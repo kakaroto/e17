@@ -6,6 +6,7 @@
 static void _cb_dummy(void *data __UNUSED__, void *data2 __UNUSED__) {}
 
 static void _cb_add(void *data, void *data2 __UNUSED__);
+static void _cb_del(void *data, void *data2 __UNUSED__);
 
 static void _dlg_add_cb_ok(void *data, E_Dialog *dlg);
 static void _dlg_add_cb_cancel(void *data, E_Dialog *dlg);
@@ -68,7 +69,7 @@ dialog_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
     );
 
     del_btn = e_widget_button_add(
-        evas, D_("Remove"), "list-remove", _cb_dummy, cfdata, NULL
+        evas, D_("Remove"), "list-remove", _cb_del, cfdata, NULL
     );
 
     e_widget_table_object_append(btn_tbl,  up_btn, 0, 0, 1, 1, 1, 1, 1, 0);
@@ -81,8 +82,10 @@ dialog_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
     /* Expose evas */
     cfdata->evas = evas;
 
-    if (cfdata->fill_delay)  ecore_timer_del(cfdata->fill_delay);
-        cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
+    if (cfdata->fill_delay)
+        ecore_timer_del(cfdata->fill_delay);
+
+    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
 
     return main;
 }
@@ -90,13 +93,39 @@ dialog_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static void
 _cb_add(void *data, void *data2 __UNUSED__)
 {
-   E_Config_Dialog_Data *cfdata = NULL;
-   if (!(cfdata = data)) return;
+    E_Config_Dialog_Data *cfdata = NULL;
+    if (!(cfdata = data)) return;
 
-   if (cfdata->dlg_add_new)
+    if (cfdata->dlg_add_new)
         e_win_raise(cfdata->dlg_add_new->win);
-   else
+    else
         cfdata->dlg_add_new = _dlg_add_new(cfdata);
+}
+
+static void
+_cb_del(void *data, void *data2 __UNUSED__)
+{
+    E_Config_Dialog_Data *cfdata = NULL;
+    E_XKB_Layout         *layout = NULL;
+    Evas_Object          *end    = NULL;
+    Eina_List            *l      = NULL;
+    const char           *label  = NULL;
+    int                   n      = 0;
+
+    if (!(cfdata = data)) return;
+
+    e_xkb_cfg_inst->used_layouts = eina_list_remove_list(
+        e_xkb_cfg_inst->used_layouts, eina_list_nth_list(
+            e_xkb_cfg_inst->used_layouts, e_widget_ilist_selected_get(
+                cfdata->used_list
+            )
+        )
+    );
+
+    if (cfdata->fill_delay)
+        ecore_timer_del(cfdata->fill_delay);
+
+    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
 }
 
 static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
@@ -204,6 +233,33 @@ static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
 static void
 _dlg_add_cb_ok(void *data, E_Dialog *dlg)
 {
+    E_Config_Dialog_Data *cfdata = dlg->data;
+    E_XKB_Config_Layout  *cl     = NULL;
+
+    const char *layout =
+        e_widget_ilist_selected_value_get(cfdata->layout_list);
+
+    const char *model =
+        e_widget_ilist_selected_value_get(cfdata->model_list);
+
+    const char *variant =
+        e_widget_ilist_selected_value_get(cfdata->variant_list);
+
+    cl          = E_NEW(E_XKB_Config_Layout, 1);
+    cl->name    = eina_stringshare_add(layout);
+    cl->model   = eina_stringshare_add(model);
+    cl->variant = eina_stringshare_add(variant);
+
+    e_xkb_cfg_inst->used_layouts =
+        eina_list_append(e_xkb_cfg_inst->used_layouts, cl);
+
+    if (cfdata->fill_delay)
+        ecore_timer_del(cfdata->fill_delay);
+
+    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
+
+   cfdata->dlg_add_new = NULL;
+   e_object_unref(E_OBJECT(dlg));
 }
 
 static void
