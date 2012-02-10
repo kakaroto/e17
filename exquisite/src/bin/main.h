@@ -23,14 +23,12 @@
 
 #include "ipc.h"
 
-#define THEMES PACKAGE_DATA_DIR"/data/themes"
-#define FONTS  PACKAGE_DATA_DIR"/data/fonts"
-
-extern Ecore_Evas *ee;
-extern Evas       *evas;
-extern Evas_Coord  scr_w;
-extern Evas_Coord  scr_h;
-extern int         quitting;
+extern Eina_Prefix *pfx;
+extern Ecore_Evas  *ee;
+extern Evas        *evas;
+extern Evas_Coord   scr_w;
+extern Evas_Coord   scr_h;
+extern int          quitting;
 
 /* Some flags that define the behavior of exquisite. */
 extern int         flags;

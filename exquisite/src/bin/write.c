@@ -77,7 +77,7 @@ main(int argc, char **argv)
              printf("Cannot find fifo at %s.\n", file);
              return 1;
           }
-        write(fd, buf, strlen(buf));
+        if (write(fd, buf, strlen(buf)) < 0) perror("write");
         close(fd);
      }
    else if (!strcmp(method, "socket") ||
@@ -118,7 +118,8 @@ main(int argc, char **argv)
              return 1;
           }
 
-        if (strlen(buf) != ecore_con_server_send(sock, buf, strlen(buf)))
+        if (strlen(buf) != 
+            (size_t)ecore_con_server_send(sock, buf, strlen(buf)))
           {
              printf("Command has been truncated.\n");
              return 1;

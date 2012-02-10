@@ -5,33 +5,40 @@
 #define GL_X      2
 #define XRENDER_X 3
 
-Ecore_Evas *ee = NULL;
-Evas       *evas = NULL;
-int         im_cache = 4096 * 1024;
-int         fn_cache = 512 * 1024;
-int         engine = SOFT_X;
-int         scr_w, scr_h;
-int         flags;
-char       *method;
+Eina_Prefix *pfx = NULL;
+Ecore_Evas  *ee = NULL;
+Evas        *evas = NULL;
+int          im_cache = 4096 * 1024;
+int          fn_cache = 512 * 1024;
+int          engine = SOFT_X;
+int          scr_w, scr_h;
+int          flags;
+char        *method;
 
 static char *theme = NULL;
 
 static Eina_Bool  _cb_exit(void *data, int ev_type, void *ev);
 static void _cb_delete_request(Ecore_Evas *ee);
 static void _cb_resize(Ecore_Evas *ee);
-static int  _cb_idle_enterer(void *data);
+static Eina_Bool _cb_idle_enterer(void *data);
 static int  _args(void);
 
 
 int
 main(int argc, char **argv)
 {
+   if (!eina_init()) return -1;
    if (!ecore_init()) return -1;
    ecore_app_args_set(argc, (const char **)argv);
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _cb_exit, NULL);
    if (!ecore_evas_init()) return -1;
    if (!edje_init()) return -1;
 
+   pfx = eina_prefix_new(argv[0], main, "EXQUISITE", "exquisite", 
+                         "data/themes/default.edj",
+                         PACKAGE_BIN_DIR, PACKAGE_LIB_DIR, 
+                         PACKAGE_DATA_DIR, PACKAGE_DATA_DIR);
+   if (!pfx) return -1;
    _args();
 
    theme_init(theme);
@@ -45,6 +52,8 @@ main(int argc, char **argv)
    edje_shutdown();
    ecore_evas_shutdown();
    ecore_shutdown();
+   eina_prefix_free(pfx);
+   eina_shutdown();
    return 0;
 }
 
@@ -68,11 +77,11 @@ _cb_resize(Ecore_Evas *ee)
    theme_resize();
 }
 
-static int
+static Eina_Bool
 _cb_idle_enterer(void *data)
 {
    ipc_init();
-   return 0;
+   return EINA_FALSE;
 }
 
 static void
@@ -86,6 +95,7 @@ _args(void)
 {
    int argc;
    char **argv;
+   char buf[PATH_MAX];
    int i;
    
    int w = 640;
@@ -183,7 +193,7 @@ _args(void)
 		    "-fps fps     Set attempted framerate in frames per second\n"
 		    "-verbose     Run Exquisite in verbose mode\n"
                     "-ipc [mode]  Choose ipc mechanism (fifo [default], socket, abstract_socket)\n"
-		    "-h           Display this help\n",
+		    "-h           Display this help\n"
 		    "\n"
 		    "Notes:\n"
 		    "\n"
@@ -233,6 +243,8 @@ _args(void)
    evas_output_viewport_get(evas, NULL, NULL, &scr_w, &scr_h);
    evas_image_cache_set(evas, im_cache);
    evas_font_cache_set(evas, fn_cache);
-   evas_font_path_append(evas, FONTS);
+   snprintf(buf, sizeof(buf), "%s/data/fonts", eina_prefix_data_get(pfx));
+   evas_font_path_append(evas, buf);
    edje_frametime_set(1.0 / fps);
+   return 1;
 }

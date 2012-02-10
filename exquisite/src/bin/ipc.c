@@ -174,11 +174,9 @@ socket_input(void *data, int type, void *ev)
 static Eina_Bool
 socket_del(void *data, int type, void *ev)
 {
-  Ecore_Con_Event_Client_Del *cl_ev;
-
-  cl_ev = ev;
-
-  ecore_con_client_del(cl_ev->client);
+   Ecore_Con_Event_Client_Del *cl_ev = ev;
+   ecore_con_client_del(cl_ev->client);
+   return EINA_TRUE;
 }
 
 void

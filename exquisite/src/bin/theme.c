@@ -11,7 +11,6 @@ struct _Exquisite_Text_Line {
 
 static Evas_Object *o_bg = NULL;
 static Eina_List *messages = NULL;
-static char *txt = NULL;
 
 static void
 theme_update_text(int signal)
@@ -76,7 +75,7 @@ theme_init(const char *theme)
        (theme[0] != '/') && 
        (!!strncmp(theme, "./", 2)) &&
 	(!!strncmp(theme, "../", 3)))
-     snprintf(buf, sizeof(buf), THEMES"/%s.edj", theme);
+     snprintf(buf, sizeof(buf), "%s/%s.edj", eina_prefix_data_get(pfx), theme);
    else
      snprintf(buf, sizeof(buf), "%s", theme);
    edje_object_file_set(o, buf, "exquisite/theme");
