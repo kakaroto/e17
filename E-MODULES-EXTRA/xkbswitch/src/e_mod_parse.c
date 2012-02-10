@@ -89,7 +89,6 @@ parse_rules(const char *fname)
 
         if (!buf[0]) break;
 
-
         char *p   = buf + 2;
         char *tmp = strdup(p);
 

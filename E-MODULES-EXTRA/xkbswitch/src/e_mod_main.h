@@ -45,6 +45,18 @@ typedef struct _E_XKB_Config_Layout
     const char *variant;
 } E_XKB_Config_Layout;
 
+/* automatically typedef'd by E */
+struct _E_Config_Dialog_Data 
+{
+    Evas *evas, *dlg_evas;
+    Evas_Object *layout_list, *used_list, *model_list, *variant_list;
+    Evas_Object *btn_add, *btn_del, *btn_up, *btn_down;
+    Ecore_Timer *fill_delay;
+    Ecore_Timer *dlg_fill_delay;
+
+    E_Dialog *dlg_add_new;
+};
+
 /* Prototypes */
 
 EAPI extern E_Module_Api e_modapi;
@@ -55,6 +67,9 @@ EAPI int e_modapi_save(E_Module *m);
 
 /* Function for calling the module's Configuration Dialog */
 E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params);
+
+/* e_mod_config_main.c */
+Evas_Object *dialog_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 
 extern e_xkb_cfg *e_xkb_cfg_inst;
 
