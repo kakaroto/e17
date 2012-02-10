@@ -1,0 +1,590 @@
+New EFL releases
+Carsten Haitzler
+raster@rasterman.com
+
+<p>
+We'd like to announce a new release of several Enlightenment components.
+</p>
+
+<p><ul>
+
+<li>Eina 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.5.0 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.5.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.5.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Embryo 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/embryo-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Efreet 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/efreet-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/efreet-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eeze 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/eeze-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Expedite 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/expedite-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/expedite-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas Generic Loaders 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.1.0.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
+
+<p>
+All of these components come from revision 65800, if you prefer to
+fetch from SVN.
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Eina>Eina 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/eina-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>eina_unicode_strndup API
+</li><li>EINA_INLIST_FOREACH_SAFE API
+</li><li>eina unicode UTF8 convenience calls API
+</li><li>eina_list_move functions to move list nodes from list to list directly
+</li><li>simple SAX XML parser API added
+</li><li>inlist sort and sorted insert API
+</li><li>mempool repack API
+</li><li>eina_file API for portable file memory-mapping with IO saffety traps
+</li><li>thread locks, conditions etc. wrapper API for portability
+</li><li>prefix API for apps or libs to find their runtime prefix location
+</li><li>refcount macro API
+</li><li>binbuf for binary extendable buffers API
+</li><li>eina_hash_free_cb_set API
+</li><li>eina_main_loop_is API
+</li><li>eina_strbuf_manage_new and eina_ustrbuf_manage_new APIs
+</li><li>eina_xattr API's
+</li><li>eina_hash_murmur3 API
+</li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>compilation problems with some configure options
+</li><li>stat issue if file size is in bytes and serial number overran 32bits
+</li><li>uninstall of mempool modules
+</li><li>static build of buddy mempool
+</li><li>stringshare multi-init bug
+</li><li>windows port of eina_sched_prio_drop
+</li><li>eina_hash_set to handle data being NULL like eina_hash_del
+</li><li>static linking to eina (iconv can be avoided)
+</li><li>eina_share_common_del and eina_share_common_ref unlock bug
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>scalability/speed improvements in Chained Mempool
+</li><li>stringshare as storage for eina error strings now
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Eet>Eet 1.5.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/eet-1.5.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.5.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>EET_DATA_DESCRIPTOR_ADD_LIST_STRING API for string lists
+</li><li>eet_node API's to manipulate nodes
+</li><li>eet_alias_get API
+</li><li>eet_data_xattr_cipher_get and eet_data_xattr_cipher_set APIs
+</li><li>EET_DATA_DESCRIPTOR_ADD_BASIC_ARRAY API
+</li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>eet shutdown on windows
+</li><li>test case to init eet
+</li><li>compilation against libjpeg 8 on windows
+</li><li>binary open on windows
+</li><li>unopenable empty eet file for read/write
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>better speed and memory footprint of EET_G_UNION and EET_G_ARRAY
+</li><li>use stringshare for mmaped file names
+</li><li>use eina locking wrappers
+</li><li>use eina_file for file IO
+</li><li>jpeg encode and decode quality improved at expense of speed
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Evas>Evas 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/evas-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>auto-align feature to textblock
+</li><li>mixedwrap wrap mode to textblock
+</li><li>harfbuzzsupport for shaping
+</li><li>WBMP loader
+</li><li>mirror mode for tables
+</li><li>proxy abilities to image objects to choose source ro mirror
+</li><li>speculative texture cache to the OpenGL engine to avoid texture uploads
+</li><li>newline policy setting API to textblock
+</li><li>evas_object_ref and evas_object_unref to defer object deletions
+</li><li>ICO loader
+</li><li>evas_object_image_memfile_set to load images from memory
+</li><li>vertical alignment to textblock
+</li><li>more shadow directions for text rendering
+</li><li>runtime italicizing and boldening of fonts that don't have their own
+</li><li>more bidi API support
+</li><li>PSD loader
+</li><li>generic external-process loader for thins like xcf, pdf, video, ps
+</li><li>password mode to textblock
+</li><li>GL shader disk cache to avoid re-compilng on start
+</li><li>evas_textblock_node_format_list_get. API
+</li><li>smart class usage count get API
+</li><li>grid layout smart object and API
+</li><li>evas_event_thaw_eval to help evaluate state and events on event thaw
+</li><li>textblock support for numeric escapes like "&#x3c;" in markup
+</li><li>evas_object_image_extension_can_load_get API
+</li><li>evas_object_image_extension_can_load_fast_get API
+</li><li>evas_object_image_load_orientation_get API
+</li><li>evas_object_image_load_orientation_set API
+</li><li>feature to allow tables to repack the same object without error
+</li><li>API to get child packing from table
+</li><li>is_inside implementation for polygon objects
+</li><li>out-of-order open/close tag support in textblock markup
+</li><li>support for quoted parameters in tags in textblock markup
+</li><li>font_weight and font_style formats
+</li><li>font_width font format
+</li><li>markup tag to specify language
+</li><li>evas_textblock_cursor_range_formats_get API
+</li><li>evas_textblock_cursor_visible_range_get API
+</li><li>callback prioritization support
+</li><li>YUV 601 input support for evas_object_image_data_convert
+</li><li>NV12 colorspace for evas image objects
+</li><li>MT12 colorspace for evas image objects
+</li><li>underline dashing suport to textblock
+</li><li>API to get largest image size
+</li><li>GL Cocoa engine
+</li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>cursor and selection handling with bidi text
+</li><li>many general bid issues with text
+</li><li>free bug in key grabs
+</li><li>bug when images are scaled to massive sizes (like 1 billion pixels)
+</li><li>BMP decode for have more pixels per line than the image does
+</li><li>font string parsing bug if font element is too long
+</li><li>crash bug in argb8888 to a8 conversion
+</li><li>textblock bug with cursors in empty textblocks
+</li><li>bug in smart calc array where some objects would be skipped
+</li><li>static linking of BMP and TGA loaders
+</li><li>bug when GL viewport was set with a NULL context
+</li><li>bug when looking for vsync API due to SGI vs EXT differences
+</li><li>bug in evas_object_del where DEL callback happened before HIDE
+</li><li>yinversion bug on some GL surfaces
+</li><li>BMP loader to handle alpha BMPS as solid where all alpha values are 0
+</li><li>clipping with evas map issues
+</li><li>bug where wrong call was used for freeing a mempool object
+</li><li>static linking of GL engine
+</li><li>GL engine to handle if someone uses GL contexts outside of evas
+</li><li>bug in evas_object_textblock_text_markup_prepend that broke cursors
+</li><li>lack of calling pre/post swap callbacks when using OpenGL-ES2
+</li><li>some crashes with load options scaling of SVGs in 2nd pass decode
+</li><li>segfault with evas_textblock_cursor_content_get
+</li><li>libjpeg 8 compilation support on windows
+</li><li>evas table to handle weighting correctly and expansion
+</li><li>evas table to allow fractional weights, not just 0/1
+</li><li>glyph search bug causing inconsitent return values in some cases
+</li><li>compile when --disable-async-preload is used
+</li><li>callback counter bug
+</li><li>grab count and hide bug
+</li><li>infintie loop bug when re-inserting objects during pre-render calc
+</li><li>evas_object_image_data_convert
+</li><li>TGA loader detects false positives less and handles alpha TGAs better
+</li><li>repeat event flag not inherited from parent smart like pass events
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>pre-render speed for rectangles if they are invisible
+</li><li>code of textblock and font engine
+</li><li>textblock layout speed
+</li><li>speed and memory usage of textblock
+</li><li>cache handler to also use file size, mode and sub-second timestamp
+</li><li>textblock to re-layout only paragraphs that have changed
+</li><li>homogenous table layout alignment and sizing
+</li><li>textblock linebreaking by using liblinebreak
+</li><li>image loader to drop out instantly if image file is a directory
+</li><li>object allocation to use mempools
+</li><li>font engine to use string objects not strings for caching purposes
+</li><li>text to display missing unicode char instead of missing glyphs
+</li><li>internal file code to use eina_file more
+</li><li>jpeg loader to use eina_file
+</li><li>jpeg encode and decode quality improved at expense of speed
+</li>
+</ul>
+<b>Removals</b>
+<ul>
+     <li>removed quartz, cairo, qtopia and xrender engines. dead.
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Ecore>Ecore 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>ecore:
+</li><li>
+ <ul><li>ecore_thread_reschedule()
+</li><li>ecore_exe_data_set()
+</li><li>ecore_animator_timeline_add()
+</li><li>ecore_timer_dump()
+</li><li>custom ecore animator tick mode and support
+</li><li>ecore_pipe_freeze/thaw()
+</li><li>ecore_pipe_wait()
+</li><li>ecore_throttle()
+</li><li>ecore_main_loop_thread_safe_call_async()
+</li><li>ecore_main_loop_thread_safe_call_sync()
+</li><li>ecore_thread_main_loop_begin()
+</li><li>ecore_thread_main_loop_end()
+</ul></li>
+
+     <li>ecore_con:
+</li><li>
+ <ul><li>ECORE_CON_EVENT_CLIENT_ERROR, ECORE_CON_EVENT_SERVER_ERROR events
+</li><li>Ecore_Con_Event_Server_Error, Ecore_Con_Event_Client_Error types
+</li><li>ecore_con_client_port_get()
+</li><li>ecore_con_url_ssl_verify_peer_set()
+</li><li>ecore_con_url_ssl_ca_set()
+</li><li>ecore_con_url_pipeline_set()
+</li><li>ecore_con_url_pipeline_get()
+</li><li>ecore_con_ssl_client/server_upgrade()
+</li><li>ECORE_CON_CLIENT/SERVER_UPGRADE events
+</li><li>ecore_con_server_timeout_get/set()
+</li><li>ecore_con_ssl_server_verify_basic()
+</li><li>ecore_con_url_url_get()
+</li><li>ecore_con_server_fd_get()
+</li><li>ecore_con_client_fd_get()
+</li><li>ECORE_CON_EVENT_CLIENT_WRITE, ECORE_CON_EVENT_SERVER_WRITE events
+</ul></li>
+
+     <li>ecore_evas:
+</li><li>
+ <ul><li>
+</li><li>ecore_evas_screen_geometry_get()
+</li><li>ecore_cocoa_evas support
+</ul></li>
+
+     <li>ecore_file:
+</li><li>
+ <ul><li>
+</li><li>ecore_file_download_full()
+</ul></li>
+
+     <li>ecore_imf:
+</li><li>
+ <ul><li>
+</li><li>ecore_imf_context_canvas_get()
+</li><li>ecore_imf_context_window_get()
+</li><li>ecore_imf_context_preedit_string_with_attributes_get()
+</li><li>added controls for auto-capitalization and prediction controls
+</li><li>ecore_imf_context_input_panel_enabled_set/get()
+</li><li>ecore_imf_context_cursor_location_set()
+</ul></li>
+
+     <li>ecore_x:
+</li><li>
+ <ul><li>
+</li><li>ecore_x_randr_edid_*()
+</li><li>ecore_x_randr_screen_backlight_*()
+</li><li>more ecore_x_sync api controls to support ecore_evas
+</li><li>shape input setting support added
+</li><li>ecore_x_screen_size_get()
+</ul></li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>https failing via curl
+</li><li>removed SIGRT handling as it was broken anyway and unused
+</li><li>space key handling in ecore_wince/ecore_win32 support
+</li><li>wince background erasing
+</li><li>300 second timeout to handle slow or large downloads in ecore_con
+</li><li>ecore_file intoify fd's to not be inherited by forked children
+</li><li>ecore_file compilation if ecore_con and curl disabled
+</li><li>crash in ecore_con_ssl when attempting connections on dead socket
+</li><li>ecore-evas intereptor not handling override-redirect
+</li><li>ecore_con_url_ftp_upload to complete uploads always
+</li><li>window removal from ignore_list in ecore_x
+</li><li>bug in ecore_evas when setting modifiers for sub buffer canvases
+</li><li>NULL pointer dereference in ecore_x selection notification code
+</li><li>sync GNUTLS thread activation with eina changes
+</li><li>ecore_ipc compilation on Windows
+</li><li>fix Shift, Control, Alt and AltGr keys detection on Windows XP
+</li><li>"mouse-down inside and mouse-up outside" issue on Windows
+</li><li>ecore_x shadow tree search fixed to respect shape input of windows
+</li><li>fd handlers fixed when idler callbacks add jobs or events
+</li><li>ecore_x_selection_convert takes length into account
+</li><li>security issue in openssl certificate verification
+</li><li>gnutls server client certificate verification
+</li><li>epoll delete of fd handling in forked child
+</li><li>grouping of timers that go off very close to eachother go off together
+</li><li>generic event buffer handling in ecore_x fixed
+</li><li>use current size not requested size when getting geom in ecore-evas
+</li><li>ecore_cocoa now handles windows correctly
+</li><li>ecore_file_download error handling when ecore_con_url_get fails
+</li><li>focus and mouse-in ininital siate on some ecore-evas back-ends
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>reduced memory needed for list of fd's in ecore by using inlist
+</li><li>ecore_evas now is able to send render-done even if not syncing to comp
+</li><li>more safety checks in ecore_con ares support
+</li><li>ecore timer monotonic clock now supported on OSX
+</li><li>make ecore_con work on Windows
+</li><li>improve resize/move on Windows
+</li><li>improve keyboard management on Windows XP
+</li><li>refactored _ecore_main_loop_iterate_internal
+</li><li>better safety with ecore_evas_ecore_evas_get
+</li><li>ecore-evas produces more errors on stderr when errors happen now
+</li><li>ecore-con works on IPv6 now
+</li><li>inet_ntop instead of getnameinfo for ecore_con_client_get_ip
+</li><li>ecore-con unit tests added
+</li><li>ecore-evas fb uses ecore_input_evas now instead of going direct
+</li><li>fix ecore-evas x changing of override support if window not shown yet
+</li>
+</ul>
+<b>Removals</b>
+<ul>
+     <li>xrender evas engine support removed from ecore_evas (api still there)
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Embryo>Embryo 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/embryo-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Fixes</b>
+<ul>
+     <li>on windows use fseek instead of rewind as rewind doesn't exist on wince
+</li><li>delete tmp files on windows
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>make embryo_cc use eina_prefix to determine installation location
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Edje>Edje 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/edje-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>"UNDER" entry cursor mode
+</li><li>auto alignment of TEXT parts with text.alignment set to -1
+</li><li>mirroring support
+</li><li>edje_object_part_text_cursor_pos_set/get()
+</li><li>size_range propert to TEXT parts
+</li><li>proxy parts so part can source other parts including swallows
+</li><li>suport explicit shadow direction with added effect param
+</li><li>edje_object_part_text_append()
+</li><li>new interpolations: ACCEL_FAC, DECEL_FAC, SIN_FAC, DIVIS, BOUNCE, SPRING
+</li><li>"entry,paste,request,1" signal (primary)
+</li><li>"entry,paste,request,3" signal (clipboard)
+</li><li>"entry,selection,all,request" signal
+</li><li>"entry,selection,none,request" signal
+</li><li>"entry,paste,request*" signals afte cursor change
+</li><li>"entry,changed,user" signal
+</li><li>collection.group.limits.horizontal/vertical
+</li><li>input panel layout setting API's
+</li><li>edje_object_signal_callback_extra_data_get()
+</li><li>group inheritance and part re-ordering with inheritance
+</li><li>add change information to "entry,changed,user"
+</li><li>add "CURRENT" option for transitions to transition from current state
+</li><li>lua color/text class, map, text, image, line, polygon and edje object API's
+</li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>invalid memory access in edje alias code
+</li><li>recusive aliases fixed
+</li><li>cursor didn't change on backspace signal
+</li><li>propagation of recursive events on existing part
+</li><li>box/table signal not including name correctly
+</li><li>clicked signal on entry
+</li><li>propagation of recursive events between existing and non-existing parts
+</li><li>textblock handling in size_min_restricted_calc fixed
+</li><li>stop emitting "cursor,changed" on text set
+</li><li>external usage in sub groups now have proper parents
+</li><li>ellipsis fixed with small text parts
+</li><li>edje_shutdown() fixed if called before all edje objects are gone
+</li><li>allow -1 for description.max
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>built-in epp (from e16) to replace cpp/gcc pre-processor on all platforms
+</li><li>edje_decc only uses edje_cc as compiler for security paranoia
+</li><li>use smart clipper more from evas
+</li><li>text.align now works for textblock too
+</li><li>creation/deletion of edje objects should be faster with freeze and thaws
+</li><li>don't walk eina_list when deleting member classes - faster
+</li><li>part.description.max now can define just 1 axis
+</li><li>signal and message propagation is more consistent and simpler now
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Efreet>Efreet 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/efreet-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/efreet-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Fixes</b>
+<ul>
+     <li>when you have an empty <Name></Name> in a menu
+</li><li>tests don't do clearenv when it is not available
+</li><li>memory leak fixed in cache icon retrieval
+</li><li>check for NULL dirs in caches
+</li><li>check for theme change when rebuilding cache
+</li><li>leak in efreet_mime_type_icon_get
+</li><li>reset log domain to -1 on unregister
+</li><li>clear memory cache when closing eet file
+</li><li>fixed documentation
+</li><li>remove EAPI from efreet_home_dir_get as it wasn't exported in .h's
+</li><li>don't leak hashes on init error
+</li><li>no more memleak in desktop cache creation
+</li><li>fixed uri encoding when opening files
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+    <li>added temporary memory cache for eet file data
+</li><li>always use icon cache
+</li><li>faster string comapre with poter equality for strings
+</li><li>local log domains per file
+</li><li>remove exess init functions for xml
+</li><li>stop creating cache dir multiple times
+</li><li>change ownership of cache files to calling user
+</li><li>fast path for "*" pattern match
+</li><li>delay cache creation with a timer to avoid storms
+</li><li>always rebuild cache from 0 when needed and be more correct
+</li><li>store cache change flags in update file and propagate to update event
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Eeze>Eeze 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/eeze-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>more disk-related detection/info functions
+</li><li>disk mounting API
+</li><li>eeze_scanner utility for applications to hook for drive detection
+</li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>bugs with device detection related to newer kernel versions
+</li><li>device filtering to be more accurate in some cases
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/E_Dbus>E Dbus 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+<b>Additions</b>
+<ul>
+     <li>e_notification_action_id_get
+</li><li>e_notification_action_name_get
+</li><li>e_notification_image_init
+</li><li>e_connman: sync api with connman-0.7x
+</li>
+</ul>
+<b>Fixes</b>
+<ul>
+     <li>DSO linking issues fixed
+</li><li>crash on e-notify-send with invalid session bus set
+</li><li>when app has no idle time, e_dbus's idlers dont process anything
+</li><li>error when trying to add duplicate fd handler for dbus fd
+</li>
+</ul>
+<b>Improvements</b>
+<ul>
+     <li>notification protocol 1.2 support
+</li><li>e_connman supports connman-0.7x api, warns that it is unstable.
+</li>
+</ul>
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Expedite>Expedite 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/expedite-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/expedite-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+First release.
+</p>
+
+<p>
+<h3><a href=http://trac.enlightenment.org/e/wiki/Evas_Generic_Loaders>Evas Generic Loaders 1.1.0</a></h3>
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.1.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.1.0.tar.bz2">BZ2</a>]
+</p><p>
+First release.
+</p>
