@@ -54,6 +54,8 @@ struct _E_Config_Dialog_Data
     Ecore_Timer *fill_delay;
     Ecore_Timer *dlg_fill_delay;
 
+    Eina_List *cfg_layouts;
+
     E_Dialog *dlg_add_new;
 };
 

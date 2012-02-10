@@ -78,6 +78,7 @@ _create_data(E_Config_Dialog *cfd)
     E_Config_Dialog_Data *cfdata  = NULL;
     Eina_List            *l       = NULL;
     E_XKB_Config_Layout  *cl      = NULL;
+    E_XKB_Config_Layout  *nl      = NULL;
     E_XKB_Layout         *layout  = NULL;
     E_XKB_Model          *model   = NULL;
     E_XKB_Variant        *variant = NULL;
@@ -86,29 +87,12 @@ _create_data(E_Config_Dialog *cfd)
 
     EINA_LIST_FOREACH(e_xkb_cfg_inst->used_layouts, l, cl)
     {
-        Eina_List *node = eina_list_search_unsorted_list(
-            layouts, layout_sort_by_name_cb, cl->name
-        );
-        if (!node) continue;
+        nl          = E_NEW(E_XKB_Config_Layout, 1);
+        nl->name    = eina_stringshare_add(cl->name);
+        nl->model   = eina_stringshare_add(cl->model);
+        nl->variant = eina_stringshare_add(cl->variant);
 
-        layout = eina_list_data_get(node);
-
-        /* this is important for load ordering */
-        layouts = eina_list_append(
-            eina_list_remove_list(layouts, node), layout
-        );
-
-        model = eina_list_search_unsorted(
-            models, model_sort_by_name_cb, cl->model
-        );
-        variant = eina_list_search_unsorted(
-            layout->variants, variant_sort_by_name_cb, cl->variant
-        );
-
-        layout->used = EINA_TRUE;
-
-        if (model  ) layout->model   = model;
-        if (variant) layout->variant = variant;
+        cfdata->cfg_layouts = eina_list_append(cfdata->cfg_layouts, nl);
     }
 
     return cfdata;
@@ -117,27 +101,12 @@ _create_data(E_Config_Dialog *cfd)
 static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
+    E_XKB_Config_Layout *cl = NULL;
+
     e_xkb_cfg_inst->cfd = NULL;
-    E_FREE(cfdata);
-}
 
-static int
-_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
-{
-    /* Here, set stuff from cfdata back into config */
-    Eina_List           *l      = NULL;
-    E_XKB_Layout        *layout = NULL;
-    E_XKB_Config_Layout *cl     = NULL;
-
-    /* the old stuff has to be freed */
-    while (e_xkb_cfg_inst->used_layouts)
+    EINA_LIST_FREE(cfdata->cfg_layouts, cl)
     {
-        cl = e_xkb_cfg_inst->used_layouts->data;
-
-        e_xkb_cfg_inst->used_layouts =
-            eina_list_remove_list(e_xkb_cfg_inst->used_layouts,
-                                  e_xkb_cfg_inst->used_layouts);
-
         if (cl->name)    eina_stringshare_del(cl->name);
         if (cl->model)   eina_stringshare_del(cl->model);
         if (cl->variant) eina_stringshare_del(cl->variant);
@@ -145,18 +114,32 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         E_FREE(cl);
     }
 
-    EINA_LIST_FOREACH(layouts, l, layout)
-    {
-        if (!layout->used) continue;
+    E_FREE(cfdata);
+}
 
-        cl          = E_NEW(E_XKB_Config_Layout, 1);
-        cl->name    = eina_stringshare_add(layout->name);
-        cl->model   = eina_stringshare_add(layout->model
-            ? layout->model->name : ""
-        );
-        cl->variant = eina_stringshare_add(layout->variant
-            ? layout->variant->name : ""
-        );
+static int
+_basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{
+    /* Here, set stuff from cfdata back into config */
+    Eina_List           *l  = NULL;
+    E_XKB_Config_Layout *cl = NULL;
+    E_XKB_Config_Layout *nl = NULL;
+
+    EINA_LIST_FREE(e_xkb_cfg_inst->used_layouts, cl)
+    {
+        if (cl->name)    eina_stringshare_del(cl->name);
+        if (cl->model)   eina_stringshare_del(cl->model);
+        if (cl->variant) eina_stringshare_del(cl->variant);
+
+        E_FREE(cl);
+    }
+
+    EINA_LIST_FOREACH(cfdata->cfg_layouts, l, cl)
+    {
+        nl          = E_NEW(E_XKB_Config_Layout, 1);
+        nl->name    = eina_stringshare_add(cl->name);
+        nl->model   = eina_stringshare_add(cl->model);
+        nl->variant = eina_stringshare_add(cl->variant);
 
         e_xkb_cfg_inst->used_layouts =
             eina_list_append(e_xkb_cfg_inst->used_layouts, cl);

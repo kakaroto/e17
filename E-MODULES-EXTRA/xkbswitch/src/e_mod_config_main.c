@@ -114,9 +114,9 @@ _cb_del(void *data, void *data2 __UNUSED__)
 
     if (!(cfdata = data)) return;
 
-    e_xkb_cfg_inst->used_layouts = eina_list_remove_list(
-        e_xkb_cfg_inst->used_layouts, eina_list_nth_list(
-            e_xkb_cfg_inst->used_layouts, e_widget_ilist_selected_get(
+    cfdata->cfg_layouts = eina_list_remove_list(
+        cfdata->cfg_layouts, eina_list_nth_list(
+            cfdata->cfg_layouts, e_widget_ilist_selected_get(
                 cfdata->used_list
             )
         )
@@ -250,8 +250,7 @@ _dlg_add_cb_ok(void *data, E_Dialog *dlg)
     cl->model   = eina_stringshare_add(model);
     cl->variant = eina_stringshare_add(variant);
 
-    e_xkb_cfg_inst->used_layouts =
-        eina_list_append(e_xkb_cfg_inst->used_layouts, cl);
+    cfdata->cfg_layouts = eina_list_append(cfdata->cfg_layouts, cl);
 
     if (cfdata->fill_delay)
         ecore_timer_del(cfdata->fill_delay);
@@ -439,7 +438,7 @@ _cb_fill_delay(void *data)
     e_widget_ilist_freeze(cfdata->used_list);
     e_widget_ilist_clear (cfdata->used_list);
 
-    EINA_LIST_FOREACH(e_xkb_cfg_inst->used_layouts, l, cl)
+    EINA_LIST_FOREACH(cfdata->cfg_layouts, l, cl)
     {
         const char *name = NULL;
 
