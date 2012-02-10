@@ -3,9 +3,25 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(configure.ac)
-AM_INIT_AUTOMAKE(exquisite, 1.0.0)
-AM_CONFIG_HEADER(config.h)
+AC_INIT([exquisite], [1.0.0], [enlightenment-devel@lists.sourceforge.net])
+AC_PREREQ([2.52])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_MACRO_DIR([m4])
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_ISC_POSIX
+
+AC_CONFIG_HEADERS([config.h])
+AH_TOP([
+#ifndef EFL_CONFIG_H__
+#define EFL_CONFIG_H__
+])
+AH_BOTTOM([
+#endif /* EFL_CONFIG_H__ */
+])
+
+AM_INIT_AUTOMAKE([1.6 dist-bzip2])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_ISC_POSIX
 AC_PROG_CC
