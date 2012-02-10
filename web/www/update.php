@@ -7,7 +7,7 @@ $apps = array
    "eina"                 => "1.1.0",
    "eet"                  => "1.5.0",
    "evas"                 => "1.1.0",
-   "ecore"                => "1.1.0"
+   "ecore"                => "1.1.0",
    "embryo"               => "1.1.0",
    "edje"                 => "1.1.0",
    "eeze"                 => "1.1.0",
@@ -23,47 +23,76 @@ $apps = array
    );
 #############################################################################
 
-
-
-
-
+function get_ip()
+{
+    if (getenv("REMOTE_ADDR")) $ip = getenv("REMOTE_ADDR");
+    else $ip = "UNKNOWN";
+    return $ip;
+}
 
 #############################################################################
 ob_start();
 ############ limit - 64kb.
 $data = file_get_contents('php://input', NULL, NULL, 0, 64 * 1024);
 ############ parse post data header
-$items = explode(" ", $data);
-$res = "OK";
+$lines = explode("\n", $data);
+$linecount = count($lines);
 
-#############################################################################
-############ update check request
-############ input:
-############   UPDATE appname version
-############ e.g.:
-############   UPDATE enlightenment 0.16.999.65347
-############ response:
-############   OK
-############   ERROR <error string>
-############   OLD <latest version>
-if ($items[0] == "UPDATE")
+for ($l = 0; $l <= $linecount; $l++)
 {
-    $app     = $items[1];
-    $version = $items[2];
-    
-    $vcl = explode(".", $version);
-    $vsv = explode(".", $apps[$app]);
-    
-    $ncl = count($vcl);
-    $nsv = count($vsv);
-    $num = $ncl;
-    if ($nsv < $num) $num = $nsv;
-    for ($i = 0; $i <= $num; $i++)
+    $items = explode(" ", $lines[$l]);
+    $res = "OK";
+
+    ########################################################################
+    ############ update check request
+    ############ input:
+    ############   UPDATE appname version
+    ############ e.g.:
+    ############   UPDATE enlightenment 0.16.999.65347
+    ############ response:
+    ############   OK
+    ############   ERROR <error string>
+    ############   OLD <latest version>
+    if ($items[0] == "UPDATE")
     {
-	if (intval($vsv[$i]) > intval($vcl[$i]))
+	$app     = $items[1];
+	$version = $items[2];
+	
+	$vcl = explode(".", $version);
+	$vsv = explode(".", $apps[$app]);
+	
+	$ncl = count($vcl);
+	$nsv = count($vsv);
+	$num = $ncl;
+	if ($nsv < $num) $num = $nsv;
+	for ($i = 0; $i <= $num; $i++)
 	{
-	    $res = "OLD " . $apps[$app];
-	    break;
+	    if (intval($vsv[$i]) > intval($vcl[$i]))
+	    {
+		$res = "OLD " . $apps[$app];
+		break;
+	    }
+	}
+    }
+    ########################################################################
+    ############ update check request
+    ############ input:
+    ############   CLIENT uuid
+    ############ e.g.:
+    ############   CLIENT 422d5ed527567ef489e8b7fe00000007
+    if ($items[0] == "CLIENT")
+    {
+	$id = $items[1];
+	$fh = fopen("/var/www/web/web/www/e17-clients", "a");
+	if ($fh)
+	{
+	    fwrite($fh, date("Y/m/d-H:i:s"));
+	    fwrite($fh, " ");
+	    fwrite($fh, get_ip());
+	    fwrite($fh, " ");
+	    fwrite($fh, $id);
+	    fwrite($fh, "\n");
+	    fclose($fh);
 	}
     }
 }
