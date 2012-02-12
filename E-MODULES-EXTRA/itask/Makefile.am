@@ -3,7 +3,14 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       config.sub configure depcomp install-sh ltmain.sh \
 		       missing module.desktop config.rpath mkinstalldirs
 
-SUBDIRS = src data po
+SUBDIRS = src data
+
+if HAVE_PO
+
+#disable entering po/ as there is no po files...
+#SUBDIRS += po
+
+endif
 
 EDJE_FLAGS = -v \
 	     -id $(top_srcdir)
