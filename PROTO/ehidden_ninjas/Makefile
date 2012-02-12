@@ -1,15 +1,15 @@
 CXXFLAGS += $(shell pkg-config --cflags eina evas ecore elementary evas)
 LIBS += $(shell pkg-config --libs eina evas ecore elementary)
-CXXFLAGS += -Wall -O2
+CXXFLAGS += -Wall -Wundef -O2
 
 SUBDIRS = src
 
-BINARY=ehidden_ninjas
+BINARY=ehninjas
 
 PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
 
-$(BINARY): app.o
+$(BINARY): ehninjas.o
 	$(CC) -o $@ $< $(LIBS)
 
 install: $(BINARY)
@@ -18,5 +18,5 @@ install: $(BINARY)
 	@install -m 0755 $(BINARY) $(BINDIR)
 
 clean:
-	rm -f $(BINARY) app.o
+	rm -f $(BINARY) ehninjas.o
 
