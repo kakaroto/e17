@@ -39,24 +39,6 @@
             }
           part
             {
-               name: "base";
-               type: IMAGE;
-               mouse_events: 0;
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "bg";
-                    rel2.to: "bg";
-                    rel2.offset: -20 -1;
-                    image
-                      {
-                         normal: "frame_label_over.png";
-                         border: 4 4 4 4;
-                      }
-                 }
-            }
-          part
-            {
                name: "clipper";
                type: RECT;
                mouse_events: 0;
@@ -73,18 +55,6 @@
                          offset: -5 -5;
                          to: "base";
                       }
-                 }
-            }
-          part
-            {
-               name: "elm.swallow.content";
-               type: SWALLOW;
-               clip_to: "clipper";
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "clipper";
-                    rel2.to: "clipper";
                  }
             }
           BUTTON_PART("button",
@@ -122,6 +92,36 @@
                     state: "hidden" 0.0;
                     inherit: "default" 0.0;
                     image.normal: "icon_arrow_right.png";
+                 }
+            }
+          part
+            {
+               name: "base";
+               type: IMAGE;
+               mouse_events: 0;
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "bg";
+                    rel2.to: "bg";
+                    rel2.offset: -20 -1;
+                    image
+                      {
+                         normal: "frame_label_over.png";
+                         border: 4 4 4 4;
+                      }
+                 }
+            }
+          part
+            {
+               name: "elm.swallow.content";
+               type: SWALLOW;
+               clip_to: "clipper";
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "clipper";
+                    rel2.to: "clipper";
                  }
             }
           PART_EVENTS("button",)
@@ -163,27 +163,9 @@
                     state: "hidden" 0.0;
                     inherit: "default" 0.0;
                     rel1.relative: 0.0 -1.0;
-                    rel1.offset: 0 21;
+                    rel1.offset: 0 -21;
                     rel2.relative: 1.0 0.0;
                     rel2.offset: -1 20;
-                 }
-            }
-          part
-            {
-               name: "base";
-               type: IMAGE;
-               mouse_events: 0;
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "bg";
-                    rel2.to: "bg";
-                    rel2.offset: -1 -20;
-                    image
-                      {
-                         normal: "frame_label_over.png";
-                         border: 4 4 4 4;
-                      }
                  }
             }
           part
@@ -206,25 +188,13 @@
                       }
                  }
             }
-          part
-            {
-               name: "elm.swallow.content";
-               type: SWALLOW;
-               clip_to: "clipper";
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "clipper";
-                    rel2.to: "clipper";
-                 }
-            }
           BUTTON_PART("button",
-           max: 32 48;
-           align: 0.5 1.0;
+           max: 48 32;
+           align: 0.5 0.0;
            rel1
              {
                 relative: 0 1.0;
-                offset: -2 2;
+                offset: 0 -6;
                 to_y: "base";
              }
            rel2.to_y: "bg";,
@@ -252,6 +222,36 @@
                     state: "hidden" 0.0;
                     inherit: "default" 0.0;
                     image.normal: "icon_arrow_down.png";
+                 }
+            }
+          part
+            {
+               name: "base";
+               type: IMAGE;
+               mouse_events: 0;
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "bg";
+                    rel2.to: "bg";
+                    rel2.offset: -1 -20;
+                    image
+                      {
+                         normal: "frame_label_over.png";
+                         border: 4 4 4 4;
+                      }
+                 }
+            }
+          part
+            {
+               name: "elm.swallow.content";
+               type: SWALLOW;
+               clip_to: "clipper";
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "clipper";
+                    rel2.to: "clipper";
                  }
             }
           PART_EVENTS("button",)
@@ -293,27 +293,9 @@
                     state: "hidden" 0.0;
                     inherit: "default" 0.0;
                     rel1.relative: 0.0 1.0;
-                    rel1.offset: 0 20;
+                    rel1.offset: -1 -24;
                     rel2.relative: 1.0 2.0;
-                    rel2.offset: -1 21;
-                 }
-            }
-          part
-            {
-               name: "base";
-               type: IMAGE;
-               mouse_events: 0;
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "bg";
-                    rel1.offset: -1 -20;
-                    rel2.to: "bg";
-                    image
-                      {
-                         normal: "frame_label_over.png";
-                         border: 4 4 4 4;
-                      }
+                    rel2.offset: 0 -21;
                  }
             }
           part
@@ -336,30 +318,15 @@
                       }
                  }
             }
-          part
-            {
-               name: "elm.swallow.content";
-               type: SWALLOW;
-               clip_to: "clipper";
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "clipper";
-                    rel2.to: "clipper";
-                 }
-            }
           BUTTON_PART("button",
-           max: 32 48;
+           max: 48 32;
+           fixed: 1 1;
            align: 0.5 0.0;
-           rel1
-             {
-                relative: 0 -1;
-                offset: -2 0;
-                to_y: "base";
-             }
-           rel2.offset: 0 10;
-           rel2.to_y: "bg";,
-          12 4 0 5)
+           rel1.to_y: "bg";
+           rel2.relative: 1.0 0.0;
+           rel2.offset: 0 5;
+           rel2.to_y: "base";,
+          4 12 5 0)
           BUTTON_GLOW_PART("button", 220)
           FOCUS_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
           DRAG_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
@@ -383,6 +350,36 @@
                     state: "hidden" 0.0;
                     inherit: "default" 0.0;
                     image.normal: "icon_arrow_up.png";
+                 }
+            }
+          part
+            {
+               name: "base";
+               type: IMAGE;
+               mouse_events: 0;
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "bg";
+                    rel1.offset: -1 20;
+                    rel2.to: "bg";
+                    image
+                      {
+                         normal: "frame_label_over.png";
+                         border: 4 4 4 4;
+                      }
+                 }
+            }
+          part
+            {
+               name: "elm.swallow.content";
+               type: SWALLOW;
+               clip_to: "clipper";
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "clipper";
+                    rel2.to: "clipper";
                  }
             }
           PART_EVENTS("button",)
@@ -428,24 +425,6 @@
             }
           part
             {
-               name: "base";
-               type: IMAGE;
-               mouse_events: 0;
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "bg";
-                    rel1.offset: 20 0;
-                    rel2.to: "bg";
-                    image
-                      {
-                         normal: "frame_label_over.png";
-                         border: 4 4 4 4;
-                      }
-                 }
-            }
-          part
-            {
                name: "clipper";
                type: RECT;
                mouse_events: 0;
@@ -462,18 +441,6 @@
                          offset: -5 -5;
                          to: "base";
                       }
-                 }
-            }
-          part
-            {
-               name: "elm.swallow.content";
-               type: SWALLOW;
-               clip_to: "clipper";
-               description
-                 {
-                    state: "default" 0.0;
-                    rel1.to: "clipper";
-                    rel2.to: "clipper";
                  }
             }
           BUTTON_PART("button",
@@ -511,6 +478,36 @@
                     state: "hidden" 0.0;
                     inherit: "default" 0.0;
                     image.normal: "icon_arrow_left.png";
+                 }
+            }
+          part
+            {
+               name: "base";
+               type: IMAGE;
+               mouse_events: 0;
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "bg";
+                    rel1.offset: 20 0;
+                    rel2.to: "bg";
+                    image
+                      {
+                         normal: "frame_label_over.png";
+                         border: 4 4 4 4;
+                      }
+                 }
+            }
+          part
+            {
+               name: "elm.swallow.content";
+               type: SWALLOW;
+               clip_to: "clipper";
+               description
+                 {
+                    state: "default" 0.0;
+                    rel1.to: "clipper";
+                    rel2.to: "clipper";
                  }
             }
           PART_EVENTS("button",)
