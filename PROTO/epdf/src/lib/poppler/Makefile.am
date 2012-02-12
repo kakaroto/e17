@@ -10,7 +10,8 @@ epdf_poppler_index.cpp \
 epdf_poppler_main.cpp \
 epdf_poppler_page.cpp \
 epdf_poppler_page_transition.cpp \
-epdf_poppler_postscript.cpp
+epdf_poppler_postscript.cpp \
+epdf_poppler_private.h
 
 libepdf_poppler_la_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
@@ -21,5 +22,3 @@ libepdf_poppler_la_CPPFLAGS = \
 
 libepdf_poppler_la_LIBADD = @EPDF_LIBS@
 libepdf_poppler_la_LDFLAGS = -no-undefined @lt_enable_auto_import@
-
-EXTRA_DIST = epdf_poppler_private.h

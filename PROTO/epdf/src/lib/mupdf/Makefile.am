@@ -387,7 +387,8 @@ epdf_mupdf_document.c \
 epdf_mupdf_fontinfo.c \
 epdf_mupdf_index.c \
 epdf_mupdf_main.c \
-epdf_mupdf_page.c
+epdf_mupdf_page.c \
+epdf_mupdf_private.h
 
 libepdf_mupdf_la_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
@@ -401,14 +402,13 @@ libepdf_mupdf_la_CPPFLAGS = \
 @EFL_EPDF_BUILD@ \
 @EPDF_CFLAGS@
 
-libepdf_mupdf_la_LIBADD = @EPDF_LIBS@
+libepdf_mupdf_la_LIBADD = @EPDF_LIBS@ -ljpeg -lz -lm
 libepdf_mupdf_la_LDFLAGS = -no-undefined @lt_enable_auto_import@
 
 clean-local:
 	-rm -f cmap_*.c font_*.c
 
 EXTRA_DIST = \
-epdf_mupdf_private.h \
 mupdf-0.5/mupdf/mupdf.h \
 mupdf-0.5/fitz/fitz_stream.h \
 mupdf-0.5/fitz/fitz_base.h \

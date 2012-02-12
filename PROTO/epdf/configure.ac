@@ -103,7 +103,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-requirements_epdf="ecore >= 1.0.0 evas >= 1.0.0"
+requirements_epdf="ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0"
 
 case "$host_os" in
    mingw*)
