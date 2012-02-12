@@ -22,7 +22,7 @@ Requiremnents:
 
 Please see http://www.enlightenment.org for information on these.
 
-If you want fraembuffer support to work, evas and ecore will need to be built
+If you want framebuffer support to work, evas and ecore will need to be built
 with FB support. X11 support requires X11 (software and/or xrender) to be
 built for evas and ecore.
 
