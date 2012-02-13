@@ -21,30 +21,33 @@
 #ifndef __DEFINES__H__
 #define __DEFINES__H__
 
+//MACRO FUNCTIONS
 #define PRINT_DBG(string) \
    do \
      { \
-        fprintf(stderr, "%s(%d), %s\n", __func__, __LINE__, string); \
+        fprintf(stderr, "%s - %s(%d)\n", string, __func__, __LINE__); \
      } \
    while(0)
 
+//ID VALUES
 #define ID_BLOCK         1
 #define ID_BOMB          2
 
+//CONST VARIABLES
+#define GRID_SIZE        50
 
+typedef float ELEMENT_TYPE;
 
-/*
-typedef float VAR_TYPE;
-
-
-typename <T>
+//STRUCTURES
+template<typename T>
 struct Vector2
 {
    T x;
    T y;
-   vector2() x(0), y(0) {}
-}
-*/
+   Vector2<T>(): x(0), y(0) {}
+   Vector2<T>(T& x, T& y): x(x), y(y) {}
+   //TODO: override operators.
+};
 
 #endif
 

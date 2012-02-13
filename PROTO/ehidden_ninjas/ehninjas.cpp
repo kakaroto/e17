@@ -25,7 +25,7 @@
 
 using namespace ehninjas;
 
-Eina_Bool App :: Initialize(int argc, char **argv)
+Eina_Bool App:: Initialize(int argc, char **argv)
 {
    //Initialize elementary
    elm_init(argc, argv);
@@ -68,7 +68,7 @@ Eina_Bool App :: Initialize(int argc, char **argv)
    return EINA_TRUE;
 }
 
-Eina_Bool App :: Run()
+Eina_Bool App:: Run()
 {
    //Run elementary main loop
    elm_run();
@@ -76,7 +76,7 @@ Eina_Bool App :: Run()
    return EINA_TRUE;
 }
 
-Eina_Bool App :: Terminate()
+Eina_Bool App:: Terminate()
 {
    //Terminate elementary
    elm_exit();

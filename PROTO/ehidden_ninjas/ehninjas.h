@@ -17,8 +17,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
-#include <Eina.h>
-
 namespace ehninjas
 {
    class App
@@ -29,6 +27,7 @@ namespace ehninjas
          Evas_Object *bg;
 
       public:
+         App(): e(NULL), win(NULL), bg(NULL) {}
          Eina_Bool Initialize(int, char **);
          Eina_Bool Run();
          Eina_Bool Terminate();
