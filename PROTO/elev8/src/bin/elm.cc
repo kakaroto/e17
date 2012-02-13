@@ -2903,7 +2903,7 @@ public:
 
                   ListItem *it = *i;
 
-                  elm_list_item_del(it->li);
+                  elm_object_item_del(it->li);
                   elm_list_go(list->get());
 
                   list->list.erase(i);
