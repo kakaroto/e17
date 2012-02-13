@@ -427,6 +427,7 @@ boom(TryCatch &try_catch)
    if (msg.IsEmpty())
      {
         ERR("%s", *error);
+        printf("%s\n", *error);
      }
    else
      {
@@ -434,6 +435,7 @@ boom(TryCatch &try_catch)
         int line = msg->GetLineNumber();
 
         INF("%s:%d %s", *file, line, *error);
+        printf("%s:%d %s\n", *file, line, *error);
      }
    exit(1);
 }
