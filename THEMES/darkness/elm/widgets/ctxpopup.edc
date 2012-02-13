@@ -370,7 +370,7 @@
             source: "elm";
             action: STATE_SET "default" 0.0;
             target: "ctxpopup_bg";
-            transition: LINEAR 0.25;
+            transition: ACCELERATE 0.1;
          }
       }
    }
