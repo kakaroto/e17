@@ -1478,11 +1478,17 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
 };
 
 class CElmBasicWindow : public CEvasObject {
+protected:
+   Persistent<Value> win_name;
+   Persistent<Value> win_type;
+
 public:
-   CElmBasicWindow(CEvasObject *parent, Local<Object> obj) :
+   CElmBasicWindow(CEvasObject *parent, Local<Object> obj, Local<String> name, Local<Number> type) :
        CEvasObject()
      {
-        eo = elm_win_add(parent ? parent->get() : NULL, "main", ELM_WIN_BASIC);
+        eo = elm_win_add(parent ? parent->get() : NULL,
+                                  *String::Utf8Value(name),
+                                  (Elm_Win_Type)(type->Value()));
         construct(eo, obj);
 
         /*
@@ -1495,6 +1501,9 @@ public:
 
         evas_object_focus_set(eo, 1);
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
+
+        win_name = Persistent<Value>::New(name);
+        win_type = Persistent<Value>::New(type);
      }
 
    virtual Handle<Value> type_get(void) const
@@ -1525,6 +1534,7 @@ public:
      {
         ERR( "warning: resize=true ignored on main window");
      }
+
 };
 
 class CElmButton : public CEvasObject {
@@ -6146,13 +6156,24 @@ Persistent<Value> the_theme;
 Handle<Value>
 elm_main_window(const Arguments& args)
 {
+   Local<String> win_name;
+   Local<Number> win_type;
+
    if (args.Length() != 1)
      return ThrowException(Exception::Error(String::New("Bad parameters")));
 
    if (!args[0]->IsObject())
      return Undefined();
 
-   main_win = new CElmBasicWindow(NULL, args[0]->ToObject());
+   if (!args[1]->IsString())
+     win_name = String::New("main");
+
+   if (!args[2]->IsNumber())
+     win_type = Number::New(ELM_WIN_BASIC);
+
+   main_win = new CElmBasicWindow(NULL, args[0]->ToObject(),
+                                         win_name, //win name/class
+                                         win_type); //win type
    if (!main_win)
      return Undefined();
 
