@@ -463,9 +463,9 @@ eet_sync(Eet_File *ef)
   an existing developer to approve that. Generally any senior or long
   time developer can do it - new ones can too but will probably defer
   the OK decision to a senior developer first. To gain access we need
-  you to provide a few files. The kind of files you find like
+  you to provide a few files. The kind of files you find in
   <a href=http://trac.enlightenment.org/e/browser/trunk/devs/raster>
-  this developer</a>.
+  this developer's directory</a>.
  </p>
  <p>
   The <b>info.txt</b> file provides general information about you.
