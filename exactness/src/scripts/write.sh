@@ -104,8 +104,8 @@ then
    return 1
 fi
 
-echo \"test name="\$_test_name"\"
-echo \"test cmd="\$_test_cmd"\"
+DEBUG echo \"test name="\$_test_name"\"
+DEBUG echo \"test cmd="\$_test_cmd"\"
 return 0
 }
 
