@@ -10,7 +10,6 @@
 #include "tsuite_file_data.h"
 #include "tsuite.h"
 
-
 #define SHOT_KEY_STR "F2"
 /* START - EET Handling code */
 struct _Eet_Event_Type
@@ -20,13 +19,81 @@ struct _Eet_Event_Type
 typedef struct _Eet_Event_Type Eet_Event_Type;
 /* END   - EET Handling code */
 
+struct _evas_hook_setting
+{
+   char *recording;
+   char *base_dir;
+   char *dest_dir;
+   char *test_name;
+   /* TODO: What about api-data? currently freed in tsuite_cleanup() */
+};
+typedef struct _evas_hook_setting evas_hook_setting;
+
 static char *shot_key = SHOT_KEY_STR;
 static Lists_st *vr_list = NULL;
+static evas_hook_setting *_hook_setting = NULL;
+
+EAPI int
+ecore_init(void)
+{
+   int (*_ecore_init)(void) =
+      dlsym(RTLD_NEXT, "ecore_init");
+
+   printf("<%s> Calling %s\n", __FILE__, __func__);
+   if (!_hook_setting)
+     {
+        printf("<%s> TSUITE_INI! %s\n", __FILE__, __func__);
+        _hook_setting = calloc(1, sizeof(evas_hook_setting));
+        _hook_setting->recording = getenv("TSUITE_RECORDING");
+        _hook_setting->base_dir = getenv("TSUITE_BASE_DIR");
+        _hook_setting->dest_dir = getenv("TSUITE_DEST_DIR");
+        _hook_setting->test_name = getenv("TSUITE_TEST_NAME");
+     }
+
+   return _ecore_init();
+}
+
+EAPI int
+ecore_shutdown(void)
+{
+   int (*_ecore_shutdown)(void) =
+      dlsym(RTLD_NEXT, "ecore_shutdown");
+
+   printf("<%s> Calling %s\n", __FILE__, __func__);
+   if (_hook_setting)
+     {
+        printf("<%s> TSUITE_SHUTDOWN! %s\n", __FILE__, __func__);
+        free(_hook_setting);
+        _hook_setting = NULL;
+     }
+
+   return _ecore_shutdown();
+}
+
+EAPI Evas *
+evas_new(void)
+{
+   Evas * (*_evas_new)(void) =
+      dlsym(RTLD_NEXT, "evas_new");
+
+   printf("<%s> Calling %s\n", __FILE__, __func__);
+   return _evas_new();
+}
+
+void
+ecore_main_loop_begin(void)
+{
+   void (*_ecore_main_loop_begin)(void) =
+      dlsym(RTLD_NEXT, "ecore_main_loop_begin");
+
+   printf("<%s> Calling %s\n", __FILE__, __func__);
+   return _ecore_main_loop_begin();
+}
 
 EAPI void
-tsuite_evas_hook_init(Lists_st *v)
+tsuite_evas_hook_init(void)
 {  /* Pointer taken from tsuite.c */
-   vr_list = v;
+   vr_list = calloc(1, sizeof(*vr_list));
    shot_key = getenv("TSUITE_SHOT_KEY");
    if (!shot_key) shot_key = SHOT_KEY_STR;
 }
@@ -34,6 +101,9 @@ tsuite_evas_hook_init(Lists_st *v)
 EAPI void
 tsuite_evas_hook_reset(void)
 {  /* tsuite.c informs us that vr_list is no longer valid */
+   if (vr_list)
+     free(vr_list);
+
    vr_list = NULL;
 }
 
