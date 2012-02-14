@@ -8,12 +8,11 @@
 #include <sys/types.h>
 #include <dlfcn.h>
 #include "tsuite_file_data.h"
-#include "tsuite.h"
 
 #define TSUITE_MAX_PATH 1024
 #define SHOT_KEY_STR "F2"
 #define IMAGE_FILENAME_EXT ".png"
-#define DEBUG_TSUITE 1
+
 /* START - EET Handling code */
 struct _Eet_Event_Type
 {
@@ -118,52 +117,6 @@ evt_time_get(unsigned int tm, Variant_st *v)
      }
 }
 
-void
-tsuite_init(Evas_Object *win, char *name, api_data *d)
-{
-   tsuite_cleanup();
-   if (!name)
-     return;
-
-   ts.name = strdup(name);  /* Freed by tsuite_cleanup */
-   ts.win = win;
-   if (d)
-     {  /* This field is not used when testing APPs */
-        ts.api = d;
-        ts.api->win = win;
-     }
-
-   ts.e = evas_object_evas_get(ts.win);
-}
-
-/**
- * @internal
- *
- * This function do cleanup for Tsuite
- * @param Tsuite_Data * data for cleanup.
- *
- * @ingroup Tsuite
- */
-void
-tsuite_cleanup(void)
-{
-   if (ts.name)
-     free(ts.name);
-
-   if (ts.api)
-     {
-        if (ts.api->data && ts.api->free_data)
-          free(ts.api->data);
-
-        free(ts.api);
-     }
-
-/*   if (ts.win)
-     evas_object_del(ts.win);
-*/
-   memset(&ts, 0, sizeof(ts));
-}
-
 EAPI void
 tsuite_evas_hook_init(void)
 {  /* Pointer taken from tsuite.c */
@@ -194,11 +147,9 @@ tsuite_evas_hook_reset(void)
 void
 tsuite_shot_do(char *name)
 {
-   printf("<%s> --- 1 ---\n", __func__);
    if (!ts.e)
      return;
 
-   printf("<%s> --- 2 ---\n", __func__);
    Ecore_Evas *ee, *ee_orig;
    Evas_Object *o;
    unsigned int *pixels;
@@ -219,20 +170,20 @@ tsuite_shot_do(char *name)
      }
    else
      {
-        filename = malloc(strlen(ts.name) + strlen(IMAGE_FILENAME_EXT) +
+        filename = malloc(strlen(_hook_setting->test_name) + strlen(IMAGE_FILENAME_EXT) +
               dir_name_len + 8); /* also space for serial */
 
         ts.serial++;
         if (_hook_setting->dest_dir)
           sprintf(filename, "%s/", _hook_setting->dest_dir);
 
-        sprintf(filename + dir_name_len, "%s_%d%s", ts.name ,ts.serial,
-              IMAGE_FILENAME_EXT);
+        sprintf(filename + dir_name_len, "%s_%d%s", _hook_setting->test_name,
+              ts.serial, IMAGE_FILENAME_EXT);
      }
 
-   printf("<%s> file=<%s>--- 3 ---\n", __func__, filename);
    /* A bit hackish, get the ecore_evas from the Evas canvas */
    ee_orig = evas_data_attach_get(ts.e);
+   printf("<%s> ts.e=<%p> ee_orig=<%p>\n", __func__, ts.e, ee_orig);
 
    ecore_evas_manual_render(ee_orig);
    pixels = (void *)ecore_evas_buffer_pixels_get(ee_orig);
@@ -290,7 +241,6 @@ ecore_shutdown(void)
    int (*_ecore_shutdown)(void) =
       dlsym(RTLD_NEXT, "ecore_shutdown");
 
-   printf("<%s> Calling %s\n", __FILE__, __func__);
    if (_hook_setting)
      {
         if (vr_list && _hook_setting->recording)
@@ -300,13 +250,12 @@ ecore_shutdown(void)
 
         free(_hook_setting);
         _hook_setting = NULL;
-        printf("<%s> TSUITE_SHUTDOWN! %s\n", __FILE__, __func__);
      }
 
    if (ts.td)
      free(ts.td);
 
-   tsuite_cleanup();
+   memset(&ts, 0, sizeof(Tsuite_Data));
    return _ecore_shutdown();
 }
 
@@ -317,24 +266,7 @@ evas_new(void)
       dlsym(RTLD_NEXT, "evas_new");
 
    ts.e = _evas_new();
-   printf("<%s> Calling %s\n", __FILE__, __func__);
    return ts.e;
-}
-
-Evas_Object *
-elm_win_add(Evas_Object *parent, const char *name, Elm_Win_Type type)
-{
-   printf("<%s> Calling %s\n", __FILE__, __func__);
-   Evas_Object * (*_elm_win_add)(Evas_Object *, const char*, Elm_Win_Type) =
-      dlsym(RTLD_NEXT, "elm_win_add");
-
-   Evas_Object *win = _elm_win_add(parent, name, type);
-
-   ts.name = strdup(name);  /* Freed by tsuite_cleanup */
-   ts.win = win;
-//   ts.e = evas_object_evas_get(ts.win);
-
-   return win;
 }
 
 static Eina_Bool

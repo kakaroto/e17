@@ -1,9 +1,52 @@
 #ifndef _TSUITE_EVAS_HOOK_H
 #define _TSUITE_EVAS_HOOK_H
 
-#include "tsuite.h"
-
 #define CACHE_FILE_ENTRY "cache"
+
+/* Macro declaring a function argument to be unused */
+#define __UNUSED__ __attribute__((unused))
+
+enum _Tsuite_Event_Type
+{  /*  Add any supported events here */
+   TSUITE_EVENT_NOT_SUPPORTED = 0,
+   TSUITE_EVENT_MOUSE_IN,
+   TSUITE_EVENT_MOUSE_OUT,
+   TSUITE_EVENT_MOUSE_DOWN,
+   TSUITE_EVENT_MOUSE_UP,
+   TSUITE_EVENT_MOUSE_MOVE,
+   TSUITE_EVENT_MOUSE_WHEEL,
+   TSUITE_EVENT_MULTI_DOWN,
+   TSUITE_EVENT_MULTI_UP,
+   TSUITE_EVENT_MULTI_MOVE,
+   TSUITE_EVENT_KEY_DOWN,
+   TSUITE_EVENT_KEY_UP,
+   TSUITE_EVENT_TAKE_SHOT
+};
+typedef enum _Tsuite_Event_Type Tsuite_Event_Type;
+
+struct _eet_event_type_mapping
+{
+   Tsuite_Event_Type t;
+   const char *name;
+};
+typedef struct _eet_event_type_mapping eet_event_type_mapping;
+
+struct _Variant_Type_st
+{
+   const char *type;
+   Eina_Bool   unknow : 1;
+};
+typedef struct _Variant_Type_st Variant_Type_st;
+
+struct _Variant_st
+{
+   Variant_Type_st t;
+   void                *data; /* differently than the union type, we
+                               * don't need to pre-allocate the memory
+                               * for the field*/
+};
+typedef struct _Variant_st Variant_st;
+
 
 struct _Timer_Data
 {
@@ -14,21 +57,10 @@ struct _Timer_Data
 };
 typedef struct _Timer_Data Timer_Data;
 
-/**
- * @internal
- *
- * @struct _Tsuite_Data
- * Struct holds test-suite data-properties
- *
- * @ingroup Tsuite
- */
 struct _Tsuite_Data
 {
-   char *name;    /**< Test Name */
-   int serial;    /**< Serial number of currnen-file */
-   api_data *api;
+   int serial;    /**< Serial number of current-file */
    Evas *e;
-   Evas_Object *win;
    Timer_Data *td;
 };
 typedef struct _Tsuite_Data Tsuite_Data;
