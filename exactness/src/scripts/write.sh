@@ -49,34 +49,23 @@ DEBUG printf "do_record()\n"
 # run ALL tests to record
 DEBUG echo do_record "\$*"
 
-OUR_LIBPATH="$1"
-
-local _dest='--destdir='"\$_dest_dir" 
-if [ -z "\$_dest_dir" ]
-then
-   local _dest=
-fi
-
-if [ -z "\$*" ]
-then
-   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw \$_dest --basedir "\$_base_dir" --record --tests
-else
-   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw \$_dest --basedir "\$_base_dir" --record --tests \$*
-fi
-return 0
+TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${1}.rec TSUITE_TEST_NAME=\${1} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${1}
 }
 
 do_simulation () {
 # This will play simulation
 # this will NOT produce screenshots
 DEBUG echo do_simulation "\$*"
-if [ -z "\$*" ]
+local file_name=\${_base_dir}/\${1}.rec
+
+if [ ! -e "\$file_name" ]
 then
-   exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests
-else
-   exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests \$*
+   echo Rec file "\$file_name" not found.
+   return 1
 fi
 
+
+TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${1} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${1}
 return 0
 }
 
@@ -89,28 +78,24 @@ DEBUG echo dest dir: "\$_dest_dir"
 DEBUG echo do_play "\$_dest_dir" "\$*"
 # Play recorded tests and produce PNG files.
 # this will produce screenshots in "_dest_dir" folder
-if [ -z "\$*" ]
-then
-# Clear all files before producing all PNG files.
-   rm "\$_dest_dir/test_*.png" &> /dev/null
-   mkdir -p "\$_dest_dir" &> /dev/null
-   ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests
-else
-   if [ -e "\$_dest_dir" ]
-   then
-# Remove PNG files according to tests played
-      for i in \$*
-      do
-         rm "\$_dest_dir"/"\$i"_[0-9]*.png &> /dev/null
-      done
-   else
-# Create dest dir
-      mkdir -p "\$_dest_dir" &> /dev/null
-   fi
+local file_name=\${_base_dir}/\${1}.rec
 
-   ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests \$*
+if [ ! -e "\$file_name" ]
+then
+   echo Rec file "\$file_name" not found.
+   return 1
 fi
 
+if [ -e "\$_dest_dir" ]
+then
+# Remove PNG files according to tests played
+   rm "\$_dest_dir"/\${1}_[0-9]*.png &> /dev/null
+else
+# Create dest dir
+   mkdir -p "\$_dest_dir" &> /dev/null
+fi
+
+ELM_ENGINE="buffer" TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${1} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${1}
 return 0
 }
 
@@ -229,6 +214,8 @@ return 0
 }
 
 # Script Entry Point
+OUR_LIBPATH="$1"
+
 _record=
 _play=
 _compare=
@@ -293,7 +280,10 @@ then
    _compare=
    _remove_fail=
    _play=
-   do_simulation "\$*"
+   for ARG in \$*
+   do
+      do_simulation "\$ARG"
+   done
 # This will cause render simulation
 fi
 
@@ -360,12 +350,18 @@ fi
 
 if [ "\$_record" ]
 then
-   do_record "\$*"
+   for ARG in \$*
+   do
+      do_record "\$ARG"
+   done
 fi
 
 if [ "\$_play" ]
 then
-   do_play "\$*"
+   for ARG in \$*
+   do
+      do_play "\$ARG"
+   done
 fi
 
 if [ "\$_compare" ]
