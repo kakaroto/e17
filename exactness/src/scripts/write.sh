@@ -87,6 +87,7 @@ then
    (( p-- ))
 fi
 _test_name=\${line:0:p}
+(( p++ ))
 _test_cmd=\${line:p}
 
 # Test that input is valid
@@ -104,8 +105,8 @@ then
    return 1
 fi
 
-DEBUG echo \"test name="\$_test_name"\"
-DEBUG echo \"test cmd="\$_test_cmd"\"
+DEBUG echo test name=\""\$_test_name"\"
+DEBUG echo test cmd=\""\$_test_cmd"\"
 return 0
 }
 
@@ -121,7 +122,7 @@ then
    return 0
 fi
 
-TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${_test_name}.rec TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
+TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${_test_name}.rec TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so eval \${_test_cmd}
 }
 
 do_simulation () {
@@ -143,7 +144,7 @@ then
 fi
 
 
-TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
+TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so eval \${_test_cmd}
 }
 
 do_play () {
@@ -178,7 +179,7 @@ else
    mkdir -p "\$_dest_dir" &> /dev/null
 fi
 
-ELM_ENGINE="buffer" TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
+ELM_ENGINE="buffer" TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so eval \${_test_cmd}
 }
 
 compare_files () {
