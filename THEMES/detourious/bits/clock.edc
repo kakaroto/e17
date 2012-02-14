@@ -1,8 +1,8 @@
 
 group {
 	name: "e/modules/clock/main";
-	/* min: 64 64;
-	 * max: 170 170; */
+	   min: 64 64;
+	/* max: 170 170; */
 
 	script {
 		public clock_cb(val) {
