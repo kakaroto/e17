@@ -19,27 +19,53 @@ function DEBUG()
 }
 
 do_help () {
-echo "Record tests to produce input-stream to play and set screenshot timing"
-echo "To record all tests:"
-echo "\$0 -r [-b BaseDir]"
-echo "To record specific tests:"
-echo "\$0 -r [-b BaseDir] TestName1 [TestName2 ...]"
-echo "Use BaseDir arg to write record-files to specific folder."
+echo "Use \$0 to test application screen-layout."
+echo "First, you need to compose a tests file as follows:"
+echo "Each line begins with test name"
+echo "second field is test-command and [optional] params."
+echo "Any line starting with '#' is a comment (ignored):"
 echo
-echo "Play tests to produce PNG files of screenshot defined while recording."
-echo "To play all tests:"
-echo "\$0 -p  [-b BaseDir] [-d DestDir]"
-echo "To play specific tests:"
-echo "\$0 -p [-b BaseDir] [-d DestDir] TestName1 [TestName2 ...]"
-echo "To play and rewrite 'orig' dir, use init option for all test: \$0 -i [-b BaseDir]"
-echo "To play and rewrite 'orig' dir, use init option for selected tests: \$0 -i [-b BaseDir] [TestName1 ...]"
-echo "Use BaseDir arg tell \$0 where record-files are found."
-echo "Otherwise, \$0 will try to find it in cwd."
-echo "This will also run comprison to produce comp_*.png files in DestDir"
+echo "# This is a comment line"
+echo "TestName1 TestCmd [param1] [param2]"
 echo
-echo "NOTE:"
-echo "For all actions require DestDir, when omitting this param we use 'current' as default."
-echo "For all actions require using record-files, when omitting BaseDir param we use current-working-directory to locate record-files."
+echo "Later, you run \$0 with the tests file as parameter."
+echo
+echo
+echo "Two additional parameters that \$0 accepts:"
+echo "BaseDir - This is where '.rec' files reside (gets pwd by default)"
+echo "DestDir - Where \$0 creates test screen shots."
+echo "          Gets 'current' under 'pwd' by default ('orig' on init)"
+echo
+echo
+echo "Use the following options:"
+echo "To record tests:"
+echo "\$0 -r [-b BaseDir] TestsFile"
+echo "Use BaseDir arg to create record files in specific folder."
+echo "Otherwise pwd is used."
+echo
+echo "Pressing F2 while recording, sets screen shot at this stage of test."
+echo "You may define env-var 'TSUITE_SHOT_KEY' to alter shot-key."
+echo "'.rec' file is produced for each test in your TestsFile."
+echo "File name is defined as 'TestName.rec' for each test."
+echo
+echo "You may test your record files with simulate option:"
+echo "\$0 -s  [-b BaseDir] TestsFile"
+echo
+echo "You need to run \$0 with init option prior"
+echo "to using play option."
+echo "Later, when doing play, PNG files are compared with"
+echo "PNG files reside in 'orig' folder create when init."
+echo
+echo "To use init option:"
+echo "\$0 -i  [-b BaseDir] TestsFile"
+echo "Do not use DestDir param with init, target always 'orig'."
+echo
+echo "Use Play tests option to produce PNG files of screen shot:"
+echo "\$0 -p  [-b BaseDir] [-d DestDir] TestsFile"
+echo "Play option produces PNG files in DestDir."
+echo "These are compares with PNGs in 'orig'."
+echo "(created in 'init' phase)"
+echo
 }
 
 get_test_params () {
