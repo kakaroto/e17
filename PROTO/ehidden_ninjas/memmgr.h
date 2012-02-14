@@ -22,19 +22,9 @@
 
 namespace ehninjas
 {
-   class App : public Singleton<App>
+   class MemoryMgr : public Singleton<MemoryMgr>
      {
-      private:
-         Evas *e;
-         Evas_Object *win;
-         Evas_Object *bg;
-         Eina_Bool initialized;
 
-      public:
-         App(): e(NULL), win(NULL), bg(NULL) {}
-         ~App() {}
-         Eina_Bool Initialize(int, char **);
-         Eina_Bool Run();
-         Eina_Bool Terminate();
      };
 }
+

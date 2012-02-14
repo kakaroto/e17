@@ -10,7 +10,7 @@ PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
 
 $(BINARY): ehninjas.o
-	$(CC) -o $@ $< $(LIBS)
+	$(CC) -o $@ $< $(LIBS) -lstdc++
 
 install: $(BINARY)
 	@echo "installation of $(BINARY)"

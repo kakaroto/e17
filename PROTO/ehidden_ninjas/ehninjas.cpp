@@ -17,6 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
+
 #include <Eina.h>
 #include <Elementary.h>
 #include <cassert>
@@ -25,8 +26,23 @@
 
 using namespace ehninjas;
 
+static void _key_down_cb(void *data,
+                         Evas *e,
+                         Evas_Object *obj,
+                         void *event_info)
+{
+   printf("KEY DOWN!\n");
+}
+
 Eina_Bool App:: Initialize(int argc, char **argv)
 {
+   //Prevent multiple initialization
+   if (this->initialized == EINA_TRUE)
+     {
+        PRINT_DBG("App is initialized already!");
+        return EINA_FALSE;
+     }
+
    //Initialize elementary
    elm_init(argc, argv);
 
@@ -43,27 +59,30 @@ Eina_Bool App:: Initialize(int argc, char **argv)
 
    //background
    Evas_Object *bg = elm_bg_add(win);
-   if (bg)
-     {
-        evas_object_size_hint_weight_set(bg,
-                                         EVAS_HINT_EXPAND,
-                                         EVAS_HINT_EXPAND);
-        //TODO: Need to set bg image instead of color.
-        elm_bg_color_set(bg, 0, 0, 255);
-        elm_win_resize_object_add(win, bg);
-     }
-   else
-     {
-        PRINT_DBG("Failed to add bg!");
-     }
+   assert(bg);
+
+   evas_object_size_hint_weight_set(bg,
+                                    EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   //TODO: Need to set bg image instead of color.
+   elm_bg_color_set(bg, 0, 0, 255);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
 
    /*
       Block block = new Block();
       if (!block) return EINA_FALSE;
     */
 
+   //Set key events callbacks to window
+   evas_object_event_callback_add(win,
+                                  EVAS_CALLBACK_KEY_DOWN,
+                                  _key_down_cb,
+                                  this);
+
    this->win = win;
    this->bg = bg;
+   this->initialized = EINA_TRUE;
 
    return EINA_TRUE;
 }
@@ -80,6 +99,7 @@ Eina_Bool App:: Terminate()
 {
    //Terminate elementary
    elm_exit();
+   this->initialized = EINA_FALSE;
 
    return EINA_TRUE;
 }
