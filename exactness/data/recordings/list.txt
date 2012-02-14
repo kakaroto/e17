@@ -1,0 +1,87 @@
+# List of tests for elementary widgets
+# To be used with exactness
+map_3d elementary_test --test-win-only Evas\\ Map\\ 3D
+actionslider elementary_test --test-win-only actionslider
+anchorblock elementary_test --test-win-only anchorblock
+anchorview elementary_test --test-win-only anchorview
+bg_image elementary_test --test-win-only bg\\ image
+bg_options elementary_test --test-win-only bg\\ options
+bg_plain elementary_test --test-win-only bg\\ plain
+box_horiz elementary_test --test-win-only box\\ horiz
+box_vert elementary_test --test-win-only box\\ vert
+box_vert2 elementary_test --test-win-only box\\ vert\\ 2
+bubble elementary_test --test-win-only bubble
+button elementary_test --test-win-only button
+calendar elementary_test --test-win-only calendar
+check elementary_test --test-win-only check
+colorselector elementary_test --test-win-only color\\ selector
+conformant elementary_test --test-win-only conformant
+conformant2 elementary_test --test-win-only conformant\\ 2
+ctxpopup elementary_test --test-win-only ctxpopup
+diskselector elementary_test --test-win-only disk\\ selector
+fileselector elementary_test --test-win-only file\\ selector
+fileselector_button elementary_test --test-win-only file\\ selector\\ button
+fileselector_entry elementary_test --test-win-only file\\ selector\\ entry
+focus elementary_test --test-win-only focus
+gengrid elementary_test --test-win-only gengrid
+gengrid2 elementary_test --test-win-only gengrid\\ 2
+gengrid_group elementary_test --test-win-only gengrid\\ Group
+genlist10 elementary_test --test-win-only genlist
+genlist11 elementary_test --test-win-only genlist\\ 2
+genlist2 elementary_test --test-win-only genlist\\ 3
+genlist3 elementary_test --test-win-only genlist\\ 4
+genlist4 elementary_test --test-win-only genlist\\ 5
+genlist6 elementary_test --test-win-only genlist\\ 7
+genlist_tree elementary_test --test-win-only genlist\\ Tree
+genlist_group elementary_test --test-win-only genlist\\ Group
+genlist_group_tree elementary_test --test-win-only genlist\\ Group\\ Tree
+genlist_mode elementary_test --test-win-only genlist\\ Mode
+genlist_reorder_mode elementary_test --test-win-only genlist\\ Reorder\\ Mode
+grid elementary_test --test-win-only grid
+hover elementary_test --test-win-only hover
+hover2 elementary_test --test-win-only hover\\ 2
+hoversel elementary_test --test-win-only hoversel
+index elementary_test --test-win-only index
+index2 elementary_test --test-win-only index\\ 2
+inwin elementary_test --test-win-only inwin
+inwin2 elementary_test --test-win-only inwin\\ 2
+label elementary_test --test-win-only label
+list elementary_test --test-win-only list
+list_horizontal elementary_test --test-win-only List\\ -\\ Horizontal
+list2 elementary_test --test-win-only list2
+list3 elementary_test --test-win-only list3
+list4 elementary_test --test-win-only list4
+list5 elementary_test --test-win-only list5
+naviframe elementary_test --test-win-only naviframe
+notify elementary_test --test-win-only notify
+pager elementary_test --test-win-only pager
+pager_slide elementary_test --test-win-only pager\\ slide
+panel elementary_test --test-win-only panel
+panes elementary_test --test-win-only panes
+progressbar elementary_test --test-win-only progressbar
+radio elementary_test --test-win-only radio
+scaling elementary_test --test-win-only scaling
+scaling2 elementary_test --test-win-only scaling\\ 2
+scroller elementary_test --test-win-only scroller
+scroller2 elementary_test --test-win-only scroller\\ 2
+segment_control elementary_test --test-win-only segment\\ control
+separator elementary_test --test-win-only separator
+slider elementary_test --test-win-only slider
+spinner elementary_test --test-win-only spinner
+table elementary_test --test-win-only table
+table_homogeneous elementary_test --test-win-only table\\ Homogeneous
+table3 elementary_test --test-win-only table\\ 3
+table4 elementary_test --test-win-only table\\ 4
+table5 elementary_test --test-win-only table\\ 5
+table6 elementary_test --test-win-only table\\ 6
+toggle elementary_test --test-win-only toggles
+toolbar elementary_test --test-win-only toolbar
+toolbar2 elementary_test --test-win-only toolbar\\ 2
+toolbar3 elementary_test --test-win-only toolbar\\ 3
+toolbar4 elementary_test --test-win-only toolbar\\ 4
+toolbar5 elementary_test --test-win-only toolbar\\ 5
+toolbar6 elementary_test --test-win-only toolbar\\ 6
+tooltip elementary_test --test-win-only tooltip
+tooltip2 elementary_test --test-win-only tooltip\\ 2
+win_states elementary_test --test-win-only Window\\ States
+win_states2 elementary_test --test-win-only Window\\ States\\ 2
