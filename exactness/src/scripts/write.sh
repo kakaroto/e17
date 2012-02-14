@@ -42,21 +42,73 @@ echo "For all actions require DestDir, when omitting this param we use 'current'
 echo "For all actions require using record-files, when omitting BaseDir param we use current-working-directory to locate record-files."
 }
 
+get_test_params () {
+# This function analyze input line and sets test-file-name, rec-file-name
+# reset globals
+_test_name=
+_test_cmd=
+local line="\$1"
+local c=\${line:0:1}
+if [ "\$c" = "#" ]
+then
+# This line is a comment
+   return 1
+fi
+
+local p=\`expr index "\$line" \\ \`
+if [ \$p -ne 0 ]
+then
+   (( p-- ))
+fi
+_test_name=\${line:0:p}
+_test_cmd=\${line:p}
+
+# Test that input is valid
+if [ -z "\$_test_name" ]
+then
+   _test_name=
+   _test_cmd=
+   return 1
+fi
+
+if [ -z "\$_test_cmd" ]
+then
+   _test_name=
+   _test_cmd=
+   return 1
+fi
+
+echo \"test name="\$_test_name"\"
+echo \"test cmd="\$_test_cmd"\"
+return 0
+}
+
 do_record () {
 DEBUG printf "do_record()\n"
 # This will run record for all test if no specific test specified
 # or run recording of specified tests (names passed as parameter).
 # run ALL tests to record
 DEBUG echo do_record "\$*"
+get_test_params "\$1"
+if [ \$? -ne 0 ]
+then
+   return 1
+fi
 
-TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${1}.rec TSUITE_TEST_NAME=\${1} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${1}
+TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${_test_name}.rec TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
 }
 
 do_simulation () {
 # This will play simulation
 # this will NOT produce screenshots
 DEBUG echo do_simulation "\$*"
-local file_name=\${_base_dir}/\${1}.rec
+get_test_params "\$1"
+if [ \$? -ne 0 ]
+then
+   return 2
+fi
+
+local file_name=\${_base_dir}/\${_test_name}.rec
 
 if [ ! -e "\$file_name" ]
 then
@@ -65,7 +117,7 @@ then
 fi
 
 
-TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${1} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${1}
+TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
 return 0
 }
 
@@ -78,7 +130,13 @@ DEBUG echo dest dir: "\$_dest_dir"
 DEBUG echo do_play "\$_dest_dir" "\$*"
 # Play recorded tests and produce PNG files.
 # this will produce screenshots in "_dest_dir" folder
-local file_name=\${_base_dir}/\${1}.rec
+get_test_params "\$1"
+if [ \$? -ne 0 ]
+then
+   return 2
+fi
+
+local file_name=\${_base_dir}/\${_test_name}.rec
 
 if [ ! -e "\$file_name" ]
 then
@@ -89,14 +147,13 @@ fi
 if [ -e "\$_dest_dir" ]
 then
 # Remove PNG files according to tests played
-   rm "\$_dest_dir"/\${1}_[0-9]*.png &> /dev/null
+   rm "\$_dest_dir"/\${_test_name}_[0-9]*.png &> /dev/null
 else
 # Create dest dir
    mkdir -p "\$_dest_dir" &> /dev/null
 fi
 
-ELM_ENGINE="buffer" TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${1} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${1}
-return 0
+ELM_ENGINE="buffer" TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
 }
 
 compare_files () {
@@ -180,20 +237,12 @@ then
 fi
 
 local files_list=
-if [ -z "\$*" ]
-# No test names given, compare all
-then
-   rm "\$_dest_dir"/comp_* &> /dev/null
-   files_list=( \`ls "\$_dest_dir"/test_*.png\` )
+for test_name in \$*
+do
+   rm "\$_dest_dir"/comp_"\$test_name"_[0-9]*.png &> /dev/null
+   files_list=( \`ls "\$_dest_dir"/"\$test_name"_[0-9]*.png\` )
    process_compare "\${files_list[@]}"
-else
-   for test_name in \$*
-   do
-      rm "\$_dest_dir"/comp_"\$test_name"_[0-9]*.png &> /dev/null
-      files_list=( \`ls "\$_dest_dir"/"\$test_name"_[0-9]*.png\` )
-      process_compare "\${files_list[@]}"
-   done
-fi
+done
 
 if [ "\$ncomp" -ne 0 ]
 then
@@ -226,6 +275,8 @@ _orig_dir="orig"
 # Init dest_dir - should change on the fly
 _dest_dir=
 _base_dir=\`pwd\`
+_test_name=
+_test_cmd=
 
 nerr=0
 ncomp=0
@@ -280,10 +331,10 @@ then
    _compare=
    _remove_fail=
    _play=
-   for ARG in \$*
+   while read curline;
    do
-      do_simulation "\$ARG"
-   done
+      do_simulation "\$curline"
+   done < "\$1"
 # This will cause render simulation
 fi
 
@@ -350,23 +401,30 @@ fi
 
 if [ "\$_record" ]
 then
-   for ARG in \$*
+   while read curline;
    do
-      do_record "\$ARG"
-   done
+      do_record "\$curline"
+   done < "\$1"
 fi
 
 if [ "\$_play" ]
 then
-   for ARG in \$*
+   while read curline;
    do
-      do_play "\$ARG"
-   done
+      do_play "\$curline"
+   done < "\$1"
 fi
 
 if [ "\$_compare" ]
 then
-   do_compare "\$*"
+   while read curline;
+   do
+      get_test_params "\$curline"
+      if [ \$? -eq 0 ]
+      then
+         do_compare "\$_test_name"
+      fi
+   done < "\$1"
 fi
 
 _n_tests_failed=0
