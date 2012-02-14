@@ -11,4 +11,4 @@ if test -z "$NOCONFIGURE" ; then
 	echo 'Configuring...'
 	./configure $@
 fi
-test "$cwd" != "$bs_dir" && cd "$cwd" &> /dev/null
+test "$cwd" = "$bs_dir" || cd "$cwd" &> /dev/null
