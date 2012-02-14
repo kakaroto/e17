@@ -42,7 +42,6 @@ PKG_CHECK_MODULES([EFL],
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/bin/Makefile
 src/lib/Makefile
 src/scripts/Makefile
 data/Makefile

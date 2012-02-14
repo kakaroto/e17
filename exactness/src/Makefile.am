@@ -1,4 +1,4 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = bin lib scripts
+SUBDIRS = lib scripts
