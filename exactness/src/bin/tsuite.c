@@ -198,8 +198,12 @@ tsuite_init(Evas_Object *win, char *name, api_data *d)
 
    ts.name = strdup(name);  /* Freed by tsuite_cleanup */
    ts.win = win;
-   ts.api = d;
-   ts.api->win = win;
+   if (d)
+     {  /* This field is not used when testing APPs */
+        ts.api = d;
+        ts.api->win = win;
+     }
+
    ts.e = evas_object_evas_get(ts.win);
 }
 
@@ -600,17 +604,43 @@ void
 do_test(char *rec_dir, void (* func) (void))
 {
    char buf[1024];
+   char appname[1024];
 
    vr_list = calloc(1, sizeof(*vr_list));
    if (recording)
      _tsuite_evas_hook_init(vr_list);
 
-   func();
-   sprintf(buf, "%s/%s.rec", rec_dir, ts.name);
+   if (func)
+     {  /* Regular test with access func */
+        func();
+        sprintf(buf, "%s/%s.rec", rec_dir, ts.name);
+     }
+   else
+     {  /* Application, compose rec-file path and fulll appname */
+        sprintf(buf, "%s/%s.rec", rec_dir, basename(ts.name));
+
+        if (basename(ts.name) == ts.name)
+          {  /* No PATH given, use cwd */
+             getcwd(appname, 1024);
+             strcat(appname, "/");
+             strcat(appname, ts.name);
+          }
+        else
+          strcpy(appname, ts.name); /* PATH incuded in ts.name */
+     }
 
    if (recording)
      {
-        elm_run(); /* and run the program now  and handle all events etc. */
+        if (func)
+          elm_run(); /* and run the program now  and handle all events etc. */
+        else
+          {
+#ifdef DEBUG_TSUITE
+             printf("%s calling <%s>\n", __func__, appname);
+#endif
+             system(appname);
+          }
+
         if (vr_list)
           write_events(buf, vr_list);
      }
@@ -619,11 +649,22 @@ do_test(char *rec_dir, void (* func) (void))
         Timer_Data *td = NULL;
 
         td = calloc(1, sizeof(Timer_Data));
+#ifdef DEBUG_TSUITE
+        printf("rec file is <%s>\n", buf);
+#endif
         vr_list = read_events(buf, ts.e, td);
         if (td->current_event)
           {  /* Got first event in list, run test */
              tsuite_feed_event(td);
-             elm_run(); /* and run the program now and handle all events etc */
+             if (func)
+               elm_run(); /* run the program now and handle all events etc */
+             else
+               {
+#ifdef DEBUG_TSUITE
+                  printf("%s calling <%s>\n", __func__, appname);
+#endif
+                  system(appname);
+               }
           }
 
         if (td)
@@ -850,17 +891,34 @@ elm_main(int argc, char **argv)
 
    /* Set tests from command line */
    for(i = first_arg; i < argc ; i++)
-     if (_set_test(tests, argv[i],  EINA_TRUE) == NULL)
-       n_total++; /* Count unknown test (wrong spelling from command line) */
+     {
+        if (_set_test(tests, argv[i],  EINA_TRUE) == NULL)
+          {  /* Failed to add test, trying to add application */
+             if (access(argv[i], X_OK) == 0)
+               {
+                  tests =  _add_test(tests, argv[i], NULL, EINA_TRUE);
+               }
+             else
+               printf("Unknown application: %s\n", argv[i]);
+          }
+
+        n_total++; /* Count argument */
+     }
 
    EINA_LIST_FOREACH(tests, l, item)
       if (item->test)
         {  /* Run test and count tests committed */
-           n_total++;
+           char buf[1024];
+           if (item->func) /* Regular test with access func */
+             sprintf(buf, "%s/%s.rec", rec_dir, item->name);
+           else
+             {  /* Application, set ts and compose rec-file path */
+                tsuite_init(NULL /* win */, item->name, NULL);
+                sprintf(buf, "%s/%s.rec", rec_dir, basename(item->name));
+             }
+
            if (!recording)
              {  /* Avoid trying to commit tests with no ".rec" file */
-                char buf[1024];
-                sprintf(buf, "%s/%s.rec", rec_dir, item->name);
                 if (access(buf, R_OK))
                   {
                      printf("Skipped test, missing <%s> file.\n", buf);
