@@ -35,6 +35,7 @@ static char *shot_key = SHOT_KEY_STR;
 static Lists_st *vr_list = NULL;
 static evas_hook_setting *_hook_setting = NULL;
 static Tsuite_Data ts;
+static Eina_List *evas_list = NULL; /* List of Evas pointers */
 
 /**
  * @internal
@@ -145,9 +146,9 @@ tsuite_evas_hook_reset(void)
  * @ingroup Tsuite
  */
 void
-tsuite_shot_do(char *name)
+tsuite_shot_do(char *name, Evas *e)
 {
-   if (!ts.e)
+   if (!e)
      return;
 
    Ecore_Evas *ee, *ee_orig;
@@ -182,8 +183,7 @@ tsuite_shot_do(char *name)
      }
 
    /* A bit hackish, get the ecore_evas from the Evas canvas */
-   ee_orig = evas_data_attach_get(ts.e);
-   printf("<%s> ts.e=<%p> ee_orig=<%p> file=<%s>\n", __func__, ts.e, ee_orig, filename);
+   ee_orig = evas_data_attach_get(e);
 
    ecore_evas_manual_render(ee_orig);
    pixels = (void *)ecore_evas_buffer_pixels_get(ee_orig);
@@ -210,7 +210,6 @@ ecore_init(void)
    int (*_ecore_init)(void) =
       dlsym(RTLD_NEXT, "ecore_init");
 
-   printf("<%s> Calling %s\n", __FILE__, __func__);
    if (!_hook_setting)
      {
         _hook_setting = calloc(1, sizeof(evas_hook_setting));
@@ -219,17 +218,15 @@ ecore_init(void)
         _hook_setting->dest_dir = getenv("TSUITE_DEST_DIR");
         _hook_setting->test_name = getenv("TSUITE_TEST_NAME");
         _hook_setting->file_name = getenv("TSUITE_FILE_NAME");
-
+#ifdef DEBUG_TSUITE
         printf("<%s> test_name=<%s>\n", __func__, _hook_setting->test_name);
         printf("<%s> base_dir=<%s>\n", __func__, _hook_setting->base_dir);
         printf("<%s> dest_dir=<%s>\n", __func__, _hook_setting->dest_dir);
         printf("<%s> recording=<%s>\n", __func__, _hook_setting->recording);
         printf("<%s> rec file is <%s>\n", __func__, _hook_setting->file_name);
-
+#endif
         if (_hook_setting->recording)
           tsuite_evas_hook_init();
-
-        printf("<%s> TSUITE_INI! %s\n", __FILE__, __func__);
      }
 
    return _ecore_init();
@@ -255,6 +252,8 @@ ecore_shutdown(void)
    if (ts.td)
      free(ts.td);
 
+   evas_list = eina_list_free(evas_list);
+
    memset(&ts, 0, sizeof(Tsuite_Data));
    return _ecore_shutdown();
 }
@@ -267,7 +266,11 @@ elm_win_add(Evas_Object *parent, const char *name, Elm_Win_Type type)
       dlsym(RTLD_NEXT, "elm_win_add");
 
    win = _elm_win_add(parent, name, type);
-   ts.e = evas_object_evas_get(win);
+   evas_list = eina_list_append(evas_list, evas_object_evas_get(win));
+#ifdef DEBUG_TSUITE
+   printf("Appended EVAS=<%p> list size=<%d>\n", evas_object_evas_get(win), eina_list_count(evas_list));
+#endif
+
    return win;
 }
 
@@ -301,9 +304,10 @@ tsuite_feed_event(void *data)
               mouse_in_mouse_out *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_in timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_mouse_in timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              evas_event_feed_mouse_in(td->e, time(NULL), NULL);
+              evas_event_feed_mouse_in(eina_list_nth(evas_list, t->n_evas),
+                       time(NULL), NULL);
               break;
            }
       case TSUITE_EVENT_MOUSE_OUT:
@@ -311,9 +315,10 @@ tsuite_feed_event(void *data)
               mouse_in_mouse_out *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_out timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_mouse_out timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp,t->n_evas);
 #endif
-              evas_event_feed_mouse_out(td->e, time(NULL), NULL);
+              evas_event_feed_mouse_out(eina_list_nth(evas_list, t->n_evas),
+                    time(NULL), NULL);
               break;
            }
       case TSUITE_EVENT_MOUSE_DOWN:
@@ -321,9 +326,10 @@ tsuite_feed_event(void *data)
               mouse_down_mouse_up *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_down timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_mouse_down timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              evas_event_feed_mouse_down(td->e, t->b, t->flags, time(NULL),
+              evas_event_feed_mouse_down(eina_list_nth(evas_list, t->n_evas),
+                    t->b, t->flags, time(NULL),
                     NULL);
 
               break;
@@ -333,9 +339,10 @@ tsuite_feed_event(void *data)
               mouse_down_mouse_up *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_up timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_mouse_up timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp,t->n_evas);
 #endif
-              evas_event_feed_mouse_up(td->e, t->b, t->flags, time(NULL),
+              evas_event_feed_mouse_up(eina_list_nth(evas_list, t->n_evas),
+                    t->b, t->flags, time(NULL),
                     NULL);
 
               break;
@@ -345,9 +352,10 @@ tsuite_feed_event(void *data)
               mouse_move *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_move (x,y)=(%d,%d) timestamp=<%u>\n", __func__, t->x, t->y, t->timestamp);
+              printf("%s evas_event_feed_mouse_move (x,y)=(%d,%d) timestamp=<%u> t->n_evas=<%d>\n", __func__, t->x, t->y, t->timestamp,t->n_evas);
 #endif
-              evas_event_feed_mouse_move(td->e, t->x, t->y, time(NULL), NULL);
+              evas_event_feed_mouse_move(eina_list_nth(evas_list, t->n_evas),
+                    t->x, t->y, time(NULL), NULL);
               break;
            }
       case TSUITE_EVENT_MOUSE_WHEEL:
@@ -355,9 +363,10 @@ tsuite_feed_event(void *data)
               mouse_wheel *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_wheel timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_mouse_wheel timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              evas_event_feed_mouse_wheel(td->e, t->direction, t->z,
+              evas_event_feed_mouse_wheel(eina_list_nth(evas_list, t->n_evas),
+                    t->direction, t->z,
                     time(NULL), NULL);
 
               break;
@@ -367,9 +376,10 @@ tsuite_feed_event(void *data)
               multi_event *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_multi_down timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_multi_down timestamp=<%u>, t->n_evas=<%d>\n", __func__, t->timestamp,t->n_evas);
 #endif
-              evas_event_feed_multi_down(td->e, t->d, t->x, t->y, t->rad,
+              evas_event_feed_multi_down(eina_list_nth(evas_list, t->n_evas),
+                    t->d, t->x, t->y, t->rad,
                     t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
                     t->flags, time(NULL), NULL);
 
@@ -380,9 +390,10 @@ tsuite_feed_event(void *data)
               multi_event *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_multi_up timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_multi_up timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp,t->n_evas);
 #endif
-              evas_event_feed_multi_up(td->e, t->d, t->x, t->y, t->rad,
+              evas_event_feed_multi_up(eina_list_nth(evas_list, t->n_evas),
+                    t->d, t->x, t->y, t->rad,
                     t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
                     t->flags, time(NULL), NULL);
 
@@ -393,9 +404,10 @@ tsuite_feed_event(void *data)
               multi_move *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_multi_move timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_multi_move timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              evas_event_feed_multi_move(td->e, t->d, t->x, t->y, t->rad,
+              evas_event_feed_multi_move(eina_list_nth(evas_list, t->n_evas),
+                    t->d, t->x, t->y, t->rad,
                     t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
                     time(NULL), NULL);
 
@@ -406,9 +418,10 @@ tsuite_feed_event(void *data)
               key_down_key_up *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_key_down timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_key_down timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              evas_event_feed_key_down(td->e, t->keyname, t->key, t->string,
+              evas_event_feed_key_down(eina_list_nth(evas_list, t->n_evas),
+                    t->keyname, t->key, t->string,
                     t->compose, time(NULL), NULL);
 
               break;
@@ -418,9 +431,10 @@ tsuite_feed_event(void *data)
               key_down_key_up *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_key_up timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s evas_event_feed_key_up timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              evas_event_feed_key_up(td->e, t->keyname, t->key, t->string,
+              evas_event_feed_key_up(eina_list_nth(evas_list, t->n_evas),
+                    t->keyname, t->key, t->string,
                     t->compose, time(NULL), NULL);
 
               break;
@@ -430,9 +444,10 @@ tsuite_feed_event(void *data)
               take_screenshot *t = v->data;
               evt_time = t->timestamp;
 #ifdef DEBUG_TSUITE
-              printf("%s take shot  timestamp=<%u>\n", __func__, t->timestamp);
+              printf("%s take shot  timestamp=<%u> t->n_evas=<%d>\n", __func__, t->timestamp, t->n_evas);
 #endif
-              tsuite_shot_do(NULL); /* Serial name based on test-name */
+              tsuite_shot_do(NULL,
+                    eina_list_nth(evas_list, t->n_evas)); /* Serial name based on test-name */
               break;
            }
       default: /* All non-input events are not handeled */
@@ -483,16 +498,15 @@ ecore_main_loop_begin(void)
      {
         ts.td = calloc(1, sizeof(Timer_Data));
 #ifdef DEBUG_TSUITE
-        printf("<%s> rec file is <%s>\n", _hook_setting->file_name);
+        printf("<%s> rec file is <%s>\n", __func__, _hook_setting->file_name);
 #endif
-        vr_list = read_events(_hook_setting->file_name, ts.e, ts.td);
+        vr_list = read_events(_hook_setting->file_name, ts.td);
         if (ts.td->current_event)
           {  /* Got first event in list, run test */
              tsuite_feed_event(ts.td);
           }
      }
 
-   printf("<%s> Calling %s\n", __FILE__, __func__);
    return _ecore_main_loop_begin();
 }
 
@@ -506,10 +520,28 @@ ecore_main_loop_begin(void)
              _variant_type_set(tsuite_event_mapping_type_str_get(EVT_TYPE), \
                    &v->t, EINA_FALSE); \
              memcpy(v->data, &INFO, sizeof(EVT_STRUCT_NAME)); \
-             printf("recording <%s> time=<%u>\n", #EVT_STRUCT_NAME, ((EVT_STRUCT_NAME *) v->data)->timestamp); \
              vr_list->variant_list = eina_list_append(vr_list->variant_list, v); \
           } \
    } while (0)
+
+static int evas_list_find(void *ptr)
+{  /* We just compare the pointers */
+   Eina_List *l;
+   void *data;
+   int n = 0;
+
+   EINA_LIST_FOREACH(evas_list, l, data)
+     {  /* Get the nuber of Evas Pointer */
+        if (ptr == data)
+          {
+             return n;
+          }
+
+        n++;
+     }
+
+   return -1;
+}
 
 static Tsuite_Event_Type
 tsuite_event_type_get(Evas_Callback_Type t)
@@ -550,9 +582,11 @@ evas_event_feed_mouse_in(Evas *e, unsigned int timestamp, const void *data)
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   mouse_in_mouse_out t = { timestamp };
+   mouse_in_mouse_out t = { timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MOUSE_IN);
-   ADD_TO_LIST(evt, mouse_in_mouse_out, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, mouse_in_mouse_out, t);
+
    void (*orig) (Evas *e, unsigned int timestamp, const void *data) =
       dlsym(RTLD_NEXT, __func__);
 
@@ -565,9 +599,11 @@ evas_event_feed_mouse_out(Evas *e, unsigned int timestamp, const void *data)
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   mouse_in_mouse_out t = { timestamp };
+   mouse_in_mouse_out t = { timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MOUSE_OUT);
-   ADD_TO_LIST(evt, mouse_in_mouse_out, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, mouse_in_mouse_out, t);
+
    void (*orig) (Evas *e, unsigned int timestamp, const void *data) =
       dlsym(RTLD_NEXT, __func__);
 
@@ -581,9 +617,11 @@ evas_event_feed_mouse_down(Evas *e, int b, Evas_Button_Flags flags,
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   mouse_down_mouse_up t = { b, flags, timestamp };
+   mouse_down_mouse_up t = { b, flags, timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MOUSE_DOWN);
-   ADD_TO_LIST(evt, mouse_down_mouse_up, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, mouse_down_mouse_up, t);
+
    void (*orig) (Evas *e, int b, Evas_Button_Flags flags,
          unsigned int timestamp, const void *data) =
       dlsym(RTLD_NEXT, __func__);
@@ -598,9 +636,11 @@ evas_event_feed_mouse_up(Evas *e, int b, Evas_Button_Flags flags,
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   mouse_down_mouse_up t = { b, flags, timestamp };
+   mouse_down_mouse_up t = { b, flags, timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MOUSE_UP);
-   ADD_TO_LIST(evt, mouse_down_mouse_up, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, mouse_down_mouse_up, t);
+
    void (*orig) (Evas *e, int b, Evas_Button_Flags flags,
          unsigned int timestamp, const void *data) =
       dlsym(RTLD_NEXT, __func__);
@@ -612,12 +652,14 @@ EAPI void
 evas_event_feed_mouse_move(Evas *e, int x, int y, unsigned int timestamp,
       const void *data)
 {
-   mouse_move t = { x, y, timestamp };
+   mouse_move t = { x, y, timestamp, evas_list_find(e) };
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MOUSE_MOVE);
-   ADD_TO_LIST(evt, mouse_move, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, mouse_move, t);
+
    void (*orig) (Evas *e, int x, int y, unsigned int timestamp,
          const void *data) = dlsym(RTLD_NEXT, __func__);
    orig(e, x, y, timestamp, data);
@@ -630,9 +672,11 @@ evas_event_feed_mouse_wheel(Evas *e, int direction, int z,
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   mouse_wheel t = { direction, z, timestamp };
+   mouse_wheel t = { direction, z, timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MOUSE_WHEEL);
-   ADD_TO_LIST(evt, mouse_wheel, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, mouse_wheel, t);
+
    void (*orig) (Evas *e, int direction, int z, unsigned int timestamp,
          const void *data) = dlsym(RTLD_NEXT, __func__);
 
@@ -649,10 +693,12 @@ evas_event_feed_multi_down(Evas *e, int d, int x, int y,
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
    multi_event t = { d, x, y, rad, radx, rady, pres, ang,
-        fx, fy, flags, timestamp };
+        fx, fy, flags, timestamp, evas_list_find(e) };
 
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MULTI_DOWN);
-   ADD_TO_LIST(evt, multi_event, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, multi_event, t);
+
    void (*orig) (Evas *e, int d, int x, int y, double rad,
          double radx, double rady, double pres, double ang,
          double fx, double fy, Evas_Button_Flags flags,
@@ -670,9 +716,11 @@ evas_event_feed_multi_up(Evas *e, int d, int x, int y,
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   multi_event t = { d, x, y, rad, radx, rady, pres, ang, fx, fy, flags, timestamp };
+   multi_event t = { d, x, y, rad, radx, rady, pres, ang, fx, fy, flags, timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MULTI_UP);
-   ADD_TO_LIST(evt, multi_event, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, multi_event, t);
+
    void (*orig) (Evas *e, int d, int x, int y, double rad,
          double radx, double rady, double pres, double ang,
          double fx, double fy, Evas_Button_Flags flags,
@@ -690,9 +738,11 @@ evas_event_feed_multi_move(Evas *e, int d, int x, int y, double rad,
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   multi_move t = { d, x, y, rad, radx, rady, pres, ang, fx, fy, timestamp };
+   multi_move t = { d, x, y, rad, radx, rady, pres, ang, fx, fy, timestamp, evas_list_find(e) };
    int evt = tsuite_event_type_get(EVAS_CALLBACK_MULTI_MOVE);
-   ADD_TO_LIST(evt, multi_move, t);
+   if (t.n_evas >= 0)
+     ADD_TO_LIST(evt, multi_move, t);
+
    void (*orig) (Evas *e, int d, int x, int y, double rad,
          double radx, double rady, double pres, double ang,
          double fx, double fy, unsigned int timestamp, const void *data) =
@@ -719,8 +769,9 @@ evas_event_feed_key_down(Evas *e, const char *keyname, const char *key,
 #ifdef DEBUG_TSUITE
         printf("Take Screenshot: %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-        take_screenshot t = { timestamp };
-        ADD_TO_LIST(TSUITE_EVENT_TAKE_SHOT, take_screenshot, t);
+        take_screenshot t = { timestamp, evas_list_find(e) };
+        if (t.n_evas >= 0)
+          ADD_TO_LIST(TSUITE_EVENT_TAKE_SHOT, take_screenshot, t);
 
         orig(e, keyname, key, string, compose, timestamp, data);
         return;
@@ -735,7 +786,9 @@ evas_event_feed_key_down(Evas *e, const char *keyname, const char *key,
         t.key = eina_stringshare_add(key);
         t.string = eina_stringshare_add(string);
         t.compose = eina_stringshare_add(compose);
-        ADD_TO_LIST(evt, key_down_key_up, t);
+        t.n_evas = evas_list_find(e);
+        if (t.n_evas >= 0)
+          ADD_TO_LIST(evt, key_down_key_up, t);
      }
 
    orig(e, keyname, key, string, compose, timestamp, data);
@@ -773,7 +826,9 @@ evas_event_feed_key_up(Evas *e, const char *keyname, const char *key,
         t.key = eina_stringshare_add(key);
         t.string = eina_stringshare_add(string);
         t.compose = eina_stringshare_add(compose);
-        ADD_TO_LIST(evt, key_down_key_up, t);
+        t.n_evas = evas_list_find(e);
+        if (t.n_evas >= 0)
+          ADD_TO_LIST(evt, key_down_key_up, t);
      }
 
    orig(e, keyname, key, string, compose, timestamp, data);

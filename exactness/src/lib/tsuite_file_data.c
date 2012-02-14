@@ -75,6 +75,102 @@ free_events(Lists_st *st, char *recording)
    return NULL;
 }
 
+#ifdef DEBUG_TSUITE
+static void
+print_events(Lists_st *vr_list)
+{
+   Eina_List *l;
+   void *data;
+   Variant_st *v;
+   int n = 0;
+   printf("List size = <%d>\n", eina_list_count(vr_list->variant_list));
+
+   EINA_LIST_FOREACH(vr_list->variant_list, l , data)
+     {
+        n++;
+        v = data;
+        switch(tsuite_event_mapping_type_get(v->t.type))
+          {
+           case TSUITE_EVENT_MOUSE_IN:
+                {
+                   mouse_in_mouse_out *t = v->data;
+                   printf("%d evas_event_feed_mouse_in timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MOUSE_OUT:
+                {
+                   mouse_in_mouse_out *t = v->data;
+                   printf("%d evas_event_feed_mouse_out timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp,t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MOUSE_DOWN:
+                {
+                   mouse_down_mouse_up *t = v->data;
+                   printf("%d evas_event_feed_mouse_down timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MOUSE_UP:
+                {
+                   mouse_down_mouse_up *t = v->data;
+                   printf("%d evas_event_feed_mouse_up timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp,t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MOUSE_MOVE:
+                {
+                   mouse_move *t = v->data;
+                   printf("%d evas_event_feed_mouse_move (x,y)=(%d,%d) timestamp=<%u> t->n_evas=<%d>\n", n, t->x, t->y, t->timestamp,t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MOUSE_WHEEL:
+                {
+                   mouse_wheel *t = v->data;
+                   printf("%d evas_event_feed_mouse_wheel timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MULTI_DOWN:
+                {
+                   multi_event *t = v->data;
+                   printf("%d evas_event_feed_multi_down timestamp=<%u>, t->n_evas=<%d>\n", n, t->timestamp,t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MULTI_UP:
+                {
+                   multi_event *t = v->data;
+                   printf("%d evas_event_feed_multi_up timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp,t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_MULTI_MOVE:
+                {
+                   multi_move *t = v->data;
+                   printf("%d evas_event_feed_multi_move timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_KEY_DOWN:
+                {
+                   key_down_key_up *t = v->data;
+                   printf("%d evas_event_feed_key_down timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_KEY_UP:
+                {
+                   key_down_key_up *t = v->data;
+                   printf("%d evas_event_feed_key_up timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           case TSUITE_EVENT_TAKE_SHOT:
+                {
+                   take_screenshot *t = v->data;
+                   printf("%d take shot  timestamp=<%u> t->n_evas=<%d>\n", n, t->timestamp, t->n_evas);
+                   break;
+                }
+           default: /* All non-input events are not handeled */
+              printf("%d --- Uknown event ---\n", n);
+              break;
+          }
+     }
+}
+#endif
+
 void
 write_events(const char *filename, Lists_st *vr_list)
 {
@@ -82,6 +178,9 @@ write_events(const char *filename, Lists_st *vr_list)
    Eet_File *fp = eet_open(filename, EET_FILE_MODE_WRITE);
    if (fp)
      {
+#ifdef DEBUG_TSUITE
+        print_events(vr_list);
+#endif
         eet_data_write(fp, desc->_lists_descriptor, CACHE_FILE_ENTRY, vr_list,
               EINA_TRUE);
 
@@ -96,10 +195,9 @@ write_events(const char *filename, Lists_st *vr_list)
 }
 
 Lists_st *
-read_events(char *filename, Evas *e, Timer_Data *td)
+read_events(char *filename, Timer_Data *td)
 {
    Lists_st *vr_list;
-   td->e = e;
    td->fp = eet_open(filename, EET_FILE_MODE_READ);
    if (!td->fp)
      {
@@ -115,6 +213,9 @@ read_events(char *filename, Evas *e, Timer_Data *td)
    if (!vr_list->variant_list)
         return NULL;
 
+#ifdef DEBUG_TSUITE
+   print_events(vr_list);
+#endif
    td->current_event = eina_list_nth_list(vr_list->variant_list, 0);
 #ifdef DEBUG_TSUITE
    printf("%s list size is <%d>\n", __func__, eina_list_count(vr_list->variant_list));
@@ -155,29 +256,30 @@ _variant_type_set(const char *type,
 } /* _variant_type_set */
 
 /* START - Allocating and setting variant structs */
-mouse_in_mouse_out *mouse_in_mouse_out_set(unsigned int timestamp)
+mouse_in_mouse_out *mouse_in_mouse_out_set(unsigned int timestamp, int n_evas)
 {
    mouse_in_mouse_out *st = calloc(1, sizeof(mouse_in_mouse_out));
    if (st)
      {
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
 }
 
 Variant_st *mouse_in_mouse_out_new(Tsuite_Event_Type type,
-      unsigned int timestamp)
+      unsigned int timestamp, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[type].name;
-   va->data = mouse_in_mouse_out_set(timestamp);
+   va->data = mouse_in_mouse_out_set(timestamp, n_evas);
 
    return va;
 }
 
 mouse_down_mouse_up *mouse_down_mouse_up_set(int b, Evas_Button_Flags flags,
-      unsigned int timestamp)
+      unsigned int timestamp, int n_evas)
 {
    mouse_down_mouse_up *st = calloc(1, sizeof(mouse_down_mouse_up));
    if (st)
@@ -185,22 +287,23 @@ mouse_down_mouse_up *mouse_down_mouse_up_set(int b, Evas_Button_Flags flags,
         st->b = b;
         st->flags = flags;
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
 }
 
 Variant_st *mouse_down_mouse_up_new(Tsuite_Event_Type type, int b,
-      Evas_Button_Flags flags, unsigned int timestamp)
+      Evas_Button_Flags flags, unsigned int timestamp, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[type].name;
-   va->data = mouse_down_mouse_up_set(b, flags, timestamp);
+   va->data = mouse_down_mouse_up_set(b, flags, timestamp, n_evas);
 
    return va;
 }
 
-mouse_move *mouse_move_set(int x, int y, unsigned int timestamp)
+mouse_move *mouse_move_set(int x, int y, unsigned int timestamp, int n_evas)
 {
    mouse_move *st = calloc(1, sizeof(mouse_move));
    if (st)
@@ -208,21 +311,23 @@ mouse_move *mouse_move_set(int x, int y, unsigned int timestamp)
         st->x = x;
         st->y = y;
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
 }
 
-Variant_st *mouse_move_new(int x, int y, unsigned int timestamp)
+Variant_st *mouse_move_new(int x, int y, unsigned int timestamp, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[TSUITE_EVENT_MOUSE_MOVE].name;
-   va->data = mouse_move_set(x, y, timestamp);
+   va->data = mouse_move_set(x, y, timestamp, n_evas);
 
    return va;
 }
 
-mouse_wheel *mouse_wheel_set(int direction, int z, unsigned int timestamp)
+mouse_wheel *mouse_wheel_set(int direction, int z, unsigned int timestamp,
+      int n_evas)
 {
    mouse_wheel *st = calloc(1, sizeof(mouse_wheel));
    if (st)
@@ -230,23 +335,26 @@ mouse_wheel *mouse_wheel_set(int direction, int z, unsigned int timestamp)
         st->direction = direction;
         st->z = z;
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
 }
 
-Variant_st *mouse_wheel_new(int direction, int z, unsigned int timestamp)
+Variant_st *mouse_wheel_new(int direction, int z, unsigned int timestamp,
+      int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[TSUITE_EVENT_MOUSE_WHEEL].name;
-   va->data = mouse_wheel_set(direction, z, timestamp);
+   va->data = mouse_wheel_set(direction, z, timestamp, n_evas);
 
    return va;
 }
 
 multi_event *multi_event_set(int d, int x, int y, double rad,
       double radx, double rady, double pres, double ang,
-      double fx, double fy, Evas_Button_Flags flags, unsigned int timestamp)
+      double fx, double fy, Evas_Button_Flags flags,
+      unsigned int timestamp, int n_evas)
 {
    multi_event *st = calloc(1, sizeof(multi_event));
    if (st)
@@ -263,6 +371,7 @@ multi_event *multi_event_set(int d, int x, int y, double rad,
         st->fy = fy;
         st->flags = flags;
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
@@ -270,19 +379,20 @@ multi_event *multi_event_set(int d, int x, int y, double rad,
 
 Variant_st *multi_event_new(Tsuite_Event_Type type, int d, int x, int y,
       double rad, double radx, double rady, double pres, double ang,
-      double fx, double fy, Evas_Button_Flags flags, unsigned int timestamp)
+      double fx, double fy, Evas_Button_Flags flags,
+      unsigned int timestamp, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[type].name;
    va->data = multi_event_set(d, x, y, rad, radx, rady, pres, ang, fx, fy,
-         flags, timestamp);
+         flags, timestamp, n_evas);
 
    return va;
 }
 
 multi_move *multi_move_set(int d, int x, int y, double rad, double radx,
       double rady, double pres, double ang, double fx, double fy,
-      unsigned int timestamp)
+      unsigned int timestamp, int n_evas)
 {
    multi_move *st = calloc(1, sizeof(multi_move));
    if (st)
@@ -298,6 +408,7 @@ multi_move *multi_move_set(int d, int x, int y, double rad, double radx,
         st->fx = fx;
         st->fy = fy;
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
@@ -305,19 +416,19 @@ multi_move *multi_move_set(int d, int x, int y, double rad, double radx,
 
 Variant_st *multi_move_new(int d, int x, int y,
       double rad, double radx,double rady, double pres, double ang,
-      double fx, double fy, unsigned int timestamp)
+      double fx, double fy, unsigned int timestamp, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[TSUITE_EVENT_MULTI_MOVE].name;
    va->data = multi_move_set(d, x, y, rad, radx, rady, pres, ang,
-         fx, fy,timestamp);
+         fx, fy,timestamp, n_evas);
 
    return va;
 }
 
 key_down_key_up *key_down_key_up_set(unsigned int timestamp,
       const char *keyname, const char *key, const char *string,
-      const char *compose)
+      const char *compose, int n_evas)
 {
    key_down_key_up *st = calloc(1, sizeof(key_down_key_up));
    if (st)
@@ -327,6 +438,7 @@ key_down_key_up *key_down_key_up_set(unsigned int timestamp,
         st->key = key;
         st->string = string;
         st->compose = compose;
+        st->n_evas = n_evas;
      }
 
    return st;
@@ -334,31 +446,32 @@ key_down_key_up *key_down_key_up_set(unsigned int timestamp,
 
 Variant_st *key_down_key_up_new(Tsuite_Event_Type type,
       unsigned int timestamp, const char *keyname, const char *key,
-      const char *string, const char *compose)
+      const char *string, const char *compose, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[type].name;
-   va->data = key_down_key_up_set(timestamp, keyname, key, string, compose);
+   va->data = key_down_key_up_set(timestamp, keyname, key, string, compose, n_evas);
 
    return va;
 }
 
-take_screenshot *take_screenshot_set(unsigned int timestamp)
+take_screenshot *take_screenshot_set(unsigned int timestamp, int n_evas)
 {
    take_screenshot *st = calloc(1, sizeof(take_screenshot));
    if (st)
      {
         st->timestamp = timestamp;
+        st->n_evas = n_evas;
      }
 
    return st;
 }
 
-Variant_st *take_screenshot_new(unsigned int timestamp)
+Variant_st *take_screenshot_new(unsigned int timestamp, int n_evas)
 {
    Variant_st *va = calloc(1, sizeof(Variant_st));
    va->t.type = eet_mapping[TSUITE_EVENT_TAKE_SHOT].name;
-   va->data = take_screenshot_set(timestamp);
+   va->data = take_screenshot_set(timestamp, n_evas);
 
    return va;
 }
@@ -375,6 +488,8 @@ take_screenshot_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, take_screenshot, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, take_screenshot, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -389,6 +504,8 @@ mouse_in_mouse_out_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_in_mouse_out, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_in_mouse_out, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -407,6 +524,8 @@ mouse_down_mouse_up_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_down_mouse_up, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_down_mouse_up, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -423,6 +542,8 @@ mouse_move_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "y", y, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -441,6 +562,8 @@ mouse_wheel_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "z", z, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -467,6 +590,8 @@ key_down_key_up_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "compose",
          compose, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -492,6 +617,8 @@ multi_event_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "flags", flags, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }
@@ -516,6 +643,8 @@ multi_move_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "fy", fy, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "timestamp",
          timestamp, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "n_evas",
+         n_evas, EET_T_INT);
 
    return desc;
 }

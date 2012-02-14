@@ -52,7 +52,6 @@ struct _Timer_Data
 {
    Eet_File *fp;
    unsigned int recent_event_time;
-   Evas *e;
    Eina_List *current_event;
 };
 typedef struct _Timer_Data Timer_Data;
@@ -60,7 +59,6 @@ typedef struct _Timer_Data Timer_Data;
 struct _Tsuite_Data
 {
    int serial;    /**< Serial number of current-file */
-   Evas *e;
    Timer_Data *td;
 };
 typedef struct _Tsuite_Data Tsuite_Data;
@@ -68,6 +66,7 @@ typedef struct _Tsuite_Data Tsuite_Data;
 struct _mouse_in_mouse_out
 {
    unsigned int timestamp;
+   int n_evas;
 };
 
 struct _mouse_down_mouse_up
@@ -75,6 +74,7 @@ struct _mouse_down_mouse_up
    int b;
    Evas_Button_Flags flags;
    unsigned int timestamp;
+   int n_evas;
 };
 
 struct _mouse_move
@@ -82,6 +82,7 @@ struct _mouse_move
    int x;
    int y;
    unsigned int timestamp;
+   int n_evas;
 };
 
 struct _mouse_wheel
@@ -89,6 +90,7 @@ struct _mouse_wheel
    int direction;
    int z;
    unsigned int timestamp;
+   int n_evas;
 };
 
 struct _key_down_key_up
@@ -98,6 +100,7 @@ struct _key_down_key_up
    const char *key;
    const char *string;
    const char *compose;
+   int n_evas;
 };
 
 struct _multi_event
@@ -114,6 +117,7 @@ struct _multi_event
    double fy;
    Evas_Button_Flags flags;
    unsigned int timestamp;
+   int n_evas;
 };
 
 struct _multi_move
@@ -129,6 +133,7 @@ struct _multi_move
    double fx;
    double fy;
    unsigned int timestamp;
+   int n_evas;
 };
 
 typedef struct _mouse_in_mouse_out mouse_in_mouse_out;
@@ -199,5 +204,5 @@ Eina_Bool _variant_type_set(const char *type, void *data, Eina_Bool unknow);
 
 Lists_st * free_events(Lists_st *st, char *recording);
 void write_events(const char *filename, Lists_st *vr_list);
-Lists_st *read_events(char *filename, Evas *e, Timer_Data *td);
+Lists_st *read_events(char *filename, Timer_Data *td);
 #endif
