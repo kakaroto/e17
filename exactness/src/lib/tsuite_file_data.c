@@ -48,6 +48,33 @@ tsuite_event_mapping_type_str_get(Tsuite_Event_Type t)
    return NULL;
 }
 
+Lists_st *
+free_events(Lists_st *st, char *recording)
+{
+   Variant_st *v;
+   EINA_LIST_FREE(st->variant_list, v)
+     {
+        if (recording)
+          {
+             Tsuite_Event_Type e = tsuite_event_mapping_type_get(v->t.type);
+             if ((e == TSUITE_EVENT_KEY_DOWN) || (e == TSUITE_EVENT_KEY_UP))
+               {  /* Allocated in tsuite_evas_hook.c */
+                  key_down_key_up *t = v->data;
+                  eina_stringshare_del(t->keyname);
+                  eina_stringshare_del(t->key);
+                  eina_stringshare_del(t->string);
+                  eina_stringshare_del(t->compose);
+               }
+          }
+
+        free(v->data);
+        free(v);
+     }
+
+   free(st);  /* Allocated when reading data from EET file */
+   return NULL;
+}
+
 void
 write_events(const char *filename, Lists_st *vr_list)
 {

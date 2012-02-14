@@ -5,6 +5,34 @@
 
 #define CACHE_FILE_ENTRY "cache"
 
+struct _Timer_Data
+{
+   Eet_File *fp;
+   unsigned int recent_event_time;
+   Evas *e;
+   Eina_List *current_event;
+};
+typedef struct _Timer_Data Timer_Data;
+
+/**
+ * @internal
+ *
+ * @struct _Tsuite_Data
+ * Struct holds test-suite data-properties
+ *
+ * @ingroup Tsuite
+ */
+struct _Tsuite_Data
+{
+   char *name;    /**< Test Name */
+   int serial;    /**< Serial number of currnen-file */
+   api_data *api;
+   Evas *e;
+   Evas_Object *win;
+   Timer_Data *td;
+};
+typedef struct _Tsuite_Data Tsuite_Data;
+
 struct _mouse_in_mouse_out
 {
    unsigned int timestamp;
@@ -94,7 +122,6 @@ typedef struct _mouse_in_mouse_out take_screenshot;
 #define TSUITE_EVENT_KEY_UP_STR "tsuite_event_key_up"
 #define TSUITE_EVENT_TAKE_SHOT_STR "tsuite_event_take_shot"
 
-
 struct _Lists_st
 {
    Eina_List *variant_list;
@@ -138,6 +165,7 @@ const char * tsuite_event_mapping_type_str_get(Tsuite_Event_Type t);
 const char * _variant_type_get(const void *data, Eina_Bool *unknow);
 Eina_Bool _variant_type_set(const char *type, void *data, Eina_Bool unknow);
 
+Lists_st * free_events(Lists_st *st, char *recording);
 void write_events(const char *filename, Lists_st *vr_list);
 Lists_st *read_events(char *filename, Evas *e, Timer_Data *td);
 #endif

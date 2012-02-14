@@ -48,11 +48,11 @@ _test_close_win(void *data, Evas_Object *obj, void *event_info);
      }
 
 #define TEST_SHOT(x) \
-   tsuite_shot_do(win, x)
+   tsuite_shot_do(x)
 
 void tsuite_init(Evas_Object *win, char *name, api_data *d);
 void tsuite_cleanup(void);
-void tsuite_shot_do(Evas_Object *obj, char *name);
+void tsuite_shot_do(char *name);
 char *tsuite_test_name_get();
 Eina_Bool  write_events_get(void);
 void write_events_set(Eina_Bool val);
@@ -99,7 +99,7 @@ struct _Variant_st
                                * for the field*/
 };
 typedef struct _Variant_st Variant_st;
-
+/* Moved to tsuite_file_data.h
 struct _Timer_Data
 {
    Eet_File *fp;
@@ -108,6 +108,6 @@ struct _Timer_Data
    Eina_List *current_event;
 };
 typedef struct _Timer_Data Timer_Data;
-
+*/
 void variant_list_append(Variant_st *v);
 #endif

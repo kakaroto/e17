@@ -4,7 +4,6 @@
 #include <Elementary.h>
 #include "tsuite.h"
 
-#define IMAGE_FILENAME_EXT ".png"
 #include <dlfcn.h>
 #include "tsuite_file_data.h"
 #include <Ecore.h>
@@ -108,24 +107,6 @@ static Lists_st *vr_list = NULL;
 /**
  * @internal
  *
- * @struct _Tsuite_Data
- * Struct holds test-suite data-properties
- *
- * @ingroup Tsuite
- */
-struct _Tsuite_Data
-{
-   char *name;    /**< Test Name */
-   int serial;    /**< Serial number of currnen-file */
-   api_data *api;
-   Evas *e;
-   Evas_Object *win;
-};
-typedef struct _Tsuite_Data Tsuite_Data;
-
-/**
- * @internal
- *
  * @struct _Test_Item
  * Struct holds test-suite test / func pair.
  *
@@ -139,9 +120,14 @@ struct _Test_Item
 };
 typedef struct _Test_Item Test_Item;
 
-static Tsuite_Data ts;
+/* static Tsuite_Data ts; moved to tsuite_evas_hook */
 static int recording = 0;
-static char *dest_dir = NULL;
+
+void
+tsuite_init(Evas_Object *win, char *name, api_data *d)
+{
+   return;
+}
 
 Eina_List *
 _add_test(Eina_List *list, char *n, void (* f) (void), Eina_Bool t)
@@ -179,7 +165,7 @@ _init_recording_funcs(void)
    _tsuite_evas_hook_init = dlsym(RTLD_DEFAULT, "tsuite_evas_hook_init");
    _tsuite_evas_hook_reset = dlsym(RTLD_DEFAULT, "tsuite_evas_hook_reset");
 }
-
+#if 0
 /**
  * @internal
  *
@@ -234,12 +220,12 @@ tsuite_cleanup(void)
 
    memset(&ts, 0, sizeof(ts));
 }
-
 char *tsuite_test_name_get()
 {
    return ts.name;
 }
-
+#endif
+#if 0 /* moved to tsuite_evas_hook */
 /**
  * @internal
  *
@@ -305,274 +291,15 @@ tsuite_shot_do(Evas_Object *obj, char *name)
    ecore_evas_free(ee);
    free(filename);
 }
-
-static unsigned int
-evt_time_get(unsigned int tm, Variant_st *v)
-{
-   switch(tsuite_event_mapping_type_get(v->t.type))
-     {
-      case TSUITE_EVENT_MOUSE_IN:
-           {
-              mouse_in_mouse_out *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MOUSE_OUT:
-           {
-              mouse_in_mouse_out *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MOUSE_DOWN:
-           {
-              mouse_down_mouse_up *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MOUSE_UP:
-           {
-              mouse_down_mouse_up *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MOUSE_MOVE:
-           {
-              mouse_move *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MOUSE_WHEEL:
-           {
-              mouse_wheel *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MULTI_DOWN:
-           {
-              multi_event *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MULTI_UP:
-           {
-              multi_event *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_MULTI_MOVE:
-           {
-              multi_move *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_KEY_DOWN:
-           {
-              key_down_key_up *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_KEY_UP:
-           {
-              key_down_key_up *t = v->data;
-              return t->timestamp;
-           }
-      case TSUITE_EVENT_TAKE_SHOT:
-           {
-              take_screenshot *t = v->data;
-              return t->timestamp;
-           }
-      default: /* All non-input events are not handeled */
-         return tm;
-         break;
-     }
-}
-
-static Eina_Bool
-tsuite_feed_event(void *data)
-{
-   static Ecore_Timer *tmr = NULL;
-   Timer_Data *td = data;
-   time_t evt_time;
-   if (!td)
-     return ECORE_CALLBACK_CANCEL;
-
-   Variant_st *v = eina_list_data_get(td->current_event);
-   switch(tsuite_event_mapping_type_get(v->t.type))
-     {
-      case TSUITE_EVENT_MOUSE_IN:
-           {
-              mouse_in_mouse_out *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_in timestamp=<%u>\n", __func__, t->timestamp);
 #endif
-              evas_event_feed_mouse_in(td->e, time(NULL), NULL);
-              break;
-           }
-      case TSUITE_EVENT_MOUSE_OUT:
-           {
-              mouse_in_mouse_out *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_out timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_mouse_out(td->e, time(NULL), NULL);
-              break;
-           }
-      case TSUITE_EVENT_MOUSE_DOWN:
-           {
-              mouse_down_mouse_up *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_down timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_mouse_down(td->e, t->b, t->flags, time(NULL),
-                    NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_MOUSE_UP:
-           {
-              mouse_down_mouse_up *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_up timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_mouse_up(td->e, t->b, t->flags, time(NULL),
-                    NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_MOUSE_MOVE:
-           {
-              mouse_move *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_move (x,y)=(%d,%d) timestamp=<%u>\n", __func__, t->x, t->y, t->timestamp);
-#endif
-              evas_event_feed_mouse_move(td->e, t->x, t->y, time(NULL), NULL);
-              break;
-           }
-      case TSUITE_EVENT_MOUSE_WHEEL:
-           {
-              mouse_wheel *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_mouse_wheel timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_mouse_wheel(td->e, t->direction, t->z,
-                    time(NULL), NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_MULTI_DOWN:
-           {
-              multi_event *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_multi_down timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_multi_down(td->e, t->d, t->x, t->y, t->rad,
-                    t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
-                    t->flags, time(NULL), NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_MULTI_UP:
-           {
-              multi_event *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_multi_up timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_multi_up(td->e, t->d, t->x, t->y, t->rad,
-                    t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
-                    t->flags, time(NULL), NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_MULTI_MOVE:
-           {
-              multi_move *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_multi_move timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_multi_move(td->e, t->d, t->x, t->y, t->rad,
-                    t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
-                    time(NULL), NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_KEY_DOWN:
-           {
-              key_down_key_up *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_key_down timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_key_down(td->e, t->keyname, t->key, t->string,
-                    t->compose, time(NULL), NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_KEY_UP:
-           {
-              key_down_key_up *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s evas_event_feed_key_up timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              evas_event_feed_key_up(td->e, t->keyname, t->key, t->string,
-                    t->compose, time(NULL), NULL);
-
-              break;
-           }
-      case TSUITE_EVENT_TAKE_SHOT:
-           {
-              take_screenshot *t = v->data;
-              evt_time = t->timestamp;
-#ifdef DEBUG_TSUITE
-              printf("%s take shot  timestamp=<%u>\n", __func__, t->timestamp);
-#endif
-              tsuite_shot_do(ts.win, NULL); /* Serial name based on test-name */
-              break;
-           }
-      default: /* All non-input events are not handeled */
-         evt_time = td->recent_event_time;
-         break;
-     }
-
-   double timer_time;
-   td->current_event = eina_list_next(td->current_event);
-
-   if (!td->current_event)
-     {  /* Finished reading all events */
-        elm_exit();
-        return ECORE_CALLBACK_CANCEL;
-     }
-
-   td->recent_event_time = evt_time;
-
-   unsigned int current_event_time = evt_time_get(evt_time, eina_list_data_get(td->current_event));
-
-   if (current_event_time < td->recent_event_time) /* Could happen with refeed event */
-     current_event_time = td->recent_event_time;
-
-#ifdef DEBUG_TSUITE
-   printf("%s td->recent_event_time=<%u> current_event_time=<%u>\n", __func__, td->recent_event_time, current_event_time);
-#endif
-   timer_time = (current_event_time - td->recent_event_time) / 1000.0;
-
-   if (!td->recent_event_time)
-     timer_time = 0.0;
-
-#ifdef DEBUG_TSUITE
-   printf("%s timer_time=<%f>\n", __func__, timer_time);
-#endif
-   tmr = ecore_timer_add(timer_time, tsuite_feed_event, td);
-
-   return ECORE_CALLBACK_CANCEL;
-}
-
 void
 _test_close_win(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
       void *event_info __UNUSED__)
 {
-   ts.win = NULL;
+//   ts.win = NULL;
    elm_exit();
 }
-
+#if 0  /* Moved to tsuite_file_data */
 static Lists_st *
 free_events(Lists_st *st)
 {
@@ -599,26 +326,26 @@ free_events(Lists_st *st)
    free(st);  /* Allocated when reading data from EET file */
    return NULL;
 }
-
+#endif
 void
 do_test(char *rec_dir, void (* func) (void))
 {
    char buf[1024];
    char appname[1024];
 
-   vr_list = calloc(1, sizeof(*vr_list));
-   if (recording)
-     _tsuite_evas_hook_init(vr_list);
+//   vr_list = calloc(1, sizeof(*vr_list));
+/*   if (recording) done now in ecore_init() hook
+     _tsuite_evas_hook_init(vr_list); */
 
    if (func)
      {  /* Regular test with access func */
         func();
-        sprintf(buf, "%s/%s.rec", rec_dir, ts.name);
+        sprintf(buf, "%s/%s.rec", rec_dir, "ts.name");
      }
    else
      {  /* Application, compose rec-file path and fulll appname */
-        sprintf(buf, "%s/%s.rec", rec_dir, basename(ts.name));
-
+        sprintf(buf, "%s/%s.rec", rec_dir, "basename(ts.name)");
+#if 0
         if (basename(ts.name) == ts.name)
           {  /* No PATH given, use cwd */
              getcwd(appname, 1024);
@@ -626,7 +353,8 @@ do_test(char *rec_dir, void (* func) (void))
              strcat(appname, ts.name);
           }
         else
-          strcpy(appname, ts.name); /* PATH incuded in ts.name */
+#endif
+          strcpy(appname, "ts.name"); /* PATH incuded in ts.name */
      }
 
    if (recording)
@@ -641,13 +369,15 @@ do_test(char *rec_dir, void (* func) (void))
              system(appname);
           }
 
-        if (vr_list)
-          write_events(buf, vr_list);
+/*        if (vr_list)
+          write_events(buf, vr_list); */
      }
    else
      {
         Timer_Data *td = NULL;
-
+             if (func)
+               elm_run(); /* run the program now and handle all events etc */
+#if 0
         td = calloc(1, sizeof(Timer_Data));
 #ifdef DEBUG_TSUITE
         printf("rec file is <%s>\n", buf);
@@ -667,16 +397,17 @@ do_test(char *rec_dir, void (* func) (void))
                }
           }
 
+#endif
         if (td)
           free(td);
      }
 
 
-   if (recording)
-     _tsuite_evas_hook_reset();
+/*   if (recording) done in ecore_shutdown() hook now
+     _tsuite_evas_hook_reset(); */
 
-   if (vr_list)
-     vr_list = free_events(vr_list);
+/*   if (vr_list) will be done in tsuite_evas_hook_reset()
+     vr_list = free_events(vr_list); */
 }
 
 EAPI int
@@ -767,9 +498,9 @@ elm_main(int argc, char **argv)
    elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
    elm_app_info_set(elm_main, "elementary", "images/logo.png");
 
-   if (opt_destdir)
+/*   if (opt_destdir)
      dest_dir = opt_destdir->data;
-
+*/
    if (opt_basedir)
      rec_dir = opt_basedir->data;
 
@@ -954,7 +685,7 @@ elm_main(int argc, char **argv)
    EINA_LIST_FREE(tests, data)
       free(data);
 
-   tsuite_cleanup();
+//   tsuite_cleanup();
    /* if the mainloop that elm_run() runs exist - we exit the app */
    elm_shutdown(); /* clean up and shut down */
 
