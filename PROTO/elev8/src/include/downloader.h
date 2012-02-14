@@ -3,6 +3,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <elev8_common.h>
+#include <elev8_utils.h>
 
 typedef struct
 {
@@ -25,13 +26,8 @@ typedef struct
    int fd;
 } downloader;
 
-/* FIXME */
+void compile_and_run(Handle<String> source);
 void start_download(void *ptr, Evas_Object *obj, void *data);
-void download_resource(downloader *dl_temp);
 void ui_kill(void *ptr, Evas_Object *obj, void *data);
-void launch_script(void *ptr, Evas_Object *obj, void *data);
-void download_resource(downloader *dl_temp);
-void start_download(void *ptr, Evas_Object *obj, void *data);
-void show_download_ui(void *data);
 
 #endif

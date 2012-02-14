@@ -1,4 +1,4 @@
-#include <dbus_library.h>
+#include <elev8_dbus.h>
 
 using namespace v8;
 int elev8_dbus_log_domain = -1;

@@ -49,32 +49,6 @@ Eina_Bool file_data_callback(void *data, int type, void *event)
    return EINA_FALSE;
 }
 
-static Eina_Bool
-_url_complete_cb(void *data, int type, void *event_info)
-{
-   downloader *dl_temp = (downloader *)data;
-
-   Ecore_Con_Event_Url_Complete *url_complete = 
-	                     (Ecore_Con_Event_Url_Complete *)event_info;
-
-   const char *url = ecore_con_url_url_get(url_complete->url_con);
-   char buf[PATH_MAX];
-   INF("Completed %s - %d", url , url_complete->status);
-   snprintf(buf, PATH_MAX, "<br>Completed %s - %d<br>", url , url_complete->status);
-   elm_entry_entry_append(dl_temp->content, buf);
-
-
-   double progress;
-   progress = elm_progressbar_value_get (dl_temp->pb);
-   if (progress < 1.0) progress += 0.0123;
-   else progress = 0.0;
-   elm_progressbar_value_set(dl_temp->pb, progress);
-   //ecore_con_url_free(dl_temp->url_con);
-   close(dl_temp->fd);
-   download_resource(dl_temp);
-   return EINA_TRUE;
-}
-
 void download_resource(downloader *dl_temp)
 {
    INF("Trying to download resources");
@@ -132,6 +106,32 @@ void download_resource(downloader *dl_temp)
           }
      }
    return;
+}
+
+static Eina_Bool
+_url_complete_cb(void *data, int type, void *event_info)
+{
+   downloader *dl_temp = (downloader *)data;
+
+   Ecore_Con_Event_Url_Complete *url_complete = 
+	                     (Ecore_Con_Event_Url_Complete *)event_info;
+
+   const char *url = ecore_con_url_url_get(url_complete->url_con);
+   char buf[PATH_MAX];
+   INF("Completed %s - %d", url , url_complete->status);
+   snprintf(buf, PATH_MAX, "<br>Completed %s - %d<br>", url , url_complete->status);
+   elm_entry_entry_append(dl_temp->content, buf);
+
+
+   double progress;
+   progress = elm_progressbar_value_get (dl_temp->pb);
+   if (progress < 1.0) progress += 0.0123;
+   else progress = 0.0;
+   elm_progressbar_value_set(dl_temp->pb, progress);
+   //ecore_con_url_free(dl_temp->url_con);
+   close(dl_temp->fd);
+   download_resource(dl_temp);
+   return EINA_TRUE;
 }
 
 Eina_Bool file_completion_callback(void *data, int type, void *event)
@@ -232,85 +232,3 @@ void start_download(void *ptr, Evas_Object *obj, void *data)
                             dl_temp);
    ecore_con_url_get(dl_temp->url_con);
 }
-
-void show_download_ui(void *data)
-{
-
-   downloader *dl = (downloader *)malloc(sizeof(downloader));;
-   if (dl!=NULL)
-     {
-        memset(dl, 0, sizeof(downloader));
-     }
-
-   dl->http_request = (char *)data;
-
-   INF( "Making request to %s", (char *)data);
-
-   dl->win = elm_win_add(NULL, "elev8_viewer", ELM_WIN_BASIC);
-   elm_win_title_set(dl->win, "ELEV8 VIEWER");
-   evas_object_smart_callback_add(dl->win, "delete,request", ui_kill, dl);
-
-   dl->bg = elm_bg_add(dl->win);
-   char buf[PATH_MAX];
-   snprintf(buf, PATH_MAX, "%s/data/images/bg.png", PACKAGE_DATA_DIR);
-   INF("Path = %s", buf);
-   elm_bg_file_set(dl->bg, buf, NULL);
-   evas_object_size_hint_align_set(dl->bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(dl->bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(dl->win, dl->bg);
-   evas_object_show(dl->bg);
-
-   dl->bx = elm_box_add(dl->win);
-   elm_win_resize_object_add(dl->win, dl->bx);
-   evas_object_size_hint_align_set(dl->bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(dl->bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(dl->bx);
-
-   dl->title = elm_label_add(dl->win);
-   elm_object_text_set(dl->title,"<title><b>ELEV8 VIEWER</b></title>");
-   evas_object_size_hint_weight_set(dl->title, 0.0, 0.0);
-   evas_object_size_hint_align_set(dl->title, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(dl->bx, dl->title);
-   evas_object_show(dl->title);
-
-   dl->pb = elm_progressbar_add(dl->win);
-   evas_object_size_hint_weight_set(dl->pb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(dl->pb, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(dl->bx, dl->pb);
-   evas_object_show(dl->pb);
-
-   dl->log = elm_label_add(dl->win);
-   elm_object_text_set(dl->log,"<title><b>Logs</b></title>");
-   evas_object_size_hint_weight_set(dl->log, 0.0, 0.0);
-   evas_object_size_hint_align_set(dl->log, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(dl->bx, dl->log);
-   evas_object_show(dl->log);
-
-   dl->content = elm_entry_add(dl->win);
-   elm_entry_scrollable_set(dl->content, EINA_TRUE);
-   evas_object_size_hint_weight_set(dl->content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(dl->content, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_entry_entry_set(dl->content, "Downloading : ");
-   elm_entry_entry_append(dl->content, dl->http_request);
-   elm_entry_editable_set(dl->content, EINA_FALSE);
-   elm_box_pack_end(dl->bx, dl->content);
-   evas_object_show(dl->content);
-
-
-   dl->bt = elm_button_add(dl->win);
-   elm_object_text_set(dl->bt, "Fetch");
-   evas_object_size_hint_align_set(dl->bt, EVAS_HINT_FILL, EVAS_HINT_EXPAND);
-   evas_object_size_hint_weight_set(dl->bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   //evas_object_smart_callback_add(dl->bt, "clicked", start_download, dl);
-   elm_box_pack_end(dl->bx, dl->bt);
-
-   /* hide the button for now
-    * In future we may want to enter a URL and download it 
-    */
-   evas_object_hide(dl->bt);
-   start_download(dl,NULL, NULL);
-
-   evas_object_resize(dl->win, 320, 480);
-   evas_object_show(dl->win);
-}
-

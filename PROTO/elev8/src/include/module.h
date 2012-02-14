@@ -8,7 +8,6 @@
 #include <string.h>
 #include <dlfcn.h>
 
-#define  MODULE_DEFAULT_PATH	"/usr/local/share/elev8/data/config/module.ini"
 #define MAX_LEN 128
 
 #ifdef __cplusplus

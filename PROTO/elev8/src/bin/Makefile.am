@@ -13,10 +13,11 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = elev8
 
 elev8_SOURCES = \
-	elm.cc \
 	main.cc main.h \
-	xmlhttprequest.cc xmlhttprequest.h \
-	dbus_library.cc dbus_library.h
-
+	elev8_utils.cc elev8_utils.h \
+	downloader.cc downloader.h \
+	elev8_elm.cc \
+	elev8_http.cc elev8_http.h \
+	elev8_dbus.cc elev8_dbus.h
 
 elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@
