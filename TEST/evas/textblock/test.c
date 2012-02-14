@@ -81,7 +81,7 @@ main(int argc, char *argv[])
    Elm_Wrap_Type wrap = ELM_WRAP_WORD;
    const char *wrapt = "word";
    /* end of wrap mode */
-   Eina_Unicode plain_utf8 = EINA_FALSE;
+   Eina_Bool plain_utf8 = EINA_FALSE;
 
    opterr = 0;
 
@@ -228,7 +228,7 @@ main(int argc, char *argv[])
         else if (!strcmp(type, "elm"))
           {
              elm_entry_entry_set(tb, buf);
-             elm_object_focus(win);
+             elm_object_focus_set(win, EINA_TRUE);
           }
         free(buf);
      }
