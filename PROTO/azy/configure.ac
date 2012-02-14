@@ -49,6 +49,9 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_PROG_LIBTOOL
 AC_PROG_YACC
+if test -z "$YACC" ; then
+   AC_ERROR([yacc not found])
+fi
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_CC
