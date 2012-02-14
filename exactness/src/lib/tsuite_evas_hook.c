@@ -183,7 +183,7 @@ tsuite_shot_do(char *name)
 
    /* A bit hackish, get the ecore_evas from the Evas canvas */
    ee_orig = evas_data_attach_get(ts.e);
-   printf("<%s> ts.e=<%p> ee_orig=<%p>\n", __func__, ts.e, ee_orig);
+   printf("<%s> ts.e=<%p> ee_orig=<%p> file=<%s>\n", __func__, ts.e, ee_orig, filename);
 
    ecore_evas_manual_render(ee_orig);
    pixels = (void *)ecore_evas_buffer_pixels_get(ee_orig);
@@ -259,6 +259,20 @@ ecore_shutdown(void)
    return _ecore_shutdown();
 }
 
+EAPI Evas_Object *
+elm_win_add(Evas_Object *parent, const char *name, Elm_Win_Type type)
+{
+   Evas_Object *win;
+   Evas_Object * (* _elm_win_add) (Evas_Object *, const char *, Elm_Win_Type) =
+      dlsym(RTLD_NEXT, "elm_win_add");
+
+   win = _elm_win_add(parent, name, type);
+   ts.e = evas_object_evas_get(win);
+   return win;
+}
+
+/* We don't use this in the meantime because a new evas
+ * is allocated at tsuite_shot_do, this changes ts.e
 EAPI Evas *
 evas_new(void)
 {
@@ -268,6 +282,7 @@ evas_new(void)
    ts.e = _evas_new();
    return ts.e;
 }
+*/
 
 static Eina_Bool
 tsuite_feed_event(void *data)
