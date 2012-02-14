@@ -726,14 +726,17 @@ evas_event_feed_key_down(Evas *e, const char *keyname, const char *key,
         return;
      }
 
-   /* Contruct t duplicate strings, free them when list if freed */
-   key_down_key_up t;
-   t.timestamp = timestamp;
-   t.keyname = eina_stringshare_add(keyname);
-   t.key = eina_stringshare_add(key);
-   t.string = eina_stringshare_add(string);
-   t.compose = eina_stringshare_add(compose);
-   ADD_TO_LIST(evt, key_down_key_up, t);
+
+   if (vr_list && _hook_setting->recording)
+     {  /* Construct duplicate strings, free them when list if freed */
+        key_down_key_up t;
+        t.timestamp = timestamp;
+        t.keyname = eina_stringshare_add(keyname);
+        t.key = eina_stringshare_add(key);
+        t.string = eina_stringshare_add(string);
+        t.compose = eina_stringshare_add(compose);
+        ADD_TO_LIST(evt, key_down_key_up, t);
+     }
 
    orig(e, keyname, key, string, compose, timestamp, data);
 }
@@ -761,14 +764,17 @@ evas_event_feed_key_up(Evas *e, const char *keyname, const char *key,
 #ifdef DEBUG_TSUITE
    printf("Calling %s timestamp=<%u>\n", __func__, timestamp);
 #endif
-   /* Contruct t duplicate strings, free them when list if freed */
-   key_down_key_up t;
-   t.timestamp = timestamp;
-   t.keyname = eina_stringshare_add(keyname);
-   t.key = eina_stringshare_add(key);
-   t.string = eina_stringshare_add(string);
-   t.compose = eina_stringshare_add(compose);
-   ADD_TO_LIST(evt, key_down_key_up, t);
+
+   if (vr_list && _hook_setting->recording)
+     {  /* Construct duplicate strings, free them when list if freed */
+        key_down_key_up t;
+        t.timestamp = timestamp;
+        t.keyname = eina_stringshare_add(keyname);
+        t.key = eina_stringshare_add(key);
+        t.string = eina_stringshare_add(string);
+        t.compose = eina_stringshare_add(compose);
+        ADD_TO_LIST(evt, key_down_key_up, t);
+     }
 
    orig(e, keyname, key, string, compose, timestamp, data);
 }
