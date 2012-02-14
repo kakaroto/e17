@@ -92,7 +92,7 @@ DEBUG echo do_record "\$*"
 get_test_params "\$1"
 if [ \$? -ne 0 ]
 then
-   return 1
+   return 0
 fi
 
 TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${_test_name}.rec TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
@@ -105,7 +105,7 @@ DEBUG echo do_simulation "\$*"
 get_test_params "\$1"
 if [ \$? -ne 0 ]
 then
-   return 2
+   return 0
 fi
 
 local file_name=\${_base_dir}/\${_test_name}.rec
@@ -118,7 +118,6 @@ fi
 
 
 TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so \${_test_cmd}
-return 0
 }
 
 do_play () {
@@ -133,7 +132,7 @@ DEBUG echo do_play "\$_dest_dir" "\$*"
 get_test_params "\$1"
 if [ \$? -ne 0 ]
 then
-   return 2
+   return 0
 fi
 
 local file_name=\${_base_dir}/\${_test_name}.rec
@@ -281,6 +280,7 @@ _test_cmd=
 nerr=0
 ncomp=0
 nfail=0
+_n_exe_err=0
 
 # Test that compare is insatlled
 which compare &> /dev/null
@@ -334,6 +334,10 @@ then
    while read curline;
    do
       do_simulation "\$curline"
+      if [ \$? -ne 0 ]
+      then
+         (( _n_exe_err++ ))
+      fi
    done < "\$1"
 # This will cause render simulation
 fi
@@ -404,6 +408,10 @@ then
    while read curline;
    do
       do_record "\$curline"
+      if [ \$? -ne 0 ]
+      then
+         (( _n_exe_err++ ))
+      fi
    done < "\$1"
 fi
 
@@ -412,6 +420,10 @@ then
    while read curline;
    do
       do_play "\$curline"
+      if [ \$? -ne 0 ]
+      then
+         (( _n_exe_err++ ))
+      fi
    done < "\$1"
 fi
 
@@ -444,7 +456,8 @@ then
 fi
 
 # Add up total-error and emit user message.
-total_errors=\$(( \$nfail + \$nerr + \$_n_tests_failed ))
+total_errors=\$(( \$nfail + \$nerr + \$_n_tests_failed + \$_n_exe_err ))
+echo "\$_n_exe_err tests returned exit-code <> 0"
 echo "\$0 finished with \$total_errors errors."
 
 status=0
