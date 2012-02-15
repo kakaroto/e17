@@ -206,6 +206,12 @@ missing EAPI definitions and documentation in header - DONE.
 
 elm_panes_fixed_set should be renamed to elm_panes_fixed_resize_set() - it applies only to resizing case. “Fixed” by itself is not so helpful.
 
+elm_panel.h
+
+missing EAPI definitions and documentation in header - DONE.
+
+
+
 
 
 
