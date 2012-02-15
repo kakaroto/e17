@@ -178,3 +178,21 @@ If it is for "Label" - then there could be a elm_entry_label_set(true/false).
 similar to password.
 
 No elm_entry_entry_prepend?
+
+
+
+FOR RELEASE 1.0
+------------------------
+
+elc_anchorblock.h
+
+1. Considering elementary test is the reference app for all widgets, under each widget provide the command for seeing the widget in action.
+
+like, elementary_test -to "<Name of Widget>"
+
+2. Elm_Entry_Anchorblock_Info
+
+Why Eina_Bool : 1 ?  Eina_Bool is an INT ? Why use only four lower order bits.  Why not a byte?
+
+3. 
+
