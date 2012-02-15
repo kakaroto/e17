@@ -194,5 +194,13 @@ like, elementary_test -to "<Name of Widget>"
 
 Why Eina_Bool : 1 ?  Eina_Bool is an INT ? Why use only four lower order bits.  Why not a byte?
 
-3. 
+elm_pager.h
+
+3. Why use the concept of stack to explain pager contents. It is not a stack if any element can be promoted or demoted. Stack is LIFO. This is an array or collection or group.
+
+4. elm_pager_content_promote - why is it undefined behaviour to promote a non-existent object ? Doesn’t the pager know what’s on the stack ?
+
+
+
+
 
