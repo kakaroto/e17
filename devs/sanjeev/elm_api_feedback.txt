@@ -200,6 +200,16 @@ elm_pager.h
 
 4. elm_pager_content_promote - why is it undefined behaviour to promote a non-existent object ? Doesn’t the pager know what’s on the stack ?
 
+elm_panes.h
+
+missing EAPI definitions and documentation in header - DONE.
+
+elm_panes_fixed_set should be renamed to elm_panes_fixed_resize_set() - it applies only to resizing case. “Fixed” by itself is not so helpful.
+
+
+
+
+
 
 
 
