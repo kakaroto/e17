@@ -211,6 +211,9 @@ elm_panel.h
 missing EAPI definitions and documentation in header - DONE.
 
 
+elm_photocam
+
+rename elm_photocam_region_get = elm_photocam_image_region_get()
 
 
 
