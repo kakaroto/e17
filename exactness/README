@@ -28,6 +28,9 @@ The application is "elementary_test"
 with two parameters: --test-win-only pager\\ slide
 ("pager slide" compose singe parameter, note the \\)
 
+By default, exactness runs through test file and commits all tests specified.
+To run selected tests add test name as param to exactness.
+More on this later.
 
 Later, you run exactness with the tests file as parameter.
 1. Test Recording.
@@ -141,8 +144,15 @@ Later, you run exactness with the tests file as parameter.
    When tests completed, the user gets notification message if any tests failed.
    In such case, please review the fail_*.txt files.
 
-   
-6. To view exactness help issue the command:
+6. Running selected tests.
+To run selected tests add test name as param to exactness.
+Use this option to run selected tests without modifying your test file.
+Usage:
+/opt/e17/bin/exactness -s TestsFile TestName1 [TestName2] [...]
+TestName param has to match test name given in tests file (1st field)
+
+
+7. To view exactness help issue the command:
    exactness --help
    or
    exactness -h

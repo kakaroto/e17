@@ -26,9 +26,16 @@ echo "second field is test-command and [optional] params."
 echo "Any line starting with '#' is a comment (ignored):"
 echo
 echo "# This is a comment line"
-echo "TestName1 TestCmd [param1] [param2]"
+echo "TestName TestCmd [param1] [param2]"
 echo
 echo "Later, you run \$0 with the tests file as parameter."
+echo
+echo "By default, exactness runs through test file running all tests specified."
+echo "You may run selected tests by adding test name as param to exactness."
+echo "Usage:"
+echo "\$0 -s TestsFile TestName1 [TestName2] [...]"
+echo "Use this option to run selected tests without modifying your test file."
+echo "TestName param has to match test name given in tests file (1st field)"
 echo
 echo
 echo "Two additional parameters that \$0 accepts:"
@@ -288,6 +295,36 @@ fi
 return 0
 }
 
+name_in_args () {
+# This function gets curline as first arg
+# Then list of args to find if test name is first field of curline
+get_test_params "\$1"
+if [ \$? -ne 0 ]
+then
+   return 0
+fi
+
+if [ -z "\$_test_name" ]
+then
+   return 0
+fi
+
+shift
+while (( "\$#" ));
+do
+   if [ "\$_test_name" = "\$1" ]
+# found test name in list of args
+   then
+      return 1
+   fi
+
+   shift
+done
+
+# Not found
+return 0
+}
+
 # Script Entry Point
 OUR_LIBPATH="$1"
 
@@ -300,6 +337,7 @@ _remove_fail=
 _orig_dir="orig"
 # Init dest_dir - should change on the fly
 _dest_dir=
+_test_all=1
 _base_dir=\`pwd\`
 _test_name=
 _test_cmd=
@@ -347,8 +385,22 @@ do
 done
 shift \$((\$OPTIND - 1))
 
+_test_file_name="\$1"
+shift
+
+# Test if user added test-names as arguments
+if [ ! -z "\$*" ]
+then
+   _test_all=0
+fi
+
+# when using -o option, we can loop now on tests names
+# given as arguments to this script
+
+DEBUG echo _test_file_name="\$_test_file_name"
 DEBUG echo _base_dir="\$_base_dir"
 DEBUG echo _dest_dir="\$_dest_dir"
+
 
 if [ "\$_simulation" ]
 then
@@ -360,12 +412,17 @@ then
    _play=
    while read curline;
    do
-      do_simulation "\$curline"
-      if [ \$? -ne 0 ]
+      name_in_args "\$curline" \$*
+      _run_test=\$(( \$? + \$_test_all ))
+      if [ \$_run_test -ne 0 ]
       then
-         (( _n_exe_err++ ))
+         do_simulation "\$curline"
+         if [ \$? -ne 0 ]
+         then
+            (( _n_exe_err++ ))
+         fi
       fi
-   done < "\$1"
+   done < "\$_test_file_name"
 # This will cause render simulation
 fi
 
@@ -434,36 +491,51 @@ if [ "\$_record" ]
 then
    while read curline;
    do
-      do_record "\$curline"
-      if [ \$? -ne 0 ]
+      name_in_args "\$curline" \$*
+      _run_test=\$(( \$? + \$_test_all ))
+      if [ \$_run_test -ne 0 ]
       then
-         (( _n_exe_err++ ))
+         do_record "\$curline"
+         if [ \$? -ne 0 ]
+         then
+            (( _n_exe_err++ ))
+         fi
       fi
-   done < "\$1"
+   done < "\$_test_file_name"
 fi
 
 if [ "\$_play" ]
 then
    while read curline;
    do
-      do_play "\$curline"
-      if [ \$? -ne 0 ]
+      name_in_args "\$curline" \$*
+      _run_test=\$(( \$? + \$_test_all ))
+      if [ \$_run_test -ne 0 ]
       then
-         (( _n_exe_err++ ))
+         do_play "\$curline"
+         if [ \$? -ne 0 ]
+         then
+            (( _n_exe_err++ ))
+         fi
       fi
-   done < "\$1"
+   done < "\$_test_file_name"
 fi
 
 if [ "\$_compare" ]
 then
    while read curline;
    do
-      get_test_params "\$curline"
-      if [ \$? -eq 0 ]
+      name_in_args "\$curline" \$*
+      _run_test=\$(( \$? + \$_test_all ))
+      if [ \$_run_test -ne 0 ]
       then
-         do_compare "\$_test_name"
+         get_test_params "\$curline"
+         if [ \$? -eq 0 ]
+         then
+            do_compare "\$_test_name"
+         fi
       fi
-   done < "\$1"
+   done < "\$_test_file_name"
 fi
 
 _n_tests_failed=0
