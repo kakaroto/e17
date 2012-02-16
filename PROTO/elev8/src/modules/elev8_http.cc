@@ -1,8 +1,10 @@
-#include <xmlhttprequest.h>
+#include <elev8_http.h>
 #include <module.h>
 
 using namespace v8;
 int elev8_http_log_domain = -1;
+
+#define HTTP_MODULE_NAME "http"
 
 int XMLHttpRequest::fd_counter = 0;
 Handle<ObjectTemplate> xmlHttpReqObj;
@@ -365,10 +367,9 @@ Handle<Value> createXMLHttpReqInstance(const Arguments& args)
    return reqObj->obj; 
 }
 
-extern "C" int xmlhttp_v8_setup(Handle<ObjectTemplate> global, void *data)
+int http_module_init(Handle<ObjectTemplate> global)
 {
-   module_info *module = (module_info *)data;
-   elev8_http_log_domain = eina_log_domain_register(module->name, EINA_COLOR_ORANGE);
+   elev8_http_log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
    if (!elev8_http_log_domain)
      {
         HTTP_ERR( "could not register elev8-http log domain.");
@@ -392,16 +393,15 @@ extern "C" int xmlhttp_v8_setup(Handle<ObjectTemplate> global, void *data)
    return 0;
 }
 
-extern "C" int xmlhttp_v8_shutdown(void *data)
+int http_module_shutdown()
 {
-   //TODO : cleanup
-   module_info *module = (module_info *)data;
-   HTTP_INF("Shutting down %s module", module->name);
-   return 0;
+   HTTP_INF("SHUTTING DOWN MODULE HTTP");
 }
 
-extern "C" int setup(module_info *module)
+extern "C"
+void setup(module_info *mi)
 {
-   module->init = &xmlhttp_v8_setup;
-   module->shutdown = &xmlhttp_v8_shutdown;
+   strcpy(mi->name,HTTP_MODULE_NAME);
+   mi->init = &http_module_init;
+   mi->deinit = &http_module_shutdown;
 }

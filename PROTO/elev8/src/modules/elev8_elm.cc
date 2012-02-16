@@ -9,8 +9,11 @@
 #include <map>
 #include <string>
 #include <module.h>
-#include <elm.h>
+#include <elev8_elm.h>
 
+#define ELM_MODULE_NAME "elm"
+
+int elev8_elm_log_domain = -1;
 
 using namespace v8;
 
@@ -18,13 +21,6 @@ using namespace v8;
 
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
-class CElmBasicWindow;
-
-int elev8_elm_log_domain = -1;
-CElmBasicWindow *main_win;
-Persistent<Value> the_datadir;
-Persistent<Value> the_tmpdir;
-Persistent<Value> the_theme;
 
 CEvasObject *realize_one(CEvasObject *parent, Handle<Value> obj);
 
@@ -6156,6 +6152,11 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
    return eo;
 }
 
+CElmBasicWindow *main_win;
+Persistent<Value> the_datadir;
+Persistent<Value> the_tmpdir;
+Persistent<Value> the_theme;
+
 Handle<Value>
 elm_main_window(const Arguments& args)
 {
@@ -6245,20 +6246,10 @@ theme_setter(Local<String> property, Local<Value> value,
    the_theme = Persistent<Value>::New(value);
 }
 
-extern "C" int elm_v8_setup(Handle<ObjectTemplate> global, void *data)
+int elm_module_init(Handle<ObjectTemplate> global)
 {
    Handle<ObjectTemplate> elm = ObjectTemplate::New();
    global->Set(String::New("elm"), elm);
-
-   module_info *module = (module_info *)data;
-   elev8_elm_log_domain = eina_log_domain_register(module->name, EINA_COLOR_ORANGE);
-   if (!elev8_elm_log_domain)
-     {
-        ELM_ERR( "could not register elev8-elm log domain.");
-        elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
-     }
-   ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
-
 
    elm->Set(String::New("window"), FunctionTemplate::New(elm_main_window));
    elm->Set(String::New("loop_time"), FunctionTemplate::New(elm_loop_time));
@@ -6270,20 +6261,30 @@ extern "C" int elm_v8_setup(Handle<ObjectTemplate> global, void *data)
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
    the_tmpdir = Persistent<String>::New(String::New(PACKAGE_TMP_DIR "/" ));
+
+   elev8_elm_log_domain = eina_log_domain_register("elev8-elm", EINA_COLOR_GREEN);
+   if (!elev8_elm_log_domain)
+     {
+        ELM_ERR( "could not register elev8-elm log domain.");
+        elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
+     }
+   ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
+
+
 }
 
-extern "C" int elm_v8_shutdown(void *data)
+int elm_module_shutdown(void)
 {
-   module_info *module = (module_info *)data;
-   ELM_INF("Shutting down %s module", module->name);
    the_datadir.Dispose();
    the_tmpdir.Dispose();
    the_theme.Dispose();
-   return 0;
+   ELM_INF("SHUTTING DOWN MODULE ELM");
 }
 
-extern "C" int setup(module_info *module)
+extern "C"
+void setup(module_info *mi)
 {
-   module->init = &elm_v8_setup;
-   module->shutdown = &elm_v8_shutdown;
+   strcpy(mi->name,ELM_MODULE_NAME);
+   mi->init = &elm_module_init;
+   mi->deinit = &elm_module_shutdown;
 }

@@ -1,9 +1,11 @@
-#include <dbus_library.h>
+#include <elev8_dbus.h>
 #include <module.h>
 
 using namespace v8;
 int elev8_dbus_log_domain = -1;
 Handle<ObjectTemplate> dbusObj;
+
+#define DBUS_MODULE_NAME "dbus"
 
 static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key, const char *value)
 {
@@ -845,10 +847,9 @@ Handle<Value> createDBusInstance(const Arguments& args)
    return dbus->obj; 
 }
 
-extern "C" int dbus_v8_setup(Handle<ObjectTemplate> global, void *data)
+int dbus_module_init(Handle<ObjectTemplate> global)
 {
-   module_info *module = (module_info *)data;
-   elev8_dbus_log_domain = eina_log_domain_register(module->name, EINA_COLOR_ORANGE);
+   elev8_dbus_log_domain = eina_log_domain_register("elev8-dbus", EINA_COLOR_ORANGE);
    if (!elev8_dbus_log_domain)
      {
         DBUS_ERR( "could not register elev8-dbus log domain.");
@@ -869,16 +870,15 @@ extern "C" int dbus_v8_setup(Handle<ObjectTemplate> global, void *data)
    return 0;
 }
 
-extern "C" int dbus_v8_shutdown(void *data)
+int dbus_module_shutdown()
 {
-   //TODO : cleanup
-   module_info *module = (module_info *)data;
-   DBUS_INF("Shutting down %s module", module->name);
-   return 0;
+   DBUS_INF("SHUTTING DOWN MODULE DBUS");
 }
 
-extern "C" int setup(module_info *module)
+extern "C"
+void setup(module_info *mi)
 {
-   module->init = &dbus_v8_setup;
-   module->shutdown = &dbus_v8_shutdown;
+   strcpy(mi->name,DBUS_MODULE_NAME);
+   mi->init = &dbus_module_init;
+   mi->deinit = &dbus_module_shutdown;
 }

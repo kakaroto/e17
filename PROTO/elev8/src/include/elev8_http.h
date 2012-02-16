@@ -12,6 +12,12 @@
 #include <fstream>
 #include <elev8_common.h>
 
+#define HTTP_DBG(...) EINA_LOG_DOM_DBG(elev8_http_log_domain, __VA_ARGS__)
+#define HTTP_INF(...) EINA_LOG_DOM_INFO(elev8_http_log_domain, __VA_ARGS__)
+#define HTTP_WRN(...) EINA_LOG_DOM_WARN(elev8_http_log_domain, __VA_ARGS__)
+#define HTTP_ERR(...) EINA_LOG_DOM_ERR(elev8_http_log_domain, __VA_ARGS__)
+#define HTTP_CRT(...) EINA_LOG_DOM_CRITICAL(elev8_http_log_domain, __VA_ARGS__)
+
 
 v8::Handle<v8::Value>response_text_getter(v8::Local<v8::String> property, const v8::AccessorInfo& info);
 v8::Handle<v8::Value>status_getter(v8::Local<v8::String> property, const v8::AccessorInfo& info);

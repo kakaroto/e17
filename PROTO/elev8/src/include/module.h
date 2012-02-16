@@ -9,28 +9,28 @@
 #include <dlfcn.h>
 
 #define MAX_LEN 128
+using namespace v8;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+typedef int (*module_init)(Handle<ObjectTemplate> global);
+typedef int (*module_deinit)(void);
+
 /* interfaces to be implemented by modules. */
-typedef int (*module_init)(v8::Handle<v8::ObjectTemplate> global, void *data);
-typedef int (*module_shutdown)(void *data);
-
-typedef struct
+struct module_info
 {
-   EINA_INLIST;
-   void *handle;
    char name[MAX_LEN];
-   char path[MAX_LEN];
    module_init init;
-   module_shutdown shutdown;
-} module_info;
+   module_deinit deinit;
+};
 
-typedef int (*setup_module)(module_info *mi);
-void load_modules(v8::Handle<v8::ObjectTemplate> global);
+typedef void (*module_setup)(module_info *);
+
+void load_modules();
+void init_modules(Handle<ObjectTemplate> global);
 
 #ifdef __cplusplus
 }

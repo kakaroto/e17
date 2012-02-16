@@ -129,6 +129,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
+src/modules/Makefile
 data/Makefile
 data/images/Makefile
 data/desktop/Makefile

@@ -10,6 +10,13 @@
 #include <map>
 #include <elev8_common.h>
 
+#define DBUS_DBG(...) EINA_LOG_DOM_DBG(elev8_dbus_log_domain, __VA_ARGS__)
+#define DBUS_INF(...) EINA_LOG_DOM_INFO(elev8_dbus_log_domain, __VA_ARGS__)
+#define DBUS_WRN(...) EINA_LOG_DOM_WARN(elev8_dbus_log_domain, __VA_ARGS__)
+#define DBUS_ERR(...) EINA_LOG_DOM_ERR(elev8_dbus_log_domain, __VA_ARGS__)
+#define DBUS_CRT(...) EINA_LOG_DOM_CRITICAL(elev8_dbus_log_domain, __VA_ARGS__)
+
+
 /* memory efficient structures to hold introspection information.
  * maybe Eina_Inlist could be replaced with single array of structures
  * (not to be confused with Eina_Array!!!!)

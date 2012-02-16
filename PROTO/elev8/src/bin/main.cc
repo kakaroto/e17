@@ -11,6 +11,7 @@
 #include <downloader.h>
 #include <elev8_utils.h>
 #include <elev8_common.h>
+#include <module.h>
 
 using namespace v8;
 int elev8_log_domain = -1;
@@ -147,22 +148,8 @@ elev8_run(const char *script)
 
    global->Set(String::New("print"), FunctionTemplate::New(Print));
 
-   elm_v8_setup(global);
-   int retval = xmlhttp_v8_setup(global);
-
-   if (retval!=0)
-     {
-        ERR("Cannot initialize ecore_con_url");
-	    //FIXME : Disable XMLHttpRequest support
-     }
-
-   retval = dbus_v8_setup(global);
-
-   if (retval!=0)
-     {
-        ERR("Cannot initialize e_dbus");
-	    //FIXME : Disable DBUS support
-     }
+   load_modules();
+   init_modules(global);
 
    /* setup V8 */
    Persistent<Context> context = Context::New(NULL, global);
