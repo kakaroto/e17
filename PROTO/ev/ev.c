@@ -112,14 +112,14 @@ _resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo
 }
 
 static void
-_pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *glit)
+_pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *ev)
 {
    const char *file, *f, *p;
    Evas_Object *win;
 
    DBG("pick");
    elm_icon_file_get(img, &f, &p);
-   file = elm_genlist_item_data_get(glit);
+   file = elm_object_item_data_get(ev);
    if (f && (!strcmp(file, f))) return;
 
    if (!evas_object_image_extension_can_load_get(file))
@@ -136,7 +136,7 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *glit)
 static void
 _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
 {
-   Elm_Object_Item *glit;
+   Elm_Object_Item *it;
    DBG("%p: %s", obj, key->keyname);
    if (!strcmp(key->keyname, "space"))
      {
@@ -271,6 +271,8 @@ main(int argc, char *argv[])
    evas_object_smart_callback_add(list, "clicked,double", (Evas_Smart_Cb)_pick, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, (Evas_Object_Event_Cb)_resize, NULL);
+   1 | evas_object_key_grab(win, "space", 0, 0, 1);
+   1 | evas_object_key_grab(win, "q", 0, 0, 1);
    1 | evas_object_key_grab(listwin, "space", 0, 0, 1);
    1 | evas_object_key_grab(listwin, "q", 0, 0, 1);
    evas_object_event_callback_add(listwin, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
