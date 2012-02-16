@@ -69,53 +69,11 @@ _title(Evas_Object *win)
 }
 
 static void
-_resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
-{
-   Evas_Coord w, h;
-   Evas_Coord ww, wh;
-   Evas_Object *ic, *win;
-   win = obj;
-   if (!win) win = elm_object_top_widget_get(img);
-   evas_object_geometry_get(win, NULL, NULL, &ww, &wh);
-
-   ic = elm_icon_object_get(img);
-   evas_object_image_size_get(ic, &w, &h);
-   DBG("Native size: %d %d", w, h);
-   if (root_w < 1) return;
-   if ((w >= root_w) || (h >= root_h))
-     {
-        double dw, dh;
-
-        dw = (double)root_w / (double) w;
-        dh = (double)root_h / (double) h;
-        if (dw > dh)
-          {
-             evas_object_resize(win, (int)(dh * w), root_h);
-          }
-        else
-          {
-             evas_object_resize(win, root_w, (int)(dw * h));
-          }
-     }
-   else
-     {
-        if (obj)
-          evas_object_resize(win, ww, wh);
-        else
-          evas_object_resize(win, w, h);
-     }
-   evas_object_geometry_get(win, NULL, NULL, &ww, &wh);
-   evas_object_move(img, (ww / 2) - (w / 2), (wh / 2) - (h / 2));
-   _title(win);
-   INF("w=%d, h=%d, x=%d, y=%d", w, h, (ww / 2) - (w / 2), (wh / 2) - (h / 2));
-   INF("ww=%d, wh=%d", ww, wh);
-}
-
-static void
 _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *ev)
 {
    const char *file, *f, *p;
-   Evas_Object *win;
+   Evas_Object *win, *ic;
+   Evas_Coord w, h;
 
    DBG("pick");
    elm_icon_file_get(img, &f, &p);
@@ -128,8 +86,13 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *ev)
         return;
      }
    elm_icon_file_set(img, file, NULL);
-   _resize(NULL, NULL, NULL, NULL);
+   elm_icon_animated_set(img, EINA_TRUE);
+   elm_icon_aspect_fixed_set(img, EINA_TRUE);
+   elm_icon_fill_outside_set(img, EINA_FALSE);
    win = elm_object_parent_widget_get(img);
+   ic = elm_icon_object_get(img);
+   evas_object_image_size_get(ic, &w, &h);
+   evas_object_resize(win, w, h);
    _title(win);
 }
 
@@ -137,7 +100,6 @@ static void
 _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
 {
    Elm_Object_Item *it;
-   DBG("%p: %s", obj, key->keyname);
    if (!strcmp(key->keyname, "space"))
      {
         it = elm_genlist_selected_item_get(list);
@@ -241,11 +203,12 @@ main(int argc, char *argv[])
 
    img = elm_icon_add(win);
    evas_object_size_hint_weight_set(img, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(img, 0.5, 0.5);
+   evas_object_size_hint_align_set(img, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_win_resize_object_add(win, img);
    evas_object_show(img);
    evas_object_show(win);
 
+   elm_win_screen_constrain_set(win, EINA_TRUE);
    elm_win_screen_size_get(win, NULL, NULL, &root_w, &root_h);
    if (root_w < 1)
      ERR("Could not determine screen size; autoscaling disabled");
@@ -270,7 +233,6 @@ main(int argc, char *argv[])
    evas_object_show(list);
    evas_object_smart_callback_add(list, "clicked,double", (Evas_Smart_Cb)_pick, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
-   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, (Evas_Object_Event_Cb)_resize, NULL);
    1 | evas_object_key_grab(win, "space", 0, 0, 1);
    1 | evas_object_key_grab(win, "q", 0, 0, 1);
    1 | evas_object_key_grab(listwin, "space", 0, 0, 1);
