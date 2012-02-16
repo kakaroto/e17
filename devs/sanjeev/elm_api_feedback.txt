@@ -215,6 +215,12 @@ elm_photocam
 
 rename elm_photocam_region_get = elm_photocam_image_region_get()
 
+No way to get out of a radio group once assigned.
+
+ZERO documentation for elm_route? Not even #ifndef ... #endif - is this a public API?
+
+
+
 
 
 
