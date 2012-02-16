@@ -1,8 +1,10 @@
 #!/bin/sh
 
-echo Let\'s do update EFL Packages
+echo Updating EFL Packages
 
 svn update
+
+CFLAGS="-02 -g -W -Wall -Wextra -Wundef -Wshadow"
 
 for e in eina eet evas ecore eeze efreet embryo edje e_dbus e ethumb elementary expedite
 do 
@@ -10,8 +12,9 @@ do
 	then 
 		echo Start $e 
 		cd $e
+		sudo make clean
 		./autogen.sh
-		sudo make install -Wall -Wextra -Wshadow && sudo ldconfig
+		CFLAGS=${CFLAGS} sudo make install && sudo ldconfig
 		cd ..
 		echo End Done
 	fi 

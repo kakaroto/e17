@@ -15,10 +15,6 @@ evas_line - does not shown on glbackend.
 evas - check the image smooth effect in gl backend
 
 evas_event - need to handle after pointer mode changed.
-evas_event - http://pastebin.com/uz1CUCgv (barbieri)
-evas_event - when freeze_set is TRUE then mouse_move should not be called.
 
 naviframe - check the problem 66723 (pespin)
 naviframe - need to block the style set while transiton is going on
-
-widget - check (obj - sub obj) circular dependency.
