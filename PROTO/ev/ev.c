@@ -140,22 +140,22 @@ _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key
    DBG("%p: %s", obj, key->keyname);
    if (!strcmp(key->keyname, "space"))
      {
-        glit = elm_genlist_selected_item_get(list);
-        DBG("current: %p", glit);
-        glit = elm_genlist_item_next_get(glit);
-        if (!glit) glit = elm_genlist_first_item_get(list);
-        DBG("next: %p", glit);
-        elm_genlist_item_selected_set(glit, EINA_TRUE);
-        elm_genlist_item_bring_in(glit);
-        _pick(NULL, NULL, glit);
+        it = elm_genlist_selected_item_get(list);
+        DBG("current: %p", it);
+        it = elm_genlist_item_next_get(it);
+        if (!it) it = elm_genlist_first_item_get(list);
+        DBG("next: %p", it);
+        elm_genlist_item_selected_set(it, EINA_TRUE);
+        elm_genlist_item_bring_in(it);
+        _pick(NULL, NULL, it);
      }
    else if ((!strcmp(key->keyname, "Return")) || (!strcmp(key->keyname, "KP_Enter")))
      {
         if (obj == elm_object_parent_widget_get(img)) return;
-        glit = elm_genlist_selected_item_get(list);
-        if (!glit) return;
-        elm_genlist_item_bring_in(glit);
-        _pick(NULL, NULL, glit);
+        it = elm_genlist_selected_item_get(list);
+        if (!it) return;
+        elm_genlist_item_bring_in(it);
+        _pick(NULL, NULL, it);
      }
    else if (key->keyname[0] == 'q')
      ecore_main_loop_quit();
