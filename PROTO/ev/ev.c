@@ -32,7 +32,6 @@
 static int _ev_log_dom = -1;
 static Elm_Genlist_Item_Class itc;;
 static Evas_Object *img, *list = NULL;
-static int root_w = -1, root_h = -1;
 
 static void
 _close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
@@ -208,9 +207,6 @@ main(int argc, char *argv[])
    evas_object_show(win);
 
    elm_win_screen_constrain_set(win, EINA_TRUE);
-   elm_win_screen_size_get(win, NULL, NULL, &root_w, &root_h);
-   if (root_w < 1)
-     ERR("Could not determine screen size; autoscaling disabled");
 
    listwin = elm_win_add(NULL, "ev", ELM_WIN_BASIC);
    elm_win_autodel_set(listwin, EINA_TRUE);
