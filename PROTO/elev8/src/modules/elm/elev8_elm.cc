@@ -6235,6 +6235,30 @@ Persistent<Value> the_tmpdir;
 Persistent<Value> the_theme;
 
 Handle<Value>
+elm_widget(const Arguments& args)
+{
+   if (args.Length() != 1)
+     return ThrowException(Exception::Error(String::New("Bad parameters")));
+
+   if (!args[0]->IsObject())
+     return Undefined();
+
+   Local<Value> parent = args[0]->ToObject()->Get(String::New("parent"));
+   if (parent.IsEmpty())
+     return ThrowException(Exception::Error(String::New("Parent not set")));
+   
+   CEvasObject *parentObject = static_cast<CEvasObject*>(External::Unwrap(parent->ToObject()->Get(String::New("_eo"))));
+   if (!parentObject)
+     return ThrowException(Exception::Error(String::New("Parent is not a widget")));
+
+   CEvasObject *object = realize_one(parentObject, args[0]->ToObject());
+   if (!object)
+     return ThrowException(Exception::Error(String::New("Could not realize widget")));
+
+   return object->get_object();
+}
+
+Handle<Value>
 elm_main_window(const Arguments& args)
 {
    Local<String> win_name;
@@ -6331,6 +6355,7 @@ int elm_module_init(Handle<ObjectTemplate> global, void *data)
    elm->Set(String::New("window"), FunctionTemplate::New(elm_main_window));
    elm->Set(String::New("loop_time"), FunctionTemplate::New(elm_loop_time));
    elm->Set(String::New("exit"), FunctionTemplate::New(elm_exit));
+   elm->Set(String::New("widget"), FunctionTemplate::New(elm_widget));
    elm->SetAccessor(String::New("datadir"), datadir_getter, datadir_setter);
    elm->SetAccessor(String::New("tmpdir"), tmpdir_getter, tmpdir_setter);
    elm->SetAccessor(String::New("theme"), theme_getter, theme_setter);
