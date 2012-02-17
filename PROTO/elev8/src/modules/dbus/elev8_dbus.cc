@@ -645,6 +645,8 @@ Handle<Value> dbus_method_invoke(const Arguments &args)
    HandleScope scope;
 
    DBUS_INF("Invoking DBUS Method API");
+
+   return Undefined();
 }
 
 void invoke_js_callback(void *data)
@@ -702,7 +704,6 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
 {
    DBusError e;
    DBus *dbus = ((struct dbus_cache *)(data))->dbus;
-   const char *xml_str;
 
    if ((error) && (dbus_error_is_set(error)))
      {
@@ -847,7 +848,7 @@ Handle<Value> createDBusInstance(const Arguments& args)
    return dbus->obj; 
 }
 
-int dbus_module_init(Handle<ObjectTemplate> global)
+int dbus_module_init(Handle<ObjectTemplate> global, void *data)
 {
    elev8_dbus_log_domain = eina_log_domain_register("elev8-dbus", EINA_COLOR_ORANGE);
    if (!elev8_dbus_log_domain)
@@ -870,9 +871,10 @@ int dbus_module_init(Handle<ObjectTemplate> global)
    return 0;
 }
 
-int dbus_module_shutdown()
+int dbus_module_shutdown(void *data)
 {
    DBUS_INF("SHUTTING DOWN MODULE DBUS");
+   return 0;
 }
 
 extern "C"

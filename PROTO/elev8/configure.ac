@@ -130,6 +130,9 @@ Makefile
 src/Makefile
 src/bin/Makefile
 src/modules/Makefile
+src/modules/dbus/Makefile
+src/modules/http/Makefile
+src/modules/elm/Makefile
 data/Makefile
 data/images/Makefile
 data/desktop/Makefile

@@ -129,7 +129,7 @@ run_script(const char *filename)
    else
      {
         /* load the script and run it */
-        Handle<String> origin = String::New(filename);
+        //Handle<String> origin = String::New(filename);
         Handle<String> source = string_from_file(filename);
         if (source.IsEmpty())
           {
@@ -156,8 +156,6 @@ elev8_run(const char *script)
    Context::Scope context_scope(context);
    run_script(script);
 
-
-
    ecore_main_loop_begin();
 
    context.Dispose();
@@ -175,8 +173,6 @@ main_help(const char *progname)
 int
 elm_main(int argc, char **argv)
 {
-   int i;
-
    eina_init();
    elev8_log_domain = eina_log_domain_register("elev8", EINA_COLOR_ORANGE);
    if (!elev8_log_domain)

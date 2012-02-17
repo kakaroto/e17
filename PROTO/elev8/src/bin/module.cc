@@ -26,15 +26,7 @@ static Eina_Bool module_check(Eina_Module *m, void *d)
 //TODO : Add support for User Home Dir based modules.
 void load_modules()
 {
-   int retval = 0;
-
    /* load all the modules in the installed path PACKAGE_LIB_DIR */
-
-   DIR *dirp;
-   struct dirent *dp;
-   char buffer[MAX_LEN];
-   Eina_Module *ptr = NULL;
-
    INF("DIR To Check = %s\n", PACKAGE_LIB_DIR);
 
    eina_elev8_modules = eina_module_list_get(NULL, PACKAGE_LIB_DIR,  EINA_FALSE, (Eina_Module_Cb)module_check, NULL);
@@ -53,7 +45,7 @@ void init_modules(v8::Handle<v8::ObjectTemplate> global)
    INF("Calling Setup of All Modules\n");
    Eina_Array_Iterator it;
    void *mod;
-   int i = 0;
+   unsigned int i = 0;
    INF("List Count of Modules = %d\n", eina_array_count(eina_elev8_modules));
    EINA_ARRAY_ITER_NEXT(eina_elev8_modules, i, mod, it)
      {
@@ -72,7 +64,7 @@ void init_modules(v8::Handle<v8::ObjectTemplate> global)
 
         if (mi.init)
           {
-             (*(mi.init))(global);
+             (*(mi.init))(global, NULL);
           }
         else
           {

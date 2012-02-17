@@ -16,8 +16,8 @@ extern "C"
 {
 #endif
 
-typedef int (*module_init)(Handle<ObjectTemplate> global);
-typedef int (*module_deinit)(void);
+typedef int (*module_init)(Handle<ObjectTemplate> global, void *data);
+typedef int (*module_deinit)(void *data);
 
 /* interfaces to be implemented by modules. */
 struct module_info

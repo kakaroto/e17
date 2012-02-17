@@ -100,7 +100,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
    reqObj->readyState =  Persistent<Integer>(readyState);
 
 
-   Local<String> funcName = String::New("onreadystatechange");
+   //Local<String> funcName = String::New("onreadystatechange");
    //if (reqObj->obj->Has(funcName))
    if (reqObj->onreadystatechange->IsFunction())
      {
@@ -367,7 +367,7 @@ Handle<Value> createXMLHttpReqInstance(const Arguments& args)
    return reqObj->obj; 
 }
 
-int http_module_init(Handle<ObjectTemplate> global)
+int http_module_init(Handle<ObjectTemplate> global, void *data)
 {
    elev8_http_log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
    if (!elev8_http_log_domain)
@@ -393,9 +393,10 @@ int http_module_init(Handle<ObjectTemplate> global)
    return 0;
 }
 
-int http_module_shutdown()
+int http_module_shutdown(void *data)
 {
    HTTP_INF("SHUTTING DOWN MODULE HTTP");
+   return 0;
 }
 
 extern "C"

@@ -82,9 +82,8 @@ void download_resource(downloader *dl_temp)
              char local_file[PATH_MAX];
              snprintf(local_file, PATH_MAX,
 			      "%s/elev8-script-%d/%s",PACKAGE_TMP_DIR,getpid(),local);
-	     INF("Local File = %s URL = %s",
+	         INF("Local File = %s URL = %s",
 			        local_file, dl_temp->http_request);
-	     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
              dl_temp->fd =  open(local_file, O_CREAT|O_WRONLY|O_TRUNC, 0644);
              ecore_con_url_url_set(dl_temp->url_con, (char *)dl_temp->http_request);
              ecore_con_url_data_set(dl_temp->url_con, dl_temp->http_request);
@@ -165,17 +164,17 @@ Eina_Bool file_completion_callback(void *data, int type, void *event)
      {
         ERR("error creating file %s ", strerror(errno));
         eina_binbuf_free(dl_temp->temp_data);
-	return EINA_FALSE;
+	    return EINA_FALSE;
      }
 
-   INF("File Created for Script %d", retval, dl_temp->fd);
+   INF("File Created for Script %d", dl_temp->fd);
    INF("File Write Size = %d-%d=%d",length,shebang,(length-shebang));
 
    retval = snprintf(set_datadir, PATH_MAX,
 		             "elm.datadir = \"%s/elev8-script-%d/\";",
-			     PACKAGE_TMP_DIR, 
-			     getpid()
-			);
+			         PACKAGE_TMP_DIR, 
+			         getpid()
+			        );
    INF("DataDir Is Set to  %s--", set_datadir);
 
    ptr = &set_datadir[0];

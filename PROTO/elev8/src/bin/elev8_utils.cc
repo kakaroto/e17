@@ -87,4 +87,11 @@ void compile_and_run(Handle<String> source)
    Handle<Value> result = script->Run();
    if (try_catch.HasCaught())
      boom(try_catch);
+
+   if (result->IsObject())
+     {
+        String::Utf8Value res(result->ToDetailString());
+        INF("Result of script run = %s", *res);
+     }
+
 }

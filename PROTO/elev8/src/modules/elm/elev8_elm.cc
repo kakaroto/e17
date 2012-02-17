@@ -8,8 +8,12 @@
 #include <list>
 #include <map>
 #include <string>
-#include <elev8_common.h>
+#include <module.h>
+#include <elev8_elm.h>
 
+#define ELM_MODULE_NAME "elm"
+
+int elev8_elm_log_domain = -1;
 
 using namespace v8;
 
@@ -281,13 +285,13 @@ public:
 
    virtual Handle<Value> type_get(void) const
      {
-        ERR( "undefined object type!");
+        ELM_ERR( "undefined object type!");
         return Undefined();
      }
 
    virtual void type_set(Handle<Value> value)
      {
-        ERR( "type cannot be set!");
+        ELM_ERR( "type cannot be set!");
      }
 
    Evas_Object *get() const
@@ -297,7 +301,7 @@ public:
 
    virtual CEvasObject *get_child(Handle<Value> name)
      {
-        ERR( "get_child undefined");
+        ELM_ERR( "get_child undefined");
         return NULL;
      }
 
@@ -698,7 +702,7 @@ public:
    virtual void image_set(Handle<Value> val)
      {
         if (val->IsString())
-          ERR( "no image set");
+          ELM_ERR( "no image set");
      }
 
    virtual Handle<Value> image_get(void) const
@@ -721,7 +725,7 @@ public:
      {
         if (!val->IsObject())
           {
-             ERR( "not an object!");
+             ELM_ERR( "not an object!");
              return out;
           }
 
@@ -754,7 +758,7 @@ public:
           {
              Evas_Object *parent = elm_object_parent_widget_get(eo);
              if (!parent)
-               ERR( "resize object has no parent!");
+               ELM_ERR( "resize object has no parent!");
              else
                {
                   is_resize = val->BooleanValue();
@@ -765,7 +769,7 @@ public:
                }
           }
         else
-          ERR( "Resize value not boolean!");
+          ELM_ERR( "Resize value not boolean!");
      }
 
    virtual Handle<Value> resize_get(void) const
@@ -1079,7 +1083,7 @@ public:
          {
             String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               WRN( "warning: can't read image file %s", *str);
+               ELM_WRN( "warning: can't read image file %s", *str);
             evas_object_image_file_set(eo, *str, NULL);
          }
        evas_object_raise(eo);
@@ -1532,7 +1536,7 @@ public:
 
    virtual void resize_set(Handle<Value> val)
      {
-        ERR( "warning: resize=true ignored on main window");
+        ELM_ERR( "warning: resize=true ignored on main window");
      }
 
 };
@@ -1725,10 +1729,10 @@ public:
                   if (dynamic_cast<CElmRadio*>(group))
                     elm_radio_group_add(eo, group->get());
                   else
-                    ERR( "%p not a radio button!", group);
+                    ELM_ERR( "%p not a radio button!", group);
                }
              else
-               ERR( "child %s not found!", *String::Utf8Value(value->ToString()));
+               ELM_ERR( "child %s not found!", *String::Utf8Value(value->ToString()));
           }
      }
 
@@ -1768,7 +1772,7 @@ protected:
 
         if (!elements_val->IsObject())
           {
-             ERR( "elements not an object");
+             ELM_ERR( "elements not an object");
              return ret;
           }
 
@@ -1778,7 +1782,7 @@ protected:
         if (val->IsObject())
           ret = eo_from_info(val->ToObject());
         else
-          ERR( "value %s not an object", *String::Utf8Value(val->ToString()));
+          ELM_ERR( "value %s not an object", *String::Utf8Value(val->ToString()));
 
         return ret;
      }
@@ -1967,7 +1971,7 @@ public:
           {
              String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               ERR( "warning: can't read icon file %s", *str);
+               ELM_ERR( "warning: can't read icon file %s", *str);
 
              elm_icon_file_set(eo, *str, NULL);
           }
@@ -2048,7 +2052,7 @@ public:
           pos = ELM_ACTIONSLIDER_RIGHT;
         else
           {
-             ERR( "Invalid actionslider position: %s", *str);
+             ELM_ERR( "Invalid actionslider position: %s", *str);
              return false;
           }
         return true;
@@ -2103,7 +2107,7 @@ public:
         content = realize_one(this, obj->Get(String::New("content")));
         if (!content)
           {
-             ERR( "scroller has no content");
+             ELM_ERR( "scroller has no content");
           }
         else
           {
@@ -2147,7 +2151,7 @@ public:
         else if (!strcmp(*str, "last"))
           policy = ELM_SCROLLER_POLICY_LAST;
         else
-          ERR( "unknown scroller policy %s", *str);
+          ELM_ERR( "unknown scroller policy %s", *str);
 
         return policy;
      }
@@ -2486,6 +2490,7 @@ public:
 
    static Eina_Bool state_get(void *data, Evas_Object *obj, const char *part)
      {
+        return EINA_TRUE;
      }
 
    static void del(void *data, Evas_Object *obj)
@@ -2494,6 +2499,7 @@ public:
 
    static void *sel(void *data, Evas_Object *obj, void *event_info)
      {
+        return NULL;
      }
    /* End of GenList functions */
 
@@ -2718,7 +2724,7 @@ public:
         CElmList *list = static_cast<CElmList *>(self);
         if (!list->list.empty() && args[0]->IsNumber() && args[1]->IsBoolean())
           {
-              int val = args[0]->IntegerValue();
+              unsigned int val = args[0]->IntegerValue();
 
               if (val <= list->list.size())
                 {
@@ -2752,7 +2758,7 @@ public:
         CElmList *list = static_cast<CElmList *>(self);
         if (!list->list.empty() && args[0]->IsNumber())
           {
-              int val = args[0]->IntegerValue();
+              unsigned int val = args[0]->IntegerValue();
               if (val <= list->list.size())
                 {
                    std::list<ListItem*>::iterator i = list->list.begin();
@@ -2800,7 +2806,7 @@ public:
         CElmList *list = static_cast<CElmList *>(self);
         if (!list->list.empty() && args[0]->IsNumber())
           {
-             int val = args[0]->IntegerValue();
+             unsigned int val = args[0]->IntegerValue();
              if (val <= list->list.size())
                {
                   std::list<ListItem*>::iterator i = list->list.begin();
@@ -2889,7 +2895,7 @@ public:
 
         if (!list->list.empty() && args[0]->IsNumber())
           {
-             int val = args[0]->IntegerValue();
+             unsigned int val = args[0]->IntegerValue();
 
              if (val==-1) //delete last one
                val = list->list.size();
@@ -2951,7 +2957,7 @@ public:
      {
         if (!val->IsObject())
           {
-             ERR( "not an object!");
+             ELM_ERR( "not an object!");
              return;
           }
 
@@ -2963,7 +2969,7 @@ public:
 
         /* iterate through elements and instantiate them */
         // there can be no elements in the list
-        for (int i = 0; i < props->Length(); i++)
+        for (unsigned int i = 0; i < props->Length(); i++)
           {
              Local<Value> x = props->Get(Integer::New(i));
              String::Utf8Value val(x);
@@ -2972,7 +2978,10 @@ public:
 
              // -1 means end of list
              ListItem *it = new_item_set(-1, item);
-
+             if (it!=NULL)
+             {
+                ELM_INF( "New list item added.");
+             }
           }
 
      }
@@ -2987,13 +2996,13 @@ public:
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             ERR( "list item is not an object");
+             ELM_ERR( "list item is not an object");
              return NULL;
           }
 
         if (items==Null())
           {
-             ERR( "Please add atleast empty \"items\" to list");
+             ELM_ERR( "Please add atleast empty \"items\" to list");
              return NULL;
           }
 
@@ -3011,7 +3020,7 @@ public:
                       && !it->end->IsObject())
                {
 
-                  ERR( "Basic elements missing");
+                  ELM_ERR( "Basic elements missing");
                   delete it;
                   return NULL;
                }
@@ -3090,9 +3099,8 @@ public:
 
    virtual Handle<Value> mode_get() const
      {
-        double min;
         int mode = elm_list_mode_get(eo);
-        return Number::New(min);
+        return Number::New(mode);
      }
 
    virtual void mode_set(Handle<Value> value)
@@ -3311,7 +3319,7 @@ public:
     {
        if (!val->IsNumber())
          {
-            ERR( "%s: value is not a Number!", __FUNCTION__);
+            ELM_ERR( "%s: value is not a Number!", __FUNCTION__);
             return;
          }
        int hour = 0;
@@ -3320,7 +3328,6 @@ public:
        // use either this or the class getters (involves conversion from Value to int)
        elm_clock_time_get(eo, &hour, &minute, &second);
 
-       Local<Object> obj = val->ToObject();
        hour = val->ToNumber()->Value();
        elm_clock_time_set(eo, hour , minute, second);
     }
@@ -3329,14 +3336,13 @@ public:
     {
        if (!val->IsNumber())
          {
-            ERR( "%s: value is not a Number!", __FUNCTION__);
+            ELM_ERR( "%s: value is not a Number!", __FUNCTION__);
             return;
          }
        int hour = 0;
        int minute = 0;
        int second = 0;
        elm_clock_time_get(eo, &hour, &minute, &second);
-       Local<Object> obj = val->ToObject();
        minute = val->ToNumber()->Value();
        elm_clock_time_set(eo, hour , minute, second);
     }
@@ -3345,14 +3351,13 @@ public:
     {
        if (!val->IsNumber())
          {
-            ERR( "%s: value is not a Number!", __FUNCTION__);
+            ELM_ERR( "%s: value is not a Number!", __FUNCTION__);
             return;
          }
        int hour = 0;
        int minute = 0;
        int second = 0;
        elm_clock_time_get(eo, &hour, &minute, &second);
-       Local<Object> obj = val->ToObject();
        second = val->ToNumber()->Value();
        elm_clock_time_set(eo, hour , minute, second);
     }
@@ -3547,11 +3552,11 @@ public:
             String::Utf8Value str(val);
 
             if (0 > access(*str, R_OK))
-              ERR( "warning: can't read image file %s", *str);
+              ELM_ERR( "warning: can't read image file %s", *str);
 
             Eina_Bool retval = elm_photo_file_set(eo, *str);
             if (retval == EINA_FALSE)
-              ERR( "Unable to set the image");
+              ELM_ERR( "Unable to set the image");
          }
     }
 
@@ -3836,7 +3841,7 @@ public:
     {
        if (!val->IsObject())
          {
-            ERR( "%s: value is not an object!", __FUNCTION__);
+            ELM_ERR( "%s: value is not an object!", __FUNCTION__);
             return;
          }
        Local<Object> obj = val->ToObject();
@@ -3892,7 +3897,7 @@ public:
 
         if (!val->IsObject())
           {
-             ERR( "not an object!");
+             ELM_ERR( "not an object!");
              return out;
           }
 
@@ -3910,7 +3915,7 @@ public:
              if (!item->IsObject())
                {
                   // FIXME: permit adding strings here?
-                  ERR( "list item is not an object");
+                  ELM_ERR( "list item is not an object");
                   continue;
                }
              Local<Value> label = item->ToObject()->Get(String::New("label"));
@@ -4017,7 +4022,7 @@ public:
        /* add a list of children */
        if (!val->IsObject())
          {
-            ERR( "not an object!");
+            ELM_ERR( "not an object!");
             return;
          }
 
@@ -4033,7 +4038,7 @@ public:
             Local<Value> item = in->Get(x->ToString());
             if (!item->IsObject())
               {
-                 ERR( "list item is not an object");
+                 ELM_ERR( "list item is not an object");
                  continue;
               }
 
@@ -4052,7 +4057,7 @@ public:
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             ERR( "list item is not an object");
+             ELM_ERR( "list item is not an object");
              return NULL;
           }
         Elm_Object_Item *par = NULL;
@@ -4090,7 +4095,7 @@ public:
              // either a label with icon
              if ( !it->label->IsString() && !it->icon->IsString() )
                {
-                  ERR( "Not a label or seperator");
+                  ELM_ERR( "Not a label or seperator");
                   delete it;
                   return NULL;
                }
@@ -4343,7 +4348,7 @@ public:
 
         if (!val->IsObject())
           {
-             ERR( "not an object!");
+             ELM_ERR( "not an object!");
              return out;
           }
 
@@ -4362,7 +4367,7 @@ public:
              if (!item->IsObject())
                {
                   String::Utf8Value xval(x->ToString());
-                  ERR( "item is not an object %s", *xval);
+                  ELM_ERR( "item is not an object %s", *xval);
                   continue;
                }
 
@@ -4512,7 +4517,6 @@ public:
      {
         if ( val->IsBoolean() )
           {
-             int year_min, year_max;
              Eina_Bool day_select = val->ToBoolean()->Value();
              elm_calendar_day_selection_enabled_set(eo, day_select);
           }
@@ -4654,7 +4658,7 @@ public:
      {
         if (!val->IsObject())
           {
-             ERR( "not an object!");
+             ELM_ERR( "not an object!");
              return;
           }
 
@@ -4679,7 +4683,7 @@ public:
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             ERR( "list item is not an object");
+             ELM_ERR( "list item is not an object");
              return Undefined();
           }
 
@@ -4720,7 +4724,7 @@ public:
           }
 
         elm_table_pack(this->get(), child->get(), x, y, w, h);
-        INF("Packing new table item at %d %d %d %d", x,y,w,h);
+        ELM_INF("Packing new table item at %d %d %d %d", x,y,w,h);
         table_items.push_back(child);
         return child->get_object();
      }
@@ -4786,15 +4790,15 @@ public:
          {
             String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               ERR( "warning: can't read image file %s", *str);
+               ELM_ERR( "warning: can't read image file %s", *str);
             elm_photocam_file_set(eo, *str);
-            INF( "Photcam image file %s", *str);
+            ELM_INF( "Photcam image file %s", *str);
          }
      }
 
    virtual Handle<Value> file_get(void) const
      {
-        const char *f = NULL, *key = NULL;
+        const char *f = NULL;
         f = elm_photocam_file_get (eo);
         if (f)
           return String::New(f);
@@ -5595,7 +5599,7 @@ public:
 
    virtual void activate_set(Handle<Value> val)
      {
-        INF("Actiavted.");
+        ELM_INF("Actiavted.");
         if (val->IsBoolean())
           elm_win_inwin_activate(eo);
      }
@@ -5650,6 +5654,7 @@ public:
           {
              double orient = val->ToInt32()->Value();
              elm_notify_orient_set(eo, (Elm_Notify_Orient)orient);
+             ELM_INF("Value of orient = %g", orient);
           }
      }
 
@@ -5717,6 +5722,8 @@ public:
              elm_pager_content_pop(pager->get());
              pager->pages.pop_front();
           }
+
+        return Undefined();
      }
 
    static Handle<Value> push(const Arguments& args)
@@ -5731,8 +5738,8 @@ public:
                   elm_pager_content_push(pager->get(), content->get());
                   pager->pages.push_front(content);
                }
-
           }
+        return Undefined();
      }
    static Handle<Value> promote(const Arguments& args)
      {
@@ -5796,7 +5803,7 @@ public:
      {
         if (!val->IsObject())
           {
-             ERR( "not an object!");
+             ELM_ERR( "not an object!");
              return;
           }
 
@@ -5819,7 +5826,7 @@ public:
          if (!item->IsObject())
            {
               // FIXME: permit adding strings here?
-              ERR( "grid item is not an object");
+              ELM_ERR( "grid item is not an object");
               return;
            }
          Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
@@ -5860,7 +5867,7 @@ public:
               h = height->IntegerValue();
            }
 
-         INF("Objects = %d %d %d %d", x,y,w,h);
+         ELM_INF("Objects = %d %d %d %d", x,y,w,h);
          elm_grid_pack (this->get(), child->get(), x, y, w, h);
          grid_items.push_back(child);
        }
@@ -5875,7 +5882,7 @@ public:
           int x, y;
           if (get_xy_from_object(val, x, y))
             {
-               INF("Grid Size = %d %d", x,y);
+               ELM_INF("Grid Size = %d %d", x,y);
                elm_grid_size_set(eo, x, y);
             }
        }
@@ -5917,7 +5924,7 @@ public:
           {
              Evas_Object *parent = elm_object_top_widget_get(eo);
              if (!parent)
-               ERR( "resize object has no parent!");
+               ELM_ERR( "resize object has no parent!");
              else
                {
                   is_resize = val->BooleanValue();
@@ -5928,7 +5935,7 @@ public:
                }
           }
         else
-          ERR( "Resize value not boolean!");
+          ELM_ERR( "Resize value not boolean!");
      }
 
 
@@ -5938,7 +5945,7 @@ public:
          {
             String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               WRN( "warning: can't read image file %s", *str);
+               ELM_WRN( "warning: can't read image file %s", *str);
             elm_image_file_set(eo, *str, NULL);
          }
 	   printf("Value is not string.\n");
@@ -6056,7 +6063,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
 {
    if (!object_val->IsObject())
      {
-        ERR( "%s: value is not an object!", __FUNCTION__);
+        ELM_ERR( "%s: value is not an object!", __FUNCTION__);
         return NULL;
      }
 
@@ -6065,7 +6072,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
    Local<Value> val = obj->Get(String::New("type"));
    String::Utf8Value str(val);
 
-   //INF("Creating %s", *str);
+   //ELM_INF("Creating %s", *str);
 
    /* create the evas object */
    // FIXME: make a list here
@@ -6141,7 +6148,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
 
    if (!eo)
      {
-        ERR( "Bad object type %s", *str);
+        ELM_ERR( "Bad object type %s", *str);
         return eo;
      }
 
@@ -6242,8 +6249,7 @@ theme_setter(Local<String> property, Local<Value> value,
    the_theme = Persistent<Value>::New(value);
 }
 
-void
-elm_v8_setup(Handle<ObjectTemplate> global)
+int elm_module_init(Handle<ObjectTemplate> global, void *data)
 {
    Handle<ObjectTemplate> elm = ObjectTemplate::New();
    global->Set(String::New("elm"), elm);
@@ -6258,12 +6264,31 @@ elm_v8_setup(Handle<ObjectTemplate> global)
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
    the_tmpdir = Persistent<String>::New(String::New(PACKAGE_TMP_DIR "/" ));
+
+   elev8_elm_log_domain = eina_log_domain_register("elev8-elm", EINA_COLOR_GREEN);
+   if (!elev8_elm_log_domain)
+     {
+        ELM_ERR( "could not register elev8-elm log domain.");
+        elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
+     }
+   ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
+
+   return 0;
 }
 
-void
-elm_v8_shutdown(void)
+int elm_module_shutdown(void *data)
 {
    the_datadir.Dispose();
    the_tmpdir.Dispose();
    the_theme.Dispose();
+   ELM_INF("SHUTTING DOWN MODULE ELM");
+   return 0;
+}
+
+extern "C"
+void setup(module_info *mi)
+{
+   strcpy(mi->name,ELM_MODULE_NAME);
+   mi->init = &elm_module_init;
+   mi->deinit = &elm_module_shutdown;
 }
