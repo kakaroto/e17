@@ -1581,14 +1581,44 @@ CEvasObject::CPropHandler<CElmButton>::list[] = {
 
 class CElmLayout : public CEvasObject {
 protected:
+   Persistent<Object> the_contents;
    CPropHandler<CElmLayout> prop_handler;
 public:
    CElmLayout(CEvasObject *parent, Local<Object> obj) :
        CEvasObject(),
        prop_handler(property_list_base)
      {
+        the_contents = Persistent<Object>::New(Object::New());
         eo = elm_layout_add(parent->top_widget_get());
         construct(eo, obj);
+     }
+
+   virtual Handle<Value> contents_get() const
+     {
+        return the_contents;
+     }
+
+   virtual void contents_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          {
+             Handle<Object> contents = val->ToObject();
+             Handle<Array> properties = contents->GetPropertyNames();
+             
+             for (unsigned int i = 0; i < properties->Length(); i++)
+               {
+                  Handle<Value> element = properties->Get(Integer::New(i));
+
+                  CEvasObject *child = realize_one(this, contents->Get(element->ToString()));
+                  if (!child)
+                    continue;
+
+                  String::Utf8Value elementName(element);
+                  elm_object_part_content_set(eo, *elementName, child->get());
+
+                  the_contents->Set(element, child->get_object());
+               }
+          }
      }
 
    virtual Handle<Value> file_get() const
@@ -1616,6 +1646,7 @@ public:
 template<> CEvasObject::CPropHandler<CElmLayout>::property_list
 CEvasObject::CPropHandler<CElmLayout>::list[] = {
      PROP_HANDLER(CElmLayout, file),
+     PROP_HANDLER(CElmLayout, contents),
      { NULL, NULL, NULL },
 };
 
