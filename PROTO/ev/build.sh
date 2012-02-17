@@ -2,12 +2,12 @@
 
 CF="-DHAVE_LIMITS_H -DSTDC_HEADERS -DHAVE_MEMCPY=1 -D_GNU_SOURCE=1 -O0 -pipe -Wall -Wextra -g"
 
-DEPS=($(pkg-config --print-requires-private elementary ecore-x))
+DEPS=($(pkg-config --print-requires-private elementary))
 echo "DEPENDENCIES: ${DEPS[@]}"
-CFLAGS="$(pkg-config --static --cflags ${DEPS[@]} elementary ecore-x)"
+CFLAGS="$(pkg-config --static --cflags ${DEPS[@]} elementary)"
 echo "DEPENDENCY CFLAGS: $CFLAGS"
 
-LIBS="$(pkg-config --static --libs ${DEPS[@]} elementary ecore-x)"
+LIBS="$(pkg-config --static --libs ${DEPS[@]} elementary)"
 echo "DEPENDENCY LIBS: $LIBS"
 echo
 

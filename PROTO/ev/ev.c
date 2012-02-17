@@ -16,7 +16,6 @@
  */
 
 #include <Elementary.h>
-#include <Ecore_X.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
