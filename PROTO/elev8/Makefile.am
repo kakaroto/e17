@@ -1,6 +1,6 @@
 SUBDIRS = src data
 
-ACLOCAL_AMFLAGS = -I m4 -fpermissive
+ACLOCAL_AMFLAGS = -I m4
 
 MAINTAINERCLEANFILES = \
 ABOUT-NLS \
