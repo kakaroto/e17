@@ -32,7 +32,7 @@ namespace ehninjas
       public:
          Singleton();
          virtual ~Singleton();
-         inline static T *GetSingleton();
+         static T *GetInstance();
         };
 
    template<typename T> T *Singleton<T>:: instance = NULL;
@@ -60,10 +60,10 @@ namespace ehninjas
      }
 
    template<typename T>
-   T* Singleton<T>:: GetSingleton()
+   T* Singleton<T>:: GetInstance()
      {
-        assert(instance != NULL);
-        return instance;
+        assert(Singleton<T> ::instance != NULL);
+        return Singleton<T> ::instance;
      }
 }
 

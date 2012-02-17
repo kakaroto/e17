@@ -18,20 +18,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "singleton.h"
-
 namespace ehninjas
 {
+   class singleton;
+   class MemoryMgr;
+
    class App : public Singleton<App>
      {
       private:
+         MemoryMgr *memmgr;
+
          Evas *e;
          Evas_Object *win;
          Evas_Object *bg;
          Eina_Bool initialized;
 
+         Eina_Bool CreateWin(const char *, unsigned int, unsigned int);
+         Eina_Bool CreateBg(int, int, int);
+
       public:
-         App(): e(NULL), win(NULL), bg(NULL) {}
+         App(): memmgr(NULL), e(NULL), win(NULL), bg(NULL) {}
          ~App() {}
          Eina_Bool Initialize(int, char **);
          Eina_Bool Run();

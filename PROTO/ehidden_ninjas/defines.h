@@ -29,6 +29,8 @@
      } \
    while(0)
 
+#define PACKAGE_BUILD_DIR
+
 //ID VALUES
 #define ID_BLOCK         1
 #define ID_BOMB          2

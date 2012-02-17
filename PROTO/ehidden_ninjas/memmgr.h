@@ -18,13 +18,28 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "singleton.h"
-
 namespace ehninjas
 {
+   class singleton;
+
    class MemoryMgr : public Singleton<MemoryMgr>
      {
+      private:
+         static Eina_Bool initialized;
+         Eina_Array *modules;
+         Eina_Mempool *mempool;
+         unsigned int pool_size;
 
+      public:
+         MemoryMgr();
+         ~MemoryMgr();
+
+         Eina_Bool Initialize(unsigned int);
+         void Terminate();
+         void *Alloc(unsigned int size);
+         void *Realloc(void *, unsigned int size);
+         void Free(void *);
+         unsigned int GetPoolSize();
      };
 }
 

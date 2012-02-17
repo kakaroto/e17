@@ -58,15 +58,22 @@ namespace eHiddenNinja
               return this->id;
            }
 
-         virtual Initialize() {}
-         virtual Release() {}
+         virtual Eina_Bool Initialize()
+           {
+              return EINA_TRUE;
+           }
+
+         virtual Eina_Bool Release()
+           {
+              return EINA_TRUE;
+           }
+
          virtual SetImgObj(Evas_Object*) = 0;
          virtual const Evas_Object *GetImgObj() = 0;
 
          static void PrintDbgInfo()
            {
 #if DEBUG_MODE
-
               PRINT_DBG("OBJECT COUNT: %d\n", Object ::TOTAL_CNT);
 #endif
            }
@@ -75,19 +82,8 @@ namespace eHiddenNinja
    class Block: public Object
      {
       public:
-         Block() :Object(string(""), ID_BLOCK)
-           {
-#if DEBUG_MODE
-              PRING_DBG("Created a Block");
-#endif
-           }
-
-         ~Block()
-           {
-#if DEBUG_MODE
-              PRINT_DBG("Destroyed a Block");
-#endif
-           }
+         Block() :Object(string(""), ID_BLOCK) {}
+         ~Block() {}
 
       private:
         vector2<ELEMENT_TYPE> pos;
