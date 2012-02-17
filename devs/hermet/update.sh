@@ -6,7 +6,7 @@ svn update
 
 CFLAGS="-02 -g -W -Wall -Wextra -Wundef -Wshadow"
 
-for e in eina eet evas ecore eeze efreet embryo edje e_dbus e ethumb elementary expedite
+for e in eina eet evas ecore eeze efreet embryo edje e_dbus e emotion PROTO/epdf ethumb eio elementary expedite
 do 
 	if [ -e $e ] && [ -d $e ]
 	then 
