@@ -28,12 +28,12 @@ GenListItem::~GenListItem ()
 
 void GenListItem::setSelected (bool selected)
 {
-  elm_gen_item_selected_set (reinterpret_cast<Elm_Gen_Item *>(mItem), selected);
+  elm_genlist_item_selected_set (reinterpret_cast<Elm_Object_Item *>(mItem), selected);
 }
 
 bool GenListItem::getSelected () const
 {
-  return elm_gen_item_selected_get (reinterpret_cast<Elm_Gen_Item *>(mItem));
+  return elm_genlist_item_selected_get (reinterpret_cast<Elm_Object_Item *>(mItem));
 }
 
 
