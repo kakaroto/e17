@@ -85,9 +85,6 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *ev)
         return;
      }
    elm_icon_file_set(img, file, NULL);
-   elm_icon_animated_set(img, EINA_TRUE);
-   elm_icon_aspect_fixed_set(img, EINA_TRUE);
-   elm_icon_fill_outside_set(img, EINA_FALSE);
    win = elm_object_parent_widget_get(img);
    ic = elm_icon_object_get(img);
    evas_object_image_size_get(ic, &w, &h);
@@ -204,6 +201,9 @@ main(int argc, char *argv[])
    evas_object_size_hint_weight_set(img, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(img, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_win_resize_object_add(win, img);
+   elm_icon_animated_set(img, EINA_TRUE);
+   elm_icon_aspect_fixed_set(img, EINA_TRUE);
+   elm_icon_fill_outside_set(img, EINA_FALSE);
    evas_object_show(img);
    evas_object_show(win);
 
