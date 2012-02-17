@@ -29,6 +29,7 @@ files_SCRIPTS = \
 	http_test.js \
 	inwin.js \
 	label.js \
+	layout.js \
 	list.js \
 	menu.js \
 	notepad.js \

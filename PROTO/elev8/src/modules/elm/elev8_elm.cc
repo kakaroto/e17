@@ -1579,6 +1579,47 @@ CEvasObject::CPropHandler<CElmButton>::list[] = {
      { NULL, NULL, NULL },
 };
 
+class CElmLayout : public CEvasObject {
+protected:
+   CPropHandler<CElmLayout> prop_handler;
+public:
+   CElmLayout(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+        eo = elm_layout_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+
+   virtual Handle<Value> file_get() const
+     {
+        // FIXME: implement
+        return Undefined();
+     }
+
+   virtual void file_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          {
+             Local<Object> obj = val->ToObject();
+             Local<Value> fileParam = obj->Get(String::New("name"));
+             Local<Value> groupParam = obj->Get(String::New("group"));
+
+             String::Utf8Value fileName(fileParam);
+             String::Utf8Value groupName(groupParam);
+
+             elm_layout_file_set(eo, *fileName, *groupName);
+          }
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmLayout>::property_list
+CEvasObject::CPropHandler<CElmLayout>::list[] = {
+     PROP_HANDLER(CElmLayout, file),
+     { NULL, NULL, NULL },
+};
+
+
 class CElmBackground : public CEvasObject {
 protected:
    CPropHandler<CElmBackground> prop_handler;
@@ -6081,6 +6122,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmActionSlider(parent, obj);
    else if (!strcmp(*str, "button"))
      eo = new CElmButton(parent, obj);
+   else if (!strcmp(*str, "layout"))
+     eo = new CElmLayout(parent, obj);
    else if (!strcmp(*str, "background"))
      eo = new CElmBackground(parent, obj);
    else if (!strcmp(*str, "check"))
