@@ -96,7 +96,7 @@ azy_value_init(const char *type)
    string_values = eina_hash_string_superfast_new(NULL);
    base64_values = eina_hash_string_superfast_new(NULL);
    time_values = eina_hash_string_superfast_new(NULL);
-   int_values = eina_hash_int64_new(NULL);
+   int_values = eina_hash_int32_new(NULL);
 
    return EINA_TRUE;
 error:
