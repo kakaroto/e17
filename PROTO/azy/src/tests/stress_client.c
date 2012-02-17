@@ -134,7 +134,7 @@ spawn(void *data __UNUSED__)
         if (!azy_client_host_set(cli, "127.0.0.1", 4444))
           return;
 
-        if (!azy_client_connect(cli, EINA_TRUE))
+        if (!azy_client_connect(cli, EINA_FALSE))
           return;
 
         azy_net_uri_set(azy_client_net_get(cli), "/");
