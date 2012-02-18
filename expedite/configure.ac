@@ -129,7 +129,7 @@ LT_PROG_RC
 # Evil library for compilation on Windows
 
 case "$host_os" in
-   mingw32ce*)
+   mingw32*)
       PKG_CHECK_MODULES([EVIL], [evil >= 1.0.0])
       AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if Evil library is installed])
       ;;
