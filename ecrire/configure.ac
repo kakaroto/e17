@@ -81,6 +81,7 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/bin/Makefile
+data/Makefile
 $po_makefile_in
 ])
 

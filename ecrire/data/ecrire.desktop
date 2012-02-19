@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Ecrire
+Comment=Simple text editor
+Exec=ecrire %f
+Icon=ecrire
+Terminal=false
+Type=Application
+MimeType=text/plain
+Categories=Utility;TextEditor;
+StartupNotify=true

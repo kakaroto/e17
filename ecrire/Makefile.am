@@ -27,7 +27,7 @@ po/remove-potcdate.sin
 
 EXTRA_DIST = README AUTHORS COPYING
 
-SUBDIRS = src
+SUBDIRS = src data
 
 if HAVE_PO
 
