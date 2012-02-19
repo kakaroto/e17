@@ -40,15 +40,15 @@
   encryption)</em>
  </p>
  <p>
-  You can also use git (with git-svn) if you want to maintain lots of
+  You can also use git if you want to maintain lots of
   local branches, code and features and generate patches and so on. You
-  can do this with:
+  can either use git-svn:
  </p>
 <p><pre><code>git svn clone http://svn.enlightenment.org/svn/e
 </code></pre></p>
  <p>
-  You can alternatively download the git-svn tars from <a href=http://download.enlightenment.org/git_svn>here</a>
-  and use them instead; This alternative is significantly faster.
+ Or alternatively use the French git mirror from <a href=http://git.enlightenment.fr/>here</a>. This is preferred as native git is faster and better than git-svn.
+ </p>
  <p>
   To update the code in your tree (pull in changes from our master
   tree), just use:
@@ -56,9 +56,14 @@
 <p><pre><code>svn update
 </code></pre></p>
  <p>
-  Or for git use:
+  Or for git-svn:
  </p>
 <p><pre><code>git svn rebase
+</code></pre></p>
+ <p>
+  Or for git:
+ </p>
+<p><pre><code>git pull --rebase
 </code></pre></p>
  <p>
   If you have made changes you'd like to share, you can generate a patch
@@ -67,9 +72,9 @@
 <p><pre><code>svn diff
 </code></pre></p>
  <p>
-  Or with git
+  Or with git:
  </p>
-<p><pre><code>git diff
+<p><pre><code>git diff # Or better yet, git format-patch - read the manual.
 </code></pre></p>
  <p>
   Please read the appropriate manuals for your chosen revisioning
@@ -90,20 +95,6 @@
 <p><pre><code>svn co svn+ssh://USER@svn.enlightenment.org/var/svn/e
 </code></pre></p>
 <p><pre><code>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
-</code></pre></p>
- <p>
-  You can also use the git svn tars with a developer access, you just need to
-  run the <a href=http://download.enlightenment.org/git_svn/gsvn_to_developer.sh>conversion script</a> as follows:
-<p><pre><code>
-  ./gsvn_to_developer.sh USER MODULE
-  for example:
-  ./gsvn_to_developer.sh tasn evas
-</code></pre></p>
- </p>
- <p>
-  You can also use our git mirror server at:
- </p>
-<p><pre><code>git clone git://git.enlightenment.org/git/e.git
 </code></pre></p>
  <p>
   Our SVN tree is divided up and categorized. The <b>trunk</b>
