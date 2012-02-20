@@ -41,10 +41,10 @@ Eina_Bool App ::CreateWin(const char *title,
                           unsigned int width,
                           unsigned int height)
 {
-   Evas_Object *win = elm_win_add(NULL, "eHidden Ninjas", ELM_WIN_BASIC);
+   Evas_Object *win = elm_win_add(NULL, title, ELM_WIN_BASIC);
    if (!win) return EINA_FALSE;
    elm_win_autodel_set(win, EINA_TRUE);
-   elm_win_title_set(win, "eHidden Ninjas");
+   elm_win_title_set(win, title);
    evas_object_resize(win, width, height);
    evas_object_show(win);
 
@@ -93,7 +93,7 @@ Eina_Bool App ::Initialize(int argc, char **argv)
         PRINT_DBG("Failed to create MemoryMgr!");
         return EINA_FALSE;
      }
-   memmgr->Initialize(sizeof(int) * 10000);
+   memmgr->Initialize(MEMPOOL_SIZE);
 
    if (!this->CreateWin("eHidden Ninjas", 400, 400))
      {

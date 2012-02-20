@@ -18,7 +18,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <cassert>
 #include <Eina.h>
+#include "defines.h"
 #include "singleton.h"
 #include "memmgr.h"
 
@@ -32,11 +34,14 @@ MemoryMgr ::MemoryMgr() :modules(NULL), mempool(NULL), pool_size(0)
 {
    //load mempool modules
    this->modules = eina_module_list_get(NULL,
-                                        MPDIR "/src/modules",
+                                        MPDIR "/modules",
                                         EINA_TRUE,
                                         NULL,
                                         NULL);
-   eina_module_list_load(modules);
+   if (this->modules)
+     eina_module_list_load(modules);
+   else
+     PRINT_DBG("Failed to load mempool module!");
 }
 
 MemoryMgr ::~MemoryMgr()
@@ -48,6 +53,8 @@ MemoryMgr ::~MemoryMgr()
 Eina_Bool MemoryMgr ::Initialize(unsigned int pool_size)
 {
    assert(!this->initialized && (pool_size > 0));
+
+   if (!this->modules) return EINA_FALSE;
 
    this->mempool = eina_mempool_add("chained_mempool",
                                     "ehninjas",

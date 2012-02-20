@@ -27,66 +27,57 @@ namespace eHiddenNinja
    class Object
      {
       private:
-#if DEBUG_MODE
-        static unsigned int TOTAL_CNT;
-#endif
         std:: string name;
         unsigned int id;
+        VECTOR2 pos;
 
       public:
-         Object(std:: string& name, std:: unsigned int& id) : name(name),
-                                                              id(id)
-           {
-#if DEBUG_MODE
-              ++TOTAL_CNT;
-#endif
-           }
-         virtual ~Object()
-           {
-#if DEBUG_MODE
-              --TOTAL_CNT;
-#endif
-           }
+        Object(std:: string& name, std:: unsigned int& id) : name(name),
+                                                              id(id),
+                                                              pos(VECTOR2()) {}
+         virtual ~Object() = 0;
 
-         std:: string& GetString()
-           {
-              return &this->name;
-           }
+         std:: string& GetString() { return &this->name; }
+         unsigned int GetId() { return this->id; }
+         VECTOR2& Position() { return &this->pos; }
+         virtual Eina_Bool Initialize() { return EINA_TRUE; }
+         virtual Eina_Bool Release() { return EINA_TRUE; }
 
-         unsigned int GetId()
-           {
-              return this->id;
-           }
-
-         virtual Eina_Bool Initialize()
-           {
-              return EINA_TRUE;
-           }
-
-         virtual Eina_Bool Release()
-           {
-              return EINA_TRUE;
-           }
-
-         virtual SetImgObj(Evas_Object*) = 0;
+         virtual Eina_Bool SetImgObj(Evas_Object*) = 0;
          virtual const Evas_Object *GetImgObj() = 0;
-
-         static void PrintDbgInfo()
-           {
-#if DEBUG_MODE
-              PRINT_DBG("OBJECT COUNT: %d\n", Object ::TOTAL_CNT);
-#endif
-           }
      };
 
    class Block: public Object
      {
       public:
-         Block() :Object(string(""), ID_BLOCK) {}
+         Block() ::Object(string(""), ID_BLOCK) {}
          ~Block() {}
 
-      private:
-        vector2<ELEMENT_TYPE> pos;
-     }
+         Eina_Bool SetImgObj(Evas_Object*) { return EINA_TRUE; }
+         const Evas_Object *GetImgObj() { return NULL; }
+     };
+
+   class Character : public Object {};
+
+   class PlayerChar : public Character
+     {
+      public:
+         PlayerChar();
+         ~PlayerChar();
+         Eina_Bool Initialize() { return EINA_TRUE; }
+         Eina_Bool Release() { return EINA_TRUE; }
+         Eina_Bool SetImgObj(Evas_Object*);
+         const Evas_Object *GetImgObj();
+     };
+
+   class NonPlayerChar : public Character
+     {
+         NonPlayerChar();
+         ~NonPlayerChar();
+         Eina_Bool Initialize() { return EINA_TRUE; }
+         Eina_Bool Release() { return EINA_TRUE; }
+         Eina_Bool SetImgObj(Evas_Object*);
+         const Evas_Object *GetImgObj();
+     };
 
 }

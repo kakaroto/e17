@@ -29,14 +29,16 @@
      } \
    while(0)
 
-#define PACKAGE_BUILD_DIR
-
 //ID VALUES
 #define ID_BLOCK         1
 #define ID_BOMB          2
+#define ID_PLAYER        3
 
 //CONST VARIABLES
 #define GRID_SIZE        50
+#define MEMPOOL_SIZE     (sizeof(int) * 10000)
+
+
 
 typedef float ELEMENT_TYPE;
 
@@ -50,6 +52,8 @@ struct Vector2
    Vector2<T>(T& x, T& y): x(x), y(y) {}
    //TODO: override operators.
 };
+
+typedef Vector2<ELEMENT_TYPE> VECTOR2;
 
 #endif
 
