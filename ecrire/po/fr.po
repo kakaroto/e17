@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ecrire\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-01-25 08:41+0100\n"
+"POT-Creation-Date: 2012-02-19 19:54+0900\n"
 "PO-Revision-Date: 2012-01-25 14:58+0100\n"
 "Last-Translator: dazibao <dazibao@sfr.fr>\n"
 "Language-Team: français <sansgourou@gmail.com>\n"
@@ -20,11 +20,14 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: src/bin/ui/alerts.c:56
-msgid "<align=center>Would you like to save changes to document?<br>Any unsaved changes will be lost."
-msgstr "<align=center>Voulez-vous enregistrer le document modifié ?<br>Toute modification non enregistrée sera perdue."
+msgid ""
+"<align=center>Would you like to save changes to document?<br>Any unsaved "
+"changes will be lost."
+msgstr ""
+"<align=center>Voulez-vous enregistrer le document modifié ?<br>Toute "
+"modification non enregistrée sera perdue."
 
-#: src/bin/ui/alerts.c:71
-#: src/bin/main.c:686
+#: src/bin/ui/alerts.c:71 src/bin/main.c:687
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -36,8 +39,7 @@ msgstr "Abandonner"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/bin/ui/search_dialog.c:144
-#: src/bin/main.c:704
+#: src/bin/ui/search_dialog.c:144 src/bin/main.c:705
 msgid "Find & Replace"
 msgstr "Substituer"
 
@@ -93,39 +95,38 @@ msgstr "%sSans titre %d - %s"
 msgid "Ln %d, Col %d"
 msgstr "Ligne %d, Col %d"
 
-#: src/bin/main.c:683
+#: src/bin/main.c:684
 msgid "New"
 msgstr "Nouveau"
 
-#: src/bin/main.c:684
+#: src/bin/main.c:685
 msgid "Open"
 msgstr "Ouvrir"
 
-#: src/bin/main.c:687
+#: src/bin/main.c:688
 msgid "Save As"
 msgstr "Enreg. sous "
 
-#: src/bin/main.c:692
+#: src/bin/main.c:693
 msgid "Undo"
 msgstr "Défaire"
 
-#: src/bin/main.c:694
+#: src/bin/main.c:695
 msgid "Redo"
 msgstr "Refaire"
 
-#: src/bin/main.c:697
+#: src/bin/main.c:698
 msgid "Cut"
 msgstr "Couper"
 
-#: src/bin/main.c:699
+#: src/bin/main.c:700
 msgid "Copy"
 msgstr "Copier"
 
-#: src/bin/main.c:701
+#: src/bin/main.c:702
 msgid "Paste"
 msgstr "Coller"
 
-#: src/bin/main.c:708
+#: src/bin/main.c:709
 msgid "Settings"
 msgstr "Paramètres"
-

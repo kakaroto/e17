@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecrire\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-01-25 18:23+0100\n"
+"POT-Creation-Date: 2012-02-19 19:54+0900\n"
 "PO-Revision-Date: 2012-01-25 18:25+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +23,7 @@ msgstr ""
 "<align=center>Volete salvare le modifiche al documento?<br>Ogni modifica non "
 "salvata verrà persa."
 
-#: src/bin/ui/alerts.c:71 src/bin/main.c:686
+#: src/bin/ui/alerts.c:71 src/bin/main.c:687
 msgid "Save"
 msgstr "Salva"
 
@@ -34,7 +35,7 @@ msgstr "Abbandona"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/bin/ui/search_dialog.c:144 src/bin/main.c:704
+#: src/bin/ui/search_dialog.c:144 src/bin/main.c:705
 msgid "Find & Replace"
 msgstr "Trova & Sostituisci"
 
@@ -90,38 +91,38 @@ msgstr "%sSenza titolo %d - %s"
 msgid "Ln %d, Col %d"
 msgstr "Riga %d, Col %d"
 
-#: src/bin/main.c:683
+#: src/bin/main.c:684
 msgid "New"
 msgstr "Nuovo"
 
-#: src/bin/main.c:684
+#: src/bin/main.c:685
 msgid "Open"
 msgstr "Apri"
 
-#: src/bin/main.c:687
+#: src/bin/main.c:688
 msgid "Save As"
 msgstr "Salva come"
 
-#: src/bin/main.c:692
+#: src/bin/main.c:693
 msgid "Undo"
 msgstr "Annulla"
 
-#: src/bin/main.c:694
+#: src/bin/main.c:695
 msgid "Redo"
 msgstr "Ripeti"
 
-#: src/bin/main.c:697
+#: src/bin/main.c:698
 msgid "Cut"
 msgstr "Taglia"
 
-#: src/bin/main.c:699
+#: src/bin/main.c:700
 msgid "Copy"
 msgstr "Copia"
 
-#: src/bin/main.c:701
+#: src/bin/main.c:702
 msgid "Paste"
 msgstr "Incolla"
 
-#: src/bin/main.c:708
+#: src/bin/main.c:709
 msgid "Settings"
 msgstr "Impostazioni"
