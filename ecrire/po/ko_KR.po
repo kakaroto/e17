@@ -68,7 +68,7 @@ msgstr ""
 
 #: src/bin/ui/font_dialog.c:157
 msgid "Use Default Font:"
-msgstr ""
+msgstr "기본 폰트 사용: "
 
 #: src/bin/ui/font_dialog.c:168
 msgid "Set"
@@ -82,7 +82,7 @@ msgstr ""
 #: src/bin/main.c:99
 #, c-format
 msgid "%sUntitled %d - %s"
-msgstr ""
+msgstr "제목없음"
 
 #: src/bin/main.c:123
 #, c-format
