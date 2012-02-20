@@ -16,11 +16,15 @@ lib_LTLIBRARIES = libekbd.la
 
 libekbd_la_SOURCES  = \
 ekbd_private.h \
-ekbd_send.h   \
-ekbd_send.c   \
 ekbd_layout.h \
 ekbd_layout.c \
 ekbd_smart.c
 
 libekbd_la_LIBADD = @EKBD_LIBS@
 libekbd_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
+
+if HAVE_X11
+libekbd_la_LIBADD += @EKBD_X11_CFLAGS@
+libekbd_la_LDFLAGS += @EKBD_X11_LIBS@
+libekbd_la_SOURCES += ekbd_send.h ekbd_send.c
+endif

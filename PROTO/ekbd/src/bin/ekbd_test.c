@@ -60,6 +60,17 @@ _keyboard_layout_update(Eina_Bool vertical)
 }
 
 static void
+_ekbd_cb_key_pressed(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Ekbd_Event_Key_Pressed *ev;
+   ev = event_info;
+   if (!ev) return;
+#ifdef HAVE_X11
+   ekbd_send_x_press(ev->key, ev->mod);
+#endif
+}
+
+static void
 _keyboard_add()
 {
    char *p;
@@ -85,6 +96,8 @@ _keyboard_add()
           }
      }
    eina_iterator_free(ls);
+   evas_object_smart_callback_add(_kbd, "key,pressed",
+                                  _ekbd_cb_key_pressed, NULL);
 
    _keyboard_layout_update(EINA_FALSE);
 }
@@ -105,6 +118,11 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    Evas_Object *bg, *box, *o;
    printf("Hello, welcome to test virtual keyboard\n");
 
+#ifdef HAVE_X11
+   printf("have x11\n");
+#else
+   printf("no x11\n");
+#endif
    ekbd_init();
    _win = elm_win_add(NULL, "Virtual_Keyboard", ELM_WIN_UTILITY);
    elm_win_title_set(_win, "Keyboard");

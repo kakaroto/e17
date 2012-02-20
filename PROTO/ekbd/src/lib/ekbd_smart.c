@@ -19,7 +19,6 @@ static void _smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 static void _smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 static void _smart_show(Evas_Object *obj);
 static void _smart_hide(Evas_Object *obj);
-static Eina_Bool _smart_update(void *data, int type, void *event);
 
 EAPI int
 ekbd_init(void)
@@ -99,6 +98,7 @@ ekbd_layout_type_get(const Ekbd_Layout *layout)
    return EKBD_TYPE_UNKNOWN;
 }
 
+
 static void
 _smart_init()
 {
@@ -156,8 +156,6 @@ _smart_add(Evas_Object *obj)
 
 //   ekbd_layout_update(sd);
 
-   _handler = ecore_event_handler_add(ECORE_X_EVENT_MAPPING_CHANGE,
-                                     _smart_update, obj);
 }
 
 static void
@@ -221,12 +219,3 @@ _smart_hide(Evas_Object *obj)
    evas_object_hide(sd->layout_obj);
 }
 
-static Eina_Bool
-_smart_update(void *data, int type __UNUSED__, void *event __UNUSED__)
-{
-   Smart_Data *sd;
-   sd = evas_object_smart_data_get(data);
-   if (!sd) return ECORE_CALLBACK_RENEW;
-   ekbd_send_update(sd);
-   return ECORE_CALLBACK_RENEW;
-}

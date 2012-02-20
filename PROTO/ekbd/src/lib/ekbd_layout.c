@@ -6,7 +6,10 @@
 #include "Ekbd.h"
 #include "ekbd_private.h"
 #include "ekbd_layout.h"
+
+#ifdef HAVE_X11
 #include "ekbd_send.h"
+#endif
 
 #define HOLD_TIMEOUT_DELAY 1.5
 #define REPEAT_DELAY 1.0
@@ -41,6 +44,7 @@ static void _ekbd_layout_state_update(Smart_Data *sd);
 static Eina_Bool _ekbd_layout_cb_hold_timeout(void *data);
 static Eina_Bool _ekbd_layout_cb_repeat(void *data);
 static void _ekbd_layout_parse(Smart_Data *sd, const char *layout);
+static void _ekbd_layout_send(Evas_Object *obj, const char *key, Ekbd_Mod mod);
 
 
 Evas_Object *
@@ -1073,11 +1077,7 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
              Ekbd_Mod mods = 0;
              if (sd->layout.state & CTRL) mods |= EKBD_MOD_CTRL;
              if (sd->layout.state & ALT) mods |= EKBD_MOD_ALT;
-
-             if (out[0] == '"')
-                ekbd_send_string_press(out, mods);
-             else
-                ekbd_send_keysym_press(out, mods);
+             _ekbd_layout_send(sd->s_obj, out, mods);
           }
         if (sd->layout.state & (SHIFT | CTRL | ALT | ALTGR))
           {
@@ -1196,3 +1196,12 @@ ekbd_layout_keys_calc(Smart_Data *sd)
      _ekbd_layout_tie_calc(sd);
 }
 
+static void
+_ekbd_layout_send(Evas_Object *obj, const char *key, Ekbd_Mod mod)
+{
+   Ekbd_Event_Key_Pressed event;
+
+   event.mod = mod;
+   event.key = key;
+   evas_object_smart_callback_call(obj, "key,pressed", &event);
+}

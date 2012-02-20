@@ -6,6 +6,26 @@
 #include "Ekbd.h"
 #include "ekbd_send.h"
 
+// Disabled this because the updated keymap cause some troubles with x11
+// Need to investigate how to fill the keymap with keysyms missing (Without
+// bugs, doable ?).
+//static Ecore_Event_Handler *_handler;
+//static Eina_Bool _ekbd_send_update(void *data, int type __UNUSED__, void *event __UNUSED__);
+//static void _ekbd_send_keysyms_get(Eina_List **keysyms, Eina_List *keys);
+
+static const char *_glyph_to_keysym(int glyph);
+static void _ekbd_send_x_string_press(const char *key, Ekbd_Mod mod);
+static void _ekbd_send_x_keysym_press(const char *key, Ekbd_Mod mod);
+
+EAPI void
+ekbd_send_x_press(const char *str, Ekbd_Mod mod)
+{
+   if (str[0] == '"')
+     _ekbd_send_x_string_press(str, mod);
+   else
+     _ekbd_send_x_keysym_press(str, mod);
+}
+
 static const char *
 _glyph_to_keysym(int glyph)
 {
@@ -14,6 +34,41 @@ _glyph_to_keysym(int glyph)
    return ecore_x_keysym_string_get(glyph);
 }
 
+static void
+_ekbd_send_x_string_press(const char *str, Ekbd_Mod mod)
+{
+   char *string = (char*)str;
+   char *key;
+   int glyph = 0;
+
+   /* First keysym is 'quotedbl' */
+   string += evas_string_char_next_get(string, 0, &glyph);
+   key = (char*) _glyph_to_keysym(glyph);
+
+   while(key)
+     {
+        if(strcmp(key,"quotedbl"))
+          _ekbd_send_x_keysym_press(key, mod);
+        glyph = 0;
+        /* utf8 -> glyph id (unicode - ucs4) */
+        string += evas_string_char_next_get(string, 0, &glyph);
+        key = (char*) _glyph_to_keysym(glyph);
+     }
+}
+
+static void
+_ekbd_send_x_keysym_press(const char *key, Ekbd_Mod mod)
+{
+   if (mod & EKBD_MOD_CTRL) ecore_x_test_fake_key_down("Control_L");
+   if (mod & EKBD_MOD_ALT) ecore_x_test_fake_key_down("Alt_L");
+   if (mod & EKBD_MOD_WIN) ecore_x_test_fake_key_down("Super_L");
+   ecore_x_test_fake_key_press(key);
+   if (mod & EKBD_MOD_WIN) ecore_x_test_fake_key_up("Super_L");
+   if (mod & EKBD_MOD_ALT) ecore_x_test_fake_key_up("Alt_L");
+   if (mod & EKBD_MOD_CTRL) ecore_x_test_fake_key_up("Control_L");
+}
+
+/*
 static void
 _ekbd_send_keysyms_get(Eina_List **keysyms, Eina_List *keys)
 {
@@ -38,41 +93,36 @@ _ekbd_send_keysyms_get(Eina_List **keysyms, Eina_List *keys)
      }
 }
 
-EAPI void
-ekbd_send_string_press(const char *str, Ekbd_Mod mod)
+
+void
+ekbd_send_x_init(Smart_Data *sd)
 {
-   char *string = (char*)str;
-   char *key;
-   int glyph = 0;
+   _handler = ecore_event_handler_add(ECORE_X_EVENT_MAPPING_CHANGE,
+                                      _ekbd_send_update, sd);
+}
 
-   /* First keysym is 'quotedbl' */
-   string += evas_string_char_next_get(string, 0, &glyph);
-   key = (char*) _glyph_to_keysym(glyph);
+void
+ekbd_send_x_shutdown()
+{
+   if (_handler)
+     ecore_event_handler_del(_handler);
+}
 
-   while(key)
+static Eina_Bool
+_ekbd_send_update(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Smart_Data *sd;
+   sd = data;
+   if (!sd)
      {
-        if(strcmp(key,"quotedbl"))
-          ekbd_send_keysym_press(key, mod);
-        glyph = 0;
-        /* utf8 -> glyph id (unicode - ucs4) */
-        string += evas_string_char_next_get(string, 0, &glyph);
-        key = (char*) _glyph_to_keysym(glyph);
+        _handler = NULL;
+        return ECORE_CALLBACK_DONE;
      }
+   ekbd_send_update(sd);
+   return ECORE_CALLBACK_RENEW;
 }
 
-EAPI void
-ekbd_send_keysym_press(const char *key, Ekbd_Mod mod)
-{
-   if (mod & EKBD_MOD_CTRL) ecore_x_test_fake_key_down("Control_L");
-   if (mod & EKBD_MOD_ALT) ecore_x_test_fake_key_down("Alt_L");
-   if (mod & EKBD_MOD_WIN) ecore_x_test_fake_key_down("Super_L");
-   ecore_x_test_fake_key_press(key);
-   if (mod & EKBD_MOD_WIN) ecore_x_test_fake_key_up("Super_L");
-   if (mod & EKBD_MOD_ALT) ecore_x_test_fake_key_up("Alt_L");
-   if (mod & EKBD_MOD_CTRL) ecore_x_test_fake_key_up("Control_L");
-}
-
-EAPI void
+void
 ekbd_send_update(Smart_Data *sd)
 {
    Ecore_X_Display *dpy;
@@ -101,7 +151,7 @@ ekbd_send_update(Smart_Data *sd)
         max = keysyms_per_keycode - 1;
         while ((max >= 0) && (keymap[max] == NoSymbol))
           max--;
-        for (j = 0; j <= max; j++)
+        for (j = max; j >= 0 ; --j)
           {
              register KeySym ks = keymap[j];
              if (ks != NoSymbol)
@@ -165,5 +215,5 @@ ekbd_send_update(Smart_Data *sd)
      }
    EINA_LIST_FREE(unused, i);
 }
-
+*/
 
