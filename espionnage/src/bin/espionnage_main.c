@@ -59,7 +59,7 @@ _espionnage_hoversel_selected(void *data, Evas_Object *obj, void *event_info __U
           break ;
        }
 
-   elm_video_uri_set(video, data);
+   elm_video_file_set(video, data);
    elm_video_play(video);
 }
 
@@ -404,7 +404,7 @@ elm_main(int argc, char **argv)
    if (webcam)
      {
         elm_object_text_set(hoversel, emotion_webcam_name_get(webcam));
-        elm_video_uri_set(video, emotion_webcam_device_get(webcam));
+        elm_video_file_set(video, emotion_webcam_device_get(webcam));
         elm_video_play(video);
      }
    else
