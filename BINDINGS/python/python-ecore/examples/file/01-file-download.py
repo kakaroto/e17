@@ -8,8 +8,8 @@ import ecore.file
 
 def cb_completion(file, status):
     # This callback will be called at the end of the download, status will be
-    # 0 if the download finish well or 1 in case of errors
-    if status == 0:
+    # the HTTP status code (200 = Successfull)
+    if status == 200:
         print("Download ended Successfully %s [%d]" % (file, status))
     else:
         print("Download ended with Errors %s [%d]" % (file, status))
