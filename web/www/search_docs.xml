@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName>Enlightenment.org - Docs search</ShortName>
+    <ShortName>docs.enlightenment.org</ShortName>
     <Description>Use google to search docs.enlightenment.org.</Description>
     <Tags>enlightenment foundation libraries efl tizen embedded ui graphics docs</Tags>
     <Contact>raster@rasterman.com</Contact>
