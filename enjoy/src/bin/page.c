@@ -587,6 +587,7 @@ static Evas_Object *
 _page_songs_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class song_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "media",
      {
        _song_item_text_get,
@@ -672,6 +673,7 @@ _page_album_songs_add(Evas_Object *parent, Album *album)
    DB *db = _page_db_get(parent);
    Eina_Iterator *it;
    static const Elm_Genlist_Item_Class song_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "media-album",
      {
        _song_item_text_get,
@@ -966,6 +968,7 @@ static Evas_Object *
 _page_albums_artist_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class album_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "media-preview",
      {
        _album_item_text_get,
@@ -1011,6 +1014,7 @@ static Evas_Object *
 _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class album_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "media-preview",
      {
        _album_item_text_get,
@@ -1069,6 +1073,7 @@ _item_all_songs_icon_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, co
 
 
 static const Elm_Genlist_Item_Class _item_all_songs_cls = {
+  ELM_GENLIST_ITEM_CLASS_HEADER,
   "media-preview",
   {
     _item_all_songs_text_get,
@@ -1137,6 +1142,7 @@ static Evas_Object *
 _page_artists_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class nameid_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "default",
      {
        _nameid_item_text_get,
@@ -1207,6 +1213,7 @@ static Evas_Object *
 _page_genres_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class nameid_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "default",
      {
        _nameid_item_text_get,
@@ -1301,6 +1308,7 @@ Evas_Object *
 page_root_add(Evas_Object *parent)
 {
    static const Elm_Genlist_Item_Class root_item_cls = {
+     ELM_GENLIST_ITEM_CLASS_HEADER,
      "default", { _static_item_text_get, NULL, NULL, NULL }
    };
    static const Page_Class root_cls = {

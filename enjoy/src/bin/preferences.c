@@ -44,6 +44,7 @@ preferences_itc_category_text_get(void *data, Evas_Object *obj __UNUSED__, const
 }
 
 static const Elm_Genlist_Item_Class preferences_itc_item = {
+  ELM_GENLIST_ITEM_CLASS_HEADER,
   "default",
   {
     preferences_itc_item_text_get,
@@ -54,6 +55,7 @@ static const Elm_Genlist_Item_Class preferences_itc_item = {
 };
 
 static const Elm_Genlist_Item_Class preferences_itc_category = {
+  ELM_GENLIST_ITEM_CLASS_HEADER,
   "group_index",
   {
     preferences_itc_category_text_get,
