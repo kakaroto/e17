@@ -1,0 +1,12 @@
+Login:		xhell
+IRC Nick:	XHeLL
+Cloak:          developer/xhell
+Name:		Mikael SANS
+Location:	Paris, France
+E-Mail:		sans.mikael@gmail.com
+WWW:		none
+Managing:	
+Contributing:	elementary efreet eio
+Group:		Applications
+Platform:	Ubuntu (Linux)
+GeoData:	
