@@ -361,14 +361,23 @@ cdef class Window(Object):
         """
         return bool(elm_win_focus_highlight_enabled_get(self.obj))
 
-    # TODO
-    """
-    def xwindow_get(self):
+    def xwindow_xid_get(self):
+        """
+        Return the X Window id, it's a long int, can be used in combination
+        with some functions/objects in the ecore.x module.
+
+        For example you can hide the mouse cursor doing:
+        import ecore.x
+        xid = your_elm_win.xwindow_xid_get()
+        xwin = ecore.x.Window_from_xid(xid)
+        xwin.cursor_hide()
+
+        Note: this is not portable at all. Work only under the X window system
+        """
         cdef Ecore_X_Window xwin
         xwin = elm_win_xwindow_get(self.obj)
+        return xwin
 
-        return Null
-    """
 
 
 _elm_widget_type_register("win", Window)
