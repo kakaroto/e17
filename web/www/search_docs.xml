@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <ShortName>Enlightenment.org - Docs search</ShortName>
+    <Description>Use google to search docs.enlightenment.org.</Description>
+    <Tags>enlightenment foundation libraries efl tizen embedded ui graphics docs</Tags>
+    <Contact>raster@rasterman.com</Contact>
+    <Url type="text/html" method ="GET" template="http://www.google.com/search?q={searchTerms}+site%3Adocs.enlightenment.org"/>
+</OpenSearchDescription>
