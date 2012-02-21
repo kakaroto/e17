@@ -1,0 +1,8 @@
+/* Main theme */
+
+collections
+{
+	/* include the elm_slider style here */	
+	#include "elm_slider_knob.edc"
+}
+
