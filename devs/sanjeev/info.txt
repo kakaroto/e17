@@ -2,8 +2,8 @@ Login:        sanjeev
 IRC Nick:     sanjeevkb
 Name:         Sanjeev BA
 Location:     Suwon, South Korea
-E-Mail:       iamsanjeev@gmail.com
-Contributing: elev8
+E-Mail:       eflelev8@gmail.com
+Contributing: elev8, elementary
 Group:        Applications, Libraries
 Platform:     Ubuntu (Linux)
 GeoData:      37.566535 126.977969
