@@ -1,3 +1,6 @@
+##  Requirements:
+##   for elm-efenniht, elementary should exist in ../../elementary
+
 EDJE_CC := edje_cc
 INSTALL := install
 PKG_CONFIG := pkg-config
