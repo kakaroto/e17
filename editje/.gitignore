@@ -32,4 +32,4 @@ py-compile
 stamp-h1
 test/Makefile
 test/Makefile.in
-
+editje.spec
