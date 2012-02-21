@@ -341,6 +341,14 @@ cdef class Window:
     def cursor_set(self, Ecore_X_Cursor cursor):
         ecore_x_window_cursor_set(self.xid, cursor)
 
+    def pointer_warp(self, int x, int y):
+        ecore_x_pointer_warp(self.xid, x, y)
+
+    def pointer_xy_get(self):
+        cdef int x, y
+        ecore_x_pointer_xy_get(self.xid, &x, &y);
+        return (x, y)
+
     def defaults_set(self):
         """Sets the default properties for the given window.
 
