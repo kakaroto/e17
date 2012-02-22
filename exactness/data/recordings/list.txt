@@ -1,6 +1,6 @@
 # List of tests for elementary widgets
 # To be used with exactness
-map_3d elementary_test --test-win-only Evas\\ Map\\ 3D
+evas_map_3d elementary_test --test-win-only Evas\\ Map\\ 3D
 actionslider elementary_test --test-win-only actionslider
 anchorblock elementary_test --test-win-only anchorblock
 anchorview elementary_test --test-win-only anchorview
@@ -21,17 +21,17 @@ ctxpopup elementary_test --test-win-only ctxpopup
 diskselector elementary_test --test-win-only disk\\ selector
 fileselector elementary_test --test-win-only file\\ selector
 fileselector_button elementary_test --test-win-only file\\ selector\\ button
-fileselector_entry elementary_test --test-win-only file\\ selector\\ entry
+#fileselector_entry elementary_test --test-win-only file\\ selector\\ entry
 focus elementary_test --test-win-only focus
 gengrid elementary_test --test-win-only gengrid
 gengrid2 elementary_test --test-win-only gengrid\\ 2
 gengrid_group elementary_test --test-win-only gengrid\\ Group
-genlist10 elementary_test --test-win-only genlist
-genlist11 elementary_test --test-win-only genlist\\ 2
-genlist2 elementary_test --test-win-only genlist\\ 3
-genlist3 elementary_test --test-win-only genlist\\ 4
-genlist4 elementary_test --test-win-only genlist\\ 5
-genlist6 elementary_test --test-win-only genlist\\ 7
+genlist elementary_test --test-win-only genlist
+genlist2 elementary_test --test-win-only genlist\\ 2
+genlist3 elementary_test --test-win-only genlist\\ 3
+genlist4 elementary_test --test-win-only genlist\\ 4
+genlist5 elementary_test --test-win-only genlist\\ 5
+genlist7 elementary_test --test-win-only genlist\\ 7
 genlist_tree elementary_test --test-win-only genlist\\ Tree
 genlist_group elementary_test --test-win-only genlist\\ Group
 genlist_group_tree elementary_test --test-win-only genlist\\ Group\\ Tree
@@ -48,10 +48,6 @@ inwin2 elementary_test --test-win-only inwin\\ 2
 label elementary_test --test-win-only label
 list elementary_test --test-win-only list
 list_horizontal elementary_test --test-win-only List\\ -\\ Horizontal
-list2 elementary_test --test-win-only list2
-list3 elementary_test --test-win-only list3
-list4 elementary_test --test-win-only list4
-list5 elementary_test --test-win-only list5
 naviframe elementary_test --test-win-only naviframe
 notify elementary_test --test-win-only notify
 pager elementary_test --test-win-only pager
@@ -80,7 +76,7 @@ toolbar2 elementary_test --test-win-only toolbar\\ 2
 toolbar3 elementary_test --test-win-only toolbar\\ 3
 toolbar4 elementary_test --test-win-only toolbar\\ 4
 toolbar5 elementary_test --test-win-only toolbar\\ 5
-toolbar6 elementary_test --test-win-only toolbar\\ 6
+#toolbar6 elementary_test --test-win-only toolbar\\ 6
 tooltip elementary_test --test-win-only tooltip
 tooltip2 elementary_test --test-win-only tooltip\\ 2
 win_states elementary_test --test-win-only Window\\ States
