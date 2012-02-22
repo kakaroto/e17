@@ -300,7 +300,6 @@ _get_cpu_load(Instance *inst)
 #else
    if (!(stat = fopen("/proc/stat", "r"))) return -1;
 
-
    while (i < cpu_count)
      {
 	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
@@ -317,8 +316,6 @@ _get_cpu_load(Instance *inst)
 
            In this case the first line is read and forgotten
          */
-        if ((cpu_count > 1) && (!i) && (!inst->ci->merge_cpus))
-          continue;
 
 	ticks_past = ((new_u + new_n + new_s + new_i + new_wa + new_hi + new_si) -
 		      (old_u[i] + old_n[i] + old_s[i] + old_i[i] + old_wa[i] + old_hi[i] + old_si[i]));
