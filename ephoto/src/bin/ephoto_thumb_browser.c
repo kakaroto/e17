@@ -130,35 +130,9 @@ _ephoto_thumb_item_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
    */
 }
 
-static const Elm_Gengrid_Item_Class _ephoto_thumb_up_class = {
-  "ephoto-up",
-  {
-    _ephoto_thumb_item_text_get,
-    NULL,
-    NULL,
-    _ephoto_thumb_item_del
-  }
-};
-
-static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
-  "ephoto-album-preview",
-  {
-    _ephoto_thumb_item_text_get,
-    _ephoto_thumb_dir_icon_get,
-    _ephoto_thumb_dir_state_get,
-    _ephoto_thumb_item_del
-  }
-};
-
-static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
-  "thumb",
-  {
-    _ephoto_thumb_item_text_get,
-    _ephoto_thumb_file_icon_get,
-    NULL,
-    _ephoto_thumb_item_del
-  }
-};
+static Elm_Gengrid_Item_Class _ephoto_thumb_up_class;
+static Elm_Gengrid_Item_Class _ephoto_thumb_dir_class;
+static Elm_Gengrid_Item_Class _ephoto_thumb_file_class;
 
 static int
 _entry_cmp(const void *pa, const void *pb)
@@ -166,7 +140,7 @@ _entry_cmp(const void *pa, const void *pb)
    const Elm_Object_Item *ia = pa;
    const Ephoto_Entry *a, *b = pb;
 
-   a = elm_gengrid_item_data_get(ia);
+   a = elm_object_item_data_get(ia);
 
    if (a->is_dir == b->is_dir)
      return strcoll(a->basename, b->basename);
@@ -217,7 +191,7 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
      }
 
    if (e->item)
-     elm_gengrid_item_data_set(e->item, e);
+     elm_object_item_data_set(e->item, e);
    else
      {
         ERR("could not add item to grid: path '%s'", e->path);
@@ -269,7 +243,7 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
    Elm_Object_Item *it = event_info;
-   Ephoto_Entry *e = elm_gengrid_item_data_get(it);
+   Ephoto_Entry *e = elm_object_item_data_get(it);
 
    elm_gengrid_item_selected_set(it, EINA_FALSE);
 
@@ -327,7 +301,7 @@ _view_single(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    Elm_Object_Item *it = elm_gengrid_selected_item_get(tb->grid);
    Ephoto_Entry *entry;
 
-   if (it) entry = elm_gengrid_item_data_get(it);
+   if (it) entry = elm_object_item_data_get(it);
    else entry = _first_file_entry_find(tb);
 
    if (!entry) return;
@@ -344,7 +318,7 @@ _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    Elm_Object_Item *it = elm_gengrid_selected_item_get(tb->grid);
    Ephoto_Entry *entry;
 
-   if (it) entry = elm_gengrid_item_data_get(it);
+   if (it) entry = elm_object_item_data_get(it);
    else entry = _first_file_entry_find(tb);
 
    if (!entry) return;
@@ -380,7 +354,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
      {
         Elm_Object_Item *it = elm_gengrid_selected_item_get(tb->grid);
         Ephoto_Entry *entry;
-        if (it) entry = elm_gengrid_item_data_get(it);
+        if (it) entry = elm_object_item_data_get(it);
         else entry = _first_file_entry_find(tb);
 
         if (entry)
@@ -498,6 +472,24 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    tb = calloc(1, sizeof(Ephoto_Thumb_Browser));
    EINA_SAFETY_ON_NULL_GOTO(tb, error);
+
+   _ephoto_thumb_up_class.item_style = "ephoto-up";
+   _ephoto_thumb_up_class.func.text_get = _ephoto_thumb_item_text_get;
+   _ephoto_thumb_up_class.func.content_get = NULL;
+   _ephoto_thumb_up_class.func.state_get = NULL;
+   _ephoto_thumb_up_class.func.del = _ephoto_thumb_item_del;
+
+   _ephoto_thumb_dir_class.item_style = "ephoto-album-preview";
+   _ephoto_thumb_dir_class.func.text_get = _ephoto_thumb_item_text_get;
+   _ephoto_thumb_dir_class.func.content_get = _ephoto_thumb_dir_icon_get;
+   _ephoto_thumb_dir_class.func.state_get = _ephoto_thumb_dir_state_get;
+   _ephoto_thumb_dir_class.func.del = _ephoto_thumb_item_del;
+
+   _ephoto_thumb_file_class.item_style = "thumb";
+   _ephoto_thumb_file_class.func.text_get = _ephoto_thumb_item_text_get;
+   _ephoto_thumb_file_class.func.content_get = _ephoto_thumb_file_icon_get;
+   _ephoto_thumb_file_class.func.state_get = NULL;
+   _ephoto_thumb_file_class.func.del = _ephoto_thumb_item_del;
 
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/themes/default/ephoto.edj");
 
