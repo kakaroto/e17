@@ -34,6 +34,7 @@ group { name:"elm/naviframe/item/basic/default";
          description { state: "default" 0.0;
             rel1.to_y: "title_clip";
             rel1.relative: 0 1;
+            rel1.offset: 0 6;
          }
       }
       part { name: "elm.swallow.content";
