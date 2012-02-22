@@ -56,7 +56,7 @@ echo "'.rec' file is produced for each test in your TestsFile."
 echo "File name is defined as 'TestName.rec' for each test."
 echo
 echo "You may test your record files with simulate option:"
-echo "\$0 -s  [-b BaseDir] TestsFile"
+echo "\$0 -s [-b BaseDir] TestsFile"
 echo
 echo "You need to run \$0 with init option prior"
 echo "to using play option."
@@ -64,15 +64,20 @@ echo "Later, when doing play, PNG files are compared with"
 echo "PNG files reside in 'orig' folder create when init."
 echo
 echo "To use init option:"
-echo "\$0 -i  [-b BaseDir] TestsFile"
+echo "\$0 -i [-b BaseDir] TestsFile"
 echo "Do not use DestDir param with init, target always 'orig'."
 echo
 echo "Use Play tests option to produce PNG files of screen shot:"
-echo "\$0 -p  [-b BaseDir] [-d DestDir] TestsFile"
+echo "\$0 -p [-b BaseDir] [-d DestDir] TestsFile"
 echo "Play option produces PNG files in DestDir."
 echo "These are compares with PNGs in 'orig'."
 echo "(created in 'init' phase)"
 echo
+echo "Use -v option for detailed flow-report."
+echo "Thus, when running many tests, the output format makes"
+echo "it easy to match output to a running test."
+echo "Example:"
+echo "\$0 -v -p [-b BaseDir] [-d DestDir] TestsFile"
 }
 
 get_test_params () {
@@ -129,6 +134,10 @@ then
    return 0
 fi
 
+if [ "\$_verbose" -ne 0 ]
+then
+   echo "do_record: \$_test_name"
+fi
 TSUITE_RECORDING='rec' TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${_base_dir}/\${_test_name}.rec TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so eval \${_test_cmd}
 }
 
@@ -151,6 +160,10 @@ then
 fi
 
 
+if [ "\$_verbose" -ne 0 ]
+then
+   echo "do_simulation: \$_test_name"
+fi
 TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so eval \${_test_cmd}
 }
 
@@ -186,10 +199,19 @@ else
    mkdir -p "\$_dest_dir" &> /dev/null
 fi
 
+if [ "\$_verbose" -ne 0 ]
+then
+   echo "do_play: \$_test_name"
+fi
 ELM_ENGINE="buffer" TSUITE_BASE_DIR=\${_base_dir} TSUITE_DEST_DIR=\${_dest_dir} TSUITE_FILE_NAME=\${file_name} TSUITE_TEST_NAME=\${_test_name} LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so eval \${_test_cmd}
 }
 
 compare_files () {
+if [ "\$_verbose" -ne 0 ]
+then
+   echo "compare_files: <\$1> and <\$2>"
+fi
+
 if [ -e "\$1" ]
 # First file exists
 then
@@ -328,6 +350,7 @@ return 0
 # Script Entry Point
 OUR_LIBPATH="$1"
 
+_verbose=0
 _record=
 _play=
 _compare=
@@ -351,7 +374,7 @@ _n_exe_err=0
 which compare &> /dev/null
 comp_unavail=\$?
 
-while getopts 'ab:cd:hpris?' OPTION
+while getopts 'ab:cd:hprisv?' OPTION
 do
    case \$OPTION in
       b)  _base_dir="\$OPTARG"
@@ -377,6 +400,8 @@ do
          ;;
       h)  do_help
          exit 0
+         ;;
+      v)  _verbose=1
          ;;
       ?)  do_help
          exit 0
