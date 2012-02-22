@@ -178,35 +178,35 @@ azy_transport_get(const char *content_type)
    if (!content_type)
      return AZY_NET_TRANSPORT_TEXT;
 
-   if (!strncmp(content_type, "text/", 5))
+   if (!strncasecmp(content_type, "text/", 5))
      c = content_type + 5;
-   else if (!strncmp(content_type, "application/", 12))
+   else if (!strncasecmp(content_type, "application/", 12))
      c = content_type + 12;
 
    if (!c) return AZY_NET_TRANSPORT_UNKNOWN;
 
-   if (!strncmp(c, "xml", 3))
+   if (!strncasecmp(c, "xml", 3))
      return AZY_NET_TRANSPORT_XML;
 
    if (c[0] == 'j')
      {
-        if (!strncmp(c + 1, "son", 3))
+        if (!strncasecmp(c + 1, "son", 3))
           return AZY_NET_TRANSPORT_JSON;
-        if (!strncmp(c + 1, "avascript", 9))
+        if (!strncasecmp(c + 1, "avascript", 9))
           return AZY_NET_TRANSPORT_JAVASCRIPT;
         return AZY_NET_TRANSPORT_UNKNOWN;
      }
 
-   if (!strncmp(c, "eet", 3))
+   if (!strncasecmp(c, "eet", 3))
      return AZY_NET_TRANSPORT_EET;
 
-   if (!strncmp(c, "plain", 5))
+   if (!strncasecmp(c, "plain", 5))
      return AZY_NET_TRANSPORT_TEXT;
 
-   if (!strncmp(c, "html", 4))
+   if (!strncasecmp(c, "html", 4))
      return AZY_NET_TRANSPORT_HTML;
 
-   if (!strncmp(c, "atom+xml", 8))
+   if (!strncasecmp(c, "atom+xml", 8))
      return AZY_NET_TRANSPORT_ATOM;
 
    return AZY_NET_TRANSPORT_UNKNOWN;
