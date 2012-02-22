@@ -393,7 +393,7 @@ Azy_Module Test1
    <%
      /*
       * Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *module)
-      * Azy_Net* net = azy_server_module_net_get(module);
+      * Azy_Net* net_ = azy_server_module_net_get(module);
       */
      const char *path; /**< The http uri requested */
      const char *username;
@@ -404,6 +404,9 @@ Azy_Module Test1
      path = azy_net_uri_get(net_);
      if (!azy_net_auth_get(net_, &username, &password))
        {
+          /** WARNING: the following method WILL BREAK if you are using suspended modules.
+           *  you will need to use azy_net_buffer_new() to create your own net object.
+           */
           azy_net_code_set(net_, 401);
           azy_net_header_set(net_, "Content-Type", "text/plain");
           azy_net_header_set(net_, "WWW-Authenticate", "Basic realm=\"Azy Testsuite\"");
@@ -453,7 +456,7 @@ Azy_Module Test1
     __upload__
     <% /*
          Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *module)
-         Azy_Net* net = azy_server_module_net_get(module);
+         Azy_Net* net_ = azy_server_module_net_get(module);
          */
        Azy_Net_Data *data;
        const char *str;
