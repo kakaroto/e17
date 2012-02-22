@@ -564,7 +564,7 @@ _azy_server_client_get_put(Azy_Server_Client *client)
    it = eina_hash_iterator_data_new(client->server->module_defs);
    EINA_ITERATOR_FOREACH(it, def)
      {
-        if ((client->current->type == AZY_NET_TYPE_GET) && def->download)
+        if (((client->current->type == AZY_NET_TYPE_GET) || (client->current->type == AZY_NET_TYPE_POST)) && def->download)
           {
              cb = def->download;
              break;
@@ -880,8 +880,15 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
            case AZY_NET_TRANSPORT_TEXT:
            case AZY_NET_TRANSPORT_HTML:
            default:
-             /* FIXME: this isn't supported yet but probably should be somehow? */
-             break;
+             _azy_server_client_get_put(client);
+             client->executing = EINA_FALSE;
+             if (!client->suspend)
+               {
+                  azy_net_free(client->current);
+                  client->current = NULL;
+                  client->resume_ret = EINA_FALSE;
+               }
+             return ECORE_CALLBACK_RENEW;
           }
 
       default:
