@@ -182,8 +182,7 @@ tsuite_shot_do(char *name, Evas *e)
               ts.serial, IMAGE_FILENAME_EXT);
      }
 
-   /* A bit hackish, get the ecore_evas from the Evas canvas */
-   ee_orig = evas_data_attach_get(e);
+   ee_orig = ecore_evas_ecore_evas_get(e);
 
    ecore_evas_manual_render(ee_orig);
    pixels = (void *)ecore_evas_buffer_pixels_get(ee_orig);
