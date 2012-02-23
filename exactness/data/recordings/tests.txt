@@ -71,7 +71,8 @@ table4 elementary_test --test-win-only table\\ 4
 table5 elementary_test --test-win-only table\\ 5
 table6 elementary_test --test-win-only table\\ 6
 toggle elementary_test --test-win-only toggles
-toolbar elementary_test --test-win-only toolbar
+# toolbar test hangs when opening sub-menu,try this with simulation and see
+#toolbar elementary_test --test-win-only toolbar
 toolbar2 elementary_test --test-win-only toolbar\\ 2
 toolbar3 elementary_test --test-win-only toolbar\\ 3
 toolbar4 elementary_test --test-win-only toolbar\\ 4
