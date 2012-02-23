@@ -3,74 +3,90 @@ MAINTAINERCLEANFILES = Makefile.in
 
 filesdir = $(datadir)/exactness/recordings/
 files_DATA = \
-recordings/test_3d.rec \
-recordings/test_actionslider.rec \
-recordings/test_anchorblock.rec \
-recordings/test_anchorview.rec \
-recordings/test_bg_image.rec \
-recordings/test_bg_options.rec \
-recordings/test_bg_plain.rec \
-recordings/test_box_horiz.rec \
-recordings/test_box_vert.rec \
-recordings/test_bubble.rec \
-recordings/test_button.rec \
-recordings/test_calendar.rec \
-recordings/test_check.rec \
-recordings/test_colorselector.rec \
-recordings/test_conformant2.rec \
-recordings/test_conformant.rec \
-recordings/test_ctxpopup.rec \
-recordings/test_diskselector.rec \
-recordings/test_fileselector_button.rec \
-recordings/test_fileselector_entry.rec \
-recordings/test_fileselector.rec \
-recordings/test_focus.rec \
-recordings/test_gengrid.rec \
-recordings/test_genlist10.rec \
-recordings/test_genlist11.rec \
-recordings/test_genlist2.rec \
-recordings/test_genlist3.rec \
-recordings/test_genlist4.rec \
-recordings/test_genlist6.rec \
-recordings/test_genlist8.rec \
-recordings/test_genlist.rec \
-recordings/test_grid.rec \
-recordings/test_hover2.rec \
-recordings/test_hover.rec \
-recordings/test_hoversel.rec \
-recordings/test_index.rec \
-recordings/test_inwin2.rec \
-recordings/test_inwin.rec \
-recordings/test_label.rec \
-recordings/test_list.rec \
-recordings/test_notify.rec \
-recordings/test_pager_slide.rec \
-recordings/test_panel.rec \
-recordings/test_panes.rec \
-recordings/test_progressbar.rec \
-recordings/test_radio.rec \
-recordings/test_scaling2.rec \
-recordings/test_scaling.rec \
-recordings/test_scroller2.rec \
-recordings/test_scroller.rec \
-recordings/test_segment_control.rec \
-recordings/test_separator.rec \
-recordings/test_slider.rec \
-recordings/test_spinner.rec \
-recordings/test_table2.rec \
-recordings/test_table3.rec \
-recordings/test_table4.rec \
-recordings/test_table5.rec \
-recordings/test_table6.rec \
-recordings/test_table.rec \
-recordings/test_toggle.rec \
-recordings/test_toolbar2.rec \
-recordings/test_toolbar3.rec \
-recordings/test_toolbar4.rec \
-recordings/test_toolbar5.rec \
-recordings/test_toolbar.rec \
-recordings/test_tooltip2.rec \
-recordings/test_tooltip.rec \
-recordings/test_win_state.rec
+	     recordings/actionslider.rec \
+	     recordings/inwin2.rec \
+	     recordings/anchorblock.rec \
+	     recordings/inwin.rec \
+	     recordings/anchorview.rec \
+	     recordings/label.rec \
+	     recordings/bg_image.rec \
+	     recordings/list2.rec \
+	     recordings/bg_options.rec \
+	     recordings/list3.rec \
+	     recordings/bg_plain.rec \
+	     recordings/list4.rec \
+	     recordings/box_horiz.rec \
+	     recordings/list5.rec \
+	     recordings/box_vert2.rec \
+	     recordings/list_horizontal.rec \
+	     recordings/box_vert.rec \
+	     recordings/list.rec \
+	     recordings/bubble.rec \
+	     recordings/naviframe.rec \
+	     recordings/button.rec \
+	     recordings/notify.rec \
+	     recordings/calendar.rec \
+	     recordings/pager.rec \
+	     recordings/check.rec \
+	     recordings/pager_slide.rec \
+	     recordings/colorselector.rec \
+	     recordings/panel.rec \
+	     recordings/conformant2.rec \
+	     recordings/panes.rec \
+	     recordings/conformant.rec \
+	     recordings/progressbar.rec \
+	     recordings/ctxpopup.rec \
+	     recordings/radio.rec \
+	     recordings/diskselector.rec \
+	     recordings/scaling2.rec \
+	     recordings/evas_map_3d.rec \
+	     recordings/scaling.rec \
+	     recordings/fileselector_button.rec \
+	     recordings/scroller2.rec \
+	     recordings/fileselector_entry.rec \
+	     recordings/scroller.rec \
+	     recordings/fileselector.rec \
+	     recordings/segment_control.rec \
+	     recordings/focus.rec \
+	     recordings/separator.rec \
+	     recordings/gengrid2.rec \
+	     recordings/slider.rec \
+	     recordings/gengrid_group.rec \
+	     recordings/spinner.rec \
+	     recordings/gengrid.rec \
+	     recordings/table3.rec \
+	     recordings/genlist2.rec \
+	     recordings/table4.rec \
+	     recordings/genlist3.rec \
+	     recordings/table5.rec \
+	     recordings/genlist4.rec \
+	     recordings/table6.rec \
+	     recordings/genlist5.rec \
+	     recordings/table_homogeneous.rec \
+	     recordings/genlist7.rec \
+	     recordings/table.rec \
+	     recordings/genlist_group.rec \
+	     recordings/toggle.rec \
+	     recordings/genlist_group_tree.rec \
+	     recordings/toolbar2.rec \
+	     recordings/genlist_mode.rec \
+	     recordings/toolbar3.rec \
+	     recordings/genlist.rec \
+	     recordings/toolbar4.rec \
+	     recordings/genlist_reorder_mode.rec \
+	     recordings/toolbar5.rec \
+	     recordings/genlist_tree.rec \
+	     recordings/toolbar6.rec \
+	     recordings/grid.rec \
+	     recordings/toolbar.rec \
+	     recordings/hover2.rec \
+	     recordings/tooltip2.rec \
+	     recordings/hover.rec \
+	     recordings/tooltip.rec \
+	     recordings/hoversel.rec \
+	     recordings/win_states2.rec \
+	     recordings/index2.rec \
+	     recordings/win_states.rec \
+	     recordings/index.rec
 
 EXTRA_DIST = $(files_DATA)
