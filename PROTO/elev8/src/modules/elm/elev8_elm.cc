@@ -1641,11 +1641,35 @@ public:
              elm_layout_file_set(eo, *fileName, *groupName);
           }
      }
+
+   virtual Handle<Value> theme_get() const
+     {
+        // FIXME: implement
+        return Undefined();
+     }
+
+   virtual void theme_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          {
+             Local<Object> obj = val->ToObject();
+             Local<Value> classParam = obj->Get(String::New("class"));
+             Local<Value> groupParam = obj->Get(String::New("group"));
+             Local<Value> styleParam = obj->Get(String::New("style"));
+
+             String::Utf8Value className(classParam);
+             String::Utf8Value groupName(groupParam);
+             String::Utf8Value styleName(styleParam);
+
+             elm_layout_theme_set(eo, *className, *groupName, *styleName);
+          }
+     }
 };
 
 template<> CEvasObject::CPropHandler<CElmLayout>::property_list
 CEvasObject::CPropHandler<CElmLayout>::list[] = {
      PROP_HANDLER(CElmLayout, file),
+     PROP_HANDLER(CElmLayout, theme),
      PROP_HANDLER(CElmLayout, contents),
      { NULL, NULL, NULL },
 };
