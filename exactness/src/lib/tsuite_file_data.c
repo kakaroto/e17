@@ -482,171 +482,171 @@ Eet_Data_Descriptor *
 take_screenshot_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, take_screenshot);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, take_screenshot, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, take_screenshot, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, take_screenshot, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, take_screenshot, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 mouse_in_mouse_out_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, mouse_in_mouse_out);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_in_mouse_out, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_in_mouse_out, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_in_mouse_out, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_in_mouse_out, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 mouse_down_mouse_up_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, mouse_down_mouse_up);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_down_mouse_up, "b", b, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_down_mouse_up, "flags",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_down_mouse_up, "b", b, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_down_mouse_up, "flags",
          flags, EET_T_INT);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_down_mouse_up, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_down_mouse_up, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_down_mouse_up, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_down_mouse_up, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 mouse_move_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, mouse_move);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "x", x, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "y", y, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_move, "x", x, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_move, "y", y, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_move, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_move, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_move, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 mouse_wheel_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, mouse_wheel);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "direction",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_wheel, "direction",
          direction, EET_T_INT);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "z", z, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_wheel, "z", z, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_wheel, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, mouse_wheel, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, mouse_wheel, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 key_down_key_up_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, key_down_key_up);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, key_down_key_up, "timestamp",
          timestamp, EET_T_UINT);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "keyname",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, key_down_key_up, "keyname",
          keyname, EET_T_STRING);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "key",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, key_down_key_up, "key",
          key, EET_T_STRING);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "string",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, key_down_key_up, "string",
          string, EET_T_STRING);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "compose",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, key_down_key_up, "compose",
          compose, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, key_down_key_up, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, key_down_key_up, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 multi_event_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, multi_event);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "d", d, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "x", x, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "y", y, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "rad", rad, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "radx", radx, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "rady", rady, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "pres", pres, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "ang", ang, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "fx", fx, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "fy", fy, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "flags", flags, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "d", d, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "x", x, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "y", y, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "rad", rad, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "radx", radx, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "rady", rady, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "pres", pres, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "ang", ang, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "fx", fx, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "fy", fy, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "flags", flags, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_event, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_event, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 Eet_Data_Descriptor *
 multi_move_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
-   Eet_Data_Descriptor *desc;
+   Eet_Data_Descriptor *_d;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, multi_move);
-   desc = eet_data_descriptor_stream_new(&eddc);
+   _d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "d", d, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "x", x, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "y", y, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "rad", rad, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "radx", radx, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "rady", rady, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "pres", pres, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "ang", ang, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "fx", fx, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "fy", fy, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "timestamp",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "d", d, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "x", x, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "y", y, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "rad", rad, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "radx", radx, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "rady", rady, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "pres", pres, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "ang", ang, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "fx", fx, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "fy", fy, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "timestamp",
          timestamp, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(desc, multi_move, "n_evas",
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_d, multi_move, "n_evas",
          n_evas, EET_T_INT);
 
-   return desc;
+   return _d;
 }
 
 /* declaring types */
