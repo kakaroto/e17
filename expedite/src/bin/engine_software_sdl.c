@@ -3,33 +3,84 @@
 
 #include <SDL/SDL.h>
 #include <Evas_Engine_SDL.h>
+#include <Evas_Engine_Buffer.h>
+
+static void *
+_expedite_sdl_switch_buffer(void *data, void *dest __UNUSED__)
+{
+   SDL_Flip(data);
+   return ((SDL_Surface*)data)->pixels;
+}
 
 Eina_Bool
 engine_software_sdl_args(const char *engine, int width, int height)
 {
-   Evas_Engine_Info_SDL *einfo;
-   int                  i;
-   int                  ok = 0;
+   int ok = 0;
 
    if (!strcmp(engine, "sdl")) ok = 1;
    if (!strcmp(engine, "sdl-16")) ok = 2;
    if (!ok) return EINA_FALSE;
 
    if (ok == 1)
-     evas_output_method_set(evas, evas_render_method_lookup("software_sdl"));
-   else
-     evas_output_method_set(evas, evas_render_method_lookup("software_16_sdl"));
-
-   einfo = (Evas_Engine_Info_SDL *) evas_engine_info_get(evas);
-
-   /* the following is specific to the engine */
-   einfo->info.fullscreen = fullscreen;
-   einfo->info.noframe = 0;
-
-   if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
      {
-	printf("Evas can not setup the informations of the Software SDL Engine\n");
-        return EINA_FALSE;
+        Evas_Engine_Info_Buffer *einfo;
+
+        evas_output_method_set(evas, evas_render_method_lookup("buffer"));
+
+        einfo = (Evas_Engine_Info_Buffer *) evas_engine_info_get(evas);
+        if (einfo)
+          {
+             SDL_Init(SDL_INIT_NOPARACHUTE);
+
+             if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+               {
+                  printf("SDL_Init failed with %s", SDL_GetError());
+                  SDL_Quit();
+                  return EINA_FALSE;
+               }
+
+             einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB32;
+             einfo->info.switch_data = SDL_SetVideoMode(width, height, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+             if (!einfo->info.switch_data)
+               {
+                  printf("SDL_SetVideoMode failed !");
+                  return EINA_FALSE;
+               }
+
+             SDL_SetAlpha(einfo->info.switch_data, SDL_SRCALPHA, 0);
+             SDL_FillRect(einfo->info.switch_data, NULL, 0);
+
+             einfo->info.dest_buffer = ((SDL_Surface*)einfo->info.switch_data)->pixels;
+             einfo->info.dest_buffer_row_bytes = width * sizeof (int);
+             einfo->info.use_color_key = 0;
+             einfo->info.alpha_threshold = 0;
+             einfo->info.func.new_update_region = NULL;
+             einfo->info.func.free_update_region = NULL;
+             einfo->info.func.switch_buffer = _expedite_sdl_switch_buffer;
+             if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+               {
+                  printf("evas_engine_info_set() for engine 'sdl' with 'buffer' backend failed.");
+                  return EINA_FALSE;
+               }
+          }
+     }
+   else
+     {
+        Evas_Engine_Info_SDL *einfo;
+
+        evas_output_method_set(evas, evas_render_method_lookup("software_16_sdl"));
+
+        einfo = (Evas_Engine_Info_SDL *) evas_engine_info_get(evas);
+
+        /* the following is specific to the engine */
+        einfo->info.fullscreen = fullscreen;
+        einfo->info.noframe = 0;
+
+        if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+          {
+             printf("Evas can not setup the informations of the Software SDL Engine\n");
+             return EINA_FALSE;
+          }
      }
 
    return EINA_TRUE;
@@ -39,6 +90,7 @@ void
 engine_software_sdl_loop(void)
 {
    SDL_Event event;
+   int rmethod;
 
    while(SDL_PollEvent(&event))
      {
@@ -56,9 +108,41 @@ engine_software_sdl_loop(void)
              evas_event_feed_mouse_up(evas, event.button.button, EVAS_BUTTON_NONE, 0, NULL);
              break;
           case SDL_VIDEORESIZE:
+             rmethod = evas_output_method_get(evas);
+             if (rmethod == evas_render_method_lookup("buffer"))
+               {
+                  Evas_Engine_Info_Buffer *einfo;
+
+                  einfo = (Evas_Engine_Info_Buffer *) evas_engine_info_get(evas);
+                  if (einfo)
+                    {
+                       einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB32;
+                       einfo->info.switch_data = SDL_SetVideoMode(event.resize.w, event.resize.h, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+                       if (!einfo->info.switch_data)
+                         {
+                            return ;
+                         }
+
+                       SDL_SetAlpha(einfo->info.switch_data, SDL_SRCALPHA, 0);
+                       SDL_FillRect(einfo->info.switch_data, NULL, 0);
+
+                       einfo->info.dest_buffer = ((SDL_Surface*)einfo->info.switch_data)->pixels;
+                       einfo->info.dest_buffer_row_bytes = event.resize.w * sizeof (int);
+                       einfo->info.use_color_key = 0;
+                       einfo->info.alpha_threshold = 0;
+                       einfo->info.func.new_update_region = NULL;
+                       einfo->info.func.free_update_region = NULL;
+                       einfo->info.func.switch_buffer = _expedite_sdl_switch_buffer;
+                       if (!evas_engine_info_set(evas, (Evas_Engine_Info *) einfo))
+                         {
+                            return ;
+                         }
+                    }
+               }
+
              evas_output_viewport_set(evas, 0, 0,
-                                      event.resize.w, event.resize.w);
-             evas_output_size_set(evas, event.resize.w, event.resize.w);
+                                      event.resize.h, event.resize.w);
+             evas_output_size_set(evas, event.resize.h, event.resize.w);
              evas_output_size_get(evas, &win_w, &win_h);
              break;
           case SDL_VIDEOEXPOSE:
