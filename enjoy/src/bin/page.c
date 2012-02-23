@@ -327,7 +327,7 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
 
    page->list = elm_genlist_add(obj_list);
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
-   elm_genlist_horizontal_set(page->list, ELM_LIST_COMPRESS);
+   elm_genlist_mode_set(page->list, ELM_LIST_COMPRESS);
    elm_genlist_compress_mode_set(page->list, EINA_TRUE);
 
    s = edje_object_data_get(page->edje_list, "homogeneous");
@@ -573,7 +573,7 @@ static void
 _song_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
-   Song *song = elm_genlist_item_data_get(event_info);
+   Song *song = elm_object_item_data_get(event_info);
    if (song) evas_object_smart_callback_call(page->layout, "song", song);
 }
 
@@ -587,8 +587,9 @@ static Evas_Object *
 _page_songs_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class song_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
+     0, 0, 0,
      "media",
+     NULL, NULL,
      {
        _song_item_text_get,
        NULL,
@@ -673,8 +674,9 @@ _page_album_songs_add(Evas_Object *parent, Album *album)
    DB *db = _page_db_get(parent);
    Eina_Iterator *it;
    static const Elm_Genlist_Item_Class song_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
+     0, 0, 0,
      "media-album",
+     NULL, NULL,
      {
        _song_item_text_get,
        NULL,
@@ -708,7 +710,7 @@ Song *
 page_songs_selected_get(const Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
-   return page->selected ? elm_genlist_item_data_get(page->selected) : NULL;
+   return page->selected ? elm_object_item_data_get(page->selected) : NULL;
 }
 
 Eina_Bool
@@ -742,7 +744,7 @@ page_songs_next_go(Evas_Object *obj)
    if (!glit) return NULL;
    glit = elm_genlist_item_next_get(glit);
    if (!glit) return NULL;
-   song = elm_genlist_item_data_get(glit);
+   song = elm_object_item_data_get(glit);
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
    elm_genlist_item_bring_in(glit);
@@ -775,7 +777,7 @@ page_songs_nth_get(const Evas_Object *obj, int32_t n)
    Elm_Object_Item *glit = page->first;
    while (glit && n--) glit = elm_genlist_item_next_get(glit);
    if (!glit) return NULL;
-   return elm_genlist_item_data_get(glit);
+   return elm_object_item_data_get(glit);
 }
 
 Eina_Bool
@@ -844,7 +846,7 @@ page_songs_shuffle_prev_go(Evas_Object *obj)
 
    glit = eina_array_data_get(page->shuffle, page->shuffle_position - 1);
 
-   song = elm_genlist_item_data_get(glit);
+   song = elm_object_item_data_get(glit);
 
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
@@ -871,7 +873,7 @@ page_songs_shuffle_next_go(Evas_Object *obj)
    glit = eina_array_data_get(page->shuffle, page->shuffle_position);
    page->shuffle_position++;
 
-   song = elm_genlist_item_data_get(glit);
+   song = elm_object_item_data_get(glit);
 
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
@@ -898,7 +900,7 @@ page_songs_prev_go(Evas_Object *obj)
    if (!glit) return NULL;
    glit = elm_genlist_item_prev_get(glit);
    if (!glit) return NULL;
-   song = elm_genlist_item_data_get(glit);
+   song = elm_object_item_data_get(glit);
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
    elm_genlist_item_bring_in(glit);
@@ -955,7 +957,7 @@ static void
 _album_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
-   Album *album = elm_genlist_item_data_get(event_info);
+   Album *album = elm_object_item_data_get(event_info);
    EINA_SAFETY_ON_NULL_RETURN(album);
    Evas_Object *next = _page_album_songs_add(page->layout, album);
    if (next)
@@ -968,8 +970,9 @@ static Evas_Object *
 _page_albums_artist_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class album_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
+     0, 0, 0,
      "media-preview",
+     NULL, NULL,
      {
        _album_item_text_get,
        _album_item_icon_get,
@@ -1014,8 +1017,9 @@ static Evas_Object *
 _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class album_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
+     0, 0, 0,
      "media-preview",
+     NULL, NULL,
      {
        _album_item_text_get,
        _album_item_icon_get,
@@ -1073,8 +1077,9 @@ _item_all_songs_icon_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, co
 
 
 static const Elm_Genlist_Item_Class _item_all_songs_cls = {
-  ELM_GENLIST_ITEM_CLASS_HEADER,
+  0, 0, 0,
   "media-preview",
+  NULL, NULL,
   {
     _item_all_songs_text_get,
     _item_all_songs_icon_get,
@@ -1116,7 +1121,7 @@ static void
 _artist_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
-   NameID *nameid = elm_genlist_item_data_get(event_info);
+   NameID *nameid = elm_object_item_data_get(event_info);
    EINA_SAFETY_ON_NULL_RETURN(nameid);
    DB *db = _page_db_get(page->layout);
    Eina_Iterator *it = db_artist_albums_get(db, nameid->id);
@@ -1142,8 +1147,9 @@ static Evas_Object *
 _page_artists_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class nameid_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
+     0, 0, 0,
      "default",
+     NULL, NULL,
      {
        _nameid_item_text_get,
        NULL,
@@ -1187,7 +1193,7 @@ static void
 _genre_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
-   NameID *nameid = elm_genlist_item_data_get(event_info);
+   NameID *nameid = elm_object_item_data_get(event_info);
    EINA_SAFETY_ON_NULL_RETURN(nameid);
    DB *db = _page_db_get(page->layout);
    Eina_Iterator *it = db_genre_albums_get(db, nameid->id);
@@ -1213,8 +1219,9 @@ static Evas_Object *
 _page_genres_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
 {
    static const Elm_Genlist_Item_Class nameid_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
+     0, 0, 0,
      "default",
+     NULL, NULL,
      {
        _nameid_item_text_get,
        NULL,
@@ -1257,7 +1264,7 @@ static void
 _static_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 {
    Page *page = data;
-   const Static_Item *si = elm_genlist_item_data_get(event_info);
+   const Static_Item *si = elm_object_item_data_get(event_info);
    Evas_Object *next;
    EINA_SAFETY_ON_NULL_RETURN(si);
    EINA_SAFETY_ON_NULL_RETURN(si->action);
@@ -1308,8 +1315,8 @@ Evas_Object *
 page_root_add(Evas_Object *parent)
 {
    static const Elm_Genlist_Item_Class root_item_cls = {
-     ELM_GENLIST_ITEM_CLASS_HEADER,
-     "default", { _static_item_text_get, NULL, NULL, NULL }
+     0, 0, 0,
+     "default", NULL, NULL, { _static_item_text_get, NULL, NULL, NULL }
    };
    static const Page_Class root_cls = {
      "root",

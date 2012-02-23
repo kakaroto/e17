@@ -44,8 +44,10 @@ preferences_itc_category_text_get(void *data, Evas_Object *obj __UNUSED__, const
 }
 
 static const Elm_Genlist_Item_Class preferences_itc_item = {
-  ELM_GENLIST_ITEM_CLASS_HEADER,
+  0, 0, 0,
   "default",
+  NULL,
+  NULL,
   {
     preferences_itc_item_text_get,
     NULL,
@@ -55,8 +57,10 @@ static const Elm_Genlist_Item_Class preferences_itc_item = {
 };
 
 static const Elm_Genlist_Item_Class preferences_itc_category = {
-  ELM_GENLIST_ITEM_CLASS_HEADER,
+  0, 0, 0,
   "group_index",
+  NULL,
+  NULL,
   {
     preferences_itc_category_text_get,
     NULL,
@@ -83,8 +87,8 @@ static int
 preferences_category_cmp(const void *pa, const void *pb)
 {
    const Elm_Object_Item *glia = pa, *glib = pb;
-   const Preferences_Category *a = elm_genlist_item_data_get(glia);
-   const Preferences_Category *b = elm_genlist_item_data_get(glib);
+   const Preferences_Category *a = elm_object_item_data_get(glia);
+   const Preferences_Category *b = elm_object_item_data_get(glib);
    return strcoll(a->name, b->name);
 }
 
@@ -92,8 +96,8 @@ static int
 preferences_item_cmp(const void *pa, const void *pb)
 {
    const Elm_Object_Item *glia = pa, *glib = pb;
-   const Enjoy_Preferences_Plugin *a = elm_genlist_item_data_get(glia);
-   const Enjoy_Preferences_Plugin *b = elm_genlist_item_data_get(glib);
+   const Enjoy_Preferences_Plugin *a = elm_object_item_data_get(glia);
+   const Enjoy_Preferences_Plugin *b = elm_object_item_data_get(glib);
    int r = a->priority - b->priority;
    if (r)
      return r;
@@ -189,7 +193,7 @@ preferences_item_del(Preferences *prefs, Enjoy_Preferences_Plugin *p)
    if (!prefs->list)
      DBG("List already deleted, ignore item deletion");
    else
-     elm_genlist_item_del(p->glit);
+     elm_object_item_del(p->glit);
 
    if (p->cat)
      {
@@ -197,7 +201,7 @@ preferences_item_del(Preferences *prefs, Enjoy_Preferences_Plugin *p)
         if (p->cat->items == 0)
           {
              if (prefs->list)
-               elm_genlist_item_del(p->cat->glit);
+               elm_object_item_del(p->cat->glit);
              eina_hash_del(prefs->categories, p->cat->name, p->cat);
              free(p->cat);
           }
