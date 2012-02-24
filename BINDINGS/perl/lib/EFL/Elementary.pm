@@ -619,7 +619,7 @@ my @elm_photocam = qw(
   elm_photocam_zoom_mode_set
   elm_photocam_zoom_mode_get
   elm_photocam_image_size_get
-  elm_photocam_region_get
+  elm_photocam_image_region_get
   elm_photocam_image_region_show
   elm_photocam_image_region_bring_in
   elm_photocam_paused_get
@@ -1242,7 +1242,7 @@ may change in future releases.
     elm_photocam_image_size_get
     elm_photocam_paused_get
     elm_photocam_paused_set
-    elm_photocam_region_get
+    elm_photocam_image_region_get
     elm_photocam_zoom_get
     elm_photocam_zoom_mode_get
     elm_photocam_zoom_mode_set

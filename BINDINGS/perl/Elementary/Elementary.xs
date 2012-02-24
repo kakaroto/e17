@@ -1707,14 +1707,14 @@ elm_photocam_image_size_get(obj, w, h)
         elm_photocam_image_size_get(obj, &w, &h);
 
 void
-elm_photocam_region_get(obj, x, y, w, h)
+elm_photocam_image_region_get(obj, x, y, w, h)
     Evas_Object *obj
     int x = NO_INIT
     int y = NO_INIT
     int w = NO_INIT
     int h = NO_INIT
     CODE:
-        elm_photocam_region_get(obj, &x, &y, &w, &h);
+        elm_photocam_image_region_get(obj, &x, &y, &w, &h);
 
 void
 elm_photocam_image_region_show(Evas_Object *obj, int x, int y, int w, int h)

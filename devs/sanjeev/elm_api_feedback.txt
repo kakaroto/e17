@@ -213,9 +213,9 @@ missing EAPI definitions and documentation in header - DONE.
 
 elm_photocam
 
-rename elm_photocam_region_get = elm_photocam_image_region_get()
+rename elm_photocam_region_get = elm_photocam_image_region_get() - DONE.
 
-No way to get out of a radio group once assigned.
+No way to get out of a radio group once assigned. - Expected.
 
 ZERO documentation for elm_route? Not even #ifndef ... #endif - is this a public API?
 
