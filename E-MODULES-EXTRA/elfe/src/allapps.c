@@ -77,7 +77,7 @@ _gl_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    Elfe_Allapps *allapps = data;
    Elm_Object_Item *it = event_info;
 
-   gitem = elm_gengrid_item_data_get(event_info);
+   gitem = elm_object_item_data_get(event_info);
 
    if (gitem->menu->type != EFREET_MENU_ENTRY_DESKTOP)
      return;
