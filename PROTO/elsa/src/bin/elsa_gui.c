@@ -1,10 +1,6 @@
 #include "elsa_client.h"
 #include "Ecore_X.h"
 
-#define ELM_INTERNAL_API_ARGESFSDFEFC
-#include <elm_widget.h>
-
-
 #define ELSA_GUI_GET(edj, name) edje_object_part_external_object_get(elm_layout_edje_get(edj), name)
 
 typedef struct Elsa_Gui_ Elsa_Gui;
@@ -212,7 +208,7 @@ _elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __
         elm_object_text_set(obj, _gui->selected_session->name);
         icon = elm_icon_add(screen->win);
         elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
-        elm_hoversel_icon_set(obj, icon);
+        elm_object_content_set(obj, icon);
         evas_object_show(icon);
      }
 }
@@ -270,7 +266,7 @@ _elsa_gui_session_update(Elsa_Xsession *xsession)
         elm_object_text_set(o, _gui->selected_session->name);
         icon = elm_icon_add(screen->win);
         elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
-        elm_hoversel_icon_set(o, icon);
+        elm_object_content_set(o, icon);
      }
 }
 
@@ -490,7 +486,7 @@ elsa_gui_users_set(Eina_List *users)
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         ol = ELSA_GUI_GET(screen->edj, "elsa_users");
-        if ((ol) && ((type = elm_widget_type_get(ol))))
+        if ((ol) && ((type = elm_object_widget_type_get(ol))))
           {
              if (!strcmp(type, "list"))
                _elsa_gui_users_list_set(ol, users);
@@ -705,7 +701,7 @@ static void
 _elsa_gui_cont_fill(Evas_Object *obj, Elsa_Gui_Item egi, Eina_List *users, Evas_Smart_Cb func, void *data)
 {
    const char *type;
-   if ((type = elm_widget_type_get(obj)))
+   if ((type = elm_object_widget_type_get(obj)))
      {
         if (!strcmp(type, "list"))
           _elsa_gui_list_fill(obj, egi, users, func, data);
