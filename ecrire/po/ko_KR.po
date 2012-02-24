@@ -82,7 +82,7 @@ msgstr ""
 #: src/bin/main.c:99
 #, c-format
 msgid "%sUntitled %d - %s"
-msgstr "제목없음"
+msgstr "%s제목없음 %d - %s"
 
 #: src/bin/main.c:123
 #, c-format
@@ -98,9 +98,8 @@ msgid "Open"
 msgstr "열기"
 
 #: src/bin/main.c:688
-#, fuzzy
 msgid "Save As"
-msgstr "저장"
+msgstr "다른이름으로 저장"
 
 #: src/bin/main.c:693
 msgid "Undo"
