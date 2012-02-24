@@ -386,9 +386,9 @@ _elsa_session_desktops_init()
    efreet_init();
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
    /* Maybee need to scan other directories ?
-    * _elsa_server_desktops_scan("/etc/share/xsessions");
+    * _elsa_session_desktops_scan("/etc/share/xsessions");
     */
-   _elsa_server_desktops_scan("/etc/X11/dm/Sessions");
+   _elsa_session_desktops_scan("/etc/X11/dm/Sessions");
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _elsa_session_desktops_scan(buf);
    dirs = efreet_data_dirs_get();
