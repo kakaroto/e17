@@ -1,0 +1,6 @@
+OLD_PARM="--host=arm-eabi --target=arm-eabi --build=i386-linux --prefix=/opt/embedded/arm-eabi-4.4.4/arm-eabi/ --disable-shared --enable-static --enable-coyote"
+OLD_CFLAGS="-Os -Wall -Wshadow -W -Wextra -pipe -I/opt/embedded/arm-eabi-4.4.4/include -DLIBC_NEWLIB"
+OLD_PATH="/opt/embedded/arm-eabi-4.4.4/bin:/usr/devel/bin:/usr/bin/:/bin"
+OLD_PKG_CONFIG_PATH="/opt/embedded/arm-eabi-4.4.4/arm-eabi/lib/pkgconfig"
+OLD_LDFLAGS="-nostartfiles"
+OLD_CXXFLAGS="-Os -Wall -Wshadow -W -Wextra -fno-threadsafe-statics -fno-rtti -fno-exceptions -DLIBC_NEWLIB"
