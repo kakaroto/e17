@@ -67,7 +67,7 @@ EAPI int exotic_madvise(void *addr, size_t length, int advice);
 #endif
 #define open exotic_open
 
-EAPI int exotic_open(const char *pathname, int flags, mode_t mode);
+EAPI int exotic_open(const char *pathname, int flags, ...);
 
 #ifdef close
 # undef close
@@ -93,6 +93,8 @@ struct exotic_stat
    gid_t	st_gid;
    dev_t	st_rdev;
    off_t	st_size;
+   unsigned long       st_blksize;
+   unsigned long       st_blocks;
    unsigned long       st_atime;
    unsigned long       st_mtime;
    unsigned long       st_ctime;

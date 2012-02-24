@@ -287,7 +287,7 @@ _exotic_close(Exotic_Map *map)
 }
 
 EAPI int
-exotic_open(const char *pathname, int flags, mode_t mode __UNUSED__)
+exotic_open(const char *pathname, int flags, ...)
 {
    Exotic_Map *m = NULL;
 
@@ -333,6 +333,8 @@ exotic_fstat(int fd, struct stat *__buf)
    __buf->st_mtime = m->timestamp;
    __buf->st_ctime = m->timestamp;
    __buf->st_size = m->length;
+   __buf->st_blocks = m->length / 512 + (m->length % 512) ? 1 : 0;
+   __buf->st_blksize = 512;
 
    return 0;
 }
@@ -359,6 +361,8 @@ exotic_stat(const char *path, struct stat *__buf)
         __buf->st_mtime = __buf->st_atime;
         __buf->st_ctime = __buf->st_atime;
         __buf->st_size = osf->GetSize();
+	__buf->st_blocks = __buf->st_size / 512 + (__buf->st_size % 512) ? 1 : 0;
+	__buf->st_blksize = 512;
 
         delete osf;
 
@@ -370,6 +374,8 @@ exotic_stat(const char *path, struct stat *__buf)
    __buf->st_mtime = f->current->timestamp;
    __buf->st_ctime = f->current->timestamp;
    __buf->st_size = f->current->length;
+   __buf->st_blocks = f->current->length / 512 + (f->current->length % 512) ? 1 : 0;
+   __buf->st_blksize = 512;
 
    return 0;
 }
