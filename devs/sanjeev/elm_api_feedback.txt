@@ -188,17 +188,17 @@ elc_anchorblock.h
 
 1. Considering elementary test is the reference app for all widgets, under each widget provide the command for seeing the widget in action.
 
-like, elementary_test -to "<Name of Widget>"
+like, elementary_test -to "<Name of Widget>" - Ignore
 
 2. Elm_Entry_Anchorblock_Info
 
-Why Eina_Bool : 1 ?  Eina_Bool is an INT ? Why use only four lower order bits.  Why not a byte?
+Why Eina_Bool : 1 ?  Eina_Bool is an INT ? Why use only four lower order bits.  Why not a byte? - Ignore
 
 elm_pager.h
 
-3. Why use the concept of stack to explain pager contents. It is not a stack if any element can be promoted or demoted. Stack is LIFO. This is an array or collection or group.
+3. Why use the concept of stack to explain pager contents. It is not a stack if any element can be promoted or demoted. Stack is LIFO. This is an array or collection or group. - Ignore
 
-4. elm_pager_content_promote - why is it undefined behaviour to promote a non-existent object ? Doesn’t the pager know what’s on the stack ?
+4. elm_pager_content_promote - why is it undefined behaviour to promote a non-existent object ? Doesn’t the pager know what’s on the stack ? - Ignore
 
 elm_panes.h
 
@@ -217,14 +217,7 @@ rename elm_photocam_region_get = elm_photocam_image_region_get() - DONE.
 
 No way to get out of a radio group once assigned. - Expected.
 
-ZERO documentation for elm_route? Not even #ifndef ... #endif - is this a public API?
-
-
-
-
-
-
-
+ZERO documentation for elm_route? Not even #ifndef ... #endif - is this a public API? - DONE!
 
 
 
