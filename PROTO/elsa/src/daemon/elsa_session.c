@@ -388,6 +388,7 @@ _elsa_session_desktops_init()
    /* Maybee need to scan other directories ?
     * _elsa_server_desktops_scan("/etc/share/xsessions");
     */
+   _elsa_server_desktops_scan("/etc/X11/dm/Sessions");
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _elsa_session_desktops_scan(buf);
    dirs = efreet_data_dirs_get();
