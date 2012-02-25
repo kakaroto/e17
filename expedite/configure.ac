@@ -73,9 +73,6 @@ AC_SUBST(ddraw_libs)
 EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d -lgdi32"])
 AC_SUBST(d3d_libs)
 
-# Software SDL
-EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
-
 # PSL1GHT
 EXPEDITE_CHECK_ENGINE([psl1ght], [PSL1GHT], "yes")
 
@@ -175,10 +172,11 @@ fi
 
 # SDL
 
-if test "x$have_software_sdl" = "xyes" -o "x$have_gl_sdl" = "xyes"; then
-   PKG_CHECK_MODULES([SDL], [sdl], [have_sdl="yes"], [have_sdl="no"])
-fi
+PKG_CHECK_MODULES([SDL], [sdl], [have_sdl="yes"], [have_sdl="no"])
 AM_CONDITIONAL(BUILD_SDL, test "x$have_sdl" = "xyes")
+if test "x$have_sdl" = "xyes"; then
+   AC_DEFINE(BUILD_SDL, 1, [build sdl support])
+fi
 
 # PSL1GHT
 AM_CONDITIONAL(BUILD_PSL1GHT, test "x$have_psl1ght" = "xyes")

@@ -49,7 +49,7 @@
 #if HAVE_EVAS_DIRECT3D
 #include "engine_direct3d.h"
 #endif
-#if HAVE_EVAS_SOFTWARE_SDL
+#if BUILD_SDL
 #include "engine_software_sdl.h"
 #endif
 #if HAVE_EVAS_OPENGL_SDL

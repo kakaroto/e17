@@ -187,7 +187,7 @@ expedite_SOURCES += \
 engine_direct3d.cpp engine_direct3d.h
 endif
 
-if BUILD_SOFTWARE_SDL
+if BUILD_SDL
 expedite_SOURCES += \
 engine_software_sdl.c engine_software_sdl.h
 endif
