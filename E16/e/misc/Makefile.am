@@ -36,7 +36,7 @@ endif
 EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) starte16.in \
 		$(xsession_DATA) $(gsession_DATA)
 
-CLEANFILES = $(DESKTOPS) starte16
+CLEANFILES = $(DESKTOPS_APP) $(XSESSION_MISC) $(XSESSION_GNOME2) starte16
 
 starte16: $(srcdir)/starte16.in Makefile
 
