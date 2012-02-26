@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,8 +24,8 @@
 #ifndef _USER_H_
 #define _USER_H_
 
-char               *username(int uid);
-char               *homedir(int uid);
-char               *usershell(int uid);
+const char         *username(void);
+const char         *userhome(void);
+const char         *usershell(void);
 
 #endif /* _USER_H_ */

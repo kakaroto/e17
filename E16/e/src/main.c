@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -547,9 +547,10 @@ EDirMake(const char *base, const char *name)
 static void
 EDirsSetup(void)
 {
-   char                s[1024], *home, *cfgdir;
+   const char         *home;
+   char                s[1024], *cfgdir;
 
-   home = homedir(getuid());
+   home = userhome();
    EDirCheck(home);
 
    /* Set user config dir if not already set */
@@ -559,7 +560,6 @@ EDirsSetup(void)
 	Esnprintf(s, sizeof(s), "%s/.e16", home);
 	Mode.conf.dir = cfgdir = Estrdup(s);
      }
-   Efree(home);
 
    if (exists(cfgdir))
      {

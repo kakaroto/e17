@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -233,15 +233,10 @@ static int
 ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 {
    char                execline[FILEPATH_LEN_MAX];
-   char               *def_home, *def_user, *def_shell;
    const char         *variant;
 
    if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigFilePreparse %s -> %s\n", src, dst);
-
-   def_home = homedir(getuid());
-   def_user = username(getuid());
-   def_shell = usershell(getuid());
 
    /* When themepath is NULL it shouldn't be used, but this is consistent
     * with old behavior */
@@ -264,12 +259,8 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 	     e_wm_version, EDirRoot(), EDirBin(), themepath, variant,
 	     EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
-	     WinGetDepth(VROOT), def_user, def_home, def_shell, src, dst);
+	     WinGetDepth(VROOT), username(), userhome(), usershell(), src, dst);
    Esystem(execline);
-
-   Efree(def_user);
-   Efree(def_shell);
-   Efree(def_home);
 
    return exists(dst) ? 0 : 1;
 }

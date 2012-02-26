@@ -88,7 +88,7 @@ int
 EspawnApplication(const char *params, int flags)
 {
    char                exe[FILEPATH_LEN_MAX];
-   char               *sh;
+   const char         *sh;
    char               *path;
    char               *real_exec;
 
@@ -105,7 +105,7 @@ EspawnApplication(const char *params, int flags)
 
    ExecSetupEnv(flags);
 
-   sh = usershell(getuid());
+   sh = usershell();
 
    if (path_canexec(exe))
      {

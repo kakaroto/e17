@@ -60,7 +60,7 @@ static void
 set_save_props(SmcConn smc_conn, int master_flag)
 {
    const char         *s;
-   char               *user;
+   const char         *user;
    const char         *program;
    char                priority = 10;
    char                style;
@@ -135,13 +135,13 @@ set_save_props(SmcConn smc_conn, int master_flag)
       /* Slave WMs never restart */
       style = SmRestartNever;
 
-   user = username(getuid());
+   user = username();
    /* The SM specs state that the SmProgram should be the argument passed
     * to execve. Passing argv[0] is close enough. */
    program = Mode.wm.exec_name;
 
    userIDVal.length = (user) ? strlen(user) : 0;
-   userIDVal.value = user;
+   userIDVal.value = (char *)user;
    programVal.length = strlen(program);
    programVal.value = (char *)program;
    styleVal.length = 1;
@@ -235,7 +235,6 @@ set_save_props(SmcConn smc_conn, int master_flag)
    props[n++] = &priorityProp;
 
    SmcSetProperties(smc_conn, n, props);
-   Efree(user);
 }
 
 /* This function is usually exclusively devoted to saving data.

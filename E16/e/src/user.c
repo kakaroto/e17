@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -29,83 +30,61 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-char               *
-username(int uid)
-{
-   char               *s;
-   static int          usr_uid = -1;
-   static char        *usr_s = NULL;
-   struct passwd      *pwd;
+static int          usr_uid = -1;
+static const char  *usr_name = "unknown";
+static const char  *usr_home = "/tmp";
+static const char  *usr_shell = "/bin/sh";
 
-   if (usr_uid < 0)
-      usr_uid = getuid();
-   if ((uid == usr_uid) && (usr_s))
-      return Estrdup(usr_s);
-   pwd = getpwuid(uid);
-   if (pwd)
-     {
-	s = Estrdup(pwd->pw_name);
-	if (uid == usr_uid)
-	   usr_s = Estrdup(s);
-	return s;
-     }
-   return Estrdup("unknown");
-}
-
-char               *
-homedir(int uid)
+static void
+_user_init(void)
 {
-   static int          usr_uid = -1;
-   static char        *usr_s = NULL;
-   char               *s;
    const char         *ss;
    struct passwd      *pwd;
 
-   if (usr_uid < 0)
-      usr_uid = getuid();
-   if ((uid == usr_uid) && (usr_s))
+   usr_uid = getuid();
+   pwd = getpwuid(usr_uid);
+
+   if (!pwd)
      {
-	return Estrdup(usr_s);
+	ss = getenv("TMPDIR");
+	if (ss)
+	   usr_home = ss;
      }
-   pwd = getpwuid(uid);
-   if (pwd)
+
+   ss = Estrdup(pwd->pw_name);
+   if (ss)
+      usr_name = ss;
+   ss = Estrdup(pwd->pw_dir);
+   if (ss)
+      usr_home = ss;
+   if (canexec(pwd->pw_shell))
      {
-	s = Estrdup(pwd->pw_dir);
-	if (uid == usr_uid)
-	   usr_s = Estrdup(s);
-	return s;
+	ss = Estrdup(pwd->pw_shell);
+	if (ss)
+	   usr_shell = ss;
      }
-   ss = getenv("TMPDIR");
-   if (!ss)
-      ss = "/tmp";
-   return Estrdup(ss);
 }
 
-char               *
-usershell(int uid)
+const char         *
+username(void)
 {
-   char               *s;
-   static int          usr_uid = -1;
-   static char        *usr_s = NULL;
-   struct passwd      *pwd;
-
    if (usr_uid < 0)
-      usr_uid = getuid();
-   if ((uid == usr_uid) && (usr_s))
-      return Estrdup(usr_s);
-   pwd = getpwuid(uid);
-   if (pwd)
-     {
-	if (!pwd->pw_shell)
-	   return Estrdup("/bin/sh");
-	if (strlen(pwd->pw_shell) < 1)
-	   return Estrdup("/bin/sh");
-	if (!(canexec(pwd->pw_shell)))
-	   return Estrdup("/bin/sh");
-	s = Estrdup(pwd->pw_shell);
-	if (uid == usr_uid)
-	   usr_s = Estrdup(s);
-	return s;
-     }
-   return Estrdup("/bin/sh");
+      _user_init();
+   return usr_name;
+}
+
+const char         *
+userhome(void)
+{
+   if (usr_uid < 0)
+      _user_init();
+   return usr_home;
+}
+
+const char         *
+usershell(void)
+{
+   if (usr_uid < 0)
+      _user_init();
+   return usr_shell;
 }
