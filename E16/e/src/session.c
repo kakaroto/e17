@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -36,20 +36,6 @@
 
 #ifdef USE_EXT_INIT_WIN
 static Window       new_init_win_ext = None;
-#endif
-
-#ifndef DEFAULT_SH_PATH
-#ifdef __sgi
-/*
- * It appears that SGI (at least IRIX 6.4) uses ksh as their sh, and it
- * seems to run in restricted mode, so things like restart fail miserably.
- * Let's use csh instead
- * -KDT 07/31/98
- */
-#define DEFAULT_SH_PATH "/sbin/csh"
-#else
-#define DEFAULT_SH_PATH "/bin/sh"
-#endif
 #endif
 
 /* True if we are saving state for a doExit("restart") */
@@ -532,10 +518,9 @@ doSMExit(int mode, const char *params)
 	SoundPlay(SOUND_EXIT);
 	EDisplayClose();
 
-	Esnprintf(s, sizeof(s), "exec %s", params);
 	if (EDebug(EDBUG_TYPE_SESSION))
-	   Eprintf("doSMExit: %s\n", s);
-	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
+	   Eprintf("doSMExit: exec %s\n", params);
+	EexecCmd(params);
 	break;
 
      case EEXIT_THEME:
@@ -550,7 +535,7 @@ doSMExit(int mode, const char *params)
 	EDisplayClose();
 
 	l = 0;
-	l += Esnprintf(s + l, sizeof(s) - l, "exec %s -f", Mode.wm.exec_name);
+	l += Esnprintf(s + l, sizeof(s) - l, "%s -f", Mode.wm.exec_name);
 	if (Mode.wm.single)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -s %d", Dpy.screen);
 	else if (!Mode.wm.master)
@@ -571,9 +556,9 @@ doSMExit(int mode, const char *params)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", ss);
 
 	if (EDebug(EDBUG_TYPE_SESSION))
-	   Eprintf("doSMExit: %s\n", s);
+	   Eprintf("doSMExit: exec %s\n", s);
 
-	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
+	EexecCmd(s);
 	break;
      }
 

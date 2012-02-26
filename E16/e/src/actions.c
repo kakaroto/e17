@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -25,6 +25,21 @@
 #include "desktops.h"
 #include "file.h"
 #include "user.h"
+
+void
+EexecCmd(const char *cmd)
+{
+   char              **lst;
+   int                 fd, num;
+
+   /* Close all file descriptors except the std 3 */
+   for (fd = 3; fd < 1024; fd++)
+      close(fd);
+
+   lst = StrlistFromString(cmd, ' ', &num);
+
+   execvp(lst[0], lst);
+}
 
 static void
 StartupIdExport(void)

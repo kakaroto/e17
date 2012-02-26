@@ -3,7 +3,7 @@
 /*****************************************************************************/
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -454,6 +454,7 @@ void                About(void);
 /* actions.c */
 #define EXEC_SET_LANG       0x01
 #define EXEC_SET_STARTUP_ID 0x02
+void                EexecCmd(const char *cmd);
 int                 EspawnApplication(const char *params, int flags);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
