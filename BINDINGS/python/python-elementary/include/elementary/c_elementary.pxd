@@ -857,9 +857,6 @@ cdef extern from "Elementary.h":
 
     # Fileselector Entry widget
     evas.c_evas.Evas_Object *elm_fileselector_entry_add(evas.c_evas.Evas_Object *parent)
-    void         elm_fileselector_entry_button_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
-    evas.c_evas.Evas_Object *elm_fileselector_entry_button_icon_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Evas_Object *elm_fileselector_entry_button_icon_unset(evas.c_evas.Evas_Object *obj)
     void         elm_fileselector_entry_window_title_set(evas.c_evas.Evas_Object *obj, char *title)
     char        *elm_fileselector_entry_window_title_get(evas.c_evas.Evas_Object *obj)
     void         elm_fileselector_entry_window_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord width, evas.c_evas.Evas_Coord height)
