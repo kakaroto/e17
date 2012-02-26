@@ -465,7 +465,7 @@ RunDocBrowser(void)
       return;
 
    Esnprintf(buf, sizeof(buf), "%s/edox %s/E-docs", EDirBin(), EDirRoot());
-   execApplication(buf, 0);
+   EspawnApplication(buf, 0);
 }
 
 static void
@@ -474,7 +474,7 @@ RunMenuGen(void)
    char                buf[FILEPATH_LEN_MAX];
 
    Esnprintf(buf, sizeof(buf), "%s/scripts/e_gen_menu", EDirRoot());
-   execApplication(buf, EXEC_SET_LANG);
+   EspawnApplication(buf, EXEC_SET_LANG);
 }
 
 static void

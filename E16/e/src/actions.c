@@ -70,7 +70,7 @@ ExecSetupEnv(int flags)
 }
 
 int
-execApplication(const char *params, int flags)
+EspawnApplication(const char *params, int flags)
 {
    char                exe[FILEPATH_LEN_MAX];
    char               *sh;

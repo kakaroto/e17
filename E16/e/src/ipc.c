@@ -949,7 +949,7 @@ static void
 IPC_Exec(const char *params)
 {
    if (params)
-      execApplication(params, EXEC_SET_LANG | EXEC_SET_STARTUP_ID);
+      EspawnApplication(params, EXEC_SET_LANG | EXEC_SET_STARTUP_ID);
    else
       IpcPrintf("exec what?\n");
 }
