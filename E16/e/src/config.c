@@ -35,7 +35,6 @@
 #include "session.h"
 #include "tclass.h"
 #include "tooltips.h"
-#include "user.h"
 #include "windowmatch.h"
 
 #define MAX_E_CFG_VERSION 2	/* Max. supported configuration version */
@@ -252,14 +251,13 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 	     "-D ECONFDIR=%s " "-D ECACHEDIR=%s "
 	     "-D SCREEN_RESOLUTION_%ix%i=1 "
 	     "-D SCREEN_WIDTH_%i=1 " "-D SCREEN_HEIGHT_%i=1 "
-	     "-D SCREEN_DEPTH_%i=1 " "-D USER_NAME=%s " "-D HOME_DIR=%s "
-	     "-D USER_SHELL=%s "
+	     "-D SCREEN_DEPTH_%i=1 "
 	     "%s %s",
 	     EDirBin(), EDirRoot(), themepath, EDirRoot(),
 	     e_wm_version, EDirRoot(), EDirBin(), themepath, variant,
 	     EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
-	     WinGetDepth(VROOT), username(), userhome(), usershell(), src, dst);
+	     WinGetDepth(VROOT), src, dst);
    Esystem(execline);
 
    return exists(dst) ? 0 : 1;
