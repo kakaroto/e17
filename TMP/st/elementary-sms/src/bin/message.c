@@ -99,7 +99,7 @@ create_message(Evas_Object *win,
    ab = elm_anchorblock_add(win);
    elm_object_style_set(ab, "popout");
    elm_anchorblock_hover_parent_set(ab, win);
-   elm_anchorblock_text_set(ab, text);
+   elm_object_text_set(ab, text);
    evas_object_smart_callback_add(ab, "anchor,clicked", on_anchor, mui);
    evas_object_size_hint_align_set(ab, -1.0, 0.0);
    evas_object_size_hint_align_set(ab, -1.0, -1.0);

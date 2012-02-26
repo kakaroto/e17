@@ -368,7 +368,6 @@ my @elm_notepad = qw(
 
 my @elm_anchorview = qw(
   elm_anchorview_add
-  elm_anchorview_text_set
   elm_anchorview_hover_parent_set
   elm_anchorview_hover_style_set
   elm_anchorview_hover_end
@@ -376,7 +375,6 @@ my @elm_anchorview = qw(
 
 my @elm_anchorblock = qw(
   elm_anchorblock_add
-  elm_anchorblock_text_set
   elm_anchorblock_hover_parent_set
   elm_anchorblock_hover_style_set
   elm_anchorblock_hover_end
@@ -984,12 +982,10 @@ may change in future releases.
     elm_anchorblock_hover_end
     elm_anchorblock_hover_parent_set
     elm_anchorblock_hover_style_set
-    elm_anchorblock_text_set
     elm_anchorview_add
     elm_anchorview_hover_end
     elm_anchorview_hover_parent_set
     elm_anchorview_hover_style_set
-    elm_anchorview_text_set
     elm_bg_add
     elm_bg_file_set
     elm_box_add

@@ -789,9 +789,6 @@ Evas_Object *
 elm_anchorview_add(Evas_Object *parent);
 
 void
-elm_anchorview_text_set(Evas_Object *obj, const char *text)
-
-void
 elm_anchorview_hover_parent_set(Evas_Object *obj, Evas_Object *parent)
 
 void
@@ -806,9 +803,6 @@ elm_anchorview_hover_end(Evas_Object *obj)
 
 Evas_Object *
 elm_anchorblock_add(Evas_Object *parent)
-
-void
-elm_anchorblock_text_set(Evas_Object *obj, const char *text)
 
 void
 elm_anchorblock_hover_parent_set(Evas_Object *obj, Evas_Object *parent)

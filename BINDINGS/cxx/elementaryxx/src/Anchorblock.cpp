@@ -24,7 +24,7 @@ Anchorblock *Anchorblock::factory (Evasxx::Object &parent)
 
 void Anchorblock::setText (const std::string &text)
 {
-  elm_anchorblock_text_set (o, text.c_str ());
+  elm_object_text_set (o, text.c_str ());
 }
 
 void Anchorblock::setHoverParent (Evasxx::Object &parent)

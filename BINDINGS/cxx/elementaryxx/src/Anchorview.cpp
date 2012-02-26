@@ -24,7 +24,7 @@ Anchorview *Anchorview::factory (Evasxx::Object &parent)
 
 void Anchorview::setText (const std::string &text)
 {
-  elm_anchorview_text_set (o, text.c_str ());
+  elm_object_text_set (o, text.c_str ());
 }
 
 void Anchorview::setHoverParent (Evasxx::Object &parent)

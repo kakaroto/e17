@@ -1358,7 +1358,7 @@ sub test_anchorview {
     $av = elm_anchorview_add($win);
     elm_anchorview_hover_style_set($av, "popout");
     elm_anchorview_hover_parent_set($av, $win);
-    elm_anchorview_text_set($av,
+    elm_object_text_set($av,
             "This is an entry widget in this window that<br>"
           . "uses markup <b>like this</> for styling and<br>"
           . "formatting <em>like this</>, as well as<br>"
@@ -1508,7 +1508,7 @@ sub test_anchorblock {
     $av = elm_anchorblock_add($win);
     elm_anchorblock_hover_style_set($av, "popout");
     elm_anchorblock_hover_parent_set($av, $win);
-    elm_anchorblock_text_set($av, "Hi there. This is the most recent message in the " . "list of messages. It has one <a href=tel:+614321234>+61 432 1234</a> " . "(phone number) to click on.");
+    elm_object_text_set($av, "Hi there. This is the most recent message in the " . "list of messages. It has one <a href=tel:+614321234>+61 432 1234</a> " . "(phone number) to click on.");
 
     evas_object_smart_callback_add($av, "anchor,clicked", \&my_anchorblock_anchor, $av);
     elm_bubble_content_set($bb, $av);
@@ -1530,7 +1530,7 @@ sub test_anchorblock {
     $av = elm_anchorblock_add($win);
     elm_anchorblock_hover_style_set($av, "popout");
     elm_anchorblock_hover_parent_set($av, $win);
-    elm_anchorblock_text_set($av,
+    elm_object_text_set($av,
             "Hey what are you doing? This is the second last message "
           . "Hi there. This is the most recent message in the "
           . "list. It's a longer one so it can wrap more and "
@@ -1567,7 +1567,7 @@ sub test_anchorblock {
     $av = elm_anchorblock_add($win);
     elm_anchorblock_hover_style_set($av, "popout");
     elm_anchorblock_hover_parent_set($av, $win);
-    elm_anchorblock_text_set($av, "This is a short message");
+    elm_object_text_set($av, "This is a short message");
 
     evas_object_smart_callback_add($av, "anchor,clicked", \&my_anchorblock_anchor, $av);
     elm_bubble_content_set($bb, $av);
