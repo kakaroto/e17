@@ -5790,6 +5790,8 @@ CEvasObject::CPropHandler<CElmNotify>::list[] = {
   { NULL, NULL, NULL },
 };
 
+#if 0
+
 class CElmPager : public CEvasObject {
 protected:
    std::list<CEvasObject *> pages;
@@ -5857,6 +5859,8 @@ template<> CEvasObject::CPropHandler<CElmPager>::property_list
 CEvasObject::CPropHandler<CElmPager>::list[] = {
   { NULL, NULL, NULL },
 };
+
+#endif
 
 class CElmNaviframe : public CEvasObject {
 protected:
@@ -6323,8 +6327,10 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmInwin(parent,obj);
    else if (!strcmp(*str, "notify"))
      eo = new CElmNotify(parent,obj);
+#if 0
    else if (!strcmp(*str, "pager"))
      eo = new CElmPager(parent,obj);
+#endif
    else if (!strcmp(*str, "naviframe"))
      eo = new CElmNaviframe(parent,obj);
    else if (!strcmp(*str, "grid"))
