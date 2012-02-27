@@ -17,7 +17,7 @@ e_ofono_network_reg.c \
 e_ofono_sms.c
 
 libeofono_la_LIBADD = \
-$(top_builddir)/src/lib/dbus/libedbus.la
+@EDBUS_LIBS@ $(top_builddir)/src/lib/dbus/libedbus.la
 
 libeofono_la_LDFLAGS = -version-info @version_info@ @release_info@
 

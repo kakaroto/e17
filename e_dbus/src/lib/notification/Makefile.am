@@ -16,7 +16,7 @@ client.c \
 daemon.c
 
 libenotify_la_LIBADD = \
-$(top_builddir)/src/lib/dbus/libedbus.la \
+@EDBUS_LIBS@ $(top_builddir)/src/lib/dbus/libedbus.la \
 @EVAS_LIBS@
 
 libenotify_la_LDFLAGS = -version-info @version_info@ @release_info@

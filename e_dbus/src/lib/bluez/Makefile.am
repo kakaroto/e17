@@ -17,7 +17,7 @@ e_bluez_device.c \
 e_bluez_devicefound.c
 
 libebluez_la_LIBADD = \
-$(top_builddir)/src/lib/dbus/libedbus.la
+@EDBUS_LIBS@ $(top_builddir)/src/lib/dbus/libedbus.la
 
 libebluez_la_LDFLAGS = -version-info @version_info@ @release_info@
 
