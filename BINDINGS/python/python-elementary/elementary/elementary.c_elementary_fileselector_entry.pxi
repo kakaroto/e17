@@ -39,16 +39,16 @@ cdef class FileselectorEntry(Object):
         return p
 
     def button_icon_set(self, c_evas.Object icon):
-        elm_object_part_content_set(self.obj, icon.obj)
+        elm_object_part_content_set(self.obj, NULL, icon.obj)
 
     def button_icon_get(self):
         cdef c_evas.Evas_Object *icon
-        icon = elm_object_part_content_get(self.obj)
+        icon = elm_object_part_content_get(self.obj, NULL)
         return evas.c_evas._Object_from_instance(<long> icon)
 
     def button_icon_unset(self):
         cdef c_evas.Evas_Object *icon
-        icon = elm_object_part_content_unset(self.obj)
+        icon = elm_object_part_content_unset(self.obj, NULL)
         return evas.c_evas._Object_from_instance(<long> icon)
 
     def window_title_set(self, title):
