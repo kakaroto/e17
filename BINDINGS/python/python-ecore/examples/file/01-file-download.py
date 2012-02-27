@@ -17,9 +17,12 @@ def cb_completion(file, status):
 
 def cb_progress(file, dltotal, dlnow, ultotal, ulnow):
     # This will be called several time during the download.
-    print("Progress [%.2f%% %d %d] %s" %
-          ((float(dlnow) / float(dltotal)) * 100,
-          dltotal, dlnow, os.path.basename(file)))
+    if dltotal > 0:
+        print("Progress [%.2f%% %d %d] %s" %
+              ((float(dlnow) / float(dltotal)) * 100,
+              dltotal, dlnow, os.path.basename(file)))
+    else:
+        print("Starting...")
     return 0 # continue the download (or 1 to abort)
 
 
