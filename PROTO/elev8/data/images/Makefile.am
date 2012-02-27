@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
-filesdir = $(datadir)/elev8/data/images
+filesdir = $(datadir)/$(PACKAGE)/data/images
 files_DATA = \
 	bg.png	\
 	bubble.png \
