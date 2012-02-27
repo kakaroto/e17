@@ -1992,10 +1992,10 @@ public:
 
         /* realize front and back */
         front = realize_one(this, obj->Get(String::New("front")));
-        elm_flip_content_front_set(eo, front->get());
+        elm_object_part_content_set(eo, "front", front->get());
 
         back = realize_one(this, obj->Get(String::New("back")));
-        elm_flip_content_back_set(eo, back->get());
+        elm_object_part_content_set(eo, "back", back->get());
 
         get_object()->Set(String::New("flip"), FunctionTemplate::New(do_flip)->GetFunction());
      }
