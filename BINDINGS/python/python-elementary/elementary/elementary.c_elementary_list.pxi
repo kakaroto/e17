@@ -201,7 +201,7 @@ cdef class ListItem(WidgetItem):
         if item == NULL:
             return None
 
-        data = elm_list_item_data_get(item)
+        data = elm_object_item_data_get(item)
         if data == NULL:
             return None
 
@@ -451,7 +451,7 @@ cdef class List(Object):
         obj = elm_list_selected_item_get(self.obj)
         if obj == NULL:
             return None
-        data = elm_list_item_data_get(obj)
+        data = elm_object_item_data_get(obj)
         if data == NULL:
             return None
         else:
@@ -465,7 +465,7 @@ cdef class List(Object):
         lst = elm_list_selected_items_get(self.obj)
         itr = lst
         while itr:
-            data = elm_list_item_data_get(<Elm_Object_Item *>itr.data)
+            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
             if data != NULL:
                 (o, callback, it, a, ka) = <object>data
                 ret.append(it)
@@ -479,7 +479,7 @@ cdef class List(Object):
         lst = elm_list_items_get(self.obj)
         itr = lst
         while itr:
-            data = elm_list_item_data_get(<Elm_Object_Item *>itr.data)
+            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
             if data != NULL:
                 (o, callback, it, a, ka) = <object>data
                 ret.append(it)

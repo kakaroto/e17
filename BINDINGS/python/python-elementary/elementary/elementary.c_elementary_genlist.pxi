@@ -351,7 +351,7 @@ cdef class GenlistItem(WidgetItem):
 
     def genlist_get(self):
         cdef c_evas.Evas_Object *o
-        o = elm_genlist_item_genlist_get(self.obj)
+        o = elm_object_item_widget_get(self.obj)
         return evas.c_evas._Object_from_instance(<long>o)
 
     property genlist:
@@ -369,7 +369,7 @@ cdef class GenlistItem(WidgetItem):
 
     def data_get(self):
         cdef void* data
-        data = elm_genlist_item_data_get(self.obj)
+        data = elm_object_item_data_get(self.obj)
         if data == NULL:
             return None
         else:
@@ -381,7 +381,7 @@ cdef class GenlistItem(WidgetItem):
             return self.data_get()
 
     def delete(self):
-        elm_genlist_item_del(self.obj)
+        elm_object_item_del(self.obj)
 
     def update(self):
         elm_genlist_item_update(self.obj)
@@ -575,7 +575,7 @@ cdef class GenlistItem(WidgetItem):
 
 def _genlist_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_genlist_item_data_get(it)
+    cdef void *data = elm_object_item_data_get(it)
     if data == NULL:
         return None
     else:
@@ -593,7 +593,7 @@ cdef _elm_genlist_item_to_python(Elm_Object_Item *it):
     cdef object prm
     if it == NULL:
         return None
-    data = elm_genlist_item_data_get(it)
+    data = elm_object_item_data_get(it)
     if data == NULL:
         return None
     prm = <object>data

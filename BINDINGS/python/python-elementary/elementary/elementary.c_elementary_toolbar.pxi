@@ -81,7 +81,7 @@ cdef class ToolbarItem(WidgetItem):
         """Delete the item"""
         if self.obj == NULL:
             raise ValueError("Object already deleted")
-        elm_toolbar_item_del(self.obj)
+        elm_object_item_del(self.obj)
 
     def icon_get(self):
         cdef const_char_ptr i
@@ -113,7 +113,7 @@ cdef class ToolbarItem(WidgetItem):
 
     def data_get(self):
         cdef void* data
-        data = elm_toolbar_item_data_get(self.obj)
+        data = elm_object_item_data_get(self.obj)
         if data == NULL:
             return None
         else:
@@ -139,17 +139,17 @@ cdef class ToolbarItem(WidgetItem):
             return elm_toolbar_item_selected_get(self.obj)
 
     def disabled_set(self, disabled):
-        elm_toolbar_item_disabled_set(self.obj, disabled)
+        elm_object_item_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
-        return elm_toolbar_item_disabled_get(self.obj)
+        return elm_object_item_disabled_get(self.obj)
 
     property disabled:
         def __set__(self, disabled):
-            elm_toolbar_item_disabled_set(self.obj, disabled)
+            elm_object_item_disabled_set(self.obj, disabled)
 
         def __get__(self):
-            return elm_toolbar_item_disabled_get(self.obj)
+            return elm_object_item_disabled_get(self.obj)
 
     def separator_set(self, separator):
         elm_toolbar_item_separator_set(self.obj, separator)
@@ -292,7 +292,7 @@ cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     cdef object prm
     if it == NULL:
         return None
-    data = elm_toolbar_item_data_get(it)
+    data = elm_object_item_data_get(it)
     if data == NULL:
         return None
     prm = <object>data

@@ -282,10 +282,13 @@ cdef extern from "Elementary.h":
     char*        elm_object_text_get(evas.c_evas.Evas_Object *obj)
 
     void         elm_object_item_disabled_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool disabled)
+    evas.c_evas.Eina_Bool elm_object_item_disabled_get(Elm_Object_Item *it)
     void         elm_object_item_text_set(Elm_Object_Item *item, char *label)
     char*        elm_object_item_text_get(Elm_Object_Item *item)
     void*        elm_object_item_data_get(Elm_Object_Item *item)
     void         elm_object_item_data_set(Elm_Object_Item *item, void *data)
+    void         elm_object_item_del(Elm_Object_Item *item)
+    evas.c_evas.Evas_Object* elm_object_item_widget_get(Elm_Object_Item *it)
 
     double       elm_scale_get()
     void         elm_scale_set(double scale)

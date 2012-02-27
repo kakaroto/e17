@@ -63,7 +63,7 @@ cdef class MenuItem:
         """Delete the menu item"""
         if self.obj == NULL:
             raise ValueError("Object already deleted")
-        elm_menu_item_del(self.obj)
+        elm_object_item_del(self.obj)
 
     def label_set(self, label):
         elm_object_item_text_set(self.obj, label)
@@ -167,7 +167,7 @@ cdef class MenuItemSeparator:
         """Delete the menu item"""
         if self.obj == NULL:
             raise ValueError("Object already deleted")
-        elm_menu_item_del(self.obj)
+        elm_object_item_del(self.obj)
 
 
 cdef class Menu(Object):

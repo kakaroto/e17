@@ -30,7 +30,7 @@ cdef class Progressbar(Object):
         return self.text_get()
 
     def icon_set(self, c_evas.Object icon):
-        elm_progressbar_icon_set(self.obj, icon.obj)
+        elm_object_part_content_set(self.obj, NULL, icon.obj)
 
     def span_size_set(self, size):
         elm_progressbar_span_size_set(self.obj, size)
