@@ -34,7 +34,6 @@ files_SCRIPTS = \
 	menu.js \
 	notepad.js \
 	notify.js \
-	pager.js \
 	panes.js \
 	photocam.js \
 	photo.js \
@@ -48,5 +47,7 @@ files_SCRIPTS = \
 	toggle.js \
 	twitter.js
 
+#deprecated
+#	pager.js 
 
 EXTRA_DIST = $(files_SCRIPTS)
