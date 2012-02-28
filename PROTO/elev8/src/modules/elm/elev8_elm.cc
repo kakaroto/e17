@@ -2991,16 +2991,16 @@ public:
 
         if (!list->list.empty() && args[0]->IsNumber())
           {
-             unsigned int val = args[0]->IntegerValue();
+             int val = args[0]->IntegerValue();
 
-             if (val==-1) //delete last one
+             if (val == -1) // delete last one
                val = list->list.size();
 
-             if (val < list->list.size())
+             if (val < (int) list->list.size())
                {
                   std::list<ListItem*>::iterator i = list->list.begin();
 
-                  for (;val>0; val--)
+                  for (; val > 0; val--)
                     i++;
 
                   ListItem *it = *i;
