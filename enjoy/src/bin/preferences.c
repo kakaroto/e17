@@ -160,7 +160,7 @@ preferences_item_add(Preferences *prefs, Enjoy_Preferences_Plugin *p)
         memcpy(cat->name, catname, catnamelen);
         eina_hash_add(prefs->categories, cat->name, cat);
 
-        cat->glit = elm_genlist_item_direct_sorted_insert
+        cat->glit = elm_genlist_item_sorted_insert
           (prefs->list, &preferences_itc_category, cat, NULL,
            ELM_GENLIST_ITEM_NONE, preferences_category_cmp, NULL, NULL);
 
@@ -171,7 +171,7 @@ preferences_item_add(Preferences *prefs, Enjoy_Preferences_Plugin *p)
 
    cat->items++;
    p->cat = cat;
-   p->glit = elm_genlist_item_direct_sorted_insert
+   p->glit = elm_genlist_item_sorted_insert
      (prefs->list, &preferences_itc_item, p, cat->glit,
       ELM_GENLIST_ITEM_NONE, preferences_item_cmp,
       preferences_item_selected, p);
