@@ -4800,24 +4800,22 @@ public:
         Local<Value> ypos = item->ToObject()->Get(String::New("y"));
         Local<Value> width = item->ToObject()->Get(String::New("w"));
         Local<Value> height = item->ToObject()->Get(String::New("h"));
+
+	if (!xpos->IsNumber() || !ypos->IsNumber() || !width->IsNumber() ||
+            !height->IsNumber())
+          {
+             ELM_ERR("Coordinates not set or not a number? x=%d, y=%d, w=%d or h=%d",
+                     xpos->IsNumber(), ypos->IsNumber(), width->IsNumber(),
+                     height->IsNumber());
+             return Undefined();
+          }
+
         int x,y,w,h;
 
-        if (xpos->IsNumber())
-          {
-             x = xpos->IntegerValue();
-          }
-        if (ypos->IsNumber())
-          {
-             y = ypos->IntegerValue();
-          }
-        if (width->IsNumber())
-          {
-             w = width->IntegerValue();
-          }
-        if (height->IsNumber())
-          {
-             h = height->IntegerValue();
-          }
+        x = xpos->IntegerValue();
+        y = ypos->IntegerValue();
+        w = width->IntegerValue();
+        h = height->IntegerValue();
 
         elm_table_pack(this->get(), child->get(), x, y, w, h);
         ELM_INF("Packing new table item at %d %d %d %d", x,y,w,h);
@@ -5892,7 +5890,7 @@ public:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmNaviframe *naviFrame = static_cast<CElmNaviframe *>(self);
-        CEvasObject *prev_btn, *next_btn, *content;
+        CEvasObject *prev_btn = NULL, *next_btn = NULL, *content;
         bool has_prev_btn = false, has_next_btn = false;
 
         if (!args[0]->IsObject())
@@ -6028,24 +6026,20 @@ public:
          Local<Value> width = item->ToObject()->Get(String::New("w"));
          Local<Value> height = item->ToObject()->Get(String::New("h"));
 
-         int x,y,w,h;
+         if (!xpos->IsNumber() || !ypos->IsNumber() || !width->IsNumber() ||
+             !height->IsNumber())
+           {
+              ELM_ERR("Coordinates not set or not a number? x=%d, y=%d, w=%d or h=%d",
+                      xpos->IsNumber(), ypos->IsNumber(), width->IsNumber(),
+                      height->IsNumber());
+              return;
+           }
 
-         if (xpos->IsNumber())
-           {
-              x = xpos->IntegerValue();
-           }
-         if (ypos->IsNumber())
-           {
-              y = ypos->IntegerValue();
-           }
-         if (width->IsNumber())
-           {
-              w = width->IntegerValue();
-           }
-         if (height->IsNumber())
-           {
-              h = height->IntegerValue();
-           }
+         int x,y,w,h;
+         x = xpos->IntegerValue();
+         y = ypos->IntegerValue();
+         w = width->IntegerValue();
+         h = height->IntegerValue();
 
          ELM_INF("Objects = %d %d %d %d", x,y,w,h);
          elm_grid_pack (this->get(), child->get(), x, y, w, h);
