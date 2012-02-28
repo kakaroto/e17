@@ -6010,22 +6010,18 @@ public:
          if (!item->IsObject())
            {
               // FIXME: permit adding strings here?
-              ELM_ERR( "grid item is not an object");
+              ELM_ERR("grid item is not an object");
               return;
            }
          Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
 
-         if (subobj->IsObject())
-           {
-              //TODO : need to check if this is an exisiting child.
-              child = realize_one(this, subobj);
-              if(!child)
-                 return;
-           }
-         else
-           {
-              return;
-           }
+         if (!subobj->IsObject())
+           return;
+
+         //TODO : need to check if this is an existing child.
+         child = realize_one(this, subobj);
+         if(!child)
+           return;
 
          Local<Value> xpos = item->ToObject()->Get(String::New("x"));
          Local<Value> ypos = item->ToObject()->Get(String::New("y"));
