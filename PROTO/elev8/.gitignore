@@ -36,3 +36,8 @@ Makefile.in
 /debian/*.substvars
 /debian/elev8/
 /debian/files
+
+*~
+.*.swp
+cscope.out
+tag
