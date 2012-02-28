@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
-filesdir = $(datadir)/elev8/data/javascript
+filesdir = $(pkgdatadir)/data/javascript
 
 files_SCRIPTS = \
 	actionslider.js \

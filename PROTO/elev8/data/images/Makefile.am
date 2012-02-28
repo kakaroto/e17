@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
-filesdir = $(datadir)/$(PACKAGE)/data/images
+filesdir = $(pkgdatadir)/data/images
 files_DATA = \
 	bg.png	\
 	bubble.png \
