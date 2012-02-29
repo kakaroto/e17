@@ -300,8 +300,8 @@ enna_grid_clear(Evas_Object *obj)
 static int
 _item_insert_cmp_cb(const void *data1, const void *data2)
 {
-   Grid_Item *li1 = (Grid_Item*) data1;
-   Grid_Item *li2 = (Grid_Item*) data2;
+   Grid_Item *li1 = (Grid_Item*) elm_object_item_data_get(data1);
+   Grid_Item *li2 = (Grid_Item*) elm_object_item_data_get(data2);
 
    if (ENNA_FILE_IS_BROWSABLE(li1->file) && !ENNA_FILE_IS_BROWSABLE(li2->file))
      return -1;
