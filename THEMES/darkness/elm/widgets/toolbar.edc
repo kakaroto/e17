@@ -110,6 +110,7 @@
               scale: 1;
               clip_to: "elm.text.clipper";
               description { state: "default" 0.0;
+                  align: 0.5 1.0;
                   fixed: 0 1;
                   rel1.to: "elm.text";
                   rel2.to: "elm.text";
@@ -139,11 +140,48 @@
                   text.min: 1 1;
               }
            }
+           part { name: "label2_new";
+              type: TEXT;
+              mouse_events:  0;
+              scale: 1;
+              clip_to: "elm.text_new.clipper";
+              description { state: "default" 0.0;
+                 align: 0.5 1.0;
+                 fixed: 0 1;
+                 rel1.to: "elm.text_new";
+                 rel2.to: "elm.text_new";
+                 color: DARKNESS_TEXT 255;
+                 text {
+                    font: "Sans";
+                    text_source: "elm.text_new";
+                    size: 10;
+                    min: 1 1;
+                    align: 0.5 0.5;
+                 }
+              }
+              description { state: "selected" 0.0;
+                 inherit: "default" 0.0;
+                 visible: 0;
+              }
+              description { state: "disabled" 0.0;
+                 inherit: "default" 0.0;
+                 color: DARKNESS_TEXT_DISABLED 128;
+                 color3: 0 0 0 0;
+              }
+              description { state: "disabled_visible" 0.0;
+                 inherit: "default" 0.0;
+                 color: DARKNESS_TEXT_DISABLED 128;
+                 color3: 0 0 0 0;
+                 visible: 1;
+                 text.min: 1 1;
+              }
+           }
            part { name: "elm.swallow.content";
                type: SWALLOW;
                clip_to: "elm.icon.clipper";
                description { state: "default" 0.0;
                    align: 0.5 0.5;
+                   fixed: 0 0;
                    rel1 {
                        relative: 0.0 0.0;
                        offset: 2 2;
@@ -155,6 +193,24 @@
                    }
                    color: 0 0 0 0;
                }
+           }
+           part { name: "elm.swallow.content_new";
+              type: SWALLOW;
+              clip_to: "elm.icon_new.clipper";
+              description { state: "default" 0.0;
+                 align: 0.5 0.5;
+                 fixed: 0 0;
+                 rel1 {
+                    relative: 0.0 0.0;
+                    offset: 2 2;
+                 }
+                 rel2 {
+                    to_y: "elm.text_new";
+                    relative: 1.0 0.0;
+                    offset: -3 -1;
+                 }
+                 color: 0 0 0 0;
+              }
            }
            part { name: "elm.text";
                type: TEXT;
@@ -199,11 +255,61 @@
                }
                description { state: "disabled_visible" 0.0;
                    inherit: "default" 0.0;
-                   color: 0 0 0 128;
+                   color: DARKNESS_TEXT_DISABLED 128;
                    color3: 0 0 0 0;
                    visible: 1;
                    text.min: 1 1;
                }
+           }
+           part { name: "elm.text_new";
+              type: TEXT;
+              effect: SOFT_OUTLINE;
+              mouse_events:  0;
+              clip_to: "elm.text_new.clipper";
+              scale: 1;
+              description { state: "default" 0.0;
+                 align: 0.5 1.0;
+                 fixed: 0 1;
+                 rel1 {
+                    relative: 0.0 1.0;
+                    offset:   0 -1;
+                 }
+                 rel2 {
+                    relative: 1.0 1.0;
+                    offset:   -1 -1;
+                 }
+                 visible: 0;
+                 color: DARKNESS_TEXT 200;
+                 color2: DARKNESS_DARK_BLUE 255;
+                 text {
+                    font: "Sans:style=Bold";
+                    size: 10;
+                    min: 1 1;
+                    align: 0.5 0.5;
+                    text_class: "toolbar_item";
+                 }
+              }
+              description { state: "selected" 0.0;
+                 inherit: "default" 0.0;
+                 visible: 1;
+              }
+              description { state: "visible" 0.0;
+                 inherit: "default" 0.0;
+                 visible: 1;
+                 text.min: 1 1;
+              }
+              description { state: "disabled" 0.0;
+                 inherit: "default" 0.0;
+                 color: 0 0 0 128;
+                 color3: 0 0 0 0;
+              }
+              description { state: "disabled_visible" 0.0;
+                 inherit: "default" 0.0;
+                 color: DARKNESS_TEXT_DISABLED 128;
+                 color3: 0 0 0 0;
+                 visible: 1;
+                 text.min: 1 1;
+              }
            }
            part { name: "elm.text.clipper";
                type: RECT;
@@ -214,6 +320,15 @@
                    color: 255 255 255 0;
                }
            }
+           part { name: "elm.text_new.clipper";
+              type: RECT;
+              description { state: "default" 0.0;
+                 color: 255 255 255 0;
+              }
+              description { state: "animation" 0.0;
+                 color: 255 255 255 255;
+              }
+           }
            part { name: "elm.icon.clipper";
                type: RECT;
                description { state: "default" 0.0;
@@ -223,6 +338,15 @@
                    color: 255 255 255 0;
                }
            }
+           part { name: "elm.icon_new.clipper";
+              type: RECT;
+              description { state: "default" 0.0;
+                 color: 255 255 255 0;
+              }
+              description { state: "animation" 0.0;
+                 color: 255 255 255 255;
+              }
+           }
            PART_EVENTS("bg",)
        }
        programs {
@@ -231,12 +355,14 @@
                source:  "elm";
                action:  STATE_SET "selected" 0.0;
                target:  "label";
+               target:  "label2_new";
            }
            program { name: "go_active2";
                signal:  "elm,state,selected";
                source:  "elm";
                action:  STATE_SET "selected" 0.0;
                target:  "elm.text";
+               target:  "elm.text_new";
                transition: SINUSOIDAL 0.2;
                after: "go_active";
                BUTTON_GLOW_DOWN_ACTION("bg")
@@ -248,6 +374,7 @@
                target:  "bg_glow";
                target:  "bg_glow_down";
                target:  "elm.text";
+               target:  "elm.text_new";
                transition: SINUSOIDAL 0.05;
            }
            program { name: "go_passive2";
@@ -255,6 +382,7 @@
                source:  "elm";
                action:  STATE_SET "default" 0.0;
                target:  "label";
+               target:  "label2_new";
                transition: SINUSOIDAL 0.05;
                after: "go_passive";
            }
@@ -299,6 +427,7 @@
            program {
               DISABLE_PROGRAM_PART
               target: "label";
+              target: "label2_new";
               after: "disable_text";
            }
            BUTTON_GLOW_PROGRAM("bg")
@@ -311,16 +440,19 @@
                    if (!strcmp(st, "visible"))
                    {
                       set_state(PART:"elm.text", "disabled_visible", 0.0);
+                      set_state(PART:"elm.text_new", "disabled_visible", 0.0);
                    }
                    else
                    {
                       set_state(PART:"elm.text", "disabled", 0.0);
+                      set_state(PART:"elm.text_new", "disabled", 0.0);
                    }
                }
            }
            program {
               ENABLE_PROGRAM_PART
               target: "label";
+              target: "label2_new";
               after: "enable_text";
            }
            program { name: "enable_text";
@@ -331,10 +463,12 @@
                    if (!strcmp(st, "disabled_visible"))
                    {
                       set_state(PART:"elm.text", "visible", 0.0);
+                      set_state(PART:"elm.text_new", "visible", 0.0);
                    }
                    else
                    {
                       set_state(PART:"elm.text", "default", 0.0);
+                      set_state(PART:"elm.text_new", "default", 0.0);
                    }
                }
            }
@@ -353,6 +487,7 @@
               source: "elm";
               action: STATE_SET "animation" 0.0;
               target: "elm.text.clipper";
+              target: "elm.text_new.clipper";
               transition: LINEAR 0.2;
               after: "label_set,animation,done";
            }
@@ -364,6 +499,7 @@
               source: "elm";
               action: STATE_SET "default" 0.0;
               target: "elm.text.clipper";
+              target: "elm.text_new.clipper";
            }
            program { name: "icon_set,animation,forward";
               signal: "elm,state,icon_set,forward";
@@ -380,6 +516,7 @@
               source: "elm";
               action: STATE_SET "animation" 0.0;
               target: "elm.icon.clipper";
+              target: "elm.icon_new.clipper";
               transition: LINEAR 0.2;
               after: "icon_set,animation,done";
            }
@@ -391,6 +528,7 @@
               source: "elm";
               action: STATE_SET "default" 0.0;
               target: "elm.icon.clipper";
+              target: "elm.icon_new.clipper";
            }
        }
    }
@@ -448,8 +586,40 @@
                text.min: 1 1;
             }
          }
+         part { name: "elm.text_new";
+            description { state: "default" 0.0;
+               align: 1 0.5;
+               min: 0 1;
+               rel1.offset: 1 0;
+               rel1.relative: 1.0 0.0;
+               rel1.to_x: "elm.swallow.content";
+               rel2.relative: 1.0 1.0;
+               text.align: 0 0.5;
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               color: DARKNESS_TEXT_DISABLED 128;
+               color3: 0 0 0 0;
+            }
+            description { state: "disabled_visible" 0.0;
+               inherit: "default" 0.0;
+               color: DARKNESS_TEXT_DISABLED 128;
+               color3: 0 0 0 0;
+               visible: 1;
+               text.min: 1 1;
+            }
+         }
       }
-}
+   }
 
    group { name: "elm/toolbar/separator/default";
       images {
