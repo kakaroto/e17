@@ -16,11 +16,13 @@ static Eina_Bool _excessive_add_up(void *data);
 static int
 _excessive_file_info_cmp(const void *a, const void *b)
 {
-   const Excessive_File_Info *fa = a;
-   const Excessive_File_Info *fb = b;
+   Elm_Object_Item *it1 = a;
+   Elm_Object_Item *it2 = b;
+   const Excessive_File_Info *fa = elm_object_item_data_get(it1);
+   const Excessive_File_Info *fb = elm_object_item_data_get(it2);
 
-   if (fa->subdir) return -1;
-   if (fb->subdir) return 1;
+   if (!fa || fa->subdir) return -1;
+   if (!fb || fb->subdir) return 1;
 
    if (fa->info.type == EINA_FILE_DIR)
      {
@@ -167,9 +169,9 @@ _excessive_add_up(void *data)
    info = evas_object_data_get(grid, "excessive/up");
    if (info)
      {
-       info->item = elm_gengrid_item_sorted_insert(grid, info->type->class,
-						   info, _excessive_file_info_cmp,
-						   NULL, NULL);
+        info->item = elm_gengrid_item_sorted_insert(grid, info->type->class,
+                                                    info, _excessive_file_info_cmp,
+                                                    NULL, NULL);
        if (!evas_object_data_get(grid, "excessive/eio"))
          elm_gengrid_item_show(info->item);
        evas_object_data_set(grid, "excessive/up_item", info->item);
