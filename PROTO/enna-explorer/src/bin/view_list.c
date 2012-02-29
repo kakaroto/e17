@@ -484,8 +484,10 @@ enna_list_add(Evas_Object *parent)
 static int
 _item_insert_cmp_cb(const void *data1, const void *data2)
 {
-   List_Item *li1 = (List_Item*) data1;
-   List_Item *li2 = (List_Item*) data2;
+   Elm_Object_Item *it1 = data1;
+   Elm_Object_Item *it2 = data2;
+   List_Item *li1 = (List_Item*) elm_object_item_data_get(it1);
+   List_Item *li2 = (List_Item*) elm_object_item_data_get(it2);
 
    if (ENNA_FILE_IS_BROWSABLE(li1->file) && !ENNA_FILE_IS_BROWSABLE(li2->file))
      {
