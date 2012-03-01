@@ -91,7 +91,7 @@
       }
    }
 
-   group { name: "elm/button/base/toolbar/default";
+   group { name: "elm/toolbar/item/default";
        data.item: "transition_animation_on" "1";
        parts {
            part { name: "bg";
@@ -176,7 +176,7 @@
                  text.min: 1 1;
               }
            }
-           part { name: "elm.swallow.content";
+           part { name: "elm.swallow.icon";
                type: SWALLOW;
                clip_to: "elm.icon.clipper";
                description { state: "default" 0.0;
@@ -194,7 +194,7 @@
                    color: 0 0 0 0;
                }
            }
-           part { name: "elm.swallow.content_new";
+           part { name: "elm.swallow.icon_new";
               type: SWALLOW;
               clip_to: "elm.icon_new.clipper";
               description { state: "default" 0.0;
@@ -533,10 +533,10 @@
        }
    }
 
-   group { name: "elm/button/base/toolbar/item_horizontal";
-      inherit: "elm/button/base/toolbar/default";
+   group { name: "elm/toolbar/item/item_horizontal";
+      inherit: "elm/toolbar/item/default";
       parts {
-         part { name: "elm.swallow.content";
+         part { name: "elm.swallow.icon";
             description { state: "default" 0.0;
                fixed: 1 1;
                aspect: 1 1;
@@ -549,7 +549,7 @@
                color: 0 0 0 0;
             }
          }
-         part { name: "elm.swallow.content_new";
+         part { name: "elm.swallow.icon_new";
             description { state: "default" 0.0;
                fixed: 1 1;
             }
@@ -560,7 +560,7 @@
                min: 0 1;
                rel1.offset: 1 0;
                rel1.relative: 1.0 0.0;
-               rel1.to_x: "elm.swallow.content";
+               rel1.to_x: "elm.swallow.icon";
                rel2.relative: 1.0 1.0;
                text.align: 0 0.5;
             }
@@ -592,7 +592,7 @@
                min: 0 1;
                rel1.offset: 1 0;
                rel1.relative: 1.0 0.0;
-               rel1.to_x: "elm.swallow.content";
+               rel1.to_x: "elm.swallow.icon";
                rel2.relative: 1.0 1.0;
                text.align: 0 0.5;
             }
