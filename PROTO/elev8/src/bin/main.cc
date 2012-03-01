@@ -205,17 +205,14 @@ require(const Arguments& args)
      return scope.Close(module_cache->Get(module_name));
 
    name_space = Object::New();
-   if (!module_native_load(module_name, name_space))
+   if (module_native_load(module_name, name_space) || module_js_load(module_name, name_space))
      {
-        if (!module_js_load(module_name, name_space))
-          {
-             Local<String> msg = String::Concat(String::New("Cannot load module: "), module_name);
-             return scope.Close(ThrowException(Exception::Error(msg)));
-          }
+        module_cache->Set(module_name, Persistent<Object>::New(name_space));
+        return scope.Close(name_space);
      }
 
-   module_cache->Set(module_name, Persistent<Object>::New(name_space));
-   return scope.Close(name_space);
+   Local<String> msg = String::Concat(String::New("Cannot load module: "), module_name);
+   return scope.Close(ThrowException(Exception::Error(msg)));
 }
 
 static Handle<Value>
