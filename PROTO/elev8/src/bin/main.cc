@@ -15,7 +15,7 @@
 using namespace v8;
 int elev8_log_domain = -1;
 
-#define MODLOAD_ENV "ELEv8_MODPATH"
+#define MODLOAD_ENV "ELEV8_MODPATH"
 #define MODLOAD_ENV_DEFAULT_DIRS ".:" PACKAGE_LIB_DIR
 
 static Persistent<Object> module_cache;
