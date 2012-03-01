@@ -33,15 +33,16 @@ Handle<Value>
 print(const Arguments& args)
 {
    HandleScope handle_scope;
+   int argument_count;
 
-   switch (args.Length()) {
+   switch ((argument_count = args.Length())) {
    case 0:
      goto end;
    case 1:
      fputs(*String::Utf8Value(args[0]), stdout);
      break;
    default:
-     for (int i = 0; i < args.Length(); i++)
+     for (int i = 0; i < argument_count; i++)
        fputs(*String::Utf8Value(args[i]), stdout);
    }
 
