@@ -10,7 +10,6 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <v8.h>
-#include <module.h>
 
 #define ELM_DBG(...) EINA_LOG_DOM_DBG(elev8_elm_log_domain, __VA_ARGS__)
 #define ELM_INF(...) EINA_LOG_DOM_INFO(elev8_elm_log_domain, __VA_ARGS__)

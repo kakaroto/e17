@@ -8,7 +8,6 @@
 #include <list>
 #include <map>
 #include <string>
-#include <module.h>
 #include <elev8_elm.h>
 
 #define ELM_MODULE_NAME "elm"

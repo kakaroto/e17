@@ -1,5 +1,4 @@
 #include <elev8_http.h>
-#include <module.h>
 
 using namespace v8;
 int elev8_http_log_domain = -1;
