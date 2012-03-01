@@ -69,7 +69,7 @@
   If you have made changes you'd like to share, you can generate a patch
   file from your changes with:
  </p>
-<p><pre><code>svn diff
+<p><pre><code>svn diff -x -up
 </code></pre></p>
  <p>
   Or with git:
@@ -447,7 +447,10 @@ eet_sync(Eet_File *ef)
   inclusion. Also remember to respect the formatting and conventions of
   the existing code as it gets a bit tedious asking for basic changes
   like naming, spacing and general style. We'd rather focus on the
-  actual algorithms and features involved.
+  actual algorithms and features involved. Refer
+  <a href=http://trac.enlightenment.org/e/wiki/PatchReview>
+  PatchReview wiki page</a>
+  for the check points when you make a patch.
  </p>
  <p>
   If you want developer access (SVN commit access) first you will need
