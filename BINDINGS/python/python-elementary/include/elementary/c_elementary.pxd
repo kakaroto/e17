@@ -220,6 +220,12 @@ cdef extern from "Elementary.h":
     void elm_run() nogil
     void elm_exit()
 
+    # Engine related
+    char *elm_engine_get()
+    void elm_engine_set(char *engine)
+    char *elm_preferred_engine_get()
+    void elm_preferred_engine_set(char *engine)
+
     # Quicklaunch
     void         elm_quicklaunch_init(int argc, char **argv)
     void         elm_quicklaunch_sub_init(int argc, char **argv)

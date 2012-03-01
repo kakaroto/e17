@@ -148,6 +148,26 @@ def focus_highlight_animate_get():
 def focus_highlight_animate_set(animate):
     elm_focus_highlight_animate_set(animate)
 
+def preferred_engine_get():
+    cdef const_char_ptr l
+    l = elm_preferred_engine_get()
+    # if l == NULL:
+        # return None
+    return l if l != NULL else None
+
+def preferred_engine_set(engine):
+    elm_preferred_engine_set(engine)
+
+def engine_get():
+    cdef const_char_ptr l
+    l = elm_engine_get()
+    # if l == NULL:
+        # return None
+    return l if l != NULL else None
+
+def engine_set(engine):
+    elm_engine_set(engine)
+
 cdef object _elm_widget_type_mapping
 
 _elm_widget_type_mapping = {}
