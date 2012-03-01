@@ -51,17 +51,12 @@ boom(TryCatch &try_catch)
    String::Utf8Value error(try_catch.Exception());
 
    if (msg.IsEmpty())
-     {
-        ERR("%s", *error);
-        printf("%s\n", *error);
-     }
+     ERR("%s", *error);
    else
      {
         String::Utf8Value file(msg->GetScriptResourceName());
         int line = msg->GetLineNumber();
-
-        INF("%s:%d %s", *file, line, *error);
-        printf("%s:%d %s\n", *file, line, *error);
+        ERR("%s:%d %s", *file, line, *error);
      }
    exit(1);
 }
