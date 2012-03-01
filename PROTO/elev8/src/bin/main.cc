@@ -5,11 +5,9 @@
  * then exit
  */
 
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <elev8_utils.h>
+#include <dlfcn.h>
 #include <elev8_common.h>
-#include <module.h>
+#include <elev8_utils.h>
 
 using namespace v8;
 int elev8_log_domain = -1;
