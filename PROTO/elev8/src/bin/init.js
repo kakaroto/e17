@@ -1,7 +1,7 @@
 /*
  * Elev8 initialization file. This is read every time elev8 boots up. Things
  * here will be available in the global context, unlike modules, which will
- * be available in their own context.
+ * be evaluated in their own context.
  */
 
 /*
