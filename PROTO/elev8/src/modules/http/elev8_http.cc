@@ -8,7 +8,7 @@ int elev8_http_log_domain = -1;
 int XMLHttpRequest::fd_counter = 0;
 Handle<ObjectTemplate> xmlHttpReqObj;
 
-Eina_Bool data_callback(void *data, int type, void *event)
+Eina_Bool data_callback(void *data, int, void *event)
 {
    Ecore_Con_Event_Url_Data *url_data = (Ecore_Con_Event_Url_Data *)event;
    void *ptr = ecore_con_url_data_get(url_data->url_con);
@@ -29,7 +29,7 @@ Eina_Bool data_callback(void *data, int type, void *event)
    return EINA_FALSE;
 }
 
-Eina_Bool completion_callback(void *data, int type, void *event)
+Eina_Bool completion_callback(void *data, int, void *event)
 {
    HandleScope handle_scope;
    Ecore_Con_Event_Url_Complete *url_complete = (Ecore_Con_Event_Url_Complete *)event;
@@ -81,7 +81,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 		out.write((char *)eina_binbuf_string_get(reqObj->data), 
 				   eina_binbuf_length_get(reqObj->data));
 		out.close();
-		HTTP_INF(  "Size of response Data = %lu bytes",
+		HTTP_INF(  "Size of response Data = %d bytes",
 						eina_binbuf_length_get(reqObj->data));
    		reqObj->responseText =  static_cast<Persistent<String> >(String::New(buf));
 	     }
@@ -126,8 +126,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 }
 
 Handle<Value> 
-response_text_getter(Local<String> property, 
-const AccessorInfo& info)
+response_text_getter(Local<String>, const AccessorInfo& info)
 {
    Local<Object> self = info.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -138,8 +137,7 @@ const AccessorInfo& info)
 }
 
 Handle<Value> 
-status_getter(Local<String> property, 
-const AccessorInfo& info)
+status_getter(Local<String>, const AccessorInfo& info)
 {
    Local<Object> self = info.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -149,8 +147,7 @@ const AccessorInfo& info)
 }
 
 Handle<Value> 
-readystate_getter(Local<String> property, 
-const AccessorInfo& info)
+readystate_getter(Local<String>, const AccessorInfo& info)
 {
    Local<Object> self = info.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -310,7 +307,7 @@ ecore_con_send(const Arguments& args)
    return Undefined();
 }
 
-Handle<Value> createXMLHttpReqInstance(const Arguments& args)
+Handle<Value> createXMLHttpReqInstance(const Arguments&)
 {
    HandleScope scope;
 
