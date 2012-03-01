@@ -29,7 +29,7 @@ add_symbols_to_context_global(Handle<ObjectTemplate> global)
    global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
 }
 
-Handle<Value>
+static Handle<Value>
 print(const Arguments& args)
 {
    HandleScope handle_scope;
@@ -53,7 +53,7 @@ end:
    return handle_scope.Close(Undefined());
 }
 
-bool
+static bool
 run_script(const char *filename)
 {
    HandleScope handle_scope;
@@ -222,40 +222,6 @@ modules(const Arguments&)
    return scope.Close(module_cache);
 }
 
-void
-elev8_run(const char *script)
-{
-   HandleScope handle_scope;
-   Handle<ObjectTemplate> global = ObjectTemplate::New();
-
-   add_symbols_to_context_global(global);
-
-   Persistent<Context> context = Context::New(NULL, global);
-   Context::Scope context_scope(context);
-
-   module_cache = Persistent<Object>::New(Object::New());
-
-   if (!run_script(PACKAGE_LIB_DIR "/../init.js"))
-     goto end;
-   if (!run_script(script))
-     goto end;
-
-   ecore_main_loop_begin();
-
-end:
-   context.Dispose();
-   module_cache.Dispose();
-}
-
-static void
-main_help(const char *progname)
-{
-   printf("Usage:\n"
-       "\t%s input_file.js\n"
-       "\te.g. %s ../../data/javascript/button.js\n",
-	progname, progname);
-}
-
 int
 main(int argc, char **argv)
 {
@@ -272,13 +238,35 @@ main(int argc, char **argv)
    if (argc < 2)
      {
         ERR("%s: Error: no input file specified.", argv[0]);
-        main_help(argv[0]);
+        printf("Usage:\n"
+            "\t%s input_file.js\n"
+            "\te.g. %s ../../data/javascript/button.js\n",
+             argv[0], argv[0]);
         exit(-1);
      }
 
-
    V8::SetFlagsFromCommandLine(&argc, argv, true);
-   elev8_run(argv[1]);
+
+   HandleScope handle_scope;
+   Handle<ObjectTemplate> global = ObjectTemplate::New();
+
+   add_symbols_to_context_global(global);
+
+   Persistent<Context> context = Context::New(NULL, global);
+   Context::Scope context_scope(context);
+
+   module_cache = Persistent<Object>::New(Object::New());
+
+   if (!run_script(PACKAGE_LIB_DIR "/../init.js"))
+     goto end;
+   if (!run_script(argv[1]))
+     goto end;
+
+   ecore_main_loop_begin();
+
+end:
+   context.Dispose();
+   module_cache.Dispose();
    V8::Dispose();
 
    return 0;
