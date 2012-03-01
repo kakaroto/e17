@@ -175,6 +175,12 @@ module_js_load(Handle<String> module_name, Handle<Object> name_space)
      }
     
    mod_script->Run();
+   if (try_catch.HasCaught())
+     {
+        mod_context.Dispose();
+        free(file_name);
+        return false;
+     }
 
    name_space->Set(String::NewSymbol("__file_name"), String::New(file_name));
    // FIXME: How to wrap mod_context so that t can be Disposed() properly?
