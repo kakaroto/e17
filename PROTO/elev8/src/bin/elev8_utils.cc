@@ -1,19 +1,13 @@
+#include <string.h>
 #include <elev8_utils.h>
 
 using namespace v8;
 
 int shebang_length(const char *p, int len)
 {
-   int i = 0;
-
-   if ((len > 2) && (p[0] == '#') && (p[1] == '!'))
-     {
-        for (i = 2; i < len && p[i] != '\n'; i++)
-          ;
-        /* leave first newline in so line numbers are correct */
-     }
-
-   return i;
+   if ((len >= 2) && (p[0] == '#') && (p[1] == '!'))
+     return (const char *)memchr(&p[2], '\n', len) - p;
+   return 0;
 }
 
 Local<String>
@@ -38,7 +32,6 @@ string_from_file(const char *filename)
      goto fail;
 
    n = shebang_length(p, len);
-
    ret = String::New(&p[n], len - n);
 
 fail:
