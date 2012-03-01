@@ -10,10 +10,10 @@ int shebang_length(const char *p, int len)
    return 0;
 }
 
-Local<String>
+Handle<String>
 string_from_file(const char *filename)
 {
-   Local<String> ret;
+   Handle<String> ret;
    int fd, len = 0;
    char *bad_ret = reinterpret_cast<char*>(MAP_FAILED);
    char *p = bad_ret;
@@ -61,18 +61,17 @@ boom(TryCatch &try_catch)
    exit(1);
 }
 
-
 void compile_and_run(Handle<String> source)
 {
-   
    TryCatch try_catch;
+
    /* compile */
-   Handle<Script> script = Script::Compile(source);
+   Local<Script> script = Script::Compile(source);
    if (try_catch.HasCaught())
      boom(try_catch);
 
    /* run */
-   Handle<Value> result = script->Run();
+   Local<Value> result = script->Run();
    if (try_catch.HasCaught())
      boom(try_catch);
 
@@ -81,5 +80,4 @@ void compile_and_run(Handle<String> source)
         String::Utf8Value res(result->ToDetailString());
         INF("Result of script run = %s", *res);
      }
-
 }
