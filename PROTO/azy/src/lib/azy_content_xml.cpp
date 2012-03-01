@@ -338,25 +338,15 @@ azy_content_serialize_response_xml(Azy_Content *content)
    return EINA_TRUE;
 }
 
-Eina_Bool
+static Eina_Bool
 azy_content_deserialize_request_xml(Azy_Content *content,
-                                    char        *buf,
-                                    ssize_t      len)
+                                    xml_document &doc)
 {
-   xml_document doc;
    xpath_node_set params, name;
    const char *mn;
    static xpath_query pquery("/methodCall/params/param/value");
    static xpath_query nquery("/methodCall/methodName");
    ptrdiff_t num;
-
-   if ((!content) || (!buf)) return EINA_FALSE; /* FIXME: ESNV? */
-
-   if (!doc.load_buffer_inplace(buf, len))
-     {
-        azy_content_error_code_set(content, AZY_ERROR_REQUEST_XML_DOC);
-        return EINA_FALSE;
-     }
 
    if ((!doc.first_child()) || (doc.first_child() != doc.last_child())) /* more than methodCall at root */
      return EINA_FALSE;
@@ -417,24 +407,14 @@ azy_content_deserialize_request_xml(Azy_Content *content,
    return EINA_TRUE;
 }
 
-Eina_Bool
+static Eina_Bool
 azy_content_deserialize_response_xml(Azy_Content *content,
-                                     char        *buf,
-                                     ssize_t      len)
+                                     xml_document &doc)
 {
-   xml_document doc;
    xpath_node_set params;
    static xpath_query pquery("/methodResponse/params/param/value");
    static xpath_query fcquery("/methodResponse/fault/value/struct/member/value/int");
    static xpath_query fsquery("/methodResponse/fault/value/struct/member/value/string");
-
-   if ((!content) || (!buf)) return EINA_FALSE; /* FIXME: ESNV? */
-
-   if (!doc.load_buffer_inplace(buf, len))
-     {
-        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
-        return EINA_FALSE;
-     }
 
    if ((!doc.first_child()) || (doc.first_child() != doc.last_child())) /* more than methodResponse at root */
      return EINA_FALSE;
@@ -518,22 +498,14 @@ azy_content_deserialize_response_xml(Azy_Content *content,
    return EINA_TRUE;
 }
 
-Eina_Bool
+static Eina_Bool
 azy_content_deserialize_rss_xml(Azy_Content *content,
-                                char        *buf,
-                                ssize_t      len)
+                                xml_document &doc)
 {
-   xml_document doc;
    xpath_node_set channel, img;
    Azy_Rss *rss;
    static xpath_query cquery("/rss/channel");
    static xpath_query iquery("/rss/channel/image/url");
-
-   if (!doc.load_buffer_inplace(buf, len))
-     {
-        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
-        return EINA_FALSE;
-     }
 
    channel = cquery.evaluate_node_set(doc);
 
@@ -769,27 +741,12 @@ atomEntry =
 
 Eina_Bool
 azy_content_deserialize_atom_xml(Azy_Content *content,
-                                 char        *buf,
-                                 ssize_t      len)
+                                 xml_document &doc)
 {
-   xml_document doc;
    xml_node node;
    xml_attribute attr;
    Azy_Rss *rss;
 
-   if (!doc.load_buffer_inplace(buf, len))
-     {
-        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
-        return EINA_FALSE;
-     }
-
-   /* ensure this is actually atom format */
-   attr = doc.first_child().attribute("xmlns");
-   if (attr.empty() || strcmp(attr.value(), "http://www.w3.org/2005/Atom"))
-     {
-        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
-        return EINA_FALSE;
-     }
    rss = azy_rss_new();
    if (!rss)
      {
@@ -871,4 +828,84 @@ atomFeed =
      }
    content->ret = rss;
    return EINA_TRUE;
+}
+
+Eina_Bool
+azy_content_deserialize_response_xml(Azy_Content *content,
+                                    char        *buf,
+                                    ssize_t      len)
+{
+   xml_document doc;
+
+   if ((!content) || (!buf)) return EINA_FALSE;
+
+   if (!doc.load_buffer_inplace(buf, len))
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
+        return EINA_FALSE;
+     }
+
+   return azy_content_deserialize_response_xml(content, doc);
+}
+
+Eina_Bool
+azy_content_deserialize_request_xml(Azy_Content *content,
+                                    char        *buf,
+                                    ssize_t      len)
+{
+   xml_document doc;
+
+   if ((!content) || (!buf)) return EINA_FALSE;
+
+   if (!doc.load_buffer_inplace(buf, len))
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
+        return EINA_FALSE;
+     }
+
+   return azy_content_deserialize_request_xml(content, doc);
+}
+
+Eina_Bool
+azy_content_deserialize_xml(Azy_Content *content,
+                            char        *buf,
+                            ssize_t      len)
+{
+   xml_document doc;
+   xml_attribute attr;
+   xml_node node;
+
+   if ((!content) || (!buf)) return EINA_FALSE;
+
+   if (!doc.load_buffer_inplace(buf, len))
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
+        return EINA_FALSE;
+     }
+
+   node = doc.first_child();
+   if (node.empty())
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
+        return EINA_FALSE;
+     }
+   switch (node.name()[0])
+     {
+      case 'r':
+        if (!strcmp(node.name(), "rss"))
+          return azy_content_deserialize_rss_xml(content, doc);
+        break;
+      case 'm':
+        if (!strcmp(node.name(), "methodCall"))
+          return azy_content_deserialize_request_xml(content, doc);
+        else if (!strcmp(node.name(), "methodResponse"))
+          return azy_content_deserialize_response_xml(content, doc);
+      default:
+        break;
+     }
+   attr = doc.first_child().attribute("xmlns");
+   if ((!attr.empty()) && (!strcmp(attr.value(), "http://www.w3.org/2005/Atom")))
+     return azy_content_deserialize_atom_xml(content, doc);
+   azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
+   return EINA_FALSE;
 }

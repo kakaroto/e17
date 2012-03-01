@@ -150,9 +150,9 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
      {
         Eina_Bool success;
         if (hd->recv->transport == AZY_NET_TRANSPORT_XML)
-          success = azy_content_deserialize_rss_xml(content, (char *)hd->recv->buffer, hd->recv->size);
+          success = azy_content_deserialize_xml(content, (char *)hd->recv->buffer, hd->recv->size);
         else
-          success = azy_content_deserialize_atom_xml(content, (char *)hd->recv->buffer, hd->recv->size);
+          success = azy_content_deserialize_xml(content, (char *)hd->recv->buffer, hd->recv->size);
         if (!success)
           {
              if (!azy_content_error_is_set(content))

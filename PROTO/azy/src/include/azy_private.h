@@ -402,10 +402,9 @@ Azy_Rss_Item *azy_rss_item_new(void);
 #ifdef HAVE_XML
 Eina_Bool     azy_content_serialize_request_xml(Azy_Content *content);
 Eina_Bool     azy_content_serialize_response_xml(Azy_Content *content);
+Eina_Bool     azy_content_deserialize_xml(Azy_Content *content, char *buf, ssize_t len);
 Eina_Bool     azy_content_deserialize_request_xml(Azy_Content *content, char *buf, ssize_t len);
 Eina_Bool     azy_content_deserialize_response_xml(Azy_Content *content, char *buf, ssize_t len);
-Eina_Bool     azy_content_deserialize_rss_xml(Azy_Content *content, char *buf, ssize_t len);
-Eina_Bool     azy_content_deserialize_atom_xml(Azy_Content *content, char *buf, ssize_t len);
 #endif
 Eina_Bool     azy_content_serialize_request_json(Azy_Content *content);
 Eina_Bool     azy_content_serialize_response_json(Azy_Content *content);

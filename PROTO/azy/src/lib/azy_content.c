@@ -75,19 +75,18 @@ azy_content_deserialize(Azy_Content *content,
    if (net->transport == AZY_NET_TRANSPORT_JSON)
      return azy_content_deserialize_json(content, (char *)net->buffer, net->size);
 
-   ERR("UNSUPPORTED TYPE PASSED! FIXME!");
-   return EINA_FALSE;
-#if 0
-   if (type == AZY_NET_TRANSPORT_XML)
+
+   if (net->transport == AZY_NET_TRANSPORT_XML)
      {
 #ifdef HAVE_XML
-        return azy_content_deserialize_xml(content, buf, len);
+        return azy_content_deserialize_xml(content, (char*)net->buffer, net->size);
 #else
         ERR("%s", eina_error_msg_get(AZY_ERROR_XML_UNSUPPORTED));
         return NULL;
 #endif
      }
-#endif
+   ERR("UNSUPPORTED TYPE PASSED! FIXME!");
+   return EINA_FALSE;
 }
 
 /**
