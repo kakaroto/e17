@@ -52,18 +52,20 @@ end:
    return handle_scope.Close(Undefined());
 }
 
-void
+bool
 run_script(const char *filename)
 {
    HandleScope handle_scope;
 
    Handle<String> source = string_from_file(filename);
-   if (source.IsEmpty())
+   if (!source.IsEmpty())
      {
-        ERR("Failed to read source %s", filename);
-        return;
+        compile_and_run(source);
+        return true;
      }
-   compile_and_run(source);
+
+   ERR("Failed to read source %s", filename);
+   return false;
 }
 
 static char *
@@ -229,11 +231,14 @@ elev8_run(const char *script)
 
    module_cache = Persistent<Object>::New(Object::New());
 
-   run_script(PACKAGE_LIB_DIR "/../init.js");
-   run_script(script);
+   if (!run_script(PACKAGE_LIB_DIR "/../init.js"))
+     goto end;
+   if (!run_script(script))
+     goto end;
 
    ecore_main_loop_begin();
 
+end:
    context.Dispose();
    module_cache.Dispose();
 }
