@@ -19,8 +19,7 @@ elev8lib_SCRIPTS = init.js
 
 elev8_SOURCES = \
 	main.cc \
-	elev8_utils.cc \
-	downloader.cc
+	elev8_utils.cc
 
 elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@
 
