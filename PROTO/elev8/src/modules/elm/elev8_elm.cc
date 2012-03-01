@@ -6456,6 +6456,19 @@ theme_setter(Local<String> property, Local<Value> value,
 extern "C"
 void RegisterModule(Handle<Object> target)
 {
+   int argc = 0;
+   char *argv[] = {};
+
+   elev8_elm_log_domain = eina_log_domain_register("elev8-elm", EINA_COLOR_GREEN);
+   if (!elev8_elm_log_domain)
+     {
+        ELM_ERR( "could not register elev8-elm log domain.");
+        elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
+     }
+   ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
+
+   elm_init(argc, argv);
+
    target->Set(String::NewSymbol("window"), FunctionTemplate::New(elm_main_window)->GetFunction());
    target->Set(String::NewSymbol("loop_time"), FunctionTemplate::New(elm_loop_time)->GetFunction());
    target->Set(String::NewSymbol("exit"), FunctionTemplate::New(elm_exit)->GetFunction());
@@ -6467,12 +6480,4 @@ void RegisterModule(Handle<Object> target)
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
    the_tmpdir = Persistent<String>::New(String::New(PACKAGE_TMP_DIR "/" ));
-
-   elev8_elm_log_domain = eina_log_domain_register("elev8-elm", EINA_COLOR_GREEN);
-   if (!elev8_elm_log_domain)
-     {
-        ELM_ERR( "could not register elev8-elm log domain.");
-        elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
-     }
-   ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
 }

@@ -241,7 +241,7 @@ main_help(const char *progname)
 }
 
 int
-elm_main(int argc, char **argv)
+main(int argc, char **argv)
 {
    eina_init();
    elev8_log_domain = eina_log_domain_register("elev8", EINA_COLOR_ORANGE);
@@ -267,5 +267,3 @@ elm_main(int argc, char **argv)
 
    return 0;
 }
-
-ELM_MAIN()
