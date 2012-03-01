@@ -32,15 +32,24 @@ add_symbols_to_context_global(Handle<ObjectTemplate> global)
 Handle<Value>
 print(const Arguments& args)
 {
-   for (int i = 0; i < args.Length(); i++)
-     {
-        HandleScope handle_scope;
-        String::Utf8Value str(args[i]);
-        printf("%s%s", i ? " ":"", *str);
-     }
-   printf("\n");
+   HandleScope handle_scope;
+
+   switch (args.Length()) {
+   case 0:
+     goto end;
+   case 1:
+     fputs(*String::Utf8Value(args[0]), stdout);
+     break;
+   default:
+     for (int i = 0; i < args.Length(); i++)
+       fputs(*String::Utf8Value(args[i]), stdout);
+   }
+
+end:
+   putchar('\n');
    fflush(stdout);
-   return Undefined();
+
+   return handle_scope.Close(Undefined());
 }
 
 void
