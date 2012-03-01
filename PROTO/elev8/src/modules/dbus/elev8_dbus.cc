@@ -640,7 +640,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
    return EINA_TRUE;
 }
 
-Handle<Value> dbus_method_invoke(const Arguments &args)
+Handle<Value> dbus_method_invoke(const Arguments&)
 {
    HandleScope scope;
 
@@ -848,7 +848,8 @@ Handle<Value> createDBusInstance(const Arguments& args)
    return dbus->obj; 
 }
 
-int dbus_module_init(Handle<ObjectTemplate> global, void *data)
+extern "C"
+void RegisterModule(Handle<ObjectTemplate>)
 {
    elev8_dbus_log_domain = eina_log_domain_register("elev8-dbus", EINA_COLOR_ORANGE);
    if (!elev8_dbus_log_domain)
@@ -858,29 +859,10 @@ int dbus_module_init(Handle<ObjectTemplate> global, void *data)
      }
    DBUS_INF("elev8-dbus Logging initialized. %d", elev8_dbus_log_domain);
 
-   if (!e_dbus_init())
+   if (e_dbus_init())
      {
-        DBUS_ERR( "Cannot Init to E_DBus");
-        return -1;
+        /* Add support for DBus Service Introspection */
+        dbusObj = ObjectTemplate::New();
+        dbusObj->SetInternalFieldCount(1);
      }
-
-   /* Add support for DBus Service Introspection */
-   dbusObj = ObjectTemplate::New();
-   dbusObj->SetInternalFieldCount(1);
-   global->Set(String::New("dbus"), FunctionTemplate::New(createDBusInstance));
-   return 0;
-}
-
-int dbus_module_shutdown(void *data)
-{
-   DBUS_INF("SHUTTING DOWN MODULE DBUS");
-   return 0;
-}
-
-extern "C"
-void setup(module_info *mi)
-{
-   strcpy(mi->name,DBUS_MODULE_NAME);
-   mi->init = &dbus_module_init;
-   mi->deinit = &dbus_module_shutdown;
 }

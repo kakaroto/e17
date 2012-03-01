@@ -5,7 +5,6 @@
  * then exit
  */
 
-
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <downloader.h>
@@ -16,13 +15,25 @@
 using namespace v8;
 int elev8_log_domain = -1;
 
-/* FIXME */
-void elm_v8_setup(Handle<ObjectTemplate> global);
-int xmlhttp_v8_setup(Handle<ObjectTemplate> global);
-int dbus_v8_setup(Handle<ObjectTemplate> global);
+#define MODLOAD_ENV "MODPATH"
+#define MODLOAD_ENV_DEFAULT_DIRS ".:" PACKAGE_LIB_DIR
+
+static Persistent<Object> module_cache;
+
+static Handle<Value> require(const Arguments& args);
+static Handle<Value> modules(const Arguments& args);
+static Handle<Value> print(const Arguments& args);
+
+static void
+add_symbols_to_context_global(Handle<ObjectTemplate> global)
+{
+   global->Set(String::NewSymbol("require"), FunctionTemplate::New(require));
+   global->Set(String::NewSymbol("modules"), FunctionTemplate::New(modules));
+   global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
+}
 
 Handle<Value>
-Print(const Arguments& args)
+print(const Arguments& args)
 {
    for (int i = 0; i < args.Length(); i++)
      {
@@ -121,23 +132,171 @@ run_script(const char *filename)
 {
    HandleScope handle_scope;
 
-   if (filename == strstr(filename, "http"))
+   if (!strncmp(filename, "http://", 7))
      {
         INF("Downloading elev8 Script");
         show_download_ui((void *)filename);
+        return;
      }
-   else
+
+   /* load the script and run it */
+   Handle<String> source = string_from_file(filename);
+   if (source.IsEmpty())
      {
-        /* load the script and run it */
-        //Handle<String> origin = String::New(filename);
-        Handle<String> source = string_from_file(filename);
-        if (source.IsEmpty())
-          {
-             ERR("Failed to read source %s", filename);
-             return;
-          }
-        compile_and_run(source);
+        ERR("Failed to read source %s", filename);
+        return;
+     }
+   compile_and_run(source);
+}
+
+static char *
+find_module_file_name(char *module_name, const char *prefix, const char *type)
+{
+   char *modpath = getenv(MODLOAD_ENV);
+   char default_modpath[] = MODLOAD_ENV_DEFAULT_DIRS;
+
+   if (!modpath) modpath = default_modpath;
+    
+   for (char *token, *rest, *ptr = modpath;
+             (token = strtok_r(ptr, ":", &rest));
+             ptr = rest)
+      {
+         char full_path[PATH_MAX];
+
+         if (snprintf(full_path, PATH_MAX - 1, "%s/%s%s.%s", token, prefix, module_name, type) < 0)
+             return NULL;
+
+         if (!access(full_path, R_OK))
+             return strdup(full_path);
       }
+    
+   return NULL;
+}
+
+inline static char *
+find_native_module_file_name(char *module_name)
+{
+   return find_module_file_name(module_name, "lib", "so");
+}
+
+inline static char *
+find_js_module_file_name(char *module_name)
+{
+   return find_module_file_name(module_name, "", "js");
+}
+
+static bool
+module_native_load(Handle<String> module_name, Handle<Object> name_space)
+{
+   char *file_name = find_native_module_file_name(*String::AsciiValue(module_name));
+
+   if (!file_name) return false;
+
+   DBG("Loading native module: %s", file_name);
+
+   // FIXME: Use Eina_Module here.
+   void *handle = dlopen(file_name, RTLD_LAZY);
+   if (!handle)
+     {
+        free(file_name);
+        return false;
+     }
+
+   void (*init_func)(Handle<Object> name_space);
+   init_func = (void (*)(Handle<Object>))dlsym(handle, "RegisterModule");
+   if (!init_func)
+     {
+        free(file_name);
+        dlclose(handle);
+        return false;
+     }
+
+   init_func(name_space);
+
+   name_space->Set(String::NewSymbol("__dl_handle"), External::Wrap(handle));
+   name_space->Set(String::NewSymbol("__file_name"), String::New(file_name));
+
+   free(file_name);
+   return true;
+}
+
+static bool
+module_js_load(Handle<String> module_name, Handle<Object> name_space)
+{
+   char *file_name = find_js_module_file_name(*String::AsciiValue(module_name));
+
+   if (!file_name) return false;
+
+   DBG("Loading JavaScript module: %s", file_name);
+
+   Handle<Value> mod_source = string_from_file(file_name);
+   if (mod_source->IsUndefined())
+     {
+        free(file_name);
+        return false;
+     }
+
+   HandleScope handle_scope;
+   Handle<ObjectTemplate> mod_global = ObjectTemplate::New();
+
+   mod_global->Set(String::NewSymbol("exports"), name_space);
+   add_symbols_to_context_global(mod_global);
+
+   Persistent<Context> mod_context = Context::New(NULL, mod_global);
+   Context::Scope mod_context_scope(mod_context);
+
+   TryCatch try_catch;
+   Local<Script> mod_script = Script::Compile(mod_source->ToString());
+   if (try_catch.HasCaught())
+     {
+        mod_context.Dispose();
+        free(file_name);
+        return false;
+     }
+    
+   mod_script->Run();
+
+   name_space->Set(String::NewSymbol("__file_name"), String::New(file_name));
+   // FIXME: How to wrap mod_context so that t can be Disposed() properly?
+
+   free(file_name);
+   return true;
+}
+
+static Handle<Value>
+require(const Arguments& args)
+{
+   HandleScope scope;
+   Local<Object> name_space;
+   Local<String> module_name;
+    
+   if (args.Length() < 1)
+     return scope.Close(ThrowException(Exception::Error(String::New("Module name missing"))));
+    
+   module_name = args[0]->ToString();
+
+   if (module_cache->HasOwnProperty(module_name))
+     return scope.Close(module_cache->Get(module_name));
+
+   name_space = Object::New();
+   if (!module_native_load(module_name, name_space))
+     {
+        if (!module_js_load(module_name, name_space))
+          {
+             Local<String> msg = String::Concat(String::New("Cannot load module: "), module_name);
+             return scope.Close(ThrowException(Exception::Error(msg)));
+          }
+     }
+
+   module_cache->Set(module_name, Persistent<Object>::New(name_space));
+   return scope.Close(name_space);
+}
+
+static Handle<Value>
+modules(const Arguments&)
+{
+   HandleScope scope;
+   return scope.Close(module_cache);
 }
 
 void
@@ -146,19 +305,20 @@ elev8_run(const char *script)
    HandleScope handle_scope;
    Handle<ObjectTemplate> global = ObjectTemplate::New();
 
-   global->Set(String::New("print"), FunctionTemplate::New(Print));
+   add_symbols_to_context_global(global);
 
-   load_modules();
-   init_modules(global);
-
-   /* setup V8 */
    Persistent<Context> context = Context::New(NULL, global);
    Context::Scope context_scope(context);
+
+   module_cache = Persistent<Object>::New(Object::New());
+
+   run_script(PACKAGE_LIB_DIR "/../init.js");
    run_script(script);
 
    ecore_main_loop_begin();
 
    context.Dispose();
+   module_cache.Dispose();
 }
 
 static void

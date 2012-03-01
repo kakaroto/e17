@@ -12,14 +12,15 @@ AM_CPPFLAGS = \
 -DPACKAGE_TMP_DIR=\"/tmp\" \
 @ELEV8_CFLAGS@
 
-
 bin_PROGRAMS = elev8
+
+elev8libdir = $(libdir)/elev8
+elev8lib_SCRIPTS = init.js
 
 elev8_SOURCES = \
 	main.cc \
 	elev8_utils.cc \
-	downloader.cc \
-	module.cc
+	downloader.cc
 
 elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@
 

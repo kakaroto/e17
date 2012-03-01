@@ -6453,18 +6453,16 @@ theme_setter(Local<String> property, Local<Value> value,
    the_theme = Persistent<Value>::New(value);
 }
 
-int elm_module_init(Handle<ObjectTemplate> global, void *data)
+extern "C"
+void RegisterModule(Handle<Object> target)
 {
-   Handle<ObjectTemplate> elm = ObjectTemplate::New();
-   global->Set(String::New("elm"), elm);
-
-   elm->Set(String::New("window"), FunctionTemplate::New(elm_main_window));
-   elm->Set(String::New("loop_time"), FunctionTemplate::New(elm_loop_time));
-   elm->Set(String::New("exit"), FunctionTemplate::New(elm_exit));
-   elm->Set(String::New("widget"), FunctionTemplate::New(elm_widget));
-   elm->SetAccessor(String::New("datadir"), datadir_getter, datadir_setter);
-   elm->SetAccessor(String::New("tmpdir"), tmpdir_getter, tmpdir_setter);
-   elm->SetAccessor(String::New("theme"), theme_getter, theme_setter);
+   target->Set(String::NewSymbol("window"), FunctionTemplate::New(elm_main_window)->GetFunction());
+   target->Set(String::NewSymbol("loop_time"), FunctionTemplate::New(elm_loop_time)->GetFunction());
+   target->Set(String::NewSymbol("exit"), FunctionTemplate::New(elm_exit)->GetFunction());
+   target->Set(String::NewSymbol("widget"), FunctionTemplate::New(elm_widget)->GetFunction());
+   target->SetAccessor(String::NewSymbol("datadir"), datadir_getter, datadir_setter);
+   target->SetAccessor(String::NewSymbol("tmpdir"), tmpdir_getter, tmpdir_setter);
+   target->SetAccessor(String::NewSymbol("theme"), theme_getter, theme_setter);
 
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
@@ -6477,23 +6475,4 @@ int elm_module_init(Handle<ObjectTemplate> global, void *data)
         elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
    ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
-
-   return 0;
-}
-
-int elm_module_shutdown(void *data)
-{
-   the_datadir.Dispose();
-   the_tmpdir.Dispose();
-   the_theme.Dispose();
-   ELM_INF("SHUTTING DOWN MODULE ELM");
-   return 0;
-}
-
-extern "C"
-void setup(module_info *mi)
-{
-   strcpy(mi->name,ELM_MODULE_NAME);
-   mi->init = &elm_module_init;
-   mi->deinit = &elm_module_shutdown;
 }

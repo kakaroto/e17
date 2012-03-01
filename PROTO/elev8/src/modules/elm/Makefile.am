@@ -12,10 +12,10 @@ AM_CPPFLAGS = \
 @ELEV8_CFLAGS@
 
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
-mod_LTLIBRARIES = libelev8-elm.la
+mod_LTLIBRARIES = libelm.la
 
-libelev8_elm_la_SOURCES = elev8_elm.cc
+libelm_la_SOURCES = elev8_elm.cc
 
-libelev8_elm_la_LIBADD = @ELEV8_LIBS@ @V8_LIBS@
-libelev8_elm_la_LDFLAGS = -module -avoid-version -no-undefined
-libelev8_elm_la_LIBTOOLFLAGS = --tag=disable-static
+libelm_la_LIBADD = @ELEV8_LIBS@ @V8_LIBS@
+libelm_la_LDFLAGS = -module -avoid-version -no-undefined
+libelm_la_LIBTOOLFLAGS = --tag=disable-static

@@ -12,10 +12,10 @@ AM_CPPFLAGS = \
 @ELEV8_CFLAGS@
 
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
-mod_LTLIBRARIES = libelev8-dbus.la
+mod_LTLIBRARIES = libdbus.la
 
-libelev8_dbus_la_SOURCES = elev8_dbus.cc
+libdbus_la_SOURCES = elev8_dbus.cc
 
-libelev8_dbus_la_LIBADD = @ELEV8_LIBS@ @V8_LIBS@
-libelev8_dbus_la_LDFLAGS = -module -avoid-version -no-undefined
-libelev8_dbus_la_LIBTOOLFLAGS = --tag=disable-static
+libdbus_la_LIBADD = @ELEV8_LIBS@ @V8_LIBS@
+libdbus_la_LDFLAGS = -module -avoid-version -no-undefined
+libdbus_la_LIBTOOLFLAGS = --tag=disable-static

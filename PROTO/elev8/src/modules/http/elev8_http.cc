@@ -367,7 +367,8 @@ Handle<Value> createXMLHttpReqInstance(const Arguments& args)
    return reqObj->obj; 
 }
 
-int http_module_init(Handle<ObjectTemplate> global, void *data)
+extern "C"
+void RegisterModule(Handle<ObjectTemplate> target)
 {
    elev8_http_log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
    if (!elev8_http_log_domain)
@@ -377,32 +378,11 @@ int http_module_init(Handle<ObjectTemplate> global, void *data)
      }
    HTTP_INF("elev8-http Logging initialized. %d", elev8_http_log_domain);
 
-
-   if (!ecore_con_url_init())
+   if (ecore_con_url_init())
      {
-        HTTP_ERR( "Cannot Init to ECore_Url");
-        return -1;
+        /* Add support for XML HTTP Request */
+        xmlHttpReqObj = ObjectTemplate::New();
+        xmlHttpReqObj->SetInternalFieldCount(1);
+        target->Set(String::NewSymbol("XMLHttpRequest"), FunctionTemplate::New(createXMLHttpReqInstance)->GetFunction());
      }
-
-   //HTTP_INF(  "Creating XML Http Request Instance");
-
-   /* Add support for XML HTTP Request */
-   xmlHttpReqObj = ObjectTemplate::New();
-   xmlHttpReqObj->SetInternalFieldCount(1);
-   global->Set(String::New("XMLHttpRequest"), FunctionTemplate::New(createXMLHttpReqInstance));
-   return 0;
-}
-
-int http_module_shutdown(void *data)
-{
-   HTTP_INF("SHUTTING DOWN MODULE HTTP");
-   return 0;
-}
-
-extern "C"
-void setup(module_info *mi)
-{
-   strcpy(mi->name,HTTP_MODULE_NAME);
-   mi->init = &http_module_init;
-   mi->deinit = &http_module_shutdown;
 }
