@@ -261,8 +261,8 @@ cdef extern from "Elementary.h":
     void         elm_object_scroll_freeze_push(evas.c_evas.Evas_Object *obj)
     void         elm_object_scroll_freeze_pop(evas.c_evas.Evas_Object *obj)
 
-    double       elm_tooltip_delay_get()
-    evas.c_evas.Eina_Bool elm_tooltip_delay_set(double delay)
+    double       elm_config_tooltip_delay_get()
+    evas.c_evas.Eina_Bool elm_config_tooltip_delay_set(double delay)
     evas.c_evas.Eina_Bool elm_cursor_engine_only_set(int engine_only)
     int          elm_cursor_engine_only_get()
     void         elm_object_tooltip_show(evas.c_evas.Evas_Object *obj)

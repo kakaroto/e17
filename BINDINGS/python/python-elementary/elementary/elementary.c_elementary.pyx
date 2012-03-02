@@ -37,10 +37,12 @@ cdef _METHOD_DEPRECATED(self, replacement=None, message=None):
     caller_module, caller_line, caller_name, caller_code = caller
     if caller_code:
         msg = "%s:%s %s (class %s) is deprecated." % \
-            (caller_module, caller_line, caller_code, self.__class__.__name__)
+            (caller_module, caller_line, caller_code,
+            self.__class__.__name__ if self else 'None')
     else:
         msg = "%s:%s %s.%s() is deprecated." % \
-            (caller_module, caller_line, self.__class__.__name__, caller_name)
+            (caller_module, caller_line,
+            self.__class__.__name__ if self else 'None', caller_name)
     if replacement:
         msg += " Use %s() instead." % (replacement,)
     if message:
@@ -112,10 +114,19 @@ def finger_size_set(size):
     elm_finger_size_set(size)
 
 def tooltip_delay_get():
-    return elm_tooltip_delay_get()
+    _METHOD_DEPRECATED(None, "config_tooltip_delay_get")
+    return config_tooltip_delay_get()
 
 def tooltip_delay_set(delay):
-    elm_tooltip_delay_set(delay)
+    _METHOD_DEPRECATED(None, "config_tooltip_delay_set")
+    config_tooltip_delay_set(delay)
+
+def config_tooltip_delay_get():
+    return elm_config_tooltip_delay_get()
+
+def config_tooltip_delay_set(delay):
+    elm_config_tooltip_delay_set(delay)
+
 
 def cursor_engine_only_get():
     return elm_cursor_engine_only_get()
@@ -151,8 +162,6 @@ def focus_highlight_animate_set(animate):
 def preferred_engine_get():
     cdef const_char_ptr l
     l = elm_preferred_engine_get()
-    # if l == NULL:
-        # return None
     return l if l != NULL else None
 
 def preferred_engine_set(engine):
@@ -161,8 +170,6 @@ def preferred_engine_set(engine):
 def engine_get():
     cdef const_char_ptr l
     l = elm_engine_get()
-    # if l == NULL:
-        # return None
     return l if l != NULL else None
 
 def engine_set(engine):
