@@ -22,13 +22,17 @@ cdef class Flip(Object):
         self._set_obj(elm_flip_add(parent.obj))
 
     def content_front_set(self, c_evas.Object content):
-        elm_flip_content_front_set(self.obj, content.obj)
+        elm_object_part_content_set(self.obj, "front", content.obj)
 
     def content_back_set(self, c_evas.Object content):
-        elm_flip_content_back_set(self.obj, content.obj)
+        elm_object_part_content_set(self.obj, "back", content.obj)
 
     def front_get(self):
-        return elm_flip_front_get(self.obj)
+        _METHOD_DEPRECATED(self, "front_visible_get")
+        self.front_visible_get()
+
+    def front_visible_get(self):
+        return elm_flip_front_visible_get(self.obj)
 
     def perspective_set(self, foc, x, y):
         elm_flip_perspective_set(self.obj, foc, x, y)
