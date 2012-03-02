@@ -1,3 +1,4 @@
+#include <Ecore.h>
 #include <elev8_http.h>
 
 using namespace v8;

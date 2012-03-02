@@ -5,7 +5,9 @@
  * then exit
  */
 
+#include <unistd.h>
 #include <dlfcn.h>
+#include <Ecore.h>
 #include <elev8_common.h>
 #include <elev8_utils.h>
 

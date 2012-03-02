@@ -10,7 +10,8 @@ AM_CPPFLAGS = \
 -DPACKAGE_LIB_DIR=\"$(libdir)/$(PACKAGE)/$(MODULE_ARCH)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DPACKAGE_TMP_DIR=\"/tmp\" \
-@ELEV8_CFLAGS@
+@EINA_CFLAGS@ \
+@ECORE_CFLAGS@
 
 bin_PROGRAMS = elev8
 
@@ -21,5 +22,5 @@ elev8_SOURCES = \
 	main.cc \
 	elev8_utils.cc
 
-elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@
+elev8_LDADD = @EINA_LIBS@ @ECORE_LIBS@ @V8_LIBS@
 

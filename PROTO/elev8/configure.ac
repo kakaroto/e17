@@ -82,26 +82,17 @@ AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES([ELEV8],
-   [
-    eina >= 1.0.999
-    eet >= 1.4.0
-    evas >= 1.0.999
-    ecore >= 1.0.999
-    ecore-evas >= 1.0.999
-    ecore-file >= 1.0.999
-    ecore-imf >= 1.0.999
-    ecore-con >= 1.0.999
-    edje >= 1.0.999
-    edbus >= 1.0.999
-    efreet >= 1.0.999
-    efreet-mime >= 1.0.999
-    efreet-trash >= 1.0.999
-    elementary >= 0.7.0
-    edbus >= 1.0.999
-    dbus-1
-   ]
-)
+PKG_CHECK_MODULES([EINA], [eina >= 1.0.999])
+PKG_CHECK_MODULES([ECORE], [ecore >= 1.0.999])
+PKG_CHECK_MODULES([ELEMENTARY], [
+	elementary >= 0.7.0
+	edje >= 1.0.999
+	eet >= 1.4.0
+	evas >= 1.0.999
+	ecore-evas >= 1.0.999
+])
+PKG_CHECK_MODULES([EDBUS], [edbus >= 1.0.999 dbus-1])
+PKG_CHECK_MODULES([ECORECON], [ecore-con >= 1.0.999])
 
 dnl Check for libv8 and v8.h by linking a bit of code using v8
 AC_LANG_PUSH(C++)

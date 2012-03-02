@@ -9,13 +9,13 @@ AM_CPPFLAGS = \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DPACKAGE_TMP_DIR=\"/tmp\" \
-@ELEV8_CFLAGS@
+@EDBUS_CFLAGS@
 
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
 mod_LTLIBRARIES = libdbus.la
 
 libdbus_la_SOURCES = elev8_dbus.cc
 
-libdbus_la_LIBADD = @ELEV8_LIBS@ @V8_LIBS@
+libdbus_la_LIBADD = @EDBUS_LIBS@ @V8_LIBS@
 libdbus_la_LDFLAGS = -module -avoid-version -no-undefined
 libdbus_la_LIBTOOLFLAGS = --tag=disable-static

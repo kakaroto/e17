@@ -9,13 +9,13 @@ AM_CPPFLAGS = \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DPACKAGE_TMP_DIR=\"/tmp\" \
-@ELEV8_CFLAGS@
+@ECORECON_CFLAGS@
 
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
 mod_LTLIBRARIES = libhttp.la
 
 libhttp_la_SOURCES = elev8_http.cc
 
-libhttp_la_LIBADD = @ELEV8_LIBS@ @V8_LIBS@
+libhttp_la_LIBADD = @ECORECON_LIBS@ @V8_LIBS@
 libhttp_la_LDFLAGS = -module -avoid-version -no-undefined
 libhttp_la_LIBTOOLFLAGS = --tag=disable-static

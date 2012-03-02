@@ -3,8 +3,6 @@
 
 #include <v8.h>
 #include <Eina.h>
-#include <Elementary.h>
-#include <Ecore.h>
 #include <assert.h>
 
 extern int elev8_log_domain;

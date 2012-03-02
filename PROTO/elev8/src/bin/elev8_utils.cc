@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <string.h>
 #include <elev8_utils.h>
 
