@@ -8,7 +8,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/modules/pdf \
 -I$(top_srcdir)/src/modules/ps \
 -I$(top_srcdir)/src/modules/txt \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+-DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
 @EYESIGHT_CFLAGS@ \
 @EYESIGHT_BIN_CFLAGS@
 

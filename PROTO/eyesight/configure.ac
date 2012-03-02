@@ -61,8 +61,6 @@ AC_ARG_ENABLE([mupdf-cjk],
 AC_MSG_CHECKING([whether mupdf CJK fonts are enabled])
 AC_MSG_RESULT([${want_mupdf_cjk}])
 
-EFL_ENABLE_BIN([eyesight])
-
 
 ### Checks for programs
 AC_PROG_CC
@@ -80,7 +78,9 @@ if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
 else
    pkgconfig_requires_private="Requires"
 fi
-AC_SUBST(pkgconfig_requires_private)
+AC_SUBST([pkgconfig_requires_private])
+
+EFL_ENABLE_BIN([eyesight])
 
 # doxygen program for documentation building
 
@@ -99,7 +99,7 @@ EYESIGHT_CHECK_MODULE([Img], [${want_img}])
 PKG_CHECK_MODULES([EYESIGHT], [${requirement_eyesight}])
 
 if test "x${have_eyesight}" = "xyes" ; then
-   PKG_CHECK_MODULES(EYESIGHT_BIN, [evas >= 1.0.0 ecore >= 1.0.0 ecore-evas >= 1.0.0 edje >= 1.0])
+   PKG_CHECK_MODULES([EYESIGHT_BIN], [evas >= 1.0.0 ecore >= 1.0.0 ecore-evas >= 1.0.0 edje >= 1.0])
 fi
 
 
@@ -113,7 +113,6 @@ fi
 
 
 ### Checks for compiler characteristics
-AC_C_CONST
 AM_PROG_CC_C_O
 AC_PROG_CXX_C_O
 
@@ -137,23 +136,24 @@ case "$host_os" in
       lt_enable_auto_import="-Wl,--enable-auto-import"
       ;;
 esac
-AC_SUBST(lt_enable_auto_import)
+AC_SUBST([lt_enable_auto_import])
 
 
 ### Checks for library functions
 
-AC_SUBST(requirement_eyesight)
+AC_SUBST([requirement_eyesight])
 
 AC_CONFIG_FILES([
 Makefile
-src/Makefile
 eyesight.pc
+src/Makefile
 eyesight.spec
 src/bin/Makefile
 src/lib/Makefile
 src/modules/Makefile
 src/modules/img/Makefile
 src/modules/pdf/Makefile
+src/modules/pdf/mupdf-0.9/Makefile
 src/modules/ps/Makefile
 src/modules/txt/Makefile
 ])
