@@ -37,7 +37,7 @@ cdef class Hover(Object):
         elm_hover_parent_set(self.obj, parent.obj)
 
     def content_set(self, swallow, c_evas.Object content):
-        elm_hover_content_set(self.obj, swallow, content.obj)
+        elm_object_part_content_set(self.obj, swallow, content.obj)
 
     def best_content_location_get(self, axis):
         cdef const_char_ptr string

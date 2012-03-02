@@ -81,7 +81,6 @@ examples_files = \
 	tests/test_list.py \
 	tests/test_menu.py \
 	tests/test_notify.py \
-	tests/test_pager.py \
 	tests/test_panel.py \
 	tests/test_progressbar.py \
 	tests/test.py \
@@ -90,7 +89,6 @@ examples_files = \
 	tests/test_separator.py \
 	tests/test_spinner.py \
 	tests/test_table.py \
-	tests/test_toggle.py \
 	tests/test_toolbar.py \
 	tests/test_tooltip.py
 examples_images_files = \

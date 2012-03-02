@@ -18,11 +18,12 @@
 
 cdef class Toggle(Object):
     """
-    A toggle widget
+    A toggle widget . This widget is DEPRECATED. use check instead
     """
     cdef c_evas.Eina_Bool state_ptr
 
     def __init__(self, c_evas.Object parent):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         Object.__init__(self, parent.evas)
         self._set_obj(elm_toggle_add(parent.obj))
 
@@ -32,9 +33,11 @@ cdef class Toggle(Object):
         elm_toggle_state_pointer_set(self.obj, &self.state_ptr)
 
     def callback_changed_add(self, func, *args, **kwargs):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         self._callback_add("changed", func, *args, **kwargs)
 
     def callback_changed_del(self, func):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         self._callback_del("changed", func)
 
     def label_set(self, label):
@@ -46,18 +49,22 @@ cdef class Toggle(Object):
         return self.text_get()
 
     def icon_set(self, c_evas.Object icon):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         elm_toggle_icon_set(self.obj, icon.obj)
 
     def states_labels_set(self,onlabel, offlabel):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         elm_toggle_states_labels_set(self.obj, onlabel, offlabel)
 
     def state_set(self, state):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         if state == True:
             elm_toggle_state_set(self.obj, 1)
         elif state == False:
             elm_toggle_state_set(self.obj, 0)
 
     def state_get(self):
+        _METHOD_DEPRECATED(self, "Check", "use Check instead, using the toggle style")
         if self.state_ptr == 1:
             return True
         return False

@@ -9,11 +9,10 @@ from test_bg import bg_plain_clicked, bg_image_clicked
 from test_icon import icon_transparent_clicked
 from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
 from test_button import buttons_clicked
-from test_toggle import toggles_clicked
 from test_table import table_clicked
 from test_clock import clock_clicked
 from test_hover import hover_clicked, hover2_clicked
-from test_entry import entry_clicked, entry_scrolled_clicked
+from test_entry import entry_clicked
 from test_anchorview import anchorview_clicked
 from test_anchorblock import anchorblock_clicked
 from test_toolbar import toolbar_clicked
@@ -22,7 +21,6 @@ from test_list import list_clicked, list2_clicked, list3_clicked
 from test_inwin import inner_window_clicked
 from test_check import check_clicked
 from test_radio import radio_clicked
-from test_pager import pager_clicked
 from test_progressbar import progressbar_clicked
 from test_fileselector import fileselector_clicked
 from test_separator import separator_clicked
@@ -88,7 +86,7 @@ if __name__ == "__main__":
 
     items = [("Booleans", [
                 ("Checks", check_clicked),
-                ("Toggles", toggles_clicked),
+                #("Toggles", toggles_clicked),TODO make a toggle with check
             ]),
              ("Boundaries", [
                 ("Separator", separator_clicked),
@@ -116,7 +114,7 @@ if __name__ == "__main__":
             ]),
              ("Entries", [
                 ("Entry", entry_clicked),
-                ("Entry Scrolled", entry_scrolled_clicked),
+#                ("Entry Scrolled", entry_scrolled_clicked),
             ]),
              ("Lists", [
                 ("List", list_clicked),
@@ -146,9 +144,9 @@ if __name__ == "__main__":
                 ("Menu", menu_clicked),
                 ("Radios", radio_clicked),
             ]),
-             ("Storyboard", [
-                ("Pager", pager_clicked),
-            ]),
+#             ("Storyboard", [ TODO
+#                ("Naviframe", pager_clicked),
+#            ]),
              ("Text", [
                 ("Anchorview", anchorview_clicked),
                 ("Anchorblock", anchorblock_clicked),

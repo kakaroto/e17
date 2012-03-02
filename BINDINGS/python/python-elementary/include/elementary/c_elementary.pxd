@@ -492,7 +492,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
     void elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
     void elm_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void elm_hover_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
     void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
 

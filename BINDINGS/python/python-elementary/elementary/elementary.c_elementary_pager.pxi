@@ -19,19 +19,24 @@
 
 cdef class Pager(Object):
     def __init__(self, c_evas.Object parent):
+        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         Object.__init__(self, parent.evas)
         self._set_obj(elm_pager_add(parent.obj))
 
     def content_push(self, c_evas.Object content):
+        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         elm_pager_content_push(self.obj, content.obj);
 
     def content_pop(self):
+        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         elm_pager_content_pop(self.obj)
 
     def content_promote(self, c_evas.Object content):
+        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         elm_pager_content_promote(self.obj, content.obj)
 
     def bottom_get(self):
+        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         cdef c_evas.Evas_Object* o
         cdef Object obj
 
@@ -43,6 +48,7 @@ cdef class Pager(Object):
         return obj
 
     def top_get(self):
+        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         cdef c_evas.Evas_Object* o
         cdef Object obj
 
