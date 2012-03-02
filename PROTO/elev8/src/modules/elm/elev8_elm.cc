@@ -208,7 +208,7 @@ protected:
         show(false);
      }
 
-   virtual void add_child(CEvasObject *child)
+   virtual void add_child(CEvasObject *)
      {
      }
 
@@ -288,7 +288,7 @@ public:
         return Undefined();
      }
 
-   virtual void type_set(Handle<Value> value)
+   virtual void type_set(Handle<Value>)
      {
         ELM_ERR( "type cannot be set!");
      }
@@ -298,7 +298,7 @@ public:
         return eo;
      }
 
-   virtual CEvasObject *get_child(Handle<Value> name)
+   virtual CEvasObject *get_child(Handle<Value>)
      {
         ELM_ERR( "get_child undefined");
         return NULL;
@@ -458,7 +458,7 @@ public:
 
      }
 
-   static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_click(void *data, Evas_Object *, void *event_info)
      {
         CEvasObject *clicked = static_cast<CEvasObject*>(data);
 
@@ -511,7 +511,7 @@ public:
         fn->Call(obj, 2,args);
      }
 
-   static void eo_on_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
+   static void eo_on_keydown(void *data, Evas *, Evas_Object *, void *event_info)
      {
         CEvasObject *self = static_cast<CEvasObject*>(data);
 
@@ -776,7 +776,7 @@ public:
         return Boolean::New(is_resize);
      }
 
-   virtual void pointer_set(Handle<Value> val)
+   virtual void pointer_set(Handle<Value>)
      {
         // FIXME: ignore this, or move the pointer?
      }
@@ -1434,7 +1434,7 @@ public:
 
      }
 
-   static void eo_on_click(void *data, Evas *e, Evas_Object *eo, void *event_info)
+   static void eo_on_click(void *data, Evas *, Evas_Object *, void *event_info)
      {
         CEvasObject *clicked = static_cast<CEvasObject*>(data);
 
@@ -1528,12 +1528,12 @@ public:
      {
      }
 
-   static void on_delete(void *data, Evas_Object *obj, void *event_info)
+   static void on_delete(void *, Evas_Object *, void *)
      {
         elm_exit();
      }
 
-   virtual void resize_set(Handle<Value> val)
+   virtual void resize_set(Handle<Value>)
      {
         ELM_ERR( "warning: resize=true ignored on main window");
      }
@@ -2463,14 +2463,14 @@ public:
           elm_slider_horizontal_set(eo, value->BooleanValue());
      }
 
-   static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_changed(void *data, Evas_Object *, void *event_info)
      {
         CElmSlider *changed = static_cast<CElmSlider*>(data);
 
         changed->on_changed(event_info);
      }
 
-   virtual void on_changed(void *event_info)
+   virtual void on_changed(void *)
      {
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
@@ -2545,7 +2545,7 @@ public:
 
 
    /* GenList functions that are going to do the heavy weight lifting */
-   static char *text_get(void *data, Evas_Object *obj, const char *part)
+   static char *text_get(void *data, Evas_Object *, const char *part)
      {
 	    GenListItemClass *itc = (GenListItemClass *)data;
         Handle<Function> fn(Function::Cast(*(itc->on_text)));
@@ -2563,7 +2563,7 @@ public:
 		  return NULL;
      }
 
-   static Evas_Object *content_get(void *data, Evas_Object *obj, const char *part)
+   static Evas_Object *content_get(void *data, Evas_Object *, const char *part)
      {
 	    printf("Invoking content get.\n");
 	    GenListItemClass *itc = (GenListItemClass *)data;
@@ -2583,16 +2583,16 @@ public:
 		return NULL;
      }
 
-   static Eina_Bool state_get(void *data, Evas_Object *obj, const char *part)
+   static Eina_Bool state_get(void *, Evas_Object *, const char *)
      {
         return EINA_TRUE;
      }
 
-   static void del(void *data, Evas_Object *obj)
+   static void del(void *, Evas_Object *)
      {
      }
 
-   static void *sel(void *data, Evas_Object *obj, void *event_info)
+   static void *sel(void *, Evas_Object *, void *)
      {
         return NULL;
      }
@@ -2967,19 +2967,19 @@ public:
           }
         return Undefined();
      }
-   static Handle<Value> insert_after(const Arguments& args)
+   static Handle<Value> insert_after(const Arguments&)
      {
         return Undefined();
      }
-   static Handle<Value> insert_before(const Arguments& args)
+   static Handle<Value> insert_before(const Arguments&)
      {
         return Undefined();
      }
-   static Handle<Value> selected_item_get(const Arguments& args)
+   static Handle<Value> selected_item_get(const Arguments&)
      {
         return Undefined();
      }
-   static Handle<Value> selected_item_set(const Arguments& args)
+   static Handle<Value> selected_item_set(const Arguments&)
      {
         return Undefined();
      }
@@ -3021,7 +3021,7 @@ public:
         return v8::Number::New(list->list.size());
      }
 
-   static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_click(void *data, Evas_Object *, void *)
      {
        if (data)
          {
@@ -4075,27 +4075,27 @@ public:
   virtual ~CElmMenu()
     {
     }
-   static Handle<Value> addchild(const Arguments& args)
+   static Handle<Value> addchild(const Arguments&)
      {
         return Undefined();
      }
 
-   static Handle<Value> parent(const Arguments& args)
+   static Handle<Value> parent(const Arguments&)
      {
         return Undefined();
      }
 
-   static Handle<Value> child(const Arguments& args)
+   static Handle<Value> child(const Arguments&)
      {
         return Undefined();
      }
 
-   static Handle<Value> child_count(const Arguments& args)
+   static Handle<Value> child_count(const Arguments&)
      {
         return Undefined();
      }
 
-   static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_click(void *data, Evas_Object *, void *)
      {
        if (data)
          {
@@ -4372,7 +4372,7 @@ public:
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
-   virtual void on_changed(void *event_info)
+   virtual void on_changed(void *)
      {
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
@@ -4383,7 +4383,7 @@ public:
         fn->Call(obj, 1, args);
      }
 
-   static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_changed(void *data, Evas_Object *, void *event_info)
      {
         CElmColorSelector *changed = static_cast<CElmColorSelector*>(data);
         changed->on_changed(event_info);
@@ -4494,7 +4494,7 @@ public:
         return out;
      }
 
-   virtual void on_changed(void *event_info)
+   virtual void on_changed(void *)
      {
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
@@ -4505,7 +4505,7 @@ public:
         fn->Call(obj, 1, args);
      }
 
-   static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_changed(void *data, Evas_Object *, void *event_info)
      {
         CElmCalendar *changed = static_cast<CElmCalendar*>(data);
         changed->on_changed(event_info);
@@ -4735,7 +4735,7 @@ public:
         return Undefined();
      }
 
-   static Handle<Value> unpack(const Arguments& args)
+   static Handle<Value> unpack(const Arguments&)
      {
         return Undefined();
      }
@@ -4993,14 +4993,14 @@ public:
         construct(eo, obj);
      }
 
-   static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
+   static void eo_on_changed(void *data, Evas_Object *, void *event_info)
      {
         CElmToggle *changed = static_cast<CElmToggle*>(data);
 
         changed->on_changed(event_info);
      }
 
-   virtual void on_changed(void *event_info)
+   virtual void on_changed(void *)
      {
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
@@ -6396,55 +6396,52 @@ elm_main_window(const Arguments& args)
 }
 
 Handle<Value>
-elm_loop_time(const Arguments& args)
+elm_loop_time(const Arguments&)
 {
    return Number::New(ecore_loop_time_get());
 }
 
 Handle<Value>
-elm_exit(const Arguments& args)
+elm_exit(const Arguments&)
 {
    elm_exit();
    return Undefined();
 }
 
 Handle<Value>
-datadir_getter(Local<String> property, const AccessorInfo& info)
+datadir_getter(Local<String>, const AccessorInfo&)
 {
    return the_datadir;
 }
 
 void
-datadir_setter(Local<String> property, Local<Value> value,
-               const AccessorInfo& info)
+datadir_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 {
    the_datadir.Dispose();
    the_datadir = Persistent<Value>::New(value);
 }
 
 Handle<Value>
-tmpdir_getter(Local<String> property, const AccessorInfo& info)
+tmpdir_getter(Local<String>, const AccessorInfo&)
 {
    return the_tmpdir;
 }
 
 void
-tmpdir_setter(Local<String> property, Local<Value> value,
-               const AccessorInfo& info)
+tmpdir_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 {
    the_tmpdir.Dispose();
    the_tmpdir = Persistent<Value>::New(value);
 }
 
 Handle<Value>
-theme_getter(Local<String> property, const AccessorInfo& info)
+theme_getter(Local<String>, const AccessorInfo&)
 {
    return the_theme;
 }
 
 void
-theme_setter(Local<String> property, Local<Value> value,
-               const AccessorInfo& info)
+theme_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 {
    the_theme.Dispose();
    setenv("ELM_THEME",  *String::Utf8Value(value->ToString()), 1);
