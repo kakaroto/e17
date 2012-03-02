@@ -117,8 +117,10 @@ AC_LINK_IFELSE(
 ]],
 [[
   n = v8::Persistent<v8::Number>::New(v8::Number::New(0));
+  v8::Handle<v8::Object> o = v8::Object::New();
+  o->HasOwnProperty(v8::String::New("bazinga"));
 ]],
-)],[V8_LIBS="-lv8"], AC_MSG_ERROR([elev8 requires libv8]))
+)],[V8_LIBS="-lv8"], AC_MSG_ERROR([elev8 requires libv8 >= 3.5.0]))
 LIBS="$saved_LIBS"
 AC_MSG_RESULT([yes])
 AC_LANG_POP
