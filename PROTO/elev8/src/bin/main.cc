@@ -149,8 +149,8 @@ module_js_load(Handle<String> module_name, Handle<Object> name_space)
 
    DBG("Loading JavaScript module: %s", file_name);
 
-   Handle<Value> mod_source = string_from_file(file_name);
-   if (mod_source->IsUndefined())
+   Handle<String> mod_source = string_from_file(file_name);
+   if (mod_source.IsEmpty())
      {
         free(file_name);
         return false;
