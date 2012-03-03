@@ -1,0 +1,19 @@
+#define PACKAGE "@CMAKE_PROJECT_NAME@"
+#define PACKAGE_NAME PACKAGE
+#define VERSION "@ECRIRE_VERSION_WITH_REV@"
+#define VMAJ @ECRIRE_VERSION_MAJOR@
+#define VMIN @ECRIRE_VERSION_MINOR@
+#define VMIC @ECRIRE_VERSION_MICRO@
+#define VREV @ECRIRE_VERSION_REV@
+
+#cmakedefine HAVE___ATTRIBUTE__
+#ifdef HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
+#cmakedefine HAVE_PATH_MAX
+#ifndef HAVE_PATH_MAX
+#define PATH_MAX 4096
+#endif
