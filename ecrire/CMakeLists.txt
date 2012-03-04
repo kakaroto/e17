@@ -52,10 +52,12 @@ configure_file (
    "${PROJECT_BINARY_DIR}/config.h"
    )
 
+include(GettextTranslate)
+GettextTranslateTargets(ALL)
+
 add_subdirectory(src/bin)
 add_subdirectory(data)
 add_subdirectory(po)
-
 
 # Make dist
 set(CPACK_PACKAGE_VERSION_MAJOR ${ECRIRE_VERSION_MAJOR})

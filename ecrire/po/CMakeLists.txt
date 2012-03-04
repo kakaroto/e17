@@ -1,1 +1,1 @@
-#USE FindGettext
+GettextTranslate()
