@@ -19,6 +19,7 @@ find_package(Ecore COMPONENTS Ecore-x)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
+find_package(Gettext)
 
 INCLUDE(CheckIncludeFiles)
 CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
@@ -54,3 +55,16 @@ configure_file (
 add_subdirectory(src/bin)
 add_subdirectory(data)
 add_subdirectory(po)
+
+
+# Make dist
+set(CPACK_PACKAGE_VERSION_MAJOR ${ECRIRE_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${ECRIRE_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${ECRIRE_VERSION_MICRO})
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME
+   "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_SOURCE_IGNORE_FILES
+   "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
+include(CPack)
+add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)

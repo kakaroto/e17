@@ -1,2 +1,1 @@
-include(GettextTranslate)
-GettextTranslate()
+#USE FindGettext
