@@ -2628,6 +2628,7 @@ _transition_move_cols(tiling_move_t direction)
             ERR("No extra for %p", bd);
             return;
         }
+        nextbd = l->next->data;
         nextextra = eina_hash_find(_G.border_extras, &nextbd);
         if (!nextextra) {
             ERR("No extra for %p", nextbd);
@@ -2712,6 +2713,7 @@ _transition_move_rows(tiling_move_t direction)
             ERR("No extra for %p", bd);
             return;
         }
+        nextbd = l->next->data;
         nextextra = eina_hash_find(_G.border_extras, &nextbd);
         if (!nextextra) {
             ERR("No extra for %p", nextbd);
