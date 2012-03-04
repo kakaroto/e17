@@ -395,6 +395,8 @@ cdef extern from "Elementary.h":
     void                     elm_image_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill_outside)
     void                     elm_image_prescale_set(evas.c_evas.Evas_Object *obj, int size)
     void                     elm_image_orient_set(evas.c_evas.Evas_Object *obj, Elm_Image_Orient orient)
+    void                     elm_image_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
+    void                     elm_image_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
     void                     elm_image_object_size_get(evas.c_evas.Evas_Object *obj, int *w, int *h)
 
     # Box object

@@ -42,6 +42,12 @@ cdef class Image(Object):
     def orient_set(self, orientation):
         elm_image_orient_set(self.obj, orientation)
 
+    def editable_set(self, editable):
+        elm_image_editable_set(self.obj, editable)
+
+    def aspect_fixed_set(self, fixed):
+        elm_image_aspect_fixed_set(self.obj, fixed)
+
     def object_size_get(self):
         cdef int width
         cdef int height
