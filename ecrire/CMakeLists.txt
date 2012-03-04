@@ -1,8 +1,11 @@
-cmake_minimum_required (VERSION 2.6)
-project (ecrire)
-set (ecrire_VERSION_MAJOR 0)
-set (ecrire_VERSION_MINOR 1)
-set (PACKAGE ${CMAKE_PROJCT_NAME} )
+cmake_minimum_required(VERSION 2.6)
+project(ecrire)
+set(ECRIRE_VERSION_MAJOR 0)
+set(ECRIRE_VERSION_MINOR 1)
+set(ECRIRE_VERSION_MICRO 0)
+set(ECRIRE_VERSION ${ECRIRE_VERSION_MAJOR}.${ECRIRE_VERSION_MINOR}.${ECRIRE_VERSION_MICRO})
+
+set(PACKAGE ${CMAKE_PROJCT_NAME})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include_directories ("${PROJECT_BINARY_DIR}")
