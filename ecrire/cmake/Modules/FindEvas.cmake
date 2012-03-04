@@ -9,7 +9,7 @@ find_package(PkgConfig)
 pkg_check_modules(PC_LIBEVAS QUIET evas)
 set(EVAS_DEFINITIONS ${PC_LIBEVAS_CFLAGS_OTHER})
 
-find_path(EVAS_INCLUDE_DIR Eina.h
+find_path(EVAS_INCLUDE_DIR Evas.h
           HINTS ${PC_LIBEVAS_INCLUDEDIR} ${PC_LIBEVAS_INCLUDE_DIRS}
           PATH_SUFFIXES evas )
 

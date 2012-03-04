@@ -9,7 +9,7 @@ find_package(PkgConfig)
 pkg_check_modules(PC_LIBEET QUIET eet)
 set(EET_DEFINITIONS ${PC_LIBEET_CFLAGS_OTHER})
 
-find_path(EET_INCLUDE_DIR Eina.h
+find_path(EET_INCLUDE_DIR Eet.h
           HINTS ${PC_LIBEET_INCLUDEDIR} ${PC_LIBEET_INCLUDE_DIRS}
           PATH_SUFFIXES eet )
 
@@ -17,7 +17,7 @@ find_library(EET_LIBRARY NAMES eet
              HINTS ${PC_LIBEET_LIBDIR} ${PC_LIBEET_LIBRARY_DIRS} )
 
 set(EET_LIBRARIES ${EET_LIBRARY} )
-set(EET_INCLUDE_DIRS ${EET_INCLUDE_DIR} "${EET_INCLUDE_DIR}/eet" )
+set(EET_INCLUDE_DIRS ${EET_INCLUDE_DIR} )
 
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set EET_FOUND to TRUE
@@ -25,4 +25,4 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(eet  DEFAULT_MSG
                                   EET_LIBRARY EET_INCLUDE_DIR)
 
-mark_as_advanced(EET_INCLUDE_DIR EET_LIBRARY )
+mark_as_advanced( EET_INCLUDE_DIR EET_LIBRARY )
