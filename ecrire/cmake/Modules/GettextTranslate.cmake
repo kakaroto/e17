@@ -76,6 +76,8 @@ find_program(MSGFMT_BINARY msgfmt
 )
 REQUIRE_BINARY(msgfmt MSGFMT_BINARY)
 
+mark_as_advanced(MSGCONV_BINARY MSGFILTER_BINARY MSGFMT_BINARY MSGINIT_BINARY MSGMERGE_BINARY XGETTEXT_BINARY)
+
 macro(GettextTranslateTargets)
   set(_addToALL)
   foreach(arg ${ARGN})
