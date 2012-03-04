@@ -5,17 +5,14 @@ set (ecrire_VERSION_MINOR 1)
 set (PACKAGE ${CMAKE_PROJCT_NAME} )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-configure_file (
-   "${PROJECT_SOURCE_DIR}/cmakeconfig.h.in"
-   "${PROJECT_BINARY_DIR}/config.h"
-   )
-
 include_directories ("${PROJECT_BINARY_DIR}")
 
+# FIXME: add version checking!
 find_package(Eina REQUIRED)
 find_package(Eet REQUIRED)
 find_package(Evas REQUIRED)
 find_package(Ecore REQUIRED)
+find_package(Ecore COMPONENTS Ecore-x)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
@@ -45,6 +42,11 @@ ADD_DEFINITIONS(
    )
 
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
+
+configure_file (
+   "${PROJECT_SOURCE_DIR}/cmakeconfig.h.in"
+   "${PROJECT_BINARY_DIR}/config.h"
+   )
 
 add_subdirectory(src/bin)
 add_subdirectory(data)

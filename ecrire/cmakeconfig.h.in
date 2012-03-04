@@ -17,3 +17,8 @@
 #ifndef HAVE_PATH_MAX
 #define PATH_MAX 4096
 #endif
+
+#cmakedefine ECORE_X_FOUND
+#ifdef ECORE_X_FOUND
+#define HAVE_ECORE_X
+#endif
