@@ -204,11 +204,11 @@ macro(GettextTranslate)
 
     endif()
 
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo
+    add_custom_command(OUTPUT ${GMO_FILE_NAME}
       COMMAND ${MSGFMT_BINARY} -c --statistics --verbose -o
-        ${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo
-        ${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po
+        ${GMO_FILE_NAME}
+        ${PO_FILE_NAME}
+        DEPENDS ${PO_FILE_NAME}
     )
     add_custom_target(${GMO_TARGET} DEPENDS ${GMO_FILE_NAME})
 
