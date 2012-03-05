@@ -2548,40 +2548,41 @@ public:
    /* GenList functions that are going to do the heavy weight lifting */
    static char *text_get(void *data, Evas_Object *, const char *part)
      {
-	    GenListItemClass *itc = (GenListItemClass *)data;
+        GenListItemClass *itc = (GenListItemClass *)data;
         Handle<Function> fn(Function::Cast(*(itc->on_text)));
         Local<Object> temp = Object::New();
         temp->Set(String::New("part"), String::New(part));
         temp->Set(String::New("data"), itc->data);
         Handle<Value> args[1] = { temp };
         Local<Value> text = fn->Call(temp, 1, args);
-		if (text->IsString())
-		  {
+
+        if (text->IsString())
+          {
              String::Utf8Value str(text->ToString());
-			 return strdup(*str);
-		  }
-		else
-		  return NULL;
+             return strdup(*str);
+          }
+        else
+          return NULL;
      }
 
    static Evas_Object *content_get(void *data, Evas_Object *, const char *part)
      {
-	    printf("Invoking content get.\n");
-	    GenListItemClass *itc = (GenListItemClass *)data;
+        GenListItemClass *itc = (GenListItemClass *)data;
         Handle<Function> fn(Function::Cast(*(itc->on_content)));
         Local<Object> temp = Object::New();
         temp->Set(String::New("part"), String::New(part));
         temp->Set(String::New("data"), itc->data);
         Handle<Value> args[1] = { temp };
         Local<Value> retval = fn->Call(temp, 1, args);
-		if (retval->IsObject())
-		  {
+
+        if (retval->IsObject())
+          {
              CEvasObject *content = realize_or_get(itc->genlist, retval->ToObject());
-			 if(content)
+             if (content)
                return content->get();
-		  }
-		printf("returning null\n");
-		return NULL;
+          }
+
+        return NULL;
      }
 
    static Eina_Bool state_get(void *, Evas_Object *, const char *)
