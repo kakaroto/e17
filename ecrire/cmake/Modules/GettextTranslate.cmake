@@ -5,6 +5,10 @@
 # with gettext
 # In your top level CMakeLists.txt, do
 #   include(GettextTranslate)
+#   GettextTranslateTargets(ALL)
+#
+#   Where ALL is an optional parameter indicating whether update-po and
+#   update-gmo should be added to the "all" rule.
 # then in any po directory where you want things to be translated, write
 #   GettextTranslate()
 #
