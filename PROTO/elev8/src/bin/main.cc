@@ -168,7 +168,7 @@ module_js_load(Handle<String> module_name, Handle<Object> name_space)
    Context::Scope mod_context_scope(mod_context);
 
    TryCatch try_catch;
-   Local<Script> mod_script = Script::Compile(mod_source->ToString());
+   Local<Script> mod_script = Script::Compile(mod_source->ToString(), String::New(file_name));
    if (try_catch.HasCaught())
      {
         mod_context.Dispose();
