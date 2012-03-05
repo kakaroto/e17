@@ -1588,7 +1588,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
                   index_label[1] = '\0';
                   if (index_label[0] != last_index)
                     {
-                       elm_index_item_append(index, index_label, gl_item);
+                       elm_index_item_append(index, index_label, NULL, gl_item);
                        last_index = index_label[0];
                     }
                }
