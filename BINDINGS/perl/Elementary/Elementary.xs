@@ -1632,10 +1632,10 @@ const void *
 elm_index_item_selected_get(Evas_Object *obj, int level)
 
 void
-elm_index_item_append(Evas_Object *obj, const char *letter, const void *item)
+elm_index_item_append(Evas_Object *obj, const char *letter, Evas_Smart_Cb func, const void *data)
 
 void
-elm_index_item_prepend(Evas_Object *obj, const char *letter, const void *item)
+elm_index_item_prepend(Evas_Object *obj, const char *letter, Evas_Smart_Cb func, const void *data)
 
 void
 elm_index_item_append_relative(Evas_Object *obj, const char *letter, const void *item, const void *relative)

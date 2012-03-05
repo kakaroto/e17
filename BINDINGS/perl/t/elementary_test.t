@@ -4681,7 +4681,7 @@ test_index(void *data, Evas_Object *obj, void *event_info)
              char buf[32];
              
              snprintf(buf, sizeof(buf), "%c", 'A' + ((j >> 4) & 0xf));
-             elm_index_item_append(id, buf, it);
+             elm_index_item_append(id, buf, NULL, it);
           }
         j += 2;
      }
