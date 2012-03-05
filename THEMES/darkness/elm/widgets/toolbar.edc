@@ -542,7 +542,7 @@
                aspect: 1 1;
                aspect_preference: VERTICAL;
                align: 0.0 0.5;
-               rel1.offset: 3 3;
+               rel1.offset: 6 3;
                rel1.relative: 0 0;
                rel2.offset: 3 -4;
                rel2.relative: 0 1;
@@ -562,6 +562,8 @@
                rel1.relative: 1.0 0.0;
                rel1.to_x: "elm.swallow.icon";
                rel2.relative: 1.0 1.0;
+               rel2.offset: -5 0;
+               rel2.to_x: "bg_glow_down";
                text.align: 0 0.5;
             }
             description { state: "selected" 0.0;
@@ -594,6 +596,8 @@
                rel1.relative: 1.0 0.0;
                rel1.to_x: "elm.swallow.icon";
                rel2.relative: 1.0 1.0;
+               rel2.offset: -5 0;
+               rel2.to_x: "bg_glow_down";
                text.align: 0 0.5;
             }
             description { state: "selected" 0.0;
