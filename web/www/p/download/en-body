@@ -21,7 +21,6 @@
     <p>Recommended requirements for all releases to the right are:
      <ul>
       <li>libc</li>
-      <li>libm</li>
       <li>libpthread</li>
       <li>zlib</li>
       <li>freetype</li>
