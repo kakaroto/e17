@@ -143,6 +143,13 @@ cdef class Emotion(evas.c_evas.Object):
         def __set__(self, double value):
             self.position_set(value)
 
+    def buffer_size_get(self):
+        return emotion_object_buffer_size_get(self.obj)
+
+    property buffer_size:
+        def __get__(self):
+            return self.buffer_size_get()
+
     def video_handled_get(self):
         return bool(emotion_object_video_handled_get(self.obj))
 

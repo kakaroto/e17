@@ -91,6 +91,7 @@ cdef extern from "Emotion.h":
     void emotion_object_smooth_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool smooth)
     evas.c_evas.Eina_Bool emotion_object_smooth_scale_get(evas.c_evas.Evas_Object *obj)
     double emotion_object_ratio_get(evas.c_evas.Evas_Object *obj)
+    double emotion_object_buffer_size_get(evas.c_evas.Evas_Object *obj)
 
     void emotion_object_event_simple_send(evas.c_evas.Evas_Object *obj, Emotion_Event ev)
 
