@@ -147,7 +147,7 @@ macro(GettextTranslate)
       --copyright-holder=${MAKEVAR_COPYRIGHT_HOLDER}
       --msgid-bugs-address="${MAKEVAR_MSGID_BUGS_ADDRESS}"
       --directory=${MAKEVAR_top_builddir}
-      --files-from=${CMAKE_CURRENT_SOURCE_DIR}/POTFILES.in
+      --files-from=${CMAKE_CURRENT_BINARY_DIR}/POTFILES
       --package-version=${VERSION}
       --package-name=${CMAKE_PROJECT_NAME}
     DEPENDS ${source_translatable}
