@@ -31,7 +31,11 @@ cdef class Image(Object):
         elm_image_no_scale_set(self.obj, no_scale)
 
     def scale_set(self, scale_up, scale_down):
-        elm_image_scale_set(self.obj, scale_up, scale_down)
+        _METHOD_DEPRECATED(self, "resizable_set")
+        self.resizable_set(scale_up, scale_down)
+
+    def resizable_set(self, size_up, size_down):
+        elm_image_resizable_set(self.obj, size_up, size_down)
 
     def fill_outside_set(self, fill_outside):
         elm_image_fill_outside_set(self.obj, fill_outside)

@@ -391,7 +391,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_image_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void                     elm_image_smooth_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool smooth)
     void                     elm_image_no_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_scale)
-    void                     elm_image_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scale_up,evas.c_evas.Eina_Bool scale_down)
+    void                     elm_image_resizable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scale_up,evas.c_evas.Eina_Bool scale_down)
     void                     elm_image_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill_outside)
     void                     elm_image_prescale_set(evas.c_evas.Evas_Object *obj, int size)
     void                     elm_image_orient_set(evas.c_evas.Evas_Object *obj, Elm_Image_Orient orient)
