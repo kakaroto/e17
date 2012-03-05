@@ -21,6 +21,11 @@ find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
 find_package(Gettext)
 
+if(DEFINED ECORE_X_FOUND)
+   set(HAVE_ECORE_X 1)
+endif(DEFINED ECORE_X_FOUND)
+
+
 INCLUDE(CheckIncludeFiles)
 CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
 
