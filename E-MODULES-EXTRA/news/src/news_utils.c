@@ -70,10 +70,10 @@ news_util_browser_open(const char *url)
      }
    else
      {
-        news_util_message_error_show("<hilight>Error when opening youre browser.</hilight><br><br>"
+        news_util_message_error_show("<hilight>Error when trying to open your browser.</hilight><br><br>"
               "News module uses the <hilight>xdg-open</hilight> script (xdg-utils package) from freedesktop.org<br>"
               "to open urls. The script seems to be present, but maybe it is not"
-              "<hilight>configured corectly ?</hilight>");
+              "<hilight>configured correctly ?</hilight>");
         return 0;
      }
 
