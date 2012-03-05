@@ -2541,6 +2541,7 @@ public:
         eo = elm_genlist_add(parent->top_widget_get());
         construct(eo, obj);
         get_object()->Set(String::New("append"), FunctionTemplate::New(append)->GetFunction());
+        get_object()->Set(String::New("clear"), FunctionTemplate::New(clear)->GetFunction());
      }
 
 
@@ -2597,6 +2598,13 @@ public:
         return NULL;
      }
    /* End of GenList functions */
+
+   static Handle<Value> clear(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        elm_genlist_clear(static_cast<CElmGenList *>(self)->get());
+        return Undefined();
+     }
 
    static Handle<Value> append(const Arguments& args)
      {
