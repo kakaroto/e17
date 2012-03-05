@@ -71,5 +71,5 @@ set(CPACK_SOURCE_IGNORE_FILES
 include(CPack)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
-find_package(Distcheck)
+include(MakeDistcheck)
 add_distcheck()
