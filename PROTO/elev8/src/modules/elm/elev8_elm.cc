@@ -21,11 +21,11 @@ using namespace v8;
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
 
-CEvasObject *realize_one(CEvasObject *parent, Handle<Value> obj);
+CEvasObject *realize_or_get(CEvasObject *parent, Handle<Value> obj);
 
 class CEvasObject {
-   /* realize_one is a factory for our class */
-   friend CEvasObject *realize_one(CEvasObject *parent, Handle<Value> obj);
+   /* realize_or_get is a factory for our class */
+   friend CEvasObject *realize_or_get(CEvasObject *parent, Handle<Value> obj);
 protected:
    Evas_Object *eo;
    Persistent<ObjectTemplate> the_template;
@@ -738,7 +738,7 @@ public:
              Handle<Value> x = props->Get(Integer::New(i));
              String::Utf8Value val(x);
 
-             CEvasObject *child = realize_one(this, in->Get(x->ToString()));
+             CEvasObject *child = realize_or_get(this, in->Get(x->ToString()));
              if (!child)
                continue;
              add_child(child);
@@ -1566,7 +1566,7 @@ public:
    virtual void icon_set(Handle<Value> value)
      {
         the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
+        CEvasObject *icon = realize_or_get(this, value);
         elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
@@ -1608,7 +1608,7 @@ public:
                {
                   Handle<Value> element = properties->Get(Integer::New(i));
 
-                  CEvasObject *child = realize_one(this, contents->Get(element->ToString()));
+                  CEvasObject *child = realize_or_get(this, contents->Get(element->ToString()));
                   if (!child)
                     continue;
 
@@ -1801,7 +1801,7 @@ public:
    virtual void icon_set(Handle<Value> value)
      {
         the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
+        CEvasObject *icon = realize_or_get(this, value);
         elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
@@ -1990,10 +1990,10 @@ public:
         construct(eo, obj);
 
         /* realize front and back */
-        front = realize_one(this, obj->Get(String::New("front")));
+        front = realize_or_get(this, obj->Get(String::New("front")));
         elm_object_part_content_set(eo, "front", front->get());
 
-        back = realize_one(this, obj->Get(String::New("back")));
+        back = realize_or_get(this, obj->Get(String::New("back")));
         elm_object_part_content_set(eo, "back", back->get());
 
         get_object()->Set(String::New("flip"), FunctionTemplate::New(do_flip)->GetFunction());
@@ -2199,7 +2199,7 @@ public:
         CEvasObject *content;
         eo = elm_scroller_add(parent->top_widget_get());
         construct(eo, obj);
-        content = realize_one(this, obj->Get(String::New("content")));
+        content = realize_or_get(this, obj->Get(String::New("content")));
         if (!content)
           {
              ELM_ERR( "scroller has no content");
@@ -2371,7 +2371,7 @@ public:
    virtual void icon_set(Handle<Value> value)
      {
         the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
+        CEvasObject *icon = realize_or_get(this, value);
         elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
@@ -2384,7 +2384,7 @@ public:
    virtual void end_set(Handle<Value> value)
      {
         the_end_object.Dispose();
-        CEvasObject *end_obj = realize_one(this, value);
+        CEvasObject *end_obj = realize_or_get(this, value);
         if (end_obj)
           {
              elm_object_part_content_set(eo, "elm.swallow.end", end_obj->get());
@@ -2575,7 +2575,7 @@ public:
         Local<Value> retval = fn->Call(temp, 1, args);
 		if (retval->IsObject())
 		  {
-             CEvasObject *content = realize_one(itc->genlist, retval->ToObject());
+             CEvasObject *content = realize_or_get(itc->genlist, retval->ToObject());
 			 if(content)
                return content->get();
 		  }
@@ -2926,7 +2926,7 @@ public:
                             {
                                static_cast<Persistent<Value> >(it->icon).Dispose();
                                it->icon = v8::Persistent<Value>::New(args[1]);
-                               it->icon_left = realize_one(list, it->icon);
+                               it->icon_left = realize_or_get(list, it->icon);
                                if (it->icon_left)
                                  {
                                     elm_icon_scale_set(it->icon_left->get(), 0, 0);
@@ -2940,7 +2940,7 @@ public:
                             {
                                static_cast<Persistent<Value> >(it->end).Dispose();
                                it->end = v8::Persistent<Value>::New(args[1]);
-                               it->icon_right = realize_one(list, it->end);
+                               it->icon_right = realize_or_get(list, it->end);
 
                                if (it->icon_right)
                                  {
@@ -3158,7 +3158,7 @@ public:
           }
         if ( it->icon->IsObject())
           {
-             it->icon_left = realize_one(this, it->icon);
+             it->icon_left = realize_or_get(this, it->icon);
              if (it->icon_left)
                {
                   elm_icon_scale_set(it->icon_left->get(), 0, 0);
@@ -3168,7 +3168,7 @@ public:
           }
         if ( it->end->IsObject())
           {
-             it->icon_right = realize_one(this, it->end);
+             it->icon_right = realize_or_get(this, it->end);
 
              if (it->icon_right)
                {
@@ -3329,7 +3329,7 @@ public:
    virtual void icon_set(Handle<Value> value)
      {
         the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
+        CEvasObject *icon = realize_or_get(this, value);
         elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
@@ -3526,7 +3526,7 @@ public:
    virtual void icon_set(Handle<Value> value)
      {
         the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
+        CEvasObject *icon = realize_or_get(this, value);
         elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
@@ -3855,13 +3855,13 @@ public:
        eo = elm_panes_add(parent->top_widget_get());
        construct(eo, obj);
        CEvasObject *left, *right;
-       left = realize_one(this, obj->Get(String::New("content_left")));
+       left = realize_or_get(this, obj->Get(String::New("content_left")));
        if (left)
          {
             elm_object_part_content_set(eo, "elm.swallow.left", left->get());
          }
 
-       right = realize_one(this, obj->Get(String::New("content_right")));
+       right = realize_or_get(this, obj->Get(String::New("content_right")));
        if (right)
          {
             elm_object_part_content_set(eo, "elm.swallow.right", right->get());
@@ -3916,7 +3916,7 @@ public:
        eo = elm_bubble_add(parent->top_widget_get());
        construct(eo, obj);
        CEvasObject *content;
-       content = realize_one(this, obj->Get(String::New("content")));
+       content = realize_or_get(this, obj->Get(String::New("content")));
        if ( content )
          {
             elm_object_content_set(eo, content->get());
@@ -4786,7 +4786,7 @@ public:
 
         if ( subobj->IsObject())
           {
-             child = realize_one(this, subobj);
+             child = realize_or_get(this, subobj);
              if(!child)
                 return Undefined();
           }
@@ -5075,7 +5075,7 @@ public:
    virtual void icon_set(Handle<Value> value)
      {
         the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
+        CEvasObject *icon = realize_or_get(this, value);
         elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
@@ -5135,7 +5135,7 @@ public:
        if (val->IsObject())
          {
 
-            CEvasObject *content = realize_one(this,val);
+            CEvasObject *content = realize_or_get(this,val);
 
             elm_object_part_content_set(eo, swallow, content->get());
 
@@ -5678,7 +5678,7 @@ public:
      {
           eo = elm_win_inwin_add(parent->top_widget_get());
           construct(eo, obj);
-          content = realize_one(this, obj->Get(String::New("content")));
+          content = realize_or_get(this, obj->Get(String::New("content")));
           if (content)
             {
                elm_win_inwin_content_set(eo, content->get());
@@ -5728,7 +5728,7 @@ public:
      {
         if (val->IsObject())
           {
-             content = realize_one(this, val);
+             content = realize_or_get(this, val);
              if (content)
                {
                   elm_object_content_set(eo, content->get());
@@ -5827,7 +5827,7 @@ public:
         CElmPager *pager = static_cast<CElmPager *>(self);
         if (args[0]->IsObject())
           {
-             CEvasObject *content = realize_one(pager, args[0]);
+             CEvasObject *content = realize_or_get(pager, args[0]);
              if (content)
                {
                   elm_pager_content_push(pager->get(), content->get());
@@ -5892,8 +5892,8 @@ public:
         CEvasObject *prev_btn = NULL, *next_btn = NULL, *content;
         bool has_prev_btn = false, has_next_btn = false;
 
-        if (!args[0]->IsObject())
-           return ThrowException(Exception::Error(String::New("Parameter 1 should be an object description")));
+        if (!args[0]->IsObject() || !args[0]->ToObject()->HasOwnProperty(String::New("_eo")))
+           return ThrowException(Exception::Error(String::New("Parameter 1 should be an object description or an elm.widget")));
 
         if (!args[1]->IsString())
            return ThrowException(Exception::Error(String::New("Parameter 2 should be a string")));
@@ -5910,19 +5910,19 @@ public:
            has_next_btn = true;
         }
 
-        content = realize_one(naviFrame, args[0]);
+        content = realize_or_get(naviFrame, args[0]);
         if (!content)
            return ThrowException(Exception::Error(String::New("Could not create content from description")));
 
         if (has_prev_btn)
           {
-             prev_btn = realize_one(naviFrame, args[2]->ToObject());
+             prev_btn = realize_or_get(naviFrame, args[2]->ToObject());
              if (!prev_btn)
                return ThrowException(Exception::Error(String::New("Could not create back button from description")));
           }
         if (has_next_btn)
           {
-             next_btn = realize_one(naviFrame, args[3]->ToObject());
+             next_btn = realize_or_get(naviFrame, args[3]->ToObject());
              if (!next_btn)
                return ThrowException(Exception::Error(String::New("Could not create next button from description")));
           }
@@ -6016,7 +6016,7 @@ public:
            return;
 
          //TODO : need to check if this is an existing child.
-         child = realize_one(this, subobj);
+         child = realize_or_get(this, subobj);
          if(!child)
            return;
 
@@ -6231,99 +6231,89 @@ CEvasObject::CPropHandler<CElmImage>::list[] = {
   { NULL, NULL, NULL },
 };
 
-CEvasObject *
-realize_one(CEvasObject *parent, Handle<Value> object_val)
+static CEvasObject *
+_realize_one(CEvasObject *parent, Local<Object>description)
 {
-   if (!object_val->IsObject())
-     {
-        ELM_ERR( "%s: value is not an object!", __FUNCTION__);
-        return NULL;
-     }
-
-   Local<Object> obj = object_val->ToObject();
-
-   Local<Value> val = obj->Get(String::New("type"));
+   Local<Value> val = description->Get(String::New("type"));
    String::Utf8Value str(val);
-
-   //ELM_INF("Creating %s", *str);
 
    /* create the evas object */
    // FIXME: make a list here
    CEvasObject *eo = NULL;
    if (!strcmp(*str, "actionslider"))
-     eo = new CElmActionSlider(parent, obj);
+     eo = new CElmActionSlider(parent, description);
    else if (!strcmp(*str, "button"))
-     eo = new CElmButton(parent, obj);
+     eo = new CElmButton(parent, description);
    else if (!strcmp(*str, "layout"))
-     eo = new CElmLayout(parent, obj);
+     eo = new CElmLayout(parent, description);
    else if (!strcmp(*str, "background"))
-     eo = new CElmBackground(parent, obj);
+     eo = new CElmBackground(parent, description);
    else if (!strcmp(*str, "check"))
-     eo = new CElmCheck(parent, obj);
+     eo = new CElmCheck(parent, description);
    else if (!strcmp(*str, "clock"))
-     eo = new CElmClock(parent, obj);
+     eo = new CElmClock(parent, description);
    else if (!strcmp(*str, "entry"))
-     eo = new CElmEntry(parent, obj);
+     eo = new CElmEntry(parent, description);
    else if (!strcmp(*str, "flip"))
-     eo = new CElmFlip(parent, obj);
+     eo = new CElmFlip(parent, description);
    else if (!strcmp(*str, "list"))
-     eo = new CElmList(parent, obj);
+     eo = new CElmList(parent, description);
    else if (!strcmp(*str, "genlist"))
-     eo = new CElmGenList(parent, obj);
+     eo = new CElmGenList(parent, description);
    else if (!strcmp(*str, "icon"))
-     eo = new CElmIcon(parent, obj);
+     eo = new CElmIcon(parent, description);
    else if (!strcmp(*str, "label"))
-     eo = new CElmLabel(parent, obj);
+     eo = new CElmLabel(parent, description);
    else if (!strcmp(*str, "radio"))
-     eo = new CElmRadio(parent, obj);
+     eo = new CElmRadio(parent, description);
    else if (!strcmp(*str, "box"))
-     eo = new CElmBox(parent, obj);
+     eo = new CElmBox(parent, description);
    else if (!strcmp(*str, "progressbar"))
-     eo = new CElmProgressBar(parent, obj);
+     eo = new CElmProgressBar(parent, description);
    else if (!strcmp(*str, "scroller"))
-     eo = new CElmScroller(parent, obj);
+     eo = new CElmScroller(parent, description);
    else if (!strcmp(*str, "segment"))
-     eo = new CElmSegment(parent, obj);
+     eo = new CElmSegment(parent, description);
    else if (!strcmp(*str, "image"))
-     eo = new CEvasImage(parent, obj);
+     eo = new CEvasImage(parent, description);
    else if (!strcmp(*str, "slider"))
-     eo = new CElmSlider(parent, obj);
+     eo = new CElmSlider(parent, description);
    else if (!strcmp(*str, "photo"))
-     eo = new CElmPhoto(parent,obj);
+     eo = new CElmPhoto(parent, description);
    else if (!strcmp(*str, "spinner"))
-     eo = new CElmSpinner(parent,obj);
+     eo = new CElmSpinner(parent, description);
    else if (!strcmp(*str, "pane"))
-     eo = new CElmPane(parent,obj);
+     eo = new CElmPane(parent, description);
    else if (!strcmp(*str, "bubble"))
-     eo = new CElmBubble(parent,obj);
+     eo = new CElmBubble(parent, description);
    else if (!strcmp(*str, "menu"))
-     eo = new CElmMenu(parent,obj);
+     eo = new CElmMenu(parent, description);
    else if (!strcmp(*str, "colorselector"))
-     eo = new CElmColorSelector(parent,obj);
+     eo = new CElmColorSelector(parent, description);
    else if (!strcmp(*str, "calendar"))
-     eo = new CElmCalendar(parent,obj);
+     eo = new CElmCalendar(parent, description);
    else if (!strcmp(*str, "table"))
-     eo = new CElmTable(parent,obj);
+     eo = new CElmTable(parent, description);
    else if (!strcmp(*str, "photocam"))
-     eo = new CElmPhotocam(parent,obj);
+     eo = new CElmPhotocam(parent, description);
    else if (!strcmp(*str, "toggle"))
-     eo = new CElmToggle(parent,obj);
+     eo = new CElmToggle(parent, description);
    else if (!strcmp(*str, "fileselectorbutton"))
-     eo = new CElmFileSelectorButton(parent,obj);
+     eo = new CElmFileSelectorButton(parent, description);
    else if (!strcmp(*str, "fileselectorentry"))
-     eo = new CElmFileSelectorEntry(parent,obj);
+     eo = new CElmFileSelectorEntry(parent, description);
    else if (!strcmp(*str, "inwin"))
-     eo = new CElmInwin(parent,obj);
+     eo = new CElmInwin(parent, description);
    else if (!strcmp(*str, "notify"))
-     eo = new CElmNotify(parent,obj);
+     eo = new CElmNotify(parent, description);
 #if 0
    else if (!strcmp(*str, "pager"))
-     eo = new CElmPager(parent,obj);
+     eo = new CElmPager(parent, description);
 #endif
    else if (!strcmp(*str, "naviframe"))
-     eo = new CElmNaviframe(parent,obj);
+     eo = new CElmNaviframe(parent, description);
    else if (!strcmp(*str, "grid"))
-     eo = new CElmGrid(parent,obj);
+     eo = new CElmGrid(parent, description);
 
    if (!eo)
      {
@@ -6332,6 +6322,27 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      }
 
    return eo;
+}
+
+static CEvasObject *
+_get_evas_object(Local<Object> obj)
+{
+   return static_cast<CEvasObject*>(External::Unwrap(obj->Get(String::New("_eo"))));
+}
+
+CEvasObject *
+realize_or_get(CEvasObject *parent, Handle<Value> object_val)
+{
+   if (!object_val->IsObject())
+     {
+        ELM_ERR( "%s: value is not an object!", __FUNCTION__);
+        return NULL;
+     }
+
+   Local<Object> obj = object_val->ToObject();
+   if (obj->HasOwnProperty(String::New("_eo")))
+     return _get_evas_object(obj);
+   return _realize_one(parent, obj);
 }
 
 CElmBasicWindow *main_win;
@@ -6352,11 +6363,11 @@ elm_widget(const Arguments& args)
    if (parent.IsEmpty())
      return ThrowException(Exception::Error(String::New("Parent not set")));
    
-   CEvasObject *parentObject = static_cast<CEvasObject*>(External::Unwrap(parent->ToObject()->Get(String::New("_eo"))));
+   CEvasObject *parentObject = _get_evas_object(parent->ToObject());
    if (!parentObject)
      return ThrowException(Exception::Error(String::New("Parent is not a widget")));
 
-   CEvasObject *object = realize_one(parentObject, args[0]->ToObject());
+   CEvasObject *object = realize_or_get(parentObject, args[0]->ToObject());
    if (!object)
      return ThrowException(Exception::Error(String::New("Could not realize widget")));
 
