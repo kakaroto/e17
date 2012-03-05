@@ -133,11 +133,11 @@ cdef class Hoversel(Object):
             self.label_set(value)
 
     def icon_set(self, c_evas.Object icon):
-        elm_hoversel_icon_set(self.obj, icon.obj)
+        elm_object_item_part_content_set(self.obj, icon.obj)
 
     def icon_get(self):
         cdef c_evas.Evas_Object *icon
-        icon = elm_hoversel_icon_get(self.obj)
+        icon = elm_object_item_part_content_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> icon)
 
     property icon:

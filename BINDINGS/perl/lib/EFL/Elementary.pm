@@ -322,7 +322,6 @@ my @elm_hover = qw(
   elm_hover_add
   elm_hover_target_set
   elm_hover_parent_set
-  elm_hover_content_set
   elm_hover_best_content_location_get
 );
 
@@ -400,10 +399,6 @@ my @elm_photo = qw(
 my @elm_hoversel = qw(
   elm_hoversel_add
   elm_hoversel_hover_parent_set
-  elm_hoversel_label_set
-  elm_hoversel_label_get
-  elm_hoversel_icon_set
-  elm_hoversel_icon_get
   elm_hoversel_hover_begin
   elm_hoversel_hover_end
   elm_hoversel_clear
@@ -1083,7 +1078,6 @@ may change in future releases.
     elm_genlist_item_append
     elm_hover_add
     elm_hover_best_content_location_get
-    elm_hover_content_set
     elm_hover_parent_set
     elm_hover_target_set
     elm_hoversel_add
@@ -1091,16 +1085,12 @@ may change in future releases.
     elm_hoversel_hover_begin
     elm_hoversel_hover_end
     elm_hoversel_hover_parent_set
-    elm_hoversel_icon_get
-    elm_hoversel_icon_set
     elm_hoversel_item_add
     elm_hoversel_item_data_get
     elm_hoversel_item_del
     elm_hoversel_item_icon_get
     elm_hoversel_item_icon_set
     elm_hoversel_item_label_get
-    elm_hoversel_label_get
-    elm_hoversel_label_set
     elm_icon_add
     elm_icon_file_set
     elm_icon_fill_outside_set

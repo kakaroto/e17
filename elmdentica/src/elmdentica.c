@@ -844,7 +844,7 @@ static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 			evas_object_show(button);
 		evas_object_show(frame);
 
-		elm_hover_content_set(url_win, "middle", frame);
+		elm_object_part_content_set(url_win, "middle", frame);
 
 		evas_object_smart_callback_add(url_win, "clicked", on_url_dismissed, NULL);
 	evas_object_show(url_win);
@@ -1496,7 +1496,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 
 		elm_hover_parent_set(gui.hover, gui.win);
 		elm_hover_target_set(gui.hover, gui.timeline);
-		elm_hover_content_set(gui.hover, "middle", box);
+		elm_object_part_content_set(gui.hover, "middle", box);
 	evas_object_show(gui.hover);
 }
 

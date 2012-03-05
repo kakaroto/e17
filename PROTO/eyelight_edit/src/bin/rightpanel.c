@@ -81,7 +81,7 @@ Evas_Object *rightpanel_create()
     hover = elm_hoversel_add(win);
     _area_layout = hover;
     elm_hoversel_hover_parent_set(hover,win);
-    elm_hoversel_label_set(hover, "no label");
+    elm_object_text_set(hover, "no label");
     evas_object_size_hint_weight_set(hover, -1.0, -1.0);
     evas_object_size_hint_align_set(hover, -1.0, 0.0);
     elm_hoversel_item_add(hover, D_("Vertical"), NULL, ELM_ICON_NONE, utils_edit_area_layout_vertical_set, NULL);
@@ -258,7 +258,7 @@ void rightpanel_image_show()
 
 void rightpanel_area_layout_set(const char *layout)
 {
-    elm_hoversel_label_set(_area_layout, layout);
+    elm_object_text_set(_area_layout, layout);
 }
 
 void rightpanel_image_data_set(const char* file, int border, int shadow, int keep_aspect)

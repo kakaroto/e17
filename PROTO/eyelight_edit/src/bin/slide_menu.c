@@ -106,10 +106,10 @@ void slide_menu_show(List_Item *item, int x, int y)
     elm_hover_parent_set(hover, win);
     elm_hover_target_set(hover, icon_hover_placement);
     elm_object_style_set(hover, "popout");
-    elm_hover_content_set(hover, "middle", icon);
-    elm_hover_content_set(hover, "left", left);
-    elm_hover_content_set(hover, "bottom", bottom);
-    elm_hover_content_set(hover, "top", top);
+    elm_object_part_content_set(hover, "middle", icon);
+    elm_object_part_content_set(hover, "left", left);
+    elm_object_part_content_set(hover, "bottom", bottom);
+    elm_object_part_content_set(hover, "top", top);
     evas_object_show(hover);
     //
 }

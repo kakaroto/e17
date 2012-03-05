@@ -641,9 +641,6 @@ elm_hover_target_set(Evas_Object *obj, Evas_Object *target)
 void
 elm_hover_parent_set(Evas_Object *obj, Evas_Object *parent)
 
-void
-elm_hover_content_set(Evas_Object *obj, const char *swallow, Evas_Object *content)
-
 const char *
 elm_hover_best_content_location_get(const Evas_Object *obj, Elm_Hover_Axis pref_axis)
 
@@ -863,18 +860,6 @@ elm_hoversel_add(Evas_Object *parent)
 
 void
 elm_hoversel_hover_parent_set(Evas_Object *obj, Evas_Object *parent)
-
-void
-elm_hoversel_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_hoversel_label_get(Evas_Object *obj)
-
-void
-elm_hoversel_icon_set(Evas_Object *obj, Evas_Object *icon)
-
-Evas_Object *
-elm_hoversel_icon_get(Evas_Object *obj)
 
 void
 elm_hoversel_hover_begin(Evas_Object *obj)

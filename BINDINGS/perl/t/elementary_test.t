@@ -744,7 +744,7 @@ sub test_hover {
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Popup");
-    elm_hover_content_set($hv, "middle", $bt);
+    elm_object_part_content_set($hv, "middle", $bt);
     evas_object_show($bt);
 
     $bx = elm_box_add($win);
@@ -769,21 +769,21 @@ sub test_hover {
     evas_object_show($bt);
 
     evas_object_show($bx);
-    elm_hover_content_set($hv, "top", $bx);
+    elm_object_part_content_set($hv, "top", $bx);
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Bottom");
-    elm_hover_content_set($hv, "bottom", $bt);
+    elm_object_part_content_set($hv, "bottom", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Left");
-    elm_hover_content_set($hv, "left", $bt);
+    elm_object_part_content_set($hv, "left", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Right");
-    elm_hover_content_set($hv, "right", $bt);
+    elm_object_part_content_set($hv, "right", $bt);
     evas_object_show($bt);
 
     evas_object_size_hint_min_set($bg, 160, 160);
@@ -823,7 +823,7 @@ sub test_hover2 {
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Popup");
-    elm_hover_content_set($hv, "middle", $bt);
+    elm_object_part_content_set($hv, "middle", $bt);
     evas_object_show($bt);
 
     $bx = elm_box_add($win);
@@ -846,21 +846,21 @@ sub test_hover2 {
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     evas_object_show($bx);
-    elm_hover_content_set($hv, "top", $bx);
+    elm_object_part_content_set($hv, "top", $bx);
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Bot");
-    elm_hover_content_set($hv, "bottom", $bt);
+    elm_object_part_content_set($hv, "bottom", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Left");
-    elm_hover_content_set($hv, "left", $bt);
+    elm_object_part_content_set($hv, "left", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_button_label_set($bt, "Right");
-    elm_hover_content_set($hv, "right", $bt);
+    elm_object_part_content_set($hv, "right", $bt);
 
     evas_object_size_hint_min_set($bg, 160, 160);
     evas_object_size_hint_max_set($bg, 640, 640);
@@ -1295,7 +1295,7 @@ sub my_anchorview_anchor {
 
     $bt = elm_button_add($obj);
     elm_button_label_set($bt, $ei->name);
-    elm_hover_content_set($ei->hover, "middle", $bt);
+    elm_object_part_content_set($ei->hover, "middle", $bt);
     evas_object_show($bt);
 
     # hints as to where we probably should put hover contents (buttons etc.).
@@ -1316,27 +1316,27 @@ sub my_anchorview_anchor {
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
-        elm_hover_content_set($ei->hover, "top", $bx);
+        elm_object_part_content_set($ei->hover, "top", $bx);
         evas_object_show($bx);
     }
     if ($ei->hover_bottom) {
         $bt = elm_button_add($obj);
         elm_button_label_set($bt, "Bot");
-        elm_hover_content_set($ei->hover, "bottom", $bt);
+        elm_object_part_content_set($ei->hover, "bottom", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
     }
     if ($ei->hover_left) {
         $bt = elm_button_add($obj);
         elm_button_label_set($bt, "Left");
-        elm_hover_content_set($ei->hover, "left", $bt);
+        elm_object_part_content_set($ei->hover, "left", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
     }
     if ($ei->hover_right) {
         $bt = elm_button_add($obj);
         elm_button_label_set($bt, "Right");
-        elm_hover_content_set($ei->hover, "right", $bt);
+        elm_object_part_content_set($ei->hover, "right", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
     }
@@ -1393,7 +1393,7 @@ sub my_anchorblock_anchor {
 
     $bt = elm_button_add($obj);
     elm_button_label_set($bt, ei->name);
-    elm_hover_content_set(ei->hover, "middle", $bt);
+    elm_object_part_content_set(ei->hover, "middle", $bt);
     evas_object_show($bt);
 
     # hints as to where we probably should put hover contents (buttons etc.).
@@ -1414,27 +1414,27 @@ sub my_anchorblock_anchor {
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
-        elm_hover_content_set($ei->hover, "top", $bx);
+        elm_object_part_content_set($ei->hover, "top", $bx);
         evas_object_show($bx);
     }
     if (ei->hover_bottom) {
         $bt = elm_button_add($obj);
         elm_button_label_set($bt, "Bot");
-        elm_hover_content_set($ei->hover, "bottom", $bt);
+        elm_object_part_content_set($ei->hover, "bottom", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
     }
     if (ei->hover_left) {
         $bt = elm_button_add($obj);
         elm_button_label_set($bt, "Left");
-        elm_hover_content_set($ei->hover, "left", $bt);
+        elm_object_part_content_set($ei->hover, "left", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
     }
     if (ei->hover_right) {
         $bt = elm_button_add($obj);
         elm_button_label_set($bt, "Right");
-        elm_hover_content_set($ei->hover, "right", $bt);
+        elm_object_part_content_set($ei->hover, "right", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
     }
@@ -1752,7 +1752,7 @@ sub test_hoversel {
 
     $bt = elm_hoversel_add($win);
     elm_hoversel_hover_parent_set($bt, $win);
-    elm_hoversel_label_set($bt, "Labels");
+    elm_object_text_set($bt, "Labels");
     elm_hoversel_item_add($bt, "Item 1",                   undef, ELM_ICON_NONE, undef, undef);
     elm_hoversel_item_add($bt, "Item 2",                   undef, ELM_ICON_NONE, undef, undef);
     elm_hoversel_item_add($bt, "Item 3",                   undef, ELM_ICON_NONE, undef, undef);
@@ -1764,7 +1764,7 @@ sub test_hoversel {
 
     $bt = elm_hoversel_add($win);
     elm_hoversel_hover_parent_set($bt, $win);
-    elm_hoversel_label_set($bt, "Some Icons");
+    elm_object_text_set($bt, "Some Icons");
     elm_hoversel_item_add($bt, "Item 1", undef,   ELM_ICON_NONE,     undef, undef);
     elm_hoversel_item_add($bt, "Item 2", undef,   ELM_ICON_NONE,     undef, undef);
     elm_hoversel_item_add($bt, "Item 3", "home",  ELM_ICON_STANDARD, undef, undef);
@@ -1776,7 +1776,7 @@ sub test_hoversel {
 
     $bt = elm_hoversel_add($win);
     elm_hoversel_hover_parent_set($bt, $win);
-    elm_hoversel_label_set($bt, "All Icons");
+    elm_object_text_set($bt, "All Icons");
     elm_hoversel_item_add($bt, "Item 1", "apps",       ELM_ICON_STANDARD, undef, undef);
     elm_hoversel_item_add($bt, "Item 2", "arrow_down", ELM_ICON_STANDARD, undef, undef);
     elm_hoversel_item_add($bt, "Item 3", "home",       ELM_ICON_STANDARD, undef, undef);
@@ -1788,7 +1788,7 @@ sub test_hoversel {
 
     $bt = elm_hoversel_add($win);
     elm_hoversel_hover_parent_set($bt, $win);
-    elm_hoversel_label_set($bt, "All Icons");
+    elm_object_text_set($bt, "All Icons");
     elm_hoversel_item_add($bt, "Item 1", "apps",         ELM_ICON_STANDARD, undef, undef);
     elm_hoversel_item_add($bt, "Item 2", $images{'sky'}, ELM_ICON_FILE,     undef, undef);
     elm_hoversel_item_add($bt, "Item 3", "home",         ELM_ICON_STANDARD, undef, undef);
@@ -1800,7 +1800,7 @@ sub test_hoversel {
 
     $bt = elm_hoversel_add($win);
     elm_hoversel_hover_parent_set($bt, $win);
-    elm_hoversel_label_set($bt, "Disabled Hoversel");
+    elm_object_text_set($bt, "Disabled Hoversel");
     elm_hoversel_item_add($bt, "Item 1", "apps",  ELM_ICON_STANDARD, undef, undef);
     elm_hoversel_item_add($bt, "Item 2", "close", ELM_ICON_STANDARD, undef, undef);
     elm_object_disabled_set($bt, 1);
@@ -1811,11 +1811,11 @@ sub test_hoversel {
 
     $bt = elm_hoversel_add($win);
     elm_hoversel_hover_parent_set($bt, $win);
-    elm_hoversel_label_set($bt, "Icon + Label");
+    elm_object_text_set($bt, "Icon + Label");
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'sky'}, undef);
-    elm_hoversel_icon_set($bt, $ic);
+    elm_object_item_part_content_set($bt, $ic);
     evas_object_show($ic);
 
     elm_hoversel_item_add($bt, "Item 1", "apps",       ELM_ICON_STANDARD, undef, undef);

@@ -46,7 +46,7 @@ sub _mouse_out {
 sub _hv_select {
     my ($data, $obj) = @_;
     elm_slideshow_transition_set($slideshow, $$data);
-    elm_hoversel_label_set($obj, $$data);
+    elm_object_text_set($obj, $$data);
 }
 
 sub _start {
@@ -144,7 +144,7 @@ sub test_slideshow {
     #   EINA_LIST_FOREACH(elm_slideshow_transitions_get($slideshow), l, transition)
     #      elm_hoversel_item_add($hv, transition, undef, 0, _hv_select, transition);
 
-    #elm_hoversel_label_set($hv, eina_list_data_get(elm_slideshow_transitions_get($slideshow)));
+    #elm_object_text_set($hv, eina_list_data_get(elm_slideshow_transitions_get($slideshow)));
     evas_object_show($hv);
 
     $spin = elm_spinner_add($win);

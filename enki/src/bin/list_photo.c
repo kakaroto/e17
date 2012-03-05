@@ -638,7 +638,7 @@ _bt_album_access_type_cb(void *data, Evas_Object *obj, void *event_info)
    elm_object_text_set(bt, D_("Private"));
    elm_box_pack_end(bx, bt);
 
-   elm_hover_content_set(_hover, "bottom", bx);
+   elm_object_part_content_set(_hover, "bottom", bx);
 
    evas_object_show(bx);
    evas_object_show(_hover);

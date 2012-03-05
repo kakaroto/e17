@@ -597,8 +597,6 @@ cdef extern from "Elementary.h":
     # Hoversel object
     evas.c_evas.Evas_Object *elm_hoversel_add(evas.c_evas.Evas_Object *parent)
     void elm_hoversel_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void elm_hoversel_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
-    evas.c_evas.Evas_Object *elm_hoversel_icon_get(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_hover_begin(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_hover_end(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_clear(evas.c_evas.Evas_Object *obj)
