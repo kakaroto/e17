@@ -190,10 +190,10 @@ _page_populate(void *data)
             (isalpha(letter) && (page->last_index_letter[0] != letter)))
           {
              if ((page->first) && (!page->last_index_letter[0]))
-               elm_index_item_append(page->index, "Special", page->first);
+               elm_index_item_append(page->index, "Special", NULL, page->first);
 
              page->last_index_letter[0] = letter;
-             elm_index_item_append(page->index, page->last_index_letter, glit);
+             elm_index_item_append(page->index, page->last_index_letter, NULL, glit);
           }
         if (!page->first) page->first = glit;
         eina_hash_set(page->od_to_list_item, od, glit);
