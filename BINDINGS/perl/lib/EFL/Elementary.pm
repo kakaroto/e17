@@ -381,12 +381,6 @@ my @elm_anchorblock = qw(
 
 my @elm_bubble = qw(
   elm_bubble_add
-  elm_bubble_label_set
-  elm_bubble_label_get
-  elm_bubble_info_set
-  elm_bubble_content_set
-  elm_bubble_icon_set
-  elm_bubble_icon_get
   elm_bubble_corner_set
 );
 
@@ -991,13 +985,7 @@ may change in future releases.
     elm_box_unpack
     elm_box_unpack_all
     elm_bubble_add
-    elm_bubble_content_set
     elm_bubble_corner_set
-    elm_bubble_icon_get
-    elm_bubble_icon_set
-    elm_bubble_info_set
-    elm_bubble_label_get
-    elm_bubble_label_set
     elm_button_add
     elm_button_icon_get
     elm_button_icon_set
