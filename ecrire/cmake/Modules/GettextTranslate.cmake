@@ -89,7 +89,7 @@ macro(GettextTranslateTargets)
         set(_addToALL "ALL")
      endif()
   endforeach()
-  add_custom_target(update-po ${_addToALL})
+  add_custom_target(update-po)
   add_custom_target(update-gmo ${_addToALL})
 endmacro()
 
