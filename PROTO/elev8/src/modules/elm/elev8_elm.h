@@ -1,5 +1,5 @@
-#ifndef ELEV8_HTTP_H
-#define ELEV8_HTTP_H
+#ifndef ELEV8_ELM_H
+#define ELEV8_ELM_H
 
 #include <Eina.h>
 #include <Ecore.h>

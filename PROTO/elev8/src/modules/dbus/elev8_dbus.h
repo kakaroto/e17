@@ -1,5 +1,5 @@
-#ifndef ELEV8_DBUS_LIBRARY_H
-#define ELEV8_DBUS_LIBRARY_H
+#ifndef ELEV8_DBUS_H
+#define ELEV8_DBUS_H
 
 #include <v8.h>
 #include <dbus/dbus.h>
