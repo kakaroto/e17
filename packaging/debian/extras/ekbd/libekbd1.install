@@ -1,0 +1,5 @@
+usr/lib/lib*.so.*
+usr/bin/ekbd_test
+usr/share/ekbd/themes/default.edj
+usr/share/ekbd/keyboards
+usr/share/applications/ekbd.desktop
