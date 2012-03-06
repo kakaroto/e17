@@ -33,7 +33,7 @@ elm_main(int argc, char **argv)
    evas_object_smart_callback_add(btn, "clicked", _cb_btn_close_clicked, NULL);
    evas_object_show(btn);
 
-   elm_conformant_content_set(conform, btn);
+   elm_object_content_set(conform, btn);
 
    evas_object_resize(win, 200, 200);
    evas_object_show(win);
