@@ -142,7 +142,6 @@ my @elm_general = qw(
   elm_finger_size_get
   elm_finger_size_set
 
-  elm_object_focus
   elm_object_focus_allow_set
   elm_object_focus_allow_get
 
@@ -1163,7 +1162,6 @@ may change in future releases.
     elm_notify_timer_init
     elm_object_disabled_get
     elm_object_disabled_set
-    elm_object_focus
     elm_object_focus_allow_get
     elm_object_focus_allow_set
     elm_object_scale_get

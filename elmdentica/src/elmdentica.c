@@ -411,7 +411,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 		if(au) {
 			snprintf(entry_str, PATH_MAX, "@%s: ", au->user->screen_name);
 			elm_entry_entry_set(entry, entry_str);
-			elm_object_focus(entry);
+			elm_object_focus_set(entry, EINA_TRUE);
 			reply_as=as;
 			elm_entry_cursor_end_set(entry);
 		}
@@ -430,7 +430,7 @@ static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 
 	if(as) {
-		elm_object_focus(entry);
+		elm_object_focus_set(entry, EINA_TRUE);
 		user_id=(long long int)as->au->user->id;
 	}
 

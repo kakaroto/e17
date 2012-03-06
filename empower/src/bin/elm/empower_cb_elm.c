@@ -96,7 +96,7 @@ void check_pass_cb(void *data, Evas_Object *w, void *event)
     if((exec) && (entry) && (!pass || (pass[0] == 0)))
     {
       if(prog && (prog[0] != 0))
-        elm_object_focus(entry);
+        elm_object_focus_set(entry, EINA_TRUE);
       if(pass) free(pass);
       if(prog) free(prog);
       return;

@@ -986,7 +986,7 @@ sub test_entry {
     elm_box_pack_end($bx, $bx2);
     evas_object_show($bx2);
 
-    elm_object_focus($en);
+    elm_object_focus_set($en, EINA_TRUE);
     evas_object_show($win);
 }
 
@@ -1189,7 +1189,7 @@ sub test_entry_scrolled {
     elm_box_pack_end($bx, $bx2);
     evas_object_resize($win, 320, 300);
 
-    elm_object_focus($win);
+    elm_object_focus_set($win, EINA_TRUE);
     evas_object_show($win);
 }
 
@@ -1276,7 +1276,7 @@ sub test_notepad {
 
     evas_object_resize($win, 320, 300);
 
-    elm_object_focus($win);
+    elm_object_focus_set($win, EINA_TRUE);
     evas_object_show($win);
 }
 
@@ -1374,7 +1374,7 @@ sub test_anchorview {
 
     evas_object_resize($win, 320, 300);
 
-    elm_object_focus($win);
+    elm_object_focus_set($win, EINA_TRUE);
     evas_object_show($win);
 }
 
@@ -1582,7 +1582,7 @@ sub test_anchorblock {
 
     evas_object_resize($win, 320, 300);
 
-    elm_object_focus($win);
+    elm_object_focus_set($win, EINA_TRUE);
     evas_object_show($win);
 }
 

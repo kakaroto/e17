@@ -138,9 +138,6 @@ void
 elm_finger_size_set(Evas_Coord size)
 
 void
-elm_object_focus(Evas_Object *obj)
-
-void
 elm_object_focus_allow_set(Evas_Object *obj, Eina_Bool enable)
 
 Eina_Bool
