@@ -2520,17 +2520,16 @@ class CElmGenList : public CEvasObject {
 protected:
    CPropHandler<CElmGenList> prop_handler;
 
-   class GenListItemClass {
-   public:
-     Persistent<Value> type;
-     Persistent<Value> data;
-     Persistent<Value> on_text;
-     Persistent<Value> on_content;
-     Persistent<Value> on_state;
-     Persistent<Value> on_delete;
-     std::string item_style;
-     Elm_Genlist_Item_Class eitc;
-	 CElmGenList *genlist;
+   struct GenListItemClass {
+       Persistent<Value> type;
+       Persistent<Value> data;
+       Persistent<Value> on_text;
+       Persistent<Value> on_content;
+       Persistent<Value> on_state;
+       Persistent<Value> on_delete;
+       std::string item_style;
+       Elm_Genlist_Item_Class eitc;
+       CElmGenList *genlist;
    };
 
 public:
@@ -2590,8 +2589,9 @@ public:
         return EINA_TRUE;
      }
 
-   static void del(void *, Evas_Object *)
+   static void del(void *data, Evas_Object *)
      {
+        delete static_cast<GenListItemClass *>(data);
      }
 
    static void *sel(void *, Evas_Object *, void *)
