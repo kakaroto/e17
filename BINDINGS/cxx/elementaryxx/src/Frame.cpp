@@ -29,7 +29,7 @@ void Frame::setLabel (const std::string &label)
 
 void Frame::setContent (const Evasxx::Object &content)
 {
-  elm_frame_content_set (o, content.obj ());
+  elm_object_content_set (o, content.obj ());
 }
 
 } // end namespace Elmxx

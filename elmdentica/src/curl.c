@@ -79,7 +79,7 @@ void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 					label = elm_label_add(gui.win);
 						elm_label_line_wrap_set(label, TRUE);
 						elm_object_text_set(label, buf);
-						elm_frame_content_set(frame, label);
+						elm_object_content_set(frame, label);
 					evas_object_show(label);
 				}
 				if(buf) free(buf);

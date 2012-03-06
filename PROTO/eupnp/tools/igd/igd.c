@@ -173,7 +173,7 @@ igd_client_win_create(void)
    evas_object_show(bx0);
 
    fr = elm_frame_add(win);
-   elm_frame_label_set(fr, "Instructions");
+   elm_object_text_set(fr, "Instructions");
    elm_box_pack_end(bx0, fr);
    evas_object_show(fr);
 
@@ -181,7 +181,7 @@ igd_client_win_create(void)
    elm_label_label_set(lb, "IGD devices will be present on the list below<br>"
 			   "as they're found. Click on them for performing <br>"
 			   "actions.");
-   elm_frame_content_set(fr, lb);
+   elm_object_content_set(fr, lb);
    evas_object_show(lb);
 
    li = elm_list_add(win);

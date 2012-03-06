@@ -198,7 +198,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
    evas_object_smart_callback_add(text, "changed",
                                   _account_set_entry_changed_cb, bt);
 
-   elm_frame_content_set(fr, tb);
+   elm_object_content_set(fr, tb);
    elm_win_inwin_content_set(inwin, fr);
 }
 

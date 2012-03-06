@@ -58,8 +58,8 @@ Evas_Object *rightpanel_create()
     _area = fr;
     evas_object_size_hint_weight_set(bx, 1.0, 1.0);
     evas_object_size_hint_align_set(bx, -1.0, -1.0);
-    elm_frame_label_set(fr, D_("Area"));
-    elm_frame_content_set(fr, bx);
+    elm_object_text_set(fr, D_("Area"));
+    elm_object_content_set(fr, bx);
     evas_object_show(fr);
 
     bt = elm_button_add(win);
@@ -130,8 +130,8 @@ Evas_Object *rightpanel_create()
     _image = fr;
     evas_object_size_hint_weight_set(bx, 1.0, 1.0);
     evas_object_size_hint_align_set(bx, -1.0, -1.0);
-    elm_frame_label_set(fr, D_("Image"));
-    elm_frame_content_set(fr, bx);
+    elm_object_text_set(fr, D_("Image"));
+    elm_object_content_set(fr, bx);
     evas_object_show(fr);
 
     tb = elm_table_add(win);

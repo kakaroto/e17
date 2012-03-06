@@ -74,7 +74,7 @@ sub basic {
     evas_object_show($bx2);
 
     my $fr = elm_frame_add($win);
-    elm_frame_label_set($fr, "Do you see this?");
+    elm_object_text_set($fr, "Do you see this?");
     elm_box_pack_end($bx2, $fr);
     evas_object_show($fr);
 
@@ -82,7 +82,7 @@ sub basic {
     elm_label_label_set($lb, "If you can see this window, then most likely everything compiled correctly.<br>"
                            . "If you'd like test out the Elementary test suite (a port of elementary_test to Perl)<br>"
                            . "click the 'Continue' button. Otherwise click the 'Done' button to exit and pass the test.");
-    elm_frame_content_set($fr, $lb);
+    elm_object_content_set($fr, $lb);
 #    elm_object_scale_set($lb, 1.0);
     evas_object_show($lb);
 
@@ -152,14 +152,14 @@ elm_win_resize_object_add($win, $bx0);
 evas_object_show($bx0);
 
 my $fr = elm_frame_add($win);
-elm_frame_label_set($fr, "Information");
+elm_object_text_set($fr, "Information");
 elm_box_pack_end($bx0, $fr);
 evas_object_show($fr);
 
 my $lb = elm_label_add($win);
 elm_label_label_set($lb, "Please select a test from the list below<br>"
                        . "by clicking the test button to show the<br>test window.");
-elm_frame_content_set($fr, $lb);
+elm_object_content_set($fr, $lb);
 evas_object_show($lb);
 
 my $li = elm_list_add($win);
@@ -2322,29 +2322,29 @@ sub test_scaling2 {
 
     $fr = elm_frame_add($win);
     elm_object_scale_set($fr, 0.5);
-    elm_frame_label_set($fr, "Scale: 0.5");
+    elm_object_text_set($fr, "Scale: 0.5");
     $lb = elm_label_add($win);
     elm_label_label_set($lb, "Parent frame scale<br>" . "is 0.5. Child should<br>" . "inherit it.");
-    elm_frame_content_set($fr, $lb);
+    elm_object_content_set($fr, $lb);
     evas_object_show($lb);
     elm_box_pack_end($bx, $fr);
     evas_object_show($fr);
 
     $fr = elm_frame_add($win);
-    elm_frame_label_set($fr, "Scale: 1.0");
+    elm_object_text_set($fr, "Scale: 1.0");
     $lb = elm_label_add($win);
     elm_label_label_set($lb, "Parent frame scale<br>" . "is 1.0. Child should<br>" . "inherit it.");
-    elm_frame_content_set($fr, $lb);
+    elm_object_content_set($fr, $lb);
     evas_object_show($lb);
     elm_object_scale_set($fr, 1.0);
     elm_box_pack_end($bx, $fr);
     evas_object_show($fr);
 
     $fr = elm_frame_add($win);
-    elm_frame_label_set($fr, "Scale: 2.0");
+    elm_object_text_set($fr, "Scale: 2.0");
     $lb = elm_label_add($win);
     elm_label_label_set($lb, "Parent frame scale<br>" . "is 2.0. Child should<br>" . "inherit it.");
-    elm_frame_content_set($fr, $lb);
+    elm_object_content_set($fr, $lb);
     evas_object_show($lb);
     elm_object_scale_set($fr, 2.0);
     elm_box_pack_end($bx, $fr);

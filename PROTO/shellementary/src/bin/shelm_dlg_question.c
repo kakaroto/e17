@@ -20,7 +20,7 @@ shelm_question_dialog(const char *window_title, const char *window_text, int win
   evas_object_show(frame);
 
   box = create_box(window, EINA_FALSE);
-  elm_frame_content_set(frame, box);
+  elm_object_content_set(frame, box);
   evas_object_show(box);
   
   hbox = create_box(window, EINA_TRUE);

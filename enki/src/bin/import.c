@@ -88,7 +88,7 @@ import_new(Evas_Object *win)
    evas_object_size_hint_weight_set(tb2, -1.0, 0.0);
    evas_object_size_hint_align_set(tb2, 1.0, 1.0);
    evas_object_show(tb2);
-   elm_frame_content_set(fr, tb2);
+   elm_object_content_set(fr, tb2);
 
    photos = photos_list_object_add(inwin);
    photos_list_object_multiselect_set(photos, EINA_TRUE);
@@ -164,7 +164,7 @@ import_new(Evas_Object *win)
    evas_object_size_hint_weight_set(bx2, 1.0, 1.0);
    evas_object_size_hint_align_set(bx2, -1.0, -1.0);
    evas_object_show(bx2);
-   elm_frame_content_set(fr, bx2);
+   elm_object_content_set(fr, bx2);
 
    gl = elm_genlist_add(win);
    gl_albums = gl;
@@ -500,7 +500,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    elm_table_pack(tb, bt, 5, 1, 2, 1);
    elm_object_disabled_set(bt, 1);
 
-   elm_frame_content_set(fr, tb);
+   elm_object_content_set(fr, tb);
    elm_notify_content_set(inwin2, fr);
 
    enlil_album_monitor_stop(album);

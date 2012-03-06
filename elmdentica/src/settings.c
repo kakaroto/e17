@@ -399,7 +399,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 					evas_object_name_set(screen_name_entry, "screen_name_entry");
 					elm_entry_single_line_set(screen_name_entry, 1);
 					elm_entry_entry_set(screen_name_entry, screen_name);
-					elm_frame_content_set(frame, screen_name_entry);
+					elm_object_content_set(frame, screen_name_entry);
 				evas_object_show(screen_name_entry);
 
 				elm_table_pack(table, frame, 0, 0, 1, 1);
@@ -415,7 +415,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 					elm_entry_single_line_set(password_entry, 1);
 					elm_entry_password_set(password_entry, 1);
 					elm_entry_entry_set(password_entry, password);
-					elm_frame_content_set(frame, password_entry);
+					elm_object_content_set(frame, password_entry);
 				evas_object_show(password_entry);
 
 				elm_table_pack(table, frame, 1, 0, 1, 1);
@@ -469,7 +469,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 					evas_object_name_set(domain_entry, "domain_entry");
 					elm_entry_single_line_set(domain_entry, 1);
 					elm_entry_entry_set(domain_entry, domain);
-					elm_frame_content_set(frame, domain_entry);
+					elm_object_content_set(frame, domain_entry);
 				evas_object_show(domain_entry);
 
 				elm_table_pack(table, frame, 0, 2, 1, 1);
@@ -484,7 +484,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 					evas_object_name_set(base_url_entry, "base_url_entry");
 					elm_entry_single_line_set(base_url_entry, 1);
 					elm_entry_entry_set(base_url_entry, base_url);
-					elm_frame_content_set(frame, base_url_entry);
+					elm_object_content_set(frame, base_url_entry);
 				evas_object_show(base_url_entry);
 
 				elm_table_pack(table, frame, 1, 2, 1, 1);
@@ -724,7 +724,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 			elm_list_go(list);
 			evas_object_show(list);
-			elm_frame_content_set(frame, list);
+			elm_object_content_set(frame, list);
 		evas_object_show(frame);
 		elm_box_pack_end(account_editor, frame);
 
@@ -1045,7 +1045,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 			elm_object_text_set(frame, _("Preferred browser..."));
 			hoversel = settings_browser_hoversel();
 			elm_hoversel_hover_parent_set(hoversel, settings_area);
-			elm_frame_content_set(frame, hoversel);
+			elm_object_content_set(frame, hoversel);
 			elm_table_pack(options_editor, frame, 0, 0, 1, 1);
 		evas_object_show(frame);
 		
@@ -1055,7 +1055,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 			elm_toggle_states_labels_set(toggle, _("Online"), _("Offline"));
 			elm_toggle_state_set(toggle, settings->online);
 			evas_object_smart_callback_add(toggle, "changed", on_toggle_online_changed, NULL);
-			elm_frame_content_set(frame, toggle);
+			elm_object_content_set(frame, toggle);
 			elm_table_pack(options_editor, frame, 1, 0, 1, 1);
 		evas_object_show(frame);
 		
@@ -1065,7 +1065,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 			elm_toggle_states_labels_set(toggle, _("Relative"), _("Absolute"));
 			elm_toggle_state_set(toggle, settings->rel_timestamps);
 			evas_object_smart_callback_add(toggle, "changed", on_toggle_timestamps, NULL);
-			elm_frame_content_set(frame, toggle);
+			elm_object_content_set(frame, toggle);
 			elm_table_pack(options_editor, frame, 0, 1, 1, 1);
 		evas_object_show(frame);
 
@@ -1085,7 +1085,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 				evas_object_smart_callback_add(auto_update_timeout, "delay,changed", on_update_timeout_changed, NULL);
 				elm_table_pack(update_table, auto_update_timeout, 1, 0, 1, 1);
 				evas_object_show(auto_update_timeout);
-				elm_frame_content_set(frame, update_table);
+				elm_object_content_set(frame, update_table);
 			evas_object_show(update_table);
 		elm_table_pack(options_editor, frame, 0, 2, 2, 1);
 		elm_box_pack_start(settings_area, options_editor);
@@ -1249,7 +1249,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 						elm_entry_entry_set(entry, "");
 					else
 						elm_entry_entry_set(entry, pattern);
-				elm_frame_content_set(frame, entry);
+				elm_object_content_set(frame, entry);
 				elm_box_pack_end(box, frame);
 			evas_object_show(frame);
 
@@ -1357,7 +1357,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 
 			elm_list_go(list);
 			evas_object_show(list);
-			elm_frame_content_set(frame, list);
+			elm_object_content_set(frame, list);
 		evas_object_show(frame);
 		elm_box_pack_end(gag_editor, frame);
 

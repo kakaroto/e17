@@ -410,13 +410,13 @@ void utils_edit_area_image_add(void *data, Evas_Object *obj, void *event_info)
 
     fr = elm_frame_add(inwin);
     elm_win_inwin_content_set(inwin, fr);
-    elm_frame_label_set(fr, D_("Select an image"));
+    elm_object_text_set(fr, D_("Select an image"));
 
     fs = elm_fileselector_add(win);
     elm_fileselector_expandable_set(fs, EINA_FALSE);
     elm_fileselector_path_set(fs, getenv("HOME"));
     evas_object_size_hint_weight_set(fs, 1.0, 1.0);
-    elm_frame_content_set(fr, fs);
+    elm_object_content_set(fr, fs);
     evas_object_show(fs);
     evas_object_smart_callback_add(fs, "done", _utils_edit_area_image_add_cb, inwin);
 }

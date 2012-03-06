@@ -17,7 +17,7 @@ shelm_about_dialog()
   evas_object_show(frame);
 
   box = create_box(window, EINA_FALSE);
-  elm_frame_content_set(frame, box);
+  elm_object_content_set(frame, box);
   evas_object_show(box);
 
   snprintf(buf, sizeof(buf), "%s/logo.png", PACKAGE_DATA_DIR);

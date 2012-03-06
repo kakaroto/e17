@@ -140,7 +140,7 @@ netsync_sync_update(Enlil_Album *album)
    evas_object_size_hint_align_set(tb2, -1.0, 1.0);
    elm_table_padding_set(tb2, 15, 5);
    evas_object_show(tb2);
-   elm_frame_content_set(fr, tb2);
+   elm_object_content_set(fr, tb2);
    //
 
    if (album_data->netsync.album_netsync_notuptodate)

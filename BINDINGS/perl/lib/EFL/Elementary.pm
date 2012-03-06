@@ -274,9 +274,6 @@ my @elm_toggle = qw(
 
 my @elm_frame = qw(
   elm_frame_add
-  elm_frame_label_set
-  elm_frame_label_get
-  elm_frame_content_set
 );
 
 my @elm_table = qw(
@@ -1039,9 +1036,6 @@ may change in future releases.
     elm_flip_go
     elm_flip_perspective_set
     elm_frame_add
-    elm_frame_content_set
-    elm_frame_label_get
-    elm_frame_label_set
     elm_genlist_add
     elm_genlist_item_append
     elm_hover_add

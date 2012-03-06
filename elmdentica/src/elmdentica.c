@@ -763,7 +763,7 @@ static void group_show(void *data) {
 					elm_box_pack_end(box2, label);
 				evas_object_show(label);
 
-				elm_frame_content_set(frame, box2);
+				elm_object_content_set(frame, box2);
 				elm_box_pack_end(box, frame);
 			evas_object_show(frame);
 
@@ -840,7 +840,7 @@ static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 				evas_object_size_hint_align_set(button, 0.5, 0.5);
 				elm_object_text_set(button, _("Check it out!"));
 				evas_object_smart_callback_add(button, "clicked", on_open_url, url_win);
-				elm_frame_content_set(frame, button);
+				elm_object_content_set(frame, button);
 			evas_object_show(button);
 		evas_object_show(frame);
 
@@ -1177,7 +1177,7 @@ static void ed_save_attachment(void* data, Evas_Object *obj, void *event_info) {
                         evas_object_name_set(cancel_button, "cancel_button");
                         elm_table_pack(table, cancel_button, 1, 2, 1, 2);
                         evas_object_show(cancel_button);
-                    elm_frame_content_set(url_frame, table);
+                    elm_object_content_set(url_frame, table);
                     evas_object_show(table);
                     evas_object_show(url_frame);
                 elm_win_inwin_content_set(gui.download_win, url_frame);
@@ -1605,7 +1605,7 @@ void show_error(StatusesList * statuses) {
 			elm_object_text_set(frame1, statuses->hash_request);
 			label = elm_label_add(frame1);
 				elm_object_text_set(label, statuses->hash_error);
-				elm_frame_content_set(frame1, label);
+				elm_object_content_set(frame1, label);
 			evas_object_show(label);
 		elm_box_pack_end(box, frame1);
 		evas_object_show(frame1);
@@ -1615,7 +1615,7 @@ void show_error(StatusesList * statuses) {
 			button = elm_button_add(frame2);
 				evas_object_smart_callback_add(button, "clicked", error_win_del, NULL);
 				elm_object_text_set(button, _("Close"));
-				elm_frame_content_set(frame2, button);
+				elm_object_content_set(frame2, button);
 			evas_object_show(button);
 		elm_box_pack_end(box, frame2);
 		evas_object_show(frame2);
@@ -1891,7 +1891,7 @@ static void on_post_dm(void *data, Evas_Object *obj, void *event_info) {
 
 					elm_box_pack_end(box, buttons);
 				evas_object_show(buttons);
-			elm_frame_content_set(frame, box);
+			elm_object_content_set(frame, box);
 		elm_win_inwin_content_set(inwin, frame);
 	evas_object_show(inwin);
 }

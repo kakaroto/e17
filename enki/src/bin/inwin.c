@@ -145,7 +145,7 @@ inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
 
-   elm_frame_content_set(fr, tb);
+   elm_object_content_set(fr, tb);
    elm_notify_content_set(inwin->inwin, fr);
 
    return inwin;
@@ -204,7 +204,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    //elm_label_line_wrap_set(lbl, 1);
    evas_object_show(lbl);
-   elm_frame_content_set(fr2, lbl);
+   elm_object_content_set(fr2, lbl);
 
    hbox = elm_box_add(enlil_data->win->win);
    elm_box_horizontal_set(hbox, 1);
@@ -235,7 +235,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
 
-   elm_frame_content_set(fr, tb);
+   elm_object_content_set(fr, tb);
    elm_notify_content_set(inwin->inwin, fr);
 
    return inwin;
@@ -651,7 +651,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    //elm_label_line_wrap_set(lbl, 1);
    evas_object_show(lbl);
-   elm_frame_content_set(fr2, lbl);
+   elm_object_content_set(fr2, lbl);
 
    gl = elm_genlist_add(enlil_data->win->win);
    inwin->gl = gl;
@@ -703,7 +703,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
 
-   elm_frame_content_set(fr, tb);
+   elm_object_content_set(fr, tb);
    elm_win_inwin_content_set(inwin->inwin, fr);
 
    return inwin;

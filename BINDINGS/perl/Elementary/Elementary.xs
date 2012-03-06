@@ -514,15 +514,6 @@ elm_toggle_state_pointer_set(Evas_Object *obj, Eina_Bool *statep)
 Evas_Object *
 elm_frame_add(Evas_Object *parent)
 
-void
-elm_frame_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_frame_label_get(Evas_Object *obj)
-
-void
-elm_frame_content_set(Evas_Object *obj, Evas_Object *content)
-
 
 # table
 # ------------------------------------------------------------------------------
