@@ -343,7 +343,7 @@ _gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
    snprintf(buf, sizeof(buf), "icons/geocaching/%s",
             enlil_geocaching_gp_type_get(gp));
    elm_icon_file_set(o, Theme, buf);
-   elm_button_icon_set(bt, o);
+   elm_object_part_content_set(bt, o);
    evas_object_smart_callback_add(bt, "clicked", _bt_geocaching_cb, gp);
 
    snprintf(buf, sizeof(buf), "terrain,%s", enlil_geocaching_gp_terrain_get(gp));

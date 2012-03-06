@@ -72,7 +72,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    elm_icon_file_set(icon, buff, NULL);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
    btn = elm_button_add(iwin->win);
-   elm_button_icon_set(btn, icon);
+   elm_object_part_content_set(btn, icon);
    evas_object_smart_callback_add(btn, "clicked", _cb_btn_home_clicked, iwin);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
    elm_box_pack_end(box, btn);
@@ -82,7 +82,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    /* create mode button */
    icon = elm_icon_add(iwin->win);
    iwin->mode = elm_button_add(iwin->win);
-   elm_button_icon_set(iwin->mode, icon);
+   elm_object_part_content_set(iwin->mode, icon);
    evas_object_smart_callback_add(iwin->mode, "clicked", 
                                   _cb_btn_mode_clicked, iwin);
    evas_object_size_hint_align_set(iwin->mode, EVAS_HINT_FILL, 0.0);
@@ -101,7 +101,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    elm_icon_file_set(icon, buff, NULL);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
    btn = elm_button_add(iwin->win);
-   elm_button_icon_set(btn, icon);
+   elm_object_part_content_set(btn, icon);
    evas_object_smart_callback_add(btn, "clicked", _cb_btn_kbd_clicked, NULL);
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 0.0);
    elm_box_pack_end(box, btn);
@@ -345,7 +345,7 @@ _set_mode_icon(Elm_Ind_Win *iwin)
    Evas_Object *icon;
    char buff[PATH_MAX];
 
-   if (!(icon = elm_button_icon_get(iwin->mode))) return;
+   if (!(icon = elm_object_part_content_get(iwin->mode))) return;
    zone = (Ecore_X_Window)evas_object_data_get(iwin->win, "zone");
    mode = ecore_x_e_illume_mode_get(zone);
    if (mode <= ECORE_X_ILLUME_MODE_SINGLE)
@@ -356,7 +356,7 @@ _set_mode_icon(Elm_Ind_Win *iwin)
      snprintf(buff, sizeof(buff), "%s/images/dual-left.png", PACKAGE_DATA_DIR);
    elm_icon_file_set(icon, buff, NULL);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_button_icon_set(iwin->mode, icon);
+   elm_object_part_content_set(iwin->mode, icon);
    evas_object_show(icon);
 }
 
@@ -384,9 +384,9 @@ _set_kbd_icon(Ecore_X_Window xwin, Evas_Object *btn)
           }
      }
 
-   icon = elm_button_icon_get(btn);
+   icon = elm_object_part_content_get(btn);
    if (!icon) return;
    elm_icon_file_set(icon, buff, NULL);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   elm_button_icon_set(btn, icon);
+   elm_object_part_content_set(btn, icon);
 }

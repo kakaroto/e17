@@ -469,7 +469,7 @@ av_browser_win_create(void)
 
    bt = elm_button_add(win);
    elm_object_text_set(bt, "Back");
-   elm_button_icon_set(bt, ic);
+   elm_object_part_content_set(bt, ic);
    evas_object_smart_callback_add(bt, "clicked", on_back_clicked, NULL);
 
    main_label = elm_label_add(win);

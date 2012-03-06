@@ -408,7 +408,7 @@ sub test_button {
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Icon sized to button");
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     evas_object_show($ic);
@@ -418,7 +418,7 @@ sub test_button {
     elm_icon_scale_set($ic, 0, 0);
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Icon no scale");
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     evas_object_show($ic);
@@ -428,7 +428,7 @@ sub test_button {
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Disabled Button");
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_object_disabled_set($bt, 1);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -438,7 +438,7 @@ sub test_button {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_object_disabled_set($bt, 1);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -453,7 +453,7 @@ sub test_button {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_icon_scale_set($ic, 0, 0);
     $bt = elm_button_add($win);
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     evas_object_show($ic);
@@ -469,7 +469,7 @@ sub test_button {
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
     elm_object_style_set($bt, "anchor");
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     evas_object_show($ic);
@@ -479,7 +479,7 @@ sub test_button {
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
     elm_object_style_set($bt, "anchor");
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     elm_object_disabled_set($bt, 1);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -1236,7 +1236,7 @@ sub test_notepad {
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "arrow_left");
     elm_icon_scale_set($ic, 1, 0);
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     evas_object_show($ic);
 
     evas_object_smart_callback_add($bt, "clicked", \&my_notepad_bt_1, \$np);
@@ -1249,7 +1249,7 @@ sub test_notepad {
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "close");
     elm_icon_scale_set($ic, 1, 0);
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     evas_object_show($ic);
 
     evas_object_smart_callback_add($bt, "clicked", \&my_notepad_bt_2, \$np);
@@ -1262,7 +1262,7 @@ sub test_notepad {
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "arrow_right");
     elm_icon_scale_set($ic, 1, 0);
-    elm_button_icon_set($bt, $ic);
+    elm_object_part_content_set($bt, $ic);
     evas_object_show($ic);
 
     evas_object_smart_callback_add($bt, "clicked", \&my_notepad_bt_3, \$np);

@@ -66,7 +66,7 @@ create_button(Evas_Object *parent, const char *button_icon, const char *label)
       elm_icon_file_set(icon, button_icon, NULL);
       evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
       evas_object_show(icon);
-      elm_button_icon_set(button, icon);
+      elm_object_part_content_set(button, icon);
     }
 
   elm_object_text_set(button, label);

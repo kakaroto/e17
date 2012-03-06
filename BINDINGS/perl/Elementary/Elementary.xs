@@ -412,12 +412,6 @@ elm_box_unpack_all(Evas_Object *obj)
 Evas_Object *
 elm_button_add(Evas_Object *parent)
 
-void
-elm_button_icon_set(Evas_Object *obj, Evas_Object *icon)
-
-Evas_Object *
-elm_button_icon_get(Evas_Object *obj)
-
 
 # scroller
 # ------------------------------------------------------------------------------

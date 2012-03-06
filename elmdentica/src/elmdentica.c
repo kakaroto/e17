@@ -2141,7 +2141,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_weight_set(gui.post, 1, 1);
 				evas_object_size_hint_align_set(gui.post, -1, 0);
 				elm_object_text_set(gui.post, _("Send"));
-				elm_button_icon_set(gui.post, icon);
+				elm_object_part_content_set(gui.post, icon);
 				evas_object_smart_callback_add(gui.post, "clicked", on_post, NULL);
 				elm_box_pack_end(box2, gui.post);
 			evas_object_show(gui.post);
@@ -2154,7 +2154,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_weight_set(bt, 1, 1);
 				evas_object_size_hint_align_set(bt, -1, 0);
 				elm_object_text_set(bt, _("DM"));
-				elm_button_icon_set(bt, icon);
+				elm_object_part_content_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_dm, NULL);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
@@ -2167,7 +2167,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_weight_set(bt, 1, 1);
 				evas_object_size_hint_align_set(bt, -1, 0);
 				elm_object_text_set(bt, _("Hide"));
-				elm_button_icon_set(bt, icon);
+				elm_object_part_content_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_hide, NULL);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
