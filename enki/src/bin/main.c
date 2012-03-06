@@ -449,9 +449,9 @@ enlil_album_data_free(Enlil_Album *album, void *_data)
    Enlil_Data *enlil_data = data->enlil_data;
    Enlil_NetSync_Job *job;
 
-   if (data->import_list_album_item) elm_genlist_item_del(
+   if (data->import_list_album_item) elm_object_item_del(
                                                           data->import_list_album_item);
-   if (data->photo_move_album_list_album_item) elm_genlist_item_del(
+   if (data->photo_move_album_list_album_item) elm_object_item_del(
                                                                     data->photo_move_album_list_album_item);
 
    list_left_remove(enlil_data->list_left, album);
@@ -498,7 +498,7 @@ void
 enlil_collection_data_free(Enlil_Collection *col, void *_data)
 {
    Enlil_Collection_Data *data = _data;
-   elm_genlist_item_del(data->list_col_item);
+   elm_object_item_del(data->list_col_item);
    data->list_col_item = NULL;
    free(data);
 }
@@ -507,7 +507,7 @@ void
 enlil_tag_data_free(Enlil_Tag *tag, void *_data)
 {
    Enlil_Tag_Data *data = _data;
-   elm_genlist_item_del(data->list_tag_item);
+   elm_object_item_del(data->list_tag_item);
    data->list_tag_item = NULL;
    free(data);
 }

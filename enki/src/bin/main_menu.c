@@ -193,10 +193,10 @@ void
 main_menu_loading_disable_set(Eina_Bool disabled)
 {
    elm_object_disabled_set(libraries_list, disabled);
-   elm_genlist_item_disabled_set(bt_import, disabled);
-   elm_genlist_item_disabled_set(bt_album_new, disabled);
-   elm_genlist_item_disabled_set(bt_slideshow, disabled);
-   elm_genlist_item_disabled_set(bt_sync, disabled);
+   elm_object_item_disabled_set(bt_import, disabled);
+   elm_object_item_disabled_set(bt_album_new, disabled);
+   elm_object_item_disabled_set(bt_slideshow, disabled);
+   elm_object_item_disabled_set(bt_sync, disabled);
 }
 
 void
@@ -210,8 +210,8 @@ main_menu_nolibrary_disabled_set(Eina_Bool disabled)
 {
    main_menu_loading_disable_set(disabled);
    elm_object_disabled_set(libraries_list, EINA_FALSE);
-   elm_genlist_item_disabled_set(bt_del_bg, disabled);
-   elm_genlist_item_disabled_set(bt_sync, disabled);
+   elm_object_item_disabled_set(bt_del_bg, disabled);
+   elm_object_item_disabled_set(bt_sync, disabled);
 }
 
 void

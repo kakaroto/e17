@@ -655,7 +655,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
 
    gl = elm_genlist_add(enlil_data->win->win);
    inwin->gl = gl;
-   elm_genlist_horizontal_mode_set(gl, ELM_LIST_SCROLL);
+   elm_genlist_mode_set(gl, ELM_LIST_SCROLL);
    evas_object_size_hint_weight_set(gl, 1.0, 1.0);
    evas_object_size_hint_align_set(gl, -1.0, -1.0);
    evas_object_show(gl);
@@ -1139,7 +1139,7 @@ _bt_album_rename_apply_cb(void *data, Evas_Object *obj, void *event_info)
    enlil_album_name_set(album, s);
    enlil_album_eet_header_save(album);
 
-   elm_genlist_item_del(album_data->list_album_item);
+   elm_object_item_del(album_data->list_album_item);
    album_data->list_album_item = NULL;
 
    photos_list_object_header_update(album_data->list_photo_item);
@@ -1216,7 +1216,7 @@ _bt_photo_move_album_apply_cb(void *data, Evas_Object *obj, void *event_info)
    Eina_List *l;
    Enlil_Photo *photo;
    if (!gl_item) return;
-   Enlil_Album *album = (Enlil_Album *) elm_genlist_item_data_get(gl_item);
+   Enlil_Album *album = (Enlil_Album *) elm_object_item_data_get(gl_item);
    ASSERT_RETURN_VOID(album != NULL);
 
    EINA_LIST_FOREACH(inwin->photos, l, photo)

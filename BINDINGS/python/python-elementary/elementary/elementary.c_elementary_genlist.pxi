@@ -79,21 +79,6 @@ cdef c_evas.Eina_Bool _py_elm_genlist_item_state_get(void *data, c_evas.Evas_Obj
     else:
         return False
 
-cdef void _py_elm_genlist_item_del(void *data, c_evas.Evas_Object *obj) with gil:
-    cdef object prm = <object>data
-    cdef GenlistItemClass itc = prm[0]
-    cdef GenlistItem item = prm[2]
-
-    func = itc._del_func
-    if func is not None:
-        try:
-            o = evas.c_evas._Object_from_instance(<long>obj)
-            func(o, prm[1])
-        except Exception, e:
-            traceback.print_exc()
-
-    item._unset_obj()
-
 cdef void _py_elm_genlist_item_func(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
     cdef object prm = <object>data
     cdef object func = prm[3]
@@ -137,7 +122,7 @@ cdef class GenlistItemClass:
         self.obj.func.text_get = _py_elm_genlist_item_text_get
         self.obj.func.content_get = _py_elm_genlist_item_content_get
         self.obj.func.state_get = _py_elm_genlist_item_state_get
-        self.obj.func.del_ = _py_elm_genlist_item_del
+        self.obj.func.del_ = _py_elm_object_item_del
 
     def __init__(self, item_style=None, text_get_func=None,
                  content_get_func=None, state_get_func=None, del_func=None):
@@ -416,10 +401,10 @@ cdef class GenlistItem(WidgetItem):
             self.expanded_set(expanded)
 
     def disabled_set(self, disabled):
-        elm_genlist_item_disabled_set(self.obj, bool(disabled))
+        elm_object_item_disabled_set(self.obj, bool(disabled))
 
     def disabled_get(self):
-        return bool(elm_genlist_item_disabled_get(self.obj))
+        return bool(elm_object_item_disabled_get(self.obj))
 
     property disabled:
         def __get__(self):
@@ -620,13 +605,13 @@ cdef class Genlist(Object):
 
     def horizontal_mode_set(self, Elm_List_Mode mode):
         _METHOD_DEPRECATED(self, "horizontal_set")
-        elm_genlist_horizontal_set(self.obj, mode)
+        elm_genlist_mode_set(self.obj, mode)
 
     def horizontal_set(self, Elm_List_Mode mode):
-        elm_genlist_horizontal_set(self.obj, mode)
+        elm_genlist_mode_set(self.obj, mode)
 
     def horizontal_get(self):
-        return elm_genlist_horizontal_get(self.obj)
+        return elm_genlist_mode_get(self.obj)
 
     def always_select_mode_set(self, always_select):
         elm_genlist_always_select_mode_set(self.obj, bool(always_select))

@@ -584,7 +584,7 @@ collection_delete_cb(void *data, Enlil_Library *library, Enlil_Collection *col)
    //Enlil_Data *enlil_data = data;
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
-   elm_genlist_item_del(col_data->list_col_item);
+   elm_object_item_del(col_data->list_col_item);
    col_data->list_col_item = NULL;
 }
 
@@ -627,7 +627,7 @@ tag_delete_cb(void *data, Enlil_Library *library, Enlil_Tag *tag)
    //Enlil_Data *enlil_data = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);
 
-   elm_genlist_item_del(tag_data->list_tag_item);
+   elm_object_item_del(tag_data->list_tag_item);
    tag_data->list_tag_item = NULL;
 }
 

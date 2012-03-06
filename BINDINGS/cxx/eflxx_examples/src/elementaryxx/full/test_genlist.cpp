@@ -1103,8 +1103,8 @@ static void gl4_exp (Evasxx::Object &obj, void *event_info, GenList *gl)
   // TODO: why is event_info used as container for genlist item?
 #if 0
    Elm_Object_Item *glit = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(glit);
-   int val = (int)elm_genlist_item_data_get(glit);
+   Evas_Object *gl = elm_object_item_widget_get(glit);
+   int val = (int)elm_object_item_data_get(glit);
    val *= 10;
    elm_genlist_item_append(gl, &itc4,
 			   (void *)(val + 1)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,

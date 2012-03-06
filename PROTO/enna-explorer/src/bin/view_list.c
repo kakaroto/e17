@@ -55,7 +55,7 @@ _item_longpress_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Smart_Data *sd = data;
    List_Item *li;
 
-   li = (List_Item*)elm_genlist_item_data_get(event_info);
+   li = (List_Item*)elm_object_item_data_get(event_info);
 
    evas_object_smart_callback_call(sd->obj, "longpress", li->file);
 }
@@ -66,7 +66,7 @@ _item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_i
 {
    List_Item *li;
 
-   li = elm_genlist_item_data_get(event_info);
+   li = elm_object_item_data_get(event_info);
    if (li->func_activated)
      li->func_activated(li->data);
 }
@@ -93,7 +93,7 @@ _item_remove(Evas_Object *obj, List_Item *item)
    sd->items = eina_list_remove(sd->items, item);
    enna_file_meta_callback_del(item->file, _file_meta_update);
    enna_file_free(item->file);
-   elm_genlist_item_del(item->item);
+   elm_object_item_del(item->item);
    free(item);
 
    return;
@@ -471,7 +471,7 @@ enna_list_add(Evas_Object *parent)
    sd = calloc(1, sizeof(Smart_Data));
    obj = elm_genlist_add(parent);
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_genlist_horizontal_set(obj, ELM_LIST_COMPRESS);
+   elm_genlist_mode_set(obj, ELM_LIST_COMPRESS);
    evas_object_smart_callback_add(obj, "longpressed", _item_longpress_cb, sd);
    evas_object_show(obj);
    sd->obj = obj;

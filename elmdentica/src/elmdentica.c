@@ -297,7 +297,7 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 
 static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
 	Elm_Object_Item *bubble = (Elm_Object_Item*)data;
-	aStatus *as = elm_genlist_item_data_get(bubble);
+	aStatus *as = elm_object_item_data_get(bubble);
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
 
@@ -336,7 +336,7 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 
 static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
 
@@ -364,7 +364,7 @@ static void status_prepend(aStatus *as, void *data) {
 
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 
 	if(as) {
 		switch(as->account_type) {
@@ -381,7 +381,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 
 	network_busy_set(EINA_TRUE);
 
@@ -401,7 +401,7 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 	anUser *au = NULL;
 	char entry_str[PATH_MAX], uid_str[100];
 
@@ -427,7 +427,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 
 	if(as) {
 		elm_object_focus_set(entry, EINA_TRUE);
@@ -534,7 +534,7 @@ static void on_user_follow_toggle(void *data, Evas_Object *obj, void *event_info
 
 Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Object_Item *li) {
 	Evas_Object *icon=NULL;
-	aStatus *as = li?(aStatus*)elm_genlist_item_data_get(li):NULL;
+	aStatus *as = li?(aStatus*)elm_object_item_data_get(li):NULL;
 	char file_path[PATH_MAX], *p=NULL;
 
 	if(as) {
@@ -1223,7 +1223,7 @@ static void on_status_show_page_attachments(void* data, Evas_Object *obj, void *
 
 static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 	char copy_text[1024], *tmp;
 
 	snprintf(copy_text, 1024, "♻ @%s: %s", as->au->user->screen_name, as->status->text);
@@ -1245,7 +1245,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 	Elm_Object_Item *li=NULL;
 	Elm_Object_Item *ti=NULL;
 	Evas_Object *box=NULL, *toolbar=NULL, *pager=NULL, *list=NULL, *button=NULL;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 	anUser *au=NULL;
 	GMatchInfo *user_matches=NULL, *link_matches=NULL, *tags_matches=NULL, *group_matches=NULL;
 	char *match=NULL, *key=NULL;
@@ -1414,7 +1414,7 @@ void on_status_swipe(void *data, Evas_Object *obj, void *event_info) {
 
 void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Object_Item *gli = (Elm_Object_Item*)event_info;
-	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 	Evas_Object *box=NULL, *table=NULL, *button=NULL;
 
 	if(elm_genlist_item_selected_get(gli) == EINA_FALSE) return;

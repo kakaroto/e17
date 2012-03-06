@@ -693,16 +693,9 @@ my @__todo = qw(
   elm_genlist_clear
   elm_genlist_compress_mode_set
   elm_genlist_first_item_get
-  elm_genlist_horizontal_mode_set
   elm_genlist_item_bring_in
-  elm_genlist_item_data_get
-  elm_genlist_item_data_set
-  elm_genlist_item_del
-  elm_genlist_item_disabled_get
-  elm_genlist_item_disabled_set
   elm_genlist_item_expanded_get
   elm_genlist_item_expanded_set
-  elm_genlist_item_genlist_get
   elm_genlist_item_insert_after
   elm_genlist_item_insert_before
   elm_genlist_item_middle_bring_in

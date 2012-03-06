@@ -2490,7 +2490,7 @@ sub _move {
     #   Elm_Object_Item *gli;
     #   gli = elm_genlist_at_xy_item_get(gl, ev->cur.canvas.x, ev->cur.canvas.y, &where);
     #   if (gli)
-    #     printf("over %p, where %i\n", elm_genlist_item_data_get(gli), where);
+    #     printf("over %p, where %i\n", elm_object_item_data_get(gli), where);
     #   else
     #     printf("over none, where %i\n", where);
 }
@@ -2530,7 +2530,7 @@ sub test_genlist {
 
     # FIXME: This causes genlist to resize the horiz axis very slowly :(
     # Reenable this and resize the window horizontally, then try to resize it back
-    #elm_genlist_horizontal_mode_set(gl, ELM_LIST_LIMIT);
+    #elm_genlist_mode_set(gl, ELM_LIST_LIMIT);
     evas_object_size_hint_weight_set($gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_box_pack_end($bx, $gl);
@@ -2684,7 +2684,7 @@ my_gl_del(void *data, Evas_Object *obj, void *event_info)
 	printf("no item selected\n");
 	return;
      }
-   elm_genlist_item_del(gli);
+   elm_object_item_del(gli);
 }
 
 static void
@@ -2697,7 +2697,7 @@ my_gl_disable(void *data, Evas_Object *obj, void *event_info)
 	printf("no item selected\n");
 	return;
      }
-   elm_genlist_item_disabled_set(gli, 1);
+   elm_object_item_disabled_set(gli, 1);
    elm_genlist_item_selected_set(gli, 0);
    elm_genlist_item_update(gli);
 }
@@ -3406,8 +3406,8 @@ static void
 gl4_exp(void *data, Evas_Object *obj, void *event_info)
 {
    Elm_Object_Item *it = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(it);
-   int val = (int)elm_genlist_item_data_get(it);
+   Evas_Object *gl = elm_object_item_widget_get(it);
+   int val = (int)elm_object_item_data_get(it);
    val *= 10;
    elm_genlist_item_append(gl, &itc4,
 			   (void *)(val + 1)/* item data */, it/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,

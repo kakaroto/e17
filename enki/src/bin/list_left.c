@@ -280,7 +280,7 @@ list_left_remove(List_Left *list_left, Enlil_Album *album)
 {
    Enlil_Album_Data *enlil_album_data = enlil_album_user_data_get(album);
 
-   elm_genlist_item_del(enlil_album_data->list_album_item);
+   elm_object_item_del(enlil_album_data->list_album_item);
 }
 
 void
@@ -393,7 +393,7 @@ _gl_col_album_sel(void *data, Evas_Object *obj, void *event_info)
    Eina_List *markers = NULL;
 
    const Enlil_Collection *col =
-            elm_genlist_item_data_get(elm_genlist_item_parent_get(event_info));
+            elm_object_item_data_get(elm_genlist_item_parent_get(event_info));
    Enlil_Album_Data *enlil_album_data = enlil_album_user_data_get(data);
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
@@ -495,7 +495,7 @@ _gl_col_exp(void *data, Evas_Object *obj, void *event_info)
    Eina_List *l;
    Enlil_Album *album;
 
-   const Enlil_Collection *col = elm_genlist_item_data_get(glit);
+   const Enlil_Collection *col = elm_object_item_data_get(glit);
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
 EINA_LIST_FOREACH(enlil_collection_albums_get(col), l, album)

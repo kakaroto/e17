@@ -23,7 +23,7 @@ GenListItem::GenListItem (Elm_Object_Item *item) :
 GenListItem::~GenListItem ()
 {
   cout << "GenListItem::~GenListItem" << endl;
-  elm_genlist_item_del (mItem);
+  elm_object_item_del (mItem);
 }
 
 void GenListItem::setSelected (bool selected)
@@ -54,12 +54,12 @@ bool GenListItem::getExpanded () const
 
 void GenListItem::setDisabled (bool disabled)
 {
-  elm_genlist_item_disabled_set (mItem, disabled);
+  elm_object_item_disabled_set (mItem, disabled);
 }
 
 bool GenListItem::getDisabled () const
 {
-  return elm_genlist_item_disabled_get (mItem);
+  return elm_object_item_disabled_get (mItem);
 }
 
 void GenListItem::setDisplayOnly (bool displayOnly)
@@ -124,19 +124,19 @@ GenListItem *GenListItem::wrap (Elm_Object_Item &item, GenDataModel &model)
 
 GenListItem *GenListItem::objectLink (const Elm_Object_Item *item)
 {
-  //GenItem *item2 = static_cast <GenItem*> (const_cast <void*> (elm_genlist_item_data_get(item)));
+  //GenItem *item2 = static_cast <GenItem*> (const_cast <void*> (elm_object_item_data_get(item)));
   //assert (item2);
   return NULL;//item2;
 }
 
 const void *GenListItem::getData ()
 {
-  return elm_genlist_item_data_get (mItem);
+  return elm_object_item_data_get (mItem);
 }
 
 void GenListItem::setData (const void *data)
 {
-  elm_genlist_item_data_set (mItem, data);
+  elm_object_item_data_set (mItem, data);
 }
   
 } // end namespace Elmxx

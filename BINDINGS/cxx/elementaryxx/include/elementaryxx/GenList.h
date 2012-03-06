@@ -164,7 +164,7 @@ class GenListColumnSelector;
  * emit a signal to the edje object with “elm,state,XXX,active” “elm” when
  * true (the default is false), where XXX is the name of the part.
  *
- * func.del - This is called when elm_genlist_item_del() is called on an
+ * func.del - This is called when elm_object_item_del() is called on an
  * item, elm_genlist_clear() is called on the genlist, or
  * elm_genlist_item_subitems_clear() is called to clear sub-items. This is
  * intended for use when actual genlist items are deleted, so any backing
@@ -192,7 +192,7 @@ class GenListColumnSelector;
  * the indicated item.
  *
  * The application can clear the list with elm_genlist_clear() which deletes
- * all the items in the list and elm_genlist_item_del() will delete a specific
+ * all the items in the list and elm_object_item_del() will delete a specific
  * item. elm_genlist_item_subitems_clear() will clear all items that are
  * children of the indicated parent item.
  *
@@ -214,10 +214,10 @@ class GenListColumnSelector;
  * let you know which item is the parent (and thus know how to skip them if
  * wanted).
  *
- * There are also convenience functions. elm_genlist_item_genlist_get() will
+ * There are also convenience functions. elm_object_item_widget_get() will
  * return the genlist object the item belongs to.  elm_genlist_item_show()
  * will make the scroller scroll to show that specific item so its visible.
- * elm_genlist_item_data_get() returns the data pointer set by the item
+ * elm_object_item_data_get() returns the data pointer set by the item
  * creation functions.
  *
  * If an item changes (state of boolean changes, label or icons change),
@@ -230,11 +230,11 @@ class GenListColumnSelector;
  * to expand/contract and item and get its expanded state, use
  * elm_genlist_item_expanded_set() and elm_genlist_item_expanded_get(). And
  * again to make an item disabled (unable to be selected and appear
- * differently) use elm_genlist_item_disabled_set() to set this and
- * elm_genlist_item_disabled_get() to get the disabled state.
+ * differently) use elm_object_item_disabled_set() to set this and
+ * elm_object_item_disabled_get() to get the disabled state.
  *
  * In general to indicate how the genlist should expand items horizontally to
- * fill the list area, use elm_genlist_horizontal_mode_set(). Valid modes are
+ * fill the list area, use elm_genlist_mode_set(). Valid modes are
  * ELM_LIST_LIMIT and ELM_LIST_SCROLL . The default is ELM_LIST_SCROLL. This
  * mode means that if items are too wide to fit, the scroller will scroll
  * horizontally. Otherwise items are expanded to fill the width of the

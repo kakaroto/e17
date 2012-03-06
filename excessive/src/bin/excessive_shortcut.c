@@ -63,7 +63,7 @@ _excessive_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void
    Excessive_Shortcut *es;
    Evas_Object *grid = data;
 
-   es = elm_genlist_item_data_get(gl_item);
+   es = elm_object_item_data_get(gl_item);
    elm_genlist_item_selected_set(gl_item, EINA_FALSE);
    if (!es) return ;
    excessive_browse_directory(grid, es->target);

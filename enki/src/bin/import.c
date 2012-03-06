@@ -168,7 +168,7 @@ import_new(Evas_Object *win)
 
    gl = elm_genlist_add(win);
    gl_albums = gl;
-   elm_genlist_horizontal_mode_set(gl, ELM_LIST_SCROLL);
+   elm_genlist_mode_set(gl, ELM_LIST_SCROLL);
    evas_object_size_hint_weight_set(gl, 1.0, 1.0);
    evas_object_size_hint_align_set(gl, -1.0, -1.0);
    evas_object_show(gl);
@@ -435,7 +435,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    Eina_List *items;
    Elm_Object_Item *gl_item = elm_genlist_selected_item_get(gl_albums);
    ASSERT_RETURN_VOID(gl_item != NULL);
-   album = (Enlil_Album *) elm_genlist_item_data_get(gl_item);
+   album = (Enlil_Album *) elm_object_item_data_get(gl_item);
 
    items = photos_list_object_selected_get(photos);
    EINA_LIST_FOREACH_SAFE(photos_data, l, l_next, photo)

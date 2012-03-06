@@ -143,7 +143,7 @@ _enna_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *eve
    Enna_Shortcut *es;
    Evas_Object *grid = data;
 
-   es = elm_genlist_item_data_get(gl_item);
+   es = elm_object_item_data_get(gl_item);
    elm_genlist_item_selected_set(gl_item, EINA_FALSE);
    if (!es) return ;
    enna_browse_directory(grid, es->target);
@@ -484,7 +484,7 @@ _volume_removed_cb(void *data, int type, void *event)
    if(!di)
      return ECORE_CALLBACK_DONE;
 
-   elm_genlist_item_del(di->gi);
+   elm_object_item_del(di->gi);
    _device_items = eina_list_remove(_device_items, di);
    eina_stringshare_del(di->udi);
    free(di);

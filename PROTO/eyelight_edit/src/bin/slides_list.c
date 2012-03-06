@@ -271,7 +271,7 @@ void slides_list_slide_append_relative(List_Item *item, List_Item *item_prev)
 
 void slides_list_slide_delete(List_Item *item)
 {
-    elm_genlist_item_del(item->item);
+    elm_object_item_del(item->item);
 }
 
 static void _item_menu_cb(void *data, Evas_Object *o, const char *emission, const char *source)
@@ -291,7 +291,7 @@ void slides_list_item_move(int id, int id_after)
     item_after = eina_list_nth(l_slides, id_after);
 
     //remove the slide from the list
-    elm_genlist_item_del(item->item);
+    elm_object_item_del(item->item);
 
     //remove the slide from the list
     l_slides = eina_list_remove(l_slides, item);

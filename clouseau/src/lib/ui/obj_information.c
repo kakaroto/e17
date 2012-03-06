@@ -25,7 +25,7 @@ static void
 gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   Inf_Tree_Item *parent = elm_genlist_item_data_get(glit);
+   Inf_Tree_Item *parent = elm_object_item_data_get(glit);
    Inf_Tree_Item *tit;
    Eina_List *itr;
 

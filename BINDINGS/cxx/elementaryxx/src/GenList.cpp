@@ -47,12 +47,12 @@ bool GenList::getMultiSelect ()
 
 void GenList::setHorizontal (Elm_List_Mode mode)
 {
-  elm_genlist_horizontal_set (o, mode);
+  elm_genlist_mode_set (o, mode);
 }
 
 Elm_List_Mode GenList::getHorizontal ()
 {
-  return elm_genlist_horizontal_get (o);
+  return elm_genlist_mode_get (o);
 }
 
 void GenList::setCompressMode (bool compress)
@@ -201,7 +201,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
   construction->mGenItem = item;
 
   //EAPI const void *
-  //elm_genlist_item_data_get(const Elm_Object_Item *it)
+  //elm_object_item_data_get(const Elm_Object_Item *it)
   // -> returns: GenListColumnConstructor *construction
   // 1. add GenItem* to construction
 
@@ -219,7 +219,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
 
 void GenList::del (GenListItem &item)
 {
-  elm_genlist_item_del (item.mItem);
+  elm_object_item_del (item.mItem);
 }
 
 GenListItem *GenList::getItemSelected () const
@@ -229,7 +229,7 @@ GenListItem *GenList::getItemSelected () const
   if (!item)
     return NULL;
 
-  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_object_item_data_get (item));
 
   return construction->mGenItem;
 }
@@ -241,7 +241,7 @@ GenListItem *GenList::getItemAtXY (const Eflxx::Point &pos, int &posret) const
   if (!item)
     return NULL;
 
-  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_object_item_data_get (item));
 
   return construction->mGenItem;
 }
@@ -253,7 +253,7 @@ GenListItem *GenList::getItemFirst () const
   if (!item)
     return NULL;
 
-  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_object_item_data_get (item));
 
   return construction->mGenItem;
 }
@@ -265,7 +265,7 @@ GenListItem *GenList::getItemLast () const
   if (!item)
     return NULL;
 
-  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
+  const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_object_item_data_get (item));
 
   return construction->mGenItem;
 }

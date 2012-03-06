@@ -105,7 +105,7 @@ config_expand(struct ensure *ensure, Elm_Object_Item *item)
    struct asninfo *ai;
    Eina_List *l;
 
-   sev = (struct severityinfo *)elm_genlist_item_data_get(item);
+   sev = (struct severityinfo *)elm_object_item_data_get(item);
 
    EINA_LIST_FOREACH (sev->asninfo, l, ai)
      {

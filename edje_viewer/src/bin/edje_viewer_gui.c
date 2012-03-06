@@ -524,7 +524,7 @@ group_next_find(Viewer *v, int next, char *buf)
         if (next == 1)
           {
              Elm_Object_Item *glit = elm_genlist_selected_item_get(v->gui.tree);
-             grp = elm_genlist_item_data_get(glit);
+             grp = elm_object_item_data_get(glit);
              tmp = EINA_INLIST_GET(grp)->next;
              EINA_INLIST_FOREACH(tmp, grp)
                {
@@ -536,7 +536,7 @@ group_next_find(Viewer *v, int next, char *buf)
                }
              if (!grp_next)
                {
-                  const Group *cur = elm_genlist_item_data_get(glit);
+                  const Group *cur = elm_object_item_data_get(glit);
                   EINA_INLIST_FOREACH(v->groups, grp)
                     {
                        if (grp == cur) break;
@@ -552,7 +552,7 @@ group_next_find(Viewer *v, int next, char *buf)
         else if (next == -1)
           {
              Elm_Object_Item *glit = elm_genlist_selected_item_get(v->gui.tree);
-             grp = elm_genlist_item_data_get(glit);
+             grp = elm_object_item_data_get(glit);
              tmp = EINA_INLIST_GET(grp);
              while (tmp && (tmp = tmp->prev))
                {
@@ -565,7 +565,7 @@ group_next_find(Viewer *v, int next, char *buf)
                }
              if (!grp_next)
                {
-                  const Group *cur = elm_genlist_item_data_get(glit);
+                  const Group *cur = elm_object_item_data_get(glit);
                   EINA_INLIST_REVERSE_FOREACH(v->groups, grp)
                     {
                        if (grp == cur) break;
@@ -659,7 +659,7 @@ group_check_toggle(Viewer *v)
    Elm_Object_Item *glit = elm_genlist_selected_item_get(v->gui.tree);
    Group *grp;
    if (!glit) return;
-   grp = (Group *) elm_genlist_item_data_get(glit);
+   grp = (Group *) elm_object_item_data_get(glit);
    if (!grp || !grp->check) return;
    grp->active = !grp->active;
    elm_check_state_set(grp->check, grp->active);

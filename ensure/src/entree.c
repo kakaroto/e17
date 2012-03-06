@@ -109,7 +109,7 @@ tree_expand_item(struct ensure *ensure, Elm_Object_Item *item)
    struct enobj *child;
    Eina_List *l;
 
-   enobj = elm_genlist_item_data_get(item);
+   enobj = elm_object_item_data_get(item);
 
    assert(enobj->magic == (int)ENOBJMAGIC);
    printf("Tree expand item %p %p\n", enobj->children, enobj->clippees);

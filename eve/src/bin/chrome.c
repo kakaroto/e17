@@ -1545,7 +1545,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
            {
                gl_item = elm_genlist_item_append(params->list, &glic_separator, NULL,
                         NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-               elm_genlist_item_disabled_set(gl_item, EINA_TRUE);
+               elm_object_item_disabled_set(gl_item, EINA_TRUE);
                break;
            }
         case ITEM_TYPE_PAGE:

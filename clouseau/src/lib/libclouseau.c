@@ -140,7 +140,7 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
    if (!elm_genlist_item_parent_get(event_info))
       return;
 
-   Tree_Item *treeit = elm_genlist_item_data_get(event_info);
+   Tree_Item *treeit = elm_object_item_data_get(event_info);
 
    Evas_Object *obj = treeit->ptr;
    libclouseau_highlight(obj);
@@ -152,8 +152,8 @@ static void
 gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(glit);
-   Tree_Item *parent = elm_genlist_item_data_get(glit);
+   Evas_Object *gl = elm_object_item_widget_get(glit);
+   Tree_Item *parent = elm_object_item_data_get(glit);
    Tree_Item *treeit;
    Eina_List *itr;
 

@@ -1233,9 +1233,6 @@ elm_genlist_item_next_get(Elm_Object_Item *item)
 Elm_Object_Item *
 elm_genlist_item_prev_get(Elm_Object_Item *item)
 
-Evas_Object *
-elm_genlist_item_genlist_get(Elm_Object_Item *item)
-
 Elm_Object_Item *
 elm_genlist_item_parent_get(Elm_Object_Item *it)
 
@@ -1255,12 +1252,6 @@ Eina_Bool
 elm_genlist_item_expanded_get(Elm_Object_Item *item)
 
 void
-elm_genlist_item_disabled_set(Elm_Object_Item *item, Eina_Bool disabled)
-
-Eina_Bool
-elm_genlist_item_disabled_get(Elm_Object_Item *item)
-
-void
 elm_genlist_item_show(Elm_Object_Item *item)
 
 void
@@ -1278,23 +1269,11 @@ elm_genlist_item_middle_show(Elm_Object_Item *it)
 void
 elm_genlist_item_middle_bring_in(Elm_Object_Item *it)
 
-void
-elm_genlist_item_del(Elm_Object_Item *item)
-
-void *
-elm_genlist_item_data_get(Elm_Object_Item *item)
-
-void
-elm_genlist_item_data_set(Elm_Object_Item *it, void *data)
-
 Evas_Object *
 elm_genlist_item_object_get(Elm_Object_Item *it)
 
 void
 elm_genlist_item_update(Elm_Object_Item *item)
-
-void
-elm_genlist_horizontal_mode_set(Evas_Object *obj, Elm_List_Mode mode)
 
 void
 elm_genlist_always_select_mode_set(Evas_Object *obj, Eina_Bool always_select)

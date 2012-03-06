@@ -157,7 +157,7 @@ enobj_free(void *enobjv)
    eina_stringshare_del(enobj->type);
 
    /* Genlist item */
-//      elm_genlist_item_del(enobj->genitem);
+//      elm_object_item_del(enobj->genitem);
 
    /* bugs */
    EINA_LIST_FREE (enobj->bugs, bug)
