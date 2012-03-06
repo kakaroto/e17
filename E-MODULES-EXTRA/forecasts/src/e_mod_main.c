@@ -785,7 +785,7 @@ _forecasts_parse(void *data)
    return 1;
 
 error:
-   printf("ERROR: Couldn't parse info from xml.weather.yahoo.com\n");
+   fprintf(stderr, "ERROR: Couldn't parse info from xml.weather.yahoo.com\n");
    return 0;
 }
 
