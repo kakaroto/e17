@@ -403,9 +403,6 @@ my @elm_hoversel = qw(
   elm_hoversel_hover_end
   elm_hoversel_clear
   elm_hoversel_item_add
-  elm_hoversel_item_del
-  elm_hoversel_item_data_get
-  elm_hoversel_item_label_get
   elm_hoversel_item_icon_set
   elm_hoversel_item_icon_get
 );
@@ -1086,11 +1083,8 @@ may change in future releases.
     elm_hoversel_hover_end
     elm_hoversel_hover_parent_set
     elm_hoversel_item_add
-    elm_hoversel_item_data_get
-    elm_hoversel_item_del
     elm_hoversel_item_icon_get
     elm_hoversel_item_icon_set
-    elm_hoversel_item_label_get
     elm_icon_add
     elm_icon_file_set
     elm_icon_fill_outside_set

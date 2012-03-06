@@ -727,9 +727,6 @@ public class Hoversel : Elm.Object
     public unowned HoverselItem item_add( string label, string? icon_file, IconType icon_type, Evas.Callback? func = null );
     public void item_del( HoverselItem item );
     /*
-    EAPI void         elm_hoversel_item_del_cb_set(Elm_Object_Item *it, void (*func)(void *data, Evas_Object *obj, void *event_info));
-    EAPI void        *elm_hoversel_item_data_get(Elm_Object_Item *it);
-    EAPI const char  *elm_hoversel_item_label_get(Elm_Object_Item *it);
     EAPI void         elm_hoversel_item_icon_set(Elm_Object_Item *it, const char *icon_file, const char *icon_group, Elm_Icon_Type icon_type);
     EAPI void         elm_hoversel_item_icon_get(Elm_Object_Item *it, const char **icon_file, const char **icon_group, Elm_Icon_Type *icon_type);
     */

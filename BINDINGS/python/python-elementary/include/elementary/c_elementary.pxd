@@ -601,10 +601,6 @@ cdef extern from "Elementary.h":
     void elm_hoversel_hover_end(evas.c_evas.Evas_Object *obj)
     void elm_hoversel_clear(evas.c_evas.Evas_Object *obj)
     Elm_Object_Item *elm_hoversel_item_add(evas.c_evas.Evas_Object *obj, char *label, char *icon_file, Elm_Icon_Type icon_type, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    void elm_hoversel_item_del(Elm_Object_Item *item)
-    void* elm_hoversel_item_data_get(Elm_Object_Item *it)
-    char *elm_hoversel_item_label_get(Elm_Object_Item *it)
-    void elm_hoversel_item_del_cb_set(Elm_Object_Item *item, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
     void elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
     void elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
 

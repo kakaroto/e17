@@ -305,7 +305,7 @@ static void
 fill_signals_list(Group *grp)
 {
    /* FIXME: Needs elm_hoversel_items_get | elm_hoversel_clear 
-    * & elm_hoversel_item_label_get */
+    * & elm_object_item_text_get */
    Eina_List *programs = edje_edit_programs_list_get(grp->obj);
    Eina_List *l;
    const char *name;
@@ -698,7 +698,7 @@ hoversel_clear(Viewer *v)
         eina_stringshare_del(data->label);
         eina_stringshare_del(data->signal);
         eina_stringshare_del(data->source);
-        elm_hoversel_item_del(data->it);
+        elm_object_item_del(data->it);
      }
 
    elm_object_text_set(v->gui.sig_signal, "Signals");

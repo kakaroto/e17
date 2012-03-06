@@ -59,13 +59,13 @@ cdef class HoverselItem:
                                           cb, cbdata)
 
         Py_INCREF(self)
-        elm_hoversel_item_del_cb_set(self.item, _hoversel_item_del_cb)
+        elm_object_item_del_cb_set(self.item, _hoversel_item_del_cb)
 
     def delete(self):
         """Delete the hoversel item"""
         if self.item == NULL:
             raise ValueError("Object already deleted")
-        elm_hoversel_item_del(self.item)
+        elm_object_item_del(self.item)
 
     def icon_set(self, icon_file, icon_group, icon_type):
         elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
@@ -85,7 +85,7 @@ cdef class HoverselItem:
 
     def label_get(self):
         cdef const_char_ptr l
-        l = elm_hoversel_item_label_get(self.item)
+        l = elm_object_item_text_get(self.item)
         if l == NULL:
             return None
         return l
