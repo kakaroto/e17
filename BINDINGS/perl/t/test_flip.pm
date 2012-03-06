@@ -67,17 +67,17 @@ my $sky = $package_data_dir . 'images/sky_01.jpg';
     #   evas_object_show($ly);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 1");
+    elm_object_text_set($bt, "Button 1");
     elm_layout_content_set($ly, "element1", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 2");
+    elm_object_text_set($bt, "Button 2");
     elm_layout_content_set($ly, "element2", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 3");
+    elm_object_text_set($bt, "Button 3");
     elm_layout_content_set($ly, "element3", $bt);
     evas_object_show($bt);
 
@@ -89,7 +89,7 @@ my $sky = $package_data_dir . 'images/sky_01.jpg';
     evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, 0.0);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "1");
+    elm_object_text_set($bt, "1");
     evas_object_smart_callback_add($bt, "clicked", \&my_fl_1, \$fl);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -97,7 +97,7 @@ my $sky = $package_data_dir . 'images/sky_01.jpg';
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "2");
+    elm_object_text_set($bt, "2");
     evas_object_smart_callback_add($bt, "clicked", \&my_fl_2, \$fl);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -105,7 +105,7 @@ my $sky = $package_data_dir . 'images/sky_01.jpg';
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "3");
+    elm_object_text_set($bt, "3");
     evas_object_smart_callback_add($bt, "clicked", \&my_fl_3, \$fl);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -113,7 +113,7 @@ my $sky = $package_data_dir . 'images/sky_01.jpg';
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "4");
+    elm_object_text_set($bt, "4");
     evas_object_smart_callback_add($bt, "clicked", \&my_fl_4, \$fl);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);

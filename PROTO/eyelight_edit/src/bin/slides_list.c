@@ -51,7 +51,7 @@ Evas_Object *slides_list_new()
     //button add a new slide
     btn = elm_button_add(win);
     bt_slide_new = btn;
-    elm_button_label_set(btn, D_("Add a new slide"));
+    elm_object_text_set(btn, D_("Add a new slide"));
     evas_object_size_hint_weight_set(btn, -1.0, -1.0);
     evas_object_size_hint_align_set(btn, -1.0, -1.0);
     evas_object_smart_callback_add(btn, "clicked", _slide_add_cb, _sl);

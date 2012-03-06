@@ -239,8 +239,6 @@ my @elm_box = qw(
 
 my @elm_button = qw(
   elm_button_add
-  elm_button_label_set
-  elm_button_label_get
   elm_button_icon_set
   elm_button_icon_get
 );
@@ -989,8 +987,6 @@ may change in future releases.
     elm_button_add
     elm_button_icon_get
     elm_button_icon_set
-    elm_button_label_get
-    elm_button_label_set
     elm_check_add
     elm_check_icon_get
     elm_check_icon_set

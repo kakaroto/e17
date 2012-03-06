@@ -120,7 +120,7 @@ void utils_slide_delete(List_Item *item)
     //
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, "Invisible button to add a vertical space");
+    elm_object_text_set(bt, "Invisible button to add a vertical space");
     elm_table_pack(tb, bt, 0, 1, 1, 1);
 
     lbl = elm_label_add(win);
@@ -129,18 +129,18 @@ void utils_slide_delete(List_Item *item)
     evas_object_show(lbl);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, "Invisible button to add a vertical space");
+    elm_object_text_set(bt, "Invisible button to add a vertical space");
     elm_table_pack(tb, bt, 0, 3, 1, 1);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, D_("Yes, Delete the slide"));
+    elm_object_text_set(bt, D_("Yes, Delete the slide"));
     evas_object_smart_callback_add(bt, "clicked", _utils_slide_delete_cb, item);
     evas_object_color_set(bt, 255, 0, 0, 255);
     elm_table_pack(tb, bt, 0, 4, 1, 1);
     evas_object_show(bt);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, D_("No, do not delete the slide"));
+    elm_object_text_set(bt, D_("No, do not delete the slide"));
     evas_object_smart_callback_add(bt, "clicked", _utils_slide_delete_cancel_cb, item);
     elm_table_pack(tb, bt, 1, 4, 1, 1);
     evas_object_show(bt);
@@ -364,18 +364,18 @@ void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info)
     evas_object_show(lbl);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, "Invisible button to add a vertical space");
+    elm_object_text_set(bt, "Invisible button to add a vertical space");
     elm_table_pack(tb, bt, 0, 3, 1, 1);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, D_("Yes, Delete the area"));
+    elm_object_text_set(bt, D_("Yes, Delete the area"));
     evas_object_smart_callback_add(bt, "clicked", _utils_area_delete_cb, NULL);
     evas_object_color_set(bt, 255, 0, 0, 255);
     elm_table_pack(tb, bt, 0, 4, 1, 1);
     evas_object_show(bt);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, D_("No, do not delete the area"));
+    elm_object_text_set(bt, D_("No, do not delete the area"));
     evas_object_smart_callback_add(bt, "clicked", _utils_area_delete_cancel_cb, NULL);
     elm_table_pack(tb, bt, 1, 4, 1, 1);
     evas_object_show(bt);
@@ -612,18 +612,18 @@ void utils_edit_object_delete(void *data, Evas_Object *obj, void *event_info)
     evas_object_show(lbl);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, "Invisible button to add a vertical space");
+    elm_object_text_set(bt, "Invisible button to add a vertical space");
     elm_table_pack(tb, bt, 0, 3, 1, 1);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, D_("Yes, Delete the object"));
+    elm_object_text_set(bt, D_("Yes, Delete the object"));
     evas_object_smart_callback_add(bt, "clicked", _utils_object_delete_cb, NULL);
     evas_object_color_set(bt, 255, 0, 0, 255);
     elm_table_pack(tb, bt, 0, 4, 1, 1);
     evas_object_show(bt);
 
     bt= elm_button_add(win);
-    elm_button_label_set(bt, D_("No, do not delete the object"));
+    elm_object_text_set(bt, D_("No, do not delete the object"));
     evas_object_smart_callback_add(bt, "clicked", _utils_object_delete_cancel_cb, NULL);
     elm_table_pack(tb, bt, 1, 4, 1, 1);
     evas_object_show(bt);

@@ -47,13 +47,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Top");
+   elm_object_text_set($bt, "Top");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify);
    elm_table_pack($tb, $bt, 1, 0, 1, 1);
    evas_object_show($bt);
@@ -76,13 +76,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify2);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Bottom");
+   elm_object_text_set($bt, "Bottom");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify2);
    elm_table_pack($tb, $bt, 1, 2, 1, 1);
    evas_object_show($bt);
@@ -103,13 +103,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify3);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Left");
+   elm_object_text_set($bt, "Left");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify3);
    elm_table_pack($tb, $bt, 0, 1, 1, 1);
    evas_object_show($bt);
@@ -129,13 +129,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify4);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Right");
+   elm_object_text_set($bt, "Right");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify4);
    elm_table_pack($tb, $bt, 2, 1, 1, 1);
    evas_object_show($bt);
@@ -155,13 +155,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify5);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Top Left");
+   elm_object_text_set($bt, "Top Left");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify5);
    elm_table_pack($tb, $bt, 0, 0, 1, 1);
    evas_object_show($bt);
@@ -181,13 +181,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify6);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Top Right");
+   elm_object_text_set($bt, "Top Right");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify6);
    elm_table_pack($tb, $bt, 2, 0, 1, 1);
    evas_object_show($bt);
@@ -207,13 +207,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify7);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Bottom Left");
+   elm_object_text_set($bt, "Bottom Left");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify7);
    elm_table_pack($tb, $bt, 0, 2, 1, 1);
    evas_object_show($bt);
@@ -233,13 +233,13 @@ sub test_notify
    evas_object_show($lb);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Close");
+   elm_object_text_set($bt, "Close");
    evas_object_smart_callback_add($bt, "clicked", \&_bt_close, \$notify8);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Bottom Right");
+   elm_object_text_set($bt, "Bottom Right");
    evas_object_smart_callback_add($bt, "clicked", \&_bt, \$notify8);
    elm_table_pack($tb, $bt, 2, 2, 1, 1);
    evas_object_show($bt);

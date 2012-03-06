@@ -451,13 +451,13 @@ av_browser_win_create(void)
    Evas_Object *b;
 
    b = elm_button_add(win);
-   elm_button_label_set(b, "Play");
+   elm_object_text_set(b, "Play");
    evas_object_smart_callback_add(b, "clicked", item_play, NULL);
    elm_box_pack_start(controls, b);
    evas_object_show(b);
 
    b = elm_button_add(win);
-   elm_button_label_set(b, "Stop");
+   elm_object_text_set(b, "Stop");
    evas_object_smart_callback_add(b, "clicked", item_stop, NULL);
    elm_box_pack_end(controls, b);
    evas_object_show(b);
@@ -468,7 +468,7 @@ av_browser_win_create(void)
    evas_object_show(ic);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "Back");
+   elm_object_text_set(bt, "Back");
    elm_button_icon_set(bt, ic);
    evas_object_smart_callback_add(bt, "clicked", on_back_clicked, NULL);
 

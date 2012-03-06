@@ -155,7 +155,7 @@ _load_keys(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
              if ((p) && (!strcmp(p, ".png"))) continue;
              if (sscanf(buff, "%*s %4000s", label) != 1) continue;
              btn = elm_button_add(obj);
-             elm_button_label_set(btn, label);
+             elm_object_text_set(btn, label);
              evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, 
                                               EVAS_HINT_EXPAND);
              evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, 

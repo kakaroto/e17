@@ -69,7 +69,7 @@ create_button(Evas_Object *parent, const char *button_icon, const char *label)
       elm_button_icon_set(button, icon);
     }
 
-  elm_button_label_set(button, label);
+  elm_object_text_set(button, label);
 
   return button;
 }

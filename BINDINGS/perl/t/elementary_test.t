@@ -94,12 +94,12 @@ sub basic {
     evas_object_show($bx3);
 
     my $ok = elm_button_add($win);
-    elm_button_label_set($ok, "Continue");
+    elm_object_text_set($ok, "Continue");
     elm_box_pack_end($bx3, $ok);
     evas_object_show($ok);
 
     my $cancel = elm_button_add($win);
-    elm_button_label_set($cancel, "Done");
+    elm_object_text_set($cancel, "Done");
     elm_box_pack_end($bx3, $cancel);
     evas_object_show($cancel);
 
@@ -407,7 +407,7 @@ sub test_button {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Icon sized to button");
+    elm_object_text_set($bt, "Icon sized to button");
     elm_button_icon_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -417,7 +417,7 @@ sub test_button {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_icon_scale_set($ic, 0, 0);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Icon no scale");
+    elm_object_text_set($bt, "Icon no scale");
     elm_button_icon_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -427,7 +427,7 @@ sub test_button {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Disabled Button");
+    elm_object_text_set($bt, "Disabled Button");
     elm_button_icon_set($bt, $ic);
     elm_object_disabled_set($bt, 1);
     elm_box_pack_end($bx, $bt);
@@ -445,7 +445,7 @@ sub test_button {
     evas_object_show($ic);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Label Only");
+    elm_object_text_set($bt, "Label Only");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
@@ -460,7 +460,7 @@ sub test_button {
 
     $bt = elm_button_add($win);
     elm_object_style_set($bt, "anchor");
-    elm_button_label_set($bt, "Anchor style");
+    elm_object_text_set($bt, "Anchor style");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
@@ -580,42 +580,42 @@ sub test_table {
     evas_object_show($tb);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 1");
+    elm_object_text_set($bt, "Button 1");
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_table_pack($tb, $bt, 0, 0, 1, 1);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 2");
+    elm_object_text_set($bt, "Button 2");
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_table_pack($tb, $bt, 1, 0, 1, 1);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 3");
+    elm_object_text_set($bt, "Button 3");
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_table_pack($tb, $bt, 2, 0, 1, 1);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 4");
+    elm_object_text_set($bt, "Button 4");
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_table_pack($tb, $bt, 0, 1, 2, 1);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 5");
+    elm_object_text_set($bt, "Button 5");
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_table_pack($tb, $bt, 2, 1, 1, 3);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 6");
+    elm_object_text_set($bt, "Button 6");
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_table_pack($tb, $bt, 0, 2, 2, 2);
@@ -691,17 +691,17 @@ sub test_layout {
     evas_object_show($ly);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 1");
+    elm_object_text_set($bt, "Button 1");
     elm_layout_content_set($ly, "element1", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 2");
+    elm_object_text_set($bt, "Button 2");
     elm_layout_content_set($ly, "element2", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button 3");
+    elm_object_text_set($bt, "Button 3");
     elm_layout_content_set($ly, "element3", $bt);
     evas_object_show($bt);
 
@@ -734,7 +734,7 @@ sub test_hover {
     $hv = elm_hover_add($win);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button");
+    elm_object_text_set($bt, "Button");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_hover_bt, \$hv);
     elm_box_pack_end($bx, $bt);
@@ -743,7 +743,7 @@ sub test_hover {
     elm_hover_target_set($hv, $bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Popup");
+    elm_object_text_set($bt, "Popup");
     elm_object_part_content_set($hv, "middle", $bt);
     evas_object_show($bt);
 
@@ -756,15 +756,15 @@ sub test_hover {
     evas_object_show($ic);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Top 1");
+    elm_object_text_set($bt, "Top 1");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Top 2");
+    elm_object_text_set($bt, "Top 2");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Top 3");
+    elm_object_text_set($bt, "Top 3");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
@@ -772,17 +772,17 @@ sub test_hover {
     elm_object_part_content_set($hv, "top", $bx);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Bottom");
+    elm_object_text_set($bt, "Bottom");
     elm_object_part_content_set($hv, "bottom", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Left");
+    elm_object_text_set($bt, "Left");
     elm_object_part_content_set($hv, "left", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Right");
+    elm_object_text_set($bt, "Right");
     elm_object_part_content_set($hv, "right", $bt);
     evas_object_show($bt);
 
@@ -813,7 +813,7 @@ sub test_hover2 {
     elm_object_style_set($hv, "popout");
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Button");
+    elm_object_text_set($bt, "Button");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_hover_bt, \$hv);
     elm_box_pack_end($bx, $bt);
@@ -822,7 +822,7 @@ sub test_hover2 {
     elm_hover_target_set($hv, $bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Popup");
+    elm_object_text_set($bt, "Popup");
     elm_object_part_content_set($hv, "middle", $bt);
     evas_object_show($bt);
 
@@ -834,32 +834,32 @@ sub test_hover2 {
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Top 1");
+    elm_object_text_set($bt, "Top 1");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Top 2");
+    elm_object_text_set($bt, "Top 2");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Top 3");
+    elm_object_text_set($bt, "Top 3");
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
     evas_object_show($bx);
     elm_object_part_content_set($hv, "top", $bx);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Bot");
+    elm_object_text_set($bt, "Bot");
     elm_object_part_content_set($hv, "bottom", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Left");
+    elm_object_text_set($bt, "Left");
     elm_object_part_content_set($hv, "left", $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Right");
+    elm_object_text_set($bt, "Right");
     elm_object_part_content_set($hv, "right", $bt);
 
     evas_object_size_hint_min_set($bg, 160, 160);
@@ -944,7 +944,7 @@ sub test_entry {
     evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Clear");
+    elm_object_text_set($bt, "Clear");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_1, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -954,7 +954,7 @@ sub test_entry {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Print");
+    elm_object_text_set($bt, "Print");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_2, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -964,7 +964,7 @@ sub test_entry {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Selection");
+    elm_object_text_set($bt, "Selection");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_3, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -974,7 +974,7 @@ sub test_entry {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Insert");
+    elm_object_text_set($bt, "Insert");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_4, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1142,7 +1142,7 @@ sub test_entry_scrolled {
     evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Clear");
+    elm_object_text_set($bt, "Clear");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_1, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1151,7 +1151,7 @@ sub test_entry_scrolled {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Print");
+    elm_object_text_set($bt, "Print");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_2, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1160,7 +1160,7 @@ sub test_entry_scrolled {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Print pwd");
+    elm_object_text_set($bt, "Print pwd");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_5, \$en_p);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1169,7 +1169,7 @@ sub test_entry_scrolled {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Selection");
+    elm_object_text_set($bt, "Selection");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_3, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1178,7 +1178,7 @@ sub test_entry_scrolled {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Insert");
+    elm_object_text_set($bt, "Insert");
 
     evas_object_smart_callback_add($bt, "clicked", \&my_entry_bt_4, \$en);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1294,7 +1294,7 @@ sub my_anchorview_anchor {
     my ($bt, $bx);
 
     $bt = elm_button_add($obj);
-    elm_button_label_set($bt, $ei->name);
+    elm_object_text_set($bt, $ei->name);
     elm_object_part_content_set($ei->hover, "middle", $bt);
     evas_object_show($bt);
 
@@ -1302,17 +1302,17 @@ sub my_anchorview_anchor {
     if ($ei->hover_top) {
         $bx = elm_box_add($obj);
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Top 1");
+        elm_object_text_set($bt, "Top 1");
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Top 2");
+        elm_object_text_set($bt, "Top 2");
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Top 3");
+        elm_object_text_set($bt, "Top 3");
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
@@ -1321,21 +1321,21 @@ sub my_anchorview_anchor {
     }
     if ($ei->hover_bottom) {
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Bot");
+        elm_object_text_set($bt, "Bot");
         elm_object_part_content_set($ei->hover, "bottom", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
     }
     if ($ei->hover_left) {
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Left");
+        elm_object_text_set($bt, "Left");
         elm_object_part_content_set($ei->hover, "left", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
     }
     if ($ei->hover_right) {
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Right");
+        elm_object_text_set($bt, "Right");
         elm_object_part_content_set($ei->hover, "right", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorview_bt, \$av);
         evas_object_show($bt);
@@ -1392,7 +1392,7 @@ sub my_anchorblock_anchor {
     my ($bt, $bx);
 
     $bt = elm_button_add($obj);
-    elm_button_label_set($bt, ei->name);
+    elm_object_text_set($bt, ei->name);
     elm_object_part_content_set(ei->hover, "middle", $bt);
     evas_object_show($bt);
 
@@ -1400,17 +1400,17 @@ sub my_anchorblock_anchor {
     if (ei->hover_top) {
         $bx = elm_box_add($obj);
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Top 1");
+        elm_object_text_set($bt, "Top 1");
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Top 2");
+        elm_object_text_set($bt, "Top 2");
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Top 3");
+        elm_object_text_set($bt, "Top 3");
         elm_box_pack_end($bx, $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
@@ -1419,21 +1419,21 @@ sub my_anchorblock_anchor {
     }
     if (ei->hover_bottom) {
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Bot");
+        elm_object_text_set($bt, "Bot");
         elm_object_part_content_set($ei->hover, "bottom", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
     }
     if (ei->hover_left) {
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Left");
+        elm_object_text_set($bt, "Left");
         elm_object_part_content_set($ei->hover, "left", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
     }
     if (ei->hover_right) {
         $bt = elm_button_add($obj);
-        elm_button_label_set($bt, "Right");
+        elm_object_text_set($bt, "Right");
         elm_object_part_content_set($ei->hover, "right", $bt);
         evas_object_smart_callback_add($bt, "clicked", \&my_anchorblock_bt, \$av);
         evas_object_show($bt);
@@ -1923,7 +1923,7 @@ sub test_list {
     elm_win_resize_object_add($win, $tb2);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Hello");
+    elm_object_text_set($bt, "Hello");
     evas_object_smart_callback_add($bt, "clicked", \&my_show_it, \$it1);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, 0.9, 0.5);
@@ -1931,7 +1931,7 @@ sub test_list {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "How");
+    elm_object_text_set($bt, "How");
     evas_object_smart_callback_add($bt, "clicked", \&my_show_it, \$it2);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, 0.9, 0.5);
@@ -1939,7 +1939,7 @@ sub test_list {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "doing");
+    elm_object_text_set($bt, "doing");
     evas_object_smart_callback_add($bt, "clicked", \&my_show_it, \$it3);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, 0.9, 0.5);
@@ -1947,7 +1947,7 @@ sub test_list {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Here");
+    elm_object_text_set($bt, "Here");
     evas_object_smart_callback_add($bt, "clicked", \&my_show_it, \$it4);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, 0.9, 0.5);
@@ -1955,7 +1955,7 @@ sub test_list {
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Maybe this...");
+    elm_object_text_set($bt, "Maybe this...");
     evas_object_smart_callback_add($bt, "clicked", \&my_show_it, \$it5);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($bt, 0.9, 0.5);
@@ -2071,7 +2071,7 @@ sub test_list2 {
     evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Clear");
+    elm_object_text_set($bt, "Clear");
     evas_object_smart_callback_add($bt, "clicked", \&my_li2_clear, \$li);
     evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -2264,37 +2264,37 @@ sub test_scaling {
     evas_object_show($bx);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Scale: 0.5");
+    elm_object_text_set($bt, "Scale: 0.5");
     elm_object_scale_set($bt, 0.5);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Scale: 0.75");
+    elm_object_text_set($bt, "Scale: 0.75");
     elm_object_scale_set($bt, 0.75);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Scale: 1.0");
+    elm_object_text_set($bt, "Scale: 1.0");
     elm_object_scale_set($bt, 1.0);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Scale: 1.5");
+    elm_object_text_set($bt, "Scale: 1.5");
     elm_object_scale_set($bt, 1.5);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Scale: 2.0");
+    elm_object_text_set($bt, "Scale: 2.0");
     elm_object_scale_set($bt, 2.0);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Scale: 3.0");
+    elm_object_text_set($bt, "Scale: 3.0");
     elm_object_scale_set($bt, 3.0);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -2551,12 +2551,12 @@ sub test_genlist {
     #itc1.func.del       = gl_del;
 
     $bt_50 = elm_button_add($win);
-    elm_button_label_set($bt_50, "Go to 50");
+    elm_object_text_set($bt_50, "Go to 50");
     evas_object_show($bt_50);
     elm_box_pack_end($bx, $bt_50);
 
     $bt_1500 = elm_button_add($win);
-    elm_button_label_set($bt_1500, "Go to 1500");
+    elm_object_text_set($bt_1500, "Go to 1500");
     evas_object_show($bt_1500);
     elm_box_pack_end($bx, $bt_1500);
 
@@ -2803,7 +2803,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "/\\");
+   elm_object_text_set(bt, "/\\");
    evas_object_smart_callback_add(bt, "clicked", my_gl_first, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2811,7 +2811,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "\\/");
+   elm_object_text_set(bt, "\\/");
    evas_object_smart_callback_add(bt, "clicked", my_gl_last, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2819,7 +2819,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "#");
+   elm_object_text_set(bt, "#");
    evas_object_smart_callback_add(bt, "clicked", my_gl_disable, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2827,7 +2827,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "U");
+   elm_object_text_set(bt, "U");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update_all, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2844,7 +2844,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "X");
+   elm_object_text_set(bt, "X");
    evas_object_smart_callback_add(bt, "clicked", my_gl_clear, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2852,7 +2852,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "+");
+   elm_object_text_set(bt, "+");
    evas_object_smart_callback_add(bt, "clicked", my_gl_add, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2860,7 +2860,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "-");
+   elm_object_text_set(bt, "-");
    evas_object_smart_callback_add(bt, "clicked", my_gl_del, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2877,7 +2877,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bx3, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "+ before");
+   elm_object_text_set(bt, "+ before");
    evas_object_smart_callback_add(bt, "clicked", my_gl_insert_before, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -2885,7 +2885,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "+ after");
+   elm_object_text_set(bt, "+ after");
    evas_object_smart_callback_add(bt, "clicked", my_gl_insert_after, gl);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3016,7 +3016,7 @@ sub test_genlist3
    evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "[1]");
+   elm_object_text_set($bt, "[1]");
    evas_object_smart_callback_add($bt, "clicked", \&my_gl_update, \$tit[0]);
    evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -3024,7 +3024,7 @@ sub test_genlist3
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "[2]");
+   elm_object_text_set($bt, "[2]");
    evas_object_smart_callback_add($bt, "clicked", \&my_gl_update, \$tit[1]);
    evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -3032,7 +3032,7 @@ sub test_genlist3
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "[3]");
+   elm_object_text_set($bt, "[3]");
    evas_object_smart_callback_add($bt, "clicked", \&my_gl_update, \$tit[2]);
    evas_object_size_hint_align_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -3167,7 +3167,7 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
+   elm_object_text_set(bt, "[1]");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3175,7 +3175,7 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
+   elm_object_text_set(bt, "[2]");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3183,7 +3183,7 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
+   elm_object_text_set(bt, "[3]");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3364,7 +3364,7 @@ test_genlist5(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
+   elm_object_text_set(bt, "[1]");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3372,7 +3372,7 @@ test_genlist5(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
+   elm_object_text_set(bt, "[2]");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3380,7 +3380,7 @@ test_genlist5(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
+   elm_object_text_set(bt, "[3]");
    evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3529,7 +3529,7 @@ test_genlist6(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[1]");
+   elm_object_text_set(bt, "[1]");
 //   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[0]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3537,7 +3537,7 @@ test_genlist6(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[2]");
+   elm_object_text_set(bt, "[2]");
 //   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[1]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3545,7 +3545,7 @@ test_genlist6(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "[3]");
+   elm_object_text_set(bt, "[3]");
 //   evas_object_smart_callback_add(bt, "clicked", my_gl_update, &(tit[2]));
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
@@ -3786,13 +3786,13 @@ sub test_pager {
     evas_object_show($lb);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Flip to 2");
+    elm_object_text_set($bt, "Flip to 2");
     evas_object_smart_callback_add($bt, "clicked", \&my_pager_1, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Popme");
+    elm_object_text_set($bt, "Popme");
     evas_object_smart_callback_add($bt, "clicked", \&my_pager_pop, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -3809,13 +3809,13 @@ sub test_pager {
     evas_object_show($lb);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Flip to 3");
+    elm_object_text_set($bt, "Flip to 3");
     evas_object_smart_callback_add($bt, "clicked", \&my_pager_2, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Popme");
+    elm_object_text_set($bt, "Popme");
     evas_object_smart_callback_add($bt, "clicked", \&my_pager_pop, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -3832,13 +3832,13 @@ sub test_pager {
     evas_object_show($lb);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Flip to 1");
+    elm_object_text_set($bt, "Flip to 1");
     evas_object_smart_callback_add($bt, "clicked", \&my_pager_3, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Popme");
+    elm_object_text_set($bt, "Popme");
     evas_object_smart_callback_add($bt, "clicked", \&my_pager_pop, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -3951,7 +3951,7 @@ sub test_win_state
    evas_object_size_hint_fill_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Alpha On");
+   elm_object_text_set($bt, "Alpha On");
    evas_object_smart_callback_add($bt, "clicked", \&my_bt_38_alpha_on, \$win);
    evas_object_size_hint_fill_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -3959,7 +3959,7 @@ sub test_win_state
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Alpha Off");
+   elm_object_text_set($bt, "Alpha Off");
    evas_object_smart_callback_add($bt, "clicked",\&my_bt_38_alpha_off, \$win);
    evas_object_size_hint_fill_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -3997,7 +3997,7 @@ sub test_win_state
    evas_object_size_hint_fill_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Rot 0");
+   elm_object_text_set($bt, "Rot 0");
    evas_object_smart_callback_add($bt, "clicked", \&my_bt_38_rot_0, \$win);
    evas_object_size_hint_fill_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -4005,7 +4005,7 @@ sub test_win_state
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Rot 90");
+   elm_object_text_set($bt, "Rot 90");
    evas_object_smart_callback_add($bt, "clicked", \&my_bt_38_rot_90, \$win);
    evas_object_size_hint_fill_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -4013,7 +4013,7 @@ sub test_win_state
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Rot 180");
+   elm_object_text_set($bt, "Rot 180");
    evas_object_smart_callback_add($bt, "clicked", \&my_bt_38_rot_180, \$win);
    evas_object_size_hint_fill_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -4021,7 +4021,7 @@ sub test_win_state
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Rot 270");
+   elm_object_text_set($bt, "Rot 270");
    evas_object_smart_callback_add($bt, "clicked", \&my_bt_38_rot_270, \$win);
    evas_object_size_hint_fill_set($bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set($bt, EVAS_HINT_EXPAND, 0.0);
@@ -4218,13 +4218,13 @@ sub test_progressbar
    evas_object_show($bt_bx);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Start");
+   elm_object_text_set($bt, "Start");
    evas_object_smart_callback_add($bt, "clicked", \&my_progressbar_test_start, undef);
    elm_box_pack_end($bt_bx, $bt);
    evas_object_show($bt);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Stop");
+   elm_object_text_set($bt, "Stop");
    evas_object_smart_callback_add($bt, "clicked", \&my_progressbar_test_stop, undef);
    elm_box_pack_end($bt_bx, $bt);
    evas_object_show($bt);
@@ -4327,13 +4327,13 @@ test_fileselector(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(hbox);
    
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "Toggle is_save");
+   elm_object_text_set(bt, "Toggle is_save");
    evas_object_smart_callback_add(bt, "clicked", _is_save_clicked, fs);
    elm_box_pack_end(hbox, bt);
    evas_object_show(bt);
    
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "sel get");
+   elm_object_text_set(bt, "sel get");
    evas_object_smart_callback_add(bt, "clicked", _sel_get_clicked, fs);
    elm_box_pack_end(hbox, bt);
    evas_object_show(bt);
@@ -4370,7 +4370,7 @@ sub test_separator
    evas_object_show($bx);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Left upper corner");
+   elm_object_text_set($bt, "Left upper corner");
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
@@ -4380,7 +4380,7 @@ sub test_separator
    evas_object_show($sp);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Left lower corner");
+   elm_object_text_set($bt, "Left lower corner");
    elm_object_disabled_set($bt, 1);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
@@ -4395,7 +4395,7 @@ sub test_separator
    evas_object_show($bx);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Right upper corner");
+   elm_object_text_set($bt, "Right upper corner");
    elm_object_disabled_set($bt, 1);
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
@@ -4406,7 +4406,7 @@ sub test_separator
    evas_object_show($sp);
 
    $bt = elm_button_add($win);
-   elm_button_label_set($bt, "Right lower corner");
+   elm_object_text_set($bt, "Right lower corner");
    elm_box_pack_end($bx, $bt);
    evas_object_show($bt);
 
@@ -4508,7 +4508,7 @@ test_scroller(void *data, Evas_Object *obj, void *event_info)
    elm_win_resize_object_add(win, tb2);
 
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "to 300 300");
+   elm_object_text_set(bt, "to 300 300");
    evas_object_smart_callback_add(bt, "clicked", my_bt_go_300_300, sc);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bt, 0.1, 0.1);
@@ -4516,7 +4516,7 @@ test_scroller(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
    
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "to 900 300");
+   elm_object_text_set(bt, "to 900 300");
    evas_object_smart_callback_add(bt, "clicked", my_bt_go_900_300, sc);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bt, 0.9, 0.1);
@@ -4524,7 +4524,7 @@ test_scroller(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
    
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "to 300 900");
+   elm_object_text_set(bt, "to 300 900");
    evas_object_smart_callback_add(bt, "clicked", my_bt_go_300_900, sc);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bt, 0.1, 0.9);
@@ -4532,7 +4532,7 @@ test_scroller(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(bt);
    
    bt = elm_button_add(win);
-   elm_button_label_set(bt, "to 900 900");
+   elm_object_text_set(bt, "to 900 900");
    evas_object_smart_callback_add(bt, "clicked", my_bt_go_900_900, sc);
    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bt, 0.9, 0.9);

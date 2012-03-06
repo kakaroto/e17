@@ -57,7 +57,7 @@ elm_main(int argc, char **argv)
           }
 
         lbl = elm_button_add(win);
-        elm_button_label_set(lbl, buff);
+        elm_object_text_set(lbl, buff);
         elm_box_pack_end(box, lbl);
         evas_object_show(lbl);
 

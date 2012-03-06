@@ -19,7 +19,7 @@ Evas_Object *rightpanel_create()
 
     bt = elm_button_add(win);
     _bt_area_new = bt;
-    elm_button_label_set(bt, D_("Add a new area"));
+    elm_object_text_set(bt, D_("Add a new area"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_area_add, NULL);
@@ -28,7 +28,7 @@ Evas_Object *rightpanel_create()
 
     bt = elm_button_add(win);
     _bt_areas_init = bt;
-    elm_button_label_set(bt, D_("Initialise the default areas"));
+    elm_object_text_set(bt, D_("Initialise the default areas"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_slide_default_areas_reinit, NULL);
@@ -63,7 +63,7 @@ Evas_Object *rightpanel_create()
     evas_object_show(fr);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("UP"));
+    elm_object_text_set(bt, D_("UP"));
     evas_object_size_hint_weight_set(bt, 0.0, 0.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_area_up, NULL);
@@ -71,7 +71,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(bx, bt);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("DOWN"));
+    elm_object_text_set(bt, D_("DOWN"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_area_down, NULL);
@@ -95,7 +95,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(bx,hover);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("Add an image"));
+    elm_object_text_set(bt, D_("Add an image"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_area_image_add, NULL);
@@ -109,7 +109,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(bx, bx2);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("Delete the area"));
+    elm_object_text_set(bt, D_("Delete the area"));
     evas_object_color_set(bt, 255, 0, 0, 255);
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
@@ -141,7 +141,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(bx, tb);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("UP"));
+    elm_object_text_set(bt, D_("UP"));
     evas_object_size_hint_weight_set(bt, 0.0, 0.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_object_up, NULL);
@@ -149,7 +149,7 @@ Evas_Object *rightpanel_create()
     elm_table_pack(tb, bt, 0, 0, 2, 1);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("DOWN"));
+    elm_object_text_set(bt, D_("DOWN"));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_object_down, NULL);
@@ -157,7 +157,7 @@ Evas_Object *rightpanel_create()
     elm_table_pack(tb, bt, 0, 1, 2, 1);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("Image : "));
+    elm_object_text_set(bt, D_("Image : "));
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);
     evas_object_smart_callback_add(bt, "clicked", utils_edit_image_file_change, NULL);
@@ -220,7 +220,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(bx, bx2);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, D_("Delete the image"));
+    elm_object_text_set(bt, D_("Delete the image"));
     evas_object_color_set(bt, 255, 0, 0, 255);
     evas_object_size_hint_weight_set(bt, -1.0, -1.0);
     evas_object_size_hint_align_set(bt, -1.0, 0.0);

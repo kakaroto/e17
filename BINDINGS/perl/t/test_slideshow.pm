@@ -124,13 +124,13 @@ sub test_slideshow {
     evas_object_event_callback_add($bx, EVAS_CALLBACK_MOUSE_OUT, \&_mouse_out, \$notify);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Previous");
+    elm_object_text_set($bt, "Previous");
     evas_object_smart_callback_add($bt, "clicked", \&_previous, \$slideshow);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
-    elm_button_label_set($bt, "Next");
+    elm_object_text_set($bt, "Next");
     evas_object_smart_callback_add($bt, "clicked", \&_next, \$slideshow);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
@@ -158,14 +158,14 @@ sub test_slideshow {
 
     $bt       = elm_button_add($win);
     $bt_start = $bt;
-    elm_button_label_set($bt, "Start");
+    elm_object_text_set($bt, "Start");
     evas_object_smart_callback_add($bt, "clicked", \&_start, \$spin);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt      = elm_button_add($win);
     $bt_stop = $bt;
-    elm_button_label_set($bt, "Stop");
+    elm_object_text_set($bt, "Stop");
     evas_object_smart_callback_add($bt, "clicked", \&_stop, \$spin);
     elm_box_pack_end($bx, $bt);
     elm_object_disabled_set($bt, 1);

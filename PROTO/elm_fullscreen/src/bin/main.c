@@ -34,7 +34,7 @@ elm_main(int argc, char **argv)
 
    btn = elm_button_add(win);
    evas_object_smart_callback_add(btn, "clicked", _cb_btn_close_clicked, NULL);
-   elm_button_label_set(btn, "Click to Close");
+   elm_object_text_set(btn, "Click to Close");
    elm_box_pack_end(box, btn);
    evas_object_show(btn);
 

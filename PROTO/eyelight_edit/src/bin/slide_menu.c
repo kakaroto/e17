@@ -38,7 +38,7 @@ void slide_menu_show(List_Item *item, int x, int y)
     Evas_Object *left = elm_box_add(win);
     Evas_Object *btn = elm_button_add(win);
     evas_object_smart_callback_add(btn, "clicked", _delete_cb, item);
-    elm_button_label_set(btn, "Delete");
+    elm_object_text_set(btn, "Delete");
     evas_object_show(btn);
     elm_box_pack_end(left, btn);
     evas_object_color_set(left, 255, 0, 0, 255);
@@ -47,7 +47,7 @@ void slide_menu_show(List_Item *item, int x, int y)
     // bottom
     Evas_Object *bottom = elm_box_add(win);
     btn = elm_button_add(win);
-    elm_button_label_set(btn, "Insert after");
+    elm_object_text_set(btn, "Insert after");
     evas_object_smart_callback_add(btn, "clicked", _insert_after_cb, item);
     evas_object_show(btn);
     elm_box_pack_end(bottom, btn);
@@ -56,7 +56,7 @@ void slide_menu_show(List_Item *item, int x, int y)
     // top
     Evas_Object *top = elm_box_add(win);
     btn = elm_button_add(win);
-    elm_button_label_set(btn, "Insert before");
+    elm_object_text_set(btn, "Insert before");
     evas_object_smart_callback_add(btn, "clicked", _insert_before_cb, item);
     evas_object_show(btn);
     elm_box_pack_end(top, btn);

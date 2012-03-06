@@ -413,12 +413,6 @@ Evas_Object *
 elm_button_add(Evas_Object *parent)
 
 void
-elm_button_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_button_label_get(Evas_Object *obj)
-
-void
 elm_button_icon_set(Evas_Object *obj, Evas_Object *icon)
 
 Evas_Object *
