@@ -79,7 +79,7 @@ lighting_control_win_create(void)
    evas_object_show(dimm);
 
    set = elm_check_add(win);
-   elm_check_label_set(set, "Light status");
+   elm_object_text_set(set, "Light status");
    elm_check_state_set(set, EINA_FALSE);
    evas_object_size_hint_weight_set(set, 1.0, 1.0);
    evas_object_size_hint_weight_set(set, 0.5, 0.5);

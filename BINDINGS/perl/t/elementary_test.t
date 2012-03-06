@@ -3584,7 +3584,7 @@ sub test_check {
     $ck = elm_check_add($win);
     evas_object_size_hint_weight_set($ck, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($ck, EVAS_HINT_FILL, 0.5);
-    elm_check_label_set($ck, "Icon sized to check");
+    elm_object_text_set($ck, "Icon sized to check");
     elm_check_icon_set($ck, $ic);
     elm_check_state_set($ck, 1);
     elm_box_pack_end($bx, $ck);
@@ -3595,14 +3595,14 @@ sub test_check {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_icon_scale_set($ic, 0, 0);
     $ck = elm_check_add($win);
-    elm_check_label_set($ck, "Icon no scale");
+    elm_object_text_set($ck, "Icon no scale");
     elm_check_icon_set($ck, $ic);
     elm_box_pack_end($bx, $ck);
     evas_object_show($ck);
     evas_object_show($ic);
 
     $ck = elm_check_add($win);
-    elm_check_label_set($ck, "Label Only");
+    elm_object_text_set($ck, "Label Only");
     elm_box_pack_end($bx, $ck);
     evas_object_show($ck);
 
@@ -3612,7 +3612,7 @@ sub test_check {
     $ck = elm_check_add($win);
     evas_object_size_hint_weight_set($ck, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($ck, EVAS_HINT_FILL, 0.5);
-    elm_check_label_set($ck, "Disabled check");
+    elm_object_text_set($ck, "Disabled check");
     elm_check_icon_set($ck, $ic);
     elm_check_state_set($ck, 1);
     elm_box_pack_end($bx, $ck);

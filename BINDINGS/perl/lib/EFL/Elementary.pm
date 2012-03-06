@@ -483,8 +483,6 @@ my @elm_genlist = qw(
 
 my @elm_check = qw(
   elm_check_add
-  elm_check_label_set
-  elm_check_label_get
   elm_check_icon_set
   elm_check_icon_get
   elm_check_state_set
@@ -986,8 +984,6 @@ may change in future releases.
     elm_check_add
     elm_check_icon_get
     elm_check_icon_set
-    elm_check_label_get
-    elm_check_label_set
     elm_check_state_get
     elm_check_state_set
     elm_clock_add
