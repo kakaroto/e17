@@ -2527,6 +2527,7 @@ protected:
        Persistent<Value> on_content;
        Persistent<Value> on_state;
        Persistent<Value> on_delete;
+       Persistent<Value> on_select;
        std::string item_style;
        Elm_Genlist_Item_Class eitc;
        CElmGenList *genlist;
@@ -2594,9 +2595,15 @@ public:
         delete static_cast<GenListItemClass *>(data);
      }
 
-   static void *sel(void *, Evas_Object *, void *)
+   static void sel(void *data, Evas_Object *, void *)
      {
-        return NULL;
+        GenListItemClass *itc = (GenListItemClass *)data;
+        if (itc->on_select.IsEmpty())
+          return;
+        Handle<Function> fn(Function::Cast(*(itc->on_select)));
+        Local<Object> temp = Object::New();
+        temp->Set(String::New("data"), itc->data);
+        fn->Call(temp, 0, 0);
      }
    /* End of GenList functions */
 
@@ -2620,6 +2627,7 @@ public:
              itc->on_text = Persistent<Value>::New(obj->Get(String::New("on_text")));
              itc->on_content = Persistent<Value>::New(obj->Get(String::New("on_content")));
              itc->on_state = Persistent<Value>::New(obj->Get(String::New("on_state")));
+             itc->on_select = Persistent<Value>::New(obj->Get(String::New("on_select")));
              itc->data = Persistent<Value>::New(obj->Get(String::New("data")));
              //TODO : Check genlist class type and modify or add
 			 
@@ -2628,10 +2636,10 @@ public:
              itc->eitc.func.content_get = content_get;
              itc->eitc.func.state_get = state_get;
              itc->eitc.func.del = del;
-			 itc->genlist = genlist;
+             itc->genlist = genlist;
              elm_genlist_item_append(genlist->get(), &itc->eitc, itc, NULL,
                                         ELM_GENLIST_ITEM_NONE,
-                                        NULL, NULL);
+                                        sel, itc);
           }
         return Undefined();
      }
