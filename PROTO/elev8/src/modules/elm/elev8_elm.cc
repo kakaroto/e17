@@ -2710,9 +2710,7 @@ public:
    virtual void block_count_set(Handle<Value> value)
      {
         if (value->IsNumber())
-          {
-             elm_genlist_block_count_set(eo, value->IntegerValue());
-          }
+          elm_genlist_block_count_set(eo, value->IntegerValue());
      }
 
    virtual Handle<Value>longpress_timeout_get() const
@@ -2723,10 +2721,8 @@ public:
    virtual void longpress_timeout_set(Handle<Value> value)
      {
         if (value->IsNumber())
-          {
-             elm_genlist_longpress_timeout_set(eo, value->IntegerValue());
-          }
-	 }
+          elm_genlist_longpress_timeout_set(eo, value->IntegerValue());
+     }
 };
 
 template<> CEvasObject::CPropHandler<CElmGenList>::property_list
