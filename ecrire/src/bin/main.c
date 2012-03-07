@@ -536,11 +536,11 @@ editor_font_set(Ecrire_Entry *ent, const char *font, int font_size)
         eina_strbuf_append(sbuf, "'");
         evas_textblock_style_set(ts, eina_strbuf_string_get(sbuf));
 
-        evas_object_textblock_style_user_set((Evas_Object *) tb, ts);
+        evas_object_textblock_style_user_push((Evas_Object *) tb, ts);
      }
    else
      {
-        evas_object_textblock_style_user_set((Evas_Object *) tb, NULL);
+        evas_object_textblock_style_user_pop((Evas_Object *) tb);
      }
 
    elm_entry_calc_force(ent->entry);
@@ -658,7 +658,7 @@ main(int argc, char *argv[])
    main_ec_ent->entry = elm_entry_add(main_ec_ent->win);
    elm_entry_scrollable_set(main_ec_ent->entry, EINA_TRUE);
    elm_entry_line_wrap_set(main_ec_ent->entry, _ent_cfg->wrap_type);
-   elm_entry_cnp_textonly_set(main_ec_ent->entry, EINA_TRUE);
+   elm_entry_cnp_mode_set(main_ec_ent->entry, ELM_CNP_MODE_PLAINTEXT);
    evas_object_size_hint_align_set(main_ec_ent->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(main_ec_ent->entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_box_pack_end(bx, main_ec_ent->entry);
