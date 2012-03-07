@@ -757,7 +757,7 @@ public:
           }
 
         Handle<Object> in = val->ToObject();
-        Handle<Array> props = in->GetPropertyNames();
+        Handle<Array> props = in->GetOwnPropertyNames();
 
         /* iterate through elements and instantiate them */
         for (unsigned int i = 0; i < props->Length(); i++)
