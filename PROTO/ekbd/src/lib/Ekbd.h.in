@@ -61,7 +61,7 @@ EAPI const char *     ekbd_layout_path_get(const Ekbd_Layout *layout);
 EAPI const char *     ekbd_layout_icon_get(const Ekbd_Layout *layout);
 EAPI Ekbd_Layout_Type ekbd_layout_type_get(const Ekbd_Layout *layout);
 
-#ifdef HAVE_X11
+#ifdef EKBD_X11
 EAPI void             ekbd_send_x_press(const char *str, Ekbd_Mod mod);
 #endif
 
