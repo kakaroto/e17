@@ -1,4 +1,4 @@
-#include "macros/scroller.h"
+#include "darkness.edc"
 externals.external: "elm";
 
 #define SCROLLBARS_ADD() \

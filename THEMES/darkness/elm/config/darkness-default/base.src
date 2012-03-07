@@ -1,6 +1,7 @@
 group "Elm_Config" struct {
   value "config_version" int: 65539;
   value "engine" string: "software_x11";
+  value "vsync" uchar: 0;
   value "thumbscroll_enable" uchar: 1;
   value "thumbscroll_threshold" int: 24;
   value "thumbscroll_momentum_threshold" double: 100.0;
@@ -11,6 +12,11 @@ group "Elm_Config" struct {
   value "bring_in_scroll_friction" double: 0.5;
   value "zoom_friction" double: 0.5;
   value "thumbscroll_border_friction" double: 0.5;
+  value "thumbscroll_sensitivity_friction" double: 0.25;
+  value "scroll_smooth_amount" double: 0.0;
+  value "scroll_smooth_history_weight" double: 0.3;
+  value "scroll_smooth_future_time" double: 0.0;
+  value "scroll_smooth_time_window" double: 0.2;
   value "scale" double: 1.0;
   value "bgpixmap" int: 0;
   value "compositing" int: 1;
@@ -23,8 +29,8 @@ group "Elm_Config" struct {
   value "edje_collection_cache" int: 64;
   value "finger_size" int: 40;
   value "fps" double: 60.0;
-  value "theme" string: "darkness-elm";
-  value "modules" string: "";
+  value "theme" string: "darkness";
+  value "modules" string: "datetime_input_ctxpopup>datetime/api";
   value "tooltip_delay" double: 1.0;
   value "cursor_engine_only" uchar: 1;
   value "focus_highlight_enable" uchar: 0;
@@ -35,4 +41,22 @@ group "Elm_Config" struct {
   value "icon_size" int: 32;
   value "longpress_timeout" double: 1.0;
   value "effect_enable" uchar: 1;
+  value "desktop_entry" uchar: 0;
+  value "password_show_last" uchar: 0;
+  value "password_show_last_timeout" double: 2.0;
+  value "glayer_zoom_finger_enable" uchar: 1;
+  value "glayer_zoom_finger_factor" double: 1.0;
+  value "glayer_zoom_wheel_factor" double: 0.05;
+  value "glayer_zoom_distance_tolerance" double: 1.0;
+  value "glayer_rotate_finger_enable" uchar: 1;
+  value "glayer_rotate_angular_tolerance" double: 2.0;
+  value "glayer_line_min_length" double: 1.0;
+  value "glayer_line_distance_tolerance" double: 3.0;
+  value "glayer_line_angular_tolerance" double: 20.0;
+  value "glayer_flick_time_limit_ms" uint: 120; /* ms to finish flick */
+  value "glayer_long_tap_start_timeout" double: 1.2; /* sec to start long-tap */
+  value "glayer_continues_enable" uchar: 1;          /* Continues gesture enabled */
+  value "week_start" int: 1;
+  value "weekend_start" int: 6;
+  value "weekend_len" int: 2;
 }
