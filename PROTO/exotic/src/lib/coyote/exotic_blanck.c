@@ -18,13 +18,13 @@ access(const char *path __UNUSED__, int __amode __UNUSED__)
 }
 
 EAPI int
-chmod(const char *path __UNUSED__, mode_t __mode __UNUSED__)
+mkstemp(char *path __UNUSED__)
 {
    return -1;
 }
 
 EAPI int
-mkstemp(char *path __UNUSED__)
+remove(const char *path __UNUSED__)
 {
    return -1;
 }
@@ -42,13 +42,13 @@ readlink(const char *path __UNUSED__, char *buf __UNUSED__, size_t buflen __UNUS
 }
 
 EAPI int
-remove(const char *path __UNUSED__)
+rmdir(const char *path __UNUSED__)
 {
    return -1;
 }
 
 EAPI int
-rmdir(const char *path __UNUSED__)
+chmod(const char *path __UNUSED__, mode_t __mode __UNUSED__)
 {
    return -1;
 }

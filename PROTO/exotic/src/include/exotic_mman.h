@@ -81,7 +81,7 @@ EAPI int exotic_close(int fd);
 #endif
 #define ftruncate exotic_ftruncate
 
-EAPI int exotic_ftruncate(int fd, unsigned long length);
+EAPI int exotic_ftruncate(int fd, off_t length);
 
 struct exotic_stat
 {

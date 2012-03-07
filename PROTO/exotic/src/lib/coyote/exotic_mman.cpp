@@ -410,7 +410,7 @@ exotic_munmap(void *addr, size_t length)
 }
 
 EAPI int
-exotic_ftruncate(int fd, unsigned long length)
+exotic_ftruncate(int fd, off_t length)
 {
    Exotic_Map *m;
    unsigned char *tmp;
