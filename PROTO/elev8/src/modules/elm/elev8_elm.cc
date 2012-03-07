@@ -12,6 +12,12 @@
 
 #define ELM_MODULE_NAME "elm"
 
+#define FACTORY(type_) \
+   public: \
+      static CEvasObject* make(CEvasObject *parent, Local<Object> description) { \
+         return new type_(parent, description); \
+      }
+
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
@@ -26,6 +32,28 @@ CEvasObject *realize_or_get(CEvasObject *parent, Handle<Value> obj);
 class CEvasObject {
    /* realize_or_get is a factory for our class */
    friend CEvasObject *realize_or_get(CEvasObject *parent, Handle<Value> obj);
+
+private:
+   typedef CEvasObject *(*WidgetConstructor)(CEvasObject *parent, Local<Object> description);
+   static Eina_Hash *constructor_map;
+
+public:
+   static void init_factory()
+     {
+        constructor_map = eina_hash_string_superfast_new(NULL);
+     }
+
+   static void register_widget(const char *type, WidgetConstructor constructor)
+     {
+        eina_hash_add(constructor_map, type, (void *)constructor);
+     }
+
+   static CEvasObject *make(const char *type, CEvasObject *parent, Local<Object> description)
+     {
+        WidgetConstructor widget_factory = (WidgetConstructor)eina_hash_find(constructor_map, type);
+        return widget_factory ? widget_factory(parent, description) : 0;
+     }
+
 protected:
    Evas_Object *eo;
    Persistent<ObjectTemplate> the_template;
@@ -1027,6 +1055,7 @@ public:
      }
 
 };
+Eina_Hash *CEvasObject::constructor_map;
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
 CEvasObject::CPropHandler<CEvasObject>::list[] = {
@@ -1064,6 +1093,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
 };
 
 class CEvasImage : public CEvasObject {
+   FACTORY(CEvasImage)
 protected:
    CPropHandler<CEvasImage> prop_handler;
 public:
@@ -1541,6 +1571,7 @@ public:
 };
 
 class CElmButton : public CEvasObject {
+   FACTORY(CElmButton)
 protected:
    Persistent<Value> the_icon;
    CPropHandler<CElmButton> prop_handler;
@@ -1579,6 +1610,7 @@ CEvasObject::CPropHandler<CElmButton>::list[] = {
 };
 
 class CElmLayout : public CEvasObject {
+   FACTORY(CElmLayout)
 protected:
    Persistent<Object> the_contents;
    CPropHandler<CElmLayout> prop_handler;
@@ -1675,6 +1707,7 @@ CEvasObject::CPropHandler<CElmLayout>::list[] = {
 
 
 class CElmBackground : public CEvasObject {
+   FACTORY(CElmBackground)
 protected:
    CPropHandler<CElmBackground> prop_handler;
 public:
@@ -1773,6 +1806,7 @@ CEvasObject::CPropHandler<CElmBackground>::list[] = {
 };
 
 class CElmRadio : public CEvasObject {
+   FACTORY(CElmRadio)
 protected:
    CPropHandler<CElmRadio> prop_handler;
    Persistent<Value> the_icon;
@@ -1852,6 +1886,7 @@ CEvasObject::CPropHandler<CElmRadio>::list[] = {
 };
 
 class CElmBox : public CEvasObject {
+   FACTORY(CElmBox)
 protected:
    virtual void add_child(CEvasObject *child)
      {
@@ -1934,6 +1969,7 @@ CEvasObject::CPropHandler<CElmBox>::list[] = {
 };
 
 class CElmLabel : public CEvasObject {
+   FACTORY(CElmLabel)
 protected:
    CPropHandler<CElmLabel> prop_handler;
 
@@ -1967,6 +2003,7 @@ CEvasObject::CPropHandler<CElmLabel>::list[] = {
 };
 
 class CElmFlip : public CEvasObject {
+   FACTORY(CElmFlip)
 public:
    static Handle<Value> do_flip(const Arguments& args)
      {
@@ -2001,6 +2038,7 @@ public:
 };
 
 class CElmIcon : public CEvasObject {
+   FACTORY(CElmIcon)
 public:
    CPropHandler<CElmIcon> prop_handler;
 public:
@@ -2092,6 +2130,7 @@ CEvasObject::CPropHandler<CElmIcon>::list[] = {
 };
 
 class CElmActionSlider : public CEvasObject {
+   FACTORY(CElmActionSlider)
 private:
    CPropHandler<CElmActionSlider> prop_handler;
 
@@ -2188,6 +2227,7 @@ CEvasObject::CPropHandler<CElmActionSlider>::list[] = {
 };
 
 class CElmScroller : public CEvasObject {
+   FACTORY(CElmScroller)
 private:
    CPropHandler<CElmScroller> prop_handler;
 
@@ -2299,6 +2339,7 @@ CEvasObject::CPropHandler<CElmScroller>::list[] = {
 };
 
 class CElmSlider : public CEvasObject {
+   FACTORY(CElmSlider)
 protected:
    Persistent<Value> the_icon;
    Persistent<Value> the_end_object;
@@ -2517,6 +2558,7 @@ CEvasObject::CPropHandler<CElmSlider>::list[] = {
 };
 
 class CElmGenList : public CEvasObject {
+   FACTORY(CElmGenList)
 protected:
    CPropHandler<CElmGenList> prop_handler;
 
@@ -2747,6 +2789,7 @@ CEvasObject::CPropHandler<CElmGenList>::list[] = {
 };
 
 class CElmList : public CEvasObject {
+   FACTORY(CElmList)
 protected:
    class Item {
    public:
@@ -3228,6 +3271,7 @@ CEvasObject::CPropHandler<CElmList>::list[] = {
 };
 
 class CElmEntry : public CEvasObject {
+   FACTORY(CElmEntry)
 protected:
    CPropHandler<CElmEntry> prop_handler;
 public:
@@ -3305,6 +3349,7 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
 };
 
 class CElmCheck : public CEvasObject {
+   FACTORY(CElmCheck)
 protected:
    CPropHandler<CElmCheck> prop_handler;
    Persistent<Value> the_icon;
@@ -3356,6 +3401,7 @@ CEvasObject::CPropHandler<CElmCheck>::list[] = {
 };
 
 class CElmClock : public CEvasObject {
+   FACTORY(CElmClock)
 protected:
   CPropHandler<CElmClock> prop_handler;
 
@@ -3498,6 +3544,7 @@ CEvasObject::CPropHandler<CElmClock>::list[] = {
 };
 
 class CElmProgressBar : public CEvasObject {
+   FACTORY(CElmProgressBar)
 protected:
    CPropHandler<CElmProgressBar> prop_handler;
    Persistent<Value> the_icon;
@@ -3631,6 +3678,7 @@ CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
 
 
 class CElmPhoto : public CEvasObject {
+   FACTORY(CElmPhoto)
 protected:
   CPropHandler<CElmPhoto> prop_handler;
 
@@ -3704,6 +3752,7 @@ CEvasObject::CPropHandler<CElmPhoto>::list[] = {
 };
 
 class CElmSpinner : public CEvasObject {
+   FACTORY(CElmSpinner)
 protected:
   CPropHandler<CElmSpinner> prop_handler;
 
@@ -3857,6 +3906,7 @@ CEvasObject::CPropHandler<CElmSpinner>::list[] = {
 };
 
 class CElmPane : public CEvasObject {
+   FACTORY(CElmPane)
 protected:
   CPropHandler<CElmPane> prop_handler;
 
@@ -3918,6 +3968,7 @@ CEvasObject::CPropHandler<CElmPane>::list[] = {
 };
 
 class CElmBubble : public CEvasObject {
+   FACTORY(CElmBubble)
 protected:
   CPropHandler<CElmBubble> prop_handler;
 
@@ -3985,6 +4036,7 @@ CEvasObject::CPropHandler<CElmBubble>::list[] = {
 };
 
 class CElmSegment : public CEvasObject {
+   FACTORY(CElmSegment)
 protected:
   CPropHandler<CElmSegment> prop_handler;
 
@@ -4047,6 +4099,7 @@ CEvasObject::CPropHandler<CElmSegment>::list[] = {
 };
 
 class CElmMenu : public CEvasObject {
+   FACTORY(CElmMenu)
 protected:
   CPropHandler<CElmMenu> prop_handler;
 
@@ -4298,6 +4351,7 @@ CEvasObject::CPropHandler<CElmMenu>::list[] = {
 };
 
 class CElmColorSelector : public CEvasObject {
+   FACTORY(CElmColorSelector)
 protected:
    CPropHandler<CElmColorSelector> prop_handler;
    /* the on_clicked function */
@@ -4430,6 +4484,7 @@ CEvasObject::CPropHandler<CElmColorSelector>::list[] = {
 };
 
 class CElmCalendar : public CEvasObject {
+   FACTORY(CElmCalendar)
 protected:
    CPropHandler<CElmCalendar> prop_handler;
    /* the on_clicked function */
@@ -4720,6 +4775,7 @@ CEvasObject::CPropHandler<CElmCalendar>::list[] = {
 };
 
 class CElmTable : public CEvasObject {
+   FACTORY(CElmTable)
 protected:
    CPropHandler<CElmTable> prop_handler;
    std::list<CEvasObject *> table_items;
@@ -4879,6 +4935,7 @@ CEvasObject::CPropHandler<CElmTable>::list[] = {
 
 
 class CElmPhotocam : public CEvasObject {
+   FACTORY(CElmPhotocam)
 protected:
    CPropHandler<CElmPhotocam> prop_handler;
 
@@ -4989,6 +5046,7 @@ CEvasObject::CPropHandler<CElmPhotocam>::list[] = {
 
 
 class CElmToggle : public CEvasObject {
+   FACTORY(CElmToggle)
 protected:
    CPropHandler<CElmToggle> prop_handler;
 
@@ -5117,6 +5175,7 @@ CEvasObject::CPropHandler<CElmToggle>::list[] = {
 
 
 class CElmHover : public CEvasObject {
+   FACTORY(CElmHover)
 protected:
    CPropHandler<CElmHover> prop_handler;
 
@@ -5340,6 +5399,7 @@ CEvasObject::CPropHandler<CElmHover>::list[] = {
 
 
 class CElmFileSelectorButton : public CEvasObject {
+   FACTORY(CElmFileSelectorButton)
 protected:
    CPropHandler<CElmFileSelectorButton> prop_handler;
 
@@ -5495,6 +5555,7 @@ CEvasObject::CPropHandler<CElmFileSelectorButton>::list[] = {
 
 
 class CElmFileSelectorEntry : public CEvasObject {
+   FACTORY(CElmFileSelectorEntry)
 protected:
    CPropHandler<CElmFileSelectorEntry> prop_handler;
 
@@ -5680,6 +5741,7 @@ CEvasObject::CPropHandler<CElmFileSelectorEntry>::list[] = {
 };
 
 class CElmInwin : public CEvasObject {
+   FACTORY(CElmInwin)
 protected:
    CPropHandler<CElmInwin> prop_handler;
    CEvasObject *content;
@@ -5719,6 +5781,7 @@ CEvasObject::CPropHandler<CElmInwin>::list[] = {
 };
 
 class CElmNotify : public CEvasObject {
+   FACTORY(CElmNotify)
 protected:
    CPropHandler<CElmNotify> prop_handler;
    CEvasObject *content;
@@ -5803,6 +5866,7 @@ CEvasObject::CPropHandler<CElmNotify>::list[] = {
 #if 0
 
 class CElmPager : public CEvasObject {
+   FACTORY(CElmPager)
 protected:
    std::list<CEvasObject *> pages;
    CPropHandler<CElmPager> prop_handler;
@@ -5873,6 +5937,7 @@ CEvasObject::CPropHandler<CElmPager>::list[] = {
 #endif
 
 class CElmNaviframe : public CEvasObject {
+   FACTORY(CElmNaviframe)
 protected:
    CPropHandler<CElmNaviframe> prop_handler;
 
@@ -5957,6 +6022,7 @@ CEvasObject::CPropHandler<CElmNaviframe>::list[] = {
 };
 
 class CElmGrid : public CEvasObject {
+   FACTORY(CElmGrid)
 protected:
    CPropHandler<CElmGrid> prop_handler;
    std::list<CEvasObject *> grid_items;
@@ -6092,6 +6158,7 @@ CEvasObject::CPropHandler<CElmGrid>::list[] = {
 };
 
 class CElmImage : public CEvasObject {
+   FACTORY(CElmImage)
 protected:
    CPropHandler<CElmGrid> prop_handler;
 
@@ -6250,89 +6317,9 @@ _realize_one(CEvasObject *parent, Local<Object>description)
    Local<Value> val = description->Get(String::New("type"));
    String::Utf8Value str(val);
 
-   /* create the evas object */
-   // FIXME: make a list here
-   CEvasObject *eo = NULL;
-   if (!strcmp(*str, "actionslider"))
-     eo = new CElmActionSlider(parent, description);
-   else if (!strcmp(*str, "button"))
-     eo = new CElmButton(parent, description);
-   else if (!strcmp(*str, "layout"))
-     eo = new CElmLayout(parent, description);
-   else if (!strcmp(*str, "background"))
-     eo = new CElmBackground(parent, description);
-   else if (!strcmp(*str, "check"))
-     eo = new CElmCheck(parent, description);
-   else if (!strcmp(*str, "clock"))
-     eo = new CElmClock(parent, description);
-   else if (!strcmp(*str, "entry"))
-     eo = new CElmEntry(parent, description);
-   else if (!strcmp(*str, "flip"))
-     eo = new CElmFlip(parent, description);
-   else if (!strcmp(*str, "list"))
-     eo = new CElmList(parent, description);
-   else if (!strcmp(*str, "genlist"))
-     eo = new CElmGenList(parent, description);
-   else if (!strcmp(*str, "icon"))
-     eo = new CElmIcon(parent, description);
-   else if (!strcmp(*str, "label"))
-     eo = new CElmLabel(parent, description);
-   else if (!strcmp(*str, "radio"))
-     eo = new CElmRadio(parent, description);
-   else if (!strcmp(*str, "box"))
-     eo = new CElmBox(parent, description);
-   else if (!strcmp(*str, "progressbar"))
-     eo = new CElmProgressBar(parent, description);
-   else if (!strcmp(*str, "scroller"))
-     eo = new CElmScroller(parent, description);
-   else if (!strcmp(*str, "segment"))
-     eo = new CElmSegment(parent, description);
-   else if (!strcmp(*str, "image"))
-     eo = new CEvasImage(parent, description);
-   else if (!strcmp(*str, "slider"))
-     eo = new CElmSlider(parent, description);
-   else if (!strcmp(*str, "photo"))
-     eo = new CElmPhoto(parent, description);
-   else if (!strcmp(*str, "spinner"))
-     eo = new CElmSpinner(parent, description);
-   else if (!strcmp(*str, "pane"))
-     eo = new CElmPane(parent, description);
-   else if (!strcmp(*str, "bubble"))
-     eo = new CElmBubble(parent, description);
-   else if (!strcmp(*str, "menu"))
-     eo = new CElmMenu(parent, description);
-   else if (!strcmp(*str, "colorselector"))
-     eo = new CElmColorSelector(parent, description);
-   else if (!strcmp(*str, "calendar"))
-     eo = new CElmCalendar(parent, description);
-   else if (!strcmp(*str, "table"))
-     eo = new CElmTable(parent, description);
-   else if (!strcmp(*str, "photocam"))
-     eo = new CElmPhotocam(parent, description);
-   else if (!strcmp(*str, "toggle"))
-     eo = new CElmToggle(parent, description);
-   else if (!strcmp(*str, "fileselectorbutton"))
-     eo = new CElmFileSelectorButton(parent, description);
-   else if (!strcmp(*str, "fileselectorentry"))
-     eo = new CElmFileSelectorEntry(parent, description);
-   else if (!strcmp(*str, "inwin"))
-     eo = new CElmInwin(parent, description);
-   else if (!strcmp(*str, "notify"))
-     eo = new CElmNotify(parent, description);
-#if 0
-   else if (!strcmp(*str, "pager"))
-     eo = new CElmPager(parent, description);
-#endif
-   else if (!strcmp(*str, "naviframe"))
-     eo = new CElmNaviframe(parent, description);
-   else if (!strcmp(*str, "grid"))
-     eo = new CElmGrid(parent, description);
-
+   CEvasObject *eo = CEvasObject::make(*str, parent, description);
    if (!eo)
-     {
-        ELM_ERR( "Bad object type %s", *str);
-        return eo;
-     }
+     ELM_ERR( "Bad object type %s", *str);
 
    return eo;
 }
@@ -6500,4 +6487,50 @@ void RegisterModule(Handle<Object> target)
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
    the_tmpdir = Persistent<String>::New(String::New(PACKAGE_TMP_DIR "/" ));
+
+   /* register widget types */
+   CEvasObject::init_factory();
+
+#define REGISTER(name_,type_) CEvasObject::register_widget(name_, type_::make)
+
+   REGISTER("actionslider", CElmActionSlider);
+   REGISTER("button", CElmButton);
+   REGISTER("layout", CElmLayout);
+   REGISTER("background", CElmBackground);
+   REGISTER("check", CElmCheck);
+   REGISTER("clock", CElmClock);
+   REGISTER("entry", CElmEntry);
+   REGISTER("flip", CElmFlip);
+   REGISTER("list", CElmList);
+   REGISTER("genlist", CElmGenList);
+   REGISTER("icon", CElmIcon);
+   REGISTER("label", CElmLabel);
+   REGISTER("radio", CElmRadio);
+   REGISTER("box", CElmBox);
+   REGISTER("progressbar", CElmProgressBar);
+   REGISTER("scroller", CElmScroller);
+   REGISTER("segment", CElmSegment);
+   REGISTER("image", CEvasImage);
+   REGISTER("slider", CElmSlider);
+   REGISTER("photo", CElmPhoto);
+   REGISTER("spinner", CElmSpinner);
+   REGISTER("pane", CElmPane);
+   REGISTER("bubble", CElmBubble);
+   REGISTER("menu", CElmMenu);
+   REGISTER("colorselector", CElmColorSelector);
+   REGISTER("calendar", CElmCalendar);
+   REGISTER("table", CElmTable);
+   REGISTER("photocam", CElmPhotocam);
+   REGISTER("toggle", CElmToggle);
+   REGISTER("fileselectorbutton", CElmFileSelectorButton);
+   REGISTER("fileselectorentry", CElmFileSelectorEntry);
+   REGISTER("inwin", CElmInwin);
+   REGISTER("notify", CElmNotify);
+#if 0
+   REGISTER("pager", CElmPager);
+#endif
+   REGISTER("naviframe", CElmNaviframe);
+   REGISTER("grid", CElmGrid);
+
+#undef REGISTER
 }
