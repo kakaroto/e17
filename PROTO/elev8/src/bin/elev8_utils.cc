@@ -58,7 +58,34 @@ boom(TryCatch &try_catch)
         String::Utf8Value file(msg->GetScriptResourceName());
         int line = msg->GetLineNumber();
         ERR("%s:%d %s", *file, line, *error);
+
+        Handle<StackTrace> trace = msg->GetStackTrace();
+        if (trace.IsEmpty())
+          {
+             ERR("   No stack trace available.");
+             goto end;
+          }
+
+        unsigned frame_count = trace->GetFrameCount();
+        if (!frame_count)
+          {
+             ERR("   Stack trace is empty.");
+             goto end;
+          }
+
+        ERR("Stack trace:");
+        for (unsigned i = 0; i < frame_count; i++)
+          {
+             Local<StackFrame> frame = trace->GetFrame(i);
+             ERR("   %s:%d,%d: %s",
+                *String::AsciiValue(frame->GetScriptName()),
+                frame->GetLineNumber(),
+                frame->GetColumn(),
+                *String::AsciiValue(frame->GetFunctionName()));
+          }
      }
+
+end:
    exit(1);
 }
 
