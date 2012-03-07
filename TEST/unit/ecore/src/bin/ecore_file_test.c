@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <Ecore_File.h>
+#include <Eina.h>
 
 #include <check.h>
 
@@ -24,24 +25,21 @@ START_TEST (ecore_file_test_mkdir_rmdir)
 }
 END_TEST
 
-
-START_TEST (ecore_file_test_recursive_rm)
+START_TEST (ecore_file_test_mkdirs_recursive_rm)
 {
    int result;
+   const char *dirs[] = {
+        "/tmp/foo",
+        "/tmp/foo/bar1",
+        "/tmp/foo/bar2"
+   };
 
    ecore_file_init();
 
-   result = ecore_file_mkdir("/tmp/foo");
-   fail_unless(result != 0,
-               "Can not create the directory /tmp/foo");
+   result = ecore_file_mkdirs(dirs);
 
-   result = ecore_file_mkdir("/tmp/foo/bar1");
-   fail_unless(result != 0,
-               "Can not create the directory /tmp/foo/bar1");
-
-   result = ecore_file_mkdir("/tmp/foo/bar2");
-   fail_unless(result != 0,
-               "Can not create the directory /tmp/foo/bar2");
+   fail_unless(result != (-1),
+               "Can not create all directories");
 
    result = ecore_file_cp(PACKAGE_DATA_DIR "/ecore_unit_test/ecore_file_test.txt",
                           "/tmp/foo/ecore_file_test1.txt");
@@ -71,6 +69,35 @@ START_TEST (ecore_file_test_recursive_rm)
 }
 END_TEST
 
+START_TEST (ecore_file_test_mksubdirs)
+{
+   int result;
+   const char *base = "/tmp/base";
+   const char *subdirs[] = {
+         "a",
+         "a/b",
+         "a/b/c"
+   };
+
+   ecore_file_init();
+
+   result = ecore_file_mkdir(base);
+   fail_unless(result !=0,
+               "Can not create the base directory /tmp/foo2");
+
+   result = ecore_file_mksubdirs(base, subdirs);
+   fail_unless(result !=(-1),
+               "Can not create the sub-directories in a batch");
+
+   result = ecore_file_recursive_rm("/tmp/base");
+   fail_unless(result !=0,
+               "Can not remove recursively the directories from /tmp/base");
+
+   ecore_file_shutdown();
+
+}
+END_TEST
+
 START_TEST (ecore_file_test_mkpath)
 {
    int result;
@@ -88,6 +115,57 @@ START_TEST (ecore_file_test_mkpath)
    result = ecore_file_rmdir("/tmp/foo");
    fail_unless(result != 0,
                "Can not remove the directory /tmp/foo");
+
+   ecore_file_shutdown();
+}
+END_TEST
+
+START_TEST (ecore_file_test_mkpaths)
+{
+   int result;
+   const char *paths[] = {
+         "/tmp/foo/bar1",
+         "/tmp/foo/bar2",
+         "/tmp/foo/bar3"
+   };
+
+   ecore_file_init();
+
+   result = ecore_file_mkpaths(paths);
+   fail_unless(result != 0,
+               "Can not create the all paths in a batch");
+
+   result = ecore_file_recursive_rm("/tmp/foo");
+   fail_unless(result != 0,
+               "Can not remove recursively the directories from /tmp/foo");
+
+   ecore_file_shutdown();
+}
+END_TEST
+
+START_TEST (ecore_file_test_remove)
+{
+   int result;
+
+   ecore_file_init();
+
+   result = ecore_file_mkdir("/tmp/ecore_file_test");
+   fail_unless(result != 0,
+               "Can not create the directory /tmp/ecore_file_test");
+
+   result = ecore_file_cp(PACKAGE_DATA_DIR "/ecore_unit_test/ecore_file_test.txt", "/tmp/ecore_file_test/ecore_file_test1.txt");
+   fail_unless(result != 0,
+               "Can not copy ecore_unit_test/ecore_file_test.txt to /tmp/ecore_file_test/ecore_file_test1.txt");
+
+   // Remove the given file
+   result = ecore_file_remove("/tmp/ecore_file_test/ecore_file_test1.txt");
+   fail_unless(result != 0,
+               "Can not remove the given file from /tmp/ecore_file_test directory");
+
+   // Remove the given directory
+   result = ecore_file_remove("/tmp/ecore_file_test");
+   fail_unless(result != 0,
+               "Can not remove the given directory from /tmp directory");
 
    ecore_file_shutdown();
 }
@@ -396,6 +474,72 @@ START_TEST (ecore_file_test_dir_get)
 }
 END_TEST
 
+START_TEST (ecore_file_test_ls)
+{
+   int result;
+   const char buf[256];
+   const char *folder, *file;
+   const char *subdirs[] = {
+      "testing1",
+      "testing2",
+      "testing3",
+      NULL
+   };
+
+   Eina_List *folders;
+   Eina_List *files;
+
+   ecore_file_init();
+
+   result = ecore_file_mkdir("/tmp/ecore_file_test_for_ls");
+   fail_unless(result != 0,
+               "Can not create the directory /tmp/ecore_file_test_for_ls");
+
+   result = ecore_file_mksubdirs("/tmp/ecore_file_test_for_ls", subdirs);
+   fail_unless(result != 0,
+               "Can not create the sub-directories to /tmp/ecore_file_test_for_ls");
+
+   result = ecore_file_cp(PACKAGE_DATA_DIR "/ecore_unit_test/ecore_file_test.txt", "/tmp/ecore_file_test_for_ls/ecore_file_test1.txt");
+   fail_unless(result !=0,
+               "Can not copy ecore_unit_test/ecore_file_test.txt to /tmp/ecore_file_test_for_ls/ecore_file_test1.txt");
+
+   result = ecore_file_cp(PACKAGE_DATA_DIR "/ecore_unit_test/ecore_file_test.txt", "/tmp/ecore_file_test_for_ls/testing1/ecore_file_test1.txt");
+   fail_unless(result !=0,
+               "Can not copy ecore_unit_test/ecore_file_test.txt to /tmp/ecore_file_test_for_ls/testing1/ecore_file_test1.txt");
+
+   folders = ecore_file_ls("/tmp/ecore_file_test_for_ls");
+   fail_unless(folders != NULL,
+               "Can not get the list of the files and directories in the given directory");
+
+   EINA_LIST_FREE(folders, folder)
+     {
+        if (folder)
+          {
+             snprintf(buf, 256, "%s/%s", "/tmp/ecore_file_test_for_ls", folder);
+
+             result = ecore_file_is_dir(buf);
+
+             if(!result)
+               {
+                  fail_unless(result == 0,
+                              "[%s] is not folder but file only", folder);
+               }
+             else
+               {
+                  fail_unless(result != 0,
+                              "[%s] is not file but folder", folder);
+               }
+          }
+        free(folder);
+     }
+
+   result = ecore_file_recursive_rm("/tmp/ecore_file_test_for_ls");
+   fail_unless(result != 0,
+               "Can not remove recursively the directories from /tmp/ecore_file_test_for_ls");
+
+   ecore_file_shutdown();
+}
+END_TEST
 
 Suite *
 ecore_file_tests_suite(void)
@@ -407,8 +551,10 @@ ecore_file_tests_suite(void)
    tc = tcase_create("test");
 
    tcase_add_test(tc, ecore_file_test_mkdir_rmdir);
-   tcase_add_test(tc, ecore_file_test_recursive_rm);
+   tcase_add_test(tc, ecore_file_test_mkdirs_recursive_rm);
+   tcase_add_test(tc, ecore_file_test_mksubdirs);
    tcase_add_test(tc, ecore_file_test_mkpath);
+   tcase_add_test(tc, ecore_file_test_mkpaths);
    tcase_add_test(tc, ecore_file_test_is_dir);
    tcase_add_test(tc, ecore_file_test_realpath);
    tcase_add_test(tc, ecore_file_test_cp_mv_unlink);
@@ -423,6 +569,8 @@ ecore_file_tests_suite(void)
    tcase_add_test(tc, ecore_file_test_strip_ext);
    tcase_add_test(tc, ecore_file_test_file_get);
    tcase_add_test(tc, ecore_file_test_dir_get);
+   tcase_add_test(tc, ecore_file_test_remove);
+   tcase_add_test(tc, ecore_file_test_ls);
 
    suite_add_tcase(s, tc);
 
