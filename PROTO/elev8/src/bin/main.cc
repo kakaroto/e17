@@ -120,6 +120,7 @@ module_native_load(Handle<String> module_name, Handle<Object> name_space)
    void *handle = dlopen(file_name, RTLD_LAZY);
    if (!handle)
      {
+        ERR("Could not dlopen(%s): %s", file_name, dlerror());
         free(file_name);
         return false;
      }
@@ -128,11 +129,13 @@ module_native_load(Handle<String> module_name, Handle<Object> name_space)
    init_func = (void (*)(Handle<Object>))dlsym(handle, "RegisterModule");
    if (!init_func)
      {
+        ERR("Could not dlsym(%p, RegisterModule): %s", handle, dlerror());
         free(file_name);
         dlclose(handle);
         return false;
      }
 
+   DBG("Initializing native module: %s\n", file_name);
    init_func(name_space);
 
    name_space->Set(String::NewSymbol("__dl_handle"), External::Wrap(handle));
