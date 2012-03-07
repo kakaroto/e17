@@ -21,7 +21,7 @@ AC_USE_SYSTEM_EXTENSIONS
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-LT_PREREQ([2.4])
+LT_PREREQ([2.2])
 LT_INIT([win32-dll])
 version_info="lt_cur:lt_rev:lt_age"
 AC_SUBST([version_info])
