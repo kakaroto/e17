@@ -54,10 +54,12 @@ grab_headers(){
 			#if already mapped, ignore
 			[[ -f $x ]] && continue
 
-			#try looking only in /usr/include first
-			y=$(find /usr/include -maxdepth 1 -path "*/$x"|head -n1)
-			#if that fails then look in other dirs
-			[[ -n "$y" && -f "$y" ]] || y=$(find /usr/include -mindepth 1 -path "*/$x"|head -n1)
+			if [[ "$(dirname $header)" != "/usr/include" ]] && ! echo $x | grep -q / ; then
+				y=$(find "$(dirname $header)" -name "$x" |head -n1)
+			fi
+
+			#try looking only in /usr/include after
+			[[ -n "$y" && -f "$y" ]] || y=$(find /usr/include -maxdepth 1 -path "*/$x"|head -n1)
 			#replace with absolute path
 			new=(${new[@]/$x/$y})
 		done
