@@ -5970,7 +5970,7 @@ public:
         CEvasObject *prev_btn = NULL, *next_btn = NULL, *content;
         bool has_prev_btn = false, has_next_btn = false;
 
-        if (!args[0]->IsObject() || !args[0]->ToObject()->HasOwnProperty(String::New("_eo")))
+        if (!args[0]->IsObject())
            return ThrowException(Exception::Error(String::New("Parameter 1 should be an object description or an elm.widget")));
 
         if (!args[1]->IsString())
