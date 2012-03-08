@@ -109,9 +109,19 @@ _dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError 
         if (err && (err->name[0] == 'C'))
           return EINA_FALSE;
         if (err)
-           ERR("an error was reported by server: "
-               "name=\"%s\", message=\"%s\"",
-               err->name, err->message);
+          {
+             /* dont keep reporting the same err again and again */
+             static char perr[256] = {0};
+             
+             if (!(!strncmp(perr, err->name, sizeof(perr) - 1)))
+               {
+                  ERR("an error was reported by server: "
+                      "name=\"%s\", message=\"%s\"",
+                      err->name, err->message);
+                  strncpy(perr, err->name, sizeof(perr) - 1);
+                  perr[sizeof(perr) - 1] = 0;
+               }
+          }
         else
            ERR("callback without message arguments!");
 
