@@ -1077,6 +1077,8 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
              Ekbd_Mod mods = 0;
              if (sd->layout.state & CTRL) mods |= EKBD_MOD_CTRL;
              if (sd->layout.state & ALT) mods |= EKBD_MOD_ALT;
+             if (sd->layout.state & ALTGR) mods |= EKBD_MOD_ALTGR;
+             if (sd->layout.state & SHIFT) mods |= EKBD_MOD_SHIFT;
              _ekbd_layout_send(sd->s_obj, out, mods);
           }
         if (sd->layout.state & (SHIFT | CTRL | ALT | ALTGR))
