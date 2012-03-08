@@ -20,8 +20,9 @@ public:
   // EAPI void         elm_need_efreet(void);
   // EAPI void         elm_need_e_dbus(void);
   
-  static double getScale ();
-  static void setScale (double scale);
+  // TODO: moved to elm_config.h => implement config class
+  //static double getScale ();
+  //static void setScale (double scale);
   
    // EAPI Evas_Coord   elm_finger_size_get(void);
    // EAPI void         elm_finger_size_set(Evas_Coord size);
@@ -29,7 +30,8 @@ public:
   /*!
    * Flush all caches & dump all data that can be to lean down to use less memory
    */
-  static void flushAll ();
+  // TODO 'void elm_all_flush()' is deprecated
+  //static void flushAll ();
 };
 
 } // end namespace Elmxx
