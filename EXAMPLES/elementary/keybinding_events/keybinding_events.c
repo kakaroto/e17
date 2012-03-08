@@ -3,16 +3,27 @@
 static Eina_Bool
 _input_event_cb(void *data, int type, void *event)
 {
+   Ecore_Event_Key *ev;
+   ev = event;
    printf("_input_event_cb: ");
    if (type == ECORE_EVENT_KEY_DOWN) {
         printf("EVAS_CALLBACK_KEY_DOWN");
+        if ((ev->modifiers == ECORE_EVENT_MODIFIER_CTRL)
+            && (!strcmp(ev->key, "e")))
+          {
+             printf("\nenlightenment\n");
+             return ECORE_CALLBACK_DONE;
+          }
    } else if (type == ECORE_EVENT_KEY_UP) {
         printf("EVAS_CALLBACK_KEY_UP");
+        if ((ev->modifiers == ECORE_EVENT_MODIFIER_CTRL)
+            && (!strcmp(ev->key, "e")))
+            return ECORE_CALLBACK_DONE;
    } else {
         printf("...");
    }
    printf("\n");
-   return ECORE_CALLBACK_RENEW;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 EAPI int
@@ -20,6 +31,11 @@ elm_main(int argc, char **argv)
 {
    Evas_Object *win, *o, *bg, *box;
    Ecore_Event_Handler *handle_key_up, *handle_key_down;
+
+   handle_key_up = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
+                                           _input_event_cb, NULL);
+   handle_key_down = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
+                                             _input_event_cb, NULL);
 
    win = elm_win_add(NULL, "elm_event", ELM_WIN_BASIC);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -46,11 +62,6 @@ elm_main(int argc, char **argv)
    elm_object_text_set(o, "Test");
    elm_box_pack_end(box, o);
    evas_object_show(o);
-
-   handle_key_up = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
-                                           _input_event_cb, NULL);
-   handle_key_down = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
-                                             _input_event_cb, NULL);
 
    evas_object_resize(win, 300, 300);
    evas_object_show(win);
