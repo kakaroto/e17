@@ -541,6 +541,107 @@ START_TEST (ecore_file_test_ls)
 }
 END_TEST
 
+START_TEST (ecore_file_test_app_exe_get)
+{
+   int result;
+   char *exe;
+   Eina_Bool exec_check = EINA_FALSE;
+
+   ecore_file_init();
+
+   result = ecore_file_mkdir("/tmp/foo-exe");
+   fail_unless(result != 0,
+               "Can not create the directory /tmp/foo-exe");
+
+   result = ecore_file_cp(PACKAGE_DATA_DIR "/ecore_unit_test/screen_clean.sh", "/tmp/foo-exe/screen_clean.sh");
+   fail_unless(result != 0,
+              "Can not copy screen_clean.sh to /tmp/foo-exe directory");
+
+   chmod("/tmp/foo-exe/screen_clean.sh", 0777);
+   
+   exe = ecore_file_app_exe_get("/tmp/foo-exe/screen_clean.sh");
+   fail_unless(exe != NULL,
+               "Application is NULL or on failure");
+
+   exec_check = ecore_file_can_exec("/tmp/foo-exe/screen_clean.sh");
+   fail_unless(exec_check != EINA_FALSE,
+               "This file is not executable file");
+
+   result = ecore_file_recursive_rm("/tmp/foo-exe");
+   fail_unless(result != 0,
+               "Can not remove recursively the directories from /tmp/foo-exe");
+
+   ecore_file_shutdown();
+}
+END_TEST
+
+START_TEST (ecore_file_test_dir_is_empty)
+{
+   int result;
+
+   ecore_file_init();
+
+   result = ecore_file_mkdir("/tmp/foo-empty");
+   fail_unless(result != 0,
+               "Can not create the directory /tmp/foo-empty");
+
+   result = ecore_file_dir_is_empty("/tmp/foo-empty");
+   fail_unless(((result != 0) || (result !=(-1))),
+               "If returned value is 0, it has at least on file. and If -1 is returned, error occurred");
+
+   result = ecore_file_rmdir("/tmp/foo-empty");
+   fail_unless(result != 0,
+               "Can not remove the directory /tmp/foo-empty");
+
+
+   ecore_file_shutdown();
+}
+END_TEST
+
+START_TEST (ecore_file_test_path_dir_exists)
+{
+   Eina_Bool result = EINA_FALSE;
+   const char *path_dirs = "/usr/bin";
+
+   ecore_file_init();
+
+   result = ecore_file_path_dir_exists(path_dirs);
+   fail_unless(result != EINA_FALSE,
+               "This directory [%s] not exist in PATH", path_dirs);
+
+   ecore_file_shutdown();
+}
+END_TEST
+
+START_TEST (ecore_file_test_app_installed)
+{
+   Eina_Bool result = EINA_FALSE;
+   const char *installed_program = "gcc";
+
+   ecore_file_init();
+
+   result = ecore_file_app_installed(installed_program);
+   fail_unless(result != EINA_FALSE,
+               "This program [%s] is not installed on the system", installed_program);
+
+   ecore_file_shutdown();
+}
+END_TEST
+
+START_TEST (ecore_file_test_app_list)
+{
+   Eina_List *installed_app_list;
+
+   ecore_file_init();
+
+   installed_app_list = ecore_file_app_list();
+   fail_unless(installed_app_list != NULL,
+               "There is no application installed on the system");
+
+   ecore_file_shutdown();
+}
+END_TEST
+
 Suite *
 ecore_file_tests_suite(void)
 {
@@ -571,6 +672,11 @@ ecore_file_tests_suite(void)
    tcase_add_test(tc, ecore_file_test_dir_get);
    tcase_add_test(tc, ecore_file_test_remove);
    tcase_add_test(tc, ecore_file_test_ls);
+   tcase_add_test(tc, ecore_file_test_app_exe_get);
+   tcase_add_test(tc, ecore_file_test_dir_is_empty);
+   tcase_add_test(tc, ecore_file_test_path_dir_exists);
+   tcase_add_test(tc, ecore_file_test_app_installed);
+   tcase_add_test(tc, ecore_file_test_app_list);
 
    suite_add_tcase(s, tc);
 
