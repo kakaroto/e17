@@ -224,7 +224,7 @@ static void
 _page_index_changed(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
-   elm_genlist_item_top_bring_in(glit);
+   elm_genlist_item_bring_in(glit, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 }
 
 static void
@@ -328,7 +328,6 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
    page->list = elm_genlist_add(obj_list);
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
    elm_genlist_mode_set(page->list, ELM_LIST_COMPRESS);
-   elm_genlist_compress_mode_set(page->list, EINA_TRUE);
 
    s = edje_object_data_get(page->edje_list, "homogeneous");
    elm_genlist_homogeneous_set(page->list, s ? !!atoi(s) : EINA_FALSE);
@@ -747,7 +746,7 @@ page_songs_next_go(Evas_Object *obj)
    song = elm_object_item_data_get(glit);
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
-   elm_genlist_item_bring_in(glit);
+   elm_genlist_item_bring_in(glit, ELM_GENGRID_ITEM_SCROLLTO_IN);
    return song;
 }
 
@@ -850,7 +849,7 @@ page_songs_shuffle_prev_go(Evas_Object *obj)
 
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
-   elm_genlist_item_bring_in(glit);
+   elm_genlist_item_bring_in(glit, ELM_GENGRID_ITEM_SCROLLTO_IN);
    return song;
 }
 
@@ -877,7 +876,7 @@ page_songs_shuffle_next_go(Evas_Object *obj)
 
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
-   elm_genlist_item_bring_in(glit);
+   elm_genlist_item_bring_in(glit, ELM_GENGRID_ITEM_SCROLLTO_IN);
    return song;
 }
 
@@ -903,7 +902,7 @@ page_songs_prev_go(Evas_Object *obj)
    song = elm_object_item_data_get(glit);
    page->selected = glit;
    elm_genlist_item_selected_set(glit, EINA_TRUE);
-   elm_genlist_item_bring_in(glit);
+   elm_genlist_item_bring_in(glit, ELM_GENGRID_ITEM_SCROLLTO_IN);
    return song;
 }
 
