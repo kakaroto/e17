@@ -57,7 +57,7 @@ cdef class MenuItem:
                                           cb, cbdata)
 
         Py_INCREF(self)
-        elm_menu_item_del_cb_set(self.obj, _menu_item_del_cb)
+        elm_object_item_del_cb_set(self.obj, _menu_item_del_cb)
 
     def delete(self):
         """Delete the menu item"""
@@ -83,7 +83,7 @@ cdef class MenuItem:
             self.label_set(value)
 
     def icon_name_set(self, icon):
-        elm_menu_item_object_icon_name_set(self.obj, icon)
+        elm_menu_item_icon_name_set(self.obj, icon)
 
     property icon_name_set:
         def __set__(self, icon):
@@ -161,7 +161,7 @@ cdef class MenuItemSeparator:
 
         elm_object_item_data_set(self.obj, <void*>self)
         Py_INCREF(self)
-        elm_menu_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
+        elm_object_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
 
     def delete(self):
         """Delete the menu item"""

@@ -973,19 +973,7 @@ Elm_Object_Item *
 elm_menu_item_separator_add(Evas_Object *obj, Elm_Object_Item *parent)
 
 void
-elm_menu_item_label_set(Elm_Object_Item *item, const char *label)
-
-const char *
-elm_menu_item_label_get(Elm_Object_Item *item)
-
-void
 elm_menu_item_icon_set(Elm_Object_Item *item, Evas_Object *icon)
-
-void
-elm_menu_item_disabled_set(Elm_Object_Item *item, Eina_Bool disabled)
-
-void
-elm_menu_item_del(Elm_Object_Item *item)
 
 Evas_Object *
 elm_menu_object_get(const Elm_Object_Item *it)

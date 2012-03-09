@@ -1195,13 +1195,13 @@ _update_undo_redo(Panel_Image *panel_image)
    const Eina_List *h, *l;
 
    EINA_LIST_FREE(panel_image->undo.items_undo, mi_item)
-   elm_menu_item_del(mi_item);
+   elm_object_item_del(mi_item);
 
    EINA_LIST_FREE(panel_image->undo.items_redo, mi_item)
-   elm_menu_item_del(mi_item);
+   elm_object_item_del(mi_item);
 
-   elm_menu_item_disabled_set(panel_image->undo.item_undo, 1);
-   elm_menu_item_disabled_set(panel_image->undo.item_redo, 1);
+   elm_object_item_disabled_set(panel_image->undo.item_undo, 1);
+   elm_object_item_disabled_set(panel_image->undo.item_redo, 1);
 
    h = enlil_trans_history_get(panel_image->history);
    current = enlil_trans_history_current_get(panel_image->history);
@@ -1256,7 +1256,7 @@ _update_undo_redo(Panel_Image *panel_image)
       mi_item = elm_menu_item_add(panel_image->undo.undo, NULL, "icons/undo", type, _menu_history_cb, panel_image);
       panel_image->undo.items_undo = eina_list_append(panel_image->undo.items_undo, mi_item);
 
-      elm_menu_item_disabled_set(panel_image->undo.item_undo, 0);
+      elm_object_item_disabled_set(panel_image->undo.item_undo, 0);
       if(item == current)
       break;
    }
@@ -1306,7 +1306,7 @@ EINA_LIST_FOREACH(l, l, item)
    mi_item = elm_menu_item_add(panel_image->undo.redo, NULL, "icons/redo", type, _menu_history_cb, panel_image);
    panel_image->undo.items_redo = eina_list_append(panel_image->undo.items_redo, mi_item);
 
-   elm_menu_item_disabled_set(panel_image->undo.item_redo, 0);
+   elm_object_item_disabled_set(panel_image->undo.item_redo, 0);
 }
 }
 

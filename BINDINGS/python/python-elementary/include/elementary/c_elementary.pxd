@@ -904,9 +904,6 @@ cdef extern from "Elementary.h":
     void  elm_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     Elm_Object_Item *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent, char *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
     Elm_Object_Item *elm_menu_item_separator_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent)
-    void  elm_menu_item_object_icon_name_set(Elm_Object_Item *item, char *icon)
-    void  elm_menu_item_del(Elm_Object_Item *item)
-    void  elm_menu_item_del_cb_set(Elm_Object_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
     evas.c_evas.Evas_Object *elm_menu_object_get(Elm_Object_Item *it)
     evas.c_evas.Eina_List *elm_menu_item_subitems_get(Elm_Object_Item *item)
 

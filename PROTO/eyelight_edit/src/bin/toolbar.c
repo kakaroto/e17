@@ -55,8 +55,8 @@ Evas_Object *toolbar_create()
 
 void toolbar_nopres_disabled_set(Eina_Bool disabled)
 {
-    elm_menu_item_disabled_set(mi_save, disabled);
-    elm_menu_item_disabled_set(mi_slideshow, disabled);
+    elm_object_item_disabled_set(mi_save, disabled);
+    elm_object_item_disabled_set(mi_slideshow, disabled);
 }
 
 static void _pres_new_cb(void *data, Evas_Object *obj, void *event_info)
@@ -200,7 +200,7 @@ static void _recent_open_cb(void *data, Evas_Object *obj, void *event_info)
    Recent_File *r_file;
 
    utils_obj_unselect();
-   eyelight_object_presentation_file_set(pres,elm_menu_item_label_get(mi));
+   eyelight_object_presentation_file_set(pres,elm_object_item_text_get(mi));
    toolbar_nopres_disabled_set(EINA_FALSE);
    slides_list_nopres_disabled_set(EINA_FALSE);
    eyelight_object_thumbnails_size_set(pres, 1024/2, 768/2);
@@ -209,7 +209,7 @@ static void _recent_open_cb(void *data, Evas_Object *obj, void *event_info)
 
    l_file = recents_file_load();
    r_file = calloc(1, sizeof(Recent_File));
-   r_file->file = eina_stringshare_add(elm_menu_item_label_get(mi));
+   r_file->file = eina_stringshare_add(elm_object_item_text_get(mi));
    l_file->l = eina_list_append(l_file->l, r_file);
    recents_file_save(l_file);
    recents_file_free(l_file);

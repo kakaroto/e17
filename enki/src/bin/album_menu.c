@@ -251,7 +251,7 @@ _collection_album_add_cb(void *data, Evas_Object *obj, void *event_info)
    Album_Menu *am = data;
    Elm_Object_Item *mi = event_info;
 
-   enlil_album_collection_add(am->album, elm_menu_item_label_get(mi));
+   enlil_album_collection_add(am->album, elm_object_item_text_get(mi));
 
    album_menu_free(am);
 }
@@ -266,7 +266,7 @@ _collection_album_remove_cb(void *data, Evas_Object *obj, void *event_info)
 
    EINA_LIST_FOREACH(enlil_album_collections_get(am->album), l, album_col)
    {
-      if(album_col->name == elm_menu_item_label_get(mi))
+      if(album_col->name == elm_object_item_text_get(mi))
       break;
    }
 
@@ -296,12 +296,12 @@ _tag_album_add_cb(void *data, Evas_Object *obj, void *event_info)
    {
       EINA_LIST_FOREACH(enlil_photo_tags_get(photo), _l, photo_tag)
       {
-         if(photo_tag->name == elm_menu_item_label_get(mi))
+         if(photo_tag->name == elm_object_item_text_get(mi))
          break;
       }
 
       if(!photo_tag)
-      enlil_photo_tag_add(photo, elm_menu_item_label_get(mi));
+      enlil_photo_tag_add(photo, elm_object_item_text_get(mi));
    }
 
    album_menu_free(am);
@@ -321,7 +321,7 @@ _tag_album_remove_cb(void *data, Evas_Object *obj, void *event_info)
    {
       EINA_LIST_FOREACH(enlil_photo_tags_get(photo), _l, photo_tag)
       {
-         if(photo_tag->name == elm_menu_item_label_get(mi))
+         if(photo_tag->name == elm_object_item_text_get(mi))
          break;
       }
 

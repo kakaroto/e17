@@ -420,11 +420,7 @@ my @elm_menu = qw(
   elm_menu_parent_set
   elm_menu_item_add
   elm_menu_item_separator_add
-  elm_menu_item_label_set
-  elm_menu_item_label_get
   elm_menu_item_icon_set
-  elm_menu_item_disabled_set
-  elm_menu_item_del
   elm_menu_object_get
 );
 
@@ -1121,11 +1117,7 @@ may change in future releases.
     elm_map_zoom_set
     elm_menu_add
     elm_menu_item_add
-    elm_menu_item_del
-    elm_menu_item_disabled_set
     elm_menu_item_icon_set
-    elm_menu_item_label_get
-    elm_menu_item_label_set
     elm_menu_item_separator_add
     elm_menu_move
     elm_menu_object_get
