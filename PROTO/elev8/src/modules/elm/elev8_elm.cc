@@ -18,44 +18,11 @@
 #include "CElmBackground.h"
 #include "CElmRadio.h"
 #include "CElmBox.h"
+#include "CElmLabel.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmLabel : public CEvasObject {
-   FACTORY(CElmLabel)
-protected:
-   CPropHandler<CElmLabel> prop_handler;
-
-public:
-   CElmLabel(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_label_add(parent->get());
-        construct(eo, obj);
-     }
-
-   virtual void wrap_set(Handle<Value> wrap)
-     {
-        if (wrap->IsNumber())
-          elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
-     }
-
-   virtual Handle<Value> wrap_get() const
-     {
-        return Integer::New(elm_label_line_wrap_get(eo));
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmLabel>::property_list
-CEvasObject::CPropHandler<CElmLabel>::list[] = {
-     PROP_HANDLER(CElmLabel, wrap),
-     /* PROP_HANDLER(CElmLabel, label), - not necessary, called from CEvasObject */
-     /* FIXME: add fontsize, wrap_height, wrap_width, ellipsis, slide, slide_duration */
-     { NULL, NULL, NULL },
-};
 
 class CElmFlip : public CEvasObject {
    FACTORY(CElmFlip)
