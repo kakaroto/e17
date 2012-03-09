@@ -417,9 +417,6 @@ Evas_Object *
 elm_scroller_add(Evas_Object *parent)
 
 void
-elm_scroller_content_set(Evas_Object *obj, Evas_Object *child)
-
-void
 elm_scroller_content_min_limit(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 
 void

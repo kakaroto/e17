@@ -1551,7 +1551,7 @@ _smart_add(Evas_Object *obj)
                                             pan_smart);
       sd->pan = evas_object_smart_data_get(sd->pan_smart);
       sd->pan->sd = sd;
-      elm_scroller_content_set(sd->scroll, sd->pan_smart);
+      elm_object_content_set(sd->scroll, sd->pan_smart);
    }
 
    sd->header_h = 90;

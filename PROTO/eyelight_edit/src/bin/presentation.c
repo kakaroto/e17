@@ -96,7 +96,7 @@ Evas_Object *presentation_create()
     evas_object_size_hint_weight_set(box, 1.0, 1.0);
     evas_object_size_hint_align_set(box, -1.0, -1.0);
     evas_object_show(box);
-    elm_scroller_content_set(sc, box);
+    elm_object_content_set(sc, box);
 
     pres = eyelight_object_add(evas_object_evas_get(win));
     eyelight_viewer_thumbnails_done_cb_set(eyelight_object_pres_get(pres), _thumb_done_cb, NULL);
@@ -110,7 +110,7 @@ Evas_Object *presentation_create()
     evas_object_event_callback_add(pres, EVAS_CALLBACK_MOVE, _pres_move_resize_cb, pres);
     evas_object_show(pres);
     elm_box_pack_end(box, pres);
-    //elm_scroller_content_set(sc, pres);
+    //elm_object_content_set(sc, pres);
     //
 
     //shadow

@@ -57,7 +57,7 @@ Evas_Object *slides_grid_create()
     grid_object_move_cb_set(grid, _item_move_cb, NULL);
     evas_object_size_hint_weight_set(grid, 1.0, 1.0);
     evas_object_size_hint_align_set(grid, -1.0, -1.0);
-    elm_scroller_content_set(sc, grid);
+    elm_object_content_set(sc, grid);
     evas_object_show(grid);
     //
 

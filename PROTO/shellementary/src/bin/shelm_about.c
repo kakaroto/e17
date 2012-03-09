@@ -47,7 +47,7 @@ shelm_about_dialog()
 			"for Enlightenment DR17, great Elementary toolkit and help with developenment<br>"
 			"<b>Christopher Michael (devilhorns)</> "
 			"for help with developenment<br>"));
-  elm_scroller_content_set(scroller, textinfo);
+  elm_object_content_set(scroller, textinfo);
   evas_object_show(textinfo);
 
   buttonbar = create_box(window, EINA_TRUE);

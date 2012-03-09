@@ -1021,7 +1021,7 @@ sub test_entry_scrolled {
     evas_object_size_hint_weight_set($en, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set($en, EVAS_HINT_FILL, 0.5);
     elm_object_disabled_set($en, 1);
-    elm_scroller_content_set($sc, $en);
+    elm_object_content_set($sc, $en);
     evas_object_show($en);
 
     evas_object_show($sc);
@@ -1040,7 +1040,7 @@ sub test_entry_scrolled {
     evas_object_size_hint_weight_set($en, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set($en, EVAS_HINT_FILL, 0.5);
     elm_object_disabled_set($en, 1);
-    elm_scroller_content_set($sc, $en);
+    elm_object_content_set($sc, $en);
     evas_object_show($en);
 
     evas_object_show($sc);
@@ -1063,7 +1063,7 @@ sub test_entry_scrolled {
     evas_object_size_hint_weight_set($en, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($en, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_object_disabled_set($en, 1);
-    elm_scroller_content_set($sc, $en);
+    elm_object_content_set($sc, $en);
     evas_object_show($en);
 
     evas_object_show($sc);
@@ -1087,7 +1087,7 @@ sub test_entry_scrolled {
     evas_object_size_hint_weight_set($en, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set($en, EVAS_HINT_FILL, 0.5);
     elm_entry_select_all($en);
-    elm_scroller_content_set($sc, $en);
+    elm_object_content_set($sc, $en);
     evas_object_show($en);
 
     evas_object_show($sc);
@@ -1105,7 +1105,7 @@ sub test_entry_scrolled {
     elm_entry_entry_set($en_p, "Password here");
     evas_object_size_hint_weight_set($en_p, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set($en_p, EVAS_HINT_FILL, 0.0);
-    elm_scroller_content_set($sc, $en_p);
+    elm_object_content_set($sc, $en_p);
     evas_object_show($en_p);
 
     evas_object_show($sc);
@@ -1131,7 +1131,7 @@ sub test_entry_scrolled {
     evas_object_smart_callback_add($en, "anchor,clicked", \&anchor_test, \$en);
     evas_object_size_hint_weight_set($en, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set($en, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    elm_scroller_content_set($sc, $en);
+    elm_object_content_set($sc, $en);
     evas_object_show($en);
 
     evas_object_show($sc);
@@ -1575,7 +1575,7 @@ sub test_anchorblock {
     elm_box_pack_end($bx, $bb);
     evas_object_show($bb);
 
-    elm_scroller_content_set($sc, $bx);
+    elm_object_content_set($sc, $bx);
     evas_object_show($bx);
 
     evas_object_show($sc);
@@ -4496,7 +4496,7 @@ test_scroller(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_weight_set(sc, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, sc);
 
-   elm_scroller_content_set(sc, tb);
+   elm_object_content_set(sc, tb);
    evas_object_show(tb);
 
    elm_scroller_page_relative_set(sc, 1.0, 1.0);

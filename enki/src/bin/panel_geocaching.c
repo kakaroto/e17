@@ -172,7 +172,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
    bx = elm_box_add(obj);
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_scroller_content_set(sc, bx);
+   elm_object_content_set(sc, bx);
 
    EINA_LIST_FOREACH(enlil_geocaching_logs_get(geocaching), l, log)
    {

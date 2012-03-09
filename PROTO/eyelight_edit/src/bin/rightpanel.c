@@ -178,7 +178,7 @@ Evas_Object *rightpanel_create()
     evas_object_size_hint_align_set(sc, -1.0, 0.5);
     elm_scroller_content_min_limit(sc, 0, 1);
     elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-    elm_scroller_content_set(sc, entry);
+    elm_object_content_set(sc, entry);
     evas_object_show(sc);
 
     lbl = elm_label_add(win);

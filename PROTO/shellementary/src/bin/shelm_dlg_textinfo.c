@@ -69,7 +69,7 @@ shelm_textinfo_dialog(const char *window_title, const char *window_text, int win
             }
         }
     }
-  elm_scroller_content_set(scroller, textinfo);
+  elm_object_content_set(scroller, textinfo);
   evas_object_show(textinfo);
 
   buttonbar = create_box(window, EINA_TRUE);

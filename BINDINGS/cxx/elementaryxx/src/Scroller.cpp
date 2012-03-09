@@ -25,7 +25,7 @@ Scroller *Scroller::factory (Evasxx::Object &parent)
 
 void Scroller::setContent (Evasxx::Object &child)
 {
-  elm_scroller_content_set (o, child.obj ());
+  elm_object_content_set (o, child.obj ());
 }
 
 void Scroller::limitMinContent (bool width, bool height)

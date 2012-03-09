@@ -78,7 +78,7 @@ void setup_window()
     evas_object_size_hint_align_set(execscroller, -1.0, 1.0);
     elm_scroller_content_min_limit(execscroller, 0, 1);
     evas_object_size_hint_padding_set(execscroller, 5, 5, 5, 5);
-    elm_scroller_content_set(execscroller, scrollerframe2);
+    elm_object_content_set(execscroller, scrollerframe2);
     
     scrollerframe = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe, 1.0, 0.0);
@@ -128,7 +128,7 @@ void setup_window()
     evas_object_size_hint_weight_set(passscroller, 1.0, 1.0);
     evas_object_size_hint_align_set(passscroller, -1.0, 1.0);
     elm_scroller_content_min_limit(passscroller, 0, 1);
-    elm_scroller_content_set(passscroller, scrollerframe2);
+    elm_object_content_set(passscroller, scrollerframe2);
 
     scrollerframe = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe, 1.0, 0.0);

@@ -36,7 +36,7 @@ shelm_entry_dialog(const char *window_title, const char *window_text, int window
   evas_object_show(scroller);
 
   entry = create_entry(window, EINA_TRUE, entry_text, entry_hide_text, EINA_FALSE, EINA_TRUE);
-  elm_scroller_content_set(scroller, entry);
+  elm_object_content_set(scroller, entry);
   evas_object_show(entry);
 
   buttonbar = create_box(window, EINA_TRUE);

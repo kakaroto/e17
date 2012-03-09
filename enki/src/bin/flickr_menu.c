@@ -170,7 +170,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
    elm_entry_single_line_set(text, 1);
    evas_object_size_hint_weight_set(text, EVAS_HINT_EXPAND, 1.0);
    evas_object_size_hint_align_set(text, 1.0, 0.5);
-   elm_scroller_content_set(sc, text);
+   elm_object_content_set(sc, text);
    evas_object_show(text);
 
    hbox = elm_box_add(enlil_data->win->win);

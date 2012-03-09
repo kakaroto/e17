@@ -242,7 +242,6 @@ my @elm_button = qw(
 
 my @elm_scroller = qw(
   elm_scroller_add
-  elm_scroller_content_set
   elm_scroller_content_min_limit
   elm_scroller_region_show
   elm_scroller_policy_set
@@ -1223,7 +1222,6 @@ may change in future releases.
     elm_scroller_bounce_set
     elm_scroller_child_size_get
     elm_scroller_content_min_limit
-    elm_scroller_content_set
     elm_scroller_page_relative_set
     elm_scroller_page_size_set
     elm_scroller_policy_set

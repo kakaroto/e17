@@ -234,7 +234,7 @@ create_text_entry(Viewer *v)
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    evas_object_smart_callback_add(o, "changed", on_entry_changed, v);
-   elm_scroller_content_set(sc, o);
+   elm_object_content_set(sc, o);
    elm_object_part_content_set(v->gui.ly, "v.swallow.text_entry", sc);
 
    evas_object_show(o);

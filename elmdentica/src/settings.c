@@ -514,7 +514,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				elm_table_pack(table, send_entry, 1, 3, 1, 1);
 			evas_object_show(send_entry);
 
-			elm_scroller_content_set(scroller, table);
+			elm_object_content_set(scroller, table);
 		evas_object_show(table);
 
 		elm_box_pack_end(box, scroller);
