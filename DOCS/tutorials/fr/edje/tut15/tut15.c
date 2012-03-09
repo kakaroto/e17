@@ -31,7 +31,7 @@ int main(int argc, char **argv)
    evas_object_move(icon, 64, 64);
    evas_object_show(icon);
 
-   elm_object_text_part_set(icon, "text", "Jouer des Vidéos");
+   elm_object_part_text_set(icon, "text", "Jouer des Vidéos");
 
 
    evas_object_resize(win, 800, 480);
