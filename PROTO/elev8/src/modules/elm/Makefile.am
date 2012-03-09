@@ -14,7 +14,7 @@ AM_CPPFLAGS = \
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
 mod_LTLIBRARIES = libelm.la
 
-libelm_la_SOURCES = elev8_elm.cc CEvasObject.cc
+libelm_la_SOURCES = elev8_elm.cc CEvasObject.cc CEvasImage.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
