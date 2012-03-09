@@ -1288,18 +1288,6 @@ Evas_Object *
 elm_radio_add(Evas_Object *parent)
 
 void
-elm_radio_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_radio_label_get(Evas_Object *obj)
-
-void
-elm_radio_icon_set(Evas_Object *obj, Evas_Object *icon)
-
-Evas_Object *
-elm_radio_icon_get(Evas_Object *obj)
-
-void
 elm_radio_group_add(Evas_Object *obj, Evas_Object *group)
 
 void

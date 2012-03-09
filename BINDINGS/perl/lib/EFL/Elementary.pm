@@ -478,10 +478,6 @@ my @elm_check = qw(
 
 my @elm_radio = qw(
   elm_radio_add
-  elm_radio_label_set
-  elm_radio_label_get
-  elm_radio_icon_set
-  elm_radio_icon_get
   elm_radio_group_add
   elm_radio_state_value_set
   elm_radio_value_set
@@ -1185,10 +1181,6 @@ may change in future releases.
     elm_quicklaunch_sub_shutdown
     elm_radio_add
     elm_radio_group_add
-    elm_radio_icon_get
-    elm_radio_icon_set
-    elm_radio_label_get
-    elm_radio_label_set
     elm_radio_state_value_set
     elm_radio_value_get
     elm_radio_value_set

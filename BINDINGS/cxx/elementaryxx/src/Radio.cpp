@@ -30,7 +30,7 @@ void Radio::setLabel (const std::string &label)
 
 void Radio::setIcon (const Evasxx::Object &icon)
 {
-  elm_radio_icon_set (o, icon.obj ());
+  elm_object_part_content_set (o, icon.obj ());
 }
 
 void Radio::addGroup (const Evasxx::Object &group)
