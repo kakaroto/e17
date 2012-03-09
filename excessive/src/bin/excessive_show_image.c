@@ -89,8 +89,8 @@ static const Elm_Slideshow_Item_Class _excessive_image_display_call = {
 static int
 _excessive_file_cmp(const void *a, const void *b)
 {
-   const Excessive_File_Info *fa = elm_slideshow_item_data_get(a);
-   const Excessive_File_Info *fb = elm_slideshow_item_data_get(b);
+   const Excessive_File_Info *fa = elm_object_item_data_get(a);
+   const Excessive_File_Info *fb = elm_object_item_data_get(b);
 
    return strcoll(fa->info.path + fa->info.name_start, fb->info.path + fb->info.name_start);
 }
@@ -106,7 +106,7 @@ _excessive_image_file_insert(Evas_Object *display, const Excessive_File_Info *in
    object = malloc(sizeof (Excessive_File_Object));
    if (!object)
      {
-        elm_slideshow_item_del(slideshow_item);
+        elm_object_item_del(slideshow_item);
         return NULL;
      }
    object->slideshow_item = slideshow_item;
@@ -117,7 +117,7 @@ _excessive_image_file_insert(Evas_Object *display, const Excessive_File_Info *in
 static void
 _excessive_image_file_del(Evas_Object *display __UNUSED__, Excessive_File_Object *object)
 {
-   elm_slideshow_item_del(object->slideshow_item);
+   elm_object_item_del(object->slideshow_item);
    free(object);
 }
 
@@ -237,7 +237,7 @@ _excessive_image_action(Evas_Object *display, Excessive_File_Object *object)
    char *layout_name;
 
    layout = evas_object_data_get(display, "excessive/parent");
-   elm_slideshow_show(object->slideshow_item);
+   elm_slideshow_item_show(object->slideshow_item);
 
    if (evas_object_data_get(layout, "excessive/notify")) return ;
 

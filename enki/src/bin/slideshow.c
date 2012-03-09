@@ -27,12 +27,12 @@ _key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    else if (!strcmp(ev->key, "Home"))
    {
       const Eina_List *l = elm_slideshow_items_get(slideshow);
-      elm_slideshow_show(eina_list_data_get(l));
+      elm_slideshow_item_show(eina_list_data_get(l));
    }
    else if (!strcmp(ev->key, "End"))
    {
       const Eina_List *l = elm_slideshow_items_get(slideshow);
-      elm_slideshow_show(eina_list_data_get(eina_list_last(l)));
+      elm_slideshow_item_show(eina_list_data_get(eina_list_last(l)));
    }
 }
 
@@ -239,7 +239,7 @@ slideshow_album_add(Enlil_Album *album, Enlil_Photo *_photo)
          slideshow_item = photo_data->slideshow_item;
       }
    }
-   if (slideshow_item) elm_slideshow_show(slideshow_item);
+   if (slideshow_item) elm_slideshow_item_show(slideshow_item);
 }
 
 void
@@ -267,7 +267,7 @@ slideshow_library_add(Enlil_Library *library, Enlil_Photo *_photo)
       }
    }
 
-   if (slideshow_item) elm_slideshow_show(slideshow_item);
+   if (slideshow_item) elm_slideshow_item_show(slideshow_item);
 }
 
 void

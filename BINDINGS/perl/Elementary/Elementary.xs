@@ -1320,9 +1320,6 @@ Elm_Object_Item *
 elm_slideshow_item_add(Evas_Object *obj, const Elm_Slideshow_Item_Class *itc, const void *data)
 
 void
-elm_slideshow_show(Elm_Object_Item *item)
-
-void
 elm_slideshow_next(Evas_Object *obj)
 
 void
@@ -1348,9 +1345,6 @@ elm_slideshow_clear(Evas_Object *obj)
 
 const Eina_List *
 elm_slideshow_items_get(const Evas_Object *obj)
-
-void
-elm_slideshow_item_del(Elm_Object_Item *item)
 
 Elm_Object_Item *
 elm_slideshow_item_current_get(Evas_Object *obj)

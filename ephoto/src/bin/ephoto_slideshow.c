@@ -204,6 +204,6 @@ ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
         Elm_Object_Item *slideshow_item;
         if (itr->is_dir) continue;
         slideshow_item = elm_slideshow_item_add(ss->slideshow, &_item_cls, itr);
-        if (itr == entry) elm_slideshow_show(slideshow_item);
+        if (itr == entry) elm_slideshow_item_show(slideshow_item);
      }
 }

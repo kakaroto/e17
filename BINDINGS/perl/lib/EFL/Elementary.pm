@@ -492,7 +492,6 @@ my @elm_pager = qw(
 my @elm_slideshow = qw(
   elm_slideshow_add
   elm_slideshow_item_add
-  elm_slideshow_show
   elm_slideshow_next
   elm_slideshow_previous
   elm_slideshow_transitions_get
@@ -502,7 +501,6 @@ my @elm_slideshow = qw(
   elm_slideshow_loop_set
   elm_slideshow_clear
   elm_slideshow_items_get
-  elm_slideshow_item_del
   elm_slideshow_item_current_get
   elm_slideshow_item_object_get
 );
@@ -1241,13 +1239,11 @@ may change in future releases.
     elm_slideshow_clear
     elm_slideshow_item_add
     elm_slideshow_item_current_get
-    elm_slideshow_item_del
     elm_slideshow_item_object_get
     elm_slideshow_items_get
     elm_slideshow_loop_set
     elm_slideshow_next
     elm_slideshow_previous
-    elm_slideshow_show
     elm_slideshow_timeout_get
     elm_slideshow_timeout_set
     elm_slideshow_transitions_get
