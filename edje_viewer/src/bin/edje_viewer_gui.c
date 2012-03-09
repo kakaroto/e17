@@ -498,7 +498,7 @@ typebuf_match(Viewer *v, int next)
         if (grp_match->item)
           {
              elm_genlist_item_selected_set(grp_match->item, EINA_TRUE);
-             elm_genlist_item_show(grp_match->item);
+             elm_genlist_item_show(grp_match->item, ELM_GENLIST_ITEM_SCROLLTO_IN);
           }
      }
 
