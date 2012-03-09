@@ -268,14 +268,14 @@ static int
 constant_22 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
-     ELM_IMAGE_ROTATE_90_CW ELM_NOTIFY_ORIENT_LEFT ELM_PANEL_ORIENT_RIGHT
+     ELM_IMAGE_ROTATE_90 ELM_NOTIFY_ORIENT_LEFT ELM_PANEL_ORIENT_RIGHT
      ELM_SCROLLER_POLICY_ON ELM_WIN_KEYBOARD_ALPHA */
   /* Offset 4 gives the best switch position.  */
   switch (name[4]) {
   case 'I':
-    if (memEQ(name, "ELM_IMAGE_ROTATE_90_CW", 22)) {
+    if (memEQ(name, "ELM_IMAGE_ROTATE_90", 22)) {
     /*                   ^                        */
-      *iv_return = ELM_IMAGE_ROTATE_90_CW;
+      *iv_return = ELM_IMAGE_ROTATE_90;
       return PERL_constant_ISIV;
     }
     break;
@@ -315,8 +315,8 @@ static int
 constant_23 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
-     ELM_HOVER_AXIS_VERTICAL ELM_IMAGE_FLIP_VERTICAL ELM_IMAGE_ROTATE_180_CW
-     ELM_IMAGE_ROTATE_90_CCW ELM_NOTIFY_ORIENT_RIGHT ELM_PANEL_ORIENT_BOTTOM
+     ELM_HOVER_AXIS_VERTICAL ELM_IMAGE_FLIP_VERTICAL ELM_IMAGE_ROTATE_180
+     ELM_IMAGE_ROTATE_270 ELM_NOTIFY_ORIENT_RIGHT ELM_PANEL_ORIENT_BOTTOM
      ELM_SCROLLER_POLICY_OFF */
   /* Offset 10 gives the best switch position.  */
   switch (name[10]) {
@@ -349,14 +349,14 @@ constant_23 (pTHX_ const char *name, IV *iv_return) {
     }
     break;
   case 'R':
-    if (memEQ(name, "ELM_IMAGE_ROTATE_180_CW", 23)) {
+    if (memEQ(name, "ELM_IMAGE_ROTATE_180", 23)) {
     /*                         ^                   */
-      *iv_return = ELM_IMAGE_ROTATE_180_CW;
+      *iv_return = ELM_IMAGE_ROTATE_180;
       return PERL_constant_ISIV;
     }
-    if (memEQ(name, "ELM_IMAGE_ROTATE_90_CCW", 23)) {
+    if (memEQ(name, "ELM_IMAGE_ROTATE_270", 23)) {
     /*                         ^                   */
-      *iv_return = ELM_IMAGE_ROTATE_90_CCW;
+      *iv_return = ELM_IMAGE_ROTATE_270;
       return PERL_constant_ISIV;
     }
     break;
@@ -669,9 +669,9 @@ my @names = (qw(),
             {name=>"ELM_IMAGE_FLIP_TRANSVERSE", type=>"IV", macro=>"1"},
             {name=>"ELM_IMAGE_FLIP_VERTICAL", type=>"IV", macro=>"1"},
             {name=>"ELM_IMAGE_ORIENT_NONE", type=>"IV", macro=>"1"},
-            {name=>"ELM_IMAGE_ROTATE_180_CW", type=>"IV", macro=>"1"},
-            {name=>"ELM_IMAGE_ROTATE_90_CCW", type=>"IV", macro=>"1"},
-            {name=>"ELM_IMAGE_ROTATE_90_CW", type=>"IV", macro=>"1"},
+            {name=>"ELM_IMAGE_ROTATE_180", type=>"IV", macro=>"1"},
+            {name=>"ELM_IMAGE_ROTATE_270", type=>"IV", macro=>"1"},
+            {name=>"ELM_IMAGE_ROTATE_90", type=>"IV", macro=>"1"},
             {name=>"ELM_LIST_COMPRESS", type=>"IV", macro=>"1"},
             {name=>"ELM_LIST_LIMIT", type=>"IV", macro=>"1"},
             {name=>"ELM_LIST_SCROLL", type=>"IV", macro=>"1"},
