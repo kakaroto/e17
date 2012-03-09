@@ -37,7 +37,8 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmFileSelectorEntry.cc \
 	CElmFileSelectorButton.cc \
 	CElmHover.cc \
-	CElmToggle.cc
+	CElmToggle.cc \
+	CElmPhotocam.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
