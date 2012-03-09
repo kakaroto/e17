@@ -20,7 +20,8 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmBasicWindow.cc \
 	CElmButton.cc \
 	CElmLayout.cc \
-	CElmBackground.cc
+	CElmBackground.cc \
+	CElmRadio.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
