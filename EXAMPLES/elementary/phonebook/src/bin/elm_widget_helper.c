@@ -62,7 +62,7 @@ list_selected_set(Evas_Object *obj, const char *value)
 
    EINA_LIST_FOREACH(elm_list_items_get(obj), iter, list_it)
      {
-        if (strstr(elm_list_item_label_get(list_it), value))
+        if (strstr(elm_object_item_text_get(list_it), value))
           {
              elm_list_item_selected_set(list_it, EINA_TRUE);
              return;

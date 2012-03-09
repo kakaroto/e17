@@ -312,7 +312,7 @@ media_server_free(Media_Server *ms)
 {
    if (!ms) return;
 
-   elm_list_item_del(ms->item);
+   elm_object_item_del(ms->item);
    eupnp_device_info_unref(ms->server);
 
    if (ms->cds)

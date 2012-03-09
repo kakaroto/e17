@@ -84,7 +84,7 @@ device_list_device_del(IGD_Device *device)
 {
    device_list = eina_list_remove(device_list, device);
    eupnp_device_info_unref(device->device);
-   elm_list_item_del(device->item);
+   elm_object_item_del(device->item);
    free(device);
 }
 

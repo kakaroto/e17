@@ -169,7 +169,7 @@ _tag_photo_add_cb(void *data, Evas_Object *obj, void *event_info)
    EINA_LIST_FOREACH(photos_list_object_selected_get(enlil_photo->o_list), l, child)
    {
       photo = photos_list_object_item_data_get(child);
-      enlil_photo_tag_add(photo, elm_list_item_label_get(elm_list_selected_item_get(obj)));
+      enlil_photo_tag_add(photo, elm_object_item_text_get(elm_list_selected_item_get(obj)));
    }
 
    photo_menu_init(enlil_photo, _edje);
@@ -189,7 +189,7 @@ _tag_photo_remove_cb(void *data, Evas_Object *obj, void *event_info)
       photo = photos_list_object_item_data_get(child);
       EINA_LIST_FOREACH(enlil_photo_tags_get(photo), l2, tag_col)
       {
-         if(tag_col->name == elm_list_item_label_get(elm_list_selected_item_get(obj)))
+         if(tag_col->name == elm_object_item_text_get(elm_list_selected_item_get(obj)))
          break;
       }
       if(tag_col)

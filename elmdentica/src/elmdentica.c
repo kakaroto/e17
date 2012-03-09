@@ -654,7 +654,7 @@ static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
 	if(network_busy || !settings->online) return;
 
 	ud = calloc(1,sizeof(userData*));
-	ud->screen_name=elm_list_item_label_get(li);
+	ud->screen_name=elm_object_item_text_get(li);
 	ud->as = (aStatus*)data;
 
 	network_busy_set(EINA_TRUE);
@@ -812,7 +812,7 @@ static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	if(network_busy || !settings->online) return;
 
 	network_busy_set(EINA_TRUE);
-	ed_statusnet_group_get(as, elm_list_item_label_get(li), group_show, NULL);
+	ed_statusnet_group_get(as, elm_object_item_text_get(li), group_show, NULL);
 }
 
 static void on_url_dismissed(void *data, Evas_Object *obj, void *event_info) {
@@ -827,7 +827,7 @@ static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 
 	if(!settings->online) return;
 
-	url = elm_list_item_label_get(li);
+	url = elm_object_item_text_get(li);
 
 	url_win = elm_hover_add(gui.win);
 		elm_hover_target_set(url_win, gui.status_detail_links);

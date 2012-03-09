@@ -217,7 +217,7 @@ void drop_account(Evas_Object *account_list) {
 		free(query);
 
 		li = elm_list_selected_item_get(account_list);
-		if(li) elm_list_item_del(li);
+		if(li) elm_object_item_del(li);
 	}
 }
 
@@ -1176,7 +1176,7 @@ void on_gag_pattern_add(void *data, Evas_Object *obj, void *event_info) {
 
 			list_items = elm_list_items_get(gag_list);
 			EINA_LIST_FOREACH(list_items, l, li)
-				elm_list_item_del(li);
+				elm_object_item_del(li);
 
 			query = "SELECT id,enabled,pattern FROM gag;";
 			res = sqlite3_exec(ed_DB, query, gag_list_insert, gag_list, &db_err);
@@ -1210,7 +1210,7 @@ void on_gag_pattern_edit(void *data, Evas_Object *obj, void *event_info) {
 		if(res != 0)
 			printf("Can't %s: %d = %s\n", query, res, db_err);
 		else
-			elm_list_item_label_set(li, pattern);
+			elm_object_item_text_set(li, pattern);
 		sqlite3_free(db_err);
 		free(query);
 	}
@@ -1288,7 +1288,7 @@ void on_gag_edit(void *data, Evas_Object *obj, void *event_info) {
 	const char *label=NULL;
 
 	if(li) {
-		label = elm_list_item_label_get(li);
+		label = elm_object_item_text_get(li);
 	}
 
 	inwin = gag_edit_widgets((char*)label);
@@ -1319,7 +1319,7 @@ void on_gag_delete(void *data, Evas_Object *button, void *event_info) {
 
 			current_gag = 0;
 			li = elm_list_selected_item_get(gag_list);
-			if(li) elm_list_item_del(li);
+			if(li) elm_object_item_del(li);
 		}
 	}
 }

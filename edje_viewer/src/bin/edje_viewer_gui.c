@@ -984,7 +984,7 @@ on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src)
    if (!grp->v->config->show_signals) return;
    if (eina_list_count(grp->v->signals) > 40)
      {
-        elm_list_item_del(eina_list_data_get(grp->v->signals));
+        elm_object_item_del(eina_list_data_get(grp->v->signals));
         grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
      }
 
@@ -999,7 +999,7 @@ on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src)
 
         if (eina_list_count(grp->v->signals) > 40)
           {
-             elm_list_item_del(eina_list_data_get(grp->v->signals));
+             elm_object_item_del(eina_list_data_get(grp->v->signals));
              grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
           }
 
@@ -1024,7 +1024,7 @@ on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
    if (!grp->v->config->show_signals) return;
    if (eina_list_count(grp->v->signals) > 40)
      {
-        elm_list_item_del(grp->v->signals->data);
+        elm_object_item_del(grp->v->signals->data);
         grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
      }
 
@@ -1039,7 +1039,7 @@ on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
 
         if (eina_list_count(grp->v->signals) > 40)
           {
-             elm_list_item_del(grp->v->signals->data);
+             elm_object_item_del(grp->v->signals->data);
              grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
           }
 

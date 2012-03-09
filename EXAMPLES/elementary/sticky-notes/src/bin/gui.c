@@ -50,12 +50,12 @@ _edit_note_cb_delete_request(void *data, Evas_Object *obj, void *event_info)
    const char *gui_text = elm_scrolled_entry_entry_get(gui->entry);
    const char *gui_title = elm_scrolled_entry_entry_get(gui->title);
 
-   entry = elm_list_item_data_get(gui->selection);
+   entry = elm_object_item_data_get(gui->selection);
 
    eina_stringshare_replace(&(entry->text), gui_text);
    eina_stringshare_replace(&(entry->title), gui_title);
 
-   elm_list_item_label_set(gui->selection, entry->title);
+   elm_object_item_text_set(gui->selection, entry->title);
 
    entry->in_use = EINA_FALSE;
 
@@ -68,12 +68,12 @@ _edit_note_cb_remove_note(void *data, Evas_Object *obj, const char *emission, co
    Db_Entry *entry;
    Edit_Note_Window *gui = (Edit_Note_Window *)data;
 
-   entry = elm_list_item_data_get(gui->selection);
+   entry = elm_object_item_data_get(gui->selection);
 
    if (!db_remove(gui->db, entry))
      return;
 
-   elm_list_item_del(gui->selection);
+   elm_object_item_del(gui->selection);
 
    evas_object_del(gui->window);
 
@@ -89,7 +89,7 @@ _edit_note_load_entry_data(Edit_Note_Window *gui)
 
    list_widget = gui->list;
    selected_item = gui->selection;
-   entry = elm_list_item_data_get(selected_item);
+   entry = elm_object_item_data_get(selected_item);
 
    if (!entry)
      return;
@@ -107,7 +107,7 @@ edit_note_window_new(Evas_Object *list, Elm_Object_Item *selection, Db *db)
    Evas_Object *ed;
    Evas_Object *layout;
 
-   Db_Entry *db_entry = elm_list_item_data_get(selection);
+   Db_Entry *db_entry = elm_object_item_data_get(selection);
    if (db_entry->in_use)
      return;
    db_entry->in_use = EINA_TRUE;

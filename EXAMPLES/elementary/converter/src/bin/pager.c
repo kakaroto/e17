@@ -120,9 +120,9 @@ on_number_button_enter(void *data, Evas_Object *obj, const char *emission,
 
    edje_object_part_text_set(obj, "equal", "=");
    snprintf(label_in, sizeof(label_in), "%s",
-            elm_list_item_label_get(list_it_in));
+            elm_object_item_text_get(list_it_in));
    snprintf(label_out, sizeof(label_out), "%s",
-            elm_list_item_label_get(list_it_out));
+            elm_object_item_text_get(list_it_out));
 
    if (!strcmp(label_in, KM_LABEL)) {
 	m_in = KILOMETER;

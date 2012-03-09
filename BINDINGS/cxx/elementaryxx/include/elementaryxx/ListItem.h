@@ -50,13 +50,7 @@ private:
 #if 0
 
 
-   EAPI void         elm_list_item_del(Elm_Object_Item *item);
-   EAPI void         elm_list_item_del_cb_set(Elm_Object_Item *item, void (*func)(void *data, Evas_Object *obj, void *event_info));
-   EAPI const void  *elm_list_item_data_get(const Elm_Object_Item *item);
-   EAPI Evas_Object *elm_list_item_icon_get(const Elm_Object_Item *item);
-   EAPI Evas_Object *elm_list_item_end_get(const Elm_Object_Item *item);
    EAPI Evas_Object *elm_list_item_object_get(const Elm_Object_Item *item);
-   EAPI const char  *elm_list_item_label_get(const Elm_Object_Item *item);
    EAPI Elm_List_Item *elm_list_item_prev(const Elm_Object_Item *it);
    EAPI Elm_List_Item *elm_list_item_next(const Elm_Object_Item *it);
 

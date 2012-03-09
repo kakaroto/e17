@@ -79,7 +79,7 @@ add_update_user(Db_Entry NewContact)
    if (App.editing)
      {
 	Db_Entry *contact;
-	contact = elm_list_item_data_get(App.selection);
+	contact = elm_object_item_data_get(App.selection);
 
 	/* Replace strings on memory */
 	eina_stringshare_replace(&(contact->Name), NewContact.Name);
@@ -91,7 +91,7 @@ add_update_user(Db_Entry NewContact)
 	contact->Gender = NewContact.Gender;
 
 	/* Update Elementary List */
-	elm_list_item_label_set(App.selection, NewContact.Name);
+	elm_object_item_text_set(App.selection, NewContact.Name);
      }
    else
      {
@@ -142,8 +142,8 @@ delete_clicked (void *data, Evas_Object *obj, const char *emission, const char *
 {
    Db_Entry *contact;
 
-   contact = elm_list_item_data_get(App.selection);
-   elm_list_item_del(App.selection);
+   contact = elm_object_item_data_get(App.selection);
+   elm_object_item_del(App.selection);
    db_remove(App._db, contact);
    elm_pager_content_promote(App.info.pager, App.info.pgMain);
 }
@@ -213,7 +213,7 @@ previous_clicked (void *data, Evas_Object *obj, const char *emission, const char
      {
         App.selection = list_prev;
         elm_list_item_selected_set(App.selection, EINA_TRUE);
-        Contact = (Db_Entry*) elm_list_item_data_get(App.selection);
+        Contact = (Db_Entry*) elm_object_item_data_get(App.selection);
         load_values(Contact);
      }
 }
@@ -231,7 +231,7 @@ next_clicked (void *data, Evas_Object *obj, const char *emission, const char *so
      {
         App.selection = list_next;
         elm_list_item_selected_set(App.selection, EINA_TRUE);
-        Contact = (Db_Entry*) elm_list_item_data_get(App.selection);
+        Contact = (Db_Entry*) elm_object_item_data_get(App.selection);
         load_values(Contact);
      }
 }
@@ -244,7 +244,7 @@ edit_clicked (void *data, Evas_Object *obj, const char *emission, const char *so
 
    elm_pager_content_promote(App.info.pager, App.info.pgRegister);
 
-   contact = elm_list_item_data_get(App.selection);
+   contact = elm_object_item_data_get(App.selection);
 
    GET_ED_FROM_PAGE(pgRegister);
    entry_value_set(ed,"EntryName", contact->Name);
@@ -313,9 +313,9 @@ list_selected_cb(void *data, Evas_Object *obj, void *event_info)
    const char *target_name;
 
    App.selection = elm_list_selected_item_get(App.contactlist);
-   target_name = elm_list_item_label_get(App.selection);
+   target_name = elm_object_item_text_get(App.selection);
 
-   load_values(elm_list_item_data_get(App.selection));
+   load_values(elm_object_item_data_get(App.selection));
 }
 
 static void

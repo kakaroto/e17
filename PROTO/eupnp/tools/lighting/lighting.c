@@ -121,7 +121,7 @@ is_device_added(Eupnp_Device_Info *device)
 
    EINA_LIST_FOREACH(items, l, list_item)
      {
-        Light_Control *c = elm_list_item_data_get(list_item);
+        Light_Control *c = elm_object_item_data_get(list_item);
 
         if (!c->device)
           continue;
@@ -144,7 +144,7 @@ pop_device(Eupnp_Device_Info *device)
 
    EINA_LIST_FOREACH(items, l, list_item)
      {
-        Light_Control *c = elm_list_item_data_get(list_item);
+        Light_Control *c = elm_object_item_data_get(list_item);
 
         if (!strcmp(c->device->udn, device->udn))
           {
@@ -157,7 +157,7 @@ pop_device(Eupnp_Device_Info *device)
                   selected_device = NULL;
                }
 
-             elm_list_item_del(list_item);
+             elm_object_item_del(list_item);
              light_control_free(c);
              break;
           }
@@ -243,7 +243,7 @@ dimm_changed(void *data, Evas_Object *obj, void *event_info)
 {
    if (!selected_device) return;
 
-   Light_Control *c = elm_list_item_data_get(selected_device);
+   Light_Control *c = elm_object_item_data_get(selected_device);
 
    if (!c->dimm_proxy)
      {
@@ -264,7 +264,7 @@ check_changed(void *data, Evas_Object *obj, void *event_info)
 {
    if (!selected_device) return;
 
-   Light_Control *c = elm_list_item_data_get(selected_device);
+   Light_Control *c = elm_object_item_data_get(selected_device);
 
    if (!c->basic_proxy)
      {

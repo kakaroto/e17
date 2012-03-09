@@ -61,7 +61,7 @@ list_dialog_callback(void *data, Evas_Object *obj, void *event_info)
   const char *item_selected;
 
   listitem = elm_list_selected_item_get(list);
-  item_selected = elm_list_item_label_get(listitem);
+  item_selected = elm_object_item_text_get(listitem);
 
   printf("%s\n", item_selected);
   elm_exit();
@@ -155,7 +155,7 @@ SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
    for (i = 0; i < len; i++)
      elm_list_item_append(obj, splitted[i], NULL, NULL, NULL, NULL);
 
-   elm_list_item_del(eina_list_data_get(eina_list_last(elm_list_items_get(obj))));
+   elm_object_item_del(eina_list_data_get(eina_list_last(elm_list_items_get(obj))));
 
    elm_list_go(obj);
 
