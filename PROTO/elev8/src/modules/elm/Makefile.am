@@ -14,7 +14,8 @@ AM_CPPFLAGS = \
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
 mod_LTLIBRARIES = libelm.la
 
-libelm_la_SOURCES = elev8_elm.cc \
+libelm_la_SOURCES = \
+	Main.cc \
 	CElmActionSlider.cc \
 	CElmBackground.cc \
 	CElmBasicWindow.cc \
