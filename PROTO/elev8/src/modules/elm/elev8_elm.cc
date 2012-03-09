@@ -729,79 +729,6 @@ CEvasObject::CPropHandler<CElmPane>::list[] = {
 };
 
 
-#if 0
-
-class CElmPager : public CEvasObject {
-   FACTORY(CElmPager)
-protected:
-   std::list<CEvasObject *> pages;
-   CPropHandler<CElmPager> prop_handler;
-
-public:
-   CElmPager(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_pager_add(parent->top_widget_get());
-        construct(eo, obj);
-        get_object()->Set(String::New("pop"), FunctionTemplate::New(pop)->GetFunction());
-        get_object()->Set(String::New("push"), FunctionTemplate::New(push)->GetFunction());
-        get_object()->Set(String::New("promote"), FunctionTemplate::New(promote)->GetFunction());
-     }
-
-   static Handle<Value> pop(const Arguments& args)
-     {
-        CEvasObject *self = eo_from_info(args.This());
-        CElmPager *pager = static_cast<CElmPager *>(self);
-        CEvasObject *content = pager->pages.front();
-
-        if (content)
-          {
-             elm_pager_content_pop(pager->get());
-             pager->pages.pop_front();
-          }
-
-        return Undefined();
-     }
-
-   static Handle<Value> push(const Arguments& args)
-     {
-        CEvasObject *self = eo_from_info(args.This());
-        CElmPager *pager = static_cast<CElmPager *>(self);
-        if (args[0]->IsObject())
-          {
-             CEvasObject *content = make_or_get(pager, args[0]);
-             if (content)
-               {
-                  elm_pager_content_push(pager->get(), content->get());
-                  pager->pages.push_front(content);
-               }
-          }
-        return Undefined();
-     }
-   static Handle<Value> promote(const Arguments& args)
-     {
-        CEvasObject *self = eo_from_info(args.This());
-        CElmPager *pager = static_cast<CElmPager *>(self);
-        if (args[0]->IsObject())
-          {
-             CEvasObject *promotee = eo_from_info(args[0]->ToObject());
-
-             if (promotee)
-               elm_pager_content_promote(pager->get(), promotee->get());
-
-          }
-        return Undefined();
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmPager>::property_list
-CEvasObject::CPropHandler<CElmPager>::list[] = {
-  { NULL, NULL, NULL },
-};
-
-#endif
-
 static CEvasObject *
 _make(CEvasObject *parent, Local<Object> description)
 {
@@ -850,7 +777,7 @@ elm_widget(const Arguments& args)
    Local<Value> parent = args[0]->ToObject()->Get(String::New("parent"));
    if (parent.IsEmpty())
      return ThrowException(Exception::Error(String::New("Parent not set")));
-   
+
    CEvasObject *parentObject = _get_evas_object(parent->ToObject());
    if (!parentObject)
      return ThrowException(Exception::Error(String::New("Parent is not a widget")));
@@ -1014,9 +941,6 @@ void RegisterModule(Handle<Object> target)
    REGISTER("fileselectorentry", CElmFileSelectorEntry);
    REGISTER("inwin", CElmInwin);
    REGISTER("notify", CElmNotify);
-#if 0
-   REGISTER("pager", CElmPager);
-#endif
    REGISTER("naviframe", CElmNaviframe);
    REGISTER("grid", CElmGrid);
 
