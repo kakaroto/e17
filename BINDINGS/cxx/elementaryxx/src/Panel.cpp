@@ -30,7 +30,7 @@ void Panel::setOrientation (Elm_Panel_Orient orient)
 
 void Panel::setContent (Evasxx::Object &content)
 {
-  elm_panel_content_set (o, content.obj ());
+  elm_object_content_set (o, content.obj ());
 }
 
 } // end namespace Elmxx

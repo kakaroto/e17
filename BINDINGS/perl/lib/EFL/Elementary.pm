@@ -619,7 +619,6 @@ my @elm_map = qw(
 my @elm_panel = qw(
   elm_panel_add
   elm_panel_orient_set
-  elm_panel_content_set
 );
 
 my @elm_flip = qw(
@@ -1150,7 +1149,6 @@ may change in future releases.
     elm_pager_content_push
     elm_pager_content_top_get
     elm_panel_add
-    elm_panel_content_set
     elm_panel_orient_set
     elm_photo_add
     elm_photo_file_set

@@ -1698,9 +1698,6 @@ elm_panel_add(Evas_Object *parent)
 void
 elm_panel_orient_set(Evas_Object *obj, Elm_Panel_Orient orient)
 
-void
-elm_panel_content_set(Evas_Object *obj, Evas_Object *content)
-
 
 # flip
 # ------------------------------------------------------------------------------
