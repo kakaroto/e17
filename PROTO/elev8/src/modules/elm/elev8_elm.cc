@@ -32,6 +32,7 @@
 #include "CElmFileSelectorEntry.h"
 #include "CElmFileSelectorButton.h"
 #include "CElmHover.h"
+#include "CElmToggle.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -2521,135 +2522,6 @@ CEvasObject::CPropHandler<CElmPhotocam>::list[] = {
   PROP_HANDLER(CElmPhotocam, zoom_mode),
   PROP_HANDLER(CElmPhotocam, paused),
   PROP_HANDLER(CElmPhotocam, bounce),
-  { NULL, NULL, NULL },
-};
-
-
-class CElmToggle : public CEvasObject {
-   FACTORY(CElmToggle)
-protected:
-   CPropHandler<CElmToggle> prop_handler;
-
-   /* the on_changed function */
-   Persistent<Value> on_changed_val;
-   Persistent<Value> the_icon;
-
-public:
-   CElmToggle(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_check_add(parent->top_widget_get());
-        elm_object_style_set(eo, "toggle");
-        construct(eo, obj);
-     }
-
-   static void eo_on_changed(void *data, Evas_Object *, void *event_info)
-     {
-        CElmToggle *changed = static_cast<CElmToggle*>(data);
-
-        changed->on_changed(event_info);
-     }
-
-   virtual void on_changed(void *)
-     {
-        Handle<Object> obj = get_object();
-        HandleScope handle_scope;
-        Handle<Value> val = on_changed_val;
-        // FIXME: pass event_info to the callback
-        // FIXME: turn the pieces below into a do_callback method
-        assert(val->IsFunction());
-        Handle<Function> fn(Function::Cast(*val));
-        Handle<Value> args[1] = { obj };
-        fn->Call(obj, 1, args);
-     }
-
-   virtual void on_changed_set(Handle<Value> val)
-     {
-        on_changed_val.Dispose();
-        on_changed_val = Persistent<Value>::New(val);
-        if (val->IsFunction())
-          evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
-        else
-          evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
-     }
-
-   virtual Handle<Value> on_changed_get(void) const
-     {
-        return on_changed_val;
-     }
-
-
-   virtual void onlabel_set(Handle<Value> val)
-     {
-       if (val->IsString())
-         {
-            String::Utf8Value str(val);
-            elm_object_part_text_set(eo, "on", *str);
-         }
-     }
-
-   virtual Handle<Value> onlabel_get(void) const
-     {
-        const char *onlabel = NULL;
-        onlabel = elm_object_part_text_get(eo, "on");
-        if (onlabel)
-          return String::New(onlabel);
-        else
-          return Null();
-     }
-
-   virtual void offlabel_set(Handle<Value> val)
-     {
-       if (val->IsString())
-         {
-            String::Utf8Value str(val);
-            elm_object_part_text_set(eo, "off", *str);
-         }
-     }
-
-   virtual Handle<Value> offlabel_get(void) const
-     {
-        const char *offlabel = NULL;
-        offlabel = elm_object_part_text_get(eo, "off");
-        if (offlabel)
-          return String::New(offlabel);
-        else
-          return Null();
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = make_or_get(this, value);
-        elm_object_content_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
-     }
-
-    void state_set(Handle<Value> val)
-      {
-         if (val->IsBoolean())
-           elm_check_state_set(eo, val->BooleanValue());
-      }
-
-    virtual Handle<Value> state_get() const
-      {
-         return Boolean::New(elm_check_state_get(eo));
-      }
-};
-
-template<> CEvasObject::CPropHandler<CElmToggle>::property_list
-CEvasObject::CPropHandler<CElmToggle>::list[] = {
-  PROP_HANDLER(CElmToggle, offlabel),
-  PROP_HANDLER(CElmToggle, onlabel),
-  PROP_HANDLER(CElmToggle, icon),
-  PROP_HANDLER(CElmToggle, state),
-  PROP_HANDLER(CElmToggle, on_changed),
   { NULL, NULL, NULL },
 };
 
