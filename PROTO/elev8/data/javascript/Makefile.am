@@ -46,7 +46,4 @@ files_SCRIPTS = \
 	toggle.js \
 	twitter.js
 
-#deprecated
-#	pager.js 
-
 EXTRA_DIST = $(files_SCRIPTS)
