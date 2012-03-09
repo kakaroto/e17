@@ -30,7 +30,6 @@ files_SCRIPTS = \
 	inwin.js \
 	label.js \
 	layout.js \
-	list.js \
 	menu.js \
 	notepad.js \
 	notify.js \
