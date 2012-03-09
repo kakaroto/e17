@@ -256,7 +256,6 @@ my @elm_scroller = qw(
 
 my @elm_label = qw(
   elm_label_add
-  elm_label_label_set
   elm_label_line_wrap_set
 );
 
@@ -1072,7 +1071,6 @@ may change in future releases.
     elm_index_item_selected_get
     elm_init
     elm_label_add
-    elm_label_label_set
     elm_label_line_wrap_set
     elm_layout_add
     elm_layout_content_set

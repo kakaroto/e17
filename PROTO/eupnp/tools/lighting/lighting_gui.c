@@ -46,7 +46,7 @@ lighting_control_win_create(void)
 
    Evas_Object *label;
    label = elm_label_add(win);
-   elm_label_label_set(label, "Devices");
+   elm_object_text_set(label, "Devices");
    evas_object_size_hint_weight_set(label, 0.0, 0.0);
    evas_object_size_hint_align_set(label, 0.5, 0.5);
    elm_box_pack_start(devices_box, label);

@@ -28,7 +28,7 @@ elm_main(int argc, char **argv)
    evas_object_show(box);
 
    lbl = elm_label_add(win);
-   elm_label_label_set(lbl, "Fullscreen Window");
+   elm_object_text_set(lbl, "Fullscreen Window");
    elm_box_pack_end(box, lbl);
    evas_object_show(lbl);
 

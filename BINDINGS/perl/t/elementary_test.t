@@ -79,7 +79,7 @@ sub basic {
     evas_object_show($fr);
 
     my $lb = elm_label_add($win);
-    elm_label_label_set($lb, "If you can see this window, then most likely everything compiled correctly.<br>"
+    elm_object_text_set($lb, "If you can see this window, then most likely everything compiled correctly.<br>"
                            . "If you'd like test out the Elementary test suite (a port of elementary_test to Perl)<br>"
                            . "click the 'Continue' button. Otherwise click the 'Done' button to exit and pass the test.");
     elm_object_content_set($fr, $lb);
@@ -157,7 +157,7 @@ elm_box_pack_end($bx0, $fr);
 evas_object_show($fr);
 
 my $lb = elm_label_add($win);
-elm_label_label_set($lb, "Please select a test from the list below<br>"
+elm_object_text_set($lb, "Please select a test from the list below<br>"
                        . "by clicking the test button to show the<br>test window.");
 elm_object_content_set($fr, $lb);
 evas_object_show($lb);
@@ -2201,7 +2201,7 @@ sub test_inwin {
     evas_object_show($inwin);
 
     $lb = elm_label_add($win);
-    elm_label_label_set($lb,
+    elm_object_text_set($lb,
             "This is an \"inwin\" - a window in a<br>"
           . "window. This is handy for quick popups<br>"
           . "you want centered, taking over the window<br>"
@@ -2231,7 +2231,7 @@ sub test_inwin2 {
     evas_object_show($inwin);
 
     $lb = elm_label_add($win);
-    elm_label_label_set($lb,
+    elm_object_text_set($lb,
             "This is an \"inwin\" - a window in a<br>"
           . "window. This is handy for quick popups<br>"
           . "you want centered, taking over the window<br>"
@@ -2324,7 +2324,7 @@ sub test_scaling2 {
     elm_object_scale_set($fr, 0.5);
     elm_object_text_set($fr, "Scale: 0.5");
     $lb = elm_label_add($win);
-    elm_label_label_set($lb, "Parent frame scale<br>" . "is 0.5. Child should<br>" . "inherit it.");
+    elm_object_text_set($lb, "Parent frame scale<br>" . "is 0.5. Child should<br>" . "inherit it.");
     elm_object_content_set($fr, $lb);
     evas_object_show($lb);
     elm_box_pack_end($bx, $fr);
@@ -2333,7 +2333,7 @@ sub test_scaling2 {
     $fr = elm_frame_add($win);
     elm_object_text_set($fr, "Scale: 1.0");
     $lb = elm_label_add($win);
-    elm_label_label_set($lb, "Parent frame scale<br>" . "is 1.0. Child should<br>" . "inherit it.");
+    elm_object_text_set($lb, "Parent frame scale<br>" . "is 1.0. Child should<br>" . "inherit it.");
     elm_object_content_set($fr, $lb);
     evas_object_show($lb);
     elm_object_scale_set($fr, 1.0);
@@ -2343,7 +2343,7 @@ sub test_scaling2 {
     $fr = elm_frame_add($win);
     elm_object_text_set($fr, "Scale: 2.0");
     $lb = elm_label_add($win);
-    elm_label_label_set($lb, "Parent frame scale<br>" . "is 2.0. Child should<br>" . "inherit it.");
+    elm_object_text_set($lb, "Parent frame scale<br>" . "is 2.0. Child should<br>" . "inherit it.");
     elm_object_content_set($fr, $lb);
     evas_object_show($lb);
     elm_object_scale_set($fr, 2.0);
@@ -3771,7 +3771,7 @@ sub test_pager {
     evas_object_show($bx);
 
     $lb = elm_label_add($win);
-    elm_label_label_set($lb,
+    elm_object_text_set($lb,
             "This is page 1 in a pager stack.<br>" . "<br>"
           . "So what is a pager stack? It is a stack<br>"
           . "of pages that hold widgets in it. The<br>"
@@ -3804,7 +3804,7 @@ sub test_pager {
     evas_object_show($bx);
 
     $lb = elm_label_add($win);
-    elm_label_label_set($lb, "This is page 2 in a pager stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the pager stack.");
+    elm_object_text_set($lb, "This is page 2 in a pager stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the pager stack.");
     elm_box_pack_end($bx, $lb);
     evas_object_show($lb);
 
@@ -3827,7 +3827,7 @@ sub test_pager {
     evas_object_show($bx);
 
     $lb = elm_label_add($win);
-    elm_label_label_set($lb, "This is page 3 in a pager stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the pager stack.");
+    elm_object_text_set($lb, "This is page 3 in a pager stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the pager stack.");
     elm_box_pack_end($bx, $lb);
     evas_object_show($lb);
 

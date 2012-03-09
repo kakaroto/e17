@@ -103,7 +103,7 @@ item_play(void *data, Evas_Object *obj, void *event_info)
 	     DBG("Playing %s", v);
 	     emotion_object_file_set(emotion, v);
 	     emotion_object_play_set(emotion, EINA_TRUE);
-	     elm_label_label_set(media_label, eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(data)));
+	     elm_object_text_set(media_label, eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(data)));
 	     break;
 	  }
      }
@@ -136,7 +136,7 @@ container_browse(void *data, Evas_Object *obj, void *event_info)
    DBG("Browsing %s", eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)));
    asprintf(&browsing, "%s/%s", browsing, eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)));
 
-   elm_label_label_set(main_label, browsing);
+   elm_object_text_set(main_label, browsing);
 
    list = elm_list_add(pager);
    evas_object_show(list);
@@ -234,7 +234,7 @@ server_browse(void *data, Evas_Object *obj, void *event_info)
    ms = data;
    DBG("Browsing server %s", ms->server->udn);
    browsing = strdup(ms->server->friendly_name);
-   elm_label_label_set(main_label, browsing);
+   elm_object_text_set(main_label, browsing);
 
    list = elm_list_add(pager);
    evas_object_show(list);
@@ -357,12 +357,12 @@ on_back_clicked(void *data, Evas_Object *obj, void *event_info)
 	    if (p)
 	       *p = '\0';
 
-	    elm_label_label_set(main_label, browsing);
+	    elm_object_text_set(main_label, browsing);
 	 }
      }
    else
      {
-	elm_label_label_set(main_label, "UPnP Network");
+	elm_object_text_set(main_label, "UPnP Network");
 	free(browsing);
 	browsing = NULL;
 	evas_object_hide(bt);
@@ -412,7 +412,7 @@ av_browser_win_create(void)
    elm_box_pack_end(hbox, media_box);
 
    media_label = elm_label_add(win);
-   elm_label_label_set(media_label, "No media selected.");
+   elm_object_text_set(media_label, "No media selected.");
    evas_object_show(media_label);
    elm_box_pack_start(media_box, media_label);
 
@@ -473,7 +473,7 @@ av_browser_win_create(void)
    evas_object_smart_callback_add(bt, "clicked", on_back_clicked, NULL);
 
    main_label = elm_label_add(win);
-   elm_label_label_set(main_label, "UPnP Network");
+   elm_object_text_set(main_label, "UPnP Network");
    evas_object_show(main_label);
    elm_box_pack_start(box, main_label);
 

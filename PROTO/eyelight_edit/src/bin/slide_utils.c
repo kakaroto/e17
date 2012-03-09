@@ -124,7 +124,7 @@ void utils_slide_delete(List_Item *item)
     elm_table_pack(tb, bt, 0, 1, 1, 1);
 
     lbl = elm_label_add(win);
-    elm_label_label_set(lbl, D_("Are you sure you want to delete this slide ?"));
+    elm_object_text_set(lbl, D_("Are you sure you want to delete this slide ?"));
     elm_table_pack(tb, lbl, 0, 2, 2, 1);
     evas_object_show(lbl);
 
@@ -359,7 +359,7 @@ void utils_edit_area_delete(void *data, Evas_Object *obj, void *event_info)
     elm_win_inwin_content_set(_inwin_delete_slide, tb);
 
     lbl = elm_label_add(win);
-    elm_label_label_set(lbl, D_("Are you sure you want to delete this area ?"));
+    elm_object_text_set(lbl, D_("Are you sure you want to delete this area ?"));
     elm_table_pack(tb, lbl, 0, 2, 2, 1);
     evas_object_show(lbl);
 
@@ -607,7 +607,7 @@ void utils_edit_object_delete(void *data, Evas_Object *obj, void *event_info)
     elm_win_inwin_content_set(_inwin_delete_slide, tb);
 
     lbl = elm_label_add(win);
-    elm_label_label_set(lbl, D_("Are you sure you want to delete this object ?"));
+    elm_object_text_set(lbl, D_("Are you sure you want to delete this object ?"));
     elm_table_pack(tb, lbl, 0, 2, 2, 1);
     evas_object_show(lbl);
 

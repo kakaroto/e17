@@ -81,7 +81,7 @@ create_label(Evas_Object *parent, const char *text)
 
   label = elm_label_add(parent);
 
-  elm_label_label_set(label, text);
+  elm_object_text_set(label, text);
 
   return label;
 }

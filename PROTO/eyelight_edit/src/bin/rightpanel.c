@@ -182,7 +182,7 @@ Evas_Object *rightpanel_create()
     evas_object_show(sc);
 
     lbl = elm_label_add(win);
-    elm_label_label_set(lbl, D_("Border : "));
+    elm_object_text_set(lbl, D_("Border : "));
     evas_object_show(lbl);
     elm_table_pack(tb, lbl, 0, 3, 1, 1);
     ck = elm_check_add(win);
@@ -192,7 +192,7 @@ Evas_Object *rightpanel_create()
     elm_table_pack(tb, ck, 1, 3, 1, 1);
 
     lbl = elm_label_add(win);
-    elm_label_label_set(lbl, D_("Shadow : "));
+    elm_object_text_set(lbl, D_("Shadow : "));
     evas_object_show(lbl);
     elm_table_pack(tb, lbl, 0, 4, 1, 1);
     ck = elm_check_add(win);
@@ -202,7 +202,7 @@ Evas_Object *rightpanel_create()
     elm_table_pack(tb, ck, 1, 4, 1, 1);
 
     lbl = elm_label_add(win);
-    elm_label_label_set(lbl, D_("Keep aspect : "));
+    elm_object_text_set(lbl, D_("Keep aspect : "));
     evas_object_show(lbl);
     elm_table_pack(tb, lbl, 0, 5, 1, 1);
     ck = elm_check_add(win);

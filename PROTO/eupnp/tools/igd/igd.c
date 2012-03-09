@@ -178,7 +178,7 @@ igd_client_win_create(void)
    evas_object_show(fr);
 
    lb = elm_label_add(win);
-   elm_label_label_set(lb, "IGD devices will be present on the list below<br>"
+   elm_object_text_set(lb, "IGD devices will be present on the list below<br>"
 			   "as they're found. Click on them for performing <br>"
 			   "actions.");
    elm_object_content_set(fr, lb);

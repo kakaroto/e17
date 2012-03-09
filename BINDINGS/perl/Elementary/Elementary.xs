@@ -468,12 +468,6 @@ Evas_Object *
 elm_label_add(Evas_Object *parent)
 
 void
-elm_label_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_label_label_get(Evas_Object *obj)
-
-void
 elm_label_line_wrap_set(Evas_Object *obj, Eina_Bool wrap)
 
 
