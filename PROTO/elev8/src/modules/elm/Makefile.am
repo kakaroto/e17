@@ -30,7 +30,8 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmScroller.cc \
 	CElmSlider.cc \
 	CElmImage.cc \
-	CElmGrid.cc
+	CElmGrid.cc \
+	CElmNaviframe.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
