@@ -21,102 +21,11 @@
 #include "CElmLabel.h"
 #include "CElmFlip.h"
 #include "CElmActionSlider.h"
+#include "CElmIcon.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmIcon : public CEvasObject {
-   FACTORY(CElmIcon)
-public:
-   CPropHandler<CElmIcon> prop_handler;
-public:
-   CElmIcon(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_icon_add(parent->top_widget_get());
-        construct(eo, obj);
-     }
-
-   virtual void scale_up_set(Handle<Value> val)
-     {
-        Eina_Bool up, down;
-        if (val->IsBoolean())
-          {
-             elm_icon_scale_get(eo, &up, &down);
-             elm_icon_scale_set(eo, val->BooleanValue(), down);
-          }
-     }
-
-   virtual Handle<Value> scale_up_get() const
-     {
-        Eina_Bool up, down;
-        elm_icon_scale_get(eo, &up, &down);
-        return Boolean::New(up);
-     }
-
-   virtual void scale_down_set(Handle<Value> val)
-     {
-        Eina_Bool up, down;
-        if (val->IsBoolean())
-          {
-             elm_icon_scale_get(eo, &up, &down);
-             elm_icon_scale_set(eo, up, val->BooleanValue());
-          }
-     }
-
-   virtual Handle<Value> prescale_get() const
-     {
-        int prescale=elm_icon_prescale_get(eo);
-        return Integer::New(prescale);
-     }
-
-   virtual void prescale_set(Handle<Value> val)
-     {
-        if (val->IsNumber())
-          {
-             elm_icon_prescale_set(eo, val->IntegerValue());
-          }
-     }
-
-   virtual Handle<Value> scale_down_get() const
-     {
-        Eina_Bool up, down;
-        elm_icon_scale_get(eo, &up, &down);
-        return Boolean::New(down);
-     }
-
-   virtual void image_set(Handle<Value> val)
-     {
-        if (val->IsString())
-          {
-             String::Utf8Value str(val);
-             if (0 > access(*str, R_OK))
-               ELM_ERR( "warning: can't read icon file %s", *str);
-
-             elm_icon_file_set(eo, *str, NULL);
-          }
-     }
-
-   virtual Handle<Value> image_get(void) const
-     {
-        const char *file = NULL, *group = NULL;
-        elm_icon_file_get(eo, &file, &group);
-        if (file)
-          return String::New(file);
-        else
-          return Null();
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmIcon>::property_list
-CEvasObject::CPropHandler<CElmIcon>::list[] = {
-     PROP_HANDLER(CElmIcon, scale_up),
-     PROP_HANDLER(CElmIcon, scale_down),
-     PROP_HANDLER(CElmIcon, prescale),
-     { NULL, NULL, NULL },
-};
 
 class CElmScroller : public CEvasObject {
    FACTORY(CElmScroller)
