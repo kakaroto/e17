@@ -19,45 +19,11 @@
 #include "CElmRadio.h"
 #include "CElmBox.h"
 #include "CElmLabel.h"
+#include "CElmFlip.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmFlip : public CEvasObject {
-   FACTORY(CElmFlip)
-public:
-   static Handle<Value> do_flip(const Arguments& args)
-     {
-        CEvasObject *self = eo_from_info(args.This());
-        CElmFlip *flipper = static_cast<CElmFlip *>(self);
-        flipper->flip(ELM_FLIP_ROTATE_Y_CENTER_AXIS);
-        return Undefined();
-     }
-
-   virtual void flip(Elm_Flip_Mode mode)
-     {
-        elm_flip_go(eo, mode);
-     }
-
-   CElmFlip(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
-     {
-        CEvasObject *front, *back;
-
-        eo = elm_flip_add(parent->get());
-        construct(eo, obj);
-
-        /* realize front and back */
-        front = make_or_get(this, obj->Get(String::New("front")));
-        elm_object_part_content_set(eo, "front", front->get());
-
-        back = make_or_get(this, obj->Get(String::New("back")));
-        elm_object_part_content_set(eo, "back", back->get());
-
-        get_object()->Set(String::New("flip"), FunctionTemplate::New(do_flip)->GetFunction());
-     }
-};
 
 class CElmIcon : public CEvasObject {
    FACTORY(CElmIcon)
