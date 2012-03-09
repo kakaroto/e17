@@ -27,6 +27,7 @@
 #include "CElmImage.h"
 #include "CElmGrid.h"
 #include "CElmNaviframe.h"
+#include "CElmNotify.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -3252,89 +3253,6 @@ public:
 template<> CEvasObject::CPropHandler<CElmInwin>::property_list
 CEvasObject::CPropHandler<CElmInwin>::list[] = {
   PROP_HANDLER(CElmInwin, activate),
-  { NULL, NULL, NULL },
-};
-
-class CElmNotify : public CEvasObject {
-   FACTORY(CElmNotify)
-protected:
-   CPropHandler<CElmNotify> prop_handler;
-   CEvasObject *content;
-
-public:
-   CElmNotify(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_notify_add(parent->top_widget_get());
-        construct(eo, obj);
-     }
-
-   virtual Handle<Value> content_get() const
-     {
-        return Undefined();
-     }
-
-   virtual void content_set(Handle<Value> val)
-     {
-        if (val->IsObject())
-          {
-             content = make_or_get(this, val);
-             if (content)
-               {
-                  elm_object_content_set(eo, content->get());
-               }
-          }
-     }
-
-   virtual Handle<Value> orient_get() const
-     {
-        return Number::New(elm_notify_orient_get(eo));
-     }
-
-   virtual void orient_set(Handle<Value> val)
-     {
-        if (val->IsNumber())
-          {
-             double orient = val->ToInt32()->Value();
-             elm_notify_orient_set(eo, (Elm_Notify_Orient)orient);
-             ELM_INF("Value of orient = %g", orient);
-          }
-     }
-
-   virtual Handle<Value> timeout_get() const
-     {
-        return Number::New(elm_notify_timeout_get(eo));
-     }
-
-   virtual void timeout_set(Handle<Value> val)
-     {
-        if (val->IsNumber())
-          {
-             double timeout = val->ToInt32()->Value();
-             elm_notify_timeout_set(eo, timeout);
-          }
-     }
-
-   virtual Handle<Value> repeat_events_get() const
-     {
-        return Boolean::New(elm_notify_repeat_events_get(eo));
-     }
-
-   virtual void repeat_events_set(Handle<Value> val)
-     {
-        if (val->IsBoolean())
-          elm_notify_repeat_events_set(eo, val->BooleanValue());
-     }
-
-};
-
-template<> CEvasObject::CPropHandler<CElmNotify>::property_list
-CEvasObject::CPropHandler<CElmNotify>::list[] = {
-  PROP_HANDLER(CElmNotify, content),
-  PROP_HANDLER(CElmNotify, orient),
-  PROP_HANDLER(CElmNotify, timeout),
-  PROP_HANDLER(CElmNotify, repeat_events),
   { NULL, NULL, NULL },
 };
 
