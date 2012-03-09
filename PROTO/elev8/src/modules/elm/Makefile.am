@@ -51,6 +51,7 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmColorSelector.cc \
 	CElmMenu.cc \
 	CElmSegment.cc
+	CElmProgressBar.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
