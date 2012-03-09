@@ -28,6 +28,7 @@
 #include "CElmGrid.h"
 #include "CElmNaviframe.h"
 #include "CElmNotify.h"
+#include "CElmInwin.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -3213,46 +3214,6 @@ CEvasObject::CPropHandler<CElmFileSelectorEntry>::list[] = {
   PROP_HANDLER(CElmFileSelectorEntry, is_save),
   PROP_HANDLER(CElmFileSelectorEntry, inwin_mode),
   PROP_HANDLER(CElmFileSelectorEntry, selected),
-  { NULL, NULL, NULL },
-};
-
-class CElmInwin : public CEvasObject {
-   FACTORY(CElmInwin)
-protected:
-   CPropHandler<CElmInwin> prop_handler;
-   CEvasObject *content;
-
-public:
-   CElmInwin(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-          eo = elm_win_inwin_add(parent->top_widget_get());
-          construct(eo, obj);
-          content = make_or_get(this, obj->Get(String::New("content")));
-          if (content)
-            {
-               elm_win_inwin_content_set(eo, content->get());
-            }
-     }
-
-   virtual Handle<Value> activate_get() const
-     {
-        return Null();
-     }
-
-   virtual void activate_set(Handle<Value> val)
-     {
-        ELM_INF("Actiavted.");
-        if (val->IsBoolean())
-          elm_win_inwin_activate(eo);
-     }
-
-};
-
-template<> CEvasObject::CPropHandler<CElmInwin>::property_list
-CEvasObject::CPropHandler<CElmInwin>::list[] = {
-  PROP_HANDLER(CElmInwin, activate),
   { NULL, NULL, NULL },
 };
 
