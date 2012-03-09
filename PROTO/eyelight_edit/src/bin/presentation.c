@@ -56,7 +56,7 @@ Evas_Object *presentation_create()
     //the slider which zoom the presentation
     sl = elm_slider_add(win);
     _pres_scroll = sc;
-    elm_slider_label_set(sl, "Zoom");
+    elm_object_text_set(sl, "Zoom");
     elm_slider_span_size_set(sl, 80);
     elm_slider_indicator_format_set(sl, "%3.0f");
     elm_slider_min_max_set(sl, 0, 100*SLIDER_ZOOM_MAX);

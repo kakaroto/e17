@@ -449,10 +449,6 @@ my @elm_list = qw(
 
 my @elm_slider = qw(
   elm_slider_add
-  elm_slider_label_set
-  elm_slider_label_get
-  elm_slider_icon_set
-  elm_slider_icon_get
   elm_slider_span_size_set
   elm_slider_unit_format_set
   elm_slider_indicator_format_set
@@ -1234,12 +1230,8 @@ may change in future releases.
     elm_shutdown
     elm_slider_add
     elm_slider_horizontal_set
-    elm_slider_icon_get
-    elm_slider_icon_set
     elm_slider_indicator_format_set
     elm_slider_inverted_set
-    elm_slider_label_get
-    elm_slider_label_set
     elm_slider_min_max_set
     elm_slider_span_size_set
     elm_slider_unit_format_set

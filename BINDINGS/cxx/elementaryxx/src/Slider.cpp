@@ -29,7 +29,7 @@ void Slider::setLabel (const std::string &label)
 
 void Slider::setIcon (const Evasxx::Object &icon)
 {
-  elm_slider_icon_set (o, icon.obj ());
+  elm_object_part_content_set (o, icon.obj ());
 }
 
 void Slider::setSpanSize (Evas_Coord size)

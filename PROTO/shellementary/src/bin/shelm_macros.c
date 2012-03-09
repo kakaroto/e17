@@ -218,7 +218,7 @@ create_slider(Evas_Object *parent, double slider_value, double slider_min_value,
   elm_slider_inverted_set(slider, slider_inverted);
 
   if (slider_unit_format) elm_slider_unit_format_set(slider, slider_unit_format);
-  if (slider_label) elm_slider_label_set(slider, slider_label);
+  if (slider_label) elm_object_text_set(slider, slider_label);
   if (slider_icon)
     {
       Evas_Object *icon;
@@ -227,7 +227,7 @@ create_slider(Evas_Object *parent, double slider_value, double slider_min_value,
       elm_icon_file_set(icon, slider_icon, NULL);
       evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
       evas_object_show(icon);
-      elm_slider_icon_set(slider, icon);
+      elm_object_part_content_set(slider, icon);
     }
   if (slider_vertical) elm_slider_horizontal_set(slider, 0);
   if (slider_value) elm_slider_value_set(slider, slider_value);

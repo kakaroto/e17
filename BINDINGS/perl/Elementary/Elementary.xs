@@ -1099,18 +1099,6 @@ Evas_Object *
 elm_slider_add(Evas_Object *parent)
 
 void
-elm_slider_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_slider_label_get(Evas_Object *obj)
-
-void
-elm_slider_icon_set(Evas_Object *obj, Evas_Object *icon)
-
-Evas_Object *
-elm_slider_icon_get(Evas_Object *obj)
-
-void
 elm_slider_span_size_set(Evas_Object *obj, Evas_Coord size)
 
 void

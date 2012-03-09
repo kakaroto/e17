@@ -2376,8 +2376,8 @@ sub test_slider {
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
     $sl = elm_slider_add($win);
-    elm_slider_label_set($sl, "Label");
-    elm_slider_icon_set($sl, $ic);
+    elm_object_text_set($sl, "Label");
+    elm_object_part_content_set($sl, $ic);
     elm_slider_unit_format_set($sl, "%1.1f units");
     elm_slider_span_size_set($sl, 120);
     evas_object_size_hint_align_set($sl, EVAS_HINT_FILL, 0.5);
@@ -2387,7 +2387,7 @@ sub test_slider {
     evas_object_show($sl);
 
     $sl = elm_slider_add($win);
-    elm_slider_label_set($sl, "Label 2");
+    elm_object_text_set($sl, "Label 2");
     elm_slider_span_size_set($sl, 80);
     evas_object_size_hint_align_set($sl, EVAS_HINT_FILL, 0.5);
     evas_object_size_hint_weight_set($sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -2402,7 +2402,7 @@ sub test_slider {
     evas_object_show($sl);
 
     $sl = elm_slider_add($win);
-    elm_slider_label_set($sl, "Label 3");
+    elm_object_text_set($sl, "Label 3");
     elm_slider_unit_format_set($sl, "units");
     elm_slider_span_size_set($sl, 40);
     evas_object_size_hint_align_set($sl, EVAS_HINT_FILL, 0.5);
@@ -2421,8 +2421,8 @@ sub test_slider {
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_HORIZONTAL, 1, 1);
 
     $sl = elm_slider_add($win);
-    elm_slider_icon_set($sl, $ic);
-    elm_slider_label_set($sl, "Label 4");
+    elm_object_part_content_set($sl, $ic);
+    elm_object_text_set($sl, "Label 4");
     elm_slider_unit_format_set($sl, "units");
     elm_slider_span_size_set($sl, 60);
     evas_object_size_hint_align_set($sl, 0.5, EVAS_HINT_FILL);
@@ -3976,7 +3976,7 @@ sub test_win_state
    evas_object_size_hint_fill_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    $sl = elm_slider_add($win);
-   elm_slider_label_set($sl, "Test");
+   elm_object_text_set($sl, "Test");
    elm_slider_span_size_set($sl, 100);
    evas_object_size_hint_align_set($sl, 0.5, 0.5);
    evas_object_size_hint_weight_set($sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

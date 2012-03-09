@@ -75,7 +75,7 @@ Evas_Object *slides_list_new()
 
     //the slider which zoom the list
     _sl = elm_slider_add(win);
-    elm_slider_label_set(_sl, "Zoom");
+    elm_object_text_set(_sl, "Zoom");
     elm_slider_span_size_set(_sl, 140);
     elm_slider_indicator_format_set(_sl, "%3.0f");
     elm_slider_min_max_set(_sl, 0, 100*SLIDER_ZOOM_MAX);

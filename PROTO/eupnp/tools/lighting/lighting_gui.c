@@ -67,7 +67,7 @@ lighting_control_win_create(void)
 
    /* Dimming control */
    dimm = elm_slider_add(win);
-   elm_slider_label_set(dimm, "Dimming");
+   elm_object_text_set(dimm, "Dimming");
    elm_slider_unit_format_set(dimm, "%%");
    elm_slider_min_max_set(dimm, 0, 100);
    elm_slider_indicator_format_set(dimm, "%3.0f%%");
