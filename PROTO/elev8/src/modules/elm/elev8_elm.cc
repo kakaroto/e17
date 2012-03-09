@@ -14,107 +14,11 @@
 #include "CEvasImage.h"
 #include "CElmBasicWindow.h"
 #include "CElmButton.h"
+#include "CElmLayout.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmLayout : public CEvasObject {
-   FACTORY(CElmLayout)
-protected:
-   Persistent<Object> the_contents;
-   CPropHandler<CElmLayout> prop_handler;
-public:
-   CElmLayout(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        the_contents = Persistent<Object>::New(Object::New());
-        eo = elm_layout_add(parent->top_widget_get());
-        construct(eo, obj);
-     }
-
-   virtual Handle<Value> contents_get() const
-     {
-        return the_contents;
-     }
-
-   virtual void contents_set(Handle<Value> val)
-     {
-        if (val->IsObject())
-          {
-             Handle<Object> contents = val->ToObject();
-             Handle<Array> properties = contents->GetPropertyNames();
-             
-             for (unsigned int i = 0; i < properties->Length(); i++)
-               {
-                  Handle<Value> element = properties->Get(Integer::New(i));
-
-                  CEvasObject *child = make_or_get(this, contents->Get(element->ToString()));
-                  if (!child)
-                    continue;
-
-                  String::Utf8Value elementName(element);
-                  elm_object_part_content_set(eo, *elementName, child->get());
-
-                  the_contents->Set(element, child->get_object());
-               }
-          }
-     }
-
-   virtual Handle<Value> file_get() const
-     {
-        // FIXME: implement
-        return Undefined();
-     }
-
-   virtual void file_set(Handle<Value> val)
-     {
-        if (val->IsObject())
-          {
-             Local<Object> obj = val->ToObject();
-             Local<Value> fileParam = obj->Get(String::New("name"));
-             Local<Value> groupParam = obj->Get(String::New("group"));
-
-             String::Utf8Value fileName(fileParam);
-             String::Utf8Value groupName(groupParam);
-
-             elm_layout_file_set(eo, *fileName, *groupName);
-          }
-     }
-
-   virtual Handle<Value> theme_get() const
-     {
-        // FIXME: implement
-        return Undefined();
-     }
-
-   virtual void theme_set(Handle<Value> val)
-     {
-        if (val->IsObject())
-          {
-             Local<Object> obj = val->ToObject();
-             Local<Value> classParam = obj->Get(String::New("class"));
-             Local<Value> groupParam = obj->Get(String::New("group"));
-             Local<Value> styleParam = obj->Get(String::New("style"));
-
-             String::Utf8Value className(classParam);
-             String::Utf8Value groupName(groupParam);
-             String::Utf8Value styleName(styleParam);
-
-             elm_layout_theme_set(eo, *className, *groupName, *styleName);
-          }
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmLayout>::property_list
-CEvasObject::CPropHandler<CElmLayout>::list[] = {
-     PROP_HANDLER(CElmLayout, file),
-     PROP_HANDLER(CElmLayout, theme),
-     PROP_HANDLER(CElmLayout, contents),
-     { NULL, NULL, NULL },
-};
-
 
 class CElmBackground : public CEvasObject {
    FACTORY(CElmBackground)
