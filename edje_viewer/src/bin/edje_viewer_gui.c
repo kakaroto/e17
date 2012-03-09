@@ -355,7 +355,7 @@ toolbar_reconfigure(Group *grp, Eina_Bool skip_config)
    else
      {
         Viewer *v = grp->v;
-        elm_toolbar_item_del(grp->ti);
+        elm_object_item_del(grp->ti);
         grp->ti = NULL;
 
         if (grp->visible)

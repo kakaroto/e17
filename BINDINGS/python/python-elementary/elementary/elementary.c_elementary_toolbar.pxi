@@ -57,7 +57,7 @@ cdef class ToolbarItem(WidgetItem):
         self.obj = elm_toolbar_item_append(toolbar.obj, icon, label, cb, cbdata)
 
         Py_INCREF(self)
-        elm_toolbar_item_del_cb_set(self.obj, _toolbar_item_del_cb)
+        elm_object_item_del_cb_set(self.obj, _toolbar_item_del_cb)
 
     def next_get(self):
         cdef Elm_Object_Item *it
@@ -95,11 +95,11 @@ cdef class ToolbarItem(WidgetItem):
             return self.icon_get()
 
     def label_set(self, label):
-        elm_toolbar_item_label_set(self.obj, label)
+        elm_object_item_text_set(self.obj, label)
 
     def label_get(self):
         cdef const_char_ptr l
-        l = elm_toolbar_item_label_get(self.obj)
+        l = elm_object_item_text_get(self.obj)
         if l == NULL:
             return None
         return l
@@ -204,7 +204,7 @@ cdef class ToolbarItem(WidgetItem):
         data = (func, self, args, kargs)
         Py_INCREF(data)
         cbdata = <void *>data
-        elm_toolbar_item_tooltip_content_cb_set(self.obj,
+        elm_object_item_tooltip_content_cb_set(self.obj,
                                                 _tooltip_item_content_create,
                                                 cbdata,
                                                 _tooltip_item_data_del_cb)
@@ -216,25 +216,25 @@ cdef class ToolbarItem(WidgetItem):
         copy of label will be removed correctly. If used
         @tooltip_content_cb_set, the data will be unreferred but no freed.
         """
-        elm_toolbar_item_tooltip_unset(self.obj)
+        elm_object_item_tooltip_unset(self.obj)
 
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
 
         @note before you set a style you should define a tooltip with
-        elm_toolbar_item_tooltip_content_cb_set() or
+        elm_object_item_tooltip_content_cb_set() or
         elm_toolbar_item_tooltip_text_set()
         """
         if style:
-            elm_toolbar_item_tooltip_style_set(self.obj, style)
+            elm_object_item_tooltip_style_set(self.obj, style)
         else:
-            elm_toolbar_item_tooltip_style_set(self.obj, NULL)
+            elm_object_item_tooltip_style_set(self.obj, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
         cdef const_char_ptr style
-        style = elm_toolbar_item_tooltip_style_get(self.obj)
+        style = elm_object_item_style_get(self.obj)
         if style == NULL:
             return None
         return style
@@ -247,29 +247,29 @@ cdef class ToolbarItem(WidgetItem):
         this function is called twice for an item, the previous set
         will be unset.
         """
-        elm_toolbar_item_cursor_set(self.obj, cursor)
+        elm_object_item_cursor_set(self.obj, cursor)
 
     def cursor_unset(self):
         """  Unset the cursor to be shown when mouse is over the toolbar item
         """
-        elm_toolbar_item_cursor_unset(self.obj)
+        elm_object_item_cursor_unset(self.obj)
 
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
 
         @note before you set a style you should define a cursor with
-        elm_toolbar_item_cursor_set()
+        elm_object_item_cursor_set()
         """
         if style:
-            elm_toolbar_item_cursor_style_set(self.obj, style)
+            elm_object_item_cursor_style_set(self.obj, style)
         else:
-            elm_toolbar_item_cursor_style_set(self.obj, NULL)
+            elm_object_item_cursor_style_set(self.obj, NULL)
 
     def cursor_style_get(self):
         """ Get the style for this object cursor.
         """
         cdef const_char_ptr style
-        style = elm_toolbar_item_cursor_style_get(self.obj)
+        style = elm_object_item_cursor_style_get(self.obj)
         if style == NULL:
             return None
         return style
@@ -278,14 +278,14 @@ cdef class ToolbarItem(WidgetItem):
         """ Sets cursor engine only usage for this object.
 
         @note before you set engine only usage you should define a cursor with
-        elm_toolbar_item_cursor_set()
+        elm_object_item_cursor_set()
         """
-        elm_toolbar_item_cursor_engine_only_set(self.obj, bool(engine_only))
+        elm_object_item_cursor_engine_only_set(self.obj, bool(engine_only))
 
     def cursor_engine_only_get(self):
         """ Get the engine only usage for this object.
         """
-        return elm_toolbar_item_cursor_engine_only_get(self.obj)
+        return elm_object_item_cursor_engine_only_get(self.obj)
 
 cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     cdef void *data

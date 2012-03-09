@@ -110,7 +110,7 @@ int my_strcmp(const void*a, const void*b) {
 
 void network_busy_set(Eina_Bool state) {
 	network_busy = state;
-	elm_toolbar_item_disabled_set(gui.timelines, state);
+	elm_object_item_disabled_set(gui.timelines, state);
 	elm_object_disabled_set(gui.post, state);
 }
 

@@ -397,12 +397,7 @@ my @elm_toolbar = qw(
   elm_toolbar_item_unselect_all
   elm_toolbar_item_add
   elm_toolbar_item_icon_get
-  elm_toolbar_item_label_get
-  elm_toolbar_item_label_set
-  elm_toolbar_item_del
   elm_toolbar_item_select
-  elm_toolbar_item_disabled_get
-  elm_toolbar_item_disabled_set
   elm_toolbar_item_separator_set
   elm_toolbar_item_separator_get
   elm_toolbar_item_menu_set
@@ -1279,12 +1274,7 @@ may change in future releases.
     elm_toolbar_icon_size_get
     elm_toolbar_icon_size_set
     elm_toolbar_item_add
-    elm_toolbar_item_del
-    elm_toolbar_item_disabled_get
-    elm_toolbar_item_disabled_set
     elm_toolbar_item_icon_get
-    elm_toolbar_item_label_get
-    elm_toolbar_item_label_set
     elm_toolbar_item_menu_get
     elm_toolbar_item_menu_set
     elm_toolbar_item_select

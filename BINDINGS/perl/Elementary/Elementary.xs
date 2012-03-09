@@ -893,23 +893,8 @@ elm_toolbar_item_add(obj, icon, label, func, data)
 Evas_Object *
 elm_toolbar_item_icon_get(Elm_Object_Item *item)
 
-const char *
-elm_toolbar_item_label_get(Elm_Object_Item *item)
-
-void
-elm_toolbar_item_label_set(Elm_Object_Item *item, const char *label)
-
-void
-elm_toolbar_item_del(Elm_Object_Item *item)
-
 void
 elm_toolbar_item_select(Elm_Object_Item *item)
-
-Eina_Bool
-elm_toolbar_item_disabled_get(Elm_Object_Item *item)
-
-void
-elm_toolbar_item_disabled_set(Elm_Object_Item *item, Eina_Bool disabled)
 
 void
 elm_toolbar_item_separator_set(Elm_Object_Item *item, Eina_Bool separator)

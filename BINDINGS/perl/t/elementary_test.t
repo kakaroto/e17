@@ -1646,7 +1646,7 @@ sub test_toolbar {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
 
     $item = elm_toolbar_item_add($tb, $ic, "Hello", \&tb_1, \$ph1);
-    elm_toolbar_item_disabled_set($item, EINA_TRUE);
+    elm_object_item_disabled_set($item, EINA_TRUE);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
