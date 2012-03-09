@@ -37,6 +37,7 @@
 #include "CElmCheck.h"
 #include "CElmClock.h"
 #include "CElmGenList.h"
+#include "CElmEntry.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -521,84 +522,6 @@ public:
 template<> CEvasObject::CPropHandler<CElmList>::property_list
 CEvasObject::CPropHandler<CElmList>::list[] = {
   PROP_HANDLER(CElmList, mode),
-  { NULL, NULL, NULL },
-};
-
-class CElmEntry : public CEvasObject {
-   FACTORY(CElmEntry)
-protected:
-   CPropHandler<CElmEntry> prop_handler;
-public:
-   CElmEntry(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_entry_add(parent->get());
-        construct(eo, obj);
-     }
-
-   virtual Handle<Value> password_get() const
-     {
-        return Boolean::New(elm_entry_password_get(eo));
-     }
-
-   virtual void password_set(Handle<Value> value)
-     {
-        if (value->IsBoolean())
-          elm_entry_password_set(eo, value->BooleanValue());
-     }
-   virtual Handle<Value> editable_get() const
-     {
-        return Boolean::New(elm_entry_editable_get(eo));
-     }
-
-   virtual void editable_set(Handle<Value> value)
-     {
-        if (value->IsBoolean())
-          elm_entry_editable_set(eo, value->BooleanValue());
-     }
-
-   virtual Handle<Value> line_wrap_get() const
-     {
-        return Integer::New(elm_entry_line_wrap_get(eo));
-     }
-
-   virtual void line_wrap_set(Handle<Value> value)
-     {
-        if (value->IsNumber())
-          elm_entry_line_wrap_set(eo, (Elm_Wrap_Type)value->Int32Value());
-     }
-
-   virtual Handle<Value> scrollable_get() const
-     {
-        return Boolean::New(elm_entry_scrollable_get(eo));
-     }
-
-   virtual void scrollable_set(Handle<Value> value)
-     {
-        if (value->IsBoolean())
-          elm_entry_scrollable_set(eo, value->BooleanValue());
-     }
-
-   virtual Handle<Value> single_line_get() const
-     {
-        return Integer::New(elm_entry_single_line_get(eo));
-     }
-
-   virtual void single_line_set(Handle<Value> value)
-     {
-        if (value->IsNumber())
-          elm_entry_single_line_set(eo, (Elm_Wrap_Type)value->Int32Value());
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmEntry>::property_list
-CEvasObject::CPropHandler<CElmEntry>::list[] = {
-  PROP_HANDLER(CElmEntry, password),
-  PROP_HANDLER(CElmEntry, editable),
-  PROP_HANDLER(CElmEntry, line_wrap),
-  PROP_HANDLER(CElmEntry, scrollable),
-  PROP_HANDLER(CElmEntry, single_line),
   { NULL, NULL, NULL },
 };
 
