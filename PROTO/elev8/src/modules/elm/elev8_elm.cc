@@ -8,15 +8,7 @@
 #include <list>
 #include <map>
 #include <string>
-#include <elev8_elm.h>
-
-#define ELM_MODULE_NAME "elm"
-
-#define FACTORY(type_) \
-   public: \
-      static CEvasObject* make(CEvasObject *parent, Local<Object> description) { \
-         return new type_(parent, description); \
-      }
+#include "elev8_elm.h"
 
 int elev8_elm_log_domain = -1;
 

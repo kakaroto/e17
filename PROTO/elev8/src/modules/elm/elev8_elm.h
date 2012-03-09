@@ -17,4 +17,14 @@
 #define ELM_ERR(...) EINA_LOG_DOM_ERR(elev8_elm_log_domain, __VA_ARGS__)
 #define ELM_CRT(...) EINA_LOG_DOM_CRITICAL(elev8_elm_log_domain, __VA_ARGS__)
 
+#define ELM_MODULE_NAME "elm"
+
+#define FACTORY(type_) \
+   public: \
+      static CEvasObject* make(CEvasObject *parent, Local<Object> description) { \
+         return new type_(parent, description); \
+      }
+
+extern int elev8_elm_log_domain;
+
 #endif
