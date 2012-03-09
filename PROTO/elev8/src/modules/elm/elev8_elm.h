@@ -27,4 +27,10 @@
 
 extern int elev8_elm_log_domain;
 
+using namespace v8;
+
+class CEvasObject;
+
+CEvasObject *make_or_get(CEvasObject *parent, Handle<Value> object_val);
+
 #endif
