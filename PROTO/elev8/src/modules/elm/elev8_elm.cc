@@ -43,6 +43,7 @@
 #include "CElmBubble.h"
 #include "CElmTable.h"
 #include "CElmCalendar.h"
+#include "CElmColorSelector.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -1037,139 +1038,6 @@ public:
 template<> CEvasObject::CPropHandler<CElmMenu>::property_list
 CEvasObject::CPropHandler<CElmMenu>::list[] = {
   PROP_HANDLER(CElmMenu, move),
-  { NULL, NULL, NULL },
-};
-
-class CElmColorSelector : public CEvasObject {
-   FACTORY(CElmColorSelector)
-protected:
-   CPropHandler<CElmColorSelector> prop_handler;
-   /* the on_clicked function */
-   Persistent<Value> on_changed_val;
-
-public:
-  CElmColorSelector(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-    {
-       eo = elm_colorselector_add(parent->top_widget_get());
-       construct(eo, obj);
-    }
-
-  virtual ~CElmColorSelector()
-    {
-    }
-
-  virtual Handle<Value> red_get() const
-    {
-       int r, g, b, a;
-       elm_colorselector_color_get(eo, &r, &g, &b, &a);
-       return Number::New(r);
-    }
-
-  virtual void red_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b, a;
-            elm_colorselector_color_get(eo, &r, &g, &b, &a);
-            r = val->ToNumber()->Value();
-            elm_colorselector_color_set(eo, r, g, b, a);
-         }
-    }
-
-  virtual Handle<Value> green_get() const
-    {
-       int r, g, b, a;
-       elm_colorselector_color_get(eo, &r, &g, &b, &a);
-       return Number::New(g);
-    }
-
-  virtual void green_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b, a;
-            elm_colorselector_color_get(eo, &r, &g, &b, &a);
-            g = val->ToNumber()->Value();
-            elm_colorselector_color_set(eo, r, g, b, a);
-         }
-    }
-  virtual Handle<Value> blue_get() const
-    {
-       int r, g, b, a;
-       elm_colorselector_color_get(eo, &r, &g, &b, &a);
-       return Number::New(b);
-    }
-
-  virtual void blue_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b, a;
-            elm_colorselector_color_get(eo, &r, &g, &b, &a);
-            b = val->ToNumber()->Value();
-            elm_colorselector_color_set(eo, r, g, b, a);
-         }
-    }
-  virtual Handle<Value> alpha_get() const
-    {
-       int r, g, b, a;
-       elm_colorselector_color_get(eo, &r, &g, &b, &a);
-       return Number::New(a);
-    }
-
-  virtual void alpha_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b, a;
-            elm_colorselector_color_get(eo, &r, &g, &b, &a);
-            a = val->ToNumber()->Value();
-            elm_colorselector_color_set(eo, r, g, b, a);
-         }
-    }
-   virtual void on_changed(void *)
-     {
-        Handle<Object> obj = get_object();
-        HandleScope handle_scope;
-        Handle<Value> val = on_changed_val;
-        assert(val->IsFunction());
-        Handle<Function> fn(Function::Cast(*val));
-        Handle<Value> args[1] = { obj };
-        fn->Call(obj, 1, args);
-     }
-
-   static void eo_on_changed(void *data, Evas_Object *, void *event_info)
-     {
-        CElmColorSelector *changed = static_cast<CElmColorSelector*>(data);
-        changed->on_changed(event_info);
-     }
-
-   virtual void on_changed_set(Handle<Value> val)
-     {
-        on_changed_val.Dispose();
-        on_changed_val = Persistent<Value>::New(val);
-        if (val->IsFunction())
-          evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
-        else
-          evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
-     }
-
-   virtual Handle<Value> on_changed_get(void) const
-     {
-        return on_changed_val;
-     }
-
-};
-
-template<> CEvasObject::CPropHandler<CElmColorSelector>::property_list
-CEvasObject::CPropHandler<CElmColorSelector>::list[] = {
-  PROP_HANDLER(CElmColorSelector, red),
-  PROP_HANDLER(CElmColorSelector, green),
-  PROP_HANDLER(CElmColorSelector, blue),
-  PROP_HANDLER(CElmColorSelector, alpha),
-  PROP_HANDLER(CElmColorSelector, on_changed),
   { NULL, NULL, NULL },
 };
 
