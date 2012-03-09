@@ -1514,7 +1514,7 @@ void add_status(aStatus *as, void *data) {
 
 	if(gli) {
 		li = elm_genlist_item_insert_after(gui.timeline, &itc1, as, NULL, gli, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-		elm_genlist_item_show(li);
+		elm_genlist_item_show(li, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 		network_busy_set(EINA_FALSE);
 	} else
 		li = elm_genlist_item_prepend(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
