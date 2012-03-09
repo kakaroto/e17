@@ -294,7 +294,6 @@ my @elm_clock = qw(
 my @elm_layout = qw(
   elm_layout_add
   elm_layout_file_set
-  elm_layout_content_set
   elm_layout_edje_get
   elm_layout_sizing_eval
 );
@@ -1073,7 +1072,6 @@ may change in future releases.
     elm_label_add
     elm_label_line_wrap_set
     elm_layout_add
-    elm_layout_content_set
     elm_layout_edje_get
     elm_layout_file_set
     elm_layout_sizing_eval

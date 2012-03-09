@@ -564,9 +564,6 @@ elm_layout_add(Evas_Object *parent);
 Eina_Bool
 elm_layout_file_set(Evas_Object *obj, const char *file, const char *group)
 
-void
-elm_layout_content_set(Evas_Object *obj, const char *swallow, Evas_Object *content)
-
 Evas_Object *
 elm_layout_edje_get(Evas_Object *obj);
 

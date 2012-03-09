@@ -256,7 +256,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
    elm_box_horizontal_set(bx, 1);
    evas_object_size_hint_weight_set(bx, 1.0, -1.0);
    evas_object_size_hint_align_set(bx, 0.0, 0.5);
-   elm_layout_content_set(ly, "object.swallow", bx);
+   elm_object_part_content_set(ly, "object.swallow", bx);
 
    Evas_Object *bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
@@ -340,7 +340,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
                                   _album_sync_netsync_cb, album);
    edje_object_signal_emit(ic, album_netsync_edje_signal_get(album), "");
 
-   elm_layout_content_set(ly, "object.swallow.sync", ic);
+   elm_object_part_content_set(ly, "object.swallow.sync", ic);
 
    if (album_data->netsync.is_sync) edje_object_signal_emit(
                                                             album_data->netsync.icon,

@@ -2090,7 +2090,7 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_smart_callback_add(gui.timeline, "longpressed", on_status_action, NULL);
 		evas_object_smart_callback_add(gui.timeline, "swipe", on_status_swipe, NULL);
 
-		elm_layout_content_set(gui.main, "timeline", gui.timeline);
+		elm_object_part_content_set(gui.main, "timeline", gui.timeline);
 	evas_object_show(gui.timeline);
 
 	if(settings->rel_timestamps)
@@ -2175,7 +2175,7 @@ EAPI int elm_main(int argc, char **argv)
 		elm_box_pack_end(gui.edit, box2);
 		evas_object_show(box2);
 
-		elm_layout_content_set(gui.main, "edit", gui.edit);
+		elm_object_part_content_set(gui.main, "edit", gui.edit);
 	evas_object_show(gui.edit);
 
 
@@ -2202,7 +2202,7 @@ EAPI int elm_main(int argc, char **argv)
 
 		it = elm_toolbar_item_append(toolbar, NULL, _("Settings"), on_settings, NULL);
 
-	elm_layout_content_set(gui.main, "toolbar", toolbar);
+	elm_object_part_content_set(gui.main, "toolbar", toolbar);
 	evas_object_show(toolbar);
 
 	evas_object_resize(gui.win, 480, 640);

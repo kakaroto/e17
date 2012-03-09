@@ -681,7 +681,7 @@ plaçant en haut à gauche x=64px et y=64px.
 
 Notre icône possède un texte (part ``text'', que nous allons changer grâce à :
 \begin{lstlisting}
-   elm_layout_text_set(icon, "text", "Vers l'infini et au delà!");
+   elm_object_part_text_set(icon, "text", "Vers l'infini et au delà!");
 \end{lstlisting}
 
 Elementary my dear Watson !
@@ -849,7 +849,7 @@ et côté programme, on crée un rectangle avec Evas et on l'ajoute dans notre p
    evas_object_resize(rect, 10000, 10000);
    evas_object_move(rect, -5000, -5000);
    evas_object_show(rect);
-   elm_layout_content_set(layout, "table_swallow", rect);
+   elm_object_part_content_set(layout, "table_swallow", rect);
 \end{lstlisting}
 
 Comme on peut le voir ici, j'ai changé la position de l'objet ainsi que sa
@@ -925,7 +925,7 @@ Dans notre programme nous pouvons spécifier le texte comme tout à l'heure, mai
 aussi enrober certaines parties avec les balises que nous avons définies dans le style.
 
 \begin{lstlisting}
- elm_layout_text_set(textblock,"textblock", "<h1>What is Enlightenment?</h1><br>");
+ elm_object_part_text_set(textblock,"textblock", "<h1>What is Enlightenment?</h1><br>");
 \end{lstlisting}
 
 \section{Capturer les signaux edje dans le programme}

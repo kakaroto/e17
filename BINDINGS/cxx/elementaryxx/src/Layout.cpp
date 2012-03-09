@@ -37,7 +37,7 @@ bool Layout::setFile (const std::string &file, const std::string &group)
 
 void Layout::setContent (const std::string &swallow, const Evasxx::Object &content)
 {
-  elm_layout_content_set (o, swallow.c_str (), content.obj ());
+  elm_object_part_content_set (o, swallow.c_str (), content.obj ());
 }
 
 Eflxx::CountedPtr <Edjexx::Object> Layout::getEdje ()

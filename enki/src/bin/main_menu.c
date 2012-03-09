@@ -308,12 +308,12 @@ _library_icon_get(void *data, Evas_Object *obj, const char *part)
       Evas_Object *icon = elm_icon_add(obj);
       elm_icon_file_set(icon, Theme, "icons/plus");
       elm_icon_fill_outside_set(icon, EINA_TRUE);
-      elm_layout_content_set(o, "object.photo.front.swallow", icon);
+      elm_object_part_content_set(o, "object.photo.front.swallow", icon);
 
       icon = elm_icon_add(obj);
       elm_icon_file_set(icon, Theme, "icons/folder");
       elm_icon_fill_outside_set(icon, EINA_TRUE);
-      elm_layout_content_set(o, "object.photo.back.swallow", icon);
+      elm_object_part_content_set(o, "object.photo.back.swallow", icon);
 
       return o;
    }
@@ -383,12 +383,12 @@ _library_icon_get(void *data, Evas_Object *obj, const char *part)
    Evas_Object *icon = elm_icon_add(obj);
    elm_icon_file_set(icon, s1, g1);
    elm_icon_fill_outside_set(icon, EINA_TRUE);
-   elm_layout_content_set(o, "object.photo.front.swallow", icon);
+   elm_object_part_content_set(o, "object.photo.front.swallow", icon);
 
    icon = elm_icon_add(obj);
    elm_icon_file_set(icon, s2, g2);
    elm_icon_fill_outside_set(icon, EINA_TRUE);
-   elm_layout_content_set(o, "object.photo.back.swallow", icon);
+   elm_object_part_content_set(o, "object.photo.back.swallow", icon);
 
    evas_object_show(o);
    return o;
