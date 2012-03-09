@@ -40,6 +40,7 @@
 #include "CElmEntry.h"
 #include "CElmPhoto.h"
 #include "CElmSpinner.h"
+#include "CElmBubble.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -719,74 +720,6 @@ template<> CEvasObject::CPropHandler<CElmPane>::property_list
 CEvasObject::CPropHandler<CElmPane>::list[] = {
   PROP_HANDLER(CElmPane, horizontal),
   PROP_HANDLER(CElmPane, on_press),
-  { NULL, NULL, NULL },
-};
-
-class CElmBubble : public CEvasObject {
-   FACTORY(CElmBubble)
-protected:
-  CPropHandler<CElmBubble> prop_handler;
-
-public:
-  CElmBubble(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-    {
-       eo = elm_bubble_add(parent->top_widget_get());
-       construct(eo, obj);
-       CEvasObject *content;
-       content = make_or_get(this, obj->Get(String::New("content")));
-       if ( content )
-         {
-            elm_object_content_set(eo, content->get());
-         }
-    }
-
-  virtual ~CElmBubble()
-    {
-    }
-
-  virtual Handle<Value> text_part_get() const
-    {
-       return Undefined();
-    }
-
-  virtual void text_part_set(Handle<Value> val)
-    {
-       if (!val->IsObject())
-         {
-            ELM_ERR( "%s: value is not an object!", __FUNCTION__);
-            return;
-         }
-       Local<Object> obj = val->ToObject();
-       Local<Value> it = obj->Get(String::New("item"));
-       Local<Value> lbl = obj->Get(String::New("label"));
-       String::Utf8Value item(it);
-       String::Utf8Value label(lbl);
-       elm_object_part_text_set(eo, *item,*label);
-    }
-
-
-  virtual Handle<Value> corner_get() const
-    {
-       return String::New(elm_bubble_corner_get(eo));
-    }
-
-  virtual void corner_set(Handle<Value> val)
-    {
-       if (val->IsString())
-         {
-            String::Utf8Value str(val);
-            elm_bubble_corner_set(eo, *str);
-         }
-    }
-
-};
-
-template<> CEvasObject::CPropHandler<CElmBubble>::property_list
-CEvasObject::CPropHandler<CElmBubble>::list[] = {
-  PROP_HANDLER(CElmBubble, text_part),
-  PROP_HANDLER(CElmBubble, corner),
   { NULL, NULL, NULL },
 };
 
