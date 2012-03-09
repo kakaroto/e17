@@ -300,7 +300,6 @@ my @elm_layout = qw(
 
 my @elm_notify = qw(
   elm_notify_add
-  elm_notify_content_set
   elm_notify_orient_set
   elm_notify_timeout_set
   elm_notify_timer_init
@@ -1127,7 +1126,6 @@ may change in future releases.
     elm_notepad_add
     elm_notepad_file_set
     elm_notify_add
-    elm_notify_content_set
     elm_notify_orient_set
     elm_notify_parent_set
     elm_notify_repeat_events_set

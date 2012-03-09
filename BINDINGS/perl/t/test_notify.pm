@@ -37,7 +37,7 @@ sub test_notify
    evas_object_size_hint_weight_set($notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify, $bx);
+   elm_object_content_set($notify, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -65,7 +65,7 @@ sub test_notify
    elm_notify_timeout_set($notify2, 5);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify2, $bx);
+   elm_object_content_set($notify2, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -93,7 +93,7 @@ sub test_notify
    elm_notify_timeout_set($notify3, 10);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify3, $bx);
+   elm_object_content_set($notify3, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -119,7 +119,7 @@ sub test_notify
    elm_notify_orient_set($notify4, ELM_NOTIFY_ORIENT_RIGHT);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify4, $bx);
+   elm_object_content_set($notify4, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -145,7 +145,7 @@ sub test_notify
    elm_notify_orient_set($notify5, ELM_NOTIFY_ORIENT_TOP_LEFT);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify5, $bx);
+   elm_object_content_set($notify5, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -171,7 +171,7 @@ sub test_notify
    elm_notify_orient_set($notify6, ELM_NOTIFY_ORIENT_TOP_RIGHT);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify6, $bx);
+   elm_object_content_set($notify6, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -197,7 +197,7 @@ sub test_notify
    elm_notify_orient_set($notify7, ELM_NOTIFY_ORIENT_BOTTOM_LEFT);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify7, $bx);
+   elm_object_content_set($notify7, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 
@@ -223,7 +223,7 @@ sub test_notify
    elm_notify_orient_set($notify7, ELM_NOTIFY_ORIENT_BOTTOM_RIGHT);
 
    $bx = elm_box_add($win);
-   elm_notify_content_set($notify8, $bx);
+   elm_object_content_set($notify8, $bx);
    elm_box_horizontal_set($bx, 1);
    evas_object_show($bx);
 

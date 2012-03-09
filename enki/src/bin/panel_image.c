@@ -360,7 +360,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    evas_object_size_hint_weight_set(bx, 1.0, 1.0);
    evas_object_size_hint_align_set(bx, -1.0, 0.0);
    evas_object_show(bx);
-   elm_notify_content_set(panel_image->notify_trans, bx);
+   elm_object_content_set(panel_image->notify_trans, bx);
 
    bx2 = elm_box_add(obj);
    elm_box_horizontal_set(bx2, 1);

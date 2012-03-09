@@ -117,7 +117,7 @@ sub test_slideshow {
 
     $bx = elm_box_add($win);
     elm_box_horizontal_set($bx, 1);
-    elm_notify_content_set($notify, $bx);
+    elm_object_content_set($notify, $bx);
     evas_object_show($bx);
 
     evas_object_event_callback_add($bx, EVAS_CALLBACK_MOUSE_IN,  \&_mouse_in,  \$notify);

@@ -501,7 +501,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    elm_object_disabled_set(bt, 1);
 
    elm_object_content_set(fr, tb);
-   elm_notify_content_set(inwin2, fr);
+   elm_object_content_set(inwin2, fr);
 
    enlil_album_monitor_stop(album);
    nb_imports = -1;

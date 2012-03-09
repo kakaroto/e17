@@ -26,7 +26,7 @@ download_new(Evas_Object *parent)
    evas_object_size_hint_weight_set(bx, -1.0, -1.0);
    evas_object_size_hint_align_set(bx, -1.0, -1.0);
    evas_object_show(bx);
-   elm_notify_content_set(notify, bx);
+   elm_object_content_set(notify, bx);
 
    lbl = elm_label_add(bx);
    elm_object_text_set(lbl, D_("Downloading ..."));

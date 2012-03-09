@@ -578,9 +578,6 @@ Evas_Object *
 elm_notify_add(Evas_Object *parent)
 
 void
-elm_notify_content_set(Evas_Object *obj, Evas_Object *content)
-
-void
 elm_notify_orient_set(Evas_Object *obj, Elm_Notify_Orient orient)
 
 void
