@@ -53,6 +53,11 @@ int elev8_elm_log_domain = -1;
 
 using namespace v8;
 
+static CElmBasicWindow *main_win;
+static Persistent<Value> the_datadir;
+static Persistent<Value> the_tmpdir;
+static Persistent<Value> the_theme;
+
 static CEvasObject *
 _make(CEvasObject *parent, Local<Object> description)
 {
@@ -84,12 +89,7 @@ make_or_get(CEvasObject *parent, Handle<Value> object_val)
    return obj->HasOwnProperty(String::New("_eo")) ? _get_evas_object(obj) : _make(parent, obj);
 }
 
-CElmBasicWindow *main_win;
-Persistent<Value> the_datadir;
-Persistent<Value> the_tmpdir;
-Persistent<Value> the_theme;
-
-Handle<Value>
+static Handle<Value>
 elm_widget(const Arguments& args)
 {
    if (args.Length() != 1)
@@ -113,7 +113,7 @@ elm_widget(const Arguments& args)
    return object->get_object();
 }
 
-Handle<Value>
+static Handle<Value>
 elm_main_window(const Arguments& args)
 {
    Local<String> win_name;
@@ -145,52 +145,52 @@ elm_main_window(const Arguments& args)
    return main_win->get_object();
 }
 
-Handle<Value>
+static Handle<Value>
 elm_loop_time(const Arguments&)
 {
    return Number::New(ecore_loop_time_get());
 }
 
-Handle<Value>
+static Handle<Value>
 elm_exit(const Arguments&)
 {
    elm_exit();
    return Undefined();
 }
 
-Handle<Value>
+static Handle<Value>
 datadir_getter(Local<String>, const AccessorInfo&)
 {
    return the_datadir;
 }
 
-void
+static void
 datadir_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 {
    the_datadir.Dispose();
    the_datadir = Persistent<Value>::New(value);
 }
 
-Handle<Value>
+static Handle<Value>
 tmpdir_getter(Local<String>, const AccessorInfo&)
 {
    return the_tmpdir;
 }
 
-void
+static void
 tmpdir_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 {
    the_tmpdir.Dispose();
    the_tmpdir = Persistent<Value>::New(value);
 }
 
-Handle<Value>
+static Handle<Value>
 theme_getter(Local<String>, const AccessorInfo&)
 {
    return the_theme;
 }
 
-void
+static void
 theme_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 {
    the_theme.Dispose();
