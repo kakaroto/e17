@@ -871,7 +871,6 @@ cdef extern from "Elementary.h":
 
     # Progressbar widget
     evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
-    void         elm_progressbar_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
     void         elm_progressbar_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
     void         elm_progressbar_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
     void         elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)

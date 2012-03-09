@@ -531,8 +531,6 @@ my @elm_fileselector = qw(
 
 my @elm_progressbar = qw(
   elm_progressbar_add
-  elm_progressbar_label_set
-  elm_progressbar_icon_set
   elm_progressbar_span_size_set
   elm_progressbar_horizontal_set
   elm_progressbar_inverted_set
@@ -1170,9 +1168,7 @@ may change in future releases.
     elm_policy_set
     elm_progressbar_add
     elm_progressbar_horizontal_set
-    elm_progressbar_icon_set
     elm_progressbar_inverted_set
-    elm_progressbar_label_set
     elm_progressbar_pulse
     elm_progressbar_pulse_set
     elm_progressbar_span_size_set

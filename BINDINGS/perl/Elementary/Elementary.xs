@@ -1430,12 +1430,6 @@ Evas_Object *
 elm_progressbar_add(Evas_Object *parent)
 
 void
-elm_progressbar_label_set(Evas_Object *obj, const char *label)
-
-void
-elm_progressbar_icon_set(Evas_Object *obj, Evas_Object *icon)
-
-void
 elm_progressbar_span_size_set(Evas_Object *obj, Evas_Coord size)
 
 void
