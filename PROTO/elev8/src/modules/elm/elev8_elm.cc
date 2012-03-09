@@ -12,70 +12,11 @@
 #include "elev8_elm.h"
 #include "CEvasObject.h"
 #include "CEvasImage.h"
+#include "CElmBasicWindow.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmBasicWindow : public CEvasObject {
-protected:
-   Persistent<Value> win_name;
-   Persistent<Value> win_type;
-
-public:
-   CElmBasicWindow(CEvasObject *parent, Local<Object> obj, Local<String> name, Local<Number> type) :
-       CEvasObject()
-     {
-        eo = elm_win_add(parent ? parent->get() : NULL,
-                                  *String::Utf8Value(name),
-                                  (Elm_Win_Type)(type->Value()));
-        construct(eo, obj);
-
-        /*
-         * Create elements and attach to parent so children can see siblings
-         * that have already been created.  Useful to find radio button groups.
-         */
-        Handle<Object> elements = Object::New();
-        get_object()->Set(String::New("elements"), elements);
-        realize_objects(obj->Get(String::New("elements")), elements);
-
-        evas_object_focus_set(eo, 1);
-        evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
-
-        win_name = Persistent<Value>::New(name);
-        win_type = Persistent<Value>::New(type);
-     }
-
-   virtual Handle<Value> type_get(void) const
-     {
-        return String::New("main");
-     }
-
-   virtual Handle<Value> label_get() const
-     {
-        return String::New(elm_win_title_get(eo));
-     }
-
-   virtual void label_set(const char *str)
-     {
-        elm_win_title_set(eo, str);
-     }
-
-   ~CElmBasicWindow()
-     {
-     }
-
-   static void on_delete(void *, Evas_Object *, void *)
-     {
-        elm_exit();
-     }
-
-   virtual void resize_set(Handle<Value>)
-     {
-        ELM_ERR( "warning: resize=true ignored on main window");
-     }
-
-};
 
 class CElmButton : public CEvasObject {
    FACTORY(CElmButton)
