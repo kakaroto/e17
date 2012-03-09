@@ -39,6 +39,7 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmHover.cc \
 	CElmToggle.cc \
 	CElmPhotocam.cc \
+    CElmCheck.cc \
     CElmClock.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@

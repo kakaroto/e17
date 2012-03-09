@@ -34,6 +34,7 @@
 #include "CElmHover.h"
 #include "CElmToggle.h"
 #include "CElmPhotocam.h"
+#include "CElmCheck.h"
 #include "CElmClock.h"
 
 int elev8_elm_log_domain = -1;
@@ -828,58 +829,6 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
   PROP_HANDLER(CElmEntry, line_wrap),
   PROP_HANDLER(CElmEntry, scrollable),
   PROP_HANDLER(CElmEntry, single_line),
-  { NULL, NULL, NULL },
-};
-
-class CElmCheck : public CEvasObject {
-   FACTORY(CElmCheck)
-protected:
-   CPropHandler<CElmCheck> prop_handler;
-   Persistent<Value> the_icon;
-
-public:
-   CElmCheck(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_check_add(parent->get());
-        construct(eo, obj);
-     }
-
-   virtual ~CElmCheck()
-     {
-        the_icon.Dispose();
-     }
-
-   virtual void state_set(Handle<Value> value)
-     {
-        if (value->IsBoolean())
-          elm_check_state_set(eo, value->BooleanValue());
-     }
-
-   virtual Handle<Value> state_get() const
-     {
-        return Boolean::New(elm_check_state_get(eo));
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = make_or_get(this, value);
-        elm_object_content_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmCheck>::property_list
-CEvasObject::CPropHandler<CElmCheck>::list[] = {
-  PROP_HANDLER(CElmCheck, state),
-  PROP_HANDLER(CElmCheck, icon),
   { NULL, NULL, NULL },
 };
 
