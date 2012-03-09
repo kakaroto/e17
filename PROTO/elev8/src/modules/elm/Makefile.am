@@ -24,7 +24,8 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmRadio.cc \
 	CElmBox.cc \
 	CElmLabel.cc \
-	CElmFlip.cc
+	CElmFlip.cc \
+	CElmActionSlider.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
