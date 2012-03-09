@@ -68,10 +68,10 @@ protected:
    /* property list for this class */
    CPropHandlerBase *property_list_base;
 
-   template<class X> class CPropHandler : CPropHandlerBase {
+   template<class T> class CPropHandler : CPropHandlerBase {
    public:
-     typedef Handle<Value> (X::*prop_getter)(void) const;
-     typedef void (X::*prop_setter)(Handle<Value> val);
+     typedef Handle<Value> (T::*prop_getter)(void) const;
+     typedef void (T::*prop_setter)(Handle<Value> val);
 
    private:
      struct property_list {
