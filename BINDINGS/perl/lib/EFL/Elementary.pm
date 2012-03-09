@@ -577,7 +577,6 @@ my @elm_index = qw(
   elm_index_item_prepend
   elm_index_item_append_relative
   elm_index_item_prepend_relative
-  elm_index_item_del
   elm_index_item_clear
   elm_index_item_go
 );
@@ -1065,7 +1064,6 @@ may change in future releases.
     elm_index_item_append
     elm_index_item_append_relative
     elm_index_item_clear
-    elm_index_item_del
     elm_index_item_go
     elm_index_item_level_get
     elm_index_item_level_set

@@ -1560,9 +1560,6 @@ void
 elm_index_item_prepend_relative(Evas_Object *obj, const char *letter, const void *item, const void *relative)
 
 void
-elm_index_item_del(Evas_Object *obj, const void *item)
-
-void
 elm_index_item_clear(Evas_Object *obj)
 
 void
