@@ -13,49 +13,11 @@
 #include "CEvasObject.h"
 #include "CEvasImage.h"
 #include "CElmBasicWindow.h"
+#include "CElmButton.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmButton : public CEvasObject {
-   FACTORY(CElmButton)
-protected:
-   Persistent<Value> the_icon;
-   CPropHandler<CElmButton> prop_handler;
-public:
-   CElmButton(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_button_add(parent->top_widget_get());
-        construct(eo, obj);
-     }
-
-   virtual ~CElmButton()
-     {
-        the_icon.Dispose();
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = make_or_get(this, value);
-        elm_object_content_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
-     }
-};
-
-template<> CEvasObject::CPropHandler<CElmButton>::property_list
-CEvasObject::CPropHandler<CElmButton>::list[] = {
-     PROP_HANDLER(CElmButton, icon),
-     { NULL, NULL, NULL },
-};
 
 class CElmLayout : public CEvasObject {
    FACTORY(CElmLayout)
