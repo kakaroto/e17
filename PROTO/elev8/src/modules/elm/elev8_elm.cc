@@ -15,109 +15,11 @@
 #include "CElmBasicWindow.h"
 #include "CElmButton.h"
 #include "CElmLayout.h"
+#include "CElmBackground.h"
 
 int elev8_elm_log_domain = -1;
 
 using namespace v8;
-
-class CElmBackground : public CEvasObject {
-   FACTORY(CElmBackground)
-protected:
-   CPropHandler<CElmBackground> prop_handler;
-public:
-   explicit CElmBackground(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-     {
-        eo = elm_bg_add(parent->get());
-        construct(eo, obj);
-     }
-
-   virtual ~CElmBackground()
-     {
-     }
-
-   virtual void image_set(Handle<Value> val)
-     {
-        if (val->IsString())
-          {
-             String::Utf8Value str(val);
-             elm_bg_file_set(eo, *str, NULL);
-          }
-     }
-
-   virtual Handle<Value> image_get(void) const
-     {
-        const char *file = NULL, *group = NULL;
-        elm_bg_file_get(eo, &file, &group);
-        if (file)
-          return String::New(file);
-        else
-          return Null();
-     }
-
-  virtual Handle<Value> red_get() const
-    {
-       int r, g, b;
-       elm_bg_color_get(eo, &r, &g, &b);
-       return Number::New(r);
-    }
-
-  virtual void red_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b;
-            elm_bg_color_get(eo, &r, &g, &b);
-        r = val->ToNumber()->Value();
-            elm_bg_color_set(eo, r, g, b);
-         }
-    }
-
-  virtual Handle<Value> green_get() const
-    {
-       int r, g, b;
-       elm_bg_color_get(eo, &r, &g, &b);
-       return Number::New(g);
-    }
-
-  virtual void green_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b;
-            elm_bg_color_get(eo, &r, &g, &b);
-            g = val->ToNumber()->Value();
-            elm_bg_color_set(eo, r, g, b);
-         }
-    }
-  virtual Handle<Value> blue_get() const
-    {
-       int r, g, b;
-       elm_bg_color_get(eo, &r, &g, &b);
-       return Number::New(b);
-    }
-
-  virtual void blue_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int r, g, b;
-            elm_bg_color_get(eo, &r, &g, &b);
-        b = val->ToNumber()->Value();
-            elm_bg_color_set(eo, r, g, b);
-         }
-    }
-
-};
-
-template<> CEvasObject::CPropHandler<CElmBackground>::property_list
-CEvasObject::CPropHandler<CElmBackground>::list[] = {
-  PROP_HANDLER(CElmBackground, red),
-  PROP_HANDLER(CElmBackground, green),
-  PROP_HANDLER(CElmBackground, blue),
-  { NULL, NULL, NULL },
-};
 
 class CElmRadio : public CEvasObject {
    FACTORY(CElmRadio)
