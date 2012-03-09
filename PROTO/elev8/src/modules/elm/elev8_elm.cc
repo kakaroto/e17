@@ -38,6 +38,7 @@
 #include "CElmClock.h"
 #include "CElmGenList.h"
 #include "CElmEntry.h"
+#include "CElmPhoto.h"
 
 int elev8_elm_log_domain = -1;
 
@@ -659,79 +660,6 @@ CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
 };
 
 
-class CElmPhoto : public CEvasObject {
-   FACTORY(CElmPhoto)
-protected:
-  CPropHandler<CElmPhoto> prop_handler;
-
-public:
-  CElmPhoto(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
-    {
-       eo = elm_photo_add(parent->top_widget_get());
-       construct(eo, obj);
-    }
-
-  virtual ~CElmPhoto()
-    {
-    }
-
-  virtual Handle<Value> image_get() const
-    {
-       //No getter available
-       return Undefined();
-    }
-
-  virtual void image_set(Handle<Value> val)
-    {
-       if (val->IsString())
-         {
-            String::Utf8Value str(val);
-
-            if (0 > access(*str, R_OK))
-              ELM_ERR( "warning: can't read image file %s", *str);
-
-            Eina_Bool retval = elm_photo_file_set(eo, *str);
-            if (retval == EINA_FALSE)
-              ELM_ERR( "Unable to set the image");
-         }
-    }
-
-  virtual Handle<Value> size_get() const
-    {
-       //No getter available
-       return Undefined();
-    }
-
-  virtual void size_set(Handle<Value> val)
-    {
-       if (val->IsNumber())
-         {
-            int size = val->ToInt32()->Value();
-            elm_photo_size_set(eo, size);
-         }
-    }
-
-  virtual Handle<Value> fill_get() const
-    {
-       //No getter available
-       return Undefined();
-    }
-
-  virtual void fill_set(Handle<Value> val)
-    {
-       if (val->IsBoolean())
-         elm_photo_fill_inside_set(eo, val->BooleanValue());
-    }
-};
-
-template<> CEvasObject::CPropHandler<CElmPhoto>::property_list
-CEvasObject::CPropHandler<CElmPhoto>::list[] = {
-  PROP_HANDLER(CElmPhoto, size),
-  PROP_HANDLER(CElmPhoto, fill),
-  { NULL, NULL, NULL },
-};
 
 class CElmSpinner : public CEvasObject {
    FACTORY(CElmSpinner)
