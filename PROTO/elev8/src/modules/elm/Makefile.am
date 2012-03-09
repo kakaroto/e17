@@ -46,7 +46,8 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmPhoto.cc \
 	CElmSpinner.cc \
 	CElmBubble.cc \
-	CElmTable.cc
+	CElmTable.cc \
+	CElmCalendar.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
