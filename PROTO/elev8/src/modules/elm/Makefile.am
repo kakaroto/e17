@@ -35,7 +35,8 @@ libelm_la_SOURCES = elev8_elm.cc \
 	CElmNotify.cc \
 	CElmInwin.cc \
 	CElmFileSelectorEntry.cc \
-	CElmFileSelectorButton.cc
+	CElmFileSelectorButton.cc \
+	CElmHover.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
