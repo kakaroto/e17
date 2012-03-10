@@ -1,29 +1,48 @@
-#ifndef E_MOD_CONFIG_H
-#define E_MOD_CONFIG_H
+/*
+ * XML parsing abstraction interface header.
+ * Contains public structs and lists externs which are further used.
+ */
 
-#include "e_mod_main.h"
+#ifndef E_MOD_PARSE_H
+#define E_MOD_PARSE_H
 
-typedef struct _language_xml_node Language_XML_Node;
-typedef struct _language_xml Language_XML;
+#include <e.h>
 
-struct _language_xml_node {
-    char *tag;
-    char *value;
-    Eina_Hash *attributes;
-    Eina_List *children;
-    Language_XML_Node *parent;
-};
+typedef struct _E_XKB_Model
+{
+    const char *name;
+    const char *description;
+} E_XKB_Model;
 
-struct _language_xml {
-    Language_XML_Node *top;
-    Language_XML_Node *current;
-};
+typedef struct _E_XKB_Variant
+{
+    const char *name;
+    const char *description;
+} E_XKB_Variant;
 
-Language_XML *languages_load();
+typedef struct _E_XKB_Layout
+{
+    const char *name;
+    const char *description;
 
-Eina_Bool language_next(Language_XML *xml);
-Eina_Bool language_first(Language_XML *xml);
+    Eina_List *variants;
+} E_XKB_Layout;
 
-void language_xml_clear(Language_XML *xml);
+int  parse_rules();
+void clear_rules();
+void  find_rules();
+
+int layout_sort_cb          (const void *data1, const void *data2);
+int model_sort_cb           (const void *data1, const void *data2);
+int variant_sort_cb         (const void *data1, const void *data2);
+int model_sort_by_name_cb   (const void *data1, const void *data2);
+int variant_sort_by_name_cb (const void *data1, const void *data2);
+int layout_sort_by_name_cb  (const void *data1, const void *data2);
+int model_sort_by_label_cb  (const void *data1, const void *data2);
+int variant_sort_by_label_cb(const void *data1, const void *data2);
+int layout_sort_by_label_cb (const void *data1, const void *data2);
+
+extern Eina_List *models;
+extern Eina_List *layouts;
 
 #endif

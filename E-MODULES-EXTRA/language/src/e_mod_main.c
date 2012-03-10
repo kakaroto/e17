@@ -1,549 +1,527 @@
 #include <e.h>
 #include "e_mod_main.h"
-#include "e_mod_config.h"
-#include "e_mod_keybindings.h"
-#include "e_mod_lang.h"
-#include "config.h"
+#include "e_mod_parse.h"
 
-#define LANG_MODULE_CONFIG_FILE "module.language"
-#define SELECTED_LANG_SET_RADIO_GROUP 1
+/* Static functions
+ * The static functions specific to the current code unit.
+ */
 
-/*********************** Shelf Code ************************************/
+/* GADCON */
 
-/*********** variables ***********************/
-static     E_Config_DD *conf_edd = NULL;
-static     E_Config_DD *conf_langlist_edd = NULL;
-int _language_log_dom = -1;
+static E_Gadcon_Client *_gc_init(
+    E_Gadcon *gc, const char *name, const char *id, const char *style
+);
 
-/*********************************************/
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient  (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
 
-/************ private funcs **************************/
-static void _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _language_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _language_face_cb_menu_keybindings_configure(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _lang_menu_cb_post_deactivate(void *data, E_Menu *m);
-/*****************************************************/
+static const char *_gc_label (E_Gadcon_Client_Class *client_class);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__);
 
-/* gadcon setup */
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
-static E_Gadcon_Client    *_gc_init    (E_Gadcon *gc, const char *name, const char *id, const char *style);
-static void        _gc_shutdown (E_Gadcon_Client *gcc);
-static void        _gc_orient   (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static const char     *_gc_label   (E_Gadcon_Client_Class *client_class);
-static Evas_Object    *_gc_icon    (E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char       *_gc_id_new  (E_Gadcon_Client_Class *client_class);
+/* CONFIG */
 
-const char *default_xkb_rules_file;
+static void _e_xkb_cfg_new (void);
+static void _e_xkb_cfg_free(void);
 
-static const E_Gadcon_Client_Class  _gadcon_class =
+static Eina_Bool _e_xkb_cfg_timer(void *data);
+
+/* EVENTS */
+
+static void _e_xkb_cb_mouse_down(
+    void *data, Evas *evas, Evas_Object *obj, void *event
+);
+
+static void _e_xkb_cb_menu_post     (void *data, E_Menu *menu);
+static void _e_xkb_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+
+/* Static variables
+ * The static variables specific to the current code unit.
+ */
+
+/* GADGET INSTANCE */
+
+typedef struct _Instance 
 {
-   GADCON_CLIENT_CLASS_VERSION,
-   "language",
-   {
-      _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL,
-      e_gadcon_site_is_not_toolbar
-   },
-   E_GADCON_CLIENT_STYLE_PLAIN
+    E_Gadcon_Client *gcc;
+
+    Evas_Object *o_xkbswitch;
+    Evas_Object *o_xkbflag;
+
+    E_Menu *menu;
+} Instance;
+
+/* LIST OF INSTANCES */
+static Eina_List *instances = NULL;
+
+/* EET STRUCTURES */
+
+static E_Config_DD *e_xkb_cfg_edd        = NULL;
+static E_Config_DD *e_xkb_cfg_layout_edd = NULL;
+
+/* Global variables
+ * Global variables shared across the module.
+ */
+
+/* CONFIG STRUCTURE */
+E_XKB_Config *e_xkb_cfg = NULL;
+
+static const E_Gadcon_Client_Class _gc_class = 
+{
+    GADCON_CLIENT_CLASS_VERSION, "xkbswitch", 
+    {
+        _gc_init,
+        _gc_shutdown,
+        _gc_orient,
+        _gc_label,
+        _gc_icon,
+        _gc_id_new,
+        NULL, NULL
+    },
+    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
-typedef struct _Instance   Instance;
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "XKB Switcher" };
 
-struct _Instance
+/* Module initializer
+ * Initializes the configuration file, checks its versions, populates
+ * menus, finds the rules file, initializes gadget icon.
+ */
+EAPI void *e_modapi_init(E_Module *m) 
 {
-   E_Gadcon_Client   *gcc;
-   Evas_Object         *o_language;
-   Evas_Object         *o_flag;
-};
+    /* Locals */
+    char buf[4096];
 
-static E_Gadcon_Client *
-_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
-{
-   char             buf[4096];
-   Evas_Object         *o;
-   E_Gadcon_Client   *gcc;
-   Instance         *inst;
+    /* i18n */
 
-   inst = E_NEW(Instance, 1);
+    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
 
-   o = edje_object_add(gc->evas);
-   if (!e_theme_edje_object_set(o, "base/theme/modules/language", "modules/language/main"))
-     {
-    snprintf(buf, sizeof(buf), "%s/language.edj", e_module_dir_get(language_config->module));
-    edje_object_file_set(o, buf, "modules/language/main");
-     }
+    bindtextdomain         (PACKAGE, buf);
+    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   gcc = e_gadcon_client_new(gc, name, id, style, o);
-   gcc->data = inst;
+    /* Menus and dialogs */
 
-   inst->gcc = gcc;
-   inst->o_language = o;
+    snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", m->dir);
 
-   inst->o_flag = e_icon_add(gc->evas);
-   snprintf(buf, sizeof(buf), "%s/images/unknown_flag.png",
-        e_module_dir_get(language_config->module));
-   e_icon_file_set(inst->o_flag, buf);
-   edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
+    e_configure_registry_category_add(
+        "keyboard_and_mouse", 80, D_("Input"), 
+        NULL, "preferences-behavior"
+    );
+    e_configure_registry_item_add(
+        "keyboard_and_mouse/xkbswitch",
+        110, D_("XKB Switcher"), 
+        NULL, buf, e_xkb_cfg_dialog
+    );
 
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-                  _lang_button_cb_mouse_down, inst);
+    /* Eet */
 
-   language_config->instances = eina_list_append(language_config->instances, inst);
-   lang_language_switch_to(language_config, language_config->language_selector);
-   return gcc;
-}
-static void
-_gc_shutdown(E_Gadcon_Client *gcc)
-{
-   Instance *inst;
+    e_xkb_cfg_layout_edd = E_CONFIG_DD_NEW(
+        "E_XKB_Config_Layout", E_XKB_Config_Layout
+    );
+    #undef T
+    #undef D
+    #define T E_XKB_Config_Layout
+    #define D e_xkb_cfg_layout_edd
+    E_CONFIG_VAL(D, T, name,    STR);
+    E_CONFIG_VAL(D, T, model,   STR);
+    E_CONFIG_VAL(D, T, variant, STR);
 
-   inst = gcc->data;
-   language_config->instances = eina_list_remove(language_config->instances, inst);
-   evas_object_del(inst->o_language);
-   evas_object_del(inst->o_flag);
-   free(inst);
-}
-static void
-_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
-{
-   Instance *inst;
+    e_xkb_cfg_edd = E_CONFIG_DD_NEW(
+        "e_xkb_cfg", E_XKB_Config
+    );
+    #undef T
+    #undef D
+    #define T E_XKB_Config
+    #define D e_xkb_cfg_edd
+    E_CONFIG_VAL(D, T, version, INT);
+    E_CONFIG_LIST(D, T, used_layouts, e_xkb_cfg_layout_edd);
 
-   inst = gcc->data;
-   e_gadcon_client_aspect_set(gcc, 16, 16);
-   e_gadcon_client_min_size_set(gcc, 16, 16);
-}
-static const char *
-_gc_label(E_Gadcon_Client_Class *client_class)
-{
-   return D_("Language");
-}
-static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
-{
-   Evas_Object *o;
-   char           buf[4096];
+    /* Version check */
 
-   o = edje_object_add(evas);
-   snprintf(buf, sizeof(buf), "%s/e-module-language.edj",
-        e_module_dir_get(language_config->module));
-   edje_object_file_set(o, buf, "icon");
-   return o;
-}
+    e_xkb_cfg = e_config_domain_load("module.xkbswitch", e_xkb_cfg_edd);
+    if (e_xkb_cfg) 
+    {
+        /* Check config version */
+        if ((e_xkb_cfg->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
+        {
+            /* config too old */
+            _e_xkb_cfg_free();
+            ecore_timer_add(1.0, _e_xkb_cfg_timer,
+                 D_("XKB Switcher Module Configuration data needed "
+                 "upgrading. Your old configuration<br> has been"
+                 " wiped and a new set of defaults initialized. "
+                 "This<br>will happen regularly during "
+                 "development, so don't report a<br>bug. "
+                 "This simply means the module needs "
+                 "new configuration<br>data by default for "
+                 "usable functionality that your old<br>"
+                 "configuration simply lacks. This new set of "
+                 "defaults will fix<br>that by adding it in. "
+                 "You can re-configure things now to your<br>"
+                 "liking. Sorry for the inconvenience.<br>")
+            );
+        }
 
-static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
-{
-   return _gadcon_class.name;
-}
-
-/* module setup */
-EAPI E_Module_Api e_modapi = 
-{
-   E_MODULE_API_VERSION,
-   "Language"
-};
-
-EAPI void *
-e_modapi_init(E_Module *m)
-{
-   int          load_default_config = 0;
-   Eina_List *l;
-   char       buf[4096];
-   int i;
-   // last three items are for freebsd systems.
-   const char *xkb_paths[] = {
-    "/etc/X11/xkb/rules/xfree86",
-    "/usr/share/X11/xkb/rules/xfree86",
-    "/usr/local/share/X11/xkb/rules/xfree86",
-    "/usr/lib/X11/xkb/rules/xfree86",
-    "/etc/X11/xkb/rules/xorg",
-    "/usr/share/X11/xkb/rules/xorg",
-    "/usr/local/share/X11/xkb/rules/xorg",
-    "/usr/lib/X11/xkb/rules/xorg",
-    "/etc/X11/xkb/rules/base",
-    "/usr/share/X11/xkb/rules/base",
-    "/usr/local/share/X11/xkb/rules/base",
-    "/usr/lib/X11/xkb/rules/base",
-    "/usr/X11R6/lib/X11/xkb/rules/xfree86",
-    "/usr/X11R6/lib/X11/xkb/rules/xorg",
-    "/usr/X11R6/lib/X11/xkb/rules/base"
-   };
-
-   if (_language_log_dom < 0) {
-      _language_log_dom = eina_log_domain_register("language", NULL);
-      if (_language_log_dom < 0) {
-         EINA_LOG_CRIT("failed to register domain for language module.");
-         eina_shutdown();
-         return EINA_FALSE;
-      }
-   }
-
-   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
-   bindtextdomain(PACKAGE, buf);
-   bind_textdomain_codeset(PACKAGE, "UTF-8");
-
-   conf_langlist_edd = E_CONFIG_DD_NEW("Language_List_Config", Language);
-#undef T
-#undef D
-#define T   Language
-#define D   conf_langlist_edd
-   E_CONFIG_VAL(D, T, id, UINT);
-   E_CONFIG_VAL(D, T, lang_name, STR);
-   E_CONFIG_VAL(D, T, lang_shortcut, STR);
-   E_CONFIG_VAL(D, T, lang_flag, STR);
-   E_CONFIG_VAL(D, T, rdefs.model, STR);
-   E_CONFIG_VAL(D, T, rdefs.layout, STR);
-   E_CONFIG_VAL(D, T, rdefs.variant, STR);
-
-   conf_edd = E_CONFIG_DD_NEW("Language_Config", Config);
-#undef T
-#undef D
-#define T   Config
-#define D   conf_edd
-   E_CONFIG_VAL(D, T, lang_policy, INT);
-   E_CONFIG_VAL(D, T, lang_show_indicator, INT);
-   //E_CONFIG_SUB(D, T, bk_next, l->conf_bk_next_edd);
-   E_CONFIG_VAL(D, T, switch_next_lang_key.context, INT);
-   E_CONFIG_VAL(D, T, switch_next_lang_key.modifiers, INT);
-   E_CONFIG_VAL(D, T, switch_next_lang_key.key, STR);
-   E_CONFIG_VAL(D, T, switch_next_lang_key.action, STR);
-   E_CONFIG_VAL(D, T, switch_next_lang_key.params, STR);
-   E_CONFIG_VAL(D, T, switch_next_lang_key.any_mod, UCHAR);
-   //E_CONFIG_SUB(D, T, bk_prev, l->conf_bk_prev_edd);
-   E_CONFIG_VAL(D, T, switch_prev_lang_key.context, INT);
-   E_CONFIG_VAL(D, T, switch_prev_lang_key.modifiers, INT);
-   E_CONFIG_VAL(D, T, switch_prev_lang_key.key, STR);
-   E_CONFIG_VAL(D, T, switch_prev_lang_key.action, STR);
-   E_CONFIG_VAL(D, T, switch_prev_lang_key.params, STR);
-   E_CONFIG_VAL(D, T, switch_prev_lang_key.any_mod, UCHAR);
-   //
-   E_CONFIG_LIST(D, T, languages, conf_langlist_edd);
-
-   language_config = e_config_domain_load(LANG_MODULE_CONFIG_FILE, conf_edd);
-   if (!language_config)
-     {
-    language_config = E_NEW(Config, 1);
-    load_default_config = 1;
-     }
-
-   // select which files to use.
-   for (i = 0; i < (sizeof(xkb_paths) / sizeof(const char *)); i++)
-     {
-    if (ecore_file_exists(xkb_paths[i]))
-      {
-        default_xkb_rules_file = xkb_paths[i];
-        break;
-      }
-     }
-   if (!default_xkb_rules_file) return EINA_FALSE;
-
-   lang_load_xfree_kbd_models(language_config);
-   lang_load_xfree_language_kbd_layouts(language_config);
-
-   if (load_default_config)
-     {
-    Language  *lang;
-    language_config->lang_policy = LS_GLOBAL_POLICY;
-    language_config->lang_show_indicator = 1;
-
-    /* switch to next language */
-    language_config->switch_next_lang_key.context     = E_BINDING_CONTEXT_ANY;
-    language_config->switch_next_lang_key.key     = eina_stringshare_add("period");
-    language_config->switch_next_lang_key.modifiers     = E_BINDING_MODIFIER_CTRL |
-                               E_BINDING_MODIFIER_ALT;
-    language_config->switch_next_lang_key.any_mod     = 0;
-    language_config->switch_next_lang_key.action     = eina_stringshare_add(LANG_NEXT_ACTION);
-    language_config->switch_next_lang_key.params     = NULL;
-
-    /* switch to prev language */
-    language_config->switch_prev_lang_key.context     = E_BINDING_CONTEXT_ANY;
-    language_config->switch_prev_lang_key.key     = eina_stringshare_add("comma");
-    language_config->switch_prev_lang_key.modifiers     = E_BINDING_MODIFIER_CTRL |
-                               E_BINDING_MODIFIER_ALT;
-    language_config->switch_prev_lang_key.any_mod     = 0;
-    language_config->switch_prev_lang_key.action     = eina_stringshare_add(LANG_PREV_ACTION);
-    language_config->switch_prev_lang_key.params     = NULL;
-
-    lang = lang_get_default_language(language_config);
-    if (lang) language_config->languages = eina_list_append(language_config->languages, lang);
-     }
-   E_CONFIG_LIMIT(language_config->lang_policy, LS_GLOBAL_POLICY, LS_UNKNOWN_POLICY - 1);
-   E_CONFIG_LIMIT(language_config->lang_show_indicator, 0, 1);
-
-   language_config->module = m;
-
-   /* initializing languages */
-   for (l = language_config->languages; l; l = l->next)
-     {
-    lang_language_xorg_values_get(l->data);
-     }
-
-   language_config->l.current = e_border_focused_get();
-
-   e_gadcon_provider_register((E_Gadcon_Client_Class *)(&_gadcon_class));
-
-   language_register_callback_handlers();
-
-   lang_register_module_actions();
-   lang_register_module_keybindings();
-
-   return m;
-}
-
-EAPI int
-e_modapi_shutdown(E_Module *m)
-{
-   Eina_List *l;
-   
-    if (_language_log_dom >= 0) {
-       eina_log_domain_unregister(_language_log_dom);
-       _language_log_dom = -1;
+        /* Ardvarks */
+        else if (e_xkb_cfg->version > MOD_CONFIG_FILE_VERSION) 
+        {
+            /* config too new...wtf ? */
+            _e_xkb_cfg_free();
+            ecore_timer_add(1.0, _e_xkb_cfg_timer, 
+                D_("Your XKB Switcher Module configuration is NEWER "
+                "than the module version. This is "
+                "very<br>strange. This should not happen unless"
+                " you downgraded<br>the module or "
+                "copied the configuration from a place where"
+                "<br>a newer version of the module "
+                "was running. This is bad and<br>as a "
+                "precaution your configuration has been now "
+                "restored to<br>defaults. Sorry for the "
+                "inconvenience.<br>")
+            );
+        }
     }
 
-   e_gadcon_provider_unregister((E_Gadcon_Client_Class *)(&_gadcon_class));
 
-   language_unregister_callback_handlers();
-   language_clear_border_language_setup_list();
+    if (!e_xkb_cfg) _e_xkb_cfg_new();
+    e_xkb_cfg->module = m;
 
-   lang_language_switch_to(language_config, 0);
+    /* Gadcon */
+    e_gadcon_provider_register(&_gc_class);
 
-   if (language_config->config_dialog)
-     e_object_del(E_OBJECT(language_config->config_dialog));
-   if (language_config->menu)
-     {
-    e_menu_post_deactivate_callback_set(language_config->menu, NULL, NULL);
-    e_object_del(E_OBJECT(language_config->menu));
-    language_config->menu = NULL;
-     }
+    /* Rules */
+    find_rules();
 
-   lang_free_xfree_language_kbd_layouts(language_config);
-   lang_free_xfree_kbd_models(language_config);
+    /* Update the icon & layout */
+    e_xkb_update_icon  ();
+    e_xkb_update_layout();
 
-   lang_unregister_module_keybindings();
-   lang_unregister_module_actions();
-
-   for (l = language_config->languages; l; l = l->next)
-     {
-    lang_language_free(l->data);
-     }
-
-   free(language_config);
-   language_config = NULL;
-
-   E_CONFIG_DD_FREE(conf_edd);
-   E_CONFIG_DD_FREE(conf_langlist_edd);
-
-   return 1;
+    return m;
 }
 
-EAPI int
-e_modapi_save(E_Module *m)
+/* Module shutdown
+ * Called when the module gets unloaded. Deregisters the menu state
+ * and frees up the config.
+ */
+EAPI int e_modapi_shutdown(E_Module *m) 
 {
-   e_config_domain_save(LANG_MODULE_CONFIG_FILE, conf_edd, language_config);
-   return 1;
+    E_XKB_Config_Layout *cl = NULL;
+
+    e_configure_registry_item_del    ("keyboard_and_mouse/xkbswitch");
+    e_configure_registry_category_del("keyboard_and_mouse");
+
+    if (e_xkb_cfg->cfd)
+        e_object_del(E_OBJECT(e_xkb_cfg->cfd));
+
+    e_xkb_cfg->cfd    = NULL;
+    e_xkb_cfg->module = NULL;
+
+    e_gadcon_provider_unregister(&_gc_class);
+
+    EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
+    {
+        if (cl->name)    eina_stringshare_del(cl->name);
+        if (cl->model)   eina_stringshare_del(cl->model);
+        if (cl->variant) eina_stringshare_del(cl->variant);
+    }
+
+    E_FREE(e_xkb_cfg);
+
+    E_CONFIG_DD_FREE(e_xkb_cfg_layout_edd);
+    E_CONFIG_DD_FREE(e_xkb_cfg_edd);
+
+    clear_rules();
+
+    return 1;
 }
 
-/************************* Just publics **************************************************/
-void language_face_language_indicator_update()
+/* Module state save
+ * Used to save the configuration file on module shutdown.
+ */
+EAPI int e_modapi_save(E_Module *m) 
 {
-   Eina_List   *l;
-   Instance    *inst; 
-   char lbuf[4096];
-
-   if (!language_config) return;
-
-   for (l = language_config->instances; l; l = l->next)
-     {
-    inst = l->data;
-
-    evas_object_hide(inst->o_flag);
-    edje_object_part_unswallow(inst->o_language, inst->o_flag);
-    if (language_config->languages)
-      {
-         Language    *lang = eina_list_nth(language_config->languages,
-                          language_config->language_selector);
-
-         snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png",
-              e_module_dir_get(language_config->module), lang->lang_flag);
-         e_icon_file_set(inst->o_flag, lbuf);
-         edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
-         edje_object_part_text_set(inst->o_language, "langout", lang->lang_shortcut); 
-      }
-    else 
-      { 
-         snprintf(lbuf, sizeof(lbuf), "%s/images/unknown_flag.png",
-              e_module_dir_get(language_config->module));
-         e_icon_file_set(inst->o_flag, lbuf);
-         edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
-         edje_object_part_text_set(inst->o_language, "langout", "");
-      }
-
-     }
+    e_config_domain_save("module.xkbswitch", e_xkb_cfg_edd, e_xkb_cfg);
+    return 1;
 }
 
-void language_register_callback_handlers()
+/* Updates icons on all available xkbswitch gadgets to reflect the
+ * current layout state.
+ */
+void e_xkb_update_icon(void)
 {
-   if (language_config->lang_policy == LS_GLOBAL_POLICY ||
-       language_config->handlers) return;
+    Instance  *inst = NULL;
+    Eina_List *l    = NULL;
+    char buf[4096];
 
-   language_config->handlers = eina_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_DESK_SHOW, lang_cb_event_desk_show, language_config));
+    if (!e_xkb_cfg->used_layouts)
+        return;
 
-   language_config->handlers = eina_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_FOCUS_IN, lang_cb_event_border_focus_in, language_config));
-   language_config->handlers = eina_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_REMOVE, lang_cb_event_border_remove, language_config));
+    const char *name = ((E_XKB_Config_Layout*)eina_list_data_get(
+        e_xkb_cfg->used_layouts
+    ))->name;
 
-   language_config->handlers = eina_list_append
-      (language_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_ICONIFY, lang_cb_event_border_iconify, language_config));
+    snprintf(
+        buf, sizeof(buf), "%s/flags/%s_flag.png",
+        e_module_dir_get(e_xkb_cfg->module), name
+    );
+
+    EINA_LIST_FOREACH(instances, l, inst)
+    {
+        evas_object_hide          (inst->o_xkbflag);
+        edje_object_part_unswallow(inst->o_xkbswitch, inst->o_xkbflag);
+
+        e_icon_file_set(inst->o_xkbflag, buf);
+
+        edje_object_part_swallow (inst->o_xkbswitch, "flag",  inst->o_xkbflag);
+        edje_object_part_text_set(inst->o_xkbswitch, "label", name);
+
+        evas_object_show(inst->o_xkbflag);
+    }
 }
-void language_unregister_callback_handlers()
-{ 
-   while (language_config->handlers) 
-     { 
-    ecore_event_handler_del(language_config->handlers->data);
-    language_config->handlers = eina_list_remove_list(language_config->handlers,
-                              language_config->handlers);
-     }
-}
-void language_clear_border_language_setup_list()
+
+void e_xkb_update_layout(void)
 {
-   if (!language_config) return;
+    E_XKB_Config_Layout *cl = NULL;
+    char buf[256];
 
-   language_config->l.current = NULL;
-   while (language_config->l.border_lang_setup)
-     {
-    Border_Language_Settings *bls = language_config->l.border_lang_setup->data;
+    if (!e_xkb_cfg->used_layouts)
+        return;
 
-    if (bls->language_name) eina_stringshare_del(bls->language_name);
-    E_FREE(bls);
+    cl = eina_list_data_get(e_xkb_cfg->used_layouts);
 
-    language_config->l.border_lang_setup = 
-       eina_list_remove_list(language_config->l.border_lang_setup,
-                 language_config->l.border_lang_setup);
-     }
+    snprintf(
+        buf, sizeof(buf), "setxkbmap -layout %s -variant %s -model %s",
+        cl->name, cl->variant, cl->model
+    );
+    printf("executing %s\n", buf);
+    ecore_exe_run(buf, NULL);
 }
-/************************* Private funcs *************************************************/
-static void 
-_lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+
+/* LOCAL STATIC FUNCTIONS */
+
+static E_Gadcon_Client *_gc_init(
+    E_Gadcon *gc, const char *name, const char *id, const char *style
+) 
 {
-   Instance *inst;
-   Evas_Event_Mouse_Down   *ev;
-   char buf[4096];
+    Instance *inst = NULL;
+    char buf[4096];
 
-   if (!(inst = data)) return;
-   ev = event_info;
-   if ((ev->button == 3) && (!language_config->menu))
-     {
-    E_Menu       *m, *mo;
-    E_Menu_Item  *mi;
-    int cx, cy, cw, ch;
+    snprintf(
+        buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
+        e_xkb_cfg->module->dir
+    );
 
-    m = e_menu_new();
-         
-    mi = e_menu_item_new(m);
-    e_menu_item_label_set(mi, D_("Configure Key Bindings"));
-    e_util_menu_item_theme_icon_set(mi, "preferences-system");
-    e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
-    
-    mi = e_menu_item_new(m);
-    e_menu_item_label_set(mi, D_("Settings"));
-    e_util_menu_item_theme_icon_set(mi, "preferences-system");
-    e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
+    /* The instance */
+    inst = E_NEW(Instance, 1);
 
-    if (eina_list_count(language_config->languages) > 1)
-      { 
-         Eina_List    *l;
-         Language    *lang;
-         int    indx;
+    /* The gadget */
+    inst->o_xkbswitch = edje_object_add(gc->evas);
+    if (!e_theme_edje_object_set(
+        inst->o_xkbswitch, "base/theme/modules/xkbswitch", 
+        "modules/xkbswitch/main"
+    )) edje_object_file_set(inst->o_xkbswitch, buf, "modules/xkbswitch/main");
 
-         mo = e_menu_new(); 
+    /* The gadcon client */
+    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_xkbswitch);
+    inst->gcc->data = inst;
 
-         mi = e_menu_item_new(mo); 
-         e_menu_item_label_set(mi, D_("Module Configuration")); 
-         e_menu_item_submenu_set(mi, mo); 
-         e_util_menu_item_theme_icon_set(mi, "preferences-system");
+    /* The flag icon */
+    inst->o_xkbflag = e_icon_add(gc->evas);
+    snprintf(
+        buf, sizeof(buf), "%s/flags/unknown_flag.png",
+        e_module_dir_get(e_xkb_cfg->module)
+    );
+    e_icon_file_set(inst->o_xkbflag, buf);
 
-         mi = e_menu_item_new(mo);
-         e_menu_item_separator_set(mi, 1);
+    /* The icon is part of the gadget. */
+    edje_object_part_swallow(inst->o_xkbswitch, "flag", inst->o_xkbflag);
 
-         for (l = language_config->languages, indx = 0; l; l = l->next, indx ++)
-           {
-          lang = l->data;
+    /* Hook some menus */
+    evas_object_event_callback_add(
+        inst->o_xkbswitch, EVAS_CALLBACK_MOUSE_DOWN,
+        _e_xkb_cb_mouse_down, inst
+    );
 
-          mi = e_menu_item_new(mo);
-          e_menu_item_label_set(mi, lang->lang_name);
-          snprintf(buf, sizeof(buf), "%s/images/%s.png", 
-               e_module_dir_get(language_config->module), lang->lang_flag);
-          e_menu_item_icon_file_set(mi, buf);
-          e_menu_item_radio_set(mi, 1);
-          e_menu_item_radio_group_set(mi, SELECTED_LANG_SET_RADIO_GROUP);
-          e_menu_item_toggle_set(mi, indx == language_config->language_selector ? 1 : 0);
-          e_menu_item_callback_set(mi, _language_face_cb_menu_switch_language_to, NULL);
-           }
-      }
+    /* Make the list know about the instance */
+    instances = eina_list_append(instances, inst);
+
+    return inst->gcc;
+}
+
+static void _gc_shutdown(E_Gadcon_Client *gcc) 
+{
+    Instance *inst = NULL;
+
+    if (!(inst = gcc->data)) return;
+    instances = eina_list_remove(instances, inst);
+
+    if (inst->menu) 
+    {
+        e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
+        e_object_del(E_OBJECT(inst->menu));
+        inst->menu = NULL;
+    }
+
+    if (inst->o_xkbswitch) 
+    {
+        evas_object_event_callback_del(
+            inst->o_xkbswitch,
+            EVAS_CALLBACK_MOUSE_DOWN, 
+            _e_xkb_cb_mouse_down
+        );
+        evas_object_del(inst->o_xkbswitch);
+        evas_object_del(inst->o_xkbflag);
+    }
+
+    E_FREE(inst);
+}
+
+static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient) 
+{
+    e_gadcon_client_aspect_set  (gcc, 16, 16);
+    e_gadcon_client_min_size_set(gcc, 16, 16);
+}
+
+static const char *_gc_label(E_Gadcon_Client_Class *client_class)
+{
+    return D_("XKB Switcher");
+}
+
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__) 
+{
+    return _gc_class.name;
+}
+
+static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
+{
+    Evas_Object *o = NULL;
+    char buf[4096];
+
+    snprintf(
+        buf, sizeof(buf), "%s/e-module-xkbswitch.edj",
+        e_xkb_cfg->module->dir
+    );
+
+    o = edje_object_add(evas);
+    edje_object_file_set(o, buf, "icon");
+
+    return o;
+}
+
+static void _e_xkb_cfg_new(void) 
+{
+    char buf[128];
+
+    e_xkb_cfg = E_NEW(E_XKB_Config, 1);
+    e_xkb_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
+
+    if ((e_xkb_cfg->version & 0xffff) < 0x008d)
+    {
+        e_xkb_cfg->used_layouts = NULL;
+    }
+
+    e_xkb_cfg->version = MOD_CONFIG_FILE_VERSION;
+
+    e_config_save_queue();
+}
+
+static void _e_xkb_cfg_free(void) 
+{
+    E_XKB_Config_Layout *cl = NULL;
+
+    EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
+    {
+        if (cl->name)    eina_stringshare_del(cl->name);
+        if (cl->model)   eina_stringshare_del(cl->model);
+        if (cl->variant) eina_stringshare_del(cl->variant);
+    }
+
+    E_FREE(e_xkb_cfg);
+}
+
+static Eina_Bool _e_xkb_cfg_timer(void *data) 
+{
+    e_util_dialog_internal( D_("XKB Switcher Configuration Updated"), data);
+    return EINA_FALSE;
+}
+
+static void _e_xkb_cb_mouse_down(
+    void *data, Evas *evas, Evas_Object *obj, void *event
+) 
+{
+    Evas_Event_Mouse_Down *ev = NULL;
+    E_Menu_Item           *mi = NULL;
+
+    Instance *inst = NULL;
+    E_Zone   *zone = NULL;
+
+    int x, y;
+
+    if (!(inst = data))
+        return;
+
+    ev = event;
+
+    if ((ev->button == 3) && (!inst->menu)) 
+    {
+        E_Menu *m = NULL;
+
+        zone = e_util_zone_current_get(e_manager_current_get());
+
+        m  = e_menu_new();
+        mi = e_menu_item_new(m);
+
+        e_menu_item_label_set          (mi, D_("Settings"));
+        e_util_menu_item_theme_icon_set(mi, "preferences-system");
+        e_menu_item_callback_set       (mi, _e_xkb_cb_menu_configure, NULL);
 
         m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
-	e_menu_post_deactivate_callback_set(m, _lang_menu_cb_post_deactivate, inst); 
-	language_config->menu = m; 
-	
-        e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
-        e_menu_activate_mouse(m,
-          e_util_zone_current_get(e_manager_current_get()), 
-          cx + ev->output.x, cy + ev->output.y, 1, 1, 
-          E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-    evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
-                 EVAS_BUTTON_NONE, ev->timestamp, NULL);
-     }
-   else if (ev->button == 1)
-     {
-    lang_language_switch_to_next(language_config);
-     }
-}
-static void 
-_language_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   if (!language_config) return;
-   if (language_config->config_dialog) return;
-   _lang_configure_language_module(language_config);
-}
-static void
-_language_face_cb_menu_keybindings_configure(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   e_configure_registry_call("keyboard_and_mouse/key_bindings", e_container_current_get(e_manager_current_get()), NULL);
-}
-static void
-_language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Eina_List   *l;
-   Language    *lang;
-   int           indx;
+        e_menu_post_deactivate_callback_set(m, _e_xkb_cb_menu_post, inst);
+        inst->menu = m;
 
-   if (!language_config || !mi) return;
+        e_gadcon_canvas_zone_geometry_get(
+            inst->gcc->gadcon, &x, &y, 
+            NULL, NULL
+        );
 
-   for (l = language_config->languages, indx = 0; l; l = l->next, indx ++)
-     {
-    lang = l->data;
+        e_menu_activate_mouse(
+            m, zone, (x + ev->output.x), 
+            (y + ev->output.y), 1, 1, 
+            E_MENU_POP_DIRECTION_AUTO, ev->timestamp
+        );
+        evas_event_feed_mouse_up(
+            inst->gcc->gadcon->evas,
+            ev->button, EVAS_BUTTON_NONE,
+            ev->timestamp, NULL
+        );
+    }
+    else if (ev->button == 1)
+    {
+        void *data = eina_list_data_get(e_xkb_cfg->used_layouts);
 
-    if (!strcmp(lang->lang_name, mi->label))
-      {
-         if (language_config->language_selector == indx)
-           break;
+        e_xkb_cfg->used_layouts = eina_list_append(
+            e_xkb_cfg->used_layouts, data
+        );
+        e_xkb_cfg->used_layouts = eina_list_remove_list(
+            e_xkb_cfg->used_layouts, e_xkb_cfg->used_layouts
+        );
 
-         lang_language_switch_to(language_config, indx);
-         break;
-      }
-     }
+        e_xkb_update_icon  ();
+        e_xkb_update_layout();
+    }
 }
-static void
-_lang_menu_cb_post_deactivate(void *data, E_Menu *m)
+
+static void _e_xkb_cb_menu_post(void *data, E_Menu *menu) 
 {
-   if (!language_config->menu) return;
-   e_object_del(E_OBJECT(language_config->menu));
-   language_config->menu = NULL;
+    Instance *inst = NULL;
+
+    if (!(inst = data) || !inst->menu) return;
+    inst->menu = NULL;
 }
-/***********************************************************************/
+
+static void _e_xkb_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
+{
+    if (!e_xkb_cfg || e_xkb_cfg->cfd) return;
+    e_xkb_cfg_dialog(mn->zone->container, NULL);
+}

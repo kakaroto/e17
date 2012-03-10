@@ -1,8 +1,11 @@
+/*
+ * Main module header.
+ * Contains some i18n stuff, module versioning,
+ * config and public prototypes from main.
+ */
+
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
-
-#include <e.h>
-#include <libxml/xmlreader.h>
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
@@ -13,88 +16,62 @@
 # define D_(string) (string)
 #endif
 
-extern int _language_log_dom;
+/* Macros used for config file versioning */
+/* You can increment the EPOCH value if the old configuration is not
+ * compatible anymore, it creates an entire new one.
+ * You need to increment GENERATION when you add new values to the
+ * configuration file but is not needed to delete the existing conf  */
+#define MOD_CONFIG_FILE_EPOCH 0x0001
+#define MOD_CONFIG_FILE_GENERATION 0x008d
+#define MOD_CONFIG_FILE_VERSION \
+   ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
-#define ERR(...) EINA_LOG_DOM_ERR(_language_log_dom, __VA_ARGS__)
-#define DBG(...) EINA_LOG_DOM_DBG(_language_log_dom, __VA_ARGS__)
-#define WARN(...) EINA_LOG_DOM_WARN(_language_log_dom, __VA_ARGS__)
-#define CRIT(...) EINA_LOG_DOM_CRIT(_language_log_dom, __VA_ARGS__)
-#define INFO(...) EINA_LOG_DOM_INFO(_language_log_dom, __VA_ARGS__)
-
-
-#undef E_FREE
-#define E_FREE(arg) \
-{ \
-    free(arg); \
-    arg = NULL; \
-}
-
-#undef E_FREE_IF
-#define E_FREE_IF(arg) \
-{ \
-    if (arg) free(arg); \
-}
-
-/******************* Shelf Code ****************************/
-typedef enum { LS_GLOBAL_POLICY,
-           LS_WINDOW_POLICY,
-           LS_APPLICATION_POLICY,
-           LS_UNKNOWN_POLICY }lang_switch_policy_t;
-
-typedef struct _Config    Config;
-
-struct _Config
+typedef struct _E_XKB_Config
 {
-   /* saved * loaded config values */
-   lang_switch_policy_t    lang_policy;
-   int            lang_show_indicator;
+    /* Not written to disk */
+    E_Module *module;
+    E_Config_Dialog *cfd;
 
-   E_Config_Binding_Key    switch_next_lang_key;
-   E_Config_Binding_Key    switch_prev_lang_key;
+    /* Written to disk */
+    int version;
+    Eina_List *used_layouts;
+} E_XKB_Config;
 
-   Eina_List        *languages; // Language
+/* This represents the node data in used_layouts */
+typedef struct _E_XKB_Config_Layout
+{
+    const char *name;
+    const char *model;
+    const char *variant;
+} E_XKB_Config_Layout;
 
-   /* config state */
-   E_Module         *module;
-   E_Config_Dialog   *config_dialog;
-   Eina_List         *instances; // Instance
-   E_Menu         *menu;
+/* automatically typedef'd by E */
+struct _E_Config_Dialog_Data 
+{
+    Evas *evas, *dlg_evas;
+    Evas_Object *layout_list, *used_list, *model_list, *variant_list;
+    Evas_Object *btn_add, *btn_del, *btn_up, *btn_down;
+    Ecore_Timer *fill_delay;
+    Ecore_Timer *dlg_fill_delay;
 
-   Eina_List         *handlers;
+    Eina_List *cfg_layouts;
 
-   /* lang related stuff */
-   unsigned int      language_selector;
-   Eina_List      *language_predef_list; // Language_Predef
-   Eina_List      *language_kbd_model_list; // Language_Kbd_Model
-
-   struct
-     { 
-    Eina_List *border_lang_setup; // Border_Language_Settings 
-    E_Border  *current;
-     } l;
+    E_Dialog *dlg_add_new;
 };
 
-/********** module api *********************/
+/* Prototypes */
 
-EAPI extern E_Module_Api   e_modapi;
+EAPI extern E_Module_Api e_modapi;
 
-EAPI void   *e_modapi_init     (E_Module *m);
-EAPI int     e_modapi_shutdown (E_Module *m);
-EAPI int     e_modapi_save     (E_Module *m);
+EAPI void *e_modapi_init    (E_Module *m);
+EAPI int   e_modapi_shutdown(E_Module *m);
+EAPI int   e_modapi_save    (E_Module *m);
 
-/*******************************************/
+void e_xkb_update_icon  (void);
+void e_xkb_update_layout(void);
 
-/************ Just publics *****************/
-void language_face_language_indicator_update();
+E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params);
 
-void language_register_callback_handlers();
-void language_unregister_callback_handlers();
-
-void language_clear_border_language_setup_list();
-/*******************************************/
-
-extern Config *language_config;
-
-extern const char *default_xkb_rules_file;
+extern E_XKB_Config *e_xkb_cfg;
 
 #endif
