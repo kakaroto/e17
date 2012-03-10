@@ -105,7 +105,7 @@ _excessive_eio_done_cb(void *data, Eio_File *handler)
    _excessive_add_up(grid);
 
    evas_object_data_set(grid, "excessive/eio", NULL);
-   elm_gengrid_item_show(evas_object_data_get(grid, "excessive/up_item"));
+   elm_gengrid_item_show(evas_object_data_get(grid, "excessive/up_item"), ELM_GENGRID_ITEM_SCROLLTO_TOP);
 }
 
 static void
@@ -173,7 +173,7 @@ _excessive_add_up(void *data)
                                                     info, _excessive_file_info_cmp,
                                                     NULL, NULL);
        if (!evas_object_data_get(grid, "excessive/eio"))
-         elm_gengrid_item_show(info->item);
+         elm_gengrid_item_show(info->item, ELM_GENGRID_ITEM_SCROLLTO_TOP);
        evas_object_data_set(grid, "excessive/up_item", info->item);
      }
 
