@@ -1,308 +1,261 @@
 #include "e_mod_parse.h"
 
-Eina_List *layouts     = NULL;
-Eina_List *models      = NULL;
-const char *rules_file = NULL;
+static Eina_Bool _lng_read(Language_XML *xml, xmlTextReaderPtr reader);
+static Eina_Bool _lng_start(Language_XML *xml);
+static Eina_Bool _lng_set(Language_XML *xml, char *value, char *attrvalue, const char *type);
 
-void
-find_rules()
+static Eina_Bool _lng_read(Language_XML *xml, xmlTextReaderPtr reader)
 {
-    int i = 0;
-    const char *lstfiles[] = {
-         "/usr/share/X11/xkb/rules/xorg.lst",
-         "/usr/share/X11/xkb/rules/xfree86.lst",
-         "/usr/local/share/X11/xkb/rules/xorg.lst",
-         "/usr/local/share/X11/xkb/rules/xfree86.lst",
-         "/usr/X11R6/lib/X11/xkb/rules/xorg.lst",
-         "/usr/X11R6/lib/X11/xkb/rules/xfree86.lst", 
-         "/usr/local/X11R6/lib/X11/xkb/rules/xorg.lst",
-         "/usr/local/X11R6/lib/X11/xkb/rules/xfree86.lst",
-         NULL
-    };
-    
-    for (; lstfiles[i]; i++)
+  Eina_Bool empty;
+  xmlChar *name, *value;
+
+  if (!reader) return EINA_FALSE;
+  language_xml_clear(xml);
+
+  while (xmlTextReaderRead(reader) == 1)
     {
-        FILE *f = fopen(lstfiles[i], "r");
-        if (f)
+      name = xmlTextReaderName(reader);
+      value = xmlTextReaderValue(reader);
+      empty = xmlTextReaderIsEmptyElement(reader);
+
+      switch (xmlTextReaderNodeType(reader))
         {
-            fclose(f);
-            rules_file = lstfiles[i];
+          case XML_READER_TYPE_ELEMENT:
+            {
+              _lng_start(xml);
+              _lng_set(xml, (char *) name, NULL, "tag");
+
+              if (xmlTextReaderHasAttributes(reader))
+                {
+                  xmlTextReaderMoveToFirstAttribute(reader);
+                  do
+                  {
+                    xmlChar *attr_name, *attr_value;
+
+                    attr_name = xmlTextReaderName(reader);
+                    attr_value = xmlTextReaderValue(reader);
+
+                    _lng_set(xml, (char *) attr_name, (char *) attr_value, "atr");
+
+                    xmlFree(attr_name);
+                    xmlFree(attr_value);
+                  } while (xmlTextReaderMoveToNextAttribute(reader) == 1);
+                }
+
+              if (!empty) break;
+            }
+          case XML_READER_TYPE_END_ELEMENT:
+            {
+              if (!xml) return EINA_FALSE;
+              if (!xml->current)
+                xml->current = xml->top;
+              else
+                xml->current = xml->current->parent;
+              break;
+            }
+          case XML_READER_TYPE_WHITESPACE:
             break;
+          case XML_READER_TYPE_TEXT:
+            {
+              _lng_set(xml, (char *) value, NULL, "val");
+              break;
+            }
         }
+      xmlFree(name);
+      xmlFree(value);
     }
+
+  xmlTextReaderClose(reader);
+  xmlFreeTextReader(reader);
+
+  xml->current = xml->top;
+
+  return EINA_TRUE;
 }
 
-int
-parse_rules()
+static Eina_Bool _lng_start(Language_XML *xml)
 {
-    E_XKB_Model *model = NULL;
-    E_XKB_Layout *layout = NULL;
-    E_XKB_Variant *variant = NULL;
+  Language_XML_Node *node;
 
-    char buf[512];
-
-    if (!rules_file) return 0;
-
-    layouts = NULL;
-    models  = NULL;
-
-    FILE *f = fopen(rules_file, "r");
-    if  (!f) return 0;
-
-    /* move on to next line, the first one is useless */
-    fgets(buf, sizeof(buf), f);
-
-    /* read models here */
-    for (;;) if (fgets(buf, sizeof(buf), f))
+  if (!xml)
     {
-        char *n = strchr(buf, '\n');
-        if   (n) *n = '\0';
+      DBG("One of values is NULL, returning with error.");
+      return EINA_FALSE;
+    }
 
-        /* means end of section */
-        if (!buf[0]) break;
+  if (!xml->current && xml->top) return EINA_FALSE;
 
-        /* get rid of initial 2 spaces here */
-        char *p   = buf + 2;
-        char *tmp = strdup(p);
-
-        model = E_NEW(E_XKB_Model, 1);
-        model->name = eina_stringshare_add(strtok(tmp, " "));
-
-        free(tmp);
-
-        p += strlen(model->name);
-        while (p[0] == ' ') ++p;
-
-        model->description = eina_stringshare_add(p);
-
-        models = eina_list_append(models, model);
-    } else break;
-
-    /* move on again */
-    fgets(buf, sizeof(buf), f);
-
-    /* read layouts here */
-    for (;;) if (fgets(buf, sizeof(buf), f))
+  node = calloc(sizeof(Language_XML_Node), 1);
+  if (!node)
     {
-        char *n = strchr(buf, '\n');
-        if   (n) *n = '\0';
+      E_FREE(node);
+      return EINA_FALSE;
+    }
 
-        if (!buf[0]) break;
+  node->attributes = eina_hash_string_superfast_new(free);
+  node->parent = xml->current;
 
-        char *p   = buf + 2;
-        char *tmp = strdup(p);
-
-        layout = E_NEW(E_XKB_Layout, 1);
-        layout->name = eina_stringshare_add(strtok(tmp, " "));
-
-        free(tmp);
-
-        p += strlen(layout->name);
-        while (p[0] == ' ') ++p;
-
-        variant = E_NEW(E_XKB_Variant, 1);
-        variant->name = eina_stringshare_add("basic");
-        variant->description = eina_stringshare_add("Default layout variant");
-
-        layout->description = eina_stringshare_add(p);
-        layout->variants    = eina_list_append(layout->variants, variant);
-
-        layouts = eina_list_append(layouts, layout);
-    } else break;
-
-    fgets(buf, sizeof(buf), f);
-
-    /* read variants here */
-    for (;;) if (fgets(buf, sizeof(buf), f))
+  if (!xml->top)
+    xml->current = xml->top = node;
+  else
     {
-        char *n = strchr(buf, '\n');
-        if   (n) *n = '\0';
+      xml->current->children = eina_list_append( xml->current->children, node );
+      xml->current = node;
+    }
 
-        if (!buf[0]) break;
-
-        char *p   = buf + 2;
-        char *tmp = strdup(p);
-
-        variant = E_NEW(E_XKB_Variant, 1);
-        variant->name = eina_stringshare_add(strtok(tmp, " "));
-
-        char   *tok = strtok(NULL, " ");
-        *strchr(tok, ':') = '\0';
-
-        layout =
-            eina_list_search_unsorted(layouts, layout_sort_by_name_cb, tok);
-        layout->variants = eina_list_append(layout->variants, variant);
-
-        p += strlen(variant->name);
-        while (p[0] == ' ') ++p;
-        p += strlen(tok);
-        p += 2;
-
-        free(tmp);
-
-        variant->description = eina_stringshare_add(p);
-    } else break;
-
-    fclose(f);
-
-    /* Sort layouts */
-    layouts =
-        eina_list_sort(layouts, eina_list_count(layouts), layout_sort_cb);
-
-   return 1;
+  return EINA_TRUE;
 }
 
-void
-clear_rules()
+static Eina_Bool _lng_set(Language_XML *xml, char *value, char *attrvalue, const char *type)
 {
-    E_XKB_Variant *v  = NULL;
-    E_XKB_Layout  *la = NULL;
-    E_XKB_Model   *m  = NULL;
-
-    EINA_LIST_FREE(layouts, la)
+  if ((!xml) || (!value))
     {
-        if (la->name       ) eina_stringshare_del(la->name);
-        if (la->description) eina_stringshare_del(la->description);
+      DBG("One of values is NULL, returning with error.");
+      return EINA_FALSE;
+    }
 
-        EINA_LIST_FREE(la->variants, v)
+  if (!strcmp(type, "atr"))
+    {
+      if (attrvalue) attrvalue = eina_stringshare_add(attrvalue);
+      eina_hash_direct_add( xml->current->attributes, eina_stringshare_add(value), attrvalue );
+    }
+  else if (!strcmp(type, "tag"))
+    {
+      xml->current->tag = eina_stringshare_add(value);
+      if (!xml->current->tag) return EINA_FALSE;
+    }
+  else if (!strcmp(type, "val"))
+    {
+      xml->current->value = eina_stringshare_add(value);
+      if (!xml->current->value) return EINA_FALSE;
+    }
+  else return EINA_FALSE;
+
+  return EINA_TRUE;
+}
+
+Language_XML *languages_load()
+{
+  Language_XML *xml;
+  char filename[PATH_MAX];
+  xmlTextReaderPtr reader;
+  Eina_Bool result;
+
+  xml = calloc(sizeof(Language_XML), 1);
+  if (!xml)
+    {
+      DBG("One of values is NULL, returning with error.");
+      return NULL;
+    }
+
+  snprintf(filename, sizeof(filename), "%s.xml", default_xkb_rules_file);
+  reader = xmlReaderForFile( filename, NULL, XML_PARSE_RECOVER );
+
+  result = _lng_read(xml, reader);
+  if (!result) return NULL;
+    
+  return xml;
+}
+
+Eina_Bool language_next(Language_XML *xml)
+{
+    Eina_List *p_list;
+    Language_XML_Node *parent, *cur;
+
+    if (!xml)
+      {
+        DBG("One of values is NULL, returning with error.");
+        return EINA_FALSE;
+      }
+
+    if (xml->current) {
+        cur = xml->current;
+        parent = cur->parent;
+
+        if (parent) {
+            p_list = parent->children;
+
+            p_list = eina_list_data_find_list(p_list, xml->current);
+            p_list = eina_list_next( p_list );
+            if (!(xml->current = eina_list_data_get(p_list))) {
+                xml->current = cur;
+                return EINA_FALSE;
+            }
+        } else
+            xml->current = EINA_FALSE;
+    }
+
+    return xml->current ? EINA_TRUE : EINA_FALSE;
+}
+
+Eina_Bool language_first(Language_XML *xml)
+{
+  Eina_Bool ret;
+  if (!xml)
+  {
+    DBG("One of values is NULL, returning with error.");
+    return EINA_FALSE;
+  }
+
+  if (xml->current && xml->current->children)
+    if (eina_list_count(xml->current->children) > 0)
+      ret = EINA_TRUE;
+    else
+      ret = EINA_FALSE;
+  else
+    ret = EINA_FALSE;
+
+  if (ret)
+    xml->current = eina_list_nth(xml->current->children, 0);
+  else
+    return EINA_TRUE;
+
+  return xml->current ? EINA_TRUE : EINA_FALSE;
+}
+
+void language_xml_clear(Language_XML *xml)
+{
+  Language_XML_Node *n_cur;
+
+  if ((!xml) || (!xml->current))
+    {
+      DBG("One of values is NULL, returning with error.");
+      return;
+    }
+
+  xml->current = xml->top;
+
+  n_cur = xml->current;
+  if (!n_cur)
+    {
+      DBG("One of values is NULL, returning with error.");
+      return;
+    }
+
+  n_cur = n_cur->parent;
+
+  if (n_cur)
+    {
+      Language_XML_Node *c_parent = n_cur;
+      Eina_List *c_list = c_parent->children;
+      void *data;
+
+      c_list = eina_list_data_find_list(c_list, xml->current);
+      EINA_LIST_FREE(c_list, data) E_FREE(data);
+      if (!(n_cur = eina_list_data_get(c_list)))
+        if (!(n_cur = eina_list_last(c_list))) n_cur = c_parent;
+    }
+  else
+    {
+      xml->top = NULL;
+      void *data;
+      if (xml->current)
         {
-            if  (v->name       ) eina_stringshare_del(v->name);
-            if  (v->description) eina_stringshare_del(v->description);
-
-            E_FREE(v);
+          eina_hash_free(xml->current->attributes);
+          EINA_LIST_FREE(xml->current->children, data) E_FREE(data);
+          E_FREE(xml->current);
         }
-
-        E_FREE(la);
     }
 
-    EINA_LIST_FREE(models, m)
-    {
-        if (m->name       ) eina_stringshare_del(m->name);
-        if (m->description) eina_stringshare_del(m->description);
-
-        E_FREE(m);
-    }
-
-    layouts = NULL;
-    models  = NULL;
-}
-
-int
-layout_sort_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Layout *l1 = NULL, *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    if (!l2->name) return -1;
-    return strcmp(l1->name, l2->name);
-}
-
-int
-model_sort_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Model *l1 = NULL, *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    if (!l2->name) return -1;
-    return strcmp(l1->name, l2->name);
-}
-
-int
-variant_sort_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Variant *l1 = NULL, *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    if (!l2->name) return -1;
-    return strcmp(l1->name, l2->name);
-}
-
-int
-model_sort_by_name_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Model *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    return strcmp(l1->name, l2);
-}
-
-int
-variant_sort_by_name_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Variant *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    return strcmp(l1->name, l2);
-}
-
-int
-layout_sort_by_name_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Layout *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    return strcmp(l1->name, l2);
-}
-
-int
-model_sort_by_label_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Model *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    return strcmp(l1->description, l2);
-}
-
-int
-variant_sort_by_label_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Variant *l1 = NULL;
-    const char *l2 = NULL;
-    char buf[128];
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    /* XXX This is nasty, see below */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->name, l1->description);
-    return strcmp(buf, l2);
-}
-
-int
-layout_sort_by_label_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Layout *l1 = NULL;
-    const char *l2 = NULL;
-    char buf[128];
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    /* XXX This is nasty, but it's definitely better than iterating
-     * over the whole list. User-defined property for ilist item would
-     * solve, but E widget system lacks this currently.
-     */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->name);
-    return strcmp(buf, l2);
+    xml->current = n_cur;
 }
