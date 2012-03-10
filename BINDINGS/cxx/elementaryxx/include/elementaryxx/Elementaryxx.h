@@ -30,8 +30,6 @@
 #include "Layout.h"
 #include "Hover.h"
 #include "Check.h"
-#include "Anchorview.h"
-#include "Anchorblock.h"
 #include "Spinner.h"
 #include "Progressbar.h"
 #include "Panel.h"
