@@ -72,14 +72,14 @@ bool GenListItem::getDisplayOnly () const
   return elm_genlist_item_display_only_get (mItem);
 }
 
-void GenListItem::show ()
+void GenListItem::show (Elm_Genlist_Item_Scrollto_Type type)
 {
-  elm_genlist_item_show (mItem);
+  elm_genlist_item_show (mItem, type);
 }
 
-void GenListItem::bringIn ()
+void GenListItem::bringIn (Elm_Genlist_Item_Scrollto_Type type)
 {
-  elm_genlist_item_bring_in (mItem);
+  elm_genlist_item_bring_in (mItem, type);
 }
 
 void GenListItem::showTop ()
@@ -134,7 +134,7 @@ const void *GenListItem::getData ()
   return elm_object_item_data_get (mItem);
 }
 
-void GenListItem::setData (const void *data)
+void GenListItem::setData (void *data)
 {
   elm_object_item_data_set (mItem, data);
 }

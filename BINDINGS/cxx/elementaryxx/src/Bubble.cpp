@@ -29,7 +29,7 @@ void Bubble::setLabel (const std::string &label)
 
 void Bubble::setInfo (const std::string &info)
 {
-  elm_object_part_text_set (o, info.c_str ());
+  elm_object_part_text_set (o, NULL, info.c_str ());
 }
 
 void Bubble::setContent (const Evasxx::Object &content)
@@ -39,7 +39,7 @@ void Bubble::setContent (const Evasxx::Object &content)
 
 void Bubble::setIcon (const Evasxx::Object &icon)
 {
-  elm_object_part_content_set (o, icon.obj ());
+  elm_object_part_content_set (o, NULL, icon.obj ());
 }
 
 void Bubble::setCorner (const std::string &corner)

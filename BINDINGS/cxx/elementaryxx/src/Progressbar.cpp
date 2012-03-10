@@ -29,7 +29,7 @@ void Progressbar::setLabel (const std::string &label)
 
 void Progressbar::setIcon (Evasxx::Object &icon)
 {
-  elm_object_part_content_set (o, icon.obj ());
+  elm_object_part_content_set (o, NULL, icon.obj ());
 }
 
 void Progressbar::setSpanSize (Evas_Coord size)

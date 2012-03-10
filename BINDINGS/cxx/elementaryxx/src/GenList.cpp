@@ -108,27 +108,27 @@ void GenList::glSelected (GenListColumnSelector &selection, const Evasxx::Object
 
 /* operations to add items */
 
-GenListItem *GenList::append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection)
 {
-  insertInternal (construction, GenList::Append, parent, flags, selection);
+  insertInternal (construction, GenList::Append, parent, type, selection);
 }
 
-GenListItem *GenList::prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection)
 {
-  insertInternal (construction, GenList::Prepend, parent, flags, selection);
+  insertInternal (construction, GenList::Prepend, parent, type, selection);
 }
 
-GenListItem *GenList::insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection)
 {
-  insertInternal (construction, GenList::InsertBefore, parent, flags, selection);
+  insertInternal (construction, GenList::InsertBefore, parent, type, selection);
 }
 
-GenListItem *GenList::insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection)
 {
-  insertInternal (construction, GenList::InsertAfter, parent, flags, selection);
+  insertInternal (construction, GenList::InsertAfter, parent, type, selection);
 }
 
-GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Type type, GenListColumnSelector *selection)
 {
   assert (mModel);
 
@@ -161,7 +161,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
       gli = elm_genlist_item_append (o, &mModel->mGLIC,
                                      construction /* item data */,
                                      opItem ? opItem->mItem : NULL /* parent */,
-                                     flags,
+                                     type,
                                      GenList::gl_sel/* func */,
                                      selection /* func data */);
       break;
@@ -170,7 +170,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
       gli = elm_genlist_item_prepend (o, &mModel->mGLIC,
                                      construction /* item data */,
                                      opItem ? opItem->mItem : NULL /* parent */,
-                                     flags,
+                                     type,
                                      GenList::gl_sel/* func */,
                                      selection /* func data */);
       break;
@@ -180,7 +180,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
                                             construction /* item data */,
                                             opItem ? opItem->mItem : NULL /* parent */,
                                             NULL,
-                                            flags,
+                                            type,
                                             GenList::gl_sel/* func */,
                                             selection /* func data */);
       break;
@@ -190,7 +190,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
                                             construction /* item data */,
                                             opItem ? opItem->mItem : NULL /* parent */,
                                             NULL,
-                                            flags,
+                                            type,
                                             GenList::gl_sel/* func */,
                                             selection /* func data */);
       break;

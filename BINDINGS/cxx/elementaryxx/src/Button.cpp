@@ -29,7 +29,7 @@ void Button::setLabel (const std::string &label)
 
 void Button::setIcon (const Evasxx::Object &icon)
 {
-  elm_object_part_content_set (o, icon.obj ());
+  elm_object_part_content_set (o, NULL, icon.obj ());
 }
 
 } // end namespace Elmxx

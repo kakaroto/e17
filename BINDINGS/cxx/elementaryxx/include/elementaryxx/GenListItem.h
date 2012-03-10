@@ -32,8 +32,8 @@ public:
   bool getDisabled () const;
   void setDisplayOnly (bool displayOnly);
   bool getDisplayOnly () const;
-  void show ();
-  void bringIn ();
+  void show (Elm_Genlist_Item_Scrollto_Type type);
+  void bringIn (Elm_Genlist_Item_Scrollto_Type type);
   void showTop ();
   void bringInTop ();
   void showMiddle ();
@@ -51,7 +51,7 @@ private:
   GenListItem (Elm_Object_Item *item);
 
   const void *getData ();
-  void setData (const void *data);
+  void setData (void *data);
 
   Elm_Object_Item *mItem;
   GenDataModel *mDataModel;

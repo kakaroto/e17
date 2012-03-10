@@ -40,8 +40,6 @@ libelementaryxx_la_SOURCES = \
 	Object.cpp  \
 	Layout.cpp  \
 	Hover.cpp  \
-	Anchorblock.cpp  \
-	Anchorview.cpp  \
 	Spinner.cpp  \
 	Progressbar.cpp  \
 	Panel.cpp  \

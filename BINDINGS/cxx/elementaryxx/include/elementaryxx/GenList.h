@@ -302,13 +302,13 @@ public:
    * @return A handle to the item added or NULL if not possible
    *
    */
-  GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection);
 
-  GenListItem *prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection);
 
-  GenListItem *insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection);
 
-  GenListItem *insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Type type, GenListColumnSelector *selection);
 
   void del (GenListItem &item);
   
@@ -357,7 +357,7 @@ private:
     InsertBefore
   };
 
-  GenListItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Type type, GenListColumnSelector *selection);
   
   static void gl_sel (void *data, Evas_Object *obj, void *event_info);
 
