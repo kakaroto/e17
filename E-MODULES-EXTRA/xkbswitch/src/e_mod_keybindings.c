@@ -207,14 +207,12 @@ static void _e_xkb_register_module_keybinding(
 
 ACT_FN_GO(e_xkb_layout_next)
 {
-    printf("GO\n");
     e_xkb_layout_next();
     return;
 }
 
 ACT_FN_GO(e_xkb_layout_prev)
 {
-    printf("GO\n");
     e_xkb_layout_prev();
     return;
 }

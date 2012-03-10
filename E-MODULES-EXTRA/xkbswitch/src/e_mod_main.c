@@ -199,15 +199,14 @@ EAPI void *e_modapi_init(E_Module *m)
     if (!e_xkb_cfg) _e_xkb_cfg_new();
     e_xkb_cfg->module = m;
 
-    /* Gadcon */
-    e_gadcon_provider_register(&_gc_class);
-
     /* Rules */
     find_rules();
 
-    /* Update the icon & layout */
-    e_xkb_update_icon  ();
+    /* Update the layout - can't update icon, gadgets are not there yet */
     e_xkb_update_layout();
+
+    /* Gadcon */
+    e_gadcon_provider_register(&_gc_class);
 
     /* Bindings */
     e_xkb_register_module_actions    ();
@@ -313,7 +312,6 @@ void e_xkb_update_layout(void)
         buf, sizeof(buf), "setxkbmap -layout %s -variant %s -model %s",
         cl->name, cl->variant, cl->model
     );
-    printf("executing %s\n", buf);
     ecore_exe_run(buf, NULL);
 }
 
@@ -342,9 +340,11 @@ void e_xkb_layout_prev(void)
 
     odata = eina_list_data_get(eina_list_last(e_xkb_cfg->used_layouts));
 
-    EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, ndata)
-        if (eina_list_next(l))
-            eina_list_data_set(eina_list_next(l), ndata);
+    for (
+        l = e_xkb_cfg->used_layouts, ndata = eina_list_data_get(l);
+        l; l = eina_list_next(l)
+    ) if (eina_list_next(l))
+        ndata = eina_list_data_set(eina_list_next(l), ndata);
 
     eina_list_data_set(e_xkb_cfg->used_layouts, odata);
 
@@ -355,11 +355,17 @@ void e_xkb_layout_prev(void)
 /* LOCAL STATIC FUNCTIONS */
 
 static E_Gadcon_Client *_gc_init(
-    E_Gadcon *gc, const char *name, const char *id, const char *style
+    E_Gadcon *gc, const char *gcname, const char *id, const char *style
 ) 
 {
-    Instance *inst = NULL;
+    Instance   *inst = NULL;
+    const char *name = NULL;
     char buf[4096];
+
+    if (e_xkb_cfg->used_layouts)
+        name = ((E_XKB_Config_Layout*)eina_list_data_get(
+            e_xkb_cfg->used_layouts
+        ))->name;
 
     snprintf(
         buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
@@ -376,15 +382,18 @@ static E_Gadcon_Client *_gc_init(
         "modules/xkbswitch/main"
     )) edje_object_file_set(inst->o_xkbswitch, buf, "modules/xkbswitch/main");
 
+    if (name)
+        edje_object_part_text_set(inst->o_xkbswitch, "label", name);
+
     /* The gadcon client */
-    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_xkbswitch);
+    inst->gcc = e_gadcon_client_new(gc, gcname, id, style, inst->o_xkbswitch);
     inst->gcc->data = inst;
 
     /* The flag icon */
     inst->o_xkbflag = e_icon_add(gc->evas);
     snprintf(
-        buf, sizeof(buf), "%s/flags/unknown_flag.png",
-        e_module_dir_get(e_xkb_cfg->module)
+        buf, sizeof(buf), "%s/flags/%s_flag.png",
+        e_module_dir_get(e_xkb_cfg->module), name ? name : "unknown"
     );
     e_icon_file_set(inst->o_xkbflag, buf);
 
