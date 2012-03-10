@@ -341,7 +341,7 @@ static void my_gl_last (Evasxx::Object &obj, void *event_info, GenList *gl)
 
 static Eina_Bool my_gl_flush_delay (void *data)
 {
-   Elmxx::Application::flushAll ();
+   //Elmxx::Application::flushAll ();
    return 0;
 }
 
