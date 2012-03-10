@@ -242,20 +242,29 @@ static void _cb_add(void *data, void *data2 __UNUSED__)
 static void _cb_del(void *data, void *data2 __UNUSED__)
 {
     E_Config_Dialog_Data *cfdata = NULL;
+    int n = 0;
+
     if (!(cfdata = data)) return;
 
+    if ((n = e_widget_ilist_selected_get(cfdata->used_list)) < 0)
+        return;
+
     cfdata->cfg_layouts = eina_list_remove_list(
-        cfdata->cfg_layouts, eina_list_nth_list(
-            cfdata->cfg_layouts, e_widget_ilist_selected_get(
-                cfdata->used_list
-            )
-        )
+        cfdata->cfg_layouts, eina_list_nth_list(cfdata->cfg_layouts, n)
     );
 
-    if (cfdata->fill_delay)
-        ecore_timer_del(cfdata->fill_delay);
+    evas_event_freeze(cfdata->evas);
+    edje_freeze      ();
 
-    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
+    e_widget_ilist_freeze(cfdata->used_list);
+
+    e_widget_ilist_remove_num(cfdata->used_list, n);
+
+    e_widget_ilist_go  (cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+
+    edje_thaw      ();
+    evas_event_thaw(cfdata->evas);
 }
 
 static void _cb_up(void *data, void *data2 __UNUSED__)
@@ -347,12 +356,7 @@ static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
     e_widget_ilist_go(avb_lst);
 
     e_widget_toolbook_page_append(
-        main_tbox,
-        NULL,
-        D_("Available"),
-        avb_lst,
-        1, 1, 1, 1,
-        0.5, 0.0
+        main_tbox, NULL, D_("Available"), avb_lst, 1, 1, 1, 1, 0.5, 0.0
     );
 
     cfdata->layout_list = avb_lst;
@@ -360,12 +364,7 @@ static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
     /* Models page */
     mdl_lst = e_widget_ilist_add(evas, 32, 32, NULL);
     e_widget_toolbook_page_append(
-        main_tbox,
-        NULL,
-        D_("Model"),
-        mdl_lst,
-        1, 1, 1, 1,
-        0.5, 0.0
+        main_tbox, NULL, D_("Model"), mdl_lst, 1, 1, 1, 1, 0.5, 0.0
     );
 
     cfdata->model_list = mdl_lst;
@@ -373,12 +372,7 @@ static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
     /* Variants page */
     vrn_lst = e_widget_ilist_add(evas, 32, 32, NULL);
     e_widget_toolbook_page_append(
-        main_tbox,
-        NULL,
-        D_("Variant"),
-        vrn_lst,
-        1, 1, 1, 1,
-        0.5, 0.0
+        main_tbox, NULL, D_("Variant"), vrn_lst, 1, 1, 1, 1, 0.5, 0.0
     );
 
     cfdata->variant_list = vrn_lst;
@@ -413,6 +407,9 @@ _dlg_add_cb_ok(void *data, E_Dialog *dlg)
 {
     E_Config_Dialog_Data *cfdata = dlg->data;
     E_XKB_Config_Layout  *cl     = NULL;
+    Evas_Object          *ic     = NULL;
+    const char           *name   = NULL;
+    char buf[4096];
 
     const char *layout =
         e_widget_ilist_selected_value_get(cfdata->layout_list);
@@ -430,13 +427,43 @@ _dlg_add_cb_ok(void *data, E_Dialog *dlg)
 
     cfdata->cfg_layouts = eina_list_append(cfdata->cfg_layouts, cl);
 
-    if (cfdata->fill_delay)
-        ecore_timer_del(cfdata->fill_delay);
+    evas_event_freeze(cfdata->evas);
+    edje_freeze      ();
 
-    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
+    e_widget_ilist_freeze(cfdata->used_list);
 
-   cfdata->dlg_add_new = NULL;
-   e_object_unref(E_OBJECT(dlg));
+    ic = e_icon_add(cfdata->evas);
+
+    name = cl->name;
+    if (strchr(name, '/')) name = strchr(name, '/') + 1;
+    snprintf(
+        buf, sizeof(buf), "%s/flags/%s_flag.png",
+        e_module_dir_get(e_xkb_cfg->module), name
+    );
+
+    if (!ecore_file_exists(buf)) snprintf(
+        buf, sizeof(buf), "%s/flags/unknown_flag.png", 
+        e_module_dir_get(e_xkb_cfg->module)
+    );
+
+    e_icon_file_set(ic, buf);
+
+    snprintf(
+        buf, sizeof(buf), "%s (%s, %s)", cl->name, cl->model, cl->variant
+    );
+
+    e_widget_ilist_append_full(
+        cfdata->used_list, ic, NULL, buf, _cb_used_select, cfdata, NULL
+    );
+
+    e_widget_ilist_go  (cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+
+    edje_thaw      ();
+    evas_event_thaw(cfdata->evas);
+
+    cfdata->dlg_add_new = NULL;
+    e_object_unref(E_OBJECT(dlg));
 }
 
 static void
@@ -486,25 +513,19 @@ _cb_dlg_fill_delay(void *data)
         name = layout->name;
         if (strchr(name, '/')) name = strchr(name, '/') + 1;
         snprintf(
-            buf, sizeof(buf),
-            "%s/flags/%s_flag.png",
-            e_module_dir_get(e_xkb_cfg->module),
-            name
+            buf, sizeof(buf), "%s/flags/%s_flag.png",
+            e_module_dir_get(e_xkb_cfg->module), name
         );
 
         if (!ecore_file_exists(buf)) snprintf(
-            buf, sizeof(buf),
-            "%s/flags/unknown_flag.png", 
+            buf, sizeof(buf), "%s/flags/unknown_flag.png", 
             e_module_dir_get(e_xkb_cfg->module)
         );
 
         e_icon_file_set(ic, buf);
 
         snprintf(
-            buf, sizeof(buf),
-            "%s (%s)",
-            layout->description,
-            layout->name
+            buf, sizeof(buf), "%s (%s)", layout->description, layout->name
         );
 
         e_widget_ilist_append_full(
@@ -558,8 +579,7 @@ _cb_layout_select(void *data)
     EINA_LIST_FOREACH(models, l, model)
     {
         e_widget_ilist_append(
-            cfdata->model_list, NULL,
-            model->description, NULL,
+            cfdata->model_list, NULL, model->description, NULL,
             cfdata, model->name
         );
     }
@@ -572,16 +592,11 @@ _cb_layout_select(void *data)
     EINA_LIST_FOREACH(layout->variants, l, variant)
     {
         snprintf(
-            buf, sizeof(buf),
-            "%s (%s)",
-            variant->name,
-            variant->description
+            buf, sizeof(buf),  "%s (%s)", variant->name, variant->description
         );
 
         e_widget_ilist_append(
-            cfdata->variant_list, NULL,
-            buf, NULL,
-            cfdata, variant->name
+            cfdata->variant_list, NULL, buf, NULL, cfdata, variant->name
         );
     }
 
@@ -625,31 +640,23 @@ _cb_fill_delay(void *data)
         name = cl->name;
         if (strchr(name, '/')) name = strchr(name, '/') + 1;
         snprintf(
-            buf, sizeof(buf),
-            "%s/flags/%s_flag.png",
-            e_module_dir_get(e_xkb_cfg->module),
-            name
+            buf, sizeof(buf), "%s/flags/%s_flag.png",
+            e_module_dir_get(e_xkb_cfg->module), name
         );
 
         if (!ecore_file_exists(buf)) snprintf(
-            buf, sizeof(buf),
-            "%s/flags/unknown_flag.png", 
+            buf, sizeof(buf), "%s/flags/unknown_flag.png", 
             e_module_dir_get(e_xkb_cfg->module)
         );
 
         e_icon_file_set(ic, buf);
 
         snprintf(
-            buf, sizeof(buf), "%s (%s, %s)",
-            cl->name, cl->model, cl->variant
+            buf, sizeof(buf), "%s (%s, %s)", cl->name, cl->model, cl->variant
         );
 
         e_widget_ilist_append_full(
-            cfdata->used_list,
-            ic, NULL, buf,
-            _cb_used_select,
-            cfdata,
-            NULL /* data */
+            cfdata->used_list, ic, NULL, buf, _cb_used_select, cfdata, NULL
         );
     }
 
