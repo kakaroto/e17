@@ -496,6 +496,20 @@ static void _e_xkb_cb_mouse_down(
             ev->timestamp, NULL
         );
     }
+    else if (ev->button == 1)
+    {
+        void *data = eina_list_data_get(e_xkb_cfg->used_layouts);
+
+        e_xkb_cfg->used_layouts = eina_list_append(
+            e_xkb_cfg->used_layouts, data
+        );
+        e_xkb_cfg->used_layouts = eina_list_remove_list(
+            e_xkb_cfg->used_layouts, e_xkb_cfg->used_layouts
+        );
+
+        e_xkb_update_icon  ();
+        e_xkb_update_layout();
+    }
 }
 
 static void _e_xkb_cb_menu_post(void *data, E_Menu *menu) 
