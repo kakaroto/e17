@@ -1247,7 +1247,7 @@ public class HoverselItem
 
 //=======================================================================
 [Compact]
-[CCode (cname = "Elm_Object_Item", free_function = "elm_list_item_del")]
+[CCode (cname = "Elm_Object_Item", free_function = "elm_object_item_del")]
 public class ListItem
 {
     public void selected_set( bool selected );
@@ -1376,9 +1376,9 @@ public class Map : Elm.Object
     public void paused_markers_set( bool paused );
     public bool paused_markers_get();
 
-    [CCode (cname = "elm_map_utils_convert_coord_into_geo")]
+    [CCode (cname = "elm_map_canvas_to_region_convert")]
     public static void convert_coord_into_geo( int x, int y, int size, out double lon, out double lat );
-    [CCode (cname = "elm_map_utils_convert_geo_into_coord")]
+    [CCode (cname = "elm_map_canvas_to_region_convert")]
     public static void convert_geo_into_coord( double lon, double lat, int size, out int x, out int y );
 
     public void max_marker_per_group_set( int max );

@@ -429,15 +429,7 @@ my @elm_list = qw(
   elm_list_items_get
   elm_list_item_selected_set
   elm_list_item_show
-  elm_list_item_del
-  elm_list_item_data_get
-  elm_list_item_icon_get
-  elm_list_item_icon_set
-  elm_list_item_end_get
-  elm_list_item_end_set
   elm_list_item_object_get
-  elm_list_item_label_get
-  elm_list_item_label_set
   elm_list_item_prev
   elm_list_item_next
 );
@@ -578,24 +570,15 @@ my @elm_map = qw(
   elm_map_zoom_get
   elm_map_zoom_mode_get
   elm_map_zoom_mode_set
-  elm_map_geo_region_get
-  elm_map_geo_region_bring_in
-  elm_map_geo_region_show
   elm_map_paused_set
   elm_map_paused_get
-  elm_map_paused_markers_set
-  elm_map_paused_markers_get
-  elm_map_utils_convert_coord_into_geo
-  elm_map_utils_convert_geo_into_coord
   elm_map_marker_add
-  elm_map_max_marker_per_group_set
   elm_map_marker_remove
   elm_map_marker_bring_in
   elm_map_marker_show
   elm_map_markers_list_show
   elm_map_marker_object_get
   elm_map_marker_update
-  elm_map_bubbles_close
 );
 
 my @elm_panel = qw(
@@ -691,7 +674,6 @@ my @__todo = qw(
   elm_genlist_selected_item_get
   elm_genlist_selected_items_get
   elm_hoversel_items_get
-  elm_list_item_del_cb_set
   elm_list_item_insert_after
   elm_list_item_insert_before
   elm_list_item_prepend
@@ -1058,14 +1040,6 @@ may change in future releases.
     elm_list_horizontal_mode_set
     elm_list_item_append
     elm_list_item_object_get
-    elm_list_item_data_get
-    elm_list_item_del
-    elm_list_item_end_get
-    elm_list_item_end_set
-    elm_list_item_icon_get
-    elm_list_item_icon_set
-    elm_list_item_label_get
-    elm_list_item_label_set
     elm_list_item_next
     elm_list_item_prev
     elm_list_item_selected_set
@@ -1073,10 +1047,6 @@ may change in future releases.
     elm_list_items_get
     elm_list_multi_select_set
     elm_map_add
-    elm_map_bubbles_close
-    elm_map_geo_region_bring_in
-    elm_map_geo_region_get
-    elm_map_geo_region_show
     elm_map_marker_add
     elm_map_marker_bring_in
     elm_map_marker_object_get
@@ -1084,13 +1054,8 @@ may change in future releases.
     elm_map_marker_show
     elm_map_marker_update
     elm_map_markers_list_show
-    elm_map_max_marker_per_group_set
     elm_map_paused_get
-    elm_map_paused_markers_get
-    elm_map_paused_markers_set
     elm_map_paused_set
-    elm_map_utils_convert_coord_into_geo
-    elm_map_utils_convert_geo_into_coord
     elm_map_zoom_get
     elm_map_zoom_mode_get
     elm_map_zoom_mode_set

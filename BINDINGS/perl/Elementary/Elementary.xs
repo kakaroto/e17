@@ -1038,37 +1038,11 @@ elm_list_item_selected_set(Elm_Object_Item *item, Eina_Bool selected)
 void
 elm_list_item_show(Elm_Object_Item *item)
 
-void
-elm_list_item_del(Elm_Object_Item *item)
-
 
 # TODO
 # void
-#elm_list_item_del_cb_set(Elm_Object_Item *item, void (*func)(void *data, Evas_Object *obj, void *event_info));
-
-void *
-elm_list_item_data_get(const Elm_Object_Item *item)
-
-Evas_Object *
-elm_list_item_icon_get(const Elm_Object_Item *item)
-
-void
-elm_list_item_icon_set(Elm_Object_Item *item, Evas_Object *icon)
-
-Evas_Object *
-elm_list_item_end_get(const Elm_Object_Item *item)
-
-void
-elm_list_item_end_set(Elm_Object_Item *item, Evas_Object *end)
-
 Evas_Object *
 elm_list_item_object_get(const Elm_Object_Item *item)
-
-const char *
-elm_list_item_label_get(const Elm_Object_Item *item)
-
-void
-elm_list_item_label_set(Elm_Object_Item *item, const char *text)
 
 Elm_Object_Item *
 elm_list_item_prev(const Elm_Object_Item *it)
@@ -1562,56 +1536,13 @@ Elm_Map_Zoom_Mode
 elm_map_zoom_mode_get(Evas_Object *obj)
 
 void
-elm_map_geo_region_get(obj, lon, lat)
-    Evas_Object *obj
-    double lon = NO_INIT
-    double lat = NO_INIT
-    CODE:
-        elm_map_geo_region_get(obj, &lon, &lat);
-
-void
-elm_map_geo_region_bring_in(Evas_Object *obj, double lon, double lat)
-
-void
-elm_map_geo_region_show(Evas_Object *obj, double lon, double lat)
-
-void
 elm_map_paused_set(Evas_Object *obj, Eina_Bool paused)
 
 Eina_Bool
 elm_map_paused_get(Evas_Object *obj)
 
-void
-elm_map_paused_markers_set(Evas_Object *obj, Eina_Bool paused)
-
-Eina_Bool
-elm_map_paused_markers_get(Evas_Object *obj)
-
-void
-elm_map_utils_convert_coord_into_geo(x, y, size, lon, lat)
-    int x
-    int y
-    int size
-    double lon = NO_INIT
-    double lat = NO_INIT
-    CODE:
-        elm_map_utils_convert_coord_into_geo(x, y, size, &lon, &lat);
-
-void
-elm_map_utils_convert_geo_into_coord(lon, lat, size, x, y)
-    double lon
-    double lat
-    int size
-    int x = NO_INIT
-    int y = NO_INIT
-    CODE:
-        elm_map_utils_convert_geo_into_coord(lon, lat, size, &x, &y);
-
 Elm_Map_Marker *
 elm_map_marker_add(Evas_Object *obj, double lon, double lat, Elm_Map_Marker_Class *clas, Elm_Map_Group_Class *group, void *data);
-
-void
-elm_map_max_marker_per_group_set(Evas_Object *obj, int max)
 
 void
 elm_map_marker_remove(Elm_Map_Marker *marker)
@@ -1630,9 +1561,6 @@ elm_map_marker_object_get(Elm_Map_Marker *marker)
 
 void
 elm_map_marker_update(Elm_Map_Marker *marker)
-
-void
-elm_map_bubbles_close(Evas_Object *obj)
 
 
 # panel
