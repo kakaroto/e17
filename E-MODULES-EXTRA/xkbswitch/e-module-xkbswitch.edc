@@ -1,89 +1,103 @@
 images 
 {
-   image: "module_icon.png" COMP;
+    image: "module_icon.png" COMP;
 }
 
 collections 
 {
-   group 
-     {
+    group 
+    {
 	name: "icon";
 	max: 24 24;
+
 	parts 
-	  {
-	     part 
-	       {
-		  name: "image";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       image.normal: "module_icon.png";
-		    }
-	       }
-	  }
-     }
-   group 
-     {
+	{
+	    part 
+	    {
+		name: "image";
+		mouse_events: 0;
+		type: IMAGE;
+
+		description
+		{
+		    state: "default" 0.0;
+		    image.normal: "module_icon.png";
+		}
+	    }
+	}
+    }
+
+    group
+    {
 	name: "modules/xkbswitch/main";
-	max: 128 128;
-	parts 
-	  {
-	     part 
-	       {
-		  name: "icon";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
+	max: 148 128;
+
+	parts
+	{
+	    part
+	    {
+		name: "flag";
+		type: SWALLOW;
+		mouse_events: 0;
+
+		description
+		{
+		    state: "default" 0.0;
+		    align: 0.5 0.5;
+		}
+	    }
+
+	    part
+	    {
+		name: "event";
+		type: RECT;
+		mouse_events: 1;
+
+		description
+		{
+		    state: "default" 0.0;
+		    color: 255 255 255 0;
+		}
+	    }
+
+	    part
+	    {
+		name: "label";
+		type: TEXT;
+		effect: SOFT_SHADOW;
+		mouse_events: 0;
+
+		description
+		{
+		    state: "default" 0.0;
+		    align: 0.5 0.5;
+
+		    rel1
 		    {
-		       state: "default" 0.0;
-		       aspect: 1.0 1.0;
-		       aspect_preference: BOTH;
-		       rel1.offset: 2 2;
-		       rel2.offset: -3 -3;
-		       image.normal: "module_icon.png";
+			relative: 0.5 0.5;
+			offset: 0 0;
 		    }
-		  description 
+
+		    rel2
 		    {
-		       state: "bigger" 0.0;
-		       inherit: "default" 0.0;
-		       rel1.offset: -2 -2;
-		       rel2.offset: 3 3;
+			relative: 0.5 0.5;
+			offset: 0 0;
 		    }
-	       }
-	     part 
-	       {
-		  name: "event";
-		  mouse_events: 1;
-		  type: RECT;
-		  description 
+
+		    color: 255 255 255 255;
+		    color3: 0 0 0 128;
+
+		    text
 		    {
-		       state: "default" 0.0;
-		       color: 255 255 255 0;
+			text: "";
+			font: "Sans";
+			size: 9;
+			align: 0.5 0.5;
+			min: 1 1;
+			text_class: "module_small";
 		    }
-	       }
-	  }
-	programs 
-	  {
-	     program 
-	       {
-		  name: "mouse_in";
-		  signal: "mouse,in";
-		  source: "event";
-		  action: STATE_SET "bigger" 0.0;
-		  transition: LINEAR 0.1;
-		  target: "icon";
-	       }
-	     program 
-	       {
-		  name: "mouse_out";
-		  signal: "mouse,out";
-		  source: "event";
-		  action: STATE_SET "default" 0.0;
-		  transition: LINEAR 0.2;
-		  target: "icon";
-	       }
-	  }
-     }
+		}
+	    }
+	}
+    }
 }

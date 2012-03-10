@@ -25,16 +25,12 @@ typedef struct _E_XKB_Layout
     const char *name;
     const char *description;
 
-    Eina_Bool used;
-
-    E_XKB_Model   *model;
-    E_XKB_Variant *variant;
-
     Eina_List *variants;
 } E_XKB_Layout;
 
-int parse_rules(const char *fname);
+int  parse_rules();
 void clear_rules();
+void  find_rules();
 
 int layout_sort_cb          (const void *data1, const void *data2);
 int model_sort_cb           (const void *data1, const void *data2);

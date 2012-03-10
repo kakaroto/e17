@@ -1,10 +1,39 @@
 #include "e_mod_parse.h"
 
-Eina_List *layouts = NULL;
-Eina_List *models  = NULL;
+Eina_List *layouts     = NULL;
+Eina_List *models      = NULL;
+const char *rules_file = NULL;
+
+void
+find_rules()
+{
+    int i = 0;
+    const char *lstfiles[] = {
+         "/usr/share/X11/xkb/rules/xorg.lst",
+         "/usr/share/X11/xkb/rules/xfree86.lst",
+         "/usr/local/share/X11/xkb/rules/xorg.lst",
+         "/usr/local/share/X11/xkb/rules/xfree86.lst",
+         "/usr/X11R6/lib/X11/xkb/rules/xorg.lst",
+         "/usr/X11R6/lib/X11/xkb/rules/xfree86.lst", 
+         "/usr/local/X11R6/lib/X11/xkb/rules/xorg.lst",
+         "/usr/local/X11R6/lib/X11/xkb/rules/xfree86.lst",
+         NULL
+    };
+    
+    for (; lstfiles[i]; i++)
+    {
+        FILE *f = fopen(lstfiles[i], "r");
+        if (f)
+        {
+            fclose(f);
+            rules_file = lstfiles[i];
+            break;
+        }
+    }
+}
 
 int
-parse_rules(const char *fname)
+parse_rules()
 {
     E_XKB_Model *model = NULL;
     E_XKB_Layout *layout = NULL;
@@ -12,7 +41,12 @@ parse_rules(const char *fname)
 
     char buf[512];
 
-    FILE *f = fopen(fname, "r");
+    if (!rules_file) return 0;
+
+    layouts = NULL;
+    models  = NULL;
+
+    FILE *f = fopen(rules_file, "r");
     if  (!f) return 0;
 
     /* move on to next line, the first one is useless */
@@ -71,9 +105,6 @@ parse_rules(const char *fname)
         variant->description = eina_stringshare_add("Default layout variant");
 
         layout->description = eina_stringshare_add(p);
-        layout->used        = EINA_FALSE;
-        layout->model       = NULL;
-        layout->variant     = variant;
         layout->variants    = eina_list_append(layout->variants, variant);
 
         layouts = eina_list_append(layouts, layout);
@@ -117,6 +148,7 @@ parse_rules(const char *fname)
     /* Sort layouts */
     layouts =
         eina_list_sort(layouts, eina_list_count(layouts), layout_sort_cb);
+
    return 1;
 }
 
@@ -126,34 +158,33 @@ clear_rules()
     E_XKB_Variant *v  = NULL;
     E_XKB_Layout  *la = NULL;
     E_XKB_Model   *m  = NULL;
-    Eina_List     *ll = NULL;
-    Eina_List     *l  = NULL;
 
-    EINA_LIST_FOREACH(layouts, l, la)
+    EINA_LIST_FREE(layouts, la)
     {
         if (la->name       ) eina_stringshare_del(la->name);
         if (la->description) eina_stringshare_del(la->description);
 
-        EINA_LIST_FOREACH(la->variants, ll, v)
+        EINA_LIST_FREE(la->variants, v)
         {
             if  (v->name       ) eina_stringshare_del(v->name);
             if  (v->description) eina_stringshare_del(v->description);
-            free(v);
+
+            E_FREE(v);
         }
-        eina_list_free(la->variants);
 
-        free(la);
+        E_FREE(la);
     }
-    eina_list_free(layouts);
 
-    EINA_LIST_FOREACH(models, l, m)
+    EINA_LIST_FREE(models, m)
     {
         if (m->name       ) eina_stringshare_del(m->name);
         if (m->description) eina_stringshare_del(m->description);
 
-        free(m);
+        E_FREE(m);
     }
-    eina_list_free(models);
+
+    layouts = NULL;
+    models  = NULL;
 }
 
 int

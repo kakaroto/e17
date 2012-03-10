@@ -26,18 +26,18 @@
 #define MOD_CONFIG_FILE_VERSION \
    ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
-typedef struct _e_xkb_cfg
+typedef struct _E_XKB_Config
 {
     /* Not written to disk */
     E_Module *module;
     E_Config_Dialog *cfd;
 
     /* Written to disk */
-    Eina_List *used_layouts;
     int version;
-} e_xkb_cfg;
+    Eina_List *used_layouts;
+} E_XKB_Config;
 
-/* used layout - these are saved in a list */
+/* This represents the node data in used_layouts */
 typedef struct _E_XKB_Config_Layout
 {
     const char *name;
@@ -63,16 +63,15 @@ struct _E_Config_Dialog_Data
 
 EAPI extern E_Module_Api e_modapi;
 
-EAPI void *e_modapi_init(E_Module *m);
-EAPI int e_modapi_shutdown(E_Module *m);
-EAPI int e_modapi_save(E_Module *m);
+EAPI void *e_modapi_init    (E_Module *m);
+EAPI int   e_modapi_shutdown(E_Module *m);
+EAPI int   e_modapi_save    (E_Module *m);
 
-/* Function for calling the module's Configuration Dialog */
+void e_xkb_update_icon  (void);
+void e_xkb_update_layout(void);
+
 E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params);
 
-/* e_mod_config_main.c */
-Evas_Object *dialog_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-
-extern e_xkb_cfg *e_xkb_cfg_inst;
+extern E_XKB_Config *e_xkb_cfg;
 
 #endif
