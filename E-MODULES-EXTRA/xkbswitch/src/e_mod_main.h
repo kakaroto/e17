@@ -7,6 +7,8 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#include <e.h>
+
 #ifdef ENABLE_NLS
 # include <libintl.h>
 # define D_(string) dgettext(PACKAGE, string)
@@ -33,8 +35,12 @@ typedef struct _E_XKB_Config
     E_Config_Dialog *cfd;
 
     /* Written to disk */
-    int version;
+    E_Config_Binding_Key layout_next_key;
+    E_Config_Binding_Key layout_prev_key;
+
     Eina_List *used_layouts;
+
+    int version;
 } E_XKB_Config;
 
 /* This represents the node data in used_layouts */

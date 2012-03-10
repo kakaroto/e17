@@ -1,6 +1,6 @@
-#include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_parse.h"
+#include "e_mod_keybindings.h"
 
 /* Static functions
  * The static functions specific to the current code unit.
@@ -134,8 +134,20 @@ EAPI void *e_modapi_init(E_Module *m)
     #undef D
     #define T E_XKB_Config
     #define D e_xkb_cfg_edd
-    E_CONFIG_VAL(D, T, version, INT);
     E_CONFIG_LIST(D, T, used_layouts, e_xkb_cfg_layout_edd);
+    E_CONFIG_VAL(D, T, layout_next_key.context, INT);
+    E_CONFIG_VAL(D, T, layout_next_key.modifiers, INT);
+    E_CONFIG_VAL(D, T, layout_next_key.key, STR);
+    E_CONFIG_VAL(D, T, layout_next_key.action, STR);
+    E_CONFIG_VAL(D, T, layout_next_key.params, STR);
+    E_CONFIG_VAL(D, T, layout_next_key.any_mod, UCHAR);
+    E_CONFIG_VAL(D, T, layout_prev_key.context, INT);
+    E_CONFIG_VAL(D, T, layout_prev_key.modifiers, INT);
+    E_CONFIG_VAL(D, T, layout_prev_key.key, STR);
+    E_CONFIG_VAL(D, T, layout_prev_key.action, STR);
+    E_CONFIG_VAL(D, T, layout_prev_key.params, STR);
+    E_CONFIG_VAL(D, T, layout_prev_key.any_mod, UCHAR);
+    E_CONFIG_VAL(D, T, version, INT);
 
     /* Version check */
 
@@ -197,6 +209,10 @@ EAPI void *e_modapi_init(E_Module *m)
     e_xkb_update_icon  ();
     e_xkb_update_layout();
 
+    /* Bindings */
+    e_xkb_register_module_actions    ();
+    e_xkb_register_module_keybindings();
+
     return m;
 }
 
@@ -218,6 +234,9 @@ EAPI int e_modapi_shutdown(E_Module *m)
     e_xkb_cfg->module = NULL;
 
     e_gadcon_provider_unregister(&_gc_class);
+
+  /*  e_xkb_unregister_module_actions    ();
+    e_xkb_unregister_module_keybindings();*/
 
     EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
     {
@@ -449,14 +468,25 @@ static void _e_xkb_cfg_new(void)
     char buf[128];
 
     e_xkb_cfg = E_NEW(E_XKB_Config, 1);
-    e_xkb_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
-    if ((e_xkb_cfg->version & 0xffff) < 0x008d)
-    {
-        e_xkb_cfg->used_layouts = NULL;
-    }
+    e_xkb_cfg->used_layouts = NULL;
+    e_xkb_cfg->version      = MOD_CONFIG_FILE_VERSION;
 
-    e_xkb_cfg->version = MOD_CONFIG_FILE_VERSION;
+    #define BIND(act, actname) \
+        e_xkb_cfg->layout_##act##_key.context = E_BINDING_CONTEXT_ANY; \
+        e_xkb_cfg->layout_##act##_key.key = eina_stringshare_add("comma"); \
+        e_xkb_cfg->layout_##act##_key.modifiers = ( \
+            E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT \
+        ); \
+        e_xkb_cfg->layout_##act##_key.any_mod = 0; \
+        e_xkb_cfg->layout_##act##_key.action = eina_stringshare_add( \
+            actname \
+        ); \
+        e_xkb_cfg->layout_##act##_key.params = NULL; \
+
+    BIND(next, E_XKB_NEXT_ACTION)
+    BIND(prev, E_XKB_PREV_ACTION)
+    #undef BIND
 
     e_config_save_queue();
 }
