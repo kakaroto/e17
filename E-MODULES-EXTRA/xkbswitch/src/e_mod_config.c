@@ -271,48 +271,95 @@ static void _cb_up(void *data, void *data2 __UNUSED__)
 {
     E_Config_Dialog_Data *cfdata = NULL;
     void                 *nddata = NULL;
+    Evas_Object          *ic     = NULL;
     Eina_List            *l      = NULL;
+    const char           *lbl    = NULL;
+    int n = 0;
 
     if (!(cfdata = data)) return;
 
-    l = eina_list_nth_list(
-        cfdata->cfg_layouts, e_widget_ilist_selected_get(
-            cfdata->used_list
-        )
-    );
+    if ((n = e_widget_ilist_selected_get(cfdata->used_list)) < 0)
+        return;
+
+    l = eina_list_nth_list(cfdata->cfg_layouts, n);
 
     nddata = eina_list_data_get(eina_list_prev(l));
     eina_list_data_set(eina_list_prev(l), eina_list_data_get(l));
     eina_list_data_set(l, nddata);
 
-    if (cfdata->fill_delay)
-        ecore_timer_del(cfdata->fill_delay);
+    evas_event_freeze(cfdata->evas);
+    edje_freeze      ();
 
-    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
+    e_widget_ilist_freeze(cfdata->used_list);
+
+    ic = e_icon_add(cfdata->evas);
+    e_icon_file_set(ic, e_icon_file_get(
+        e_widget_ilist_nth_icon_get(cfdata->used_list, n)
+    ));
+
+    lbl = e_widget_ilist_nth_label_get(cfdata->used_list, n);
+
+    e_widget_ilist_prepend_relative_full(
+        cfdata->used_list, ic, NULL, lbl,
+        _cb_used_select, cfdata, NULL, (n - 1)
+    );
+
+    e_widget_ilist_remove_num(cfdata->used_list, n);
+
+    e_widget_ilist_go  (cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+
+    edje_thaw      ();
+    evas_event_thaw(cfdata->evas);
+
+    e_widget_ilist_selected_set(cfdata->used_list, (n - 1));
 }
 
 static void _cb_dn(void *data, void *data2 __UNUSED__)
 {
     E_Config_Dialog_Data *cfdata = NULL;
     void                 *nddata = NULL;
+    Evas_Object          *ic     = NULL;
     Eina_List            *l      = NULL;
+    const char           *lbl    = NULL;
+    int n = 0;
 
     if (!(cfdata = data)) return;
 
-    l = eina_list_nth_list(
-        cfdata->cfg_layouts, e_widget_ilist_selected_get(
-            cfdata->used_list
-        )
-    );
+    if ((n = e_widget_ilist_selected_get(cfdata->used_list)) < 0)
+        return;
+
+    l = eina_list_nth_list(cfdata->cfg_layouts, n);
 
     nddata = eina_list_data_get(eina_list_next(l));
     eina_list_data_set(eina_list_next(l), eina_list_data_get(l));
     eina_list_data_set(l, nddata);
 
-    if (cfdata->fill_delay)
-        ecore_timer_del(cfdata->fill_delay);
+    evas_event_freeze(cfdata->evas);
+    edje_freeze      ();
 
-    cfdata->fill_delay = ecore_timer_add(0.2, _cb_fill_delay, cfdata);
+    e_widget_ilist_freeze(cfdata->used_list);
+
+    ic = e_icon_add(cfdata->evas);
+    e_icon_file_set(ic, e_icon_file_get(
+        e_widget_ilist_nth_icon_get(cfdata->used_list, n)
+    ));
+
+    lbl = e_widget_ilist_nth_label_get(cfdata->used_list, n);
+
+    e_widget_ilist_append_relative_full(
+        cfdata->used_list, ic, NULL, lbl, _cb_used_select, cfdata, NULL, n
+    );
+
+    e_widget_ilist_remove_num(cfdata->used_list, n);
+
+    e_widget_ilist_go  (cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+
+    edje_thaw      ();
+    evas_event_thaw(cfdata->evas);
+
+    e_widget_ilist_selected_set(cfdata->used_list, (n + 1));
 }
 
 static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
@@ -686,10 +733,15 @@ _cb_used_select(void *data)
 
     e_widget_disabled_set(cfdata->btn_del, EINA_FALSE);
 
-    if (n == (c - 1) || n == 0)
+    if (n == (c - 1))
     {
-        e_widget_disabled_set(cfdata->btn_up,   EINA_TRUE);
-        e_widget_disabled_set(cfdata->btn_down, EINA_TRUE);
+        e_widget_disabled_set(cfdata->btn_up,   EINA_FALSE);
+        e_widget_disabled_set(cfdata->btn_down, EINA_TRUE );
+    }
+    else if (n == 0)
+    {
+        e_widget_disabled_set(cfdata->btn_up,   EINA_TRUE );
+        e_widget_disabled_set(cfdata->btn_down, EINA_FALSE);
     }
     else
     {
