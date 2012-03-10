@@ -1228,7 +1228,7 @@ on_tab_close(void *data, Evas_Object *o,
    Elm_Object_Item *item = evas_object_data_get(o, "item");
    Eina_List *win_iter;
 
-   elm_gengrid_item_del(item);
+   elm_object_item_del(item);
    tab_close_chrome(win, chrome);
 
    if (win->current_chrome)
@@ -1251,9 +1251,9 @@ on_tab_close(void *data, Evas_Object *o,
               item;
               item = elm_gengrid_item_next_get(item))
             {
-               if (elm_gengrid_item_data_get(item) == view)
+               if (elm_object_item_data_get(item) == view)
                   {
-                     elm_gengrid_item_del(item);
+                     elm_object_item_del(item);
                      break;
                   }
             }
@@ -1266,7 +1266,7 @@ on_tab_gengrid_item_realized(void *data, Evas_Object *o __UNUSED__, void *event_
 {
    Browser_Window *win = data;
    Evas_Object *item = (Evas_Object *)elm_gengrid_item_object_get(event_info);
-   Evas_Object *view = elm_gengrid_item_data_get(event_info);
+   Evas_Object *view = elm_object_item_data_get(event_info);
 
    evas_object_data_set(item, "item", event_info);
    evas_object_data_set(item, "win", win);

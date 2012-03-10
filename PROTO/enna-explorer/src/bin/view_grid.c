@@ -175,7 +175,7 @@ _item_remove(Evas_Object *obj, Grid_Item *item)
 
    if (!sd || !item) return;
 
-   elm_gengrid_item_del(item->item);
+   elm_object_item_del(item->item);
    sd->items = eina_list_remove(sd->items, item);
    ENNA_FREE(item);
 
@@ -226,7 +226,7 @@ _item_longpress_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Smart_Data *sd = data;
    Grid_Item *gi;
 
-   gi = (Grid_Item*)elm_gengrid_item_data_get(event_info);
+   gi = (Grid_Item*)elm_object_item_data_get(event_info);
 
    evas_object_smart_callback_call(sd->o_grid, "longpress", gi->file);
 }
@@ -235,7 +235,7 @@ static void
 _item_click_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Event_Mouse_Up *ev = event_info;
-   Grid_Item *gi = elm_gengrid_item_data_get(data);
+   Grid_Item *gi = elm_object_item_data_get(data);
 
    /* Right click */
    if (ev->button != 3)
@@ -256,7 +256,7 @@ _item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_i
 {
    Grid_Item *li;
 
-   li = (Grid_Item*)elm_gengrid_item_data_get(event_info);
+   li = (Grid_Item*)elm_object_item_data_get(event_info);
    if (li->func_activated)
      li->func_activated(li->data);
 }

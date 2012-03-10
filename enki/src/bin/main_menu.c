@@ -397,7 +397,7 @@ _library_icon_get(void *data, Evas_Object *obj, const char *part)
 static void
 _library_select(void *data, Evas_Object *obj, void *event_info)
 {
-   Library *lib = elm_gengrid_item_data_get(elm_gengrid_selected_item_get(obj));
+   Library *lib = elm_object_item_data_get(elm_gengrid_selected_item_get(obj));
 
    if (lib->is_new_library)
    {

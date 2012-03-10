@@ -123,7 +123,7 @@ static void
 _excessive_selected(void *data __UNUSED__, Evas_Object *grid, void *event_info)
 {
    Elm_Object_Item *gg_it = event_info;
-   Excessive_File_Info *info = elm_gengrid_item_data_get(gg_it);
+   Excessive_File_Info *info = elm_object_item_data_get(gg_it);
    const char *tmp;
 
    elm_gengrid_item_selected_set(gg_it, EINA_FALSE);
