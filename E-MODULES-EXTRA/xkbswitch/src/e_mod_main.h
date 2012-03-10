@@ -70,6 +70,9 @@ EAPI int   e_modapi_save    (E_Module *m);
 void e_xkb_update_icon  (void);
 void e_xkb_update_layout(void);
 
+void e_xkb_layout_next(void);
+void e_xkb_layout_prev(void);
+
 E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params);
 
 extern E_XKB_Config *e_xkb_cfg;

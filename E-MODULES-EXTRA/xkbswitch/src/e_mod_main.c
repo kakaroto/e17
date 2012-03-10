@@ -298,6 +298,41 @@ void e_xkb_update_layout(void)
     ecore_exe_run(buf, NULL);
 }
 
+void e_xkb_layout_next(void)
+{
+    void      *odata = NULL;
+    void      *ndata = NULL;
+    Eina_List *l     = NULL;
+
+    odata = eina_list_data_get(e_xkb_cfg->used_layouts);
+
+    EINA_LIST_FOREACH(eina_list_next(e_xkb_cfg->used_layouts), l, ndata)
+        eina_list_data_set(eina_list_prev(l), ndata);
+
+    eina_list_data_set(eina_list_last(e_xkb_cfg->used_layouts), odata);
+
+    e_xkb_update_icon  ();
+    e_xkb_update_layout();
+}
+
+void e_xkb_layout_prev(void)
+{
+    void      *odata = NULL;
+    void      *ndata = NULL;
+    Eina_List *l     = NULL;
+
+    odata = eina_list_data_get(eina_list_last(e_xkb_cfg->used_layouts));
+
+    EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, ndata)
+        if (eina_list_next(l))
+            eina_list_data_set(eina_list_next(l), ndata);
+
+    eina_list_data_set(e_xkb_cfg->used_layouts, odata);
+
+    e_xkb_update_icon  ();
+    e_xkb_update_layout();
+}
+
 /* LOCAL STATIC FUNCTIONS */
 
 static E_Gadcon_Client *_gc_init(
@@ -497,19 +532,7 @@ static void _e_xkb_cb_mouse_down(
         );
     }
     else if (ev->button == 1)
-    {
-        void *data = eina_list_data_get(e_xkb_cfg->used_layouts);
-
-        e_xkb_cfg->used_layouts = eina_list_append(
-            e_xkb_cfg->used_layouts, data
-        );
-        e_xkb_cfg->used_layouts = eina_list_remove_list(
-            e_xkb_cfg->used_layouts, e_xkb_cfg->used_layouts
-        );
-
-        e_xkb_update_icon  ();
-        e_xkb_update_layout();
-    }
+        e_xkb_layout_next();
 }
 
 static void _e_xkb_cb_menu_post(void *data, E_Menu *menu) 
