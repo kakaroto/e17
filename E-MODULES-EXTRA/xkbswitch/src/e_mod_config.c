@@ -33,6 +33,7 @@ static void _dlg_add_cb_del(void *obj);
 static Eina_Bool _cb_dlg_fill_delay(void *data);
 
 static void _cb_layout_select(void *data);
+static void _cb_used_select  (void *data);
 
 static Eina_Bool _cb_fill_delay(void *data);
 
@@ -165,11 +166,6 @@ static Evas_Object *_basic_create(
     Evas_Object *configs = NULL; /* The list of configurations */
     Evas_Object *btn_tbl = NULL; /* Table of buttons */
 
-    Evas_Object *add_btn = NULL; /*  Add button */
-    Evas_Object *del_btn = NULL; /*  Del button */
-    Evas_Object * up_btn = NULL; /*   Up button */
-    Evas_Object * dn_btn = NULL; /* Down button */
-
     main = e_widget_list_add(evas, 0, 0);
 
     list = e_widget_framelist_add(evas, D_("Configurations"), 0);
@@ -186,26 +182,38 @@ static Evas_Object *_basic_create(
 
     btn_tbl = e_widget_table_add(evas, 1);
 
-    up_btn = e_widget_button_add(
+    cfdata->btn_up = e_widget_button_add(
         evas, D_("Up"), "go-up", _cb_up, cfdata, NULL
     );
 
-    dn_btn = e_widget_button_add(
+    cfdata->btn_down = e_widget_button_add(
         evas, D_("Down"), "go-down", _cb_dn, cfdata, NULL
     );
 
-    add_btn = e_widget_button_add(
+    cfdata->btn_add = e_widget_button_add(
         evas, D_("Add"), "list-add", _cb_add, cfdata, NULL
     );
 
-    del_btn = e_widget_button_add(
+    cfdata->btn_del = e_widget_button_add(
         evas, D_("Remove"), "list-remove", _cb_del, cfdata, NULL
     );
 
-    e_widget_table_object_append(btn_tbl,  up_btn, 0, 0, 1, 1, 1, 1, 1, 0);
-    e_widget_table_object_append(btn_tbl,  dn_btn, 1, 0, 1, 1, 1, 1, 1, 0);
-    e_widget_table_object_append(btn_tbl, add_btn, 0, 1, 1, 1, 1, 1, 1, 0);
-    e_widget_table_object_append(btn_tbl, del_btn, 1, 1, 1, 1, 1, 1, 1, 0);
+    e_widget_disabled_set(cfdata->btn_up,   EINA_TRUE);
+    e_widget_disabled_set(cfdata->btn_down, EINA_TRUE);
+    e_widget_disabled_set(cfdata->btn_del,  EINA_TRUE);
+
+    e_widget_table_object_append(
+        btn_tbl, cfdata->btn_up, 0, 0, 1, 1, 1, 1, 1, 0
+    );
+    e_widget_table_object_append(
+        btn_tbl, cfdata->btn_down, 1, 0, 1, 1, 1, 1, 1, 0
+    );
+    e_widget_table_object_append(
+        btn_tbl, cfdata->btn_add, 0, 1, 1, 1, 1, 1, 1, 0
+    );
+    e_widget_table_object_append(
+        btn_tbl, cfdata->btn_del, 1, 1, 1, 1, 1, 1, 1, 0
+    );
 
     e_widget_list_object_append(main, btn_tbl, 1, 0, 1);
 
@@ -639,7 +647,7 @@ _cb_fill_delay(void *data)
         e_widget_ilist_append_full(
             cfdata->used_list,
             ic, NULL, buf,
-            /*_cb_layout_select*/ NULL,
+            _cb_used_select,
             cfdata,
             NULL /* data */
         );
@@ -653,4 +661,32 @@ _cb_fill_delay(void *data)
 
     cfdata->fill_delay = NULL;
     return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+_cb_used_select(void *data)
+{
+    E_Config_Dialog_Data *cfdata  = NULL;
+    int n, c;
+
+    if (!(cfdata = data))
+        return;
+
+    if ((n = e_widget_ilist_selected_get(cfdata->used_list)) < 0)
+        return;
+
+    c = e_widget_ilist_count(cfdata->used_list);
+
+    e_widget_disabled_set(cfdata->btn_del, EINA_FALSE);
+
+    if (n == (c - 1) || n == 0)
+    {
+        e_widget_disabled_set(cfdata->btn_up,   EINA_TRUE);
+        e_widget_disabled_set(cfdata->btn_down, EINA_TRUE);
+    }
+    else
+    {
+        e_widget_disabled_set(cfdata->btn_up,   EINA_FALSE);
+        e_widget_disabled_set(cfdata->btn_down, EINA_FALSE);
+    }
 }
