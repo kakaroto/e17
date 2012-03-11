@@ -52,6 +52,14 @@ parse_rules()
     /* move on to next line, the first one is useless */
     fgets(buf, sizeof(buf), f);
 
+    /* let X decide on this one, also serves as
+     * "fallback on global" for layout combinations
+     */
+    model = E_NEW(E_XKB_Model, 1);
+    model->name = eina_stringshare_add("default");
+    model->description = eina_stringshare_add("Unspecified");
+    models = eina_list_append(models, model);
+
     /* read models here */
     for (;;) if (fgets(buf, sizeof(buf), f))
     {

@@ -147,6 +147,7 @@ EAPI void *e_modapi_init(E_Module *m)
     E_CONFIG_VAL(D, T, layout_prev_key.action, STR);
     E_CONFIG_VAL(D, T, layout_prev_key.params, STR);
     E_CONFIG_VAL(D, T, layout_prev_key.any_mod, UCHAR);
+    E_CONFIG_VAL(D, T, default_model, STR);
     E_CONFIG_VAL(D, T, version, INT);
 
     /* Version check */
@@ -244,6 +245,9 @@ EAPI int e_modapi_shutdown(E_Module *m)
         if (cl->variant) eina_stringshare_del(cl->variant);
     }
 
+    if (e_xkb_cfg->default_model)
+        eina_stringshare_del(e_xkb_cfg->default_model);
+
     E_FREE(e_xkb_cfg);
 
     E_CONFIG_DD_FREE(e_xkb_cfg_layout_edd);
@@ -308,9 +312,23 @@ void e_xkb_update_layout(void)
 
     cl = eina_list_data_get(e_xkb_cfg->used_layouts);
 
+    const char *model = cl->model;
+    if (!strcmp(model, "default"))
+    {
+        model = e_xkb_cfg->default_model;
+        if (!strcmp(model, "default"))
+        {
+            snprintf(
+                buf, sizeof(buf), "setxkbmap -layout %s -variant %s",
+                cl->name, cl->variant
+            );
+            ecore_exe_run(buf, NULL);
+            return;
+        }
+    }
     snprintf(
         buf, sizeof(buf), "setxkbmap -layout %s -variant %s -model %s",
-        cl->name, cl->variant, cl->model
+        cl->name, cl->variant, model
     );
     ecore_exe_run(buf, NULL);
 }
@@ -478,8 +496,9 @@ static void _e_xkb_cfg_new(void)
 
     e_xkb_cfg = E_NEW(E_XKB_Config, 1);
 
-    e_xkb_cfg->used_layouts = NULL;
-    e_xkb_cfg->version      = MOD_CONFIG_FILE_VERSION;
+    e_xkb_cfg->used_layouts  = NULL;
+    e_xkb_cfg->version       = MOD_CONFIG_FILE_VERSION;
+    e_xkb_cfg->default_model = eina_stringshare_add("default");
 
     #define BIND(act, actname) \
         e_xkb_cfg->layout_##act##_key.context = E_BINDING_CONTEXT_ANY; \
@@ -510,6 +529,9 @@ static void _e_xkb_cfg_free(void)
         if (cl->model)   eina_stringshare_del(cl->model);
         if (cl->variant) eina_stringshare_del(cl->variant);
     }
+
+    if (e_xkb_cfg->default_model)
+        eina_stringshare_del(e_xkb_cfg->default_model);
 
     E_FREE(e_xkb_cfg);
 }

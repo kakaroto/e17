@@ -38,7 +38,8 @@ typedef struct _E_XKB_Config
     E_Config_Binding_Key layout_next_key;
     E_Config_Binding_Key layout_prev_key;
 
-    Eina_List *used_layouts;
+    Eina_List  *used_layouts;
+    const char *default_model;
 
     int version;
 } E_XKB_Config;
@@ -55,12 +56,14 @@ typedef struct _E_XKB_Config_Layout
 struct _E_Config_Dialog_Data 
 {
     Evas *evas, *dlg_evas;
-    Evas_Object *layout_list, *used_list, *model_list, *variant_list;
+    Evas_Object *layout_list, *used_list;
+    Evas_Object *dmodel_list, *model_list, *variant_list;
     Evas_Object *btn_add, *btn_del, *btn_up, *btn_down;
     Ecore_Timer *fill_delay;
     Ecore_Timer *dlg_fill_delay;
 
-    Eina_List *cfg_layouts;
+    Eina_List  *cfg_layouts;
+    const char *default_model;
 
     E_Dialog *dlg_add_new;
 };
