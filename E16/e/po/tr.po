@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Fatih Demir <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u bað geriye kaldý"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -55,7 +55,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "Zira , bu dosya yok .\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -75,7 +75,7 @@ msgstr ""
 "komutanýn rehberine (man ..) bakýp o ´path´\n"
 "verimini geniþlet .\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -92,7 +92,7 @@ msgstr ""
 "Bu dosya var ve senin çalýþtýrma hakkýn da\n"
 "var ?! ..\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -107,7 +107,7 @@ msgstr ""
 "Bu uygulama var , ama senin bu uyulamayý \n"
 "çalýþtýrma hakkýn yok .\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -120,7 +120,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "O dosya gercek'te bir dizin .\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -133,7 +133,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "Zira bu normal bir dosya deðil .\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -320,17 +320,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG : \"%s\"'nin ekstra bilgilerini gözardý ediyorum"
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG : \"%s\"'de gerekli bilgi yok"
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -339,26 +339,26 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "Görünüm nesilleme hatasý"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "Önayarlý deðerlerle yeniden baþla"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "Býrak ve Çýk"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -379,7 +379,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment baþlýyor ...."
 
@@ -1434,7 +1434,7 @@ msgstr ""
 "Enlightenment masaüstü & bölge\n"
 "gözey ayarlarý diyaloðu"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1460,51 +1460,51 @@ msgstr ""
 "\n"
 "... inþallah !\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "Emin misin ?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "Enlightenment'den çýkmak istediðinden emin misin ?"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr ""
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr ""
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "Evet, çýk"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "Hayýr"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr ""
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr ""
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

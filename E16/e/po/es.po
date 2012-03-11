@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2010-04-23 21:20+0000\n"
 "Last-Translator: Fernando Muñoz <munozferna@gmail.com>\n"
 "Language-Team: \n"
@@ -52,7 +52,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u referencias restantes"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -65,7 +65,7 @@ msgstr ""
 "Este programa no pudo ser ejecutado.\n"
 "Debido a que el archivo no existe.\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -86,7 +86,7 @@ msgstr ""
 "directorios a su\n"
 "ruta de ejecución.\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -104,7 +104,7 @@ msgstr ""
 "es un archivo, y tiene permisos para ejecutarlo. Le sugiero que le de\n"
 "una mirada.\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -121,7 +121,7 @@ msgstr ""
 "ejecutarlo debido a que Ud. no tiene permisos de ejecución sobre el "
 "archivo.\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -134,7 +134,7 @@ msgstr ""
 "Este programa no pudo ser ejecutado.\n"
 "Esto se debe a que el archivo es en realidad un directorio.\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -147,7 +147,7 @@ msgstr ""
 "Este programa no pudo ser ejecutado.\n"
 "Esto se debe a que el archivo no es un archivo normal.\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -336,17 +336,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG: ignorando datos extras en \"%s\""
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG: datos requeridos no disponibles en \"%s\""
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -359,7 +359,7 @@ msgstr ""
 "%s\n"
 "Se ignorará y se continuará...\n"
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -368,19 +368,19 @@ msgstr ""
 "Advertencia:  Error de configuración en bloque %s.\n"
 "Probablemente la salida será incorrecta.\n"
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "ERROR en el versionado del tema"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "Reiniciar con los valores predeterminados"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "Abortar y Salir"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -417,7 +417,7 @@ msgstr ""
 "algún tiempo y que este tema utilize características solo\n"
 "presentes en una versión más avanzada.\n"
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Iniciando Enlightenment..."
 
@@ -1499,7 +1499,7 @@ msgstr ""
 "Escritorio y Area de Enlightenment\n"
 "Diálogo de Configuración del Paginador"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1525,51 +1525,51 @@ msgstr ""
 "\n"
 "... eso espero.\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "¿Está seguro?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "¿Está seguro de abandonar la sesión?"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "SI, Apagar"
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "SI, Reiniciar"
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "SI, Salir"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "No"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr "Habilitar Script de Sesión"
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr "Habilitar Dialogo Logout"
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Hbilitar Reinicio/Apagar al Salir"
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "Sesión"
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "Configuraciones de Sesión"
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

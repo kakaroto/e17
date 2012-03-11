@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u referanser er igjen"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -56,7 +56,7 @@ msgstr ""
 "Dette programmet kunne ikke bli kjørt.\n"
 "Årsaken er at filen ikke eksisterer.\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -75,7 +75,7 @@ msgstr ""
 "at du leser om skallet ditt og ser etter hvordan man\n"
 "endrer denne stien.\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -92,7 +92,7 @@ msgstr ""
 "er en fil og du har tillatelse til å kjøre det. Jeg foreslår du ser\n"
 "nærmere på dette sjøl.\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -107,7 +107,7 @@ msgstr ""
 "Filen eksister og er en fil, men\n"
 "du har tillatelse til å kjøre det.\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -120,7 +120,7 @@ msgstr ""
 "Dette programmet kunne ikke bli kjørt.\n"
 "Årsaken er at fila faktisk er en katalog.\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -133,7 +133,7 @@ msgstr ""
 "Dette programmet kunne ikke bli kjørt.\n"
 "Årsaken er at fila ikke er en normal fil.\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -320,17 +320,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG: overser ekstra informasjon i \"%s\""
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG: nødvendig informasjon mangler i  \"%s\""
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -339,26 +339,26 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "Feil ved versjonen til temaet"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "Start på nytt med standardverdier"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "Avbryt og avslutt"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -379,7 +379,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment starter opp..."
 
@@ -1427,7 +1427,7 @@ msgstr ""
 "Dialog for innstilling av \n"
 "skrivebordsoversikt i Enlightenment"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1449,51 +1449,51 @@ msgstr ""
 "\n"
 "... håper jeg.\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "Er du sikker du vil gjøre dette?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "Er du sikker på at du logge ut ?"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "Ja, avslutt"
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "Ja, start på nytt"
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "Ja, avslutt"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "Nei"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "Sesjon"
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "Innstillinger for sesjon"
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

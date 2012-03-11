@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2010-01-16 04:42+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -52,7 +52,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u reference ostaju"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -65,7 +65,7 @@ msgstr ""
 "Ovaj program ne može biti izvršen.\n"
 "Ovo je zato jer datoteka ne postoji.\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -84,7 +84,7 @@ msgstr ""
 "pogledajte priručnik za ovu školjku i pročitajte\n"
 "kako promijeniti ili dodati na vaš izvršni put.\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -101,7 +101,7 @@ msgstr ""
 "i vama je dozvoljeno izvršenje.\n"
 "Predlažem da pogledate u ovo malo detaljnije.\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -116,7 +116,7 @@ msgstr ""
 "Ovo je zato jer datoteka postoji ali vi nemate\n"
 "izvršni pristup ovoj datoteci.\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -129,7 +129,7 @@ msgstr ""
 "Ovaj program ne može biti izvršen.\n"
 "Ovao je zato je ova datoteka je u stvari direktorij.\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -142,7 +142,7 @@ msgstr ""
 "Ovaj program ne može biti izvršen.\n"
 "Ovo je zato jer ova datoteka nije regularna datoteka.\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -331,17 +331,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG: ignoriranje dodatnih podataka u \"%s\""
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG: nedostaju potrebni podaci u \"%s\""
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -354,7 +354,7 @@ msgstr ""
 "%s\n"
 "Ignoriram i nastavljam...\n"
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -363,19 +363,19 @@ msgstr ""
 "Upozorenje: Konfiguraciona greška u %s bloku.\n"
 "Rezultat vjerovatno neće biti dobar.\n"
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "GREŠKA tematske verzije"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "Pokreni ponovo sa Zadanim Vrijednostima"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "Prekini i Izađi"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -396,7 +396,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment Započinje..."
 
@@ -1385,7 +1385,7 @@ msgid ""
 "Pager Settings Dialog"
 msgstr ""
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1400,51 +1400,51 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "Jeste li sigurni?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "Jeste li sigurni da se želite odjaviti ?"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "Da, Ugasi"
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "Da, Prekini Rad Računala"
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "Da, Odjavi Se"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "Ne"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr "Omogući Odjavni Dijalog"
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "Sesija"
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "Postavke Sesije"
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

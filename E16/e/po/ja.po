@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2011-10-11 18:12+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -54,7 +54,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u 参照残っています。"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -67,7 +67,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルが存在しません。\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -85,7 +85,7 @@ msgstr ""
 "シェルのマニュアルページを読んで、シェルの実行パスの変更方法\n"
 "や追加方法を理解した方がいいと思います。\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -102,7 +102,7 @@ msgstr ""
 "それにこのファイルを実行する権限もあります。この件は調べた方がいいと\n"
 "思います。\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -118,7 +118,7 @@ msgstr ""
 "る\n"
 "実行権限がないので実行できません。\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -131,7 +131,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "ファイルではなくディレクトリが指定されています。\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -144,7 +144,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -336,17 +336,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG: \"%s\" にある余分なデータは無視します。"
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。"
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -358,7 +358,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -367,19 +367,19 @@ msgstr ""
 "警告。%s ブロックに設定エラーがあります。\n"
 "出力はおそらくおかしくなっていると思います。\n"
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -413,7 +413,7 @@ msgstr ""
 "このテーマで利用している機能が新しい Enlightenment の機能なのに、\n"
 "Enlightenment がしばらく更新されていないためかもしれません。\n"
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
@@ -1518,7 +1518,7 @@ msgstr ""
 "Enlightenment デスクトップの\n"
 "ページャ設定ダイアログ"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1544,57 +1544,57 @@ msgstr ""
 "\n"
 "...たぶん。\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "いいですか?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "本当にログアウトしますか ?"
 
 #
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "シャットダウンします"
 
 #
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "再起動します"
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "ログアウトします"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "いいえ、ログアウトしません"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr "セッションスクリプトを有効にする"
 
 #
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr "ログアウトダイアログを有効にする"
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr "ログアウト時に再起動または停止できるようにする"
 
 #
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "セッション"
 
 #
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "セッションの設定"
 
 #
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u개의 참조가 남아있습니다"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -55,7 +55,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이 프로그램이 존재하지 않기 때문입니다.\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -74,7 +74,7 @@ msgstr ""
 "를 설정하는 방법을 배우신 후 경로를 제대로 설정하시기\n"
 "바랍니다.\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -91,7 +91,7 @@ msgstr ""
 "당신이 실행할 수 있도록 되어 있습니다. 이 파일의 내용을\n"
 "한 번 확인해 보시기 바랍니다.\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -106,7 +106,7 @@ msgstr ""
 "이 파일이 존재하지만 당신은 이 파일을 실행할 수 있는 권한을\n"
 "가지고 있지 않습니다.\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -119,7 +119,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 파일이 아니고 디렉토리입니다.\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -132,7 +132,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 일반적인 파일이 아니기 때문입니다.\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -319,17 +319,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다"
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG: \"%s\"에 요구되는 데이타가 없습니다"
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -338,26 +338,26 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "테마 버전 오류"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "기본 테마로 재시작"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "중단하고 종료"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -378,7 +378,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "인라이튼먼트 시작중..."
 
@@ -1438,7 +1438,7 @@ msgstr ""
 "인라이튼먼트 데스크탑과 영역\n"
 "페이저 설정 대화상자"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1464,51 +1464,51 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "정말로 로그아웃하기를 바라십니까 ?"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr ""
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr ""
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "예, 로그아웃"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "아니오"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr ""
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr ""
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

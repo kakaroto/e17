@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2009-11-09 14:39+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "%u verwijzingen blijven over"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -64,7 +64,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "Dit omdat het bestand niet bestaat.\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -83,7 +83,7 @@ msgstr ""
 "U de documentatie voor uw sheel bekijkt hoe U het pad voor\n"
 "uivoerbare programma's moet aanpassen.\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -100,7 +100,7 @@ msgstr ""
 "en U bent gerechtigd om het uit te voeren. Ik suggereer dat\n"
 "U hier naar kijkt.\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,7 +115,7 @@ msgstr ""
 "De reden hiervoor is dat het bestand bestaat, maar U kan het\n"
 "niet uitvoeren omdat U geen uitvoer rechten voor het bestand heeft.\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -128,7 +128,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "De reden hiervoor is dat het bestand in werkelijkheid een directory is.\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -141,7 +141,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "Dit is omdat het bestand geen gewoon bestand is.\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -330,17 +330,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\""
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIGURATIE: benodigde gegevens ontbreken in \"%s\""
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -353,7 +353,7 @@ msgstr ""
 "%s\n"
 "Zal dit negeren en verdergaan...\n"
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -362,19 +362,19 @@ msgstr ""
 "Waarschuwing: Configuratiefout in %s blok.\n"
 "Verdere verloop is waarschijnlijk niet goed.\n"
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "Thema versie fout"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "Herstarten met standaard instellingen"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "Afbreken en afsluiten"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -412,7 +412,7 @@ msgstr ""
 "van enkele nieuwe voordelen/functies van Enlightenment in \n"
 "de nieuwere versies.\n"
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
@@ -1492,7 +1492,7 @@ msgstr ""
 "Enlightenment Bureaublad & Gebied\n"
 "Pager Instellingendialoog"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1518,51 +1518,51 @@ msgstr ""
 "\n"
 "... Hoop ik.\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "Weet U het zeker?"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "Weet U zeker dat U uit wil loggen ?"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "Ja, Sluit Af"
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "Ja, Herstarten"
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "Ja, log uit"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "Nee"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr "Sessiescript Inschakelen"
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr "Afmeldialoog Inschakelen"
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Herstarten Inschakelen/Stoppen bij Afmelden"
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "Sessie"
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "Sessie Instellingen"
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

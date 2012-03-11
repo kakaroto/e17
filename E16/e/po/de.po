@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2010-05-09 01:21+0000\n"
 "Last-Translator: Peter Wehrfritz <Unknown>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -60,7 +60,7 @@ msgid "%u references remain"
 msgstr "%u Referenzen verbleiben"
 
 # src/actions.c:664
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -74,7 +74,7 @@ msgstr ""
 "da die Datei nicht existiert.\n"
 
 # src/actions.c:672
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -95,7 +95,7 @@ msgstr ""
 "müssen.\n"
 
 # src/actions.c:692
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -113,7 +113,7 @@ msgstr ""
 "Sie ausführen. Sie sollten sich die Angelegenheit näher ansehen.\n"
 
 # src/actions.c:703
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -130,7 +130,7 @@ msgstr ""
 "für diese Datei haben.\n"
 
 # src/actions.c:719
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -144,7 +144,7 @@ msgstr ""
 "da die Datei in Wirklichkeit ein Verzeichnis ist.\n"
 
 # src/actions.c:727
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -157,7 +157,7 @@ msgstr ""
 "auf. Es konnte nicht ausgeführt werden,\n"
 "da die Datei keine normale Datei ist.\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -395,7 +395,7 @@ msgstr ""
 # src/config.c:1649 src/config.c:1896 src/config.c:1965 src/config.c:2060
 # src/config.c:2316 src/config.c:2532 src/config.c:2795 src/config.c:2887
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\""
@@ -405,13 +405,13 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\""
 # src/config.c:1657 src/config.c:1902 src/config.c:1971 src/config.c:2068
 # src/config.c:2322 src/config.c:2540 src/config.c:2801 src/config.c:3071
 # src/config.c:3395
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "KONFIG: vermisse benötigte Daten in \"%s\""
 
 # src/config.c:2929
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -425,7 +425,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:927 src/config.c:1160
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -435,22 +435,22 @@ msgstr ""
 "Das Ergebnis ist vermutlich nicht gut.\n"
 
 # src/config.c:3404
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "FEHLER in der Themen-Versionsnummerierung"
 
 # src/config.c:3405 src/config.c:3439
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "Mit Voreinstellung neu starten"
 
 # src/config.c:3406 src/config.c:3440
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "Abbrechen und verlassen"
 
 # src/config.c:3407
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -489,7 +489,7 @@ msgstr ""
 "in neueren Versionen finden.\n"
 
 # src/config.c:3743
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
@@ -1748,7 +1748,7 @@ msgstr ""
 "für den Pager"
 
 # src/session.c:1039
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1775,59 +1775,59 @@ msgstr ""
 "... hoffentlich.\n"
 
 # src/handlers.c:235 src/session.c:1178
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 # src/session.c:1180
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "Sind Sie sicher, dass Sie sich abmelden wollen?"
 
 # src/session.c:1184
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "Ja, herunterfahren"
 
 # src/session.c:1184
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "Ja, neu starten"
 
 # src/session.c:1184
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "Ja, abmelden"
 
 # src/settings.c:3740
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "Nein"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr "Verwende Sitzungsskript"
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr "Abmeldedialog aktivieren"
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Aktiviere Neustart/Ausschalten beim Abmelden"
 
 # src/settings.c:393
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "Sitzung"
 
 # src/settings.c:393
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "Sitzungs-Einstellungen"
 
 # src/main.c:89
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-06 18:15+0100\n"
+"POT-Creation-Date: 2012-03-11 18:16+0100\n"
 "PO-Revision-Date: 2010-05-09 01:20+0000\n"
 "Last-Translator: luojie-dune <Unknown>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -52,7 +52,7 @@ msgstr ""
 msgid "%u references remain"
 msgstr "保留 %u 引用"
 
-#: src/actions.c:114
+#: src/actions.c:129
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -65,7 +65,7 @@ msgstr ""
 "程序不能运行。\n"
 "可能是程序不存在。\n"
 
-#: src/actions.c:120
+#: src/actions.c:135
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -83,7 +83,7 @@ msgstr ""
 "建议查看相关的 Shell 帮助手册中，关于如何修改或\n"
 "添加执行路径的章节。\n"
 
-#: src/actions.c:139
+#: src/actions.c:154
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -100,7 +100,7 @@ msgstr ""
 "该文件存在，并且允许您有权限来运行它。\n"
 "建议仔细检查。\n"
 
-#: src/actions.c:149
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,7 +115,7 @@ msgstr ""
 "存在这一文件，但它是普通文件，并没有执行权限。\n"
 "或者是您没有执行它的权限。\n"
 
-#: src/actions.c:162
+#: src/actions.c:177
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -128,7 +128,7 @@ msgstr ""
 "程序不能运行。\n"
 "指定的文件实际上是一个目录。\n"
 
-#: src/actions.c:169
+#: src/actions.c:184
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -141,7 +141,7 @@ msgstr ""
 "程序不能运行。\n"
 "指定的文件不是一个常规文件。\n"
 
-#: src/actions.c:194
+#: src/actions.c:209
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -330,17 +330,17 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:202 src/config.c:304
+#: src/config.c:201 src/config.c:293
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\""
 msgstr "CONFIG：忽略“%s”中的额外数据"
 
-#: src/config.c:210 src/config.c:311
+#: src/config.c:209 src/config.c:300
 #, c-format
 msgid "CONFIG: missing required data in \"%s\""
 msgstr "CONFIG：缺失“%s”中的必需数据"
 
-#: src/config.c:220
+#: src/config.c:219
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -352,7 +352,7 @@ msgstr ""
 "%s\n"
 "将会忽略继续进行...\n"
 
-#: src/config.c:228
+#: src/config.c:227
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -361,19 +361,19 @@ msgstr ""
 "警告：配置错误，出现在 %s 块。\n"
 "结果不正确。\n"
 
-#: src/config.c:320
+#: src/config.c:309
 msgid "Theme versioning ERROR"
 msgstr "主题版本错误"
 
-#: src/config.c:321
+#: src/config.c:310
 msgid "Restart with Defaults"
 msgstr "以默认重启"
 
-#: src/config.c:322
+#: src/config.c:311
 msgid "Abort and Exit"
 msgstr "中止并退出"
 
-#: src/config.c:323
+#: src/config.c:312
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -399,7 +399,7 @@ msgstr ""
 "不兼容，它是 版本 %i.\n"
 "标记的需求版本为 <= %i\n"
 
-#: src/config.c:625
+#: src/config.c:614
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 启动中..."
 
@@ -1414,7 +1414,7 @@ msgstr ""
 "Enlightenment 桌面区域\n"
 "分页器设置对话框"
 
-#: src/session.c:342
+#: src/session.c:327
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1439,51 +1439,51 @@ msgstr ""
 "\n"
 "...你不在意吧。\n"
 
-#: src/session.c:646
+#: src/session.c:630
 msgid "Are you sure?"
 msgstr "您确定吗？"
 
-#: src/session.c:648
+#: src/session.c:632
 msgid "Are you sure you wish to log out ?"
 msgstr "您确定要注销吗？"
 
-#: src/session.c:656
+#: src/session.c:640
 msgid "Yes, Shut Down"
 msgstr "是的，关机"
 
-#: src/session.c:658
+#: src/session.c:642
 msgid "Yes, Reboot"
 msgstr "是的，重启"
 
-#: src/session.c:661
+#: src/session.c:645
 msgid "Yes, Log Out"
 msgstr "是的，注销"
 
-#: src/session.c:663
+#: src/session.c:647
 msgid "No"
 msgstr "不是"
 
-#: src/session.c:798
+#: src/session.c:782
 msgid "Enable Session Script"
 msgstr "启用会话脚本"
 
-#: src/session.c:803
+#: src/session.c:787
 msgid "Enable Logout Dialog"
 msgstr "启用注销对话框"
 
-#: src/session.c:808
+#: src/session.c:792
 msgid "Enable Reboot/Halt on Logout"
 msgstr "在注销中启用重启和关机"
 
-#: src/session.c:814
+#: src/session.c:798
 msgid "Session"
 msgstr "会话"
 
-#: src/session.c:815
+#: src/session.c:799
 msgid "Session Settings"
 msgstr "会话设置"
 
-#: src/session.c:818
+#: src/session.c:802
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog"
