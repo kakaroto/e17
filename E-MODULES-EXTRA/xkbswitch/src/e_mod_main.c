@@ -396,39 +396,31 @@ void e_xkb_update_layout(void)
     if (!e_xkb_cfg->used_layouts)
         return;
 
-    cl = eina_list_data_get(e_xkb_cfg->used_layouts);
-
     /* We put an empty -option here in order to override all previously
      * set options.
      */
 
-    const char *model = cl->model;
-    if (!strcmp(model, "default"))
+    snprintf(buf, sizeof(buf), "setxkbmap ");
+    EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
     {
-        model = e_xkb_cfg->default_model;
-        if (!strcmp(model, "default"))
-        {
-            snprintf(
-                buf, sizeof(buf), "setxkbmap -layout %s -variant %s -option",
-                cl->name, cl->variant
-            );
-
-            EINA_LIST_FOREACH(e_xkb_cfg->used_options, l, op)
-            {
-                strcat(buf, " -option ");
-                strcat(buf, op->name);
-            }
-
-            ecore_exe_run(buf, NULL);
-            return;
-        }
+        strcat(buf, cl->name);
+        strcat(buf, ",");
     }
 
-    snprintf(
-        buf, sizeof(buf),
-        "setxkbmap -layout %s -variant %s -model %s -option",
-        cl->name, cl->variant, model
-    );
+    strcat(buf, " -variant ");
+    EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
+    {
+        strcat(buf, cl->variant);
+        strcat(buf, ",");
+    }
+
+    strcat(buf, " -model ");
+    cl = eina_list_data_get(e_xkb_cfg->used_layouts);
+
+    if (strcmp(cl->model, "default"))
+        strcat(buf, cl->model);
+    else if (strcmp(e_xkb_cfg->default_model, "default"))
+        strcat(buf, e_xkb_cfg->default_model);
 
     EINA_LIST_FOREACH(e_xkb_cfg->used_options, l, op)
     {
