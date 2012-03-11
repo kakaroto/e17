@@ -59,6 +59,7 @@ static Eina_List *instances = NULL;
 
 static E_Config_DD *e_xkb_cfg_edd        = NULL;
 static E_Config_DD *e_xkb_cfg_layout_edd = NULL;
+static E_Config_DD *e_xkb_cfg_option_edd = NULL;
 
 /* Global variables
  * Global variables shared across the module.
@@ -91,7 +92,7 @@ EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "XKB Switcher" };
 EAPI void *e_modapi_init(E_Module *m) 
 {
     /* Locals */
-    char buf[4096];
+    char buf[PATH_MAX];
 
     /* i18n */
 
@@ -127,6 +128,15 @@ EAPI void *e_modapi_init(E_Module *m)
     E_CONFIG_VAL(D, T, model,   STR);
     E_CONFIG_VAL(D, T, variant, STR);
 
+    e_xkb_cfg_option_edd = E_CONFIG_DD_NEW(
+        "E_XKB_Config_Option", E_XKB_Config_Option
+    );
+    #undef T
+    #undef D
+    #define T E_XKB_Config_Option
+    #define D e_xkb_cfg_option_edd
+    E_CONFIG_VAL(D, T, name, STR);
+
     e_xkb_cfg_edd = E_CONFIG_DD_NEW(
         "e_xkb_cfg", E_XKB_Config
     );
@@ -135,6 +145,7 @@ EAPI void *e_modapi_init(E_Module *m)
     #define T E_XKB_Config
     #define D e_xkb_cfg_edd
     E_CONFIG_LIST(D, T, used_layouts, e_xkb_cfg_layout_edd);
+    E_CONFIG_LIST(D, T, used_options, e_xkb_cfg_option_edd);
     E_CONFIG_VAL(D, T, layout_next_key.context, INT);
     E_CONFIG_VAL(D, T, layout_next_key.modifiers, INT);
     E_CONFIG_VAL(D, T, layout_next_key.key, STR);
@@ -224,6 +235,7 @@ EAPI void *e_modapi_init(E_Module *m)
 EAPI int e_modapi_shutdown(E_Module *m) 
 {
     E_XKB_Config_Layout *cl = NULL;
+    E_XKB_Config_Option *op = NULL;
 
     e_configure_registry_item_del    ("keyboard_and_mouse/xkbswitch");
     e_configure_registry_category_del("keyboard_and_mouse");
@@ -244,6 +256,14 @@ EAPI int e_modapi_shutdown(E_Module *m)
         if (cl->name)    eina_stringshare_del(cl->name);
         if (cl->model)   eina_stringshare_del(cl->model);
         if (cl->variant) eina_stringshare_del(cl->variant);
+
+        E_FREE(cl);
+    }
+
+    EINA_LIST_FREE(e_xkb_cfg->used_options, op)
+    {
+        if (op->name) eina_stringshare_del(op->name);
+        E_FREE(op);
     }
 
     if (e_xkb_cfg->default_model)
@@ -252,6 +272,7 @@ EAPI int e_modapi_shutdown(E_Module *m)
     E_FREE(e_xkb_cfg);
 
     E_CONFIG_DD_FREE(e_xkb_cfg_layout_edd);
+    E_CONFIG_DD_FREE(e_xkb_cfg_option_edd);
     E_CONFIG_DD_FREE(e_xkb_cfg_edd);
 
     clear_rules();
@@ -275,7 +296,7 @@ void e_xkb_update_icon(void)
 {
     Instance  *inst = NULL;
     Eina_List *l    = NULL;
-    char buf[4096];
+    char buf[PATH_MAX];
 
     if (!e_xkb_cfg->used_layouts)
         return;
@@ -319,7 +340,7 @@ void e_xkb_update_icon(void)
     }
     else
     {
-        char buf2[4096];
+        char buf2[PATH_MAX];
 
         snprintf(
             buf2, sizeof(buf2), "%s/flags/%s_flag.png",
@@ -366,12 +387,20 @@ void e_xkb_update_icon(void)
 void e_xkb_update_layout(void)
 {
     E_XKB_Config_Layout *cl = NULL;
-    char buf[256];
+    E_XKB_Config_Option *op = NULL;
+    Eina_List           *l  = NULL;
+
+    /* XXX: Safe? Yeah .. Consider heap allocation */
+    char buf[8192];
 
     if (!e_xkb_cfg->used_layouts)
         return;
 
     cl = eina_list_data_get(e_xkb_cfg->used_layouts);
+
+    /* We put an empty -option here in order to override all previously
+     * set options.
+     */
 
     const char *model = cl->model;
     if (!strcmp(model, "default"))
@@ -380,17 +409,33 @@ void e_xkb_update_layout(void)
         if (!strcmp(model, "default"))
         {
             snprintf(
-                buf, sizeof(buf), "setxkbmap -layout %s -variant %s",
+                buf, sizeof(buf), "setxkbmap -layout %s -variant %s -option",
                 cl->name, cl->variant
             );
+
+            EINA_LIST_FOREACH(e_xkb_cfg->used_options, l, op)
+            {
+                strcat(buf, " -option ");
+                strcat(buf, op->name);
+            }
+
             ecore_exe_run(buf, NULL);
             return;
         }
     }
+
     snprintf(
-        buf, sizeof(buf), "setxkbmap -layout %s -variant %s -model %s",
+        buf, sizeof(buf),
+        "setxkbmap -layout %s -variant %s -model %s -option",
         cl->name, cl->variant, model
     );
+
+    EINA_LIST_FOREACH(e_xkb_cfg->used_options, l, op)
+    {
+        strcat(buf, " -option ");
+        strcat(buf, op->name);
+    }
+
     ecore_exe_run(buf, NULL);
 }
 
@@ -439,7 +484,7 @@ static E_Gadcon_Client *_gc_init(
 {
     Instance   *inst = NULL;
     const char *name = NULL;
-    char buf[4096];
+    char buf[PATH_MAX];
 
     if (e_xkb_cfg->used_layouts)
         name = ((E_XKB_Config_Layout*)eina_list_data_get(
@@ -542,7 +587,7 @@ static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__)
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
 {
     Evas_Object *o = NULL;
-    char buf[4096];
+    char buf[PATH_MAX];
 
     snprintf(
         buf, sizeof(buf), "%s/e-module-xkbswitch.edj",
@@ -562,6 +607,7 @@ static void _e_xkb_cfg_new(void)
     e_xkb_cfg = E_NEW(E_XKB_Config, 1);
 
     e_xkb_cfg->used_layouts  = NULL;
+    e_xkb_cfg->used_options  = NULL;
     e_xkb_cfg->version       = MOD_CONFIG_FILE_VERSION;
     e_xkb_cfg->default_model = eina_stringshare_add("default");
 
@@ -587,12 +633,21 @@ static void _e_xkb_cfg_new(void)
 static void _e_xkb_cfg_free(void) 
 {
     E_XKB_Config_Layout *cl = NULL;
+    E_XKB_Config_Option *op = NULL;
 
     EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
     {
         if (cl->name)    eina_stringshare_del(cl->name);
         if (cl->model)   eina_stringshare_del(cl->model);
         if (cl->variant) eina_stringshare_del(cl->variant);
+
+        E_FREE(cl);
+    }
+
+    EINA_LIST_FREE(e_xkb_cfg->used_options, op)
+    {
+        if (op->name) eina_stringshare_del(op->name);
+        E_FREE(op);
     }
 
     if (e_xkb_cfg->default_model)

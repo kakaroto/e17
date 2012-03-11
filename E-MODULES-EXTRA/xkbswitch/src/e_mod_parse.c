@@ -2,6 +2,7 @@
 
 Eina_List *layouts     = NULL;
 Eina_List *models      = NULL;
+Eina_List *optgroups   = NULL;
 const char *rules_file = NULL;
 
 void find_rules()
@@ -35,7 +36,9 @@ int parse_rules()
 {
     E_XKB_Model *model = NULL;
     E_XKB_Layout *layout = NULL;
+    E_XKB_Option *option = NULL;
     E_XKB_Variant *variant = NULL;
+    E_XKB_Option_Group *group = NULL;
 
     char buf[512];
 
@@ -149,6 +152,52 @@ int parse_rules()
         variant->description = eina_stringshare_add(p);
     } else break;
 
+    fgets(buf, sizeof(buf), f);
+
+    /* read options here */
+    for (;;) if (fgets(buf, sizeof(buf), f))
+    {
+        char *n = strchr(buf, '\n');
+        if   (n) *n = '\0';
+
+        if (!buf[0]) break;
+
+        char *p   = buf + 2;
+        char *tmp  = strdup(p);
+        char *name = strtok(tmp, " ");
+
+        p += strlen(name);
+        while (p[0] == ' ') ++p;
+
+        if (!strchr(name, ':'))
+        {
+            group = E_NEW(E_XKB_Option_Group, 1);
+
+            /* A hack to get it to parse right if
+             * the group name contains a space
+             */
+            if (strstr(p, "  "))
+            {
+                p = strstr(p, "  ");
+                while (p[0] == ' ') ++p;
+            }
+
+            group->description = eina_stringshare_add(p);
+
+            optgroups = eina_list_append(optgroups, group);
+        }
+        else
+        {
+            option = E_NEW(E_XKB_Option, 1);
+            option->name = eina_stringshare_add(name);
+            option->description = eina_stringshare_add(p);
+
+            group->options = eina_list_append(group->options, option);
+        }
+
+        free(tmp);
+    } else break;
+
     fclose(f);
 
     /* Sort layouts */
@@ -160,9 +209,11 @@ int parse_rules()
 
 void clear_rules()
 {
-    E_XKB_Variant *v  = NULL;
-    E_XKB_Layout  *la = NULL;
-    E_XKB_Model   *m  = NULL;
+    E_XKB_Option_Group *og = NULL;
+    E_XKB_Variant      *v  = NULL;
+    E_XKB_Option       *o  = NULL;
+    E_XKB_Layout       *la = NULL;
+    E_XKB_Model        *m  = NULL;
 
     EINA_LIST_FREE(layouts, la)
     {
@@ -188,8 +239,24 @@ void clear_rules()
         E_FREE(m);
     }
 
-    layouts = NULL;
-    models  = NULL;
+    EINA_LIST_FREE(optgroups, og)
+    {
+        if (og->description) eina_stringshare_del(og->description);
+
+        EINA_LIST_FREE(og->options, o)
+        {
+            if  (o->name       ) eina_stringshare_del(o->name);
+            if  (o->description) eina_stringshare_del(o->description);
+
+            E_FREE(o);
+        }
+
+        E_FREE(og);
+    }
+
+    optgroups = NULL;
+    layouts   = NULL;
+    models    = NULL;
 }
 
 int layout_sort_cb(const void *data1, const void *data2)

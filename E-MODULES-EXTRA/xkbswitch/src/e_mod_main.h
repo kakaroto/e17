@@ -39,6 +39,7 @@ typedef struct _E_XKB_Config
     E_Config_Binding_Key layout_prev_key;
 
     Eina_List  *used_layouts;
+    Eina_List  *used_options;
     const char *default_model;
 
     int only_label;
@@ -54,6 +55,19 @@ typedef struct _E_XKB_Config_Layout
     const char *variant;
 } E_XKB_Config_Layout;
 
+/* This represents a keyboard option in the config dialog */
+typedef struct _E_XKB_Dialog_Option
+{
+    int enabled;
+    const char *name;
+} E_XKB_Dialog_Option;
+
+/* This represents a keyboard option saved into eet */
+typedef struct _E_XKB_Config_Option
+{
+    const char *name;
+} E_XKB_Config_Option;
+
 /* automatically typedef'd by E */
 struct _E_Config_Dialog_Data 
 {
@@ -65,6 +79,7 @@ struct _E_Config_Dialog_Data
     Ecore_Timer *dlg_fill_delay;
 
     Eina_List  *cfg_layouts;
+    Eina_List  *cfg_options;
     const char *default_model;
 
     int only_label;
