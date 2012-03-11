@@ -1,4 +1,2 @@
-X keyboard switcher module for Enlightenment 0.17.
-Allows you to get a list of keyboard layouts and use some of them.
-
-Work in progress!
+X keyboard layout switcher module for Enlightenment 0.17.
+Licensed under MIT/X11.
