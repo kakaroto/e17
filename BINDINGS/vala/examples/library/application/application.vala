@@ -22,9 +22,6 @@ class DemoApplication : EflVala.Application
 //=======================================================================
 {
     Elm.Win win;
-    Elm.Layout layout;
-    Elm.Box box;
-    Elm.Button button;
 
     public DemoApplication( string[] args )
     {
@@ -41,17 +38,17 @@ class DemoApplication : EflVala.Application
         win.smart_callback_add( "delete,request", this.quit );
         win.show();
 
-        layout = new Elm.Layout( win );
+        unowned Elm.Layout layout = Elm.Layout.add( win );
         layout.file_set( "/usr/local/share/elementary/objects/test.edj", "layout" );
         layout.size_hint_weight_set( 1.0, 1.0 );
         layout.show();
         win.resize_object_add( layout );
 
-        box = new Elm.Box( win );
+        unowned Elm.Box box = Elm.Box.add( win );
         box.show();
         //win.resize_object_add( box );
 
-        button = new Elm.Button( win );
+        unowned Elm.Button button = Elm.Button.add( win );
         button.smart_callback_add( "clicked", on_button_press );
         button.text_set( "This is a button" );
         button.show();

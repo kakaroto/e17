@@ -12,17 +12,17 @@ AM_CPPFLAGS = \
 
 BUILT_SOURCES = .vala.stamp
 
-bin_PROGRAMS = dialer
+bin_PROGRAMS = application
 
-dialer_VALASOURCES = \
-	dialer.vala \
+application_VALASOURCES = \
+	application.vala \
 	$(NULL)
 
-dialer_SOURCES = \
-	$(dialer_VALASOURCES:.vala=.c) \
+application_SOURCES = \
+	$(application_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-.vala.stamp: $(dialer_VALASOURCES)
+.vala.stamp: $(application_VALASOURCES)
 	$(VALAC) -C --vapidir $(top_srcdir)/vapi \
 	            --vapidir ../../../eflvala \
 	            --pkg dbus-glib-1 \
@@ -31,13 +31,13 @@ dialer_SOURCES = \
 	            --basedir $(top_srcdir) $^
 	touch $@
 
-dialer_LDADD = \
+application_LDADD = \
 	$(DEPS_LIBS) \
 	../../../eflvala/libeflvala.la \
 	$(NULL)
 
 EXTRA_DIST += \
-	$(dialer_VALASOURCES) \
+	$(application_VALASOURCES) \
 	.vala.stamp \
 	$(NULL)
 
