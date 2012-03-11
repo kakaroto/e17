@@ -100,6 +100,10 @@ static void *_create_data(E_Config_Dialog *cfd)
         cfdata->cfg_layouts = eina_list_append(cfdata->cfg_layouts, nl);
     }
 
+    /* Initialize options */
+
+    cfdata->only_label = e_xkb_cfg->only_label;
+
     return cfdata;
 }
 
@@ -154,6 +158,10 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         eina_stringshare_del(e_xkb_cfg->default_model);
 
     e_xkb_cfg->default_model = eina_stringshare_add(cfdata->default_model);
+
+    /* Save options */
+
+    e_xkb_cfg->only_label = cfdata->only_label;
 
     e_xkb_update_icon  ();
     e_xkb_update_layout();
@@ -243,6 +251,27 @@ static Evas_Object *_basic_create(
 
             e_widget_toolbook_page_append(
                 main, NULL, D_("Models"), models, 1, 1, 1, 1, 0.5, 0.0
+            );
+        }
+
+        /* Holds the options */
+        Evas_Object *options = e_widget_list_add(evas, 0, 0);
+        {
+            Evas_Object *general =  e_widget_framelist_add(
+                evas, D_("General"), 0
+            );
+            {
+                Evas_Object *only_label = e_widget_check_add(
+                    evas, D_("Label only"), &(cfdata->only_label)
+                );
+                {
+                    e_widget_framelist_object_append(general, only_label);
+                }
+                e_widget_list_object_append(options, general, 1, 1, 0.5);
+            }
+
+            e_widget_toolbook_page_append(
+                main, NULL, D_("Options"), options, 1, 1, 1, 1, 0.5, 0.0
             );
         }
 

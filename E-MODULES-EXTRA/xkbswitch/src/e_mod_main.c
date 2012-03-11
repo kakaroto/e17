@@ -148,6 +148,7 @@ EAPI void *e_modapi_init(E_Module *m)
     E_CONFIG_VAL(D, T, layout_prev_key.params, STR);
     E_CONFIG_VAL(D, T, layout_prev_key.any_mod, UCHAR);
     E_CONFIG_VAL(D, T, default_model, STR);
+    E_CONFIG_VAL(D, T, only_label, INT);
     E_CONFIG_VAL(D, T, version, INT);
 
     /* Version check */
@@ -284,21 +285,81 @@ void e_xkb_update_icon(void)
     ))->name;
 
     snprintf(
-        buf, sizeof(buf), "%s/flags/%s_flag.png",
-        e_module_dir_get(e_xkb_cfg->module), name
+        buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
+        e_xkb_cfg->module->dir
     );
 
-    EINA_LIST_FOREACH(instances, l, inst)
+    if (e_xkb_cfg->only_label)
     {
-        evas_object_hide          (inst->o_xkbflag);
-        edje_object_part_unswallow(inst->o_xkbswitch, inst->o_xkbflag);
+        snprintf(
+            buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
+            e_xkb_cfg->module->dir
+        );
 
-        e_icon_file_set(inst->o_xkbflag, buf);
+        EINA_LIST_FOREACH(instances, l, inst)
+        {
+            if (inst->o_xkbflag)
+            {
+                evas_object_hide          (inst->o_xkbflag);
+                edje_object_part_unswallow(inst->o_xkbswitch, inst->o_xkbflag);
+                evas_object_del           (inst->o_xkbflag);
 
-        edje_object_part_swallow (inst->o_xkbswitch, "flag",  inst->o_xkbflag);
-        edje_object_part_text_set(inst->o_xkbswitch, "label", name);
+                inst->o_xkbflag = NULL;
+            }
 
-        evas_object_show(inst->o_xkbflag);
+            if (!e_theme_edje_object_set(
+                inst->o_xkbswitch, "base/theme/modules/xkbswitch", 
+                "modules/xkbswitch/noflag"
+            )) edje_object_file_set(
+                inst->o_xkbswitch, buf, "modules/xkbswitch/noflag"
+            );
+
+            edje_object_part_text_set(inst->o_xkbswitch, "label", name);
+        }
+    }
+    else
+    {
+        char buf2[4096];
+
+        snprintf(
+            buf2, sizeof(buf2), "%s/flags/%s_flag.png",
+            e_module_dir_get(e_xkb_cfg->module), name
+        );
+
+        EINA_LIST_FOREACH(instances, l, inst)
+        {
+            if (!e_theme_edje_object_set(
+                inst->o_xkbswitch, "base/theme/modules/xkbswitch", 
+                "modules/xkbswitch/main"
+            )) edje_object_file_set(
+                inst->o_xkbswitch, buf, "modules/xkbswitch/main"
+            );
+
+            if (!inst->o_xkbflag)
+            {
+                inst->o_xkbflag = e_icon_add(inst->gcc->gadcon->evas);
+                e_icon_file_set(inst->o_xkbflag, buf2);
+
+                edje_object_part_swallow(
+                    inst->o_xkbswitch, "flag", inst->o_xkbflag
+                );
+                edje_object_part_text_set(inst->o_xkbswitch, "label", name);
+            }
+            else
+            {
+                evas_object_hide          (inst->o_xkbflag);
+                edje_object_part_unswallow(inst->o_xkbswitch, inst->o_xkbflag);
+
+                e_icon_file_set(inst->o_xkbflag, buf2);
+
+                edje_object_part_swallow(
+                    inst->o_xkbswitch, "flag",  inst->o_xkbflag
+                );
+                edje_object_part_text_set(inst->o_xkbswitch, "label", name);
+
+                evas_object_show(inst->o_xkbflag);
+            }
+        }
     }
 }
 
@@ -408,15 +469,19 @@ static E_Gadcon_Client *_gc_init(
     inst->gcc->data = inst;
 
     /* The flag icon */
-    inst->o_xkbflag = e_icon_add(gc->evas);
-    snprintf(
-        buf, sizeof(buf), "%s/flags/%s_flag.png",
-        e_module_dir_get(e_xkb_cfg->module), name ? name : "unknown"
-    );
-    e_icon_file_set(inst->o_xkbflag, buf);
+    if (!e_xkb_cfg->only_label)
+    {
+        inst->o_xkbflag = e_icon_add(gc->evas);
+        snprintf(
+            buf, sizeof(buf), "%s/flags/%s_flag.png",
+            e_module_dir_get(e_xkb_cfg->module), name ? name : "unknown"
+        );
+        e_icon_file_set(inst->o_xkbflag, buf);
 
-    /* The icon is part of the gadget. */
-    edje_object_part_swallow(inst->o_xkbswitch, "flag", inst->o_xkbflag);
+        /* The icon is part of the gadget. */
+        edje_object_part_swallow(inst->o_xkbswitch, "flag", inst->o_xkbflag);
+    }
+    else inst->o_xkbflag = NULL;
 
     /* Hook some menus */
     evas_object_event_callback_add(

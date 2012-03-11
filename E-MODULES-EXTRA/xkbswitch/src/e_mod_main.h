@@ -41,6 +41,8 @@ typedef struct _E_XKB_Config
     Eina_List  *used_layouts;
     const char *default_model;
 
+    int only_label;
+
     int version;
 } E_XKB_Config;
 
@@ -64,6 +66,8 @@ struct _E_Config_Dialog_Data
 
     Eina_List  *cfg_layouts;
     const char *default_model;
+
+    int only_label;
 
     E_Dialog *dlg_add_new;
 };
