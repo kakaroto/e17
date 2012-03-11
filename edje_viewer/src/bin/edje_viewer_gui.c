@@ -96,7 +96,7 @@ create_main_win(Viewer *v)
    o = elm_genlist_add(v->gui.ly);
    evas_object_show(o);
    elm_object_part_content_set(v->gui.ly, "v.swallow.tree", o);
-   elm_genlist_always_select_mode_set(o, 1);
+   elm_genlist_select_mode_set(o, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_show(o);
@@ -210,7 +210,7 @@ create_group_parts_list(Viewer *v)
    Evas_Object *o;
 
    v->gui.parts_list = o = elm_list_add(v->gui.ly);
-   elm_list_always_select_mode_set(o, 1);
+   elm_list_select_mode_set(o, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    elm_object_part_content_set(v->gui.ly, "v.swallow.parts_list", o);
@@ -960,7 +960,7 @@ on_group_part_select(void *data, Evas_Object *obj, void *event_info)
 static void
 on_group_part_unselect(void *data, Evas_Object *obj, void *event_info)
 {
-   Part *prt = (Part *) elm_list_item_data_get(event_info);
+   Part *prt = (Part *) elm_object_item_data_get(event_info);
    Viewer *v = prt->grp->v;
 
    if (prt->highlight)
