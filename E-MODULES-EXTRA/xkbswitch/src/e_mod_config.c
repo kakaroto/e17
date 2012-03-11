@@ -166,7 +166,7 @@ static Evas_Object *_basic_create(
     E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata
 )
 {
-    Evas_Object *main = NULL; /* The main toolbook */
+    Evas_Object *main    = NULL; /* The main toolbook */
     Evas_Object *layouts = NULL; /* The layout page */
     Evas_Object *models  = NULL; /* The model page */
 
@@ -635,7 +635,8 @@ _cb_layout_select(void *data)
         return;
 
     if (!(layout = eina_list_search_unsorted(
-        layouts, layout_sort_by_label_cb, label
+        layouts, layout_sort_by_name_cb,
+        e_widget_ilist_nth_value_get(cfdata->layout_list, n)
     ))) return;
 
     evas_event_freeze(cfdata->dlg_evas);
@@ -646,9 +647,9 @@ _cb_layout_select(void *data)
 
     EINA_LIST_FOREACH(models, l, model)
     {
+        snprintf(buf, sizeof(buf), "%s (%s)", model->description, model->name);
         e_widget_ilist_append(
-            cfdata->model_list, NULL, model->description, NULL,
-            cfdata, model->name
+            cfdata->model_list, NULL, buf, NULL, cfdata, model->name
         );
     }
 
@@ -738,9 +739,9 @@ _cb_fill_delay(void *data)
 
     EINA_LIST_FOREACH(models, l, model)
     {
+        snprintf(buf, sizeof(buf), "%s (%s)", model->description, model->name);
         e_widget_ilist_append(
-            cfdata->dmodel_list, NULL, model->description, NULL,
-            cfdata, model->name
+            cfdata->dmodel_list, NULL, buf, NULL, cfdata, model->name
         );
         if (model->name == e_xkb_cfg->default_model)
             e_widget_ilist_selected_set(cfdata->dmodel_list, n);

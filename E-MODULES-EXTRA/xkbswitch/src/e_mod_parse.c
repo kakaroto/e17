@@ -4,8 +4,7 @@ Eina_List *layouts     = NULL;
 Eina_List *models      = NULL;
 const char *rules_file = NULL;
 
-void
-find_rules()
+void find_rules()
 {
     int i = 0;
     const char *lstfiles[] = {
@@ -32,8 +31,7 @@ find_rules()
     }
 }
 
-int
-parse_rules()
+int parse_rules()
 {
     E_XKB_Model *model = NULL;
     E_XKB_Layout *layout = NULL;
@@ -160,8 +158,7 @@ parse_rules()
    return 1;
 }
 
-void
-clear_rules()
+void clear_rules()
 {
     E_XKB_Variant *v  = NULL;
     E_XKB_Layout  *la = NULL;
@@ -195,8 +192,7 @@ clear_rules()
     models  = NULL;
 }
 
-int
-layout_sort_cb(const void *data1, const void *data2)
+int layout_sort_cb(const void *data1, const void *data2)
 {
     const E_XKB_Layout *l1 = NULL, *l2 = NULL;
 
@@ -207,56 +203,7 @@ layout_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int
-model_sort_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Model *l1 = NULL, *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    if (!l2->name) return -1;
-    return strcmp(l1->name, l2->name);
-}
-
-int
-variant_sort_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Variant *l1 = NULL, *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    if (!l2->name) return -1;
-    return strcmp(l1->name, l2->name);
-}
-
-int
-model_sort_by_name_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Model *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    return strcmp(l1->name, l2);
-}
-
-int
-variant_sort_by_name_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Variant *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    return strcmp(l1->name, l2);
-}
-
-int
-layout_sort_by_name_cb(const void *data1, const void *data2)
+int layout_sort_by_name_cb(const void *data1, const void *data2)
 {
     const E_XKB_Layout *l1 = NULL;
     const char *l2 = NULL;
@@ -265,52 +212,4 @@ layout_sort_by_name_cb(const void *data1, const void *data2)
     if (!l1->name) return 1;
     if (!(l2 = data2)) return -1;
     return strcmp(l1->name, l2);
-}
-
-int
-model_sort_by_label_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Model *l1 = NULL;
-    const char *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    return strcmp(l1->description, l2);
-}
-
-int
-variant_sort_by_label_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Variant *l1 = NULL;
-    const char *l2 = NULL;
-    char buf[128];
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    /* XXX This is nasty, see below */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->name, l1->description);
-    return strcmp(buf, l2);
-}
-
-int
-layout_sort_by_label_cb(const void *data1, const void *data2)
-{
-    const E_XKB_Layout *l1 = NULL;
-    const char *l2 = NULL;
-    char buf[128];
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    /* XXX This is nasty, but it's definitely better than iterating
-     * over the whole list. User-defined property for ilist item would
-     * solve, but E widget system lacks this currently.
-     */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->name);
-    return strcmp(buf, l2);
 }
