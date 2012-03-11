@@ -259,7 +259,7 @@ EAPI int e_modapi_shutdown(E_Module *m)
 }
 
 /* Module state save
- * Used to save the configuration file on module shutdown.
+ * Used to save the configuration file.
  */
 EAPI int e_modapi_save(E_Module *m) 
 {

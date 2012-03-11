@@ -147,7 +147,7 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         nl->variant = eina_stringshare_add(cl->variant);
 
         e_xkb_cfg->used_layouts =
-            eina_list_append(e_xkb_cfg->used_layouts, cl);
+            eina_list_append(e_xkb_cfg->used_layouts, nl);
     }
 
     if (e_xkb_cfg->default_model)
