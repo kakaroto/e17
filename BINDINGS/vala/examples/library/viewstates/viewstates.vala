@@ -2,18 +2,17 @@ using EflVala;
 
 public class MainViewState : EflVala.ViewState
 {
-    private Elm.Box box;
-    private Elm.Button button;
+    private unowned Elm.Box box;
 
     public MainViewState(ViewStateMachine sm, Elm.Win win)
     {
         base(sm);
         
-        box = new Elm.Box(win);
+        box = Elm.Box.add(win);
         box.size_hint_weight_set(1.0, 1.0);
         box.show();
 
-        button = new Elm.Button(win);
+        unowned Elm.Button button = Elm.Button.add(win);
         button.text_set("Configuration");
         button.smart_callback_add("clicked", this.on_configuration);
         box.pack_end(button);
@@ -41,18 +40,17 @@ public class MainViewState : EflVala.ViewState
 
 public class ConfigurationViewState : EflVala.ViewState
 {
-    private Elm.Box box;
-    private Elm.Button button;
+    private unowned Elm.Box box;
 
     public ConfigurationViewState(ViewStateMachine sm, Elm.Win win)
     {
         base(sm);
         
-        box = new Elm.Box(win);
+        box = Elm.Box.add(win);
         box.size_hint_weight_set(1.0, 1.0);
         box.show();
 
-        button = new Elm.Button(win);
+        unowned Elm.Button button = Elm.Button.add(win);
         button.text_set("Main");
         button.smart_callback_add("clicked", this.on_main);
         box.pack_end(button);
@@ -89,7 +87,7 @@ static int main(string[] args)
     win.resize(320, 320);
     win.smart_callback_add("delete,request", Elm.exit);
 
-    Elm.Bg bg = new Elm.Bg(win);
+    unowned Elm.Bg bg = Elm.Bg.add(win);
     bg.size_hint_weight_set(1.0, 1.0);
     win.resize_object_add(bg);
     bg.show();

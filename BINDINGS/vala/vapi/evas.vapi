@@ -984,5 +984,14 @@ namespace Evas
             Coord h;
         }
     }
+
+
+    //=====================================================================
+    public struct ObjectBoxData { }
+
+    public struct ObjectBoxOption { }
+
+    [CCode (has_target = false)]
+    public delegate void ObjectBoxLayout( Evas.Object o, Evas.ObjectBoxData priv, void* user_data );
 }
 

@@ -41,7 +41,7 @@ public void test_objects()
 {
     Elm.init( new string[] { "elementary_test" } );
     var win = new Elm.Win( null, "window", Elm.WinType.BASIC );
-    var bg = new Elm.Bg( win );
+    unowned Elm.Bg? bg = Elm.Bg.add( win );
     Elm.shutdown();
 }
 

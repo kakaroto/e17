@@ -451,7 +451,7 @@ namespace Eina
         }
         [Compact]
         [CCode (cname = "Eina_File_Direct_Info")]
-        class DirectInfo
+        public class DirectInfo
         {
             string path;
             size_t name_start;

@@ -19,12 +19,14 @@
 
 public class T.Background : T.Abstract
 {
-    Elm.Bg bg;
+    unowned Elm.Bg? bg;
 
     public override void run( Evas.Object obj, void* event_info )
     {
         open();
-        bg = new Elm.Bg( win );
+        bg = Elm.Bg.add( win );
+        //FIXME: This path probably doesn't exist in your machine, 
+        //so you'll get output errors from elementary.
         bg.file_set( "/usr/share/backgrounds/space-02.jpg" );
         bg.size_hint_weight_set( 1.0, 1.0 );
         bg.size_hint_min_set( 160, 160 );

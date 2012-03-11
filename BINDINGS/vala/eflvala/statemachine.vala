@@ -7,7 +7,7 @@ public class EflVala.ViewState
 
     public ViewState(ViewStateMachine sm)
     {
-        transition_map = Eina.Hash.string_superfast<ViewState>(null);
+        transition_map = Eina.Hash<string, ViewState>.string_superfast(null);
         this.state_machine = sm;
     }
 
@@ -37,14 +37,14 @@ public class EflVala.ViewState
 
 public class EflVala.ViewStateMachine
 {
-    private Elm.Pager pager;
+    private unowned Elm.Pager pager;
     private ViewState current_state;
 
     public ViewStateMachine(Elm.Win win)
     {
         current_state = null;
 
-        pager = new Elm.Pager(win);
+        pager = Elm.Pager.add(win);
         win.resize_object_add(pager);
         pager.show();
     }

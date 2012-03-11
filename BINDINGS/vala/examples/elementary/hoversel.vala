@@ -19,26 +19,26 @@
 
 public class T.Hoversel : T.Abstract
 {
-    Elm.Bg bg;
-    Elm.Box box;
-    Elm.Hoversel hoversel;
+    unowned Elm.Bg? bg;
+    unowned Elm.Box? box;
+    unowned Elm.Hoversel? hoversel;
 
     public override void run( Evas.Object obj, void* event_info )
     {
         open();
 
-        bg = new Elm.Bg( win );
+        bg = Elm.Bg.add( win );
         bg.file_set( "/usr/share/backgrounds/space-02.jpg" );
         bg.size_hint_weight_set( 1.0, 1.0 );
         bg.show();
         win.resize_object_add( bg );
 
-        box = new Elm.Box( win );
+        box = Elm.Box.add( win );
         win.resize_object_add( box );
         box.size_hint_weight_set( 1.0, 1.0 );
         box.show();
 
-        hoversel = new Elm.Hoversel( win );
+        hoversel = Elm.Hoversel.add( win );
         hoversel.hover_parent_set( win );
         hoversel.text_set( "Labels without any Item" );
 
@@ -51,7 +51,7 @@ public class T.Hoversel : T.Abstract
         hoversel.size_hint_align_set( 0.5, 0.5 );
         box.pack_end( hoversel );
         hoversel.show();
-
+		win.resize( 320, 320 );
     }
 
     public override string name()

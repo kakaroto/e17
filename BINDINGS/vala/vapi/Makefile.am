@@ -13,6 +13,8 @@ dist_vapi_DATA = \
   ecore.deps \
   ecore-evas.vapi \
   ecore-evas.deps \
+  ecore-x.vapi \
+  ecore-x.deps \
   edje.vapi \
   edje.deps \
   elementary.vapi \

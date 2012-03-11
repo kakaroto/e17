@@ -18,18 +18,17 @@
  */
 
 Elm.Win win;
-Elm.Box box;
-Elm.Button[] buttons;
+unowned Elm.Box? box;
 
-public void add_test( T.Abstract t, int index )
+public void add_test( T.Abstract t )
 {
-    buttons[index] = new Elm.Button( win );
-    buttons[index].text_set( t.name() );
-    buttons[index].smart_callback_add( "clicked", t.run );
-    buttons[index].show();
-    buttons[index].size_hint_align_set( 0.5, 0.5 );
-    buttons[index].size_hint_weight_set( 1.0, 1.0 );
-    box.pack_end( buttons[index] );
+    unowned Elm.Button? bt = Elm.Button.add( win );
+    bt.text_set( t.name() );
+	bt.smart_callback_add( "clicked", t.run );
+    bt.show();
+    bt.size_hint_align_set( 0.5, 0.5 );
+    bt.size_hint_weight_set( 1.0, 1.0 );
+    box.pack_end( bt );
 }
 
 public int main( string[] args )
@@ -44,29 +43,28 @@ public int main( string[] args )
     win.smart_callback_add( "delete,request", Elm.exit );
 
 /*
-    var bg = new Bg( win );
+    unowned Elm.Bg? bg = Elm.Bg.add( win );
     bg.size_hint_weight_set( 1.0, 1.0 );
     bg.show();
     win.resize_object_add( bg );
 */
 
-    var layout = new Elm.Layout( win );
+    unowned Elm.Layout? layout = Elm.Layout.add( win );
     layout.file_set( "/usr/local/share/elementary/objects/test.edj", "layout" );
     layout.size_hint_weight_set( 1.0, 1.0 );
     layout.show();
     win.resize_object_add( layout );
 
-    buttons = new Elm.Button[10];
-    box = new Elm.Box( win );
+    box = Elm.Box.add( win );
     box.size_hint_weight_set( 1.0, 1.0 );
     win.resize_object_add( box );
 
     var test1 = new T.Background();
-    add_test( test1, 1 );
+    add_test( test1 );
     var test2 = new T.Hoversel();
-    add_test( test2, 2 );
+    add_test( test2 );
     var test3 = new T.Genlist();
-    add_test( test3, 3 );
+    add_test( test3 );
 
     box.homogeneous_set( true );
 
