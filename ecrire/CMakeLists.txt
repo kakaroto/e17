@@ -5,7 +5,7 @@ set(ECRIRE_VERSION_MINOR 1)
 set(ECRIRE_VERSION_MICRO 0)
 set(ECRIRE_VERSION ${ECRIRE_VERSION_MAJOR}.${ECRIRE_VERSION_MINOR}.${ECRIRE_VERSION_MICRO})
 
-set(PACKAGE ${CMAKE_PROJCT_NAME})
+set(PACKAGE ${CMAKE_PROJECT_NAME})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include_directories ("${PROJECT_BINARY_DIR}")
@@ -57,8 +57,10 @@ configure_file (
    "${PROJECT_BINARY_DIR}/config.h"
    )
 
+
+set(GettextTranslate_ALL true)
+set(GettextTranslate_GMO_BINARY true)
 include(GettextTranslate)
-GettextTranslateTargets(ALL)
 
 add_subdirectory(src/bin)
 add_subdirectory(data)
