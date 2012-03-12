@@ -109,16 +109,6 @@ void Window::setSticky (bool sticky)
   elm_win_sticky_set(o, sticky);
 }
 
-bool Window::getTransparent () const
-{
-  return elm_win_transparent_get (o);
-}
-
-void Window::setTransparent (bool transparent)
-{
-  elm_win_transparent_set (o, transparent);
-}
-
 void Window::addObjectResize (const Evasxx::Object &subobj)
 {
   elm_win_resize_object_add (o, subobj.obj ());
