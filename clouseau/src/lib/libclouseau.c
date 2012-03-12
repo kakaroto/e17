@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <dlfcn.h>
+#include <execinfo.h>
 
 #include <Eina.h>
 #include <Ecore.h>
@@ -166,7 +167,7 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
         Elm_Genlist_Item_Type iflag = (treeit->children) ?
            ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
         elm_genlist_item_append(gl, &itc, treeit, glit, iflag,
-              _gl_selected, NULL);
+              NULL, NULL);
      }
 }
 
@@ -426,6 +427,51 @@ ecore_main_loop_begin(void)
    return;
 }
 
+#define EINA_LOCK_DEBUG_BT_NUM 64
+typedef void (*Eina_Lock_Bt_Func) ();
+
+Evas_Object *
+evas_object_new(Evas *e)
+{
+   Eina_Lock_Bt_Func lock_bt[EINA_LOCK_DEBUG_BT_NUM];
+   int lock_bt_num;
+   Evas_Object *(*_evas_object_new)(Evas *e) = dlsym(RTLD_NEXT, "evas_object_new");
+   Eina_Strbuf *str;
+   Evas_Object *r;
+   char **strings;
+   int i;
+
+   r = _evas_object_new(e);
+   if (!r) return NULL;
+
+   lock_bt_num = backtrace((void **)lock_bt, EINA_LOCK_DEBUG_BT_NUM);
+   strings = backtrace_symbols((void **)lock_bt, lock_bt_num);
+
+   str = eina_strbuf_new();
+
+   for (i = 1; i < lock_bt_num; ++i)
+     eina_strbuf_append_printf(str, "%s\n", strings[i]);
+
+   evas_object_data_set(r, ".clouseau.bt", eina_stringshare_add(eina_strbuf_string_get(str)));
+
+   free(strings);
+   eina_strbuf_free(str);
+
+   return r;
+}
+
+void
+evas_object_free(Evas_Object *obj, int clean_layer)
+{
+   void (*_evas_object_free)(Evas_Object *obj, int clean_layer) = dlsym(RTLD_NEXT, "evas_object_free");
+   const char *tmp;
+
+   tmp = evas_object_data_get(obj, ".clouseau.bt");
+   eina_stringshare_del(tmp);
+
+   _evas_object_free(obj, clean_layer);
+}
+
 
 /* HIGHLIGHT code. */
 
@@ -447,6 +493,7 @@ libclouseau_highlight(Evas_Object *obj)
    Evas *e;
    Evas_Object *r;
    int x, y, w, h;
+   const char *tmp;
 
    e = evas_object_evas_get(obj);
    if (!e) return;
@@ -460,6 +507,9 @@ libclouseau_highlight(Evas_Object *obj)
          HIGHLIGHT_A);
    evas_object_show(r);
    ecore_timer_add(0.1, libclouseau_highlight_fade, r);
+
+   tmp = evas_object_data_get(obj, ".clouseau.bt");
+   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp);
 }
 
 static Eina_Bool

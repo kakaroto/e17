@@ -8,6 +8,7 @@ struct _Obj_Information
 {
    struct {
         const char *name;
+        const char *bt;
         short layer;
         Evas_Coord x, y, w, h;
         double scale;

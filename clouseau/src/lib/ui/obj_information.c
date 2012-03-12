@@ -124,6 +124,7 @@ static void
 _obj_information_free(Obj_Information *oinfo)
 {
    eina_stringshare_del(oinfo->evas_props.name);
+   eina_stringshare_del(oinfo->evas_props.bt);
 
    if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_ELM)
      {
@@ -191,6 +192,7 @@ _obj_information_get(Tree_Item *treeit)
    oinfo->evas_props.mode = evas_object_pointer_mode_get(obj);
 
    oinfo->evas_props.is_clipper = !!evas_object_clipees_get(obj);
+   oinfo->evas_props.bt = eina_stringshare_ref(evas_object_data_get(obj, ".clouseau.bt"));
 
    if (!strcmp("elm_widget", evas_object_type_get(obj)))
      {

@@ -1,4 +1,3 @@
-* Record backtraces of object creations, so we'll be able when and why an object was created.
 * Make it possible to hide rects? or show only elm-widgets? or something similar? too much clutter atm.
 * Add filter?
 * Make it an elm module (or setting an env var without a module?) so I'll be able to remotely connect to elm apps.
