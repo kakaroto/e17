@@ -19,6 +19,7 @@ struct _Obj_Information
         Eina_Bool has_focus;
         Eina_Bool is_clipper;
         Eina_Bool is_visible;
+        Evas_Object_Pointer_Mode mode;
    } evas_props;
 
    enum {
@@ -44,6 +45,7 @@ struct _Obj_Information
              const char *font;
              int size;
              const char *source;
+             const char *text;
         } text;
         struct {
              const char *file, *key;

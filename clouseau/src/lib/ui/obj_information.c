@@ -134,6 +134,7 @@ _obj_information_free(Obj_Information *oinfo)
      {
         eina_stringshare_del(oinfo->extra_props.text.font);
         eina_stringshare_del(oinfo->extra_props.text.source);
+        eina_stringshare_del(oinfo->extra_props.text.text);
      }
    else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_IMAGE)
      {
@@ -187,6 +188,8 @@ _obj_information_get(Tree_Item *treeit)
    evas_object_color_get(obj, &oinfo->evas_props.r, &oinfo->evas_props.g,
          &oinfo->evas_props.b, &oinfo->evas_props.a);
 
+   oinfo->evas_props.mode = evas_object_pointer_mode_get(obj);
+
    oinfo->evas_props.is_clipper = !!evas_object_clipees_get(obj);
 
    if (!strcmp("elm_widget", evas_object_type_get(obj)))
@@ -215,6 +218,7 @@ _obj_information_get(Tree_Item *treeit)
         oinfo->extra_props.text.size = size;
         oinfo->extra_props.text.source =
            eina_stringshare_add(evas_object_text_font_source_get(obj));
+	oinfo->extra_props.text.text = eina_stringshare_add(evas_object_text_text_get(obj));
      }
    else if (!strcmp("image", evas_object_type_get(obj)))
      {
@@ -264,9 +268,22 @@ _obj_information_get(Tree_Item *treeit)
    return oinfo;
 }
 
+static const struct {
+   const char *text;
+   Evas_Object_Pointer_Mode mode;
+} pointer_mode[3] = {
+# define POINTER_MODE(Value) { "Pointer mode : "#Value, Value }
+  POINTER_MODE(EVAS_OBJECT_POINTER_MODE_AUTOGRAB),
+  POINTER_MODE(EVAS_OBJECT_POINTER_MODE_NOGRAB),
+  POINTER_MODE(EVAS_OBJECT_POINTER_MODE_NOGRAB_NO_REPEAT_UPDOWN)
+# undef POINTER_MODE
+};
+
 void
 clouseau_obj_information_list_populate(Tree_Item *treeit)
 {
+   unsigned int i;
+
    clouseau_obj_information_list_clear();
 
    if (!treeit->is_obj)
@@ -387,6 +404,15 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
+	for (i = 0; i < sizeof (pointer_mode) / sizeof (pointer_mode[0]); ++i)
+	  if (pointer_mode[i].mode == oinfo->evas_props.mode)
+	    {
+               tit = calloc(1, sizeof(*tit));
+               tit->string = eina_stringshare_add(pointer_mode[i].text);
+               main_tit->children = eina_list_append(main_tit->children, tit);
+               break;
+	    }
+
         snprintf(buf, sizeof(buf), "Pass events: %d",
               (int) oinfo->evas_props.pass_events);
         tit = calloc(1, sizeof(*tit));
@@ -465,6 +491,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         Inf_Tree_Item *tit;
         char buf[1024];
         const char *font;
+        const char *text;
 
         main_tit = calloc(1, sizeof(*main_tit));
         main_tit->string = eina_stringshare_add("Text");
@@ -484,6 +511,15 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         if (font)
           {
              snprintf(buf, sizeof(buf), "Source: %s", font);
+             tit = calloc(1, sizeof(*tit));
+             tit->string = eina_stringshare_add(buf);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+
+        text = oinfo->extra_props.text.text;
+        if (text)
+          {
+             snprintf(buf, sizeof(buf), "Text: %s", text);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
