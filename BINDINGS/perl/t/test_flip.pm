@@ -54,7 +54,7 @@ sub test_flip {
     evas_object_size_hint_weight_set($o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 my $sky = $package_data_dir . 'images/sky_01.jpg';
     elm_bg_file_set($o, $sky, undef);
-    elm_flip_content_front_set($fl, $o);
+    elm_object_part_content_set($fl, "front", $o);
     evas_object_show($o);
 
     $ly = elm_layout_add($win);
@@ -62,7 +62,7 @@ my $sky = $package_data_dir . 'images/sky_01.jpg';
     elm_layout_file_set($ly, $layout, "layout");
     evas_object_size_hint_align_set($ly, EVAS_HINT_FILL, EVAS_HINT_FILL);
     evas_object_size_hint_weight_set($ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-    elm_flip_content_back_set($fl, $ly);
+    elm_object_part_content_set($fl, "back", $ly);
 
     #   evas_object_show($ly);
 

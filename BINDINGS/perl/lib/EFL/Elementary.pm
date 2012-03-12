@@ -588,9 +588,6 @@ my @elm_panel = qw(
 
 my @elm_flip = qw(
   elm_flip_add
-  elm_flip_content_front_set
-  elm_flip_content_back_set
-  elm_flip_front_get
   elm_flip_perspective_set
   elm_flip_go
 );
@@ -978,9 +975,6 @@ may change in future releases.
     elm_finger_size_get
     elm_finger_size_set
     elm_flip_add
-    elm_flip_content_back_set
-    elm_flip_content_front_set
-    elm_flip_front_get
     elm_flip_go
     elm_flip_perspective_set
     elm_frame_add

@@ -446,8 +446,6 @@ cdef extern from "Elementary.h":
 
     # Flip object
     evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
-    void elm_flip_content_front_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-    void elm_flip_content_back_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
     void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
     evas.c_evas.Eina_Bool elm_flip_front_visible_get(evas.c_evas.Evas_Object *obj)

@@ -168,7 +168,7 @@ _populate_table(void *data)
 
     for (i = 0; i < game->total_size; i++)
     {
-        if (!elm_flip_front_get(game->cards[i].flip))
+        if (!elm_flip_front_visible_get(game->cards[i].flip))
             elm_flip_go(game->cards[i].flip, random() % 2);
         game->cards[i].value = values[i];
 
@@ -181,7 +181,7 @@ _populate_table(void *data)
         evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
                 EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(ic, 0.5, 0.5);
-        elm_flip_content_back_set(game->cards[i].flip, ic);
+        elm_object_part_content_set(game->cards[i].flip, "back", ic);
         evas_object_show(ic);
     }
     game->play_timer = ecore_timer_add(1, _play_timer_cb, game);
@@ -196,7 +196,7 @@ _unflip_table(Game *game)
     int i;
     for (i = 0; i < game->total_size; i++)
     {
-        if (!elm_flip_front_get(game->cards[i].flip))
+        if (!elm_flip_front_visible_get(game->cards[i].flip))
             elm_flip_go(game->cards[i].flip, random() % 2);
     }
     if (game->dl_pop)
@@ -227,7 +227,7 @@ _prepopulate_table(Game *game)
         evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND,
                 EVAS_HINT_EXPAND);
-        elm_flip_content_front_set(fl, bt);
+        elm_object_part_content_set(fl, "front", bt);
         evas_object_show(bt);
 
         evas_object_data_set(bt, "card", &(game->cards[i]));
