@@ -110,9 +110,8 @@ EAPI void *e_modapi_init(E_Module *m)
         NULL, "preferences-behavior"
     );
     e_configure_registry_item_add(
-        "keyboard_and_mouse/xkbswitch",
-        110, D_("XKB Switcher"), 
-        NULL, buf, e_xkb_cfg_dialog
+        "keyboard_and_mouse/xkbswitch", 110, D_("XKB Switcher"),  NULL,
+        "preferences-desktop-locale", e_xkb_cfg_dialog
     );
 
     /* Eet */
@@ -248,8 +247,8 @@ EAPI int e_modapi_shutdown(E_Module *m)
 
     e_gadcon_provider_unregister(&_gc_class);
 
-  /*  e_xkb_unregister_module_actions    ();
-    e_xkb_unregister_module_keybindings();*/
+    e_xkb_unregister_module_actions    ();
+    e_xkb_unregister_module_keybindings();
 
     EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
     {

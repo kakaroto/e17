@@ -51,7 +51,6 @@ int e_xkb_unregister_module_actions()
 
     e_action_predef_name_del(E_XKB_ACTION_GROUP, E_XKB_ACTION_NEXT); 
     e_action_predef_name_del(E_XKB_ACTION_GROUP, E_XKB_ACTION_PREV);
-    e_config_save();
 
     return 1;
 }

@@ -44,8 +44,6 @@ E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params)
     E_Config_Dialog    *cfd = NULL;
     E_Config_Dialog_View *v = NULL;
 
-    char buf[PATH_MAX];
-
     if (e_config_dialog_find("XKB Switcher", "keyboard_and_mouse/xkbswitch"))
         return NULL;
 
@@ -57,14 +55,10 @@ E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params)
     v->basic.create_widgets = _basic_create;
     v->basic.apply_cfdata   = _basic_apply;
 
-    snprintf(
-        buf, sizeof(buf), "%s/e-module-xkbswitch.edj",
-        e_xkb_cfg->module->dir
-    );
-
     cfd = e_config_dialog_new(
         con, D_("XKB Switcher Module"), "XKB Switcher", 
-        "keyboard_and_mouse/xkbswitch", buf, 0, v, NULL
+        "keyboard_and_mouse/xkbswitch", "preferences-desktop-locale",
+        0, v, NULL
     );
 
     e_dialog_resizable_set(cfd->dia, 1);
