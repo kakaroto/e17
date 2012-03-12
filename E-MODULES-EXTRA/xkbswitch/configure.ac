@@ -64,15 +64,10 @@ AC_ARG_ENABLE(homedir-install,
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
 
-AC_CHECK_HEADERS(X11/XKBlib.h, ,
-  AC_MSG_ERROR([Cannot find XKBlib.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
-
-AC_CHECK_HEADERS(X11/extensions/XKBrules.h, ,
-  AC_MSG_ERROR([Cannot find XKBrules.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]),
-  [
-    #include <stdio.h>
-    #include <X11/XKBlib.h>
-  ])
+AC_PATH_PROG([SETXKBMAP], ["setxkbmap"], [""], [$PATH])
+if test "x$SETXKBMAP" = "x"; then
+    AC_MSG_ERROR(["Cannot find setxkbmap. Make sure it's in your \$PATH."])
+fi
 
 AC_OUTPUT([
 Makefile
