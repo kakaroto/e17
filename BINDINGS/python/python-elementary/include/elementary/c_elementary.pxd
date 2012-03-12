@@ -277,8 +277,8 @@ cdef extern from "Elementary.h":
     void         elm_object_cursor_unset(evas.c_evas.Evas_Object *obj)
     void         elm_object_cursor_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char*        elm_object_cursor_style_get(evas.c_evas.Evas_Object *obj)
-    void         elm_object_cursor_engine_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool engine_only)
-    evas.c_evas.Eina_Bool elm_object_cursor_engine_only_get(evas.c_evas.Evas_Object *obj)
+    void         elm_object_cursor_theme_search_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool theme_search)
+    evas.c_evas.Eina_Bool elm_object_cursor_theme_search_enabled_get(evas.c_evas.Evas_Object *obj)
 
 
     void         elm_object_part_text_set(evas.c_evas.Evas_Object *obj, const_char_ptr part, const_char_ptr label)

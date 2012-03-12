@@ -295,12 +295,12 @@ cdef class Object(evas.c_evas.Object):
         @note before you set engine only usage you should define a cursor with
         elm_object_cursor_set()
         """
-        elm_object_cursor_engine_only_set(self.obj, bool(engine_only))
+        elm_object_cursor_theme_search_enabled_set(self.obj, bool(engine_only))
 
     def cursor_engine_only_get(self):
         """ Get the engine only usage for this object.
         """
-        return elm_object_cursor_engine_only_get(self.obj)
+        return elm_object_cursor_theme_search_enabled_get(self.obj)
 
     def text_set(self, text):
         """Sets the main text for this object.
