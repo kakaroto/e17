@@ -482,8 +482,8 @@ cdef extern from "Elementary.h":
     int elm_notify_orient_get(evas.c_evas.Evas_Object *obj)
     void elm_notify_timeout_set(evas.c_evas.Evas_Object *obj, double timeout)
     double elm_notify_timeout_get(evas.c_evas.Evas_Object *obj)
-    void elm_notify_repeat_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
-    evas.c_evas.Eina_Bool elm_notify_repeat_events_get(evas.c_evas.Evas_Object *obj)
+    void elm_notify_allow_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
+    evas.c_evas.Eina_Bool elm_notify_allow_events_get(evas.c_evas.Evas_Object *obj)
 
     # Hover object
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)

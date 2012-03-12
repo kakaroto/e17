@@ -458,7 +458,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    photos_list_object_top_goto(photos);
 
    inwin2 = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin2, EINA_FALSE);
+   elm_notify_allow_events_set(inwin2, EINA_FALSE);
    elm_notify_orient_set(inwin2, ELM_NOTIFY_ORIENT_TOP);
    elm_notify_parent_set(inwin2, enlil_data->win->win);
    evas_object_show(inwin2);

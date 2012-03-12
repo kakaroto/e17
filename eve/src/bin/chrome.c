@@ -1195,7 +1195,7 @@ on_view_popup_new(void *data __UNUSED__, Evas_Object *view, void *event_info)
 
    elm_object_style_set(notify, "ewebkit");
    evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_notify_repeat_events_set(notify, EINA_FALSE);
+   elm_notify_allow_events_set(notify, EINA_FALSE);
    elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_BOTTOM);
 
    li = elm_list_add(view);
@@ -1789,7 +1789,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    notify = elm_notify_add(parent);
    elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_CENTER);
    evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_notify_repeat_events_set(notify, EINA_FALSE);
+   elm_notify_allow_events_set(notify, EINA_FALSE);
 
    bx_v = elm_box_add(parent);
    elm_object_content_set(notify, bx_v);

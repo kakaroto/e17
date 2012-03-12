@@ -584,7 +584,7 @@ void
 elm_notify_timer_init(Evas_Object *obj)
 
 void
-elm_notify_repeat_events_set(Evas_Object *obj, Eina_Bool repeat)
+elm_notify_allow_events_set(Evas_Object *obj, Eina_Bool repeat)
 
 void
 elm_notify_parent_set(Evas_Object *obj, Evas_Object *parent)

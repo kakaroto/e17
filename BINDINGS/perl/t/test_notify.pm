@@ -59,7 +59,7 @@ sub test_notify
    evas_object_show($bt);
 
    my $notify2 = elm_notify_add($win);
-   elm_notify_repeat_events_set($notify2, EINA_FALSE);
+   elm_notify_allow_events_set($notify2, EINA_FALSE);
    evas_object_size_hint_weight_set($notify2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_notify_orient_set($notify2, ELM_NOTIFY_ORIENT_BOTTOM);
    elm_notify_timeout_set($notify2, 5);

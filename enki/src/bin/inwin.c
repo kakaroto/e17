@@ -94,7 +94,7 @@ inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    inwin->file = eina_stringshare_add(buf);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
 
@@ -172,7 +172,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    inwin->photo = photo;
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
 
@@ -260,7 +260,7 @@ inwin_library_delete_new(Enlil_Data *enlil_data)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -308,7 +308,7 @@ inwin_tag_new_new(Inwin_Del del_cb, void *data, Eina_List *photos)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -349,7 +349,7 @@ inwin_album_tag_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -391,7 +391,7 @@ inwin_collection_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -430,7 +430,7 @@ inwin_album_new_new(Inwin_Del del_cb, void *data)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -475,7 +475,7 @@ inwin_photo_delete_new(Evas_Object *win, Inwin_Del del_cb, void *data,
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -523,7 +523,7 @@ inwin_album_delete_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);
@@ -566,7 +566,7 @@ inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    evas_object_show(ly);
 
    inwin->inwin = elm_notify_add(enlil_data->win->win);
-   elm_notify_repeat_events_set(inwin->inwin, EINA_FALSE);
+   elm_notify_allow_events_set(inwin->inwin, EINA_FALSE);
    elm_notify_orient_set(inwin->inwin, ELM_NOTIFY_ORIENT_TOP);
    evas_object_show(inwin->inwin);
    elm_object_content_set(inwin->inwin, ly);

@@ -302,7 +302,7 @@ my @elm_notify = qw(
   elm_notify_orient_set
   elm_notify_timeout_set
   elm_notify_timer_init
-  elm_notify_repeat_events_set
+  elm_notify_allow_events_set
   elm_notify_parent_set
 );
 
@@ -1066,7 +1066,7 @@ may change in future releases.
     elm_notify_add
     elm_notify_orient_set
     elm_notify_parent_set
-    elm_notify_repeat_events_set
+    elm_notify_allow_events_set
     elm_notify_timeout_set
     elm_notify_timer_init
     elm_object_disabled_get

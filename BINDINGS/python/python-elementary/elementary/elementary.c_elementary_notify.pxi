@@ -134,7 +134,7 @@ cdef class Notify(Object):
         @param obj: The notify object
         @parm: repeats If True events are repeats, else no
         """
-        elm_notify_repeat_events_set(self.obj, repeat)
+        elm_notify_allow_events_set(self.obj, repeat)
 
     def repeat_events_get(self):
         """
@@ -142,7 +142,7 @@ cdef class Notify(Object):
 
         @param obj: the notify object
         """
-        return bool(elm_notify_repeat_events_get(self.obj))
+        return bool(elm_notify_allow_events_get(self.obj))
 
 
 _elm_widget_type_register("notify", Notify)

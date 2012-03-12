@@ -960,7 +960,7 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
    notify = elm_notify_add(chrome);
    elm_object_style_set(notify, "ewebkit");
    evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_notify_repeat_events_set(notify, EINA_FALSE);
+   elm_notify_allow_events_set(notify, EINA_FALSE);
    elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_BOTTOM);
 
    li = elm_list_add(view);
@@ -1341,7 +1341,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
 
    dialog_data->notify = elm_notify_add(parent);
    evas_object_size_hint_weight_set(dialog_data->notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_notify_repeat_events_set(dialog_data->notify, EINA_FALSE);
+   elm_notify_allow_events_set(dialog_data->notify, EINA_FALSE);
 
    bx_v = elm_box_add(parent);
    elm_object_content_set(dialog_data->notify, bx_v);
