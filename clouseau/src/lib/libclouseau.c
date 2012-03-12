@@ -163,8 +163,8 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
               (!list_show_clippers && treeit->is_clipper))
            continue;
 
-        Elm_Genlist_Item_Flags iflag = (treeit->children) ?
-           ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
+        Elm_Genlist_Item_Type iflag = (treeit->children) ?
+           ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
         elm_genlist_item_append(gl, &itc, treeit, glit, iflag,
               _gl_selected, NULL);
      }
@@ -268,8 +268,8 @@ _load_list(Evas_Object *gl)
 
         /* Insert the base ee items */
           {
-             Elm_Genlist_Item_Flags glflag = (treeit->children) ?
-                ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
+             Elm_Genlist_Item_Type glflag = (treeit->children) ?
+                ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
              elm_genlist_item_append(gl, &itc, treeit, NULL,
                    glflag, NULL, NULL);
           }

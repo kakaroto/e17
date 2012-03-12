@@ -31,8 +31,8 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 
    EINA_LIST_FOREACH(parent->children, itr, tit)
      {
-        Elm_Genlist_Item_Flags iflag = (tit->children) ?
-           ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
+        Elm_Genlist_Item_Type iflag = (tit->children) ?
+           ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
         elm_genlist_item_append(prop_list, &itc, tit, glit,
               iflag, _gl_selected, NULL);
      }
@@ -585,7 +585,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
           {
              Elm_Object_Item *git;
              git = elm_genlist_item_append(prop_list, &itc, tit, NULL,
-                   ELM_GENLIST_ITEM_SUBITEMS, _gl_selected, NULL);
+                   ELM_GENLIST_ITEM_TREE, _gl_selected, NULL);
              if (first_it)
                {
                   /* Start with all the base item expanded */
