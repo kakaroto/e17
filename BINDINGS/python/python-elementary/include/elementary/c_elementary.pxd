@@ -582,7 +582,6 @@ cdef extern from "Elementary.h":
 
     # Bubble object
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
-    void elm_bubble_corner_set(evas.c_evas.Evas_Object *obj, char *corner)
 
     # Photo object
     evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)

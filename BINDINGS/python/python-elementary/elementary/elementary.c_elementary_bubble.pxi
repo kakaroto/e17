@@ -58,8 +58,4 @@ cdef class Bubble(Object):
         def __set__(self, value):
             self.icon_set(value)
 
-    def corner_set(self, corner):
-        elm_bubble_corner_set(self.obj, corner)
-
-
 _elm_widget_type_register("bubble", Bubble)

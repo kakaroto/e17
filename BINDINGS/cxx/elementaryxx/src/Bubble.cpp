@@ -42,9 +42,4 @@ void Bubble::setIcon (const Evasxx::Object &icon)
   elm_object_part_content_set (o, NULL, icon.obj ());
 }
 
-void Bubble::setCorner (const std::string &corner)
-{
-  elm_bubble_corner_set (o, corner.c_str ());
-}
-
 } // end namespace Elmxx

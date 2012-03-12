@@ -369,7 +369,6 @@ my @elm_anchorblock = qw(
 
 my @elm_bubble = qw(
   elm_bubble_add
-  elm_bubble_corner_set
 );
 
 my @elm_photo = qw(
@@ -918,7 +917,6 @@ may change in future releases.
     elm_box_unpack
     elm_box_unpack_all
     elm_bubble_add
-    elm_bubble_corner_set
     elm_button_add
     elm_check_add
     elm_check_state_get

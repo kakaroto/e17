@@ -778,10 +778,6 @@ elm_anchorblock_hover_end(Evas_Object *obj)
 Evas_Object *
 elm_bubble_add(Evas_Object *parent)
 
-void
-elm_bubble_corner_set(Evas_Object *obj, const char *corner)
-
-
 # photo
 # ------------------------------------------------------------------------------
 
