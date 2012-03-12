@@ -4688,7 +4688,7 @@ test_index(void *data, Evas_Object *obj, void *event_info)
    evas_object_smart_callback_add(id, "delay,changed", index_changed2, undef);
    evas_object_smart_callback_add(id, "changed", index_changed, undef);
    evas_object_smart_callback_add(id, "selected", index_selected, undef);
-   elm_index_item_go(id, 0);
+   elm_index_level_go(id, 0);
 
    evas_object_resize(win, 320, 480);
    evas_object_show(win);

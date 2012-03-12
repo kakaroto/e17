@@ -544,7 +544,7 @@ my @elm_index = qw(
   elm_index_item_append_relative
   elm_index_item_prepend_relative
   elm_index_item_clear
-  elm_index_item_go
+  elm_index_level_go
 );
 
 my @elm_photocam = qw(
@@ -1012,7 +1012,7 @@ may change in future releases.
     elm_index_item_append
     elm_index_item_append_relative
     elm_index_item_clear
-    elm_index_item_go
+    elm_index_level_go
     elm_index_item_level_get
     elm_index_item_level_set
     elm_index_item_prepend

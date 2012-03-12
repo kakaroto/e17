@@ -1455,7 +1455,7 @@ void
 elm_index_item_clear(Evas_Object *obj)
 
 void
-elm_index_item_go(Evas_Object *obj, int level)
+elm_index_level_go(Evas_Object *obj, int level)
 
 
 # photocam
