@@ -30,8 +30,6 @@ public:
   /*!
    * Flush all caches & dump all data that can be to lean down to use less memory
    */
-  // TODO 'void elm_all_flush()' is deprecated
-  //static void flushAll ();
 };
 
 } // end namespace Elmxx

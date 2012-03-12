@@ -321,7 +321,7 @@ def genlist2_clicked(obj, item=None):
 
     def my_gl_flush(bt, gl):
         def my_gl_flush_delay():
-            elm_all_flush()
+            elm_cache_all_flush()
         ecore.timer_add(1.2, my_gl_flush_delay)
     bt = elementary.Button(win)
     bt.text_set("Flush")
