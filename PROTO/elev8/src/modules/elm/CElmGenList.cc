@@ -131,48 +131,28 @@ void CElmGenList::reorder_mode_set(Handle<Value> value)
         elm_genlist_reorder_mode_set(eo, value->BooleanValue());
 }
 
-Handle<Value> CElmGenList::height_for_width_mode_get() const
+Handle<Value> CElmGenList::mode_get() const
 {
-    return Boolean::New(elm_genlist_height_for_width_mode_get(eo));
+    return Number::New(elm_genlist_mode_get(eo));
 }
 
-void CElmGenList::height_for_width_mode_set(Handle<Value> value)
+void CElmGenList::mode_set(Handle<Value> value)
 {
-    if (value->IsBoolean())
-        elm_genlist_height_for_width_mode_set(eo, value->BooleanValue());
+    if (value->IsNumber())
+        elm_genlist_mode_set(eo, (Elm_List_Mode)value->ToNumber()->Value());
 }
 
-Handle<Value> CElmGenList::compress_mode_get() const
+Handle<Value> CElmGenList::select_mode_get() const
 {
-    return Boolean::New(elm_genlist_compress_mode_get(eo));
+    return Number::New(elm_genlist_select_mode_get(eo));
 }
 
-void CElmGenList::compress_mode_set(Handle<Value> value)
+void CElmGenList::select_mode_set(Handle<Value> value)
 {
-    if (value->IsBoolean())
-        elm_genlist_compress_mode_set(eo, value->BooleanValue());
-}
-
-Handle<Value> CElmGenList::no_select_mode_get() const
-{
-    return Boolean::New(elm_genlist_no_select_mode_get(eo));
-}
-
-void CElmGenList::no_select_mode_set(Handle<Value> value)
-{
-    if (value->IsBoolean())
-        elm_genlist_no_select_mode_set(eo, value->BooleanValue());
-}
-
-Handle<Value> CElmGenList::always_select_mode_get() const
-{
-    return Boolean::New(elm_genlist_always_select_mode_get(eo));
-}
-
-void CElmGenList::always_select_mode_set(Handle<Value> value)
-{
-    if (value->IsBoolean())
-        elm_genlist_always_select_mode_set(eo, value->BooleanValue());
+    if (value->IsNumber())
+      {
+          elm_genlist_select_mode_set(eo,(Elm_Object_Select_Mode)value->ToNumber()->Value());
+      }
 }
 
 Handle<Value> CElmGenList::block_count_get() const
@@ -200,11 +180,9 @@ void CElmGenList::longpress_timeout_set(Handle<Value> value)
 template<> CEvasObject::CPropHandler<CElmGenList>::property_list
 CEvasObject::CPropHandler<CElmGenList>::list[] = {
     PROP_HANDLER(CElmGenList, multi_select),
-    PROP_HANDLER(CElmGenList, always_select_mode),
-    PROP_HANDLER(CElmGenList, no_select_mode),
-    PROP_HANDLER(CElmGenList, compress_mode),
+    PROP_HANDLER(CElmGenList, select_mode),
     PROP_HANDLER(CElmGenList, reorder_mode),
-    PROP_HANDLER(CElmGenList, height_for_width_mode),
+    PROP_HANDLER(CElmGenList, mode),
     PROP_HANDLER(CElmGenList, block_count),
     PROP_HANDLER(CElmGenList, longpress_timeout),
     { NULL, NULL, NULL },

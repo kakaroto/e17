@@ -41,9 +41,9 @@ public:
 
    virtual void max_year_set(Handle<Value> val);
 
-   virtual Handle<Value> day_selection_enabled_get(void) const;
+   virtual Handle<Value> day_selection_disabled_get(void) const;
 
-   virtual void day_selection_enabled_set(Handle<Value> val);
+   virtual void day_selection_disabled_set(Handle<Value> val);
 
    virtual Handle<Value> selected_date_get(void) const;
 

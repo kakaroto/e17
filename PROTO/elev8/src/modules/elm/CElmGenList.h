@@ -51,21 +51,17 @@ public:
 
    virtual void reorder_mode_set(Handle<Value> value);
 
-   virtual Handle<Value> height_for_width_mode_get() const;
+   virtual Handle<Value> mode_get() const;
 
-   virtual void height_for_width_mode_set(Handle<Value> value);
+   virtual void mode_set(Handle<Value> value);
 
    virtual Handle<Value> compress_mode_get() const;
 
    virtual void compress_mode_set(Handle<Value> value);
 
-   virtual Handle<Value> no_select_mode_get() const;
+   virtual Handle<Value> select_mode_get() const;
 
-   virtual void no_select_mode_set(Handle<Value> value);
-
-   virtual Handle<Value> always_select_mode_get() const;
-
-   virtual void always_select_mode_set(Handle<Value> value);
+   virtual void select_mode_set(Handle<Value> value);
 
    virtual Handle<Value> block_count_get() const;
 

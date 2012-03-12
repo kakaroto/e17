@@ -31,13 +31,13 @@ void CElmBubble::text_part_set(Handle <Value> val)
 
 Handle <Value> CElmBubble::corner_get() const
 {
-    return String::New(elm_bubble_corner_get(eo));
+    return Number::New(elm_bubble_pos_get(eo));
 }
 
 void CElmBubble::corner_set(Handle <Value> val)
 {
-    if (val->IsString())
-        elm_bubble_corner_set(eo, *String::Utf8Value(val));
+    if (val->IsNumber())
+        elm_bubble_pos_set(eo, (Elm_Bubble_Pos)val->ToNumber()->Value());
 }
 
 template<> CEvasObject::CPropHandler<CElmBubble>::property_list CEvasObject::CPropHandler<CElmBubble>::list[] =

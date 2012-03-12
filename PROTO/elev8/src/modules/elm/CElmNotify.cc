@@ -54,15 +54,15 @@ void CElmNotify::timeout_set(Handle<Value> val)
      }
 }
 
-Handle<Value> CElmNotify::repeat_events_get() const
+Handle<Value> CElmNotify::allow_events_get() const
 {
-   return Boolean::New(elm_notify_repeat_events_get(eo));
+   return Boolean::New(elm_notify_allow_events_get(eo));
 }
 
-void CElmNotify::repeat_events_set(Handle<Value> val)
+void CElmNotify::allow_events_set(Handle<Value> val)
 {
    if (val->IsBoolean())
-     elm_notify_repeat_events_set(eo, val->BooleanValue());
+     elm_notify_allow_events_set(eo, val->BooleanValue());
 }
 
 template<> CEvasObject::CPropHandler<CElmNotify>::property_list
@@ -70,6 +70,6 @@ CEvasObject::CPropHandler<CElmNotify>::list[] = {
      PROP_HANDLER(CElmNotify, content),
      PROP_HANDLER(CElmNotify, orient),
      PROP_HANDLER(CElmNotify, timeout),
-     PROP_HANDLER(CElmNotify, repeat_events),
+     PROP_HANDLER(CElmNotify, allow_events),
      { NULL, NULL, NULL },
 };

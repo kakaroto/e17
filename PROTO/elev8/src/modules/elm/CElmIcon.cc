@@ -8,29 +8,36 @@ CElmIcon::CElmIcon(CEvasObject * parent, Local <Object> obj)
     construct(eo, obj);
 }
 
-void CElmIcon::scale_up_set(Handle <Value> val)
+void CElmIcon::resizable_up_set(Handle <Value> val)
 {
     Eina_Bool up, down;
     if (val->IsBoolean()) {
-        elm_icon_scale_get(eo, &up, &down);
-        elm_icon_scale_set(eo, val->BooleanValue(), down);
+        elm_icon_resizable_get(eo, &up, &down);
+        elm_icon_resizable_set(eo, val->BooleanValue(), down);
     }
 }
 
-Handle <Value> CElmIcon::scale_up_get() const
+Handle <Value> CElmIcon::resizable_up_get() const
 {
     Eina_Bool up, down;
-    elm_icon_scale_get(eo, &up, &down);
+    elm_icon_resizable_get(eo, &up, &down);
     return Boolean::New(up);
 }
 
-void CElmIcon::scale_down_set(Handle <Value> val)
+void CElmIcon::resizable_down_set(Handle <Value> val)
 {
     Eina_Bool up, down;
     if (val->IsBoolean()) {
-        elm_icon_scale_get(eo, &up, &down);
-        elm_icon_scale_set(eo, up, val->BooleanValue());
+        elm_icon_resizable_get(eo, &up, &down);
+        elm_icon_resizable_set(eo, up, val->BooleanValue());
     }
+}
+
+Handle <Value> CElmIcon::resizable_down_get() const
+{
+    Eina_Bool up, down;
+    elm_icon_resizable_get(eo, &up, &down);
+    return Boolean::New(down);
 }
 
 Handle <Value> CElmIcon::prescale_get() const
@@ -43,13 +50,6 @@ void CElmIcon::prescale_set(Handle <Value> val)
 {
     if (val->IsNumber())
         elm_icon_prescale_set(eo, val->IntegerValue());
-}
-
-Handle <Value> CElmIcon::scale_down_get() const
-{
-    Eina_Bool up, down;
-    elm_icon_scale_get(eo, &up, &down);
-    return Boolean::New(down);
 }
 
 void CElmIcon::image_set(Handle <Value> val)
@@ -75,8 +75,8 @@ Handle <Value> CElmIcon::image_get(void) const
 
 template<> CEvasObject::CPropHandler<CElmIcon>::property_list CEvasObject::CPropHandler<CElmIcon>::list[] =
 {
-     PROP_HANDLER(CElmIcon, scale_up),
-     PROP_HANDLER(CElmIcon, scale_down),
+     PROP_HANDLER(CElmIcon, resizable_up),
+     PROP_HANDLER(CElmIcon, resizable_down),
      PROP_HANDLER(CElmIcon, prescale),
      { NULL, NULL, NULL },
 };

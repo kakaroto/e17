@@ -49,7 +49,7 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
         Local<Value> repeat = item->ToObject()->Get(String::New("mark_repeat"));
         String::Utf8Value mark_repeat(repeat);
-        Elm_Calendar_Mark_Repeat intRepeat = ELM_CALENDAR_UNIQUE;
+        Elm_Calendar_Mark_Repeat_Type intRepeat = ELM_CALENDAR_UNIQUE;
 
         if ( !strcasecmp(*mark_repeat, "annually"))
           intRepeat = ELM_CALENDAR_ANNUALLY;
@@ -175,18 +175,18 @@ void CElmCalendar::max_year_set(Handle<Value> val)
      }
 }
 
-Handle<Value> CElmCalendar::day_selection_enabled_get(void) const
+Handle<Value> CElmCalendar::day_selection_disabled_get(void) const
 {
-   Eina_Bool day_select = elm_calendar_day_selection_enabled_get(eo);
+   Eina_Bool day_select = elm_calendar_day_selection_disabled_get(eo);
    return Boolean::New(day_select);
 }
 
-void CElmCalendar::day_selection_enabled_set(Handle<Value> val)
+void CElmCalendar::day_selection_disabled_set(Handle<Value> val)
 {
    if ( val->IsBoolean() )
      {
         Eina_Bool day_select = val->ToBoolean()->Value();
-        elm_calendar_day_selection_enabled_set(eo, day_select);
+        elm_calendar_day_selection_disabled_set(eo, day_select);
      }
 }
 
@@ -269,7 +269,7 @@ CEvasObject::CPropHandler<CElmCalendar>::list[] = {
      PROP_HANDLER(CElmCalendar, weekday_names),
      PROP_HANDLER(CElmCalendar, min_year),
      PROP_HANDLER(CElmCalendar, max_year),
-     PROP_HANDLER(CElmCalendar, day_selection_enabled),
+     PROP_HANDLER(CElmCalendar, day_selection_disabled),
      PROP_HANDLER(CElmCalendar, selected_date),
      PROP_HANDLER(CElmCalendar, selected_month),
      PROP_HANDLER(CElmCalendar, selected_year),

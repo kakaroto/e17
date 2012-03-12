@@ -28,9 +28,9 @@ public:
 
    virtual void timeout_set(Handle<Value> val);
 
-   virtual Handle<Value> repeat_events_get() const;
+   virtual Handle<Value> allow_events_get() const;
 
-   virtual void repeat_events_set(Handle<Value> val);
+   virtual void allow_events_set(Handle<Value> val);
 };
 
 #endif
