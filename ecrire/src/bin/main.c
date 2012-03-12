@@ -647,7 +647,7 @@ main(int argc, char *argv[])
    tbar = elm_toolbar_add(main_ec_ent->win);
    elm_toolbar_homogeneous_set(tbar, 0);
    elm_toolbar_shrink_mode_set(tbar, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_no_select_mode_set(tbar, EINA_TRUE);
+   elm_toolbar_select_mode_set(tbar, ELM_OBJECT_SELECT_MODE_NONE);
    elm_toolbar_align_set(tbar, 0.0);
    evas_object_size_hint_weight_set(tbar, 0.0, 0.0);
    evas_object_size_hint_align_set(tbar, EVAS_HINT_FILL, 0.0);
