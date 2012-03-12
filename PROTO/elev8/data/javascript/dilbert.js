@@ -11,8 +11,8 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 var logo_icon_unscaled = {
 	type : "icon",
 	image : elm.datadir + "logo_small.png",
-	scale_up : false,
-	scale_down : false,
+	resizable_up : false,
+	resizable_down : false,
 };
 
 request.onreadystatechange = function(){

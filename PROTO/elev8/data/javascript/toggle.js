@@ -11,8 +11,8 @@ var logo_icon = {
 var logo_icon_unscaled = {
 	type : "icon",
 	image : elm.datadir + "data/images/logo_small.png",
-	scale_up : false,
-	scale_down : false,
+	resizable_up : false,
+	resizable_down : false,
 };
 
 var my_window = new elm.window({

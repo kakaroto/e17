@@ -5,7 +5,7 @@ elm.datadir=elm.datadir + "/data/images/";
 var small_icon = {
 	type : "icon",
 	prescale : 20,
-	scale_up : false,
+	resizable_up : false,
 	image : elm.datadir + "logo_small.png",
 };
 var green = {

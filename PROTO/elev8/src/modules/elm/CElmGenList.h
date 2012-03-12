@@ -55,10 +55,6 @@ public:
 
    virtual void mode_set(Handle<Value> value);
 
-   virtual Handle<Value> compress_mode_get() const;
-
-   virtual void compress_mode_set(Handle<Value> value);
-
    virtual Handle<Value> select_mode_get() const;
 
    virtual void select_mode_set(Handle<Value> value);
