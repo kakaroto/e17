@@ -1428,7 +1428,7 @@ Evas_Object *
 elm_index_add(Evas_Object *parent)
 
 void
-elm_index_active_set(Evas_Object *obj, Eina_Bool active)
+elm_index_autohide_disabled_set(Evas_Object *obj, Eina_Bool active)
 
 void
 elm_index_item_level_set(Evas_Object *obj, int level)
@@ -1445,11 +1445,11 @@ elm_index_item_append(Evas_Object *obj, const char *letter, Evas_Smart_Cb func, 
 void
 elm_index_item_prepend(Evas_Object *obj, const char *letter, Evas_Smart_Cb func, const void *data)
 
-void
-elm_index_item_append_relative(Evas_Object *obj, const char *letter, const void *item, const void *relative)
+Elm_Object_Item *
+elm_index_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, const char *letter, Evas_Smart_Cb func, const void *data)
 
-void
-elm_index_item_prepend_relative(Evas_Object *obj, const char *letter, const void *item, const void *relative)
+Elm_Object_Item *
+elm_index_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, const char *letter, Evas_Smart_Cb func, const void *data)
 
 void
 elm_index_item_clear(Evas_Object *obj)

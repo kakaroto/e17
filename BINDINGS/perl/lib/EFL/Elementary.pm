@@ -535,14 +535,14 @@ my @elm_spinner = qw(
 
 my @elm_index = qw(
   elm_index_add
-  elm_index_active_set
+  elm_index_autohide_disabled_set
   elm_index_item_level_set
   elm_index_item_level_get
   elm_index_item_selected_get
   elm_index_item_append
   elm_index_item_prepend
-  elm_index_item_append_relative
-  elm_index_item_prepend_relative
+  elm_index_item_insert_after
+  elm_index_item_insert_before
   elm_index_item_clear
   elm_index_level_go
 );
@@ -1007,16 +1007,16 @@ may change in future releases.
     elm_image_prescale_set
     elm_image_scale_set
     elm_image_smooth_set
-    elm_index_active_set
+    elm_index_autohide_disabled_set
     elm_index_add
     elm_index_item_append
-    elm_index_item_append_relative
+    elm_index_item_insert_after
     elm_index_item_clear
     elm_index_level_go
     elm_index_item_level_get
     elm_index_item_level_set
     elm_index_item_prepend
-    elm_index_item_prepend_relative
+    elm_index_item_insert_before
     elm_index_item_selected_get
     elm_init
     elm_label_add
