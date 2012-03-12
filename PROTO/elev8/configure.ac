@@ -116,6 +116,11 @@ LIBS="$saved_LIBS"
 AC_MSG_RESULT([yes])
 AC_LANG_POP
 
+dnl Look for libdl
+AC_SEARCH_LIBS([dlopen], [dl dld], [], [
+  AC_MSG_ERROR([unable to find the dlopen() function])
+])
+
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 AC_OUTPUT([
