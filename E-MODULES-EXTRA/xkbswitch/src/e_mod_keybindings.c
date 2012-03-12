@@ -87,8 +87,8 @@ int e_xkb_unregister_module_keybindings()
 
 void _e_xkb_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
 {
-    E_Config_Binding_Key *eb = NULL;
-    Eina_List            *l  = NULL;
+    E_Config_Binding_Key *eb;
+    Eina_List            *l;
 
     Eina_Bool done  = EINA_FALSE;
     Eina_Bool found = EINA_FALSE;
@@ -107,8 +107,8 @@ void _e_xkb_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
             {
                 if (save)
                 {
-                    if (key->key   ) eina_stringshare_del(key->key);
-                    if (key->params) eina_stringshare_del(key->params);
+                    eina_stringshare_del(key->key);
+                    eina_stringshare_del(key->params);
 
                     key->context   = eb->context;
                     key->key       = eina_stringshare_add(eb->key);
@@ -124,9 +124,9 @@ void _e_xkb_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
                     eb->any_mod, eb->action, eb->params
                 );
 
-                if (eb->key)    eina_stringshare_del(eb->key);
-                if (eb->action)  eina_stringshare_del(eb->action);
-                if (eb->params) eina_stringshare_del(eb->params);
+                eina_stringshare_del(eb->key);
+                eina_stringshare_del(eb->action);
+                eina_stringshare_del(eb->params);
 
                 E_FREE(eb);
 
@@ -144,8 +144,8 @@ void _e_xkb_unregister_module_keybinding(E_Config_Binding_Key *key, int save)
 
     if (!found)
     {
-        if (key->key)    eina_stringshare_del(key->key);
-        if (key->params) eina_stringshare_del(key->params);
+        eina_stringshare_del(key->key);
+        eina_stringshare_del(key->params);
 
         key->key       = NULL;
         key->context   = E_BINDING_CONTEXT_ANY;
@@ -158,9 +158,9 @@ static void _e_xkb_register_module_keybinding(
     E_Config_Binding_Key *key, const char *action
 )
 {
-    E_Config_Binding_Key *eb = NULL;
-    E_Config_Binding_Key *t  = NULL;
-    Eina_List            *l  = NULL;
+    E_Config_Binding_Key *eb;
+    E_Config_Binding_Key *t;
+    Eina_List            *l;
 
     Eina_Bool found = EINA_FALSE;
 
@@ -196,9 +196,9 @@ static void _e_xkb_register_module_keybinding(
     }
     else
     {
-        if (eb->key)    eina_stringshare_del(eb->key);
-        if (eb->action) eina_stringshare_del(eb->action);
-        if (eb->params) eina_stringshare_del(eb->params);
+        eina_stringshare_del(eb->key);
+        eina_stringshare_del(eb->action);
+        eina_stringshare_del(eb->params);
 
         E_FREE(eb);
     }

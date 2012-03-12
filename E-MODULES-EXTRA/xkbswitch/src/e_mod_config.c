@@ -41,8 +41,8 @@ static Eina_Bool _cb_fill_delay(void *data);
 
 E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params) 
 {
-    E_Config_Dialog    *cfd = NULL;
-    E_Config_Dialog_View *v = NULL;
+    E_Config_Dialog    *cfd;
+    E_Config_Dialog_View *v;
 
     if (e_config_dialog_find("XKB Switcher", "keyboard_and_mouse/xkbswitch"))
         return NULL;
@@ -71,15 +71,12 @@ E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params)
 
 static void *_create_data(E_Config_Dialog *cfd)
 {
-    E_Config_Dialog_Data *cfdata  = NULL;
-    Eina_List            *l       = NULL;
-    Eina_List            *ll      = NULL;
-    Eina_List            *lll     = NULL;
-    E_XKB_Config_Layout  *cl      = NULL;
-    E_XKB_Config_Layout  *nl      = NULL;
-    E_XKB_Dialog_Option  *od      = NULL;
-    E_XKB_Option         *op      = NULL;
-    E_XKB_Option_Group   *gr      = NULL;
+    E_Config_Dialog_Data *cfdata;
+    Eina_List            *l,  *ll, *lll;
+    E_XKB_Config_Layout  *cl, *nl;
+    E_XKB_Dialog_Option  *od;
+    E_XKB_Option         *op;
+    E_XKB_Option_Group   *gr;
 
     parse_rules(); /* XXX: handle in case nothing was found? */
 
@@ -128,23 +125,23 @@ static void *_create_data(E_Config_Dialog *cfd)
 
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-    E_XKB_Config_Layout *cl = NULL;
-    E_XKB_Dialog_Option *od = NULL;
+    E_XKB_Config_Layout *cl;
+    E_XKB_Dialog_Option *od;
 
     e_xkb_cfg->cfd = NULL;
 
     EINA_LIST_FREE(cfdata->cfg_layouts, cl)
     {
-        if (cl->name)    eina_stringshare_del(cl->name);
-        if (cl->model)   eina_stringshare_del(cl->model);
-        if (cl->variant) eina_stringshare_del(cl->variant);
+        eina_stringshare_del(cl->name);
+        eina_stringshare_del(cl->model);
+        eina_stringshare_del(cl->variant);
 
         E_FREE(cl);
     }
 
     EINA_LIST_FREE(cfdata->cfg_options, od)
     {
-        if (od->name) eina_stringshare_del(od->name);
+        eina_stringshare_del(od->name);
         E_FREE(od);
     }
 
@@ -157,17 +154,16 @@ static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
 static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-    Eina_List           *l  = NULL;
-    E_XKB_Config_Layout *cl = NULL;
-    E_XKB_Config_Layout *nl = NULL;
-    E_XKB_Config_Option *oc = NULL;
-    E_XKB_Dialog_Option *od = NULL;
+    Eina_List           *l;
+    E_XKB_Config_Layout *cl, *nl;
+    E_XKB_Config_Option *oc;
+    E_XKB_Dialog_Option *od;
 
     EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
     {
-        if (cl->name)    eina_stringshare_del(cl->name);
-        if (cl->model)   eina_stringshare_del(cl->model);
-        if (cl->variant) eina_stringshare_del(cl->variant);
+        eina_stringshare_del(cl->name);
+        eina_stringshare_del(cl->model);
+        eina_stringshare_del(cl->variant);
 
         E_FREE(cl);
     }
@@ -196,7 +192,7 @@ static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
     EINA_LIST_FREE(e_xkb_cfg->used_options, oc)
     {
-        if (oc->name) eina_stringshare_del(oc->name);
+        eina_stringshare_del(oc->name);
         E_FREE(oc);
     }
 
@@ -308,11 +304,10 @@ static Evas_Object *_basic_create(
         /* Holds the options */
         Evas_Object *options = e_widget_list_add(evas, 0, 0);
         {
-            E_XKB_Option         *option = NULL;
-            E_XKB_Option_Group   *group  = NULL;
-            Eina_List            *l      = NULL;
-            Eina_List            *ll     = NULL;
-            Eina_List            *lll    = NULL;
+            E_XKB_Option         *option;
+            E_XKB_Option_Group   *group;
+            Eina_List            *l, *ll, *lll;
+
             Evas_Coord mw, mh;
 
             Evas_Object *general =  e_widget_framelist_add(
@@ -388,7 +383,7 @@ static Evas_Object *_basic_create(
 
 static void _cb_add(void *data, void *data2 __UNUSED__)
 {
-    E_Config_Dialog_Data *cfdata = NULL;
+    E_Config_Dialog_Data *cfdata;
     if (!(cfdata = data)) return;
 
     if (cfdata->dlg_add_new)
@@ -399,7 +394,7 @@ static void _cb_add(void *data, void *data2 __UNUSED__)
 
 static void _cb_del(void *data, void *data2 __UNUSED__)
 {
-    E_Config_Dialog_Data *cfdata = NULL;
+    E_Config_Dialog_Data *cfdata;
     int n = 0;
 
     if (!(cfdata = data)) return;
@@ -429,12 +424,12 @@ static void _cb_del(void *data, void *data2 __UNUSED__)
 
 static void _cb_up(void *data, void *data2 __UNUSED__)
 {
-    E_Config_Dialog_Data *cfdata = NULL;
-    void                 *nddata = NULL;
-    Evas_Object          *ic     = NULL;
-    Eina_List            *l      = NULL;
-    const char           *lbl    = NULL;
-    int n = 0;
+    E_Config_Dialog_Data *cfdata;
+    void                 *nddata;
+    Evas_Object          *ic;
+    Eina_List            *l;
+    const char           *lbl;
+    int n;
 
     if (!(cfdata = data)) return;
 
@@ -479,12 +474,12 @@ static void _cb_up(void *data, void *data2 __UNUSED__)
 
 static void _cb_dn(void *data, void *data2 __UNUSED__)
 {
-    E_Config_Dialog_Data *cfdata = NULL;
-    void                 *nddata = NULL;
-    Evas_Object          *ic     = NULL;
-    Eina_List            *l      = NULL;
-    const char           *lbl    = NULL;
-    int n = 0;
+    E_Config_Dialog_Data *cfdata;
+    void                 *nddata;
+    Evas_Object          *ic;
+    Eina_List            *l;
+    const char           *lbl;
+    int n;
 
     if (!(cfdata = data)) return;
 
@@ -528,8 +523,8 @@ static void _cb_dn(void *data, void *data2 __UNUSED__)
 
 static E_Dialog *_dlg_add_new(E_Config_Dialog_Data *cfdata)
 {
-    E_Dialog *dlg  = NULL;
-    Evas     *evas = NULL;
+    E_Dialog *dlg;
+    Evas     *evas;
     Evas_Coord mw, mh;
 
     if (!(dlg = e_dialog_new(
@@ -612,8 +607,8 @@ static void
 _dlg_add_cb_ok(void *data, E_Dialog *dlg)
 {
     E_Config_Dialog_Data *cfdata = dlg->data;
-    E_XKB_Config_Layout  *cl     = NULL;
-    const char           *name   = NULL;
+    E_XKB_Config_Layout  *cl;
+
     char buf[PATH_MAX];
 
     /* Configuration information */
@@ -684,28 +679,28 @@ _dlg_add_cb_ok(void *data, E_Dialog *dlg)
 static void
 _dlg_add_cb_cancel(void *data, E_Dialog *dlg)
 {
-   E_Config_Dialog_Data *cfdata = dlg->data;
+    E_Config_Dialog_Data *cfdata = dlg->data;
 
-   cfdata->dlg_add_new = NULL;
-   e_object_unref(E_OBJECT(dlg));
+    cfdata->dlg_add_new = NULL;
+    e_object_unref(E_OBJECT(dlg));
 }
 
 static void
 _dlg_add_cb_del(void *obj)
 {
-   E_Dialog *dlg = obj;
-   E_Config_Dialog_Data *cfdata = dlg->data;
+    E_Dialog *dlg = obj;
+    E_Config_Dialog_Data *cfdata = dlg->data;
 
-   cfdata->dlg_add_new = NULL;
-   e_object_unref(E_OBJECT(dlg));
+    cfdata->dlg_add_new = NULL;
+    e_object_unref(E_OBJECT(dlg));
 }
 
 static Eina_Bool
 _cb_dlg_fill_delay(void *data)
 {
-    E_Config_Dialog_Data *cfdata = NULL;
-    Eina_List            *l      = NULL;
-    E_XKB_Layout         *layout = NULL;
+    E_Config_Dialog_Data *cfdata;
+    Eina_List            *l;
+    E_XKB_Layout         *layout;
 
     char buf[PATH_MAX];
 
@@ -764,13 +759,13 @@ _cb_dlg_fill_delay(void *data)
 static void
 _cb_layout_select(void *data)
 {
-    E_Config_Dialog_Data *cfdata  = NULL;
-    E_XKB_Variant        *variant = NULL;
-    E_XKB_Layout         *layout  = NULL;
-    E_XKB_Model          *model   = NULL;
-    Eina_List            *l       = NULL;
-    const char           *label   = NULL;
-    int                   n       = 0;
+    E_Config_Dialog_Data *cfdata;
+    E_XKB_Variant        *variant;
+    E_XKB_Layout         *layout;
+    E_XKB_Model          *model;
+    Eina_List            *l;
+    const char           *label;
+    int n;
 
     char buf[512];
 
@@ -842,10 +837,10 @@ _cb_layout_select(void *data)
 static Eina_Bool
 _cb_fill_delay(void *data)
 {
-    E_Config_Dialog_Data *cfdata = NULL;
-    Eina_List            *l      = NULL;
-    E_XKB_Config_Layout  *cl     = NULL;
-    E_XKB_Model          *model  = NULL;
+    E_Config_Dialog_Data *cfdata;
+    Eina_List            *l;
+    E_XKB_Config_Layout  *cl;
+    E_XKB_Model          *model;
     int n;
 
     char buf[PATH_MAX];
@@ -924,7 +919,7 @@ _cb_fill_delay(void *data)
 static void
 _cb_used_select(void *data)
 {
-    E_Config_Dialog_Data *cfdata  = NULL;
+    E_Config_Dialog_Data *cfdata;
     int n, c;
 
     if (!(cfdata = data))

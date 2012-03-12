@@ -34,11 +34,11 @@ void find_rules()
 
 int parse_rules()
 {
-    E_XKB_Model *model = NULL;
-    E_XKB_Layout *layout = NULL;
-    E_XKB_Option *option = NULL;
-    E_XKB_Variant *variant = NULL;
-    E_XKB_Option_Group *group = NULL;
+    E_XKB_Model *model;
+    E_XKB_Layout *layout;
+    E_XKB_Option *option;
+    E_XKB_Variant *variant;
+    E_XKB_Option_Group *group;
 
     char buf[512];
 
@@ -209,21 +209,21 @@ int parse_rules()
 
 void clear_rules()
 {
-    E_XKB_Option_Group *og = NULL;
-    E_XKB_Variant      *v  = NULL;
-    E_XKB_Option       *o  = NULL;
-    E_XKB_Layout       *la = NULL;
-    E_XKB_Model        *m  = NULL;
+    E_XKB_Option_Group *og;
+    E_XKB_Variant      *v;
+    E_XKB_Option       *o;
+    E_XKB_Layout       *la;
+    E_XKB_Model        *m;
 
     EINA_LIST_FREE(layouts, la)
     {
-        if (la->name       ) eina_stringshare_del(la->name);
-        if (la->description) eina_stringshare_del(la->description);
+        eina_stringshare_del(la->name);
+        eina_stringshare_del(la->description);
 
         EINA_LIST_FREE(la->variants, v)
         {
-            if  (v->name       ) eina_stringshare_del(v->name);
-            if  (v->description) eina_stringshare_del(v->description);
+            eina_stringshare_del(v->name);
+            eina_stringshare_del(v->description);
 
             E_FREE(v);
         }
@@ -233,20 +233,20 @@ void clear_rules()
 
     EINA_LIST_FREE(models, m)
     {
-        if (m->name       ) eina_stringshare_del(m->name);
-        if (m->description) eina_stringshare_del(m->description);
+        eina_stringshare_del(m->name);
+        eina_stringshare_del(m->description);
 
         E_FREE(m);
     }
 
     EINA_LIST_FREE(optgroups, og)
     {
-        if (og->description) eina_stringshare_del(og->description);
+        eina_stringshare_del(og->description);
 
         EINA_LIST_FREE(og->options, o)
         {
-            if  (o->name       ) eina_stringshare_del(o->name);
-            if  (o->description) eina_stringshare_del(o->description);
+            eina_stringshare_del(o->name);
+            eina_stringshare_del(o->description);
 
             E_FREE(o);
         }
@@ -261,12 +261,13 @@ void clear_rules()
 
 int layout_sort_cb(const void *data1, const void *data2)
 {
-    const E_XKB_Layout *l1 = NULL, *l2 = NULL;
+    const E_XKB_Layout *l1, *l2;
 
     if (!(l1 = data1)) return 1;
     if (!l1->name) return 1;
     if (!(l2 = data2)) return -1;
     if (!l2->name) return -1;
+
     return strcmp(l1->name, l2->name);
 }
 
@@ -278,5 +279,6 @@ int layout_sort_by_name_cb(const void *data1, const void *data2)
     if (!(l1 = data1)) return 1;
     if (!l1->name) return 1;
     if (!(l2 = data2)) return -1;
+
     return strcmp(l1->name, l2);
 }

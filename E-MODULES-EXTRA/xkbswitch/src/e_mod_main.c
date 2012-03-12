@@ -33,8 +33,15 @@ static void _e_xkb_cb_mouse_down(
     void *data, Evas *evas, Evas_Object *obj, void *event
 );
 
-static void _e_xkb_cb_menu_post     (void *data, E_Menu *menu);
-static void _e_xkb_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void _e_xkb_cb_menu_post(void *data, E_Menu *menu __UNUSED__);
+static void _e_xkb_cb_menu_configure(
+    void *data, E_Menu *mn, E_Menu_Item *mi __UNUSED__
+);
+
+static void _e_xkb_cb_lmenu_post(void *data, E_Menu *menu __UNUSED__);
+static void _e_xkb_cb_lmenu_set(
+    void *data, E_Menu *mn __UNUSED__, E_Menu_Item *mi __UNUSED__
+);
 
 /* Static variables
  * The static variables specific to the current code unit.
@@ -50,6 +57,7 @@ typedef struct _Instance
     Evas_Object *o_xkbflag;
 
     E_Menu *menu;
+    E_Menu *lmenu;
 } Instance;
 
 /* LIST OF INSTANCES */
@@ -233,8 +241,8 @@ EAPI void *e_modapi_init(E_Module *m)
  */
 EAPI int e_modapi_shutdown(E_Module *m) 
 {
-    E_XKB_Config_Layout *cl = NULL;
-    E_XKB_Config_Option *op = NULL;
+    E_XKB_Config_Layout *cl;
+    E_XKB_Config_Option *op;
 
     e_configure_registry_item_del    ("keyboard_and_mouse/xkbswitch");
     e_configure_registry_category_del("keyboard_and_mouse");
@@ -252,16 +260,16 @@ EAPI int e_modapi_shutdown(E_Module *m)
 
     EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
     {
-        if (cl->name)    eina_stringshare_del(cl->name);
-        if (cl->model)   eina_stringshare_del(cl->model);
-        if (cl->variant) eina_stringshare_del(cl->variant);
+        eina_stringshare_del(cl->name);
+        eina_stringshare_del(cl->model);
+        eina_stringshare_del(cl->variant);
 
         E_FREE(cl);
     }
 
     EINA_LIST_FREE(e_xkb_cfg->used_options, op)
     {
-        if (op->name) eina_stringshare_del(op->name);
+        eina_stringshare_del(op->name);
         E_FREE(op);
     }
 
@@ -293,8 +301,9 @@ EAPI int e_modapi_save(E_Module *m)
  */
 void e_xkb_update_icon(void)
 {
-    Instance  *inst = NULL;
-    Eina_List *l    = NULL;
+    Instance  *inst;
+    Eina_List *l;
+
     char buf[PATH_MAX];
 
     if (!e_xkb_cfg->used_layouts)
@@ -385,9 +394,9 @@ void e_xkb_update_icon(void)
 
 void e_xkb_update_layout(void)
 {
-    E_XKB_Config_Layout *cl = NULL;
-    E_XKB_Config_Option *op = NULL;
-    Eina_List           *l  = NULL;
+    E_XKB_Config_Layout *cl;
+    E_XKB_Config_Option *op;
+    Eina_List           *l;
 
     /* XXX: Safe? Yeah .. Consider heap allocation */
     char buf[8192];
@@ -432,9 +441,8 @@ void e_xkb_update_layout(void)
 
 void e_xkb_layout_next(void)
 {
-    void      *odata = NULL;
-    void      *ndata = NULL;
-    Eina_List *l     = NULL;
+    void      *odata, *ndata;
+    Eina_List *l;
 
     odata = eina_list_data_get(e_xkb_cfg->used_layouts);
 
@@ -449,9 +457,8 @@ void e_xkb_layout_next(void)
 
 void e_xkb_layout_prev(void)
 {
-    void      *odata = NULL;
-    void      *ndata = NULL;
-    Eina_List *l     = NULL;
+    void      *odata, *ndata;
+    Eina_List *l;
 
     odata = eina_list_data_get(eina_list_last(e_xkb_cfg->used_layouts));
 
@@ -473,14 +480,17 @@ static E_Gadcon_Client *_gc_init(
     E_Gadcon *gc, const char *gcname, const char *id, const char *style
 ) 
 {
-    Instance   *inst = NULL;
-    const char *name = NULL;
+    Instance   *inst;
+    const char *name;
+
     char buf[PATH_MAX];
 
     if (e_xkb_cfg->used_layouts)
         name = ((E_XKB_Config_Layout*)eina_list_data_get(
             e_xkb_cfg->used_layouts
         ))->name;
+    else
+        name = NULL;
 
     snprintf(
         buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
@@ -533,7 +543,7 @@ static E_Gadcon_Client *_gc_init(
 
 static void _gc_shutdown(E_Gadcon_Client *gcc) 
 {
-    Instance *inst = NULL;
+    Instance *inst;
 
     if (!(inst = gcc->data)) return;
     instances = eina_list_remove(instances, inst);
@@ -543,6 +553,13 @@ static void _gc_shutdown(E_Gadcon_Client *gcc)
         e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
         e_object_del(E_OBJECT(inst->menu));
         inst->menu = NULL;
+    }
+
+    if (inst->lmenu) 
+    {
+        e_menu_post_deactivate_callback_set(inst->lmenu, NULL, NULL);
+        e_object_del(E_OBJECT(inst->lmenu));
+        inst->lmenu = NULL;
     }
 
     if (inst->o_xkbswitch) 
@@ -577,7 +594,7 @@ static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__)
 
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
 {
-    Evas_Object *o = NULL;
+    Evas_Object *o;
     char buf[PATH_MAX];
 
     snprintf(
@@ -623,21 +640,21 @@ static void _e_xkb_cfg_new(void)
 
 static void _e_xkb_cfg_free(void) 
 {
-    E_XKB_Config_Layout *cl = NULL;
-    E_XKB_Config_Option *op = NULL;
+    E_XKB_Config_Layout *cl;
+    E_XKB_Config_Option *op;
 
     EINA_LIST_FREE(e_xkb_cfg->used_layouts, cl)
     {
-        if (cl->name)    eina_stringshare_del(cl->name);
-        if (cl->model)   eina_stringshare_del(cl->model);
-        if (cl->variant) eina_stringshare_del(cl->variant);
+        eina_stringshare_del(cl->name);
+        eina_stringshare_del(cl->model);
+        eina_stringshare_del(cl->variant);
 
         E_FREE(cl);
     }
 
     EINA_LIST_FREE(e_xkb_cfg->used_options, op)
     {
-        if (op->name) eina_stringshare_del(op->name);
+        eina_stringshare_del(op->name);
         E_FREE(op);
     }
 
@@ -657,66 +674,205 @@ static void _e_xkb_cb_mouse_down(
     void *data, Evas *evas, Evas_Object *obj, void *event
 ) 
 {
-    Evas_Event_Mouse_Down *ev = NULL;
-    E_Menu_Item           *mi = NULL;
-
-    Instance *inst = NULL;
-    E_Zone   *zone = NULL;
-
-    int x, y;
+    Evas_Event_Mouse_Down *ev = event;
+    Instance *inst;
 
     if (!(inst = data))
         return;
 
-    ev = event;
-
-    if ((ev->button == 3) && (!inst->menu)) 
+    if ((ev->button == 3) && (!inst->menu)) /* Right-click utility menu */
     {
-        E_Menu *m = NULL;
+        int x, y;
+        E_Menu_Item *mi;
 
-        zone = e_util_zone_current_get(e_manager_current_get());
+        /* The menu and menu item */
+        inst->menu = e_menu_new();
+        mi         = e_menu_item_new(inst->menu);
 
-        m  = e_menu_new();
-        mi = e_menu_item_new(m);
-
+        /* Menu item specifics */
         e_menu_item_label_set          (mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "preferences-system");
         e_menu_item_callback_set       (mi, _e_xkb_cb_menu_configure, NULL);
 
-        m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
-        e_menu_post_deactivate_callback_set(m, _e_xkb_cb_menu_post, inst);
-        inst->menu = m;
+        /* Append into the util menu */
+        inst->menu = e_gadcon_client_util_menu_items_append(
+            inst->gcc, inst->menu, 0
+        );
 
+        /* Callback */
+        e_menu_post_deactivate_callback_set(
+            inst->menu, _e_xkb_cb_menu_post, inst
+        );
+
+        /* Coords */
         e_gadcon_canvas_zone_geometry_get(
             inst->gcc->gadcon, &x, &y, 
             NULL, NULL
         );
 
+        /* Activate - we show the menu relative to the gadget */
         e_menu_activate_mouse(
-            m, zone, (x + ev->output.x), 
-            (y + ev->output.y), 1, 1, 
+            inst->menu, e_util_zone_current_get(e_manager_current_get()),
+            (x + ev->output.x), (y + ev->output.y), 1, 1, 
             E_MENU_POP_DIRECTION_AUTO, ev->timestamp
         );
+
         evas_event_feed_mouse_up(
-            inst->gcc->gadcon->evas,
-            ev->button, EVAS_BUTTON_NONE,
+            inst->gcc->gadcon->evas, ev->button, EVAS_BUTTON_NONE,
             ev->timestamp, NULL
         );
     }
-    else if (ev->button == 1)
+    else if ((ev->button == 1) && (!inst->lmenu)) /* Left-click layout menu */
+    {
+        Evas_Coord x, y, w, h;
+        int cx, cy;
+
+        /* Coordinates and sizing */
+        evas_object_geometry_get(inst->o_xkbswitch, &x, &y, &w, &h);
+        e_gadcon_canvas_zone_geometry_get(
+            inst->gcc->gadcon, &cx, &cy, NULL, NULL
+        );
+
+        x += cx;
+        y += cy;
+
+        if (!inst->lmenu)
+             inst->lmenu = e_menu_new();
+
+        if (inst->lmenu)
+        {
+            E_XKB_Config_Layout *cl;
+            E_Menu_Item         *mi;
+            Eina_List           *l;
+
+            int  dir;
+            char buf[PATH_MAX];
+
+            /* Append all the layouts */
+            EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
+            {
+                mi = e_menu_item_new(inst->lmenu);
+
+                e_menu_item_radio_set      (mi, 1);
+                e_menu_item_radio_group_set(mi, 1);
+                e_menu_item_toggle_set(
+                    mi, (l == e_xkb_cfg->used_layouts) ? 1 : 0
+                );
+
+                snprintf(
+                    buf, sizeof(buf), "%s (%s, %s)",
+                    cl->name, cl->model, cl->variant
+                );
+
+                e_menu_item_label_set   (mi, buf);
+                e_menu_item_callback_set(mi, _e_xkb_cb_lmenu_set, cl);
+            }
+
+            /* Deactivate callback */
+            e_menu_post_deactivate_callback_set(
+                inst->lmenu, _e_xkb_cb_lmenu_post, inst
+            );
+
+            /* Proper menu orientation */
+            switch (inst->gcc->gadcon->orient)
+            {
+                case E_GADCON_ORIENT_TOP:
+                    dir = E_MENU_POP_DIRECTION_DOWN;
+                    break;
+                case E_GADCON_ORIENT_BOTTOM:
+                    dir = E_MENU_POP_DIRECTION_UP;
+                    break;
+                case E_GADCON_ORIENT_LEFT:
+                    dir = E_MENU_POP_DIRECTION_RIGHT;
+                    break;
+                case E_GADCON_ORIENT_RIGHT:
+                    dir = E_MENU_POP_DIRECTION_LEFT;
+                    break;
+                case E_GADCON_ORIENT_CORNER_TL:
+                    dir = E_MENU_POP_DIRECTION_DOWN;
+                    break;
+                case E_GADCON_ORIENT_CORNER_TR:
+                    dir = E_MENU_POP_DIRECTION_DOWN;
+                    break;
+                case E_GADCON_ORIENT_CORNER_BL:
+                    dir = E_MENU_POP_DIRECTION_UP;
+                    break;
+                case E_GADCON_ORIENT_CORNER_BR:
+                    dir = E_MENU_POP_DIRECTION_UP;
+                    break;
+                case E_GADCON_ORIENT_CORNER_LT:
+                    dir = E_MENU_POP_DIRECTION_RIGHT;
+                    break;
+                case E_GADCON_ORIENT_CORNER_RT:
+                    dir = E_MENU_POP_DIRECTION_LEFT;
+                    break;
+                case E_GADCON_ORIENT_CORNER_LB:
+                    dir = E_MENU_POP_DIRECTION_RIGHT;
+                    break;
+                case E_GADCON_ORIENT_CORNER_RB:
+                    dir = E_MENU_POP_DIRECTION_LEFT;
+                    break;
+                case E_GADCON_ORIENT_FLOAT:
+                case E_GADCON_ORIENT_HORIZ:
+                case E_GADCON_ORIENT_VERT:
+                default:
+                    dir = E_MENU_POP_DIRECTION_AUTO;
+                    break;
+            }
+
+            e_gadcon_locked_set(inst->gcc->gadcon, 1);
+
+            /* We display not relatively to the gadget, but similarly to
+             * the start menu - thus the need for direction etc.
+             */
+            e_menu_activate_mouse(
+                inst->lmenu, e_util_zone_current_get(e_manager_current_get()),
+                x, y, w, h, dir, ev->timestamp
+            );
+        }
+    }
+    else if (ev->button == 2) /* Middle click */
         e_xkb_layout_next();
 }
 
-static void _e_xkb_cb_menu_post(void *data, E_Menu *menu) 
+static void _e_xkb_cb_menu_post(void *data, E_Menu *menu __UNUSED__) 
 {
-    Instance *inst = NULL;
+    Instance *inst;
 
     if (!(inst = data) || !inst->menu) return;
     inst->menu = NULL;
 }
 
-static void _e_xkb_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
+static void _e_xkb_cb_lmenu_post(void *data, E_Menu *menu __UNUSED__) 
+{
+    Instance *inst;
+
+    if (!(inst = data) || !inst->lmenu) return;
+    inst->lmenu = NULL;
+}
+
+static void _e_xkb_cb_menu_configure(
+    void *data, E_Menu *mn, E_Menu_Item *mi __UNUSED__
+) 
 {
     if (!e_xkb_cfg || e_xkb_cfg->cfd) return;
     e_xkb_cfg_dialog(mn->zone->container, NULL);
+}
+
+static void _e_xkb_cb_lmenu_set(
+    void *data, E_Menu *mn __UNUSED__, E_Menu_Item *mi __UNUSED__
+) 
+{
+    Eina_List *l;
+
+    void *ndata;
+    void *odata = eina_list_data_get(e_xkb_cfg->used_layouts);
+
+    EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, ndata)
+        if (ndata == data) eina_list_data_set(l, odata);
+
+    eina_list_data_set(e_xkb_cfg->used_layouts, data);
+
+    e_xkb_update_icon  ();
+    e_xkb_update_layout();
 }
