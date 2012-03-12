@@ -6,60 +6,88 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Xkbswitch\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-11-29 16:17+0900\n"
-"PO-Revision-Date: 2011-11-04 13:04+0100\n"
+"POT-Creation-Date: 2012-03-12 20:46+0100\n"
+"PO-Revision-Date: 2012-03-12 20:49+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
-#: src/e_mod_config.c:75
+#: src/e_mod_config.c:59
 msgid "XKB Switcher Module"
 msgstr "Modulo cambio tastiera"
 
-#: src/e_mod_config.c:179
-msgid "Add"
-msgstr "Aggiungi"
-
-#: src/e_mod_config.c:186
-msgid "Remove"
-msgstr "Rimuovi"
-
-#: src/e_mod_config.c:197
-msgid "Available"
-msgstr "Disponibili"
-
-#: src/e_mod_config.c:214
+#: src/e_mod_config.c:248
 msgid "Up"
 msgstr "Su"
 
-#: src/e_mod_config.c:221
+#: src/e_mod_config.c:258
 msgid "Down"
 msgstr "Giù"
 
-#: src/e_mod_config.c:232
-msgid "Used"
-msgstr "In uso"
+#: src/e_mod_config.c:268
+msgid "Add"
+msgstr "Aggiungi"
 
-#: src/e_mod_config.c:243
+#: src/e_mod_config.c:277
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: src/e_mod_config.c:290
+msgid "Configurations"
+msgstr "Configurazioni"
+
+#: src/e_mod_config.c:304
+msgid "Models"
+msgstr "Modelli"
+
+#: src/e_mod_config.c:319
+msgid "General"
+msgstr "Generale"
+
+#: src/e_mod_config.c:323
+msgid "Label only"
+msgstr "Solo etichetta"
+
+#: src/e_mod_config.c:368
+msgid "Options"
+msgstr "Opzioni"
+
+#: src/e_mod_config.c:545
+msgid "Add New Configuration"
+msgstr "Aggiungi nuova configurazione"
+
+#: src/e_mod_config.c:557
+msgid "Available"
+msgstr "Disponibili"
+
+#: src/e_mod_config.c:567
 msgid "Model"
 msgstr "Modello"
 
-#: src/e_mod_config.c:254
+#: src/e_mod_config.c:577
 msgid "Variant"
 msgstr "Variante"
 
-#: src/e_mod_main.c:75
+#: src/e_mod_config.c:599
+msgid "OK"
+msgstr "OK"
+
+#: src/e_mod_config.c:600
+msgid "Cancel"
+msgstr "Annulla"
+
+#: src/e_mod_main.c:109
 msgid "Input"
 msgstr "Input"
 
-#: src/e_mod_main.c:80 src/e_mod_main.c:300
+#: src/e_mod_main.c:113 src/e_mod_main.c:570
 msgid "XKB Switcher"
 msgstr "XKBSwitcher"
 
-#: src/e_mod_main.c:112
+#: src/e_mod_main.c:175
 msgid ""
 "XKB Switcher Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -79,7 +107,7 @@ msgstr ""
 "Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
 "l'inconveniente."
 
-#: src/e_mod_main.c:133
+#: src/e_mod_main.c:196
 msgid ""
 "Your XKB Switcher Module configuration is NEWER than the module version. "
 "This is very<br>strange. This should not happen unless you downgraded<br>the "
@@ -96,10 +124,22 @@ msgstr ""
 "vostra<br>configurazione è stata adesso ripristinata ai valori predefiniti."
 "<br>Ci scusiamo per l'inconveniente."
 
-#: src/e_mod_main.c:377
+#: src/e_mod_main.c:652
 msgid "XKB Switcher Configuration Updated"
 msgstr "Configurazione di XKBSwitcher aggiornata"
 
-#: src/e_mod_main.c:403
+#: src/e_mod_main.c:682
 msgid "Settings"
 msgstr "Impostazioni"
+
+#: src/e_mod_keybindings.c:4
+msgid "Keyboard Layouts"
+msgstr "Layout di tastiera"
+
+#: src/e_mod_keybindings.c:5
+msgid "Switch to the next layout"
+msgstr "Passa al layout successivo"
+
+#: src/e_mod_keybindings.c:6
+msgid "Switch to the previous layout"
+msgstr "Passa al layout precedente"
