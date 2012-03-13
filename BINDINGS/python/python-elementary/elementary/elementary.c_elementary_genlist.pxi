@@ -619,8 +619,8 @@ cdef class Genlist(Object):
     def no_select_mode_set(self, no_select):
         elm_genlist_no_select_mode_set(self.obj, bool(no_select))
 
-    def compress_mode_set(self, compress):
-        elm_genlist_compress_mode_set(self.obj, bool(compress))
+    def mode_set(self, mode = ELM_LIST_COMPRESS):
+        elm_genlist_mode_set(self.obj, mode)
 
     def bounce_set(self, h_bounce, v_bounce):
         elm_genlist_bounce_set(self.obj, bool(h_bounce), bool(v_bounce))

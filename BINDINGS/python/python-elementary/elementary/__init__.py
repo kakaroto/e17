@@ -25,7 +25,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Genlist, GenlistItem, GenlistItemClass, WidgetItem, ScrolledEntry, \
     Gengrid, GengridItem, GengridItemClass, \
     init, shutdown, run, exit, scale_get, scale_set, \
-    finger_size_get, finger_size_set, coords_finger_size_adjust, \
+    config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
     tooltip_delay_set, tooltip_delay_get, cursor_engine_only_set, \
     cursor_engine_only_get, focus_highlight_enabled_get, \

@@ -102,16 +102,16 @@ def policy_get(policy):
     return elm_policy_get(policy)
 
 def scale_get():
-    return elm_scale_get()
+    return elm_config_scale_get()
 
 def scale_set(scale):
-    elm_scale_set(scale)
+    elm_config_scale_set(scale)
 
-def finger_size_get():
-    return elm_finger_size_get()
+def config_finger_size_get():
+    return elm_config_finger_size_get()
 
-def finger_size_set(size):
-    elm_finger_size_set(size)
+def config_finger_size_set(size):
+    elm_config_finger_size_set(size)
 
 def tooltip_delay_get():
     _METHOD_DEPRECATED(None, "config_tooltip_delay_get")
@@ -129,10 +129,10 @@ def config_tooltip_delay_set(delay):
 
 
 def cursor_engine_only_get():
-    return elm_cursor_engine_only_get()
+    return elm_config_cursor_engine_only_get()
 
 def cursor_engine_only_set(engine_only):
-    elm_cursor_engine_only_set(engine_only)
+    elm_config_cursor_engine_only_set(engine_only)
 
 def coords_finger_size_adjust(times_w, w, times_h, h):
     cdef c_evas.Evas_Coord width
@@ -148,32 +148,32 @@ def theme_extension_add(item):
     elm_theme_extension_add(NULL, item)
 
 def focus_highlight_enabled_get():
-    return elm_focus_highlight_enabled_get()
+    return elm_config_focus_highlight_enabled_get()
 
 def focus_highlight_enabled_set(enabled):
-    elm_focus_highlight_enabled_set(enabled)
+    elm_config_focus_highlight_enabled_set(enabled)
 
 def focus_highlight_animate_get():
-    return elm_focus_highlight_animate_get()
+    return elm_config_focus_highlight_animate_get()
 
 def focus_highlight_animate_set(animate):
-    elm_focus_highlight_animate_set(animate)
+    elm_config_focus_highlight_animate_set(animate)
 
 def preferred_engine_get():
     cdef const_char_ptr l
-    l = elm_preferred_engine_get()
+    l = elm_config_preferred_engine_get()
     return l if l != NULL else None
 
 def preferred_engine_set(engine):
-    elm_preferred_engine_set(engine)
+    elm_config_preferred_engine_set(engine)
 
 def engine_get():
     cdef const_char_ptr l
-    l = elm_engine_get()
+    l = elm_config_engine_get()
     return l if l != NULL else None
 
 def engine_set(engine):
-    elm_engine_set(engine)
+    elm_config_engine_set(engine)
 
 cdef object _elm_widget_type_mapping
 

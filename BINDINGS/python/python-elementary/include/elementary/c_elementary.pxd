@@ -221,10 +221,10 @@ cdef extern from "Elementary.h":
     void elm_exit()
 
     # Engine related
-    char *elm_engine_get()
-    void elm_engine_set(char *engine)
-    char *elm_preferred_engine_get()
-    void elm_preferred_engine_set(char *engine)
+    char *elm_config_engine_get()
+    void elm_config_engine_set(const_char_ptr engine)
+    char *elm_config_preferred_engine_get()
+    void elm_config_preferred_engine_set(const_char_ptr engine)
 
     # Quicklaunch
     void         elm_quicklaunch_init(int argc, char **argv)
@@ -263,8 +263,8 @@ cdef extern from "Elementary.h":
 
     double       elm_config_tooltip_delay_get()
     evas.c_evas.Eina_Bool elm_config_tooltip_delay_set(double delay)
-    evas.c_evas.Eina_Bool elm_cursor_engine_only_set(int engine_only)
-    int          elm_cursor_engine_only_get()
+    evas.c_evas.Eina_Bool elm_config_cursor_engine_only_set(int engine_only)
+    int          elm_config_cursor_engine_only_get()
     void         elm_object_tooltip_show(evas.c_evas.Evas_Object *obj)
     void         elm_object_tooltip_hide(evas.c_evas.Evas_Object *obj)
     void         elm_object_tooltip_text_set(evas.c_evas.Evas_Object *obj, char *text)
@@ -296,20 +296,20 @@ cdef extern from "Elementary.h":
     void         elm_object_item_del(Elm_Object_Item *item)
     evas.c_evas.Evas_Object* elm_object_item_widget_get(Elm_Object_Item *it)
 
-    double       elm_scale_get()
-    void         elm_scale_set(double scale)
-    evas.c_evas.Evas_Coord elm_finger_size_get()
-    void         elm_finger_size_set(evas.c_evas.Evas_Coord size)
+    double       elm_config_scale_get()
+    void         elm_config_scale_set(double scale)
+    evas.c_evas.Evas_Coord elm_config_finger_size_get()
+    void         elm_config_finger_size_set(evas.c_evas.Evas_Coord size)
 
     # Focus handling
     void         elm_object_focus_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool x)
     evas.c_evas.Eina_Bool elm_object_focus_get(evas.c_evas.Evas_Object *obj)
     void         elm_object_focus_allow_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enable)
     evas.c_evas.Eina_Bool elm_object_focus_allow_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_focus_highlight_enabled_get()
-    void         elm_focus_highlight_enabled_set(evas.c_evas.Eina_Bool enable)
-    evas.c_evas.Eina_Bool elm_focus_highlight_animate_get()
-    void         elm_focus_highlight_animate_set(evas.c_evas.Eina_Bool animate)
+    evas.c_evas.Eina_Bool elm_config_focus_highlight_enabled_get()
+    void         elm_config_focus_highlight_enabled_set(evas.c_evas.Eina_Bool enable)
+    evas.c_evas.Eina_Bool elm_config_focus_highlight_animate_get()
+    void         elm_config_focus_highlight_animate_set(evas.c_evas.Eina_Bool animate)
 
     void         elm_object_event_callback_add(evas.c_evas.Evas_Object *obj, Elm_Event_Cb func, const_void *data)
     void        *elm_object_event_callback_del(evas.c_evas.Evas_Object *obj, Elm_Event_Cb func, const_void *data)
@@ -675,7 +675,6 @@ cdef extern from "Elementary.h":
     void elm_genlist_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
     void elm_genlist_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool always_select)
     void elm_genlist_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_select)
-    void elm_genlist_compress_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool compress)
     void elm_genlist_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void elm_genlist_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
     void elm_genlist_block_count_set(evas.c_evas.Evas_Object *obj, int n)
