@@ -975,7 +975,7 @@ win_new(App *app)
         goto error;
      }
 
-   elm_toolbar_no_select_mode_set(w->toolbar, EINA_TRUE);
+   elm_toolbar_select_mode_set(w->toolbar, ELM_OBJECT_SELECT_MODE_NONE);
    elm_toolbar_menu_parent_set(w->toolbar, w->win);
    w->action.prev = _toolbar_item_add
       (w, "media-seek-backward", "Previous", 130, _win_prev);

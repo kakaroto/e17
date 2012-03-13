@@ -2184,7 +2184,7 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
 		evas_object_size_hint_align_set(toolbar, -1, 0);
 		elm_toolbar_homogeneous_set(toolbar, EINA_TRUE);
-		elm_toolbar_no_select_mode_set(toolbar, EINA_TRUE);
+		elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_NONE);
 		elm_object_style_set(toolbar, "elmdentica");
 
 		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), NULL, NULL);

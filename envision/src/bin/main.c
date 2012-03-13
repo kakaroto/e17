@@ -862,7 +862,7 @@ create_main_win(App *app)
         goto gui_error;
      }
 
-   elm_toolbar_no_select_mode_set(app->toolbar, EINA_TRUE);
+   elm_toolbar_select_mode_set(app->toolbar, ELM_OBJECT_SELECT_MODE_NONE);
    elm_toolbar_menu_parent_set(app->toolbar, app->win);
    app->action.down = _toolbar_item_add
       (app, "go-down", "Down", 200, _page_down);
