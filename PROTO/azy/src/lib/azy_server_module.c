@@ -632,9 +632,9 @@ azy_server_module_size_set(Azy_Server_Module_Def *def,
  * @brief Send data to a client
  *
  * This function is used to queue arbitrary data to send to a client through its module.  It will automatically
- * generate all http header strings from @p net including the content-length (based on @p data).
+ * generate all http header strings from @p net (if provided) including the content-length (based on @p data).
  * @param module The client's #Azy_Server_Module object (NOT NULL)
- * @param net An #Azy_Net object containing http information to use (NOT NULL)
+ * @param net An #Azy_Net object containing http information to use
  * @param data The data to send
  * @return EINA_TRUE on success, else EINA_FALSE
  */
@@ -651,29 +651,26 @@ azy_server_module_send(Azy_Server_Module  *module,
         return EINA_FALSE;
      }
 
-   if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
+   if (net)
      {
-        AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
-        return EINA_FALSE;
+        Eina_Bool s;
+        if (data) azy_net_message_length_set(net, data->size);
+        if (!net->http.res.http_code)
+          azy_net_code_set(net, 200);  /* OK */
+        azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
+        EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), EINA_FALSE);
+
+        s = !!ecore_con_client_send(module->client->current->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header));
+        eina_strbuf_free(header);
+        if (!s)
+          {
+             ERR("Could not queue header for sending!");
+             return EINA_FALSE;
+          }
      }
-
-   if (data) azy_net_message_length_set(net, data->size);
-   if (!net->http.res.http_code)
-     azy_net_code_set(net, 200);  /* OK */
-   azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
-
-   if (!ecore_con_client_send(module->client->current->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)))
-     {
-        ERR("Could not queue header for sending!");
-        goto error;
-     }
-
    if (data && data->data)
-     EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, data->data, data->size), error);
+     EINA_SAFETY_ON_TRUE_RETURN_VAL(!ecore_con_client_send(module->client->current->conn, data->data, data->size), EINA_FALSE);
 
-error:
-   eina_strbuf_free(header);
    return EINA_TRUE;
 }
 
