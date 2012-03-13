@@ -748,6 +748,17 @@ static void _e_xkb_cb_mouse_down(
             int  dir;
             char buf[PATH_MAX];
 
+            mi = e_menu_item_new(inst->lmenu);
+
+            e_menu_item_label_set          (mi, D_("Settings"));
+            e_util_menu_item_theme_icon_set(mi, "preferences-system");
+            e_menu_item_callback_set       (
+                mi, _e_xkb_cb_menu_configure, NULL
+            );
+
+            mi = e_menu_item_new(inst->lmenu);
+            e_menu_item_separator_set(mi, 1);
+
             /* Append all the layouts */
             EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
             {
