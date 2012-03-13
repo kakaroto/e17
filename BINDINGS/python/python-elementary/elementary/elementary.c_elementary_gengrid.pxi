@@ -579,17 +579,11 @@ cdef class Gengrid(Object):
     def multi_select_get(self):
         return bool(elm_gengrid_multi_select_get(self.obj))
 
-    def always_select_mode_set(self, always_select):
-        elm_gengrid_always_select_mode_set(self.obj, bool(always_select))
+    def select_mode_set(self, mode):
+        elm_gengrid_select_mode_set(self.obj, mode)
 
-    def always_select_mode_get(self):
-        return bool(elm_gengrid_always_select_mode_get(self.obj))
-
-    def no_select_mode_set(self, no_select):
-        elm_gengrid_no_select_mode_set(self.obj, bool(no_select))
-
-    def no_select_mode_get(self):
-        return bool(elm_gengrid_no_select_mode_get(self.obj))
+    def select_mode_get(self):
+        return elm_gengrid_select_mode_get(self.obj)
 
     def bounce_set(self, h_bounce, v_bounce):
         elm_gengrid_bounce_set(self.obj, bool(h_bounce), bool(v_bounce))

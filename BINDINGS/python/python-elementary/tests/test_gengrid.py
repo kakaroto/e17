@@ -111,30 +111,6 @@ def gengrid_clicked(obj):
     tb.pack(bt, 1, 1, 1, 1)
     bt.show()
 
-    # always select mode
-    def always_select_mode_changed(bt, gg):
-        gg.always_select_mode_set(bt.state)
-        print gg.always_select_mode_get()
-
-    bt = elementary.Check(win)
-    bt.text_set("AlwaysSelectMode")
-    bt.state = gg.always_select_mode_get()
-    bt.callback_changed_add(always_select_mode_changed, gg)
-    tb.pack(bt, 2, 1, 1, 1)
-    bt.show()
-
-    # no select mode
-    def no_select_mode_changed(bt, gg):
-        gg.no_select_mode_set(bt.state)
-        print gg.no_select_mode_get()
-
-    bt = elementary.Check(win)
-    bt.text_set("NoSelectMode")
-    bt.state = gg.no_select_mode_get()
-    bt.callback_changed_add(no_select_mode_changed, gg)
-    tb.pack(bt, 3, 1, 1, 1)
-    bt.show()
-
     # bounce h
     def bounce_h_changed(bt, gg):
         (h_bounce, v_bounce) = gg.bounce_get()

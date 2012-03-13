@@ -104,6 +104,14 @@ cdef extern from "Elementary.h":
         ELM_TEXT_FORMAT_PLAIN_UTF8
         ELM_TEXT_FORMAT_MARKUP_UTF8
 
+    ctypedef enum Elm_Object_Select_Mode:
+        ELM_OBJECT_SELECT_MODE_DEFAUL         # default select mode
+        ELM_OBJECT_SELECT_MODE_ALWAYS         # always select mode
+        ELM_OBJECT_SELECT_MODE_NONE           # no select mode 
+        ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY   # no select mode with no finger size rule
+        ELM_OBJECT_SELECT_MODE_MAX
+
+
     ctypedef enum Elm_List_Mode:
         ELM_LIST_COMPRESS
         ELM_LIST_SCROLL
@@ -731,10 +739,9 @@ cdef extern from "Elementary.h":
 
     void elm_gengrid_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
     evas.c_evas.Eina_Bool elm_gengrid_multi_select_get(evas.c_evas.Evas_Object *obj)
-    void elm_gengrid_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool always_select)
-    evas.c_evas.Eina_Bool elm_gengrid_always_select_mode_get(evas.c_evas.Evas_Object *obj)
-    void elm_gengrid_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_select)
-    evas.c_evas.Eina_Bool elm_gengrid_no_select_mode_get(evas.c_evas.Evas_Object *obj)
+    void elm_gengrid_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
+    Elm_Object_Select_Mode elm_gengrid_select_mode_get(evas.c_evas.Evas_Object *obj)
+
     void elm_gengrid_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void elm_gengrid_bounce_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *h_bounce, evas.c_evas.Eina_Bool *v_bounce)
     void elm_gengrid_page_relative_set(evas.c_evas.Evas_Object *obj, double h_pagerel, double v_pagerel)
