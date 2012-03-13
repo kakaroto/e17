@@ -240,8 +240,8 @@ enki_elm_genlist_item_collection_append(Evas_Object *edje,
 {
    INIT();
 
-   Elm_Genlist_Item_Flags flags = ELM_GENLIST_ITEM_NONE;
-   if (!parent) flags = ELM_GENLIST_ITEM_SUBITEMS;
+   Elm_Genlist_Item_Type type = ELM_GENLIST_ITEM_NONE;
+   if (!parent) type = ELM_GENLIST_ITEM_TREE;
 
    if (IFTREE(edje))
    {
@@ -251,9 +251,9 @@ enki_elm_genlist_item_collection_append(Evas_Object *edje,
 
       if (!parent)
          return elm_genlist_item_append(tree, itc, data, header_collections,
-                                        flags, func, func_data);
+                                        type, func, func_data);
       else
-         return elm_genlist_item_append(tree, itc, data, parent, flags, func,
+         return elm_genlist_item_append(tree, itc, data, parent, type, func,
                                         func_data);
    }
    else
@@ -262,7 +262,7 @@ enki_elm_genlist_item_collection_append(Evas_Object *edje,
                edje_object_part_external_object_get(edje,
                                                     "object.list.collections");
 
-      return elm_genlist_item_append(list, itc, data, parent, flags, func,
+      return elm_genlist_item_append(list, itc, data, parent, type, func,
                                      func_data);
    }
 }

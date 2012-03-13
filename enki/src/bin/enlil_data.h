@@ -150,7 +150,7 @@ struct enlil_photo_data
    Enlil_IPTC_Job *iptc_job;
    Eina_Bool clear_iptc_data;
 
-   Elm_Map_Marker *marker;
+   Elm_Map_Overlay *marker;
 
    int cant_create_thumb;
 
@@ -188,7 +188,7 @@ struct geocaching_data
 {
    Enlil_Geocaching *gp;
 
-   Elm_Map_Marker *marker;
+   Elm_Map_Overlay *marker;
    Panel_Geocaching *panel_geocaching;
 };
 

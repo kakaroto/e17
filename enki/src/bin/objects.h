@@ -77,10 +77,9 @@ struct panel_geocaching
    Evas_Object *map;
 
    Enlil_Geocaching *geocaching;
-   Elm_Map_Marker *marker;
+   Elm_Map_Overlay *marker;
 
-   Elm_Map_Marker_Class *itc;
-   Elm_Map_Group_Class *itc_group;
+   Elm_Map_Overlay *itc;
 };
 
 struct panel_image

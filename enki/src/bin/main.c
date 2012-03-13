@@ -73,7 +73,6 @@ _photos_list_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 {
    Enlil_Data *enlil_data = data;
    enlil_data->list_left->is_map = EINA_FALSE;
-   if (enlil_data->map) elm_map_bubbles_close(enlil_data->map->map);
 }
 
 static void
@@ -88,7 +87,6 @@ _menu_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 {
    Enlil_Data *enlil_data = data;
    enlil_data->list_left->is_map = EINA_FALSE;
-   if (enlil_data->map) elm_map_bubbles_close(enlil_data->map->map);
 }
 
 void

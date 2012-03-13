@@ -12,7 +12,7 @@ static void
 _map_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static Evas_Object *
-_map_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
+_map_icon_get(Evas_Object *obj, Elm_Map_Overlay *marker, void *data);
 
 Panel_Geocaching *
 panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
@@ -131,20 +131,16 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
                                               "object.geocaching.panel.map");
    panel_geocaching->map = map;
 
-   panel_geocaching->itc_group = elm_map_group_class_new(map);
-   panel_geocaching->itc = elm_map_marker_class_new(map);
-   elm_map_marker_class_icon_cb_set(panel_geocaching->itc, _map_icon_get);
-   elm_map_marker_class_style_set(panel_geocaching->itc, "empty");
+   panel_geocaching->itc = elm_map_overlay_class_add(map);
 
-   panel_geocaching->marker
-            = elm_map_marker_add(map,
+   panel_geocaching->marker = elm_map_overlay_add(map,
                                  enlil_geocaching_longitude_get(geocaching),
-                                 enlil_geocaching_latitude_get(geocaching),
-                                 panel_geocaching->itc,
-                                 panel_geocaching->itc_group, panel_geocaching);
+                                 enlil_geocaching_latitude_get(geocaching));
+   elm_map_overlay_class_append(panel_geocaching->itc, panel_geocaching->marker);
+   elm_map_overlay_icon_set(panel_geocaching->itc, _map_icon_get(map, panel_geocaching->marker, panel_geocaching));
 
    l = eina_list_append(NULL, panel_geocaching->marker);
-   elm_map_markers_list_show(l);
+   elm_map_overlays_show(l);
    eina_list_free(l);
 
    //
@@ -183,7 +179,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
 
       snprintf(buf, PATH_MAX, "%s", enlil_geocaching_log_date_get(log));
       buf[10] = '\0';
-      elm_object_part_text_set(bb, buf);
+      elm_object_text_set(bb, buf);
 
       if(enlil_geocaching_log_text_get(log))
       {
@@ -212,7 +208,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
       o = elm_icon_add(obj);
       snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_log_type_get(log));
       elm_icon_file_set(o, Theme, buf);
-      elm_object_part_content_set(bb, o);
+      elm_object_part_content_set(bb, "icon", o);
       evas_object_show(o);
       evas_object_size_hint_weight_set(bb, EVAS_HINT_EXPAND, 0.0);
       evas_object_size_hint_align_set(bb, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -257,7 +253,6 @@ panel_geocaching_free(Panel_Geocaching **_panel_geocaching)
 static void
 _panel_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 {
-   elm_map_bubbles_close(enlil_data->map->map);
 }
 
 static void
@@ -305,7 +300,7 @@ _map_move_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static Evas_Object *
-_map_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
+_map_icon_get(Evas_Object *obj, Elm_Map_Overlay *marker, void *data)
 {
    char buf[PATH_MAX];
    Evas_Object *icon;

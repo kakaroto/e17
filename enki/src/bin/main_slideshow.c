@@ -62,7 +62,7 @@ elm_main(int argc, char **argv)
    if (exit_option) return 0;
    //
 
-   elm_finger_size_set(1);
+   elm_config_finger_size_set(1);
 
    //
    library = enlil_library_new(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,

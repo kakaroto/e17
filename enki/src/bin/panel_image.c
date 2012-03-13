@@ -908,8 +908,6 @@ _panel_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
    Panel_Image *panel_image = (Panel_Image *) data;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(panel_image->photo);
    _update_undo_redo(photo_data->panel_image);
-
-   elm_map_bubbles_close(enlil_data->map->map);
 }
 
 static void

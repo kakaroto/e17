@@ -137,7 +137,7 @@ slideshow_object_file_set(Evas_Object *obj, const char *file, const char *group)
 
    icon = elm_icon_add(obj);
    elm_icon_standard_set(icon, "arrow_left");
-   elm_object_part_content_set(bt, icon);
+   elm_object_part_content_set(bt, "icon", icon);
 
    bt = elm_button_add(obj);
    sd->bt_right = bt;
@@ -151,7 +151,7 @@ slideshow_object_file_set(Evas_Object *obj, const char *file, const char *group)
 
    icon = elm_icon_add(obj);
    elm_icon_standard_set(icon, "arrow_right");
-   elm_object_part_content_set(bt, icon);
+   elm_object_part_content_set(bt, "icon", icon);
 
    //manage the size
    Evas_Coord minw, minh, maxw, maxh;

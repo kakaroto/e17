@@ -1,11 +1,8 @@
 #include "main.h"
 #include "evas_object/photo_object.h"
 
-Elm_Map_Marker_Class *itc;
-Elm_Map_Group_Class *itc_group;
-
-Elm_Map_Marker_Class *itc_gp;
-Elm_Map_Group_Class *itc_gp_group;
+Elm_Map_Overlay *grp;
+Elm_Map_Overlay *grp_gp;
 
 static void
 _geocaching_import_cb(void *data, Evas_Object *obj, void *event_info);
@@ -18,13 +15,13 @@ static void
 _mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static Evas_Object *
-_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
+_marker_get(Evas_Object *obj, Elm_Map_Overlay *marker, void *data);
 static Evas_Object *
-_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
+_gp_marker_get(Evas_Object *obj, Elm_Map_Overlay *marker, void *data);
 static Evas_Object *
-_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
+_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Overlay *marker, void *data);
 static Evas_Object *
-_gp_group_icon_get(Evas_Object *obj, void *data);
+_gp_group_icon_get(Evas_Object *obj);
 
 static void
 _enki_open(void *data, Evas_Object *obj, void *event_info);
@@ -39,6 +36,28 @@ _tg_photos_changed_cb(void *data, Evas_Object *obj, void *event_info);
 static void
 _bt_geocaching_cb(void *data, Evas_Object *obj, void *event_info);
 
+static void
+_ovl_clicked(void *data, Evas_Object *map, const Elm_Map_Overlay *ovl)
+{
+   if (elm_map_overlay_type_get(ovl) == ELM_MAP_OVERLAY_TYPE_DEFAULT)
+     {
+        Elm_Map_Overlay *bubble = elm_map_overlay_bubble_add(map);
+        elm_map_overlay_bubble_follow(bubble, ovl);
+        elm_map_overlay_bubble_content_append(bubble, _marker_get(map, NULL, data));
+     }
+}
+
+static void
+_gp_ovl_clicked(void *data, Evas_Object *map, const Elm_Map_Overlay *ovl)
+{
+   if (elm_map_overlay_type_get(ovl) == ELM_MAP_OVERLAY_TYPE_DEFAULT)
+     {
+        Elm_Map_Overlay *bubble = elm_map_overlay_bubble_add(map);
+        elm_map_overlay_bubble_follow(bubble, ovl);
+        elm_map_overlay_bubble_content_append(bubble, _gp_marker_get(map, NULL, data));
+     }
+}
+
 Map *
 map_new(Evas_Object *edje)
 {
@@ -48,20 +67,12 @@ map_new(Evas_Object *edje)
    //
    map->map = edje_object_part_external_object_get(edje, "object.map.map");
 
-   itc_group = elm_map_group_class_new(map->map);
+   grp = elm_map_overlay_class_add(map->map);
 
-   itc = elm_map_marker_class_new(map->map);
-   elm_map_marker_class_get_cb_set(itc, _marker_get);
+   grp_gp = elm_map_overlay_class_add(map->map);
+   elm_map_overlay_icon_set(grp_gp, _gp_group_icon_get(map->map));
+   elm_map_overlay_class_zoom_max_set(grp_gp, 10);
 
-   itc_gp_group = elm_map_group_class_new(map->map);
-   elm_map_group_class_icon_cb_set(itc_gp_group, _gp_group_icon_get);
-   elm_map_group_class_style_set(itc_gp_group, "empty");
-   elm_map_group_class_zoom_grouped_set(itc_gp_group, 10);
-
-   itc_gp = elm_map_marker_class_new(map->map);
-   elm_map_marker_class_get_cb_set(itc_gp, _gp_marker_get);
-   elm_map_marker_class_icon_cb_set(itc_gp, _gp_marker_icon_get);
-   elm_map_marker_class_style_set(itc_gp, "empty");
    //
 
    //
@@ -124,11 +135,11 @@ map_photo_add(Map *map, Enlil_Photo *photo)
       if (enlil_photo_longitude_get(photo) != 360
                && enlil_photo_latitude_get(photo) != 360)
       {
-         photo_data->marker
-                  = elm_map_marker_add(map->map,
+         photo_data->marker  = elm_map_overlay_add(map->map,
                                        enlil_photo_longitude_get(photo),
-                                       enlil_photo_latitude_get(photo), itc,
-                                       itc_group, photo);
+                                       enlil_photo_latitude_get(photo));
+         elm_map_overlay_class_append(grp, photo_data->marker);
+         elm_map_overlay_get_cb_set(photo_data->marker, _ovl_clicked, photo);
       }
       break;
 
@@ -149,14 +160,13 @@ map_photo_update(Map *map, Enlil_Photo *photo)
    if (photo_data->marker && (enlil_photo_longitude_get(photo) == 360
             || enlil_photo_latitude_get(photo) == 360))
    {
-      elm_map_marker_remove(photo_data->marker);
+      elm_map_overlay_del(photo_data->marker);
       photo_data->marker = NULL;
       if (photo == map->selected) map->selected = NULL;
    }
    else if (photo_data->marker)
    {
       if (photo == map->selected) map->selected = NULL;
-      elm_map_marker_update(photo_data->marker);
    }
    else if (enlil_photo_longitude_get(photo) != 360
             && enlil_photo_latitude_get(photo) != 360) map_photo_add(map, photo);
@@ -172,12 +182,12 @@ map_photo_remove(Map *map, Enlil_Photo *photo)
    switch (enlil_photo_type_get(photo))
    {
    case ENLIL_PHOTO_TYPE_PHOTO:
-      elm_map_marker_remove(photo_data->marker);
+      elm_map_overlay_del(photo_data->marker);
       photo_data->marker = NULL;
       break;
 
    case ENLIL_PHOTO_TYPE_GPX:
-      elm_map_route_remove(photo_data->route.route);
+      elm_map_route_del(photo_data->route.route);
       photo_data->route.route = NULL;
       break;
    }
@@ -188,15 +198,17 @@ map_geocaching_add(Map *map, Enlil_Geocaching *gp)
 {
    Geocaching_Data *gp_data = enlil_geocaching_user_data_get(gp);
 
-   if (!elm_toggle_state_get(map->display_geocaching)) return;
+   if (!elm_check_state_get(map->display_geocaching)) return;
 
    if (enlil_geocaching_longitude_get(gp) != 360
             && enlil_geocaching_latitude_get(gp) != 360)
    {
-      gp_data->marker = elm_map_marker_add(map->map,
-                                           enlil_geocaching_longitude_get(gp),
-                                           enlil_geocaching_latitude_get(gp),
-                                           itc_gp, itc_gp_group, gp);
+      gp_data->marker  = elm_map_overlay_add(map->map,
+                                       enlil_geocaching_longitude_get(gp),
+                                       enlil_geocaching_latitude_get(gp));
+      elm_map_overlay_class_append(grp_gp, gp_data->marker);
+      elm_map_overlay_icon_set(grp_gp, _gp_marker_icon_get(map->map, grp_gp, gp));
+      elm_map_overlay_get_cb_set(gp_data->marker, _gp_ovl_clicked, gp);
    }
 }
 
@@ -208,12 +220,8 @@ map_geocaching_update(Map *map, Enlil_Geocaching *gp)
    if (gp_data->marker && (enlil_geocaching_longitude_get(gp) == 360
             || enlil_geocaching_latitude_get(gp) == 360))
    {
-      elm_map_marker_remove(gp_data->marker);
+      elm_map_overlay_del(gp_data->marker);
       gp_data->marker = NULL;
-   }
-   else if (gp_data->marker)
-   {
-      elm_map_marker_update(gp_data->marker);
    }
    else if (enlil_geocaching_longitude_get(gp) != 360
             && enlil_geocaching_latitude_get(gp) != 360) map_geocaching_add(
@@ -226,7 +234,7 @@ map_geocaching_remove(Map *map, Enlil_Geocaching *gp)
 {
    Geocaching_Data *gp_data = enlil_geocaching_user_data_get(gp);
 
-   elm_map_marker_remove(gp_data->marker);
+   elm_map_overlay_del(gp_data->marker);
    gp_data->marker = NULL;
 }
 
@@ -264,7 +272,7 @@ _mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static Evas_Object *
-_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
+_marker_get(Evas_Object *obj, Elm_Map_Overlay *ovl, void *data)
 {
    const char *s = NULL;
    Enlil_Photo *photo = (Enlil_Photo *) data;
@@ -298,11 +306,12 @@ _marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
    photo_object_text_set(o, enlil_photo_name_get(photo));
 
    evas_object_show(o);
+   elm_map_overlay_data_set(ovl, o);
    return o;
 }
 
 static Evas_Object *
-_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
+_gp_marker_get(Evas_Object *obj, Elm_Map_Overlay *ovl, void *data)
 {
    char buf[PATH_MAX];
    Evas_Object *o, *bt, *edje, *lbl;
@@ -343,7 +352,7 @@ _gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
    snprintf(buf, sizeof(buf), "icons/geocaching/%s",
             enlil_geocaching_gp_type_get(gp));
    elm_icon_file_set(o, Theme, buf);
-   elm_object_part_content_set(bt, o);
+   elm_object_part_content_set(bt, "icon", o);
    evas_object_smart_callback_add(bt, "clicked", _bt_geocaching_cb, gp);
 
    snprintf(buf, sizeof(buf), "terrain,%s", enlil_geocaching_gp_terrain_get(gp));
@@ -357,7 +366,7 @@ _gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
 }
 
 static Evas_Object *
-_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
+_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Overlay *ovl, void *data)
 {
    char buf[PATH_MAX];
    Evas_Object *icon;
@@ -383,7 +392,7 @@ _gp_marker_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
 }
 
 static Evas_Object *
-_gp_group_icon_get(Evas_Object *obj, void *data)
+_gp_group_icon_get(Evas_Object *obj)
 {
    Evas_Object *icon;
 
@@ -403,7 +412,8 @@ _photo_select_cb(void *data, Evas_Object *obj, void *event_info)
    {
       Enlil_Photo_Data *photo_data_selected =
                enlil_photo_user_data_get(enlil_data->map->selected);
-      Evas_Object *o = elm_map_marker_object_get(photo_data_selected->marker);
+
+      Evas_Object *o = elm_map_overlay_data_get(photo_data_selected->marker);
       if (o) evas_object_smart_callback_call(o, "unselect", NULL);
    }
    enlil_data->map->selected = photo;
@@ -447,7 +457,7 @@ _tg_geocaching_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Map *map = data;
 
-   if (elm_toggle_state_get(map->display_geocaching))
+   if (elm_check_state_get(map->display_geocaching))
    {
       enlil_geocaching_get(geocaching_done_cb, NULL);
    }
@@ -462,13 +472,13 @@ _tg_photos_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Map *map = data;
 
-   if (elm_toggle_state_get(map->display_photos))
+   if (elm_check_state_get(map->display_photos))
    {
-      elm_map_group_class_hide_set(map->map, itc_group, EINA_FALSE);
+      elm_map_overlay_hide_set(grp, EINA_TRUE);
    }
    else
    {
-      elm_map_group_class_hide_set(map->map, itc_group, EINA_TRUE);
+      elm_map_overlay_hide_set(grp, EINA_TRUE);
    }
 }
 

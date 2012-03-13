@@ -376,7 +376,7 @@ _gl_sel(void *data, Evas_Object *obj, void *event_info)
       }
       if (markers)
       {
-         elm_map_markers_list_show(markers);
+         elm_map_overlays_show(markers);
          eina_list_free(markers);
          elm_slider_value_set(enlil_data->map->sl,
                               elm_map_zoom_get(enlil_data->map->map));
@@ -423,7 +423,7 @@ _gl_col_album_sel(void *data, Evas_Object *obj, void *event_info)
       }
       if (markers)
       {
-         elm_map_markers_list_show(markers);
+         elm_map_overlays_show(markers);
          eina_list_free(markers);
          elm_slider_value_set(enlil_data->map->sl,
                               elm_map_zoom_get(enlil_data->map->map));

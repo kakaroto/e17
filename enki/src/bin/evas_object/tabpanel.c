@@ -174,8 +174,7 @@ tabpanel_item_del(Tabpanel_Item *item)
    if (item->tab->items) tabpanel_item_select(
                                               eina_list_data_get(
                                                                  item->tab->items));
-
-   elm_toolbar_item_del(item->item_tb);
+   elm_object_item_del(item->item_tb);
 
    if (item->tab->from_edje && eina_list_count(item->tab->items) <= 2) edje_object_signal_emit(
                                                                                                item->tab->parent,
