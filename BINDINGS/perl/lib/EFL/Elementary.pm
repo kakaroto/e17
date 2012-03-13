@@ -538,7 +538,7 @@ my @elm_index = qw(
   elm_index_autohide_disabled_set
   elm_index_item_level_set
   elm_index_item_level_get
-  elm_index_item_selected_get
+  elm_index_selected_item_get
   elm_index_item_append
   elm_index_item_prepend
   elm_index_item_insert_after
@@ -1017,7 +1017,7 @@ may change in future releases.
     elm_index_item_level_set
     elm_index_item_prepend
     elm_index_item_insert_before
-    elm_index_item_selected_get
+    elm_index_selected_item_get
     elm_init
     elm_label_add
     elm_label_line_wrap_set

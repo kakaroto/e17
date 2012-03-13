@@ -1437,7 +1437,7 @@ int
 elm_index_item_level_get(Evas_Object *obj)
 
 const void *
-elm_index_item_selected_get(Evas_Object *obj, int level)
+elm_index_selected_item_get(Evas_Object *obj, int level)
 
 void
 elm_index_item_append(Evas_Object *obj, const char *letter, Evas_Smart_Cb func, const void *data)
