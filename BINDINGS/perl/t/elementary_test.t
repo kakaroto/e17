@@ -2497,7 +2497,7 @@ sub _move {
 
 sub _bt50_cb {
     my ($data) = @_;
-    elm_genlist_item_bring_in($$data);
+    elm_genlist_item_bring_in($$data, ELM_GENLIST_ITEM_SCROLLTO_IN);
 }
 
 sub _bt1500_cb {
@@ -3416,7 +3416,7 @@ gl4_exp(void *data, Evas_Object *obj, void *event_info)
 			   (void *)(val + 2)/* item data */, it/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
 			   undef/* func data */);
    elm_genlist_item_append(gl, &itc4,
-			   (void *)(val + 3)/* item data */, it/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
+			   (void *)(val + 3)/* item data */, it/* parent */, ELM_GENLIST_ITEM_TREE, gl4_sel/* func */,
 			   undef/* func data */);
 }
 static void
@@ -3505,10 +3505,10 @@ test_genlist6(void *data, Evas_Object *obj, void *event_info)
    itc4.func.del       = gl4_del;
 
    elm_genlist_item_append(gl, &itc4,
-			   (void *)1/* item data */, undef/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
+			   (void *)1/* item data */, undef/* parent */, ELM_GENLIST_ITEM_TREE, gl4_sel/* func */,
 			   undef/* func data */);
    elm_genlist_item_append(gl, &itc4,
-			   (void *)2/* item data */, undef/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
+			   (void *)2/* item data */, undef/* parent */, ELM_GENLIST_ITEM_TREE, gl4_sel/* func */,
 			   undef/* func data */);
    elm_genlist_item_append(gl, &itc4,
 			   (void *)3/* item data */, undef/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,

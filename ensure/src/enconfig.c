@@ -94,7 +94,7 @@ config_add_classes(Evas_Object *gl)
    for (i = 0; i < ENSURE_N_SEVERITIES; i++)
      {
         severity[i].item = elm_genlist_item_append(gl, &clc, severity + i, NULL, /* No parent */
-                                                   ELM_GENLIST_ITEM_SUBITEMS, cfg_sel, severity + i /* data */);
+                                                   ELM_GENLIST_ITEM_TREE, cfg_sel, severity + i /* data */);
      }
 }
 

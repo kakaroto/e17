@@ -297,7 +297,7 @@ class FontSelectionWizard(FileSelectionWizard):
                 self._files += self._system_fonts
 
             self._file_list.item_append(itc, message, None,
-                   elementary.ELM_GENLIST_ITEM_SUBITEMS, self._expand_cb)
+                   elementary.ELM_GENLIST_ITEM_TREE, self._expand_cb)
 
     def _expand_cb(self, obj, part, item_data):
         if obj.expanded:

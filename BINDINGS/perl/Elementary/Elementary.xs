@@ -1090,7 +1090,7 @@ elm_genlist_item_append(obj, itc, data, parent, flags, func, func_data)
     Elm_Genlist_Item_Class *itc
     void *data
     Elm_Genlist_Item *parent
-    Elm_Genlist_Item_Flags flags
+    Elm_Genlist_Item_Type flags
     SV *func
     SV *func_data
     PREINIT:
@@ -1110,13 +1110,13 @@ elm_genlist_item_append(obj, itc, data, parent, flags, func, func_data)
 =pod
 TODO
 Elm_Object_Item *
-elm_genlist_item_prepend(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
+elm_genlist_item_prepend(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
 
 Elm_Object_Item *
-elm_genlist_item_insert_before(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *before, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
+elm_genlist_item_insert_before(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *before, Elm_Genlist_Item_Type flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
 
 Elm_Object_Item *
-elm_genlist_item_insert_after(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *after, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
+elm_genlist_item_insert_after(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *after, Elm_Genlist_Item_Type flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
 
 =cut
 

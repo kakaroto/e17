@@ -1113,7 +1113,7 @@ static void gl4_exp (Evasxx::Object &obj, void *event_info, GenList *gl)
 			   (void *)(val + 2)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
 			   NULL/* func data */);
    elm_genlist_item_append(gl, &itc4,
-			   (void *)(val + 3)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
+			   (void *)(val + 3)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_TREE, gl4_sel/* func */,
 			   NULL/* func data */);
 #endif
 }

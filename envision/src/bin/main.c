@@ -241,7 +241,7 @@ grid_changed(void            *data,
    App *app = data;
    if (!app->bring_in_cur_page) return;
    app->bring_in_cur_page = EINA_FALSE;
-   elm_gengrid_item_bring_in(app->current_item_page);
+   elm_gengrid_item_bring_in(app->current_item_page, ELM_GENGRID_ITEM_SCROLLTO_IN);
 }
 
 /*---------------------CONTENT GET - RENDER PDF-------------------------*/
@@ -340,7 +340,7 @@ grid_item_db_double_clicked(void            *data,
    app->current_item_page = event_info;
    app->bring_in_cur_page = EINA_TRUE;
    page_view_mode_set((App *)data, WINDOW_WIDTH);
-   elm_gengrid_item_bring_in(app->current_item_page);
+   elm_gengrid_item_bring_in(app->current_item_page, ELM_GENGRID_ITEM_SCROLLTO_IN);
 }
 
 /*--------------------------ZOOM IN CB-------------------------------*/
@@ -371,7 +371,7 @@ _zoom_in(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 
    if (app->update_job) ecore_job_del(app->update_job);
    app->update_job = ecore_job_add(_update_items, app);
-   elm_gengrid_item_show(app->current_item_page);
+   elm_gengrid_item_show(app->current_item_page, ELM_GENGRID_ITEM_SCROLLTO_IN);
 }
 
 /*--------------------------ZOOM OUT CB------------------------------*/
@@ -416,7 +416,7 @@ _page_up(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    if (!prev)
      return;
    elm_gengrid_item_selected_set(prev, EINA_TRUE);
-   elm_gengrid_item_show(prev);
+   elm_gengrid_item_show(prev, ELM_GENGRID_ITEM_SCROLLTO_IN);
 }
 
 /*--------------------------PAGE_DOWN CB-------------------------------*/
@@ -433,7 +433,7 @@ _page_down(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    if (!next)
      return;
    elm_gengrid_item_selected_set(next, EINA_TRUE);
-   elm_gengrid_item_show(next);
+   elm_gengrid_item_show(next, ELM_GENGRID_ITEM_SCROLLTO_IN);
 }
 
 /*--------------------------FULL SCREEN CB-----------------------------*/
@@ -581,7 +581,7 @@ load_index_genlist(App              *app,
              Elm_Object_Item *parent;
              parent = elm_genlist_item_append(app->gl_index, &glc2, it,
                                               ancestor,
-                                              ELM_GENLIST_ITEM_SUBITEMS,
+                                              ELM_GENLIST_ITEM_TREE,
                                               _goto_page, app->grid);
              load_index_genlist(app, parent, ch);
           }
@@ -737,7 +737,7 @@ _change_selection(void            *data,
      }
 
    elm_gengrid_item_selected_set(gg_it, EINA_TRUE);
-   elm_gengrid_item_show(gg_it);
+   elm_gengrid_item_show(gg_it, ELM_GENGRID_ITEM_SCROLLTO_IN);
 }
 
 /*--------------------------FILE SELECTOR OK CB-----------------------*/

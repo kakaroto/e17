@@ -103,7 +103,7 @@ _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key
         if (!it) it = elm_genlist_first_item_get(list);
         DBG("next: %p", it);
         elm_genlist_item_selected_set(it, EINA_TRUE);
-        elm_genlist_item_bring_in(it);
+        elm_genlist_item_bring_in(it, ELM_GENLIST_ITEM_SCROLLTO_IN);
         _pick(NULL, NULL, it);
      }
    else if ((!strcmp(key->keyname, "Return")) || (!strcmp(key->keyname, "KP_Enter")))
@@ -111,7 +111,7 @@ _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key
         if (obj == elm_object_parent_widget_get(img)) return;
         it = elm_genlist_selected_item_get(list);
         if (!it) return;
-        elm_genlist_item_bring_in(it);
+        elm_genlist_item_bring_in(it, ELM_GENLIST_ITEM_SCROLLTO_IN);
         _pick(NULL, NULL, it);
      }
    else if (key->keyname[0] == 'q')

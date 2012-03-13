@@ -564,7 +564,7 @@ enna_shortcut_add(Evas_Object *parent)
 
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, "DEVICES", NULL,
-                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+                                 ELM_GENLIST_ITEM_TREE, NULL, NULL);
 
    evas_object_data_set(list, "devices/item", egi);
    evas_object_data_set(list, "items", egi);
@@ -600,10 +600,10 @@ enna_shortcut_add(Evas_Object *parent)
 
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, "NETWORK", NULL,
-                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+                                 ELM_GENLIST_ITEM_TREE, NULL, NULL);
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, "PLACES", NULL,
-                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+                                 ELM_GENLIST_ITEM_TREE, NULL, NULL);
 
    gtk_bookmarks = _enna_shortcut_parse_gtk_bookmarks();
    EINA_LIST_FREE(gtk_bookmarks, file)

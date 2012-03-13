@@ -37,7 +37,7 @@ if (eval { require ExtUtils::Constant; 1 }) {
         {'name' => 'ELM_FLIP_ROTATE_YZ_CENTER_AXIS',     'macro' => '1'},
         {'name' => 'ELM_FLIP_ROTATE_Y_CENTER_AXIS',      'macro' => '1'},
         {'name' => 'ELM_GENLIST_ITEM_NONE',              'macro' => '1'},
-        {'name' => 'ELM_GENLIST_ITEM_SUBITEMS',          'macro' => '1'},
+        {'name' => 'ELM_GENLIST_ITEM_TREE',              'macro' => '1'},
         {'name' => 'ELM_HOVER_AXIS_BOTH',                'macro' => '1'},
         {'name' => 'ELM_HOVER_AXIS_HORIZONTAL',          'macro' => '1'},
         {'name' => 'ELM_HOVER_AXIS_NONE',                'macro' => '1'},

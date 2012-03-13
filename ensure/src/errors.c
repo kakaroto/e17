@@ -82,10 +82,10 @@ errors_update(struct ensure *ensure)
 
         if (!enobj->enwin->genitem)
           {
-             enobj->enwin->genitem = elm_genlist_item_append(ensure->view, &windowclass, enobj->enwin, NULL, ELM_GENLIST_ITEM_SUBITEMS, enwin_select, enobj->enwin);
+             enobj->enwin->genitem = elm_genlist_item_append(ensure->view, &windowclass, enobj->enwin, NULL, ELM_GENLIST_ITEM_TREE, enwin_select, enobj->enwin);
           }
 
-        enobj->genitem = elm_genlist_item_append(ensure->view, &objc, enobj, enobj->enwin->genitem, ELM_GENLIST_ITEM_SUBITEMS, enobj_select, enobj);
+        enobj->genitem = elm_genlist_item_append(ensure->view, &objc, enobj, enobj->enwin->genitem, ELM_GENLIST_ITEM_TREE, enobj_select, enobj);
      }
 }
 

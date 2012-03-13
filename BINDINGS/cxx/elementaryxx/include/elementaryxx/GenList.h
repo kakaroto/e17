@@ -177,8 +177,8 @@ class GenListColumnSelector;
  * internal data (eg the struct with the original item data). The parent
  * parameter is the parent genlist item this belongs to if it is a tree, and
  * NULL if there is no parent. The flags can be a bitmask of
- * ELM_GENLIST_ITEM_NONE and ELM_GENLIST_ITEM_SUBITEMS. If
- * ELM_GENLIST_ITEM_SUBITEMS is set then this item is displayed as a item
+ * ELM_GENLIST_ITEM_NONE and ELM_GENLIST_ITEM_TREE. If
+ * ELM_GENLIST_ITEM_TREE is set then this item is displayed as a item
  * that is able to expand and have child items. The func parameter is a
  * convenience callback that is called when the item is selected and the data
  * parameter will be the func_data parameter, obj be the genlist object and
@@ -371,9 +371,9 @@ private:
 
 #if 0
    /* operations to add items */
-   EAPI Elm_Object_Item *elm_genlist_item_prepend(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
-   EAPI Elm_Object_Item *elm_genlist_item_insert_before(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Object_Item *parent, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
-   EAPI Elm_Object_Item *elm_genlist_item_insert_after(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Object_Item *parent, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, Evas_Smart_Cb func, const void *func_data);
+   EAPI Elm_Object_Item *elm_genlist_item_prepend(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, Evas_Smart_Cb func, const void *func_data);
+   EAPI Elm_Object_Item *elm_genlist_item_insert_before(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Object_Item *parent, Elm_Genlist_Item *before, Elm_Genlist_Item_Type flags, Evas_Smart_Cb func, const void *func_data);
+   EAPI Elm_Object_Item *elm_genlist_item_insert_after(Evas_Object *obj, const Elm_Genlist_Item_Class *itc, const void *data, Elm_Object_Item *parent, Elm_Genlist_Item *after, Elm_Genlist_Item_Type flags, Evas_Smart_Cb func, const void *func_data);
    /* operations to retrieve existing items */
 
 

@@ -93,7 +93,7 @@ tree_update(struct ensure *ensure)
    EINA_LIST_FOREACH (cur->windows, l, enwin)
      {
         assert(enwin->genitem == NULL);
-        enwin->genitem = elm_genlist_item_append(ensure->view, &windowclass, enwin, NULL, ELM_GENLIST_ITEM_GROUP | ELM_GENLIST_ITEM_SUBITEMS, tree_window_select, enwin);
+        enwin->genitem = elm_genlist_item_append(ensure->view, &windowclass, enwin, NULL, ELM_GENLIST_ITEM_GROUP | ELM_GENLIST_ITEM_TREE, tree_window_select, enwin);
      }
 
    eina_hash_foreach(cur->objdb, tree_add_toplevel, ensure);
@@ -125,7 +125,7 @@ tree_add_toplevel(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, 
 {
    struct enobj *enobj;
    struct ensure *ensure = ensurev;
-   Elm_Genlist_Item_Flags flags;
+   Elm_Genlist_Item_Type flags;
 
    enobj = enobjv;
    if (enobj->parent)
@@ -133,7 +133,7 @@ tree_add_toplevel(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, 
    assert(enobj->genitem == NULL);
    assert(enobj->magic == (int)ENOBJMAGIC);
 
-   flags = ELM_GENLIST_ITEM_SUBITEMS;
+   flags = ELM_GENLIST_ITEM_TREE;
 //      printf("Obj: %p Children: %p Clips: %p\n",enobj, enobj->children,
 //                      enobj->clippees);
 
