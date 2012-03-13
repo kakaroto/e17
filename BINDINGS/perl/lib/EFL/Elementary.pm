@@ -217,7 +217,7 @@ my @elm_image = qw(
   elm_image_smooth_set
   elm_image_no_scale_set
   elm_image_object_size_get
-  elm_image_scale_set
+  elm_icon_resizable_set
   elm_image_fill_outside_set
   elm_image_prescale_set
   elm_image_orient_set
@@ -1005,7 +1005,7 @@ may change in future releases.
     elm_image_object_size_get
     elm_image_orient_set
     elm_image_prescale_set
-    elm_image_scale_set
+    elm_icon_resizable_set
     elm_image_smooth_set
     elm_index_autohide_disabled_set
     elm_index_add

@@ -357,7 +357,7 @@ elm_image_object_size_get(obj, w, h)
         h
 
 void
-elm_image_scale_set(Evas_Object *obj, Eina_Bool scale_up, Eina_Bool scale_down)
+elm_icon_resizable_set(Evas_Object *obj, Eina_Bool scale_up, Eina_Bool scale_down)
 
 void
 elm_image_fill_outside_set(Evas_Object *obj, Eina_Bool fill_outside)

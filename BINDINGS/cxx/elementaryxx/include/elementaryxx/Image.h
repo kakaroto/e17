@@ -27,7 +27,7 @@ public:
   
   void setNoScale (bool noScale);
   
-  void setScale (bool scaleUp, bool scaleDown);
+  void setResizable (bool scaleUp, bool scaleDown);
   
   void setFillOutside (bool fillOutside);
   

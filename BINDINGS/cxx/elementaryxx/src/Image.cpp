@@ -37,9 +37,9 @@ void Image::setNoScale (bool noScale)
   elm_image_no_scale_set (o, noScale);
 }
 
-void Image::setScale (bool scaleUp, bool scaleDown)
+void Image::setResizable (bool scaleUp, bool scaleDown)
 {
-  elm_image_scale_set (o, scaleUp, scaleDown);
+  elm_icon_resizable_set (o, scaleUp, scaleDown);
 }
 
 void Image::setFillOutside (bool fillOutside)
