@@ -426,23 +426,11 @@ cdef class GenlistItem(WidgetItem):
         def __set__(self, display_only):
             self.display_only_set(display_only)
 
-    def show(self):
-        elm_genlist_item_show(self.obj)
+    def show(self, type):
+        elm_genlist_item_show(self.obj, type)
 
-    def bring_in(self):
-        elm_genlist_item_bring_in(self.obj)
-
-    def top_show(self):
-        elm_genlist_item_top_show(self.obj)
-
-    def top_bring_in(self):
-        elm_genlist_item_top_bring_in(self.obj)
-
-    def middle_show(self):
-        elm_genlist_item_middle_show(self.obj)
-
-    def middle_bring_in(self):
-        elm_genlist_item_middle_bring_in(self.obj)
+    def bring_in(self, type):
+        elm_genlist_item_bring_in(self.obj, type)
 
     def tooltip_text_set(self, char *text):
         """ Set the text to be shown in the tooltip object

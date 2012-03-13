@@ -443,7 +443,7 @@ _smart_select_item(Smart_Data *sd, int n)
    it = eina_list_nth(sd->items, n);
    if (!it) return;
 
-   elm_genlist_item_middle_bring_in(it->item);
+   elm_genlist_item_bring_in(it->item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
    elm_genlist_item_selected_set(it->item, 1);
    evas_object_smart_callback_call(sd->obj, "hilight", it->data);
 }

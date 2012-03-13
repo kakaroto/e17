@@ -34,10 +34,6 @@ public:
   bool getDisplayOnly () const;
   void show (Elm_Genlist_Item_Scrollto_Type type);
   void bringIn (Elm_Genlist_Item_Scrollto_Type type);
-  void showTop ();
-  void bringInTop ();
-  void showMiddle ();
-  void bringInMiddle ();
   void update ();
 
   const Evasxx::Object *getEvasObject ();

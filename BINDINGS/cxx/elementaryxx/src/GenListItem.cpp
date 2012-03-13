@@ -82,26 +82,6 @@ void GenListItem::bringIn (Elm_Genlist_Item_Scrollto_Type type)
   elm_genlist_item_bring_in (mItem, type);
 }
 
-void GenListItem::showTop ()
-{
-  elm_genlist_item_top_show (mItem);
-}
-
-void GenListItem::bringInTop ()
-{
-  elm_genlist_item_top_bring_in (mItem);
-}
-
-void GenListItem::showMiddle ()
-{
-  elm_genlist_item_middle_show (mItem);
-}
-
-void GenListItem::bringInMiddle ()
-{
-  elm_genlist_item_middle_bring_in (mItem);
-}
-
 void GenListItem::update ()
 {
   elm_genlist_item_update (mItem);

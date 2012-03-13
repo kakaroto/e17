@@ -650,8 +650,6 @@ my @__todo = qw(
   elm_genlist_item_expanded_set
   elm_genlist_item_insert_after
   elm_genlist_item_insert_before
-  elm_genlist_item_middle_bring_in
-  elm_genlist_item_middle_show
   elm_genlist_item_next_get
   elm_genlist_item_object_get
   elm_genlist_item_parent_get
@@ -661,8 +659,6 @@ my @__todo = qw(
   elm_genlist_item_selected_set
   elm_genlist_item_show
   elm_genlist_item_subitems_clear
-  elm_genlist_item_top_bring_in
-  elm_genlist_item_top_show
   elm_genlist_item_update
   elm_genlist_last_item_get
   elm_genlist_multi_select_set

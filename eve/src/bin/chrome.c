@@ -709,7 +709,7 @@ compare_fav_cb(const void *d1, const void *d2)
 static void
 index_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   elm_genlist_item_top_bring_in(event_info);
+   elm_genlist_item_bring_in(event_info, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 }
 
 static More_Menu_Item *

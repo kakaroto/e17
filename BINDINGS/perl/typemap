@@ -6,6 +6,7 @@ Eina_List *                 T_PTR
 Elm_Flip_Mode               T_IV
 Elm_Genlist_Item_Class *    T_PTR
 Elm_Genlist_Item_Flags      T_IV
+Elm_Genlist_Item_Scrollto_Type    T_IV
 Elm_Hover_Axis              T_IV
 Elm_Icon_Type               T_IV
 Elm_Icon_Type *             T_PTR

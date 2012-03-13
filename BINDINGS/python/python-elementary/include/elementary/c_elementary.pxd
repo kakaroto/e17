@@ -122,6 +122,12 @@ cdef extern from "Elementary.h":
         ELM_GENLIST_ITEM_NONE
         ELM_GENLIST_ITEM_SUBITEMS
 
+    ctypedef enum Elm_Genlist_Item_Scrollto_Type:
+        ELM_GENLIST_ITEM_SCROLLTO_NON       # no scrollto 
+        ELM_GENLIST_ITEM_SCROLLTO_IN        # to the nearest viewport 
+        ELM_GENLIST_ITEM_SCROLLTO_TOP       # to the top of viewport
+        ELM_GENLIST_ITEM_SCROLLTO_MIDDLE    # to the middle of viewport
+
     ctypedef enum Elm_Image_Orient:
         ELM_IMAGE_ORIENT_NONE
         ELM_IMAGE_ROTATE_90
@@ -699,12 +705,8 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_genlist_item_expanded_get(Elm_Object_Item *item)
     void elm_genlist_item_display_only_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool display_only)
     evas.c_evas.Eina_Bool elm_genlist_item_display_only_get(Elm_Object_Item *it)
-    void elm_genlist_item_show(Elm_Object_Item *item)
-    void elm_genlist_item_bring_in(Elm_Object_Item *item)
-    void elm_genlist_item_top_show(Elm_Object_Item *item)
-    void elm_genlist_item_top_bring_in(Elm_Object_Item *item)
-    void elm_genlist_item_middle_show(Elm_Object_Item *it)
-    void elm_genlist_item_middle_bring_in(Elm_Object_Item *it)
+    void elm_genlist_item_show(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type type)
+    void elm_genlist_item_bring_in(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type type)
     evas.c_evas.Evas_Object *elm_genlist_item_object_get(Elm_Object_Item *it)
     void elm_genlist_item_update(Elm_Object_Item *item)
     void         elm_genlist_item_tooltip_text_set(Elm_Object_Item *item, char *text)

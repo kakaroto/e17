@@ -2502,7 +2502,7 @@ sub _bt50_cb {
 
 sub _bt1500_cb {
     my ($data) = @_;
-    elm_genlist_item_middle_bring_in($$data);
+    elm_genlist_item_bring_in($$data, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 }
 
 sub test_genlist {
@@ -4620,21 +4620,21 @@ index_changed2(void *data, Evas_Object *obj, void *event_info)
 {
    // called on a change but delayed in case multiple changes happen in a
    // short timespan
-   elm_genlist_item_top_bring_in(event_info);
+   elm_genlist_item_bring_in(event_info, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 }
 
 void
 index_changed(void *data, Evas_Object *obj, void *event_info)
 {
    // this is calld on every change, no matter how often
-   // elm_genlist_item_bring_in(event_info);
+   // elm_genlist_item_bring_in(event_info, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 }
 
 void
 index_selected(void *data, Evas_Object *obj, void *event_info)
 {
    // called on final select
-   elm_genlist_item_top_bring_in(event_info);
+   elm_genlist_item_bring_in(event_info);
 }
 
 void
