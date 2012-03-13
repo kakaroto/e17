@@ -382,7 +382,7 @@ cdef extern from "Elementary.h":
     void elm_icon_standard_set(evas.c_evas.Evas_Object *obj, char* name)
     void elm_icon_smooth_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool smooth)
     void elm_icon_no_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool no_scale)
-    void elm_icon_scale_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scale_up, evas.c_evas.Eina_Bool scale_down)
+    void elm_icon_resizable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scale_up, evas.c_evas.Eina_Bool scale_down)
     void elm_icon_fill_outside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill_outside)
     void elm_icon_prescale_set(evas.c_evas.Evas_Object *obj, int size)
 

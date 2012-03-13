@@ -44,9 +44,9 @@ void Icon::setNoScale (bool noScale)
 {
   elm_icon_no_scale_set (o, noScale);
 }
-void Icon::setScale (bool scaleUp, bool scaleDown)
+void Icon::setResizable (bool scaleUp, bool scaleDown)
 {
-  elm_icon_scale_set (o, scaleUp, scaleDown);
+  elm_icon_resizable_set (o, scaleUp, scaleDown);
 }
 void Icon::setFillOutside (bool fillOutside)
 {

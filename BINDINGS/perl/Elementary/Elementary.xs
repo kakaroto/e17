@@ -320,7 +320,7 @@ void
 elm_icon_no_scale_set(Evas_Object *obj, Eina_Bool no_scale)
 
 void
-elm_icon_scale_set(Evas_Object *obj, Eina_Bool scale_up, Eina_Bool scale_down)
+elm_icon_resizable_set(Evas_Object *obj, Eina_Bool scale_up, Eina_Bool scale_down)
 
 void
 elm_icon_fill_outside_set(Evas_Object *obj, Eina_Bool fill_outside);

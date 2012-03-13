@@ -206,7 +206,7 @@ my @elm_icon = qw(
   elm_icon_standard_set
   elm_icon_smooth_set
   elm_icon_no_scale_set
-  elm_icon_scale_set
+  elm_icon_resizable_set
   elm_icon_fill_outside_set
   elm_icon_prescale_set
 );
@@ -995,7 +995,7 @@ may change in future releases.
     elm_icon_fill_outside_set
     elm_icon_no_scale_set
     elm_icon_prescale_set
-    elm_icon_scale_set
+    elm_icon_resizable_set
     elm_icon_smooth_set
     elm_icon_standard_set
     elm_image_add

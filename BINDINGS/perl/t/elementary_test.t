@@ -294,7 +294,7 @@ sub test_icon {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_win_resize_object_add($win, $ic);
     evas_object_show($ic);
 
@@ -322,21 +322,21 @@ sub test_box_vert {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.5);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.0, 0.5);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, EVAS_HINT_EXPAND, 0.5);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
@@ -364,21 +364,21 @@ sub test_box_horiz {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.5);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.0);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.0, EVAS_HINT_EXPAND);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
@@ -415,7 +415,7 @@ sub test_button {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Icon no scale");
     elm_object_part_content_set($bt, $ic);
@@ -451,7 +451,7 @@ sub test_button {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $bt = elm_button_add($win);
     elm_object_part_content_set($bt, $ic);
     elm_box_pack_end($bx, $bt);
@@ -522,7 +522,7 @@ sub test_toggle {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
 
     $tg = elm_toggle_add($win);
     elm_toggle_label_set($tg, "Icon no scale");
@@ -533,7 +533,7 @@ sub test_toggle {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
 
     $tg = elm_toggle_add($win);
     elm_toggle_label_set($tg, "Icon no scale");
@@ -551,7 +551,7 @@ sub test_toggle {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
 
     $tg = elm_toggle_add($win);
     elm_toggle_icon_set($tg, $ic);
@@ -751,7 +751,7 @@ sub test_hover {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
@@ -830,7 +830,7 @@ sub test_hover2 {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
     $bt = elm_button_add($win);
@@ -1235,7 +1235,7 @@ sub test_notepad {
     $bt = elm_button_add($win);
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "arrow_left");
-    elm_icon_scale_set($ic, 1, 0);
+    elm_icon_resizable_set($ic, 1, 0);
     elm_object_part_content_set($bt, $ic);
     evas_object_show($ic);
 
@@ -1248,7 +1248,7 @@ sub test_notepad {
     $bt = elm_button_add($win);
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "close");
-    elm_icon_scale_set($ic, 1, 0);
+    elm_icon_resizable_set($ic, 1, 0);
     elm_object_part_content_set($bt, $ic);
     evas_object_show($ic);
 
@@ -1261,7 +1261,7 @@ sub test_notepad {
     $bt = elm_button_add($win);
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "arrow_right");
-    elm_icon_scale_set($ic, 1, 0);
+    elm_icon_resizable_set($ic, 1, 0);
     elm_object_part_content_set($bt, $ic);
     evas_object_show($ic);
 
@@ -1495,7 +1495,7 @@ sub test_anchorblock {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
     $bb = elm_bubble_add($win);
@@ -1553,7 +1553,7 @@ sub test_anchorblock {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
     $bb = elm_bubble_add($win);
@@ -1856,23 +1856,23 @@ sub test_list {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 1, 1);
+    elm_icon_resizable_set($ic, 1, 1);
     $it1 = elm_list_item_append($li, "Hello", $ic, undef, undef, undef);
     $ic = elm_icon_add($win);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_list_item_append($li, "world", $ic, undef, undef, undef);
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "edit");
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_list_item_append($li, ".", $ic, undef, undef, undef);
 
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "delete");
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $ic2 = elm_icon_add($win);
     elm_icon_standard_set($ic2, "clock");
-    elm_icon_scale_set($ic2, 0, 0);
+    elm_icon_resizable_set($ic2, 0, 0);
     $it2 = elm_list_item_append($li, "How", $ic, $ic2, undef, undef);
 
     $bx = elm_box_add($win);
@@ -1880,21 +1880,21 @@ sub test_list {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.5);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.0);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.0, EVAS_HINT_EXPAND);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
@@ -2012,20 +2012,20 @@ sub test_list2 {
     $it = elm_list_item_append($li, "Hello", $ic, undef, \&my_li2_sel, undef);
     elm_list_item_selected_set($it, 1);
     $ic = elm_icon_add($win);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_list_item_append($li, "world", $ic, undef, undef, undef);
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "edit");
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_list_item_append($li, ".", $ic, undef, undef, undef);
 
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "delete");
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $ic2 = elm_icon_add($win);
     elm_icon_standard_set($ic2, "clock");
-    elm_icon_scale_set($ic2, 0, 0);
+    elm_icon_resizable_set($ic2, 0, 0);
     elm_list_item_append($li, "How", $ic, $ic2, undef, undef);
 
     $bx2 = elm_box_add($win);
@@ -2033,14 +2033,14 @@ sub test_list2 {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.5);
     elm_box_pack_end($bx2, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.0);
     elm_box_pack_end($bx2, $ic);
     evas_object_show($ic);
@@ -2106,20 +2106,20 @@ sub test_list3 {
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_list_item_append($li, "Hello", $ic, undef, undef, undef);
     $ic = elm_icon_add($win);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
     elm_list_item_append($li, "world", $ic, undef, undef, undef);
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "edit");
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     elm_list_item_append($li, ".", $ic, undef, undef, undef);
 
     $ic = elm_icon_add($win);
     elm_icon_standard_set($ic, "delete");
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $ic2 = elm_icon_add($win);
     elm_icon_standard_set($ic2, "clock");
-    elm_icon_scale_set($ic2, 0, 0);
+    elm_icon_resizable_set($ic2, 0, 0);
     elm_list_item_append($li, "How", $ic, $ic2, undef, undef);
 
     $bx = elm_box_add($win);
@@ -2127,21 +2127,21 @@ sub test_list3 {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.5);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.5, 0.0);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     evas_object_size_hint_align_set($ic, 0.0, EVAS_HINT_EXPAND);
     elm_box_pack_end($bx, $ic);
     evas_object_show($ic);
@@ -3079,12 +3079,12 @@ Evas_Object *gl3_icon_get(const void *data, Evas_Object *obj, const char *part)
 	ic = elm_icon_add(obj);
 	snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
 	elm_icon_file_set(ic, buf, undef);
-	elm_icon_scale_set(ic, 0, 0);
+	elm_icon_resizable_set(ic, 0, 0);
 	evas_object_show(ic);
 	elm_box_pack_end(bx, ic);
 	ic = elm_icon_add(obj);
 	elm_icon_file_set(ic, buf, undef);
-	elm_icon_scale_set(ic, 0, 0);
+	elm_icon_resizable_set(ic, 0, 0);
 	evas_object_show(ic);
 	elm_box_pack_end(bx, ic);
         elm_box_horizontal_set(bx, 1);
@@ -3234,12 +3234,12 @@ Evas_Object *gl5_icon_get(const void *data, Evas_Object *obj, const char *part)
 	ic = elm_icon_add(obj);
 	snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
 	elm_icon_file_set(ic, buf, undef);
-	elm_icon_scale_set(ic, 0, 0);
+	elm_icon_resizable_set(ic, 0, 0);
 	evas_object_show(ic);
 	elm_box_pack_end(bx, ic);
 	ic = elm_icon_add(obj);
 	elm_icon_file_set(ic, buf, undef);
-	elm_icon_scale_set(ic, 0, 0);
+	elm_icon_resizable_set(ic, 0, 0);
 	evas_object_show(ic);
 	elm_box_pack_end(bx, ic);
         elm_box_horizontal_set(bx, 1);
@@ -3593,7 +3593,7 @@ sub test_check {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $ck = elm_check_add($win);
     elm_object_text_set($ck, "Icon no scale");
     elm_object_part_content_set($ck, $ic);
@@ -3622,7 +3622,7 @@ sub test_check {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
     $ck = elm_check_add($win);
     elm_object_part_content_set($ck, $ic);
     elm_box_pack_end($bx, $ck);
@@ -3666,7 +3666,7 @@ sub test_radio {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
 
     $rd = elm_radio_add($win);
     elm_radio_state_value_set($rd, 1);
@@ -3694,7 +3694,7 @@ sub test_radio {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
 
     $rd = elm_radio_add($win);
     elm_radio_state_value_set($rd, 4);
@@ -3706,7 +3706,7 @@ sub test_radio {
 
     $ic = elm_icon_add($win);
     elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_scale_set($ic, 0, 0);
+    elm_icon_resizable_set($ic, 0, 0);
 
     $rd = elm_radio_add($win);
     elm_radio_state_value_set($rd, 5);

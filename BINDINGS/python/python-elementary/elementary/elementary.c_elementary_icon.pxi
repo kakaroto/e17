@@ -58,7 +58,7 @@ cdef class Icon(Object):
         elm_icon_no_scale_set(self.obj,no_scale)
 
     def scale_set(self,scale_up,scale_down):
-        elm_icon_scale_set(self.obj,scale_up,scale_down)
+        elm_icon_resizable_set(self.obj,scale_up,scale_down)
 
     def fill_outside_set(self,fill_outside):
         elm_icon_fill_outside_set(self.obj,fill_outside)

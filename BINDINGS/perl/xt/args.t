@@ -32,7 +32,7 @@ elm_win_alpha_set($win, 1);
 
 $ic = elm_icon_add($win);
 elm_icon_file_set($ic, $images{'logo'}, undef);
-elm_icon_scale_set($ic, 0, 0);
+elm_icon_resizable_set($ic, 0, 0);
 elm_win_resize_object_add($win, $ic);
 evas_object_show($ic);
 

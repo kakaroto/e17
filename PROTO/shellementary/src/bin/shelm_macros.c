@@ -140,7 +140,7 @@ create_icon(Evas_Object *parent, const char *iconfile)
   icon = elm_icon_add(parent);
 
   elm_icon_file_set(icon, iconfile, NULL);
-  elm_icon_scale_set(icon, 0, 0);
+  elm_icon_resizable_set(icon, 0, 0);
 
   return icon;
 }

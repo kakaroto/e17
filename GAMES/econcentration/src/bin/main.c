@@ -177,7 +177,7 @@ _populate_table(void *data)
         snprintf(buf, sizeof(buf), "%s/images/icon_%02i.png",
                 PACKAGE_DATA_DIR, values[i]);
         elm_icon_file_set(ic, buf, NULL);
-        elm_icon_scale_set(ic, 0, 0);
+        elm_icon_resizable_set(ic, 0, 0);
         evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
                 EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(ic, 0.5, 0.5);
