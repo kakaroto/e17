@@ -397,7 +397,7 @@ _em_gui_channel_free(void *obj)
    evas_object_del(c->w_text);
    evas_object_del(c->w_box);
 
-   elm_toolbar_item_del(c->w_select);
+   elm_object_item_del(c->w_select);
 }
 
 static void
