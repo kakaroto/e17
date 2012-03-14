@@ -1,23 +1,19 @@
+<Evas>
+direct3d - start hurry (vicent torri)
+map - afterimage problem 
+map - check rotation util inconsistency rotation
+map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
+line - width_set API? 
+line - does not shown on glbackend. 
+image  - check the image smooth effect in gl backend
+text - check the text rendering when mapbuf is used.
+event - need to handle after pointer mode changed.
+
+<Elementary>
 ctxpopup - use elm_list internally
-
-evas_direct3d - start hurry (vicent torri)
-
-evas_map - afterimage problem 
-evas_map - check rotation util inconsistency rotation
-evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
-
 transit - check the transit to use the ecore_animator functionalities.
 transit - use clip for wipe effect
-
-evas_line - width_set API? 
-evas_line - does not shown on glbackend. 
-
-evas - check the image smooth effect in gl backend
-evas - check the text rendering when mapbuf is used.
-
-evas_event - need to handle after pointer mode changed.
-
-naviframe - check the problem 66723 (pespin)
 naviframe - need to block the style set while transiton is going on
+naviframe - more transition efffect styles. 
+panel - check the elementary_test. looks are crazy.
 
-gengrid - check gengrid2 test case. (cedric)
