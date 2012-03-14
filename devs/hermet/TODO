@@ -16,4 +16,8 @@ transit - use clip for wipe effect
 naviframe - need to block the style set while transiton is going on
 naviframe - more transition efffect styles. 
 panel - check the elementary_test. looks are crazy.
-
+conformant - check the elementary_test. It works abnormally.
+menu - check the elementary_test. Remove the ERR evas_object_smart_need_recalculate_set()
+hoversel - add horizontal mode style. 
+dayselector - side button image looks not good.
+colorselector - add mode set test to elementary_test
