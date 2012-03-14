@@ -5,7 +5,7 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var my_window = new elm.window({
 	type : "main",
-	label : "Colour Demo",
+	label : "Colour Selector Demo",
 	width : 320,
 	height : 480,
 	align : FILL_BOTH,
