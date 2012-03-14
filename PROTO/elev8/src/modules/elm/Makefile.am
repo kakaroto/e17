@@ -52,6 +52,7 @@ libelm_la_SOURCES = \
 	CElmSpinner.cc \
 	CElmTable.cc \
 	CElmToggle.cc \
+	CElmDaySelector.cc \
 	CEvasImage.cc \
 	CEvasObject.cc
 
