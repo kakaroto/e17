@@ -642,7 +642,7 @@ cdef extern from "Elementary.h":
     Elm_List_Mode       elm_list_mode_get(evas.c_evas.Evas_Object *obj)
     void         elm_list_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
     evas.c_evas.Eina_Bool       elm_list_horizontal_get(evas.c_evas.Evas_Object *obj)
-    void      elm_list_always_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
+    void      elm_list_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
     evas.c_evas.Eina_List     *elm_list_items_get(evas.c_evas.Evas_Object *obj)
     Elm_Object_Item *elm_list_selected_item_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_List     *elm_list_selected_items_get(evas.c_evas.Evas_Object *obj)

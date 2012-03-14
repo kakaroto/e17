@@ -149,7 +149,7 @@ int main (int argc, char **argv)
   lb->show ();
 
   List *li = List::factory (*win);
-  li->setAlwaysSelectMode (true);
+  li->setSelectMode (ELM_OBJECT_SELECT_MODE_ALWAYS);
   li->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   li->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx0->packEnd (*li);

@@ -439,8 +439,8 @@ cdef class List(Object):
         def __set__(self, horizontal):
             elm_list_horizontal_set(self.obj, horizontal)
 
-    def always_select_mode_set(self, always_select):
-        elm_list_always_select_mode_set(self.obj, always_select)
+    def select_mode_set(self, mode):
+        elm_list_select_mode_set(self.obj, mode)
 
     def bounce_set(self, h, v):
         elm_list_bounce_set(self.obj, h, v)

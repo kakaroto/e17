@@ -185,7 +185,7 @@ igd_client_win_create(void)
    evas_object_show(lb);
 
    li = elm_list_add(win);
-   elm_list_always_select_mode_set(li, 1);
+   elm_list_select_mode_set(li, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(li, 1.0, 1.0);
    evas_object_size_hint_align_set(li, -1.0, -1.0);
    elm_box_pack_end(bx0, li);

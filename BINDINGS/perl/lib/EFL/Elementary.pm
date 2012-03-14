@@ -424,7 +424,7 @@ my @elm_list = qw(
   elm_list_go
   elm_list_multi_select_set
   elm_list_horizontal_mode_set
-  elm_list_always_select_mode_set
+  elm_list_select_mode_set
   elm_list_items_get
   elm_list_item_selected_set
   elm_list_item_show
@@ -1021,7 +1021,7 @@ may change in future releases.
     elm_layout_file_set
     elm_layout_sizing_eval
     elm_list_add
-    elm_list_always_select_mode_set
+    elm_list_select_mode_set
     elm_list_clear
     elm_list_go
     elm_list_horizontal_mode_set

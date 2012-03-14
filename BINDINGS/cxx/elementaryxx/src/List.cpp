@@ -42,9 +42,9 @@ void List::setHorizontal (bool horizontal)
   elm_list_horizontal_set (o, horizontal);
 }
 
-void List::setAlwaysSelectMode (bool alwaysSelect)
+void List::setSelectMode (Elm_Object_Select_Mode mode)
 {
-  elm_list_always_select_mode_set (o, alwaysSelect);
+  elm_list_select_mode_set (o, mode);
 }
 
 const Eina_List *List::getItems ()

@@ -1017,7 +1017,7 @@ void
 elm_list_horizontal_mode_set(Evas_Object *obj, Elm_List_Mode mode)
 
 void
-elm_list_always_select_mode_set(Evas_Object *obj, Eina_Bool always_select)
+elm_list_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
 
 const Eina_List *
 elm_list_items_get(const Evas_Object *obj)

@@ -965,7 +965,7 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
 
    li = elm_list_add(view);
    elm_object_style_set(li, "ewebkit");
-   elm_list_always_select_mode_set(li, 1);
+   elm_list_select_mode_set(li, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(li, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(li, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_min_set(li, 200, 200);

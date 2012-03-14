@@ -31,7 +31,7 @@ public:
 
   void setHorizontal (bool horizontal);
 
-  void setAlwaysSelectMode (bool alwaysSelect);
+  void setSelectMode (Elm_Object_Select_Mode mode);
 
   const Eina_List *getItems (); // TODO: port Eina_List
 
