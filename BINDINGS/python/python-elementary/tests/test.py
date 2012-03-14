@@ -13,8 +13,6 @@ from test_table import table_clicked
 from test_clock import clock_clicked
 from test_hover import hover_clicked, hover2_clicked
 from test_entry import entry_clicked
-from test_anchorview import anchorview_clicked
-from test_anchorblock import anchorblock_clicked
 from test_toolbar import toolbar_clicked
 from test_hoversel import hoversel_clicked
 from test_list import list_clicked, list2_clicked, list3_clicked
@@ -147,10 +145,6 @@ if __name__ == "__main__":
 #             ("Storyboard", [ TODO
 #                ("Naviframe", pager_clicked),
 #            ]),
-             ("Text", [
-                ("Anchorview", anchorview_clicked),
-                ("Anchorblock", anchorblock_clicked),
-            ]),
              ("Times & Dates", [
                 ("Clock", clock_clicked),
             ]),

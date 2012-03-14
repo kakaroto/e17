@@ -15,8 +15,6 @@ c_elementary_includes = \
 
 
 c_elementary_deps = \
-	elementary/elementary.c_elementary_anchorblock.pxi \
-	elementary/elementary.c_elementary_anchorview.pxi \
 	elementary/elementary.c_elementary_background.pxi \
 	elementary/elementary.c_elementary_box.pxi \
 	elementary/elementary.c_elementary_bubble.pxi \
@@ -59,8 +57,6 @@ c_elementary_deps = \
 
 # elementary tests are not actual unit tests but a test AND a nice example
 examples_files = \
-	tests/test_anchorblock.py \
-	tests/test_anchorview.py \
 	tests/test_bg.py \
 	tests/test_box.py \
 	tests/test_button.py \

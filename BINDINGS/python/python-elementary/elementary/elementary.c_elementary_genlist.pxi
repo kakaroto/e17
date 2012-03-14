@@ -426,11 +426,11 @@ cdef class GenlistItem(WidgetItem):
         def __set__(self, display_only):
             self.display_only_set(display_only)
 
-    def show(self, type):
-        elm_genlist_item_show(self.obj, type)
+    def show(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
+        elm_genlist_item_show(self.obj, scrollto_type)
 
-    def bring_in(self, type):
-        elm_genlist_item_bring_in(self.obj, type)
+    def bring_in(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
+        elm_genlist_item_bring_in(self.obj, scrollto_type)
 
     def tooltip_text_set(self, char *text):
         """ Set the text to be shown in the tooltip object
@@ -665,7 +665,7 @@ cdef class Genlist(Object):
         prm = (item_class, item_data, ret, func)
         item = elm_genlist_item_append(self.obj, &item_class.obj, <void*>prm,
                                        parent,
-                                       <Elm_Genlist_Item_Flags>flags, cb,
+                                       <Elm_Genlist_Item_Type>flags, cb,
                                        <void*>prm)
         if item != NULL:
             ret._set_obj(item, prm)
@@ -719,7 +719,7 @@ cdef class Genlist(Object):
         prm = (item_class, item_data, ret, func)
         item = elm_genlist_item_prepend(self.obj, &item_class.obj, <void*>prm,
                                         parent,
-                                        <Elm_Genlist_Item_Flags>flags, cb,
+                                        <Elm_Genlist_Item_Type>flags, cb,
                                         <void*>prm)
         if item != NULL:
             ret._set_obj(item, prm)
@@ -773,7 +773,7 @@ cdef class Genlist(Object):
                                               <void*>prm,
                                               NULL,
                                               before,
-                                              <Elm_Genlist_Item_Flags>flags, cb,
+                                              <Elm_Genlist_Item_Type>flags, cb,
                                               <void*>prm)
         if item != NULL:
             ret._set_obj(item, prm)
@@ -827,7 +827,7 @@ cdef class Genlist(Object):
                                              <void*>prm,
                                              NULL,
                                              after,
-                                             <Elm_Genlist_Item_Flags>flags, cb,
+                                             <Elm_Genlist_Item_Type>flags, cb,
                                              <void*>prm)
         if item != NULL:
             ret._set_obj(item, prm)

@@ -29,7 +29,7 @@ cdef void _list_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info)
 
 def _list_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_list_item_data_get(it)
+    cdef void *data = elm_object_item_data_get(it)
     if data == NULL:
         return None
     else:
@@ -101,7 +101,7 @@ cdef class ListItem(WidgetItem):
                                                         cb, cbdata)
 
         Py_INCREF(self)
-        elm_list_item_del_cb_set(self.item, _list_item_del_cb)
+        elm_object_item_del_cb_set(self.item, _list_item_del_cb)
 
     def __str__(self):
         return ("%s(label=%r, icon=%s, end=%s, "
@@ -121,7 +121,7 @@ cdef class ListItem(WidgetItem):
     def delete(self):
         if self.item == NULL:
             raise ValueError("Object already deleted")
-        elm_list_item_del(self.item)
+        elm_object_item_del(self.item)
 
     def selected_set(self, selected):
         elm_list_item_selected_set(self.item, selected)
@@ -142,7 +142,7 @@ cdef class ListItem(WidgetItem):
         @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
         """
         cdef void* data
-        data = elm_list_item_data_get(self.item)
+        data = elm_object_item_data_get(self.item)
         if data == NULL:
             return None
         else:
@@ -160,7 +160,7 @@ cdef class ListItem(WidgetItem):
         @rtype: evas.c_evas.Object
         """
         cdef c_evas.Evas_Object *icon
-        icon = elm_list_item_icon_get(self.item)
+        icon = elm_object_item_part_content_get(self.item, NULL)
         return evas.c_evas._Object_from_instance(<long> icon)
 
     property icon:
@@ -173,14 +173,14 @@ cdef class ListItem(WidgetItem):
         @rtype: str
         """
         cdef const_char_ptr l
-        l = elm_list_item_label_get(self.item)
+        l = elm_object_item_text_get(self.item)
         if l == NULL:
             return None
         return l
 
     def label_set(self, char *label):
         """Set the label string for this list item."""
-        elm_list_item_label_set(self.item, label)
+        elm_object_item_text_set(self.item, label)
 
     property label:
         def __get__(self):
@@ -220,7 +220,7 @@ cdef class ListItem(WidgetItem):
         if item == NULL:
             return None
 
-        data = elm_list_item_data_get(item)
+        data = elm_object_item_data_get(item)
         if data == NULL:
             return None
 
@@ -238,7 +238,7 @@ cdef class ListItem(WidgetItem):
         cdef c_evas.Evas_Object *obj
         cdef void *data
 
-        obj = elm_list_item_end_get(self.item)
+        obj = elm_object_item_part_content_get(self.item, "end")
         if obj == NULL:
             return None
         return evas.c_evas._Object_from_instance(<long>obj)
@@ -276,7 +276,7 @@ cdef class ListItem(WidgetItem):
         tooltip, so any previous tooltip data is removed.
         Internaly, this method call @tooltip_content_cb_set
         """
-        elm_list_item_tooltip_text_set(self.item, text)
+        elm_object_item_tooltip_text_set(self.item, text)
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
@@ -298,7 +298,7 @@ cdef class ListItem(WidgetItem):
         data = (func, self, args, kargs)
         Py_INCREF(data)
         cbdata = <void *>data
-        elm_list_item_tooltip_content_cb_set(self.item,
+        elm_object_item_tooltip_content_cb_set(self.item,
                                              _tooltip_item_content_create,
                                              cbdata, _tooltip_item_data_del_cb)
 
@@ -309,25 +309,25 @@ cdef class ListItem(WidgetItem):
         copy of label will be removed correctly. If used
         @tooltip_content_cb_set, the data will be unreferred but no freed.
         """
-        elm_list_item_tooltip_unset(self.item)
+        elm_object_item_tooltip_unset(self.item)
 
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
 
         @note before you set a style you should define a tooltip with
-        elm_list_item_tooltip_content_cb_set() or
-        elm_list_item_tooltip_text_set()
+        elm_object_item_tooltip_content_cb_set() or
+        elm_object_item_tooltip_text_set()
         """
         if style:
-            elm_list_item_tooltip_style_set(self.item, style)
+            elm_object_item_tooltip_style_set(self.item, style)
         else:
-            elm_list_item_tooltip_style_set(self.item, NULL)
+            elm_object_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
         cdef const_char_ptr style
-        style = elm_list_item_tooltip_style_get(self.item)
+        style = elm_object_item_tooltip_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -340,29 +340,29 @@ cdef class ListItem(WidgetItem):
         this function is called twice for an item, the previous set
         will be unset.
         """
-        elm_list_item_cursor_set(self.item, cursor)
+        elm_object_item_cursor_set(self.item, cursor)
 
     def cursor_unset(self):
         """  Unset the cursor to be shown when mouse is over the list item
         """
-        elm_list_item_cursor_unset(self.item)
+        elm_object_item_cursor_unset(self.item)
 
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
 
         @note before you set a style you should define a cursor with
-        elm_list_item_cursor_set()
+        elm_object_item_cursor_set()
         """
         if style:
-            elm_list_item_cursor_style_set(self.item, style)
+            elm_object_item_cursor_style_set(self.item, style)
         else:
-            elm_list_item_cursor_style_set(self.item, NULL)
+            elm_object_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """ Get the style for this object cursor.
         """
         cdef const_char_ptr style
-        style = elm_list_item_cursor_style_get(self.item)
+        style = elm_object_item_cursor_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -371,14 +371,14 @@ cdef class ListItem(WidgetItem):
         """ Sets cursor engine only usage for this object.
 
         @note before you set engine only usage you should define a cursor with
-        elm_list_item_cursor_set()
+        elm_object_item_cursor_set()
         """
-        elm_list_item_cursor_engine_only_set(self.item, bool(engine_only))
+        elm_object_item_cursor_engine_only_set(self.item, bool(engine_only))
 
     def cursor_engine_only_get(self):
         """ Get the engine only usage for this object.
         """
-        return elm_list_item_cursor_engine_only_get(self.item)
+        return elm_object_item_cursor_engine_only_get(self.item)
 
 
 cdef class List(Object):

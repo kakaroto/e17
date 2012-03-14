@@ -390,11 +390,11 @@ cdef class GengridItem(WidgetItem):
         def __set__(self, selected):
             self.selected_set(selected)
 
-    def show(self):
-        elm_gengrid_item_show(self.obj)
+    def show(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
+        elm_gengrid_item_show(self.obj, scrollto_type)
 
-    def bring_in(self):
-        elm_gengrid_item_bring_in(self.obj)
+    def bring_in(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
+        elm_gengrid_item_bring_in(self.obj, scrollto_type)
 
     def pos_get(self):
         cdef unsigned int x, y

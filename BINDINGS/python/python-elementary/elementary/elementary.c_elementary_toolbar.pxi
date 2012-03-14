@@ -182,7 +182,7 @@ cdef class ToolbarItem(WidgetItem):
         tooltip, so any previous tooltip data is removed.
         Internaly, this method call @tooltip_content_cb_set
         """
-        elm_toolbar_item_tooltip_text_set(self.obj, text)
+        elm_object_item_tooltip_text_set(self.obj, text)
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
@@ -223,7 +223,7 @@ cdef class ToolbarItem(WidgetItem):
 
         @note before you set a style you should define a tooltip with
         elm_object_item_tooltip_content_cb_set() or
-        elm_toolbar_item_tooltip_text_set()
+        elm_object_item_tooltip_text_set()
         """
         if style:
             elm_object_item_tooltip_style_set(self.obj, style)
@@ -234,7 +234,7 @@ cdef class ToolbarItem(WidgetItem):
         """ Get the style for this object tooltip.
         """
         cdef const_char_ptr style
-        style = elm_object_item_style_get(self.obj)
+        style = elm_object_item_tooltip_style_get(self.obj)
         if style == NULL:
             return None
         return style
