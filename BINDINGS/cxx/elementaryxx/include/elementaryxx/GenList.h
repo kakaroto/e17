@@ -269,10 +269,6 @@ public:
   
   Elm_List_Mode getHorizontal ();
   
-  void setCompressMode (bool compress);
-  
-  bool getCompressMode ();
-   
   void setHomogeneous (bool homogeneous);
   
   bool getHomogeneous ();

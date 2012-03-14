@@ -55,16 +55,6 @@ Elm_List_Mode GenList::getHorizontal ()
   return elm_genlist_mode_get (o);
 }
 
-void GenList::setCompressMode (bool compress)
-{
-  elm_genlist_compress_mode_set (o, compress);
-}
-
-bool GenList::getCompressMode ()
-{
-  return elm_genlist_compress_mode_get (o);
-}
-
 void GenList::setHomogeneous (bool homogeneous)
 {
   elm_genlist_homogeneous_set (o, homogeneous);
