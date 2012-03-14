@@ -26,8 +26,8 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   rd->setAlignHintSize (EVAS_HINT_FILL, 0.5);
-  rd->setLabel ("Icon sized to radio");
-  rd->setIcon (*ic);
+  rd->setTextPart ("Icon sized to radio");
+  rd->setContentPart (*ic);
   bx->packEnd (*rd);
   rd->show ();
   ic->show ();
@@ -35,12 +35,12 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
 
   ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (false, false);
+  ic->setNoScale (true);
   rd = Radio::factory (*win);
   rd->setStateValue (1);
   rd->addGroup (*rdg);
-  rd->setLabel ("Icon no scale");
-  rd->setIcon (*ic);
+  rd->setTextPart ("Icon no scale");
+  rd->setContentPart (*ic);
   bx->packEnd (*rd);
   rd->show ();
   ic->show ();
@@ -48,36 +48,36 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setStateValue (2);
   rd->addGroup (*rdg);
-  rd->setLabel ("Label Only");
+  rd->setTextPart ("Label Only");
   bx->packEnd (*rd);
   rd->show ();
 
   rd = Radio::factory (*win);
   rd->setStateValue (3);
   rd->addGroup (*rdg);
-  rd->setLabel ("Disabled");
+  rd->setTextPart ("Disabled");
   rd->setDisabled (true);
   bx->packEnd (*rd);
   rd->show ();
 
   ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (false, false);
+  ic->setNoScale (true);
   rd = Radio::factory (*win);
   rd->setStateValue (4);
   rd->addGroup (*rdg);
-  rd->setIcon (*ic);
+  rd->setContentPart (*ic);
   bx->packEnd (*rd);
   rd->show ();
   ic->show ();
 
   ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (false, false);
+  ic->setNoScale (true);
   rd = Radio::factory (*win);
   rd->setStateValue (5);
   rd->addGroup (*rdg);
-  rd->setIcon (*ic);
+  rd->setContentPart (*ic);
   rd->setDisabled (true);
   bx->packEnd (*rd);
   rd->show ();

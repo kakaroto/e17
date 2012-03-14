@@ -23,8 +23,8 @@ void test_button (void *data, Evas_Object *obj, void *event_info)
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
   bt = Button::factory (*win);
-  bt->setLabel ("Icon sized to button");
-  bt->setIcon (*ic);
+  bt->setTextPart ("Icon sized to button");
+  bt->setContentPart (*ic);
   bx->packEnd (*bt);
   bt->show ();
   ic->show ();
@@ -33,8 +33,8 @@ void test_button (void *data, Evas_Object *obj, void *event_info)
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
   bt = Button::factory (*win);
-  bt->setLabel ("Disabled Button");
-  bt->setIcon (*ic);
+  bt->setTextPart ("Disabled Button");
+  bt->setContentPart (*ic);
   bt->setDisabled (true);
   bx->packEnd (*bt);
   bt->show ();
@@ -42,25 +42,25 @@ void test_button (void *data, Evas_Object *obj, void *event_info)
 
   ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (false, false);
+  ic->setNoScale (true);
   bt = Button::factory (*win);
-  bt->setLabel ("Icon no scale");
-  bt->setIcon (*ic);
+  bt->setTextPart ("Icon no scale");
+  bt->setContentPart (*ic);
   bx->packEnd (*bt);
   bt->show ();
   ic->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Label Only");
+  bt->setTextPart ("Label Only");
   bx->packEnd (*bt);
   bt->show ();
 
   ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic->setScale (false, false);
+  ic->setNoScale (true);
   bt = Button::factory (*win);
-  bt->setLabel ("Icon no scale");
-  bt->setIcon (*ic);
+  bt->setTextPart ("Icon no scale");
+  bt->setContentPart (*ic);
   bx->packEnd (*bt);
   bt->show ();
   ic->show ();

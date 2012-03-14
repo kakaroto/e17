@@ -70,7 +70,7 @@ int main (int argc, char **argv)
 
   elmWin->setTitle ("Elementaryxx Simple Example");
 
-  elmButton->setLabel ("Text");
+  elmButton->setTextPart ("Text");
 
   elmClock->setEdit (true);
 

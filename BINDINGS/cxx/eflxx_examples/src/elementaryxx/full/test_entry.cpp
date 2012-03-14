@@ -61,7 +61,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = Button::factory (*win);
-  bt->setLabel ("Clear");
+  bt->setTextPart ("Clear");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_1), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -69,7 +69,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Print");
+  bt->setTextPart ("Print");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_2), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -77,7 +77,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Selection");
+  bt->setTextPart ("Selection");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_3), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -85,7 +85,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Insert");
+  bt->setTextPart ("Insert");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_4), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -184,7 +184,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
 
 
   bt = Button::factory (*win);
-  bt->setLabel ("Clear");
+  bt->setTextPart ("Clear");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_1), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -192,7 +192,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Print");
+  bt->setTextPart ("Print");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_2), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -200,7 +200,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Selection");
+  bt->setTextPart ("Selection");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_3), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -208,7 +208,7 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Insert");
+  bt->setTextPart ("Insert");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_entry_bt_4), en));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);

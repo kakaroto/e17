@@ -53,7 +53,7 @@ int main (int argc, char **argv)
     // This access is type unsafe as a cast is done without checking prior the type!
     Evasxx::Object &ext_eo = edje->getPart ("Button01").getExternalObject ();
     Elmxx::Button &button = *(static_cast <Elmxx::Button*> (&ext_eo));
-    button.setLabel ("This is a changed button");
+    button.setTextPart ("This is a changed button");
   }
   catch (Edjexx::PartNotExistingException pne)
   {

@@ -32,7 +32,7 @@ void test_toggle (void *data, Evas_Object *obj, void *event_info)
 
   Icon *ic2 = Icon::factory (*win);
   ic2->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic2->setScale (false, false);
+  ic2->setNoScale (true);
   Toggle *tg2 = Toggle::factory (*win);
   tg2->setLabel ("Icon no scale");
   tg2->setIcon (*ic2);
@@ -48,7 +48,7 @@ void test_toggle (void *data, Evas_Object *obj, void *event_info)
 
   Icon *ic3 = Icon::factory (*win);
   ic3->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-  ic3->setScale (false, false);
+  ic3->setNoScale (true);
   Toggle *tg4 = Toggle::factory (*win);
   tg4->setIcon (*ic3);
   bx->packEnd (*tg4);

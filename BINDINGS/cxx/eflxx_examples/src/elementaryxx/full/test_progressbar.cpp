@@ -204,13 +204,13 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   bt_bx->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Start");
+  bt->setTextPart ("Start");
   bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_progressbar_test_start));
   bt_bx->packEnd (*bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Stop");
+  bt->setTextPart ("Stop");
   bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_progressbar_test_stop));
   bt_bx->packEnd (*bt);
   bt->show ();

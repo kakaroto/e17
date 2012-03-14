@@ -107,12 +107,12 @@ void _move (const Evasxx::MouseMoveEvent &ev, GenList *gl)
 
 static void _bt50_cb (Evasxx::Object &obj, void *event_info, GenListItem *gli)
 {
-  gli->bringIn ();
+  //gli->bringIn ();
 }
 
 static void _bt1500_cb (Evasxx::Object &obj, void *event_info, GenListItem *gli)
 {
-  gli->bringInMiddle ();
+  //gli->bringInMiddle ();
 }
 
 static void _gl_selected (Evasxx::Object &obj, void *event_info)
@@ -169,12 +169,12 @@ void test_genlist (void *data, Evas_Object *obj, void *event_info)
   win->addObjectResize (*over);
 
   Button *bt_50 = Button::factory (*win);
-  bt_50->setLabel ("Go to 50");
+  bt_50->setTextPart ("Go to 50");
   bx->packEnd (*bt_50);
   bt_50->show ();
 
   Button *bt_1500 = Button::factory (*win);
-  bt_1500->setLabel ("Go to 1500");
+  bt_1500->setTextPart ("Go to 1500");
   bx->packEnd (*bt_1500);
   bt_1500->show ();
 
@@ -324,7 +324,7 @@ static void my_gl_first (Evasxx::Object &obj, void *event_info, GenList *gl)
   if (!gli)
     return;
 
-  gli->show ();
+  //gli->show ();
   gli->setSelected (true);
 }
 
@@ -335,7 +335,7 @@ static void my_gl_last (Evasxx::Object &obj, void *event_info, GenList *gl)
   if (!gli)
     return;
 
-  gli->show ();
+  //gli->show ();
   gli->setSelected (true);
 }
 
@@ -436,7 +436,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bx2->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("/\\");
+  bt->setTextPart ("/\\");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_first), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -444,7 +444,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("\\/");
+  bt->setTextPart ("\\/");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_last), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -452,7 +452,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("#");
+  bt->setTextPart ("#");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_disable), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -460,7 +460,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("U");
+  bt->setTextPart ("U");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update_all), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);/*************/
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -478,7 +478,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bx2->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("X");
+  bt->setTextPart ("X");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_clear), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -486,7 +486,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("+");
+  bt->setTextPart ("+");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_add), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -494,7 +494,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("-");
+  bt->setTextPart ("-");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_del), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -511,7 +511,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bx3->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = Button::factory (*win);
-  bt->setLabel ("+ before");
+  bt->setTextPart ("+ before");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_insert_before), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -519,7 +519,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("+ after");
+  bt->setTextPart ("+ after");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_insert_after), gl));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -527,7 +527,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("Flush");
+  bt->setTextPart ("Flush");
   bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_gl_flush));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -707,7 +707,7 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = Button::factory (*win);
-  bt->setLabel ("[1]");
+  bt->setTextPart ("[1]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -715,7 +715,7 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[2]");
+  bt->setTextPart ("[2]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -723,7 +723,7 @@ void test_genlist3(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[3]");
+  bt->setTextPart ("[3]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -774,7 +774,7 @@ public:
 
       lb->setLineWrap (ELM_WRAP_MIXED);
       lb->setWrapWidth (201);
-      lb->setLabel ("ashj ascjscjh n asjkl hcjlh ls hzshnn zjh sh zxjcjsnd h dfw sdv edev efe fwefvv vsd cvs ws wf  fvwf wd fwe f  we wef we wfe rfwewef wfv wswf wefg sdfws w wsdcfwcf wsc vdv  sdsd sdcd cv wsc sdcv wsc d sdcdcsd sdcdsc wdvd sdcsd wscxcv wssvd sd");
+      lb->setTextPart ("ashj ascjscjh n asjkl hcjlh ls hzshnn zjh sh zxjcjsnd h dfw sdv edev efe fwefvv vsd cvs ws wf  fvwf wd fwe f  we wef we wfe rfwewef wfv wswf wefg sdfws w wsdcfwcf wsc vdv  sdsd sdcd cv wsc sdcv wsc d sdcdcsd sdcdsc wdvd sdcsd wscxcv wssvd sd");
       lb->show ();
 
       return lb;
@@ -855,7 +855,7 @@ void test_genlist4 (void *data, Evas_Object *obj, void *event_info)
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = Button::factory (*win);
-  bt->setLabel ("[1]");
+  bt->setTextPart ("[1]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -863,7 +863,7 @@ void test_genlist4 (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[2]");
+  bt->setTextPart ("[2]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -871,7 +871,7 @@ void test_genlist4 (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[3]");
+  bt->setTextPart ("[3]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -968,7 +968,7 @@ public:
 
       bx->setOrientation (Box::Horizontal);
       ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
-      ic->setScale (0,0);
+      ic->setNoScale (true);
       ic->show ();
       bx->packEnd (*ic);
       bx->show ();
@@ -1066,7 +1066,7 @@ void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = Button::factory (*win);
-  bt->setLabel ("[1]");
+  bt->setTextPart ("[1]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -1074,7 +1074,7 @@ void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[2]");
+  bt->setTextPart ("[2]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -1082,7 +1082,7 @@ void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[3]");
+  bt->setTextPart ("[3]");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -1238,7 +1238,7 @@ void test_genlist6(void *data, Evas_Object *obj, void *event_info)
   bx2->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
 
   bt = Button::factory (*win);
-  bt->setLabel ("[1]");
+  bt->setTextPart ("[1]");
   //bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[0])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -1246,7 +1246,7 @@ void test_genlist6(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[2]");
+  bt->setTextPart ("[2]");
   //bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[1])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
@@ -1254,7 +1254,7 @@ void test_genlist6(void *data, Evas_Object *obj, void *event_info)
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setLabel ("[3]");
+  bt->setTextPart ("[3]");
   //bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_gl_update), &(tit[2])));
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bt->setWeightHintSize (EVAS_HINT_EXPAND, 0.0);
