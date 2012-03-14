@@ -169,6 +169,12 @@ cdef extern from "Elementary.h":
         ELM_WRAP_MIXED
         ELM_WRAP_LAST
 
+    ctypedef enum Elm_Bubble_Pos:
+        ELM_BUBBLE_POS_TOP_LEFT
+        ELM_BUBBLE_POS_TOP_RIGHT
+        ELM_BUBBLE_POS_BOTTOM_LEFT
+        ELM_BUBBLE_POS_BOTTOM_RIGHT
+
     ctypedef struct Elm_Entry_Anchor_Info
     ctypedef struct Elm_Entry_Anchorview_Info:
         char *name
@@ -596,6 +602,7 @@ cdef extern from "Elementary.h":
 
     # Bubble object
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
+    void elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
 
     # Photo object
     evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)

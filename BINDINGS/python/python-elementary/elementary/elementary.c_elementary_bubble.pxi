@@ -58,4 +58,7 @@ cdef class Bubble(Object):
         def __set__(self, value):
             self.icon_set(value)
 
+    def pos_set(self, pos):
+        elm_bubble_pos_set(self.obj, pos)
+
 _elm_widget_type_register("bubble", Bubble)
