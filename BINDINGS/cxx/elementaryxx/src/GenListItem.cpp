@@ -87,12 +87,6 @@ void GenListItem::update ()
   elm_genlist_item_update (mItem);
 }
 
-const Evasxx::Object *GenListItem::getEvasObject ()
-{
-  const Evas_Object *obj = elm_genlist_item_object_get (mItem);
-  return Evasxx::Object::objectLink (obj);
-}
-
 GenListItem *GenListItem::wrap (Elm_Object_Item &item, GenDataModel &model)
 {
   GenListItem *genItem = new GenListItem (&item);

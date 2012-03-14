@@ -1173,9 +1173,6 @@ elm_genlist_item_show(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type type
 void
 elm_genlist_item_bring_in(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type type)
 
-Evas_Object *
-elm_genlist_item_object_get(Elm_Object_Item *it)
-
 void
 elm_genlist_item_update(Elm_Object_Item *item)
 

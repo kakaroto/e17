@@ -1912,7 +1912,7 @@ on_more_item_click(void *data, Evas_Object *obj,
          conf = mmi->next;
          if (conf->type == CONFIG_TYPE_CHECKBOX)
          {
-             Evas_Object *end = edje_object_part_swallow_get(elm_genlist_item_object_get(event_info), "elm.swallow.end");
+             Evas_Object *end = elm_object_item_part_content_get(event_info, "elm.swallow.end");
              if (end) elm_check_state_set(end, !elm_check_state_get(end));
              elm_genlist_item_selected_set(event_info, EINA_FALSE);
              return;

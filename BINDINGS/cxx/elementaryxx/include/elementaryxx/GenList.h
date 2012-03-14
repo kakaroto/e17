@@ -66,7 +66,7 @@ class GenListColumnSelector;
  * realized - This is called when the item in the list is created as a real
  * evas object. event_info parameter is the genlist item that was created.
  * The object may be deleted at any time, so it is up to the caller to
- * not use the object pointer from elm_genlist_item_object_get() in a way
+ * not use the object pointer from elm_object_item_part_content_get() in a way
  * where it may point to freed objects.
  *
  * drag,start,up - This is called when the item in the list has been dragged

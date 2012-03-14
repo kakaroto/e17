@@ -36,8 +36,6 @@ public:
   void bringIn (Elm_Genlist_Item_Scrollto_Type type);
   void update ();
 
-  const Evasxx::Object *getEvasObject ();
-
   static GenListItem *wrap (Elm_Object_Item &item, GenDataModel &model);
 
   static GenListItem *objectLink (const Elm_Object_Item *item);

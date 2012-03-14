@@ -651,7 +651,6 @@ my @__todo = qw(
   elm_genlist_item_insert_after
   elm_genlist_item_insert_before
   elm_genlist_item_next_get
-  elm_genlist_item_object_get
   elm_genlist_item_parent_get
   elm_genlist_item_prepend
   elm_genlist_item_prev_get
