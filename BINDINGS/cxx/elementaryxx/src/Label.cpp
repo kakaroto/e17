@@ -22,16 +22,6 @@ Label *Label::factory (Evasxx::Object &parent)
   return new Label (parent);
 }
 
-void Label::setLabel (const std::string &label)
-{
-  elm_object_text_set (o, label.c_str ());
-}
-
-const std::string Label::getLabel () const
-{
-  return elm_object_text_get (o);
-}
-
 void Label::setLineWrap (Elm_Wrap_Type wrap)
 {
   elm_label_line_wrap_set (o, wrap);

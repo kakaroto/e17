@@ -32,11 +32,6 @@ void Hover::setParent (const Evasxx::Object &parent)
   elm_hover_parent_set (o, parent.obj ());
 }
 
-void Hover::setContent (const std::string &swallow, const Evasxx::Object &content)
-{
-  elm_object_part_content_set (o, swallow.c_str (), content.obj ());
-}
-
 const string Hover::getBestContentLocation (Elm_Hover_Axis prefAxis) const
 {
   return elm_hover_best_content_location_get (o, prefAxis);

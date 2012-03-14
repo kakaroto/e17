@@ -108,4 +108,76 @@ const std::string Object::getWidgetType ()
   return elm_object_widget_type_get (o);
 }
 
+void Object::setTextPart (const std::string &label)
+{
+  elm_object_part_text_set(o, NULL, label.c_str());
+}
+
+void Object::setTextPart (const std::string &part, const std::string &label)
+{
+  elm_object_part_text_set(o, part.c_str(), label.c_str());
+}
+
+const std::string Object::getTextPart ()
+{
+  return elm_object_part_text_get(o, NULL);
+}
+
+const std::string Object::getTextPart (const std::string &part)
+{
+  return elm_object_part_text_get(o, part.c_str());
+}
+
+void Object::setContentPart (const Evasxx::Object &content)
+{
+  elm_object_part_content_set(o, NULL, content.obj());
+}
+
+void Object::setContentPart (const std::string &part, const Evasxx::Object &content)
+{
+  elm_object_part_content_set(o, part.c_str(), content.obj());
+}
+
+Eflxx::CountedPtr <Evasxx::Object> Object::getContentPart ()
+{
+  Evas_Object *eo = elm_object_part_content_get(o, NULL);
+ 
+  Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
+
+  return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+Eflxx::CountedPtr <Evasxx::Object> Object::getContentPart (const std::string &part)
+{
+  Evas_Object *eo = elm_object_part_content_get(o, part.c_str());
+ 
+  Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
+
+  return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+void Object::unsetContent()
+{
+  /* ignore return */ elm_object_part_content_unset(o, NULL);
+}
+
+void Object::unsetContent(const std::string &part)
+{
+ /* ignore return */ elm_object_part_content_unset(o, part.c_str());
+}
+
+Eflxx::CountedPtr <Evasxx::Object> Object::findName(const std::string &name, int recurse)
+{
+  Evas_Object *eo = elm_object_name_find(o, name.c_str(), recurse);
+ 
+  Evasxx::Object *ret_o = Evasxx::Object::wrap (eo);
+
+  return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
+}
+
+void Object::setInfoAccess(const std::string &txt)
+{
+  elm_object_access_info_set(o, txt.c_str());
+}
+
 } // end namespace Elmxx

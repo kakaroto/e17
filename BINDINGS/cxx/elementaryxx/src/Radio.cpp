@@ -22,17 +22,6 @@ Radio *Radio::factory (Evasxx::Object &parent)
   return new Radio (parent);
 }
 
-
-void Radio::setLabel (const std::string &label)
-{
-  elm_object_text_set (o, label.c_str ());
-}
-
-void Radio::setIcon (const Evasxx::Object &icon)
-{
-  elm_object_part_content_set (o, NULL, icon.obj ());
-}
-
 void Radio::addGroup (const Evasxx::Object &group)
 {
   elm_radio_group_add (o, group.obj ());

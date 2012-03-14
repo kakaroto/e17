@@ -17,10 +17,6 @@ class Label : public Object
 public:
   static Label *factory (Evasxx::Object &parent);
   
-  void setLabel (const std::string &label);
-
-  const std::string getLabel () const;
-
   void setLineWrap (Elm_Wrap_Type wrap);
 
   Elm_Wrap_Type getLineWrap () const;

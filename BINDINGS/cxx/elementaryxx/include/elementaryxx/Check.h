@@ -20,10 +20,6 @@ class Check : public Object
 {
 public:
   static Check *factory (Evasxx::Object &parent);
-
-  void setLabel (const std::string &label);
-  
-  void setIcon (const Evasxx::Object &icon);
   
   void setState (bool state);
   

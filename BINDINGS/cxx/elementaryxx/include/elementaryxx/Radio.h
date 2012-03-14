@@ -20,10 +20,6 @@ class Radio : public Object
 {
 public:  
   static Radio *factory (Evasxx::Object &parent);
-
-  void setLabel (const std::string &label);
-  
-  void setIcon (const Evasxx::Object &icon);
   
   void addGroup (const Evasxx::Object &group);
   

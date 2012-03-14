@@ -22,16 +22,6 @@ Check *Check::factory (Evasxx::Object &parent)
   return new Check (parent);
 }
 
-void Check::setLabel (const std::string &label)
-{
-  elm_object_text_set (o, label.c_str ());
-}
-
-void Check::setIcon (const Evasxx::Object &icon)
-{
-   elm_object_part_content_set (o, NULL, icon.obj ());
-}
-
 void Check::setState (bool state)
 {
   elm_check_state_set (o, state);

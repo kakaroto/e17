@@ -25,10 +25,6 @@ class Button : public Object
 {
 public:  
   static Button *factory (Evasxx::Object &parent);
-
-  void setLabel (const std::string &label);
-  
-  void setIcon (const Evasxx::Object &icon);
   
 private:
   Button (); // forbid standard constructor

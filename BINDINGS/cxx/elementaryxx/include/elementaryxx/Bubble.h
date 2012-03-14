@@ -16,14 +16,6 @@ class Bubble : public Object
 {
 public:
   static Bubble *factory (Evasxx::Object &parent);
-
-  void setLabel (const std::string &label);
-  
-  void setInfo (const std::string &info);
-  
-  void setContent (const Evasxx::Object &content);
-  
-  void setIcon (const Evasxx::Object &icon);
   
   void setCorner (const std::string &corner);
   

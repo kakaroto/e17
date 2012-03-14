@@ -26,8 +26,6 @@ public:
 
   void setParent (const Evasxx::Object &parent);
 
-  void setContent (const std::string &swallow, const Evasxx::Object &content);
-
   const string getBestContentLocation (Elm_Hover_Axis prefAxis) const;
 
 private:

@@ -22,14 +22,4 @@ Button *Button::factory (Evasxx::Object &parent)
   return new Button (parent);
 }
 
-void Button::setLabel (const std::string &label)
-{
-  elm_object_text_set (o, label.c_str ());
-}
-
-void Button::setIcon (const Evasxx::Object &icon)
-{
-  elm_object_part_content_set (o, NULL, icon.obj ());
-}
-
 } // end namespace Elmxx

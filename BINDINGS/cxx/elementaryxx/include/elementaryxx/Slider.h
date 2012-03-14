@@ -30,10 +30,6 @@ public:
   
   static Slider *factory (Evasxx::Object &parent);
 
-  void setLabel (const std::string &label);
-  
-  void setIcon (const Evasxx::Object &icon);
-  
   void setSpanSize (Evas_Coord size);
   
   void setUnitFormat (const std::string &format);
