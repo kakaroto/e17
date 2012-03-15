@@ -9,8 +9,8 @@ class CElmLabel : public CEvasObject {
 protected:
    CPropHandler<CElmLabel> prop_handler;
 
-public:
    CElmLabel(CEvasObject *parent, Local<Object> obj);
+public:
    virtual void wrap_set(Handle<Value> wrap);
    virtual Handle<Value> wrap_get() const;
 };
