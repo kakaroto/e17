@@ -44,7 +44,7 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
         Local<Value> day = item->ToObject()->Get(String::New("day"));
         mark_time.tm_mday = day->ToNumber()->Value();
         Local<Value> month = item->ToObject()->Get(String::New("month"));
-        mark_time.tm_mon = month->ToNumber()->Value();
+        mark_time.tm_mon = month->ToNumber()->Value() - 1;
         Local<Value> year = item->ToObject()->Get(String::New("year"));
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
         Local<Value> repeat = item->ToObject()->Get(String::New("repeat"));
