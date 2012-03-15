@@ -42,7 +42,7 @@ void CEvasObject::construct(Evas_Object *_eo, Local<Object> obj)
    Handle<Object> out = get_object();
 
    /* copy properties, one by one */
-   Handle<Array> props = obj->GetPropertyNames();
+   Handle<Array> props = obj->GetOwnPropertyNames();
    for (unsigned int i = 0; i < props->Length(); i++)
      {
         Local<Value> name = props->Get(Integer::New(i));
