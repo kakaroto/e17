@@ -497,179 +497,179 @@ var oauth;
 var new_item = new Array();
 
 function image_ready_cb() {
-	print("Image ready= " + arguments[0]);
-	print("Image path= " + arguments[1]);
+    print("Image ready= " + arguments[0]);
+    print("Image path= " + arguments[1]);
 
-	for (i=0; i<15; i++)
-	{
-		if ( arguments[0] == array[i].user.profile_image_url )
-		{
-			new_item[i].icon.image = arguments[1];
-			print("index = " + i + " image=" + arguments[1]);
+    for (i=0; i<15; i++)
+    {
+        if ( arguments[0] == array[i].user.profile_image_url )
+        {
+            new_item[i].icon.image = arguments[1];
+            print("index = " + i + " image=" + arguments[1]);
 
             var newicon = {
                             type : "icon",
                             image : arguments[1],
             };
-			my_window.elements.tweets.elements.the_list.set_icon(i, newicon);
-			print("match found= " + array[i].user.profile_image_url);
-		}
-	}
-	
+            my_window.elements.tweets.elements.the_list.set_icon(i, newicon);
+            print("match found= " + array[i].user.profile_image_url);
+        }
+    }
+    
 }
 
 function success(data){
-	print("Login Success");
+    print("Login Success");
         my_window.elements.login.visible = false;
-	my_window.elements.tweets.visible = true;
-	array = JSON.parse(data.text);
+    my_window.elements.tweets.visible = true;
+    array = JSON.parse(data.text);
 
-	for (i=0; i<15; i++)
-	{
-		print("-------------------------");
-		print(array[i].user.name);
-		print(array[i].text);
-		print(array[i].user.profile_image_url);
-		print("-------------------------");
+    for (i=0; i<15; i++)
+    {
+        print("-------------------------");
+        print(array[i].user.name);
+        print(array[i].text);
+        print(array[i].user.profile_image_url);
+        print("-------------------------");
 
 
-		new_item[i] = {
-				label : array[i].text,
-				icon : {
-					type : "icon",
-    					image :  "NA",
-    					tooltip :  "Tooltip",
-				},
-				tooltip : array[i].user.name,
-				on_clicked : function(arg) {
-					print("Twitter element clicked\n");
-				},
-			};
-		my_window.elements.tweets.elements.the_list.append(new_item[i]);
+        new_item[i] = {
+                label : array[i].text,
+                icon : {
+                    type : "icon",
+                        image :  "NA",
+                        tooltip :  "Tooltip",
+                },
+                tooltip : array[i].user.name,
+                on_clicked : function(arg) {
+                    print("Twitter element clicked\n");
+                },
+            };
+        my_window.elements.tweets.elements.the_list.append(new_item[i]);
 
         //if(i%2)
          //   my_window.elements.tweets.elements.the_list.disabled(i, true);
 
-		var req = new XMLHttpRequest();
-		req.onreadystatechange = image_ready_cb;
-		req.open("GET", array[i].user.profile_image_url);
-		req.send("");
-	}
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = image_ready_cb;
+        req.open("GET", array[i].user.profile_image_url);
+        req.send("");
+    }
 }
 
 function failure(data){
-	print("Login failure");
+    print("Login failure");
 }
 
 var my_window = new elm.window({
-		type : "main",
-		label : "Twitter Demo",
-		width : 400,
-		height : 580,
-		weight : EXPAND_BOTH,
-		align : FILL_BOTH,
-		elements : {
-			the_background : {
-				type : "background",
-				weight : EXPAND_BOTH,
-				align : FILL_BOTH,
+        type : "main",
+        label : "Twitter Demo",
+        width : 400,
+        height : 580,
+        weight : EXPAND_BOTH,
+        align : FILL_BOTH,
+        elements : {
+            the_background : {
+                type : "background",
+                weight : EXPAND_BOTH,
+                align : FILL_BOTH,
                 file : elm.datadir + "data/images/twitter.png",
-    			resize : true,
-			},
-			login : {
-				type : "box",
-				weight : EXPAND_BOTH,
-				align : FILL_BOTH,
-    				resize : true,
-				elements : {
-					the_photo : {
-						type : "photo",
-						size : 200,
-						image : elm.datadir + "data/images/twitter.png",
-						weight : EXPAND_BOTH,
-						align : FILL_BOTH,
-					},
-					the_user : {
-						type : "entry",
-						text : "Enter Username Here",
-						weight : EXPAND_BOTH,
-						align : FILL_BOTH,
-						scrollable : true,
-				        },
-					the_pass : {
-						type : "entry",
-						text : "Enter Password Here",
-						weight : EXPAND_X,
-						align : FILL_BOTH,
-						scrollable : true,
-						password : true,
-				        },
-					the_button : {
-						type : "button",
-						label : "Sign In Here",
-						weight : EXPAND_X,
-						align : FILL_BOTH,
-						on_clicked : function(arg) {
-							var oauth = OAuth({
-							consumerKey : "0KnH68gpgyHoszB2IXIew",
-							consumerSecret : "6qVXP8LFuHnDR4bpN6NwnMBI8sMkvPkVtDAs3RVTCPk",
-							accessTokenKey :  "101332537-foetvzzAsjm6RidEyRNWkt1A5SlvqQD9k5X4aM0U",
-							accessTokenSecret : "3KnUleEkIaPHyYTm7fLlINKvOvfrIdyuQlc6UCAok"
-							});
-							oauth.get("http://api.twitter.com/1/statuses/home_timeline.json", success, failure);
-						},
-					},
-				},
-			},
-			tweets : {
-				type : "box",
-				weight : EXPAND_BOTH,
-				align : FILL_BOTH,
-				visible : false,
-				homogeneous : false,
-				resize : true,
-				elements : {
-					the_list : {
-						type : "list",
-						weight : EXPAND_BOTH,
-						align : FILL_BOTH,
+                resize : true,
+            },
+            login : {
+                type : "box",
+                weight : EXPAND_BOTH,
+                align : FILL_BOTH,
+                    resize : true,
+                elements : {
+                    the_photo : {
+                        type : "photo",
+                        size : 200,
+                        image : elm.datadir + "data/images/twitter.png",
+                        weight : EXPAND_BOTH,
+                        align : FILL_BOTH,
+                    },
+                    the_user : {
+                        type : "entry",
+                        text : "Enter Username Here",
+                        weight : EXPAND_BOTH,
+                        align : FILL_BOTH,
+                        scrollable : true,
+                        },
+                    the_pass : {
+                        type : "entry",
+                        text : "Enter Password Here",
+                        weight : EXPAND_X,
+                        align : FILL_BOTH,
+                        scrollable : true,
+                        password : true,
+                        },
+                    the_button : {
+                        type : "button",
+                        label : "Sign In Here",
+                        weight : EXPAND_X,
+                        align : FILL_BOTH,
+                        on_clicked : function(arg) {
+                            var oauth = OAuth({
+                            consumerKey : "0KnH68gpgyHoszB2IXIew",
+                            consumerSecret : "6qVXP8LFuHnDR4bpN6NwnMBI8sMkvPkVtDAs3RVTCPk",
+                            accessTokenKey :  "101332537-foetvzzAsjm6RidEyRNWkt1A5SlvqQD9k5X4aM0U",
+                            accessTokenSecret : "3KnUleEkIaPHyYTm7fLlINKvOvfrIdyuQlc6UCAok"
+                            });
+                            oauth.get("http://api.twitter.com/1/statuses/home_timeline.json", success, failure);
+                        },
+                    },
+                },
+            },
+            tweets : {
+                type : "box",
+                weight : EXPAND_BOTH,
+                align : FILL_BOTH,
+                visible : false,
+                homogeneous : false,
+                resize : true,
+                elements : {
+                    the_list : {
+                        type : "list",
+                        weight : EXPAND_BOTH,
+                        align : FILL_BOTH,
                         mode : 0,
-						items : {
-						},
-					},
-					controls : {
-						type : "box",
-						weight : EXPAND_X,
-						align : FILL_BOTH,
-						horizontal : true,
-						elements : {
-							prev : {
-								type : "button",
-								weight : EXPAND_X,
-								align : FILL_X,
-								label : "Prev 20",
-							},
-							logout : {
-								type : "button",
-								weight : EXPAND_X,
-								align : FILL_X,
-								label : "Logout",
-							},
-							newtweet : {
-								type : "button",
-								weight : EXPAND_X,
-								align : FILL_X,
-								label : "New Tweet",
-							},
-							next : {
-								type : "button",
-								weight : EXPAND_X,
-								align : FILL_X,
-								label : "Next 20",
-							},
-						},
-					},
-				},
-			},
-		},
+                        items : {
+                        },
+                    },
+                    controls : {
+                        type : "box",
+                        weight : EXPAND_X,
+                        align : FILL_BOTH,
+                        horizontal : true,
+                        elements : {
+                            prev : {
+                                type : "button",
+                                weight : EXPAND_X,
+                                align : FILL_X,
+                                label : "Prev 20",
+                            },
+                            logout : {
+                                type : "button",
+                                weight : EXPAND_X,
+                                align : FILL_X,
+                                label : "Logout",
+                            },
+                            newtweet : {
+                                type : "button",
+                                weight : EXPAND_X,
+                                align : FILL_X,
+                                label : "New Tweet",
+                            },
+                            next : {
+                                type : "button",
+                                weight : EXPAND_X,
+                                align : FILL_X,
+                                label : "Next 20",
+                            },
+                        },
+                    },
+                },
+            },
+        },
 });

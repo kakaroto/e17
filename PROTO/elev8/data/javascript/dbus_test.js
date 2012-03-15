@@ -6,42 +6,42 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 var interface;
 
 var my_window = new elm.window({
-	type : "main",
-	label : "D-Feet Demo",
-	width : 320,
-	height : 480,
-	align : FILL_BOTH,
-	elements : {
-		the_background : {
-			type : "background",
-			weight : EXPAND_BOTH,
-			align : FILL_BOTH,
-			resize : true,
-		},
-		the_box : {
-			type : "box",
-			weight : EXPAND_BOTH,
-			resize : true,
-			elements : {
-				the_entry : {
-					type : "entry",
-					weight : EXPAND_BOTH,
-					align : FILL_BOTH,
-					line_wrap : 3,
-					editable : false,
-				},
-				the_bus : {
-					type : "entry",
-					text : "org.freedesktop.DBus",
-					weight : EXPAND_BOTH,
-					align : FILL_BOTH,
-				},
+    type : "main",
+    label : "D-Feet Demo",
+    width : 320,
+    height : 480,
+    align : FILL_BOTH,
+    elements : {
+        the_background : {
+            type : "background",
+            weight : EXPAND_BOTH,
+            align : FILL_BOTH,
+            resize : true,
+        },
+        the_box : {
+            type : "box",
+            weight : EXPAND_BOTH,
+            resize : true,
+            elements : {
+                the_entry : {
+                    type : "entry",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    line_wrap : 3,
+                    editable : false,
+                },
+                the_bus : {
+                    type : "entry",
+                    text : "org.freedesktop.DBus",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                },
                 the_buttons : {
-			            type : "box",
-			            weight : EXPAND_BOTH,
-			            horizontal : true,
-			            resize : true,
-			            elements : {
+                        type : "box",
+                        weight : EXPAND_BOTH,
+                        horizontal : true,
+                        resize : true,
+                        elements : {
                             fdo : {
                                 type : "button",
                                 label : "System Bus : UPower",

@@ -17,78 +17,78 @@ var orange = elm.datadir + "orange.jpg";
 var violet = elm.datadir + "violet.jpg";
 
 var menu_content = {
-	type : "menu",
-	x : 50, 
-	y : 50,
-	items : {
-		item_1 : {
-			label : "item 1",
-			disabled : true,
-			items : {
-				item_2 : {
-					icon : small_icon,
-					label : "item 2",
-					on_clicked : function (arg) {
-						print("Item 1 selected\n");
-					},
-				},
-				item_3 : {
-					icon : yellow,
-					label : "item 3",
-				},
-				item_4 : {
-					icon : violet,
-					label : "item 4",
-					on_clicked : function (arg) {
-						print("Item 4 selected\n");
-					},
-				},
-			},
-		},
-		item_5 : {
-			icon : orange,
-			label : "item 5",
-			separator : true,
-		},
-		item_6 : {
-			label : "item 6",
-			disabled : true,
-			icon : maroon,
-			items : {
-				item_7 : {
-					icon : yellow,
-					label : "item 7",
-				},
-				item_8 : {
-					icon : orange,
-					label : "item 8",
-				        seperator : true,
-				},
-				item_9 : {
-					icon : violet,
-					label : "item 9",
-					on_clicked : function (arg) {
-						print("Item 9 selected\n");
-					},
-				},
-			},
-		},
-	},
+    type : "menu",
+    x : 50, 
+    y : 50,
+    items : {
+        item_1 : {
+            label : "item 1",
+            disabled : true,
+            items : {
+                item_2 : {
+                    icon : small_icon,
+                    label : "item 2",
+                    on_clicked : function (arg) {
+                        print("Item 1 selected\n");
+                    },
+                },
+                item_3 : {
+                    icon : yellow,
+                    label : "item 3",
+                },
+                item_4 : {
+                    icon : violet,
+                    label : "item 4",
+                    on_clicked : function (arg) {
+                        print("Item 4 selected\n");
+                    },
+                },
+            },
+        },
+        item_5 : {
+            icon : orange,
+            label : "item 5",
+            separator : true,
+        },
+        item_6 : {
+            label : "item 6",
+            disabled : true,
+            icon : maroon,
+            items : {
+                item_7 : {
+                    icon : yellow,
+                    label : "item 7",
+                },
+                item_8 : {
+                    icon : orange,
+                    label : "item 8",
+                        seperator : true,
+                },
+                item_9 : {
+                    icon : violet,
+                    label : "item 9",
+                    on_clicked : function (arg) {
+                        print("Item 9 selected\n");
+                    },
+                },
+            },
+        },
+    },
 };
 
 var my_window = new elm.window({
-	type : "main",
-	label : "Menu Demo",
-	width : 320,
-	height : 480,
-	align : FILL_BOTH,
-	elements : {
-		the_background : {
-			type : "background",
-			weight : EXPAND_BOTH,
-			align : FILL_BOTH,
-			resize : true,
-		},
-		the_menu : menu_content,
-	},
+    type : "main",
+    label : "Menu Demo",
+    width : 320,
+    height : 480,
+    align : FILL_BOTH,
+    elements : {
+        the_background : {
+            type : "background",
+            weight : EXPAND_BOTH,
+            align : FILL_BOTH,
+            resize : true,
+        },
+        the_menu : menu_content,
+    },
 });

@@ -58,34 +58,34 @@ item_6 = {
 };
 
 var menu_content = {
-	type : "menu",
-	x : 50, 
-	y : 50,
-	items : {
+    type : "menu",
+    x : 50, 
+    y : 50,
+    items : {
         1 : item_1,
         2 : item_5,
         3 : item_6,
-	},
+    },
 };
 
 var my_window = new elm.window({
-	type : "main",
-	label : "Menu Demo",
-	width : 320,
-	height : 480,
-	align : FILL_BOTH,
-	elements : {
-		the_background : {
-			type : "background",
-			weight : EXPAND_BOTH,
-			align : FILL_BOTH,
-			resize : true,
-		},
-		the_box : {
-			type : "box",
-			weight : EXPAND_BOTH,
-			resize : true,
-			elements : {
+    type : "main",
+    label : "Menu Demo",
+    width : 320,
+    height : 480,
+    align : FILL_BOTH,
+    elements : {
+        the_background : {
+            type : "background",
+            weight : EXPAND_BOTH,
+            align : FILL_BOTH,
+            resize : true,
+        },
+        the_box : {
+            type : "box",
+            weight : EXPAND_BOTH,
+            resize : true,
+            elements : {
                 the_menu : menu_content,
                 but_box : {
                     type : "box",
@@ -117,5 +117,5 @@ var my_window = new elm.window({
                 },
             },
        },
-	},
+    },
 });

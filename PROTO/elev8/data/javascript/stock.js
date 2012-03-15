@@ -39,7 +39,7 @@ on_click = function(){
 }
 
 list_items[0] =  {
-			label : "GOOG",
+            label : "GOOG",
             tooltip : ps + "GOOG" + pe,
             on_clicked : on_click,
 };
@@ -51,23 +51,23 @@ list_items[1] = {
             on_clicked : on_click,
         }
 list_items[2] = {
-			label : "AAPL",
+            label : "AAPL",
             tooltip : ps + "AAPL" + pe,
             on_clicked : on_click,
-		}
+        }
 
 var my_window = new elm.window({
-		type : "main",
-		label : "Live Stock Quote Demo",
-		width : 320,
-		height : 480,
-		elements : {
-			the_background : {
-				type : "background",
+        type : "main",
+        label : "Live Stock Quote Demo",
+        width : 320,
+        height : 480,
+        elements : {
+            the_background : {
+                type : "background",
                 align : FILL_BOTH,
                 weight : EXPAND_BOTH,
                 resize : true,
-			},
+            },
             scroll : {
                 type : "scroller",
                 align : FILL_BOTH,
@@ -119,5 +119,5 @@ var my_window = new elm.window({
                     },
                 },
             },
-	    },
+        },
 });

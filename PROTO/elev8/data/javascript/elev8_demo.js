@@ -3,52 +3,52 @@
 elm.datadir=elm.datadir + "/data/images/";
 
 var small_icon = {
-	type : "icon",
-	prescale : 20,
-	resizable_up : false,
-	image : elm.datadir + "logo_small.png",
+    type : "icon",
+    prescale : 20,
+    resizable_up : false,
+    image : elm.datadir + "logo_small.png",
 };
 var green = {
-	type : "icon",
+    type : "icon",
     hint_max : { w : 20, h : 20 },
     hint_min : { w : 20, h : 20 },
     width : 20,
     height : 20,
-	image : elm.datadir + "green.png",
+    image : elm.datadir + "green.png",
 };
 var yellow = {
-	type : "icon",
-	prescale : 20,
-	image : elm.datadir + "yellow.png",
+    type : "icon",
+    prescale : 20,
+    image : elm.datadir + "yellow.png",
 };
 var orange = {
-	type : "icon",
-	image : elm.datadir + "orange.png",
+    type : "icon",
+    image : elm.datadir + "orange.png",
 };
 var maroon = {
-	type : "icon",
-	prescale : 20,
-	image : elm.datadir + "maroon.png",
+    type : "icon",
+    prescale : 20,
+    image : elm.datadir + "maroon.png",
 };
 var violet = {
-	type : "icon",
+    type : "icon",
     hint_max : { w : 20, h : 20 },
     hint_min : { w : 20, h : 20 },
     width : 20,
     height : 20,
-	image : elm.datadir + "violet.png",
+    image : elm.datadir + "violet.png",
 };
 
 var logo_icon = {
-	type : "icon",
-	prescale : 20,
-	image : elm.datadir + "logo_small.png",
+    type : "icon",
+    prescale : 20,
+    image : elm.datadir + "logo_small.png",
 };
 
 var logo_end = {
-	type : "icon",
-	prescale : 20,
-	image : elm.datadir + "bubble.png",
+    type : "icon",
+    prescale : 20,
+    image : elm.datadir + "bubble.png",
 };
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
@@ -111,26 +111,26 @@ function init_list(arg)
 
 
 win = new elm.window({
-	label : "Elev8 Demo",
-	width : 320,
-	height : 480,
-	elements : {
-		the_background : {
-			type : "background",
-			resize : true,
-			weight : EXPAND_BOTH,
-		},
-		scroll : {
-			type : "scroller",
-			bounce : { x : false, y : true },
-			policy : { x : "off", y : "auto" },
-			weight : EXPAND_BOTH,
-			resize : true,
-		    content : {
-				type : "box",
-				weight : EXPAND_BOTH,
-				align : FILL_BOTH,
-				elements : {
+    label : "Elev8 Demo",
+    width : 320,
+    height : 480,
+    elements : {
+        the_background : {
+            type : "background",
+            resize : true,
+            weight : EXPAND_BOTH,
+        },
+        scroll : {
+            type : "scroller",
+            bounce : { x : false, y : true },
+            policy : { x : "off", y : "auto" },
+            weight : EXPAND_BOTH,
+            resize : true,
+            content : {
+                type : "box",
+                weight : EXPAND_BOTH,
+                align : FILL_BOTH,
+                elements : {
                     the_list : {
                         type : "list",
                         resize : true,
@@ -161,6 +161,6 @@ win = new elm.window({
                 },
             },
         },
-	},
+    },
 });
 

@@ -9,10 +9,10 @@ var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var logo_icon_unscaled = {
-	type : "icon",
-	image : elm.datadir + "logo_small.png",
-	resizable_up : false,
-	resizable_down : false,
+    type : "icon",
+    image : elm.datadir + "logo_small.png",
+    resizable_up : false,
+    resizable_down : false,
 };
 
 request.onreadystatechange = function(){
@@ -22,43 +22,43 @@ request.onreadystatechange = function(){
 
 
 var my_window = new elm.window({
-		type : "main",
-		label : "Dilbert Demo",
-		width : 320,
-		height : 480,
-		align : FILL_BOTH,
-		elements : {
-			the_background : {
-				type : "background",
-				weight : EXPAND_BOTH,
-				align : FILL_BOTH,
-				resize : true,
-			},
-			the_box : {
-				type : "box",
-				weight : EXPAND_BOTH,
-				resize : true,
-				elements : {
-					the_photo : {
-						type : "photo",
-						size : 80,
-						weight : EXPAND_BOTH,
-						align : FILL_BOTH,
-						resize : true,
-						image : elm.datadir + "logo_small.png",
-						fill : true,
-					},
-					icon_no_scale : {
-						type : "button",
-						label : "Fetch My Dilbert",
-						weight : { x : -1.0, y : -1.0 },
-						icon : logo_icon_unscaled,
-						on_clicked : function() {
-							request.open("GET", url);
-							request.send("");
-						},
-					},
-				},
-			},
-		},
+        type : "main",
+        label : "Dilbert Demo",
+        width : 320,
+        height : 480,
+        align : FILL_BOTH,
+        elements : {
+            the_background : {
+                type : "background",
+                weight : EXPAND_BOTH,
+                align : FILL_BOTH,
+                resize : true,
+            },
+            the_box : {
+                type : "box",
+                weight : EXPAND_BOTH,
+                resize : true,
+                elements : {
+                    the_photo : {
+                        type : "photo",
+                        size : 80,
+                        weight : EXPAND_BOTH,
+                        align : FILL_BOTH,
+                        resize : true,
+                        image : elm.datadir + "logo_small.png",
+                        fill : true,
+                    },
+                    icon_no_scale : {
+                        type : "button",
+                        label : "Fetch My Dilbert",
+                        weight : { x : -1.0, y : -1.0 },
+                        icon : logo_icon_unscaled,
+                        on_clicked : function() {
+                            request.open("GET", url);
+                            request.send("");
+                        },
+                    },
+                },
+            },
+        },
 });

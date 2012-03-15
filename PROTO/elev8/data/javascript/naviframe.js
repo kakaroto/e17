@@ -5,36 +5,36 @@ elm.datadir=elm.datadir + "/data/images/";
 var green = {
     type : "photo",
     size : 80,
-	weight : EXPAND_BOTH,
-	align : FILL_BOTH,
-	image : elm.datadir + "green.png",
-	fill : true,
+    weight : EXPAND_BOTH,
+    align : FILL_BOTH,
+    image : elm.datadir + "green.png",
+    fill : true,
 };
 var yellow = {
     type : "photo",
     size : 80,
-	weight : EXPAND_BOTH,
-	align : FILL_BOTH,
-	image : elm.datadir + "yellow.png",
-	fill : true,
+    weight : EXPAND_BOTH,
+    align : FILL_BOTH,
+    image : elm.datadir + "yellow.png",
+    fill : true,
 };
 var orange = {
     type : "photo",
     size : 80,
-	weight : EXPAND_BOTH,
-	align : FILL_BOTH,
-	image : elm.datadir + "orange.png",
-	fill : true,
+    weight : EXPAND_BOTH,
+    align : FILL_BOTH,
+    image : elm.datadir + "orange.png",
+    fill : true,
 };
 var maroon = {
-	type : "icon",
-	prescale : 1,
-	image : elm.datadir + "maroon.png",
+    type : "icon",
+    prescale : 1,
+    image : elm.datadir + "maroon.png",
 };
 var violet = {
-	type : "icon",
-	prescale : 1,
-	image : elm.datadir + "violet.png",
+    type : "icon",
+    prescale : 1,
+    image : elm.datadir + "violet.png",
 };
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
@@ -57,16 +57,16 @@ function button_push() {
 
 var win = new elm.window({
     type : "main",
-	label : "Naviframe Example",
-	width : 320,
-	height : 480,
-	elements : {
-		the_background : {
-			type : "background",
-			weight : EXPAND_BOTH,
+    label : "Naviframe Example",
+    width : 320,
+    height : 480,
+    elements : {
+        the_background : {
+            type : "background",
+            weight : EXPAND_BOTH,
             align : FILL_BOTH,
             resize : true,
-		},
+        },
         box : {
             type : "box",
             weight : EXPAND_BOTH,
