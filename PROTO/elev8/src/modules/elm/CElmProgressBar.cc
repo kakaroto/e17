@@ -9,9 +9,9 @@ Handle<Value> CElmProgressBar::do_pulse(const Arguments& args)
    return Undefined();
 }
 
-CElmProgressBar::CElmProgressBar(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmProgressBar::CElmProgressBar(CEvasObject *parent, Local<Object> obj)
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_progressbar_add(parent->get());
    construct(eo, obj);
@@ -71,10 +71,7 @@ Handle<Value> CElmProgressBar::units_get() const
 void CElmProgressBar::units_set(Handle<Value> value)
 {
    if (value->IsString())
-     {
-        String::Utf8Value str(value);
-        elm_progressbar_unit_format_set(eo, *str);
-     }
+     elm_progressbar_unit_format_set(eo, *String::Utf8Value(value));
 }
 
 Handle<Value> CElmProgressBar::span_get() const
@@ -85,10 +82,7 @@ Handle<Value> CElmProgressBar::span_get() const
 void CElmProgressBar::span_set(Handle<Value> value)
 {
    if (value->IsInt32())
-     {
-        int span = value->Int32Value();
-        elm_progressbar_span_size_set(eo, span);
-     }
+     elm_progressbar_span_size_set(eo, value->Int32Value());
 }
 
 Handle<Value> CElmProgressBar::pulser_get() const
