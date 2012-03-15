@@ -14,8 +14,9 @@ public:
 
     virtual Handle<Value> text_part_get() const;
     virtual void text_part_set(Handle<Value> val);
+
     virtual Handle<Value> corner_get() const;
     virtual void corner_set(Handle<Value> val);
 };
 
-#endif // C_ELM_BUBBLE_H
+#endif
