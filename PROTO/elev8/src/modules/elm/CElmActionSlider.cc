@@ -6,9 +6,9 @@
 
 using namespace v8;
 
-CElmActionSlider::CElmActionSlider(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmActionSlider::CElmActionSlider(CEvasObject *parent, Local<Object> obj)
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_actionslider_add(parent->get());
    construct(eo, obj);
@@ -17,24 +17,25 @@ CElmActionSlider::CElmActionSlider(CEvasObject *parent, Local<Object> obj) :
 /* there's 1 indicator label and 3 position labels */
 void CElmActionSlider::labels_set(Handle<Value> val)
 {
-   if (val->IsObject())
-     {
-        Local<Object> obj = val->ToObject();
-        Local<Value> v[3];
-        Local<String> str[3];
-        const char *name[3] = { "left", "center", "right" };
+   if (!val->IsObject())
+     return;
 
-        for (int i = 0; i < 3; i++)
-          {
-             v[i] = obj->Get(String::New(name[i]));
-             if (v[i]->IsString())
-               str[i] = v[i]->ToString();
-          }
-        String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
-        elm_object_part_text_set(eo, name[0], *left);
-        elm_object_part_text_set(eo,name[1], *middle);
-        elm_object_part_text_set(eo,name[2], *right);
+   Local<Object> obj = val->ToObject();
+   Local<Value> v[3];
+   Local<String> str[3];
+   const char *name[3] = { "left", "center", "right" };
+
+   for (int i = 0; i < 3; i++)
+     {
+        v[i] = obj->Get(String::New(name[i]));
+        if (v[i]->IsString())
+          str[i] = v[i]->ToString();
      }
+
+   String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
+   elm_object_part_text_set(eo, name[0], *left);
+   elm_object_part_text_set(eo,name[1], *middle);
+   elm_object_part_text_set(eo,name[2], *right);
 }
 
 Handle<Value> CElmActionSlider::labels_get() const
@@ -89,9 +90,10 @@ Handle<Value> CElmActionSlider::magnet_get() const
 }
 
 template<> CEvasObject::CPropHandler<CElmActionSlider>::property_list
-CEvasObject::CPropHandler<CElmActionSlider>::list[] = {
+CEvasObject::CPropHandler<CElmActionSlider>::list[] =
+  {
      PROP_HANDLER(CElmActionSlider, magnet),
      PROP_HANDLER(CElmActionSlider, slider),
      PROP_HANDLER(CElmActionSlider, labels),
      { NULL, NULL, NULL },
-};
+  };
