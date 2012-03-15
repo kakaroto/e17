@@ -16,7 +16,7 @@ files_SCRIPTS = \
 	calculator.js \
 	check.js \
 	clock.js \
-	color.js \
+	colorselector.js \
 	dbus_test.js \
 	dilbert.js \
 	entry.js \
