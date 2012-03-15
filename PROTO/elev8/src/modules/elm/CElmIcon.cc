@@ -54,13 +54,20 @@ void CElmIcon::prescale_set(Handle <Value> val)
 
 void CElmIcon::image_set(Handle <Value> val)
 {
-    if (val->IsString()) {
-        String::Utf8Value str(val);
-        if (0 > access(*str, R_OK))
-            ELM_ERR("warning: can't read icon file %s", *str);
+   if (!val->IsString())
+     return;
 
+   String::Utf8Value str(val);
+
+   if (access(*str, R_OK) == 0)
+     {
         elm_icon_file_set(eo, *str, NULL);
-    }
+        return;
+     }
+   else if (elm_icon_standard_set(eo, *str))
+     return;
+
+   ELM_ERR("warning: can't read standard or file icon %s", *str);
 }
 
 Handle <Value> CElmIcon::image_get(void) const
