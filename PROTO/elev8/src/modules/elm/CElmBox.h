@@ -12,10 +12,11 @@ protected:
 
    CPropHandler<CElmBox> prop_handler;
 
-public:
    CElmBox(CEvasObject *parent, Local<Object> obj);
+public:
    void horizontal_set(Handle<Value> val);
    virtual Handle<Value> horizontal_get() const;
+
    void homogeneous_set(Handle<Value> val);
    virtual Handle<Value> homogeneous_get() const;
 };
