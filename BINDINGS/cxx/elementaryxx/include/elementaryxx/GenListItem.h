@@ -30,8 +30,8 @@ public:
   bool getExpanded () const;
   void setDisabled (bool disabled);
   bool getDisabled () const;
-  void setDisplayOnly (bool displayOnly);
-  bool getDisplayOnly () const;
+  void setSelectMode (Elm_Object_Select_Mode mode);
+  Elm_Object_Select_Mode getSelectMode () const;
   void show (Elm_Genlist_Item_Scrollto_Type type);
   void bringIn (Elm_Genlist_Item_Scrollto_Type type);
   void update ();

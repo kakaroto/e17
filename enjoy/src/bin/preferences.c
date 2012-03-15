@@ -164,7 +164,7 @@ preferences_item_add(Preferences *prefs, Enjoy_Preferences_Plugin *p)
           (prefs->list, &preferences_itc_category, cat, NULL,
            ELM_GENLIST_ITEM_NONE, preferences_category_cmp, NULL, NULL);
 
-        elm_genlist_item_display_only_set(cat->glit, EINA_TRUE);
+        elm_genlist_item_select_mode_set(cat->glit, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
      }
 
    eina_hash_add(prefs->items, &p, p);

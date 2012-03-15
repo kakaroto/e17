@@ -404,18 +404,11 @@ cdef class GenlistItem(WidgetItem):
         def __set__(self, disabled):
             self.disabled_set(disabled)
 
-    def display_only_set(self, display_only):
-        elm_genlist_item_display_only_set(self.obj, bool(display_only))
+    def select_mode_set(self, mode):
+        elm_genlist_item_select_mode_set(self.obj, mode)
 
-    def display_only_get(self):
-        return bool(elm_genlist_item_display_only_get(self.obj))
-
-    property display_only:
-        def __get__(self):
-            return self.display_only_get()
-
-        def __set__(self, display_only):
-            self.display_only_set(display_only)
+    def select_mode_get(self):
+        return elm_genlist_item_select_mode_get(self.obj)
 
     def show(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
         elm_genlist_item_show(self.obj, scrollto_type)

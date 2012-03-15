@@ -62,14 +62,14 @@ bool GenListItem::getDisabled () const
   return elm_object_item_disabled_get (mItem);
 }
 
-void GenListItem::setDisplayOnly (bool displayOnly)
+void GenListItem::setSelectMode (Elm_Object_Select_Mode mode)
 {
-  elm_genlist_item_display_only_set (mItem, displayOnly);
+  elm_genlist_item_select_mode_set (mItem, mode);
 }
 
-bool GenListItem::getDisplayOnly () const
+Elm_Object_Select_Mode GenListItem::getSelectMode () const
 {
-  return elm_genlist_item_display_only_get (mItem);
+  return elm_genlist_item_select_mode_get (mItem);
 }
 
 void GenListItem::show (Elm_Genlist_Item_Scrollto_Type type)
