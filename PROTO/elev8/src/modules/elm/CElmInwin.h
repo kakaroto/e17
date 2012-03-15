@@ -13,12 +13,13 @@ protected:
    CPropHandler<CElmInwin> prop_handler;
    CEvasObject *content;
 
-public:
    CElmInwin(CEvasObject *parent, Local<Object> obj);
 
-   virtual Handle<Value> activate_get() const;
+   static Handle<Value> activate(const Arguments&);
 
-   virtual void activate_set(Handle<Value> val);
+public:
+   virtual Handle<Value> content_get() const;
+   virtual void content_set(Handle<Value> val);
 };
 
 #endif

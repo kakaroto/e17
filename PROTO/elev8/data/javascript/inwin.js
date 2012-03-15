@@ -44,7 +44,7 @@ var my_window = new elm.window({
                     weight : { x : -1.0, y : -1.0 },
                     on_clicked : function(arg) {
                         print("Activate InWin");
-                        my_window.elements.the_box.elements.inwin.activate = true;
+                        my_window.elements.the_box.elements.inwin.activate();
                     },
                 },
             },
