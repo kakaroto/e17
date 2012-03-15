@@ -6,18 +6,18 @@ CElmSegment::CElmSegment(CEvasObject *parent, Local<Object> obj) :
 {
    eo = elm_segment_control_add(parent->get());
    construct(eo, obj);
-   //items_set(obj->Get(String::New("items")));
+
+   items_set(obj->Get(String::New("items")));
 }
 
-Handle<Object> CElmSegment::items_set(Handle<Value> val)
+void CElmSegment::items_set(Handle<Value> val)
 {
-   /* add an list of children */
-   Local<Object> out = Object::New();
+   HandleScope scope;
 
    if (!val->IsObject())
      {
-        ELM_ERR( "not an object!");
-        return out;
+        ELM_ERR("not an object!");
+        return;
      }
 
    Local<Object> in = val->ToObject();
@@ -26,24 +26,25 @@ Handle<Object> CElmSegment::items_set(Handle<Value> val)
    /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
      {
-
-        Local<Value> x = props->Get(Integer::New(i));
-        String::Utf8Value val(x);
-
-        Local<Value> item = in->Get(x->ToString());
+        Local<Value> item = in->Get(props->Get(Integer::New(i))->ToString());
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             ELM_ERR( "list item is not an object");
+             ELM_ERR("list item is not an object");
              continue;
           }
+
         Local<Value> label = item->ToObject()->Get(String::New("label"));
-
-        String::Utf8Value str(label);
-        elm_segment_control_item_add(eo, NULL, *str);
+        elm_segment_control_item_add(eo, NULL, *String::Utf8Value(label));
      }
-
-   return out;
 }
 
-PROPERTIES_OF(CElmSegment) = NO_PROPERTIES;
+Handle<Value> CElmSegment::items_get() const
+{
+   return Undefined();
+}
+
+PROPERTIES_OF(CElmSegment) = {
+   PROP_HANDLER(CElmSegment, items),
+   { NULL }
+};

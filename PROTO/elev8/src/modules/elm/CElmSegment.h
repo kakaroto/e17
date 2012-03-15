@@ -7,17 +7,15 @@
 using namespace v8;
 
 class CElmSegment : public CEvasObject {
-    FACTORY(CElmSegment)
+   FACTORY(CElmSegment)
 
 protected:
-    CPropHandler<CElmSegment> prop_handler;
+   CPropHandler<CElmSegment> prop_handler;
 
+   CElmSegment(CEvasObject *parent, Local<Object> obj);
 public:
-    CElmSegment(CEvasObject *parent, Local<Object> obj);
-
-    virtual ~CElmSegment() { }
-
-    Handle<Object> items_set(Handle<Value> val);
+   void items_set(Handle<Value> val);
+   Handle<Value> items_get() const;
 };
 
 #endif
