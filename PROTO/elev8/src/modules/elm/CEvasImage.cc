@@ -415,4 +415,5 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, load_region),
      PROP_HANDLER(CEvasImage, load_orientation),
      PROP_HANDLER(CEvasImage, colorspace),
+     { NULL, NULL, NULL }
 };

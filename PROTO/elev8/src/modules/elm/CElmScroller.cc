@@ -99,4 +99,5 @@ template<> CEvasObject::CPropHandler<CElmScroller>::property_list
 CEvasObject::CPropHandler<CElmScroller>::list[] = {
      PROP_HANDLER(CElmScroller, bounce),
      PROP_HANDLER(CElmScroller, policy),
+     { NULL, NULL, NULL },
 };
