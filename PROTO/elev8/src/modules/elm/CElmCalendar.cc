@@ -22,11 +22,12 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
 
    Local<Object> in = val->ToObject();
    Local<Array> props = in->GetPropertyNames();
-   struct tm mark_time;
 
    /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
      {
+        struct tm mark_time;
+
         Local<Value> x = props->Get(Integer::New(i));
         String::Utf8Value val(x);
 
@@ -48,7 +49,8 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
         Local<Value> repeat = item->ToObject()->Get(String::New("mark_repeat"));
         String::Utf8Value mark_repeat(repeat);
-        Elm_Calendar_Mark_Repeat_Type intRepeat = ELM_CALENDAR_UNIQUE;
+
+        Elm_Calendar_Mark_Repeat_Type intRepeat;
 
         if (!strcasecmp(*mark_repeat, "annually"))
           intRepeat = ELM_CALENDAR_ANNUALLY;
@@ -58,6 +60,8 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
           intRepeat = ELM_CALENDAR_WEEKLY;
         else if (!strcasecmp(*mark_repeat, "daily"))
           intRepeat = ELM_CALENDAR_DAILY;
+        else
+          intRepeat = ELM_CALENDAR_UNIQUE;
 
         elm_calendar_mark_add(eo, *mark_type, &mark_time, intRepeat);
         elm_calendar_marks_draw(eo);
@@ -151,15 +155,15 @@ void CElmCalendar::min_year_set(Handle<Value> val)
      return;
 
    int year_min, year_max;
-   elm_calendar_min_max_year_get(eo, &year_min, &year_max);
+   elm_calendar_min_max_year_get(eo, NULL, &year_max);
    year_min = val->ToNumber()->Value();
    elm_calendar_min_max_year_set(eo, year_min, year_max);
 }
 
 Handle<Value> CElmCalendar::max_year_get(void) const
 {
-   int year_min, year_max;
-   elm_calendar_min_max_year_get(eo, &year_min, &year_max);
+   int year_max;
+   elm_calendar_min_max_year_get(eo, NULL, &year_max);
    return Number::New(year_max);
 }
 
@@ -169,7 +173,7 @@ void CElmCalendar::max_year_set(Handle<Value> val)
      return;
 
    int year_min, year_max;
-   elm_calendar_min_max_year_get(eo, &year_min, &year_max);
+   elm_calendar_min_max_year_get(eo, &year_min, NULL);
    year_max = val->ToNumber()->Value();
    elm_calendar_min_max_year_set(eo, year_min, year_max);
 }
@@ -209,6 +213,7 @@ Handle<Value> CElmCalendar::selected_month_get(void) const
 {
    struct tm selected_time;
    elm_calendar_selected_time_get(eo, &selected_time);
+
    return Number::New(selected_time.tm_mon);
 }
 
@@ -231,6 +236,7 @@ Handle<Value> CElmCalendar::selected_year_get(void) const
 {
    struct tm selected_time;
    elm_calendar_selected_time_get (eo,&selected_time);
+
    return Number::New(selected_time.tm_year);
 }
 
@@ -242,6 +248,7 @@ void CElmCalendar::selected_year_set(Handle<Value> val)
    struct tm selected_time;
    elm_calendar_selected_time_get(eo, &selected_time);
    selected_time.tm_year = val->ToNumber()->Value();
+
    //tm_year is years since 1900 - but hide that from user.
    //let them give a normal year
    selected_time.tm_year = selected_time.tm_year - 1900;
