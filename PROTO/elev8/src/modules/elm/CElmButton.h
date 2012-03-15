@@ -9,8 +9,9 @@ class CElmButton : public CEvasObject {
 protected:
    Persistent<Value> the_icon;
    CPropHandler<CElmButton> prop_handler;
-public:
+
    CElmButton(CEvasObject *parent, Local<Object> obj);
+public:
    virtual ~CElmButton();
 
    virtual Handle<Value> icon_get() const;
