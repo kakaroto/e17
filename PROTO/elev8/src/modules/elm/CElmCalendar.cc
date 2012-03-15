@@ -11,13 +11,13 @@ CElmCalendar::CElmCalendar(CEvasObject *parent, Local<Object> obj)
 
 Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
 {
-   /* add an list of children */
+   HandleScope scope;
    Local<Object> out = Object::New();
 
    if (!val->IsObject())
      {
         ELM_ERR( "not an object!");
-        return out;
+        return scope.Close(out);
      }
 
    Local<Object> in = val->ToObject();
@@ -63,24 +63,21 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
         elm_calendar_marks_draw(eo);
      }
 
-   return out;
+   return scope.Close(out);
 }
 
-void CElmCalendar::on_changed(void *)
+void CElmCalendar::eo_on_changed(void *data, Evas_Object *, void *)
 {
-   Handle<Object> obj = get_object();
-   HandleScope handle_scope;
-   Handle<Value> val = on_changed_val;
+   CElmCalendar *cal = static_cast<CElmCalendar*>(data);
+
+   Handle<Object> obj = cal->get_object();
+   Handle<Value> val = cal->on_changed_val;
    assert(val->IsFunction());
+
+   HandleScope scope;
    Handle<Function> fn(Function::Cast(*val));
    Handle<Value> args[1] = { obj };
    fn->Call(obj, 1, args);
-}
-
-void CElmCalendar::eo_on_changed(void *data, Evas_Object *, void *event_info)
-{
-   CElmCalendar *changed = static_cast<CElmCalendar*>(data);
-   changed->on_changed(event_info);
 }
 
 void CElmCalendar::on_changed_set(Handle<Value> val)
@@ -101,6 +98,7 @@ Handle<Value> CElmCalendar::on_changed_get(void) const
 
 Handle<Value> CElmCalendar::weekday_names_get(void) const
 {
+   HandleScope scope;
    Local<Object> obj = Object::New();
 
    const char **wds = elm_calendar_weekdays_names_get(eo);
@@ -112,7 +110,7 @@ Handle<Value> CElmCalendar::weekday_names_get(void) const
    obj->Set(String::New("5"), String::New(wds[5]));
    obj->Set(String::New("6"), String::New(wds[6]));
 
-   return obj;
+   return scope.Close(obj);
 }
 
 void CElmCalendar::weekday_names_set(Handle<Value> val)
@@ -120,6 +118,7 @@ void CElmCalendar::weekday_names_set(Handle<Value> val)
    if (!val->IsObject())
      return;
 
+   HandleScope scope;
    const char *weekdays[7];
    Local<Object> obj = val->ToObject();
 
