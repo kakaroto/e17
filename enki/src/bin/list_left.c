@@ -340,8 +340,13 @@ _gl_text_get(void *data, Evas_Object *obj, const char *part)
 
    if (album_data->list_album_item)
    {
-      elm_object_item_smart_callback_add(album_data->list_album_item,
-                                         EVAS_CALLBACK_MOUSE_UP, _right_click_cb, album);
+/* FIXME: this is wrong. do not add callback to genlist item's internal
+          edje object. use item select callback instead.
+        const Evas_Object *o =
+           elm_genlist_item_object_get(album_data->list_album_item);
+        evas_object_event_callback_add((Evas_Object *) o, EVAS_CALLBACK_MOUSE_UP,
+                                       _right_click_cb, album);
+*/
    }
 
    return strdup(enlil_album_name_get(album));
@@ -435,9 +440,13 @@ _gl_col_text_get(void *data, Evas_Object *obj, const char *part)
    const Enlil_Collection *col = data;
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
-   elm_object_item_smart_callback_add(col_data->list_col_item,
-                                      EVAS_CALLBACK_MOUSE_UP,
-                                      _col_right_click_cb, col);
+/* FIXME: this is wrong. do not add callback to genlist item's internal
+          edje object. use item select callback instead.
+        const Evas_Object *o =
+           elm_genlist_item_object_get(col_data->list_col_item);
+        evas_object_event_callback_add((Evas_Object *) o, EVAS_CALLBACK_MOUSE_UP,
+                                       _col_right_click_cb, col);
+*/
 
    return strdup(enlil_collection_name_get(col));
 }
@@ -517,9 +526,13 @@ _gl_tag_text_get(void *data, Evas_Object *obj, const char *part)
    const Enlil_Tag *tag = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);
 
-   elm_object_item_smart_callback_add(tag_data->list_tag_item,
-                                      EVAS_CALLBACK_MOUSE_UP,
-                                      _tag_right_click_cb, tag);
+/* FIXME: this is wrong. do not add callback to genlist item's internal
+          edje object. use item select callback instead.
+        const Evas_Object *o =
+           elm_genlist_item_object_get(tag_data->list_tag_item);
+        evas_object_event_callback_add((Evas_Object *) o, EVAS_CALLBACK_MOUSE_UP,
+                                       _tag_right_click_cb, tag);
+*/
 
    return strdup(enlil_tag_name_get(tag));
 }
