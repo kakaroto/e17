@@ -10,20 +10,17 @@ class CElmCalendar : public CEvasObject {
    FACTORY(CElmCalendar)
 
 protected:
+   CElmCalendar(CEvasObject *parent, Local<Object> obj);
+
+   Handle<Object> marks_set(Handle<Value> val);
+
+   static void eo_on_changed(void *data, Evas_Object *, void *event_info);
+
    CPropHandler<CElmCalendar> prop_handler;
    /* the on_clicked function */
    Persistent<Value> on_changed_val;
 
 public:
-   CElmCalendar(CEvasObject *parent, Local<Object> obj);
-
-   virtual ~CElmCalendar() { }
-
-   Handle<Object> marks_set(Handle<Value> val);
-
-   virtual void on_changed(void *);
-   static void eo_on_changed(void *data, Evas_Object *, void *event_info);
-
    virtual void on_changed_set(Handle<Value> val);
    virtual Handle<Value> on_changed_get(void) const;
 
