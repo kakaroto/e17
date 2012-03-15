@@ -83,29 +83,31 @@ Handle<Value> CElmGenList::append(const Arguments& args)
 {
     CEvasObject *self = eo_from_info(args.This());
     CElmGenList *genlist = static_cast<CElmGenList *>(self);
-    if (args[0]->IsObject())
-    {
-        GenListItemClass *itc = new GenListItemClass();
 
-        Local<Object> obj = args[0]->ToObject();
-        itc->type = Persistent<Value>::New(obj->Get(String::New("type")));
-        itc->on_text = Persistent<Value>::New(obj->Get(String::New("on_text")));
-        itc->on_content = Persistent<Value>::New(obj->Get(String::New("on_content")));
-        itc->on_state = Persistent<Value>::New(obj->Get(String::New("on_state")));
-        itc->on_select = Persistent<Value>::New(obj->Get(String::New("on_select")));
-        itc->data = Persistent<Value>::New(obj->Get(String::New("data")));
-        //TODO : Check genlist class type and modify or add
+    if (!args[0]->IsObject())
+        return Undefined();
 
-        itc->eitc.item_style = "default";
-        itc->eitc.func.text_get = text_get;
-        itc->eitc.func.content_get = content_get;
-        itc->eitc.func.state_get = state_get;
-        itc->eitc.func.del = del;
-        itc->genlist = genlist;
-        elm_genlist_item_append(genlist->get(), &itc->eitc, itc, NULL,
-                ELM_GENLIST_ITEM_NONE,
-                sel, itc);
-    }
+    GenListItemClass *itc = new GenListItemClass();
+
+    Local<Object> obj = args[0]->ToObject();
+    itc->type = Persistent<Value>::New(obj->Get(String::New("type")));
+    itc->on_text = Persistent<Value>::New(obj->Get(String::New("text")));
+    itc->on_content = Persistent<Value>::New(obj->Get(String::New("content")));
+    itc->on_state = Persistent<Value>::New(obj->Get(String::New("state")));
+    itc->on_select = Persistent<Value>::New(obj->Get(String::New("select")));
+    itc->data = Persistent<Value>::New(obj->Get(String::New("data")));
+    //TODO : Check genlist class type and modify or add
+
+    itc->eitc.item_style = "default";
+    itc->eitc.func.text_get = text_get;
+    itc->eitc.func.content_get = content_get;
+    itc->eitc.func.state_get = state_get;
+    itc->eitc.func.del = del;
+    itc->genlist = genlist;
+    elm_genlist_item_append(genlist->get(), &itc->eitc, itc, NULL,
+            ELM_GENLIST_ITEM_NONE,
+            sel, itc);
+
     return Undefined();
 }
 

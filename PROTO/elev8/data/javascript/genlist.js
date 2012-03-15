@@ -50,19 +50,19 @@ var ItemType1 = function(data)
 };
 
 ItemType1.prototype = {
-		on_selected : function() {
+		select : function() {
 			print("The member is " + this.type);
 		},
-		on_text : function(arg) {
+		text : function(arg) {
 			return "Item # " + this.data.toString();
 		},
-		on_content : function(arg) {
+		content : function(arg) {
 			if (arguments[0].part == "elm.swallow.icon")
 				return logo;
 			if (arguments[0].part == "elm.swallow.end")
 				return bubble;
 		},
-		on_state : function(arg) {
+		state : function(arg) {
 			print("Calling state get function.");
 		},
 };
