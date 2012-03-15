@@ -26,8 +26,10 @@ void CElmBubble::text_part_set(Handle<Value> val)
 
    Local<Object> obj = val->ToObject();
    Local<Value> it = obj->Get(String::New("item"));
-   Local<Value> lbl = obj->Get(String::New("label"));
-   elm_object_part_text_set(eo, *String::Utf8Value(it), *String::Utf8Value(lbl));
+   Local<Value> text = obj->Get(String::New("text"));
+
+   elm_object_part_text_set(eo, *String::Utf8Value(it),
+                            *String::Utf8Value(text));
 }
 
 Handle<Value> CElmBubble::corner_get() const

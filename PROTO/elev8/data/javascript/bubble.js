@@ -25,14 +25,14 @@ var my_window = new elm.window({
 					type : "bubble",
 					weight : EXPAND_BOTH,
 					align : FILL_BOTH,
-				   text_part : { item : "info", label : "Hello Bubble" },
+					text_part : { item : "info", text : "Hello Bubble" },
 					corner : "bottom_right",
 				},
 				the_bubble_2 : {
 					type : "bubble",
 					weight : EXPAND_BOTH,
 					align : FILL_BOTH,
-				   text_part : { item : "info", label : "Hi Bumble" },
+					text_part : { item : "info", text : "Hi Bumble" },
 					corner : "top_left",
 					content : {
 						type : "label",
@@ -45,7 +45,7 @@ var my_window = new elm.window({
 					type : "bubble",
 					weight : EXPAND_BOTH,
 					align : FILL_BOTH,
-				   text_part : { item : "info", label : "Hi Bumble" },
+					text_part : { item : "info", text : "Hi Bumble" },
 					corner : "top_left",
 					content : {
 						type : "icon",
