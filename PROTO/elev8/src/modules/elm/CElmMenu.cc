@@ -8,31 +8,6 @@ CElmMenu::CElmMenu(CEvasObject *par, Local<Object> obj) :
    root = NULL;
    construct(eo, obj);
    items_set(NULL, obj->Get(String::New("items")));
-   get_object()->Set(String::New("addchild"), FunctionTemplate::New(addchild)->GetFunction());
-
-   get_object()->Set(String::New("child"), FunctionTemplate::New(child)->GetFunction());
-   get_object()->Set(String::New("parent"), FunctionTemplate::New(parent)->GetFunction());
-   get_object()->Set(String::New("child_count"), FunctionTemplate::New(child_count)->GetFunction());
-}
-
-Handle<Value> CElmMenu::addchild(const Arguments&)
-{
-   return Undefined();
-}
-
-Handle<Value> CElmMenu::parent(const Arguments&)
-{
-   return Undefined();
-}
-
-Handle<Value> CElmMenu::child(const Arguments&)
-{
-   return Undefined();
-}
-
-Handle<Value> CElmMenu::child_count(const Arguments&)
-{
-   return Undefined();
 }
 
 void CElmMenu::eo_on_click(void *data, Evas_Object *, void *)
@@ -95,17 +70,18 @@ CElmMenu::MenuItem *CElmMenu::new_item_set(CElmMenu::MenuItem *parent, Handle<Va
         ELM_ERR( "list item is not an object");
         return NULL;
      }
+
    Elm_Object_Item *par = NULL;
-   if (parent!=NULL)
+   if (parent != NULL)
      {
         par = parent->mi;
      }
 
-   Local<Value> sep_object = item->ToObject()->Get(String::New("seperator"));
+   Local<Value> sep_object = item->ToObject()->Get(String::New("separator"));
 
-   if ( sep_object->IsBoolean() )
+   if (sep_object->IsBoolean())
      {
-        // FIXME add if seperator : true, what if false
+        // FIXME add if separator : true, what if false
         if (sep_object->ToBoolean()->Value())
           {
              elm_menu_item_separator_add(eo, par);
@@ -114,23 +90,22 @@ CElmMenu::MenuItem *CElmMenu::new_item_set(CElmMenu::MenuItem *parent, Handle<Va
      }
    else
      {
-        MenuItem *it = NULL;
+        MenuItem *it;
 
         it = new MenuItem();
         it->next = NULL;
         it->prev = NULL;
         it->child = NULL;
         it->parent = NULL;
-        it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
-        it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
+        it->label = Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
+        it->icon = Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
         it->on_clicked = Local<Value>::New(item->ToObject()->Get(String::New("on_clicked")));
         it->parent = parent;
 
-
         // either a label with icon
-        if ( !it->label->IsString() && !it->icon->IsString() )
+        if (!it->label->IsString() && !it->icon->IsString())
           {
-             ELM_ERR( "Not a label or seperator");
+             ELM_ERR( "Not a label or separator");
              delete it;
              return NULL;
           }
@@ -198,26 +173,4 @@ CElmMenu::MenuItem *CElmMenu::new_item_set(CElmMenu::MenuItem *parent, Handle<Va
      }
 }
 
-Handle<Value> CElmMenu::move_get() const
-{
-   return Undefined();
-}
-
-void CElmMenu::move_set(Handle<Value> val)
-{
-   if (!val->IsObject())
-     return;
-   Local<Object> obj = val->ToObject();
-   Local<Value> x = obj->Get(String::New("x"));
-   Local<Value> y = obj->Get(String::New("y"));
-   if (!x->IsNumber() || !y->IsNumber())
-     return;
-   Evas_Coord x_out = x->NumberValue();
-   Evas_Coord y_out = y->NumberValue();
-   elm_menu_move (eo, x_out, y_out);
-}
-
-PROPERTIES_OF(CElmMenu) = {
-     PROP_HANDLER(CElmMenu, move),
-     { NULL }
-};
+PROPERTIES_OF(CElmMenu) = NO_PROPERTIES;
