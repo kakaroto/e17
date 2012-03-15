@@ -12,8 +12,6 @@ class CElmCalendar : public CEvasObject {
 protected:
    CElmCalendar(CEvasObject *parent, Local<Object> obj);
 
-   Handle<Object> marks_set(Handle<Value> val);
-
    static void eo_didChange(void *data, Evas_Object *, void *event_info);
 
    CPropHandler<CElmCalendar> prop_handler;

@@ -6,22 +6,21 @@ CElmCalendar::CElmCalendar(CEvasObject *parent, Local<Object> obj)
 {
    eo = elm_calendar_add(parent->top_widget_get());
    construct(eo, obj);
-   marks_set(obj->Get(String::New("marks")));
-}
 
-Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
-{
    HandleScope scope;
-   Local<Object> out = Object::New();
+
+   Local<Value> val = obj->Get(String::New("marks"));
+   if (val->IsUndefined())
+     return;
 
    if (!val->IsObject())
      {
-        ELM_ERR( "not an object!");
-        return scope.Close(out);
+        ELM_ERR("not an object!");
+        return;
      }
 
-   Local<Object> in = val->ToObject();
-   Local<Array> props = in->GetPropertyNames();
+   Local<Object> marks = val->ToObject();
+   Local<Array> props = marks->GetOwnPropertyNames();
 
    /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
@@ -29,24 +28,27 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
         struct tm mark_time;
 
         Local<Value> x = props->Get(i);
-        String::Utf8Value val(x);
+        Local<Value> item = marks->Get(x->ToString());
 
-        Local<Value> item = in->Get(x->ToString());
         if (!item->IsObject())
           {
              String::Utf8Value xval(x->ToString());
-             ELM_ERR( "item is not an object %s", *xval);
+             ELM_ERR( "mark %s is not an object", *xval);
              continue;
           }
 
         Local<Value> type = item->ToObject()->Get(String::New("type"));
         String::Utf8Value mark_type(type);
+
         Local<Value> day = item->ToObject()->Get(String::New("day"));
         mark_time.tm_mday = day->ToNumber()->Value();
+
         Local<Value> month = item->ToObject()->Get(String::New("month"));
         mark_time.tm_mon = month->ToNumber()->Value() - 1;
+
         Local<Value> year = item->ToObject()->Get(String::New("year"));
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
+
         Local<Value> repeat = item->ToObject()->Get(String::New("repeat"));
         String::Utf8Value mark_repeat(repeat);
 
@@ -64,10 +66,9 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
           intRepeat = ELM_CALENDAR_UNIQUE;
 
         elm_calendar_mark_add(eo, *mark_type, &mark_time, intRepeat);
-        elm_calendar_marks_draw(eo);
      }
 
-   return scope.Close(out);
+   elm_calendar_marks_draw(eo);
 }
 
 void CElmCalendar::eo_didChange(void *data, Evas_Object *, void *)
