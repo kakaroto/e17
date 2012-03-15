@@ -1,8 +1,8 @@
 #include "CElmNotify.h"
 
-CElmNotify::CElmNotify(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject(),
-       prop_handler(property_list_base)
+CElmNotify::CElmNotify(CEvasObject *parent, Local<Object> obj) 
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_notify_add(parent->top_widget_get());
    construct(eo, obj);
@@ -15,14 +15,13 @@ Handle<Value> CElmNotify::content_get() const
 
 void CElmNotify::content_set(Handle<Value> val)
 {
-   if (val->IsObject())
-     {
-        content = make_or_get(this, val);
-        if (content)
-          {
-             elm_object_content_set(eo, content->get());
-          }
-     }
+   if (!val->IsObject())
+     return;
+
+   content = make_or_get(this, val);
+
+   if (content)
+     elm_object_content_set(eo, content->get());
 }
 
 Handle<Value> CElmNotify::orient_get() const
@@ -33,11 +32,7 @@ Handle<Value> CElmNotify::orient_get() const
 void CElmNotify::orient_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        double orient = val->ToInt32()->Value();
-        elm_notify_orient_set(eo, (Elm_Notify_Orient)orient);
-        ELM_INF("Value of orient = %g", orient);
-     }
+     elm_notify_orient_set(eo, (Elm_Notify_Orient)val->ToInt32()->Value());
 }
 
 Handle<Value> CElmNotify::timeout_get() const
@@ -48,10 +43,7 @@ Handle<Value> CElmNotify::timeout_get() const
 void CElmNotify::timeout_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        double timeout = val->ToInt32()->Value();
-        elm_notify_timeout_set(eo, timeout);
-     }
+     elm_notify_timeout_set(eo, val->ToInt32()->Value());
 }
 
 Handle<Value> CElmNotify::allow_events_get() const
