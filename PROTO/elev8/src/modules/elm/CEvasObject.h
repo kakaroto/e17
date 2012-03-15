@@ -74,7 +74,7 @@ protected:
      typedef void (T::*prop_setter)(Handle<Value> val);
 
    private:
-     struct property_list {
+     struct CPropertyList {
        const char *name;
        prop_getter get;
        prop_setter set;
@@ -83,7 +83,7 @@ protected:
      /* base class property list, setup in constructor */
      CPropHandlerBase *prev_list;
 
-     static property_list list[];
+     static CPropertyList list[];
    public:
      explicit CPropHandler(CPropHandlerBase *&prev)
        {
@@ -101,7 +101,7 @@ protected:
        {
           T *self = static_cast<T*>(eo);
 
-          for (property_list *prop = list; prop->name; prop++)
+          for (CPropertyList *prop = list; prop->name; prop++)
             {
                if (!strcmp(prop->name, prop_name))
                  {
@@ -124,7 +124,7 @@ protected:
        {
           const T *self = static_cast<const T*>(eo);
 
-          for (property_list *prop = list; prop->name; prop++)
+          for (CPropertyList *prop = list; prop->name; prop++)
             {
                if (!strcmp(prop->name, prop_name))
                  {
@@ -143,7 +143,7 @@ protected:
       */
      virtual void fill_template(Handle<ObjectTemplate> &ot)
        {
-          for (property_list *prop = list; prop->name; prop++)
+          for (CPropertyList *prop = list; prop->name; prop++)
             ot->SetAccessor(String::New(prop->name), &eo_getter, &eo_setter);
           /* traverse into base classes */
           if (!prev_list)
@@ -385,7 +385,7 @@ public:
       }
 
 #define PROPERTIES_OF(type_) \
-   template<> CEvasObject::CPropHandler<type_>::property_list CEvasObject::CPropHandler<type_>::list[]
+   template<> CEvasObject::CPropHandler<type_>::CPropertyList CEvasObject::CPropHandler<type_>::list[]
 
 #define NO_PROPERTIES { { NULL } }
 
