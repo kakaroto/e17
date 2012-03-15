@@ -704,7 +704,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_genlist_item_display_only_get(Elm_Object_Item *it)
     void elm_genlist_item_show(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
     void elm_genlist_item_bring_in(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
-    evas.c_evas.Evas_Object *elm_genlist_item_object_get(Elm_Object_Item *it)
     void elm_genlist_item_update(Elm_Object_Item *item)
     void         elm_genlist_item_tooltip_text_set(Elm_Object_Item *item, char *text)
     void         elm_genlist_item_tooltip_content_cb_set(Elm_Object_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)

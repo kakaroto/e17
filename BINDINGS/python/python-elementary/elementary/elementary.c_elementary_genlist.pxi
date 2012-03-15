@@ -343,15 +343,6 @@ cdef class GenlistItem(WidgetItem):
         def __get__(self):
             return self.genlist_get()
 
-    def object_get(self):
-        cdef c_evas.const_Evas_Object *o
-        o = elm_genlist_item_object_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
-
-    property object:
-        def __get__(self):
-            return self.object_get()
-
     def data_get(self):
         cdef void* data
         data = elm_object_item_data_get(self.obj)
