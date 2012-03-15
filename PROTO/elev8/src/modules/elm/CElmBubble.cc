@@ -19,6 +19,7 @@ Handle<Value> CElmBubble::text_part_get() const
 
 void CElmBubble::text_part_set(Handle<Value> val)
 {
+   HandleScope scope;
    if (!val->IsObject()) {
         ELM_ERR("%s: value is not an object!", __FUNCTION__);
         return;
@@ -39,13 +40,14 @@ Handle<Value> CElmBubble::corner_get() const
 
 void CElmBubble::corner_set(Handle<Value> val)
 {
+   HandleScope scope;
+
    if (val->IsNumber())
      elm_bubble_pos_set(eo, (Elm_Bubble_Pos)val->ToNumber()->Value());
 }
 
-PROPERTIES_OF(CElmBubble) =
-  {
-     PROP_HANDLER(CElmBubble, text_part),
-     PROP_HANDLER(CElmBubble, corner),
-     { NULL }
-  };
+PROPERTIES_OF(CElmBubble) = {
+   PROP_HANDLER(CElmBubble, text_part),
+   PROP_HANDLER(CElmBubble, corner),
+   { NULL }
+};
