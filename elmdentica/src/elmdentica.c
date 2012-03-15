@@ -2082,7 +2082,6 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_weight_set(gui.timeline, 1, 1);
 		evas_object_size_hint_align_set(gui.timeline, -1, -1);
 		elm_genlist_bounce_set(gui.timeline, EINA_FALSE, EINA_TRUE);
-		elm_genlist_height_for_width_mode_set(gui.timeline, EINA_TRUE);
 		//elm_genlist_select_mode_set(gui.timeline, ELM_OBJECT_SELECT_MODE_NONE);
 		elm_genlist_mode_set(gui.timeline, ELM_LIST_COMPRESS);
 		elm_genlist_longpress_timeout_set(gui.timeline, 0.5);
