@@ -6,32 +6,26 @@
 #include "CEvasObject.h"
 
 class CElmTable : public CEvasObject {
-    FACTORY(CElmTable)
+   FACTORY(CElmTable)
 
 protected:
-    CPropHandler<CElmTable> prop_handler;
-    std::list<CEvasObject *> table_items;
+   CPropHandler<CElmTable> prop_handler;
+   std::list<CEvasObject *> table_items;
 
+   CElmTable(CEvasObject *parent, Local<Object> obj);
+
+   static Handle<Value> pack(const Arguments& args);
+   static Handle<Value> unpack(const Arguments&);
+   static Handle<Value> clear(const Arguments& args);
 public:
-    CElmTable(CEvasObject *parent, Local<Object> obj);
+   virtual void items_set(Handle<Value> val);
+   virtual Handle<Value> new_item_set(Handle<Value> item);
 
-    static Handle<Value> pack(const Arguments& args);
+   void homogeneous_set(Handle<Value> val);
+   virtual Handle<Value> homogeneous_get() const;
 
-    static Handle<Value> unpack(const Arguments&);
-
-    static Handle<Value> clear(const Arguments& args);
-
-    virtual void items_set(Handle<Value> val);
-
-    virtual Handle<Value> new_item_set(Handle<Value> item);
-
-    void homogeneous_set(Handle<Value> val);
-
-    virtual Handle<Value> homogeneous_get() const;
-
-    void padding_set(Handle<Value> val);
-
-    virtual Handle<Value> padding_get() const;
+   void padding_set(Handle<Value> val);
+   virtual Handle<Value> padding_get() const;
 };
 
 #endif
