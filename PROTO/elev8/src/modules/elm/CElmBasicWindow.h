@@ -13,6 +13,8 @@ protected:
 public:
    CElmBasicWindow(CEvasObject *parent, Local<Object> obj, Local<String> name, Local<Number> type);
 
+   static Handle<Value> add(const Arguments& args);
+
    virtual Handle<Value> type_get(void) const;
    virtual Handle<Value> label_get() const;
    virtual void label_set(const char *str);

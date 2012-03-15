@@ -22,6 +22,15 @@ CElmBasicWindow::CElmBasicWindow(CEvasObject *parent, Local<Object> obj,
 
    win_name = Persistent<Value>::New(name);
    win_type = Persistent<Value>::New(type);
+
+   get_object()->Set(String::New("add"), FunctionTemplate::New(add)->GetFunction());
+}
+
+Handle<Value> CElmBasicWindow::add(const Arguments& args) 
+{
+   CEvasObject *self = eo_from_info(args.This());
+   CEvasObject *obj = make_or_get(self, args[0]->ToObject());
+   return obj->get_object();
 }
 
 Handle<Value> CElmBasicWindow::type_get(void) const
