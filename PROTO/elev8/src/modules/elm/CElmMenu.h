@@ -12,14 +12,17 @@ class CElmMenu : public CEvasObject {
 protected:
    CElmMenu(CEvasObject *par, Local<Object> obj);
 
+   ~CElmMenu();
+
    class Item {
    public:
-      Local<Value> on_clicked;
-      Handle<Value> label;
-      Handle<Value> icon;
+      Persistent<Value> on_clicked;
+      Persistent<Value> label;
+      Persistent<Value> icon;
       bool disabled;
    };
 
+   //FIXME: refactor this struct entirely...
    class MenuItem : public Item {
    public:
       Elm_Object_Item *mi;
@@ -32,14 +35,10 @@ protected:
    CPropHandler<CElmMenu> prop_handler;
    MenuItem *root;
 
-   MenuItem *new_item_set(MenuItem *parent, Handle<Value> item);
+   MenuItem *new_item_set(MenuItem *parent, Handle<Object> item);
    void items_set(MenuItem *parent, Handle<Value> val);
 
    static void eo_on_click(void *data, Evas_Object *, void *);
-
-public:
-   virtual Handle<Value> move_get() const;
-   virtual void move_set(Handle<Value> val);
 };
 
 #endif

@@ -1,30 +1,34 @@
 #include "CElmMenu.h"
 
-CElmMenu::CElmMenu(CEvasObject *par, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmMenu::CElmMenu(CEvasObject *par, Local<Object> obj)
+   : CEvasObject()
+   , prop_handler(property_list_base)
+   , root(NULL)
 {
    eo = elm_menu_add(par->top_widget_get());
-   root = NULL;
    construct(eo, obj);
    items_set(NULL, obj->Get(String::New("items")));
 }
 
+CElmMenu::~CElmMenu()
+{
+   //FIXME: call ->Dispose() on Permanent<> variables
+   //FIXME: delete menu items
+}
+
 void CElmMenu::eo_on_click(void *data, Evas_Object *, void *)
 {
-   if (data)
-     {
-        Item *it = reinterpret_cast<Item *>(data);
+   if (!data)
+     return;
 
-        if (*it->on_clicked != NULL)
-          {
-             if (it->on_clicked->IsFunction())
-               {
-                  Handle<Function> fn(Function::Cast(*(it->on_clicked)));
-                  fn->Call(fn, 0, NULL);
-               }
-          }
-     }
+   Item *it = reinterpret_cast<Item *>(data);
+
+   if (it->on_clicked->IsUndefined())
+     return;
+
+   HandleScope scope;
+   Local<Function> fn(Function::Cast(*(it->on_clicked)));
+   fn->Call(fn, 0, NULL);
 }
 
 void CElmMenu::items_set(MenuItem *parent, Handle<Value> val)
@@ -32,145 +36,121 @@ void CElmMenu::items_set(MenuItem *parent, Handle<Value> val)
    /* add a list of children */
    if (!val->IsObject())
      {
-        ELM_ERR( "not an object!");
+        ELM_ERR("not an object!");
         return;
      }
 
+   HandleScope scope;
    Local<Object> in = val->ToObject();
-   Local<Array> props = in->GetPropertyNames();
+   Local<Array> props = in->GetOwnPropertyNames();
+
    /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
      {
-
-        Local<Value> x = props->Get(Integer::New(i));
-        String::Utf8Value val(x);
-
-        Local<Value> item = in->Get(x->ToString());
+        Local<Value> propname = props->Get(i);
+        Local<Value> item = in->Get(propname->ToString());
         if (!item->IsObject())
           {
              ELM_ERR( "list item is not an object");
              continue;
           }
 
-        MenuItem *par = new_item_set(parent, item);
+        MenuItem *par = new_item_set(parent, item->ToObject());
+        if (!par)
+          continue;
 
         Local<Value> items_object = item->ToObject()->Get(String::New("items"));
         if (items_object->IsObject())
-          {
-             items_set(par, items_object);
-          }
+          items_set(par, items_object);
      }
 }
 
-CElmMenu::MenuItem *CElmMenu::new_item_set(CElmMenu::MenuItem *parent, Handle<Value> item)
+CElmMenu::MenuItem *CElmMenu::new_item_set(CElmMenu::MenuItem *parent, Handle<Object> item)
 {
-   if (!item->IsObject())
+   Elm_Object_Item *par = parent ? parent->mi : NULL;
+
+   HandleScope scope;
+   Local<Value> separator = item->Get(String::New("separator"));
+
+   if (separator->IsBoolean() && separator->ToBoolean()->Value())
      {
-        // FIXME: permit adding strings here?
-        ELM_ERR( "list item is not an object");
+        elm_menu_item_separator_add(eo, par);
         return NULL;
      }
 
-   Elm_Object_Item *par = NULL;
-   if (parent != NULL)
+   MenuItem *it = new MenuItem();
+
+   it->next = NULL;
+   it->prev = NULL;
+   it->child = NULL;
+   it->label = Persistent<Value>::New(item->Get(String::New("label")));
+   it->icon = Persistent<Value>::New(item->Get(String::New("icon")));
+   it->on_clicked = Persistent<Value>::New(item->Get(String::New("on_clicked")));
+   it->parent = parent;
+
+   if (!it->label->IsString() && !it->icon->IsString())
      {
-        par = parent->mi;
+        ELM_ERR("Define at least a label or icon");
+        delete it;
+        return NULL;
      }
 
-   Local<Value> sep_object = item->ToObject()->Get(String::New("separator"));
+   Evas_Smart_Cb cb;
+   void *data;
 
-   if (sep_object->IsBoolean())
+   if (it->on_clicked->IsFunction())
      {
-        // FIXME add if separator : true, what if false
-        if (sep_object->ToBoolean()->Value())
-          {
-             elm_menu_item_separator_add(eo, par);
-          }
-        return parent;
+        cb = &eo_on_click;
+        data = reinterpret_cast<void *>(it);
      }
    else
      {
-        MenuItem *it;
+        cb = NULL;
+        data = NULL;
+     }
 
-        it = new MenuItem();
-        it->next = NULL;
-        it->prev = NULL;
-        it->child = NULL;
-        it->parent = NULL;
-        it->label = Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
-        it->icon = Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
-        it->on_clicked = Local<Value>::New(item->ToObject()->Get(String::New("on_clicked")));
-        it->parent = parent;
+   it->mi = elm_menu_item_add(eo, par, *String::Utf8Value(it->icon),
+                              *String::Utf8Value(it->label), cb, data);
 
-        // either a label with icon
-        if (!it->label->IsString() && !it->icon->IsString())
+   //FIXME :: Refactor
+   if (root==NULL)
+     {
+        this->root = it;
+     }
+   else
+     {
+        if (parent)
           {
-             ELM_ERR( "Not a label or separator");
-             delete it;
-             return NULL;
-          }
-
-        String::Utf8Value label(it->label->ToString());
-        String::Utf8Value icon(it->icon->ToString());
-
-        Evas_Smart_Cb cb;
-        void *data = NULL;
-
-        if ( it->on_clicked->IsFunction() )
-          {
-             cb = &eo_on_click;
-             data = reinterpret_cast<void *>(it);
-          }
-
-        it->mi = elm_menu_item_add(eo, par, *icon, *label, cb, data);
-
-        //FIXME :: Refactor
-        if (this->root==NULL)
-          {
-             this->root = it;
-          }
-        else
-          {
-             if (parent)
-               {
-                  it->parent = parent;
-                  if (parent->child==NULL)
-                    {
-                       parent->child = it;
-                    }
-                  else
-                    {
-                       MenuItem *ptr = parent->child;
-
-                       while(ptr->next)
-                         {
-                            ptr = ptr->next;
-                         }
-
-                       ptr->next = it;
-                       it->prev = ptr;
-                    }
-               }
+             it->parent = parent;
+             if (parent->child==NULL)
+               parent->child = it;
              else
                {
-                  MenuItem *ptr = this->root;
-                  while(ptr->next)
-                    {
-                       ptr = ptr->next;
-                    }
+                  MenuItem *ptr = parent->child;
+                  while (ptr->next)
+                    ptr = ptr->next;
+
                   ptr->next = it;
                   it->prev = ptr;
                }
           }
-
-        Local<Value> disabled_object = item->ToObject()->Get(String::New("disabled"));
-
-        if ( disabled_object->IsBoolean() )
+        else
           {
-             elm_object_item_disabled_set(it->mi, disabled_object->ToBoolean()->Value());
+             MenuItem *ptr = this->root;
+             while (ptr->next)
+               ptr = ptr->next;
+
+             ptr->next = it;
+             it->prev = ptr;
           }
-        return it;
      }
+
+   Local<Value> disabled = item->Get(String::New("disabled"));
+
+   if (disabled->IsBoolean())
+     elm_object_item_disabled_set(it->mi, disabled->ToBoolean()->Value());
+
+   return it;
 }
 
 PROPERTIES_OF(CElmMenu) = NO_PROPERTIES;
