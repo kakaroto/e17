@@ -12,61 +12,54 @@ class CElmHover : public CEvasObject {
 protected:
    CPropHandler<CElmHover> prop_handler;
 
+   enum Position {
+      TOP,
+      TOP_LEFT,
+      TOP_RIGHT,
+      BOTTOM,
+      BOTTOM_LEFT,
+      BOTTOM_RIGHT,
+      LEFT,
+      RIGHT,
+      MIDDLE,
+      N_POSITIONS
+   };
+   static const char *position_as_string[];
+
    Persistent<Value> target;
    Persistent<Value> parent;
 
-   /* the contents of Hover */
-   Persistent<Value> top;
-   Persistent<Value> top_left;
-   Persistent<Value> top_right;
-   Persistent<Value> bottom;
-   Persistent<Value> bottom_left;
-   Persistent<Value> bottom_right;
-   Persistent<Value> left;
-   Persistent<Value> right;
-   Persistent<Value> middle;
+   Persistent<Value> positions[N_POSITIONS];
 
-public:
+   virtual void content_set(CElmHover::Position, Handle<Value> val);
+
    CElmHover(CEvasObject *parent, Local<Object> obj);
-
-   virtual void content_set(const char *swallow,Handle<Value> val);
-
-   virtual Handle<Value> content_get(const char *swallow) const;
-
+public:
    void top_set(Handle<Value> val);
-
    virtual Handle<Value> top_get() const;
 
    void top_left_set(Handle<Value> val);
-
    virtual Handle<Value> top_left_get() const;
 
    void top_right_set(Handle<Value> val);
-
    virtual Handle<Value> top_right_get() const;
 
    void bottom_set(Handle<Value> val);
-
    virtual Handle<Value> bottom_get() const;
 
    void bottom_left_set(Handle<Value> val);
-
    virtual Handle<Value> bottom_left_get() const;
 
    void bottom_right_set(Handle<Value> val);
-
    virtual Handle<Value> bottom_right_get() const;
 
    void left_set(Handle<Value> val);
-
    virtual Handle<Value> left_get() const;
 
    void right_set(Handle<Value> val);
-
    virtual Handle<Value> right_get() const;
 
    void middle_set(Handle<Value> val);
-
    virtual Handle<Value> middle_get() const;
 };
 

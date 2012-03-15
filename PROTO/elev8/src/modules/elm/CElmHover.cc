@@ -1,191 +1,129 @@
 #include "CElmHover.h"
 
-CElmHover::CElmHover(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+const char *CElmHover::position_as_string[] = {
+   "top", "top_left", "top_right",
+   "bottom", "bottom_left", "bottom_right",
+   "left", "right", "middle"
+};
+
+CElmHover::CElmHover(CEvasObject *parent, Local<Object> obj)
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_hover_add(parent->top_widget_get());
    construct(eo, obj);
 }
 
-void CElmHover::content_set(const char *swallow,Handle<Value> val)
+void CElmHover::content_set(Position pos, Handle<Value> val)
 {
-   if (val->IsObject())
-     {
+   if (!val->IsObject())
+     return;
 
-        CEvasObject *content = make_or_get(this,val);
+   CEvasObject *content = make_or_get(this,val);
 
-        elm_object_part_content_set(eo, swallow, content->get());
+   elm_object_part_content_set(eo, CElmHover::position_as_string[pos], content->get());
 
-        if (!strcmp(swallow, "top"))
-          {
-             top.Dispose();
-             top = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "top_left"))
-          {
-             top_left.Dispose();
-             top_left = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "top_right"))
-          {
-             top_right.Dispose();
-             top_right = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "bottom"))
-          {
-             bottom.Dispose();
-             bottom = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "bottom_left"))
-          {
-             bottom_left.Dispose();
-             bottom_left = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "bottom_right"))
-          {
-             bottom_right.Dispose();
-             bottom_right = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "left"))
-          {
-             left.Dispose();
-             left = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "right"))
-          {
-             right.Dispose();
-             right = Persistent<Value>::New(content->get_object());
-          }
-        if (!strcmp(swallow, "middle"))
-          {
-             middle.Dispose();
-             middle = Persistent<Value>::New(content->get_object());
-          }
-     }
-}
-
-Handle<Value> CElmHover::content_get(const char *swallow) const
-{
-   if (!strcmp(swallow, "top"))
-     return top;
-   if (!strcmp(swallow, "top_left"))
-     return top_left;
-   if (!strcmp(swallow, "top_right"))
-     return top_right;
-   if (!strcmp(swallow, "bottom"))
-     return bottom;
-   if (!strcmp(swallow, "bottom_left"))
-     return bottom_left;
-   if (!strcmp(swallow, "bottom_right"))
-     return bottom_right;
-   if (!strcmp(swallow, "left"))
-     return left;
-   if (!strcmp(swallow, "right"))
-     return right;
-   if (!strcmp(swallow, "middle"))
-     return middle;
-
-   return Null();
+   positions[pos].Dispose();
+   positions[pos] = Persistent<Value>::New(content->get_object());
 }
 
 void CElmHover::top_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("top", val);
+     content_set(TOP, val);
 }
 
 Handle<Value> CElmHover::top_get() const
 {
-   return content_get("top");
+   return positions[TOP];
 }
 
 void CElmHover::top_left_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("top_left", val);
+     content_set(TOP_LEFT, val);
 }
 
 Handle<Value> CElmHover::top_left_get() const
 {
-   return content_get("top_left");
+   return positions[TOP_LEFT];
 }
 
 void CElmHover::top_right_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("top_right", val);
+     content_set(TOP_RIGHT, val);
 }
 
 Handle<Value> CElmHover::top_right_get() const
 {
-   return content_get("top_right");
+   return positions[TOP_RIGHT];
 }
 
 void CElmHover::bottom_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("bottom", val);
+     content_set(BOTTOM, val);
 }
 
 Handle<Value> CElmHover::bottom_get() const
 {
-   return content_get("bottom");
+   return positions[BOTTOM];
 }
 
 void CElmHover::bottom_left_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("bottom_left", val);
+     content_set(BOTTOM_LEFT, val);
 }
 
 Handle<Value> CElmHover::bottom_left_get() const
 {
-   return content_get("bottom_left");
+   return positions[BOTTOM_LEFT];
 }
 
 void CElmHover::bottom_right_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("bottom_right", val);
+     content_set(BOTTOM_RIGHT, val);
 }
 
 Handle<Value> CElmHover::bottom_right_get() const
 {
-   return content_get("bottom_right");
+   return positions[BOTTOM_RIGHT];
 }
 
 void CElmHover::left_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("left", val);
+     content_set(LEFT, val);
 }
 
 Handle<Value> CElmHover::left_get() const
 {
-   return content_get("left");
+   return positions[LEFT];
 }
 
 void CElmHover::right_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("right", val);
+     content_set(RIGHT, val);
 }
 
 Handle<Value> CElmHover::right_get() const
 {
-   return content_get("right");
+   return positions[RIGHT];
 }
 
 void CElmHover::middle_set(Handle<Value> val)
 {
    if (val->IsObject())
-     content_set("middle", val);
+     content_set(MIDDLE, val);
 }
 
 Handle<Value> CElmHover::middle_get() const
 {
-   return content_get("middle");
+   return positions[MIDDLE];
 }
 
 PROPERTIES_OF(CElmHover) = {
