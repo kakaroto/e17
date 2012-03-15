@@ -10,17 +10,13 @@ CElmDaySelector::CElmDaySelector(CEvasObject *parent, Local<Object> obj) :
 
 Handle<Value> CElmDaySelector::day_selected_get(int day) const
 {
-   Eina_Bool selected = elm_dayselector_day_selected_get(eo, (Elm_Dayselector_Day)day);
-   return Boolean::New(selected);
+   return Boolean::New(elm_dayselector_day_selected_get(eo, (Elm_Dayselector_Day)day));
 }
 
 void CElmDaySelector::day_selected_set(int day, Handle<Value> val)
 {
    if (val->IsBoolean())
-     {
-        Eina_Bool selected = val->BooleanValue();
-        elm_dayselector_day_selected_set(eo, (Elm_Dayselector_Day)day, selected);
-     }
+     elm_dayselector_day_selected_set(eo, (Elm_Dayselector_Day)day, val->BooleanValue());
 }
 
 Handle<Value> CElmDaySelector::monday_get() const
@@ -101,10 +97,7 @@ Handle<Value> CElmDaySelector::week_start_get() const
 void CElmDaySelector::week_start_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        int value = val->ToNumber()->Value();
-        elm_dayselector_week_start_set(eo, (Elm_Dayselector_Day)value);
-     }
+     elm_dayselector_week_start_set(eo, (Elm_Dayselector_Day)val->ToNumber()->Value());
 }
 
 Handle<Value> CElmDaySelector::weekend_start_get() const
@@ -115,10 +108,7 @@ Handle<Value> CElmDaySelector::weekend_start_get() const
 void CElmDaySelector::weekend_start_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        int value = val->ToNumber()->Value();
-        elm_dayselector_weekend_start_set(eo, (Elm_Dayselector_Day)value);
-     }
+     elm_dayselector_weekend_start_set(eo, (Elm_Dayselector_Day)val->ToNumber()->Value());
 }
 
 Handle<Value> CElmDaySelector::weekend_length_get() const
@@ -129,16 +119,13 @@ Handle<Value> CElmDaySelector::weekend_length_get() const
 void CElmDaySelector::weekend_length_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        int value = val->ToNumber()->Value();
-        elm_dayselector_weekend_length_set(eo, value);
-     }
+     elm_dayselector_weekend_length_set(eo, val->ToNumber()->Value());
 }
 
 void CElmDaySelector::on_changed(void *)
 {
-   Handle<Object> obj = get_object();
    HandleScope handle_scope;
+   Handle<Object> obj = get_object();
    Handle<Value> val = on_changed_val;
    assert(val->IsFunction());
    Handle<Function> fn(Function::Cast(*val));
@@ -169,8 +156,8 @@ Handle<Value> CElmDaySelector::on_changed_get(void) const
 
 void CElmDaySelector::on_lang_changed(void *)
 {
-   Handle<Object> obj = get_object();
    HandleScope handle_scope;
+   Handle<Object> obj = get_object();
    Handle<Value> val = on_lang_changed_val;
    assert(val->IsFunction());
    Handle<Function> fn(Function::Cast(*val));
@@ -178,16 +165,15 @@ void CElmDaySelector::on_lang_changed(void *)
    fn->Call(obj, 1, args);
 }
 
-
 void CElmDaySelector::eo_on_lang_changed(void *data, Evas_Object *, void *event_info)
 {
-   CElmDaySelector *changed = static_cast<CElmDaySelector*>(data);
-   changed->on_lang_changed(event_info);
+   static_cast<CElmDaySelector*>(data)->on_lang_changed(event_info);
 }
 
 void CElmDaySelector::on_lang_changed_set(Handle<Value> val)
 {
    on_lang_changed_val.Dispose();
+
    on_lang_changed_val = Persistent<Value>::New(val);
    if (val->IsFunction())
      evas_object_smart_callback_add(eo, "language,changed", &eo_on_lang_changed, this);
@@ -200,19 +186,18 @@ Handle<Value> CElmDaySelector::on_lang_changed_get(void) const
    return on_lang_changed_val;
 }
 
-template<> CEvasObject::CPropHandler<CElmDaySelector>::property_list
-CEvasObject::CPropHandler<CElmDaySelector>::list[] = {
-     PROP_HANDLER(CElmDaySelector, monday),
-     PROP_HANDLER(CElmDaySelector, tuesday),
-     PROP_HANDLER(CElmDaySelector, wednesday),
-     PROP_HANDLER(CElmDaySelector, thursday),
-     PROP_HANDLER(CElmDaySelector, friday),
-     PROP_HANDLER(CElmDaySelector, saturday),
-     PROP_HANDLER(CElmDaySelector, sunday),
-     PROP_HANDLER(CElmDaySelector, weekend_start),
-     PROP_HANDLER(CElmDaySelector, week_start),
-     PROP_HANDLER(CElmDaySelector, weekend_length),
-     PROP_HANDLER(CElmDaySelector, on_changed),
-     PROP_HANDLER(CElmDaySelector, on_lang_changed),
-     { NULL, NULL, NULL },
+PROPERTIES_OF(CElmDaySelector) = {
+   PROP_HANDLER(CElmDaySelector, monday),
+   PROP_HANDLER(CElmDaySelector, tuesday),
+   PROP_HANDLER(CElmDaySelector, wednesday),
+   PROP_HANDLER(CElmDaySelector, thursday),
+   PROP_HANDLER(CElmDaySelector, friday),
+   PROP_HANDLER(CElmDaySelector, saturday),
+   PROP_HANDLER(CElmDaySelector, sunday),
+   PROP_HANDLER(CElmDaySelector, weekend_start),
+   PROP_HANDLER(CElmDaySelector, week_start),
+   PROP_HANDLER(CElmDaySelector, weekend_length),
+   PROP_HANDLER(CElmDaySelector, on_changed),
+   PROP_HANDLER(CElmDaySelector, on_lang_changed),
+   { NULL },
 };
