@@ -639,7 +639,7 @@ my @__todo = qw(
   elm_check_state_pointer_set
   elm_fileselector_buttons_ok_cancel_get
   elm_fileselector_folder_only_get
-  elm_genlist_always_select_mode_set
+  elm_genlist_select_mode_set
   elm_genlist_at_xy_item_get
   elm_genlist_bounce_set
   elm_genlist_clear
@@ -661,7 +661,6 @@ my @__todo = qw(
   elm_genlist_item_update
   elm_genlist_last_item_get
   elm_genlist_multi_select_set
-  elm_genlist_no_select_mode_set
   elm_genlist_selected_item_get
   elm_genlist_selected_items_get
   elm_hoversel_items_get

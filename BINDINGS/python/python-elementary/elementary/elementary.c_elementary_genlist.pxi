@@ -601,11 +601,8 @@ cdef class Genlist(Object):
     def horizontal_get(self):
         return elm_genlist_mode_get(self.obj)
 
-    def always_select_mode_set(self, always_select):
-        elm_genlist_always_select_mode_set(self.obj, bool(always_select))
-
-    def no_select_mode_set(self, no_select):
-        elm_genlist_no_select_mode_set(self.obj, bool(no_select))
+    def select_mode_set(self, mode):
+        elm_genlist_select_mode_set(self.obj, mode)
 
     def mode_set(self, mode = ELM_LIST_COMPRESS):
         elm_genlist_mode_set(self.obj, mode)

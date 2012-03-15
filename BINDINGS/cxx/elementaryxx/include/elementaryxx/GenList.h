@@ -245,11 +245,11 @@ class GenListColumnSelector;
  *
  * Items will only call their selection func and callback when first becoming
  * selected. Any further clicks will do nothing, unless you enable always
- * select with elm_genlist_always_select_mode_set(). This means even if
- * selected, every click will make the selected callbacks be called.
- * elm_genlist_no_select_mode_set() will turn off the ability to select
- * items entirely and they will neither appear selected nor call selected
- * callback functions.
+ * select with elm_genlist_select_mode_set() using ELM_OBJECT_SELECT_MODE_ALWAYS.
+ * This means even if selected, every click will make the selected callbacks be called.
+ * elm_genlist_select_mode_set() using ELM_OBJECT_SELECT_MODE_NONE will turn off 
+ * the ability to select items entirely and they will neither appear selected 
+ * nor call selected callback functions.
  *
  * Remember that you can create new styles and add you own theme augmentation
  * per application with elm_theme_extension_add(). If you absolutely must
@@ -268,7 +268,9 @@ public:
   void setHorizontal (Elm_List_Mode mode);
   
   Elm_List_Mode getHorizontal ();
-  
+
+  Elm_Object_Select_Mode setSelectMode (Elm_Object_Select_Mode mode);
+
   void setHomogeneous (bool homogeneous);
   
   bool getHomogeneous ();

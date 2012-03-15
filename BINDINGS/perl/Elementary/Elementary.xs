@@ -1177,10 +1177,7 @@ void
 elm_genlist_item_update(Elm_Object_Item *item)
 
 void
-elm_genlist_always_select_mode_set(Evas_Object *obj, Eina_Bool always_select)
-
-void
-elm_genlist_no_select_mode_set(Evas_Object *obj, Eina_Bool no_select)
+elm_genlist_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
 
 void
 elm_genlist_compress_mode_set(Evas_Object *obj, Eina_Bool compress)

@@ -1018,7 +1018,7 @@ void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
   bx->show ();
 
   GenList *gl = GenList::factory (*win);
-  gl->setAlwaysSelectMode (true);
+  gl->setSelectMode (ELM_OBJECT_SELECT_MODE_ALWAYS);
   gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   gl->show ();
@@ -1203,7 +1203,7 @@ void test_genlist6(void *data, Evas_Object *obj, void *event_info)
   bx->show ();
 
   GenList *gl = GenList::factory (*win);
-  gl->setAlwaysSelectMode (true);
+  gl->setSelectMode (ELM_OBJECT_SELECT_MODE_ALWAYS);
   gl->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   gl->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   gl->show ();

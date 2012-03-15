@@ -75,6 +75,12 @@ int GenList::getBlockCound ()
   return elm_genlist_block_count_get (o);
 }
 
+bool GenList::setSelectMode (Elm_Object_Select_Mode mode)
+{
+   return elm_genlist_select_mode_set (o, mode);
+}
+
+
 void GenList::setDataModel (GenDataModel &model)
 {
   mModel = &model;
