@@ -1,31 +1,31 @@
 #include "CElmGrid.h"
 
-CElmGrid::CElmGrid(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmGrid::CElmGrid(CEvasObject *parent, Local<Object> obj)
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_grid_add(parent->top_widget_get());
    construct(eo, obj);
-   get_object()->Set(String::New("add"), FunctionTemplate::New(add)->GetFunction());
-   get_object()->Set(String::New("clear"), FunctionTemplate::New(clear)->GetFunction());
+
+   get_object()->Set(String::NewSymbol("add"), FunctionTemplate::New(add)->GetFunction());
+   get_object()->Set(String::NewSymbol("clear"), FunctionTemplate::New(clear)->GetFunction());
+
    items_set(obj->Get(String::New("subobjects")));
 }
 
 Handle<Value> CElmGrid::add(const Arguments& args)
 {
-   CEvasObject *self = eo_from_info(args.This());
-   CElmGrid *grid = static_cast<CElmGrid *>(self);
+   CElmGrid *grid = static_cast<CElmGrid *>(eo_from_info(args.This()));
+
    if (args[0]->IsObject())
-     {
-        grid->pack_set(args[0]);
-     }
+     grid->pack_set(args[0]);
    return Undefined();
 }
 
 Handle<Value> CElmGrid::clear(const Arguments& args)
 {
-   CEvasObject *self = eo_from_info(args.This());
-   CElmGrid *grid = static_cast<CElmGrid *>(self);
+   CElmGrid *grid = static_cast<CElmGrid *>(eo_from_info(args.This()));
+
    elm_grid_clear(grid->get(), true);
    grid->grid_items.clear();
    return Undefined();
@@ -45,31 +45,30 @@ void CElmGrid::items_set(Handle<Value> val)
    /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
      {
-        Local<Value> x = props->Get(Integer::New(i));
-        String::Utf8Value val(x);
-        Local<Value> item = in->Get(x->ToString());
-        pack_set(item);
+        Local<Value> val = props->Get(Integer::New(i));
+        pack_set(in->Get(val->ToString()));
      }
 }
 
 void CElmGrid::pack_set(Handle<Value> item)
 {
    CEvasObject *child = NULL;
+
    if (!item->IsObject())
      {
         // FIXME: permit adding strings here?
         ELM_ERR("grid item is not an object");
         return;
      }
-   Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
 
+   Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
    if (!subobj->IsObject())
      return;
 
    //TODO : need to check if this is an existing child.
    child = make_or_get(this, subobj);
-   if(!child)
-     return;
+   if (!child)
+      return;
 
    Local<Value> xpos = item->ToObject()->Get(String::New("x"));
    Local<Value> ypos = item->ToObject()->Get(String::New("y"));
@@ -85,14 +84,9 @@ void CElmGrid::pack_set(Handle<Value> item)
         return;
      }
 
-   int x,y,w,h;
-   x = xpos->IntegerValue();
-   y = ypos->IntegerValue();
-   w = width->IntegerValue();
-   h = height->IntegerValue();
-
-   ELM_INF("Objects = %d %d %d %d", x,y,w,h);
-   elm_grid_pack (this->get(), child->get(), x, y, w, h);
+   elm_grid_pack(this->get(), child->get(),
+                 xpos->IntegerValue(), ypos->IntegerValue(),
+                 width->IntegerValue(), height->IntegerValue());
    grid_items.push_back(child);
 }
 
@@ -113,17 +107,21 @@ void CElmGrid::size_set(Handle<Value> val)
 
 Handle<Value> CElmGrid::size_get() const
 {
+   HandleScope scope;
+
    int x, y;
    elm_grid_size_get (eo, &x, &y);
+
    Local<Object> obj = Object::New();
    obj->Set(String::New("x"), Number::New(x));
    obj->Set(String::New("y"), Number::New(y));
-   return obj;
+
+   return scope.Close(obj);
 }
 
 PROPERTIES_OF(CElmGrid) = {
-  PROP_HANDLER(CElmGrid, size),
-  PROP_HANDLER(CElmGrid, pack),
-  { NULL }
+   PROP_HANDLER(CElmGrid, size),
+   PROP_HANDLER(CElmGrid, pack),
+   { NULL }
 };
 
