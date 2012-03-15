@@ -14,15 +14,15 @@ protected:
 
    Handle<Object> marks_set(Handle<Value> val);
 
-   static void eo_on_changed(void *data, Evas_Object *, void *event_info);
+   static void eo_didChange(void *data, Evas_Object *, void *event_info);
 
    CPropHandler<CElmCalendar> prop_handler;
-   /* the on_clicked function */
-   Persistent<Value> on_changed_val;
+
+   Persistent<Value> didChange;
 
 public:
-   virtual void on_changed_set(Handle<Value> val);
-   virtual Handle<Value> on_changed_get(void) const;
+   virtual void didChange_set(Handle<Value> val);
+   virtual Handle<Value> didChange_get(void) const;
 
    virtual Handle<Value> weekday_names_get(void) const;
    virtual void weekday_names_set(Handle<Value> val);

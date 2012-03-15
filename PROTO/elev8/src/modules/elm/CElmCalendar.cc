@@ -70,12 +70,12 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
    return scope.Close(out);
 }
 
-void CElmCalendar::eo_on_changed(void *data, Evas_Object *, void *)
+void CElmCalendar::eo_didChange(void *data, Evas_Object *, void *)
 {
    CElmCalendar *cal = static_cast<CElmCalendar*>(data);
 
    Handle<Object> obj = cal->get_object();
-   Handle<Value> val = cal->on_changed_val;
+   Handle<Value> val = cal->didChange;
    assert(val->IsFunction());
 
    HandleScope scope;
@@ -84,20 +84,20 @@ void CElmCalendar::eo_on_changed(void *data, Evas_Object *, void *)
    fn->Call(obj, 1, args);
 }
 
-void CElmCalendar::on_changed_set(Handle<Value> val)
+void CElmCalendar::didChange_set(Handle<Value> val)
 {
-   on_changed_val.Dispose();
-   on_changed_val = Persistent<Value>::New(val);
+   didChange.Dispose();
+   didChange = Persistent<Value>::New(val);
 
    if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
+     evas_object_smart_callback_add(eo, "changed", &eo_didChange, this);
    else
-     evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
+     evas_object_smart_callback_del(eo, "changed", &eo_didChange);
 }
 
-Handle<Value> CElmCalendar::on_changed_get(void) const
+Handle<Value> CElmCalendar::didChange_get(void) const
 {
-   return on_changed_val;
+   return didChange;
 }
 
 Handle<Value> CElmCalendar::weekday_names_get(void) const
@@ -275,6 +275,6 @@ PROPERTIES_OF(CElmCalendar) = {
      PROP_HANDLER(CElmCalendar, selected_month),
      PROP_HANDLER(CElmCalendar, selected_year),
      PROP_HANDLER(CElmCalendar, calendar_interval),
-     PROP_HANDLER(CElmCalendar, on_changed),
+     PROP_HANDLER(CElmCalendar, didChange),
      { NULL }
 };
