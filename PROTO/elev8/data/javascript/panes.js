@@ -25,8 +25,8 @@ var my_window = new elm.window({
             type : "pane",
             weight : EXPAND_BOTH,
             resize : true,
-                        fill : true,
-                        content_left : {
+            fill : true,
+            left : {
                 type : "button",
                 label : "Left",
                 weight : { x : -1.0, y : -1.0 },
@@ -38,14 +38,14 @@ var my_window = new elm.window({
                 },
                 icon : logo_icon,
             },
-                        content_right : {
+            right : {
                 type : "pane",
                 weight : EXPAND_BOTH,
                 align : FILL_BOTH,
                 resize : true,
                 fill : true,
                 horizontal : true,
-                content_left : {
+                left : {
                     type : "button",
                     label : "Up",
                     weight : { x : -1.0, y : -1.0 },
@@ -57,7 +57,7 @@ var my_window = new elm.window({
                     },
                     icon : logo_icon,
                 },
-                content_right : {
+                right : {
                     type : "button",
                     label : "Down",
                     weight : { x : -1.0, y : -1.0 },
