@@ -282,7 +282,7 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 
 	eina_strbuf_free(buf);
 
-	if(elm_toggle_state_get(secure_entry)) {
+	if(elm_check_state_get(secure_entry)) {
 		proto = "https";
 		port = 443;
 	} else {
@@ -354,7 +354,7 @@ void on_account_type_chose_identica(void *data, Evas_Object *obj, void *event_in
 	evas = evas_object_evas_get(obj);
 	if(evas) {
 		eo = evas_object_name_find(evas, "secure_entry");
-		if(eo) elm_toggle_state_set(eo, TRUE);
+		if(eo) elm_check_state_set(eo, TRUE);
 
 		eo = evas_object_name_find(evas, "domain_entry");
 		if(eo) elm_entry_entry_set(eo, "identi.ca");
@@ -447,15 +447,17 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				elm_table_pack(table, type_entry, 0, 1, 1, 1);
 			evas_object_show(type_entry);
 
-			secure_entry = elm_toggle_add(user_data_dialog);
+			secure_entry = elm_check_add(user_data_dialog);
+                                elm_object_style_set(secure_entry, "toggle");
+                                elm_object_part_text_set(secure_entry, "on", _("Secure"));
+                                elm_object_part_text_set(secure_entry, "off", _("Faster"));
 				evas_object_name_set(secure_entry, "secure_entry");
 				evas_object_size_hint_weight_set(secure_entry, 1, 1);
 				evas_object_size_hint_align_set(secure_entry, -1, 0.5);
-				elm_toggle_states_labels_set(secure_entry, _("Secure"), _("Faster"));
 				if(use_https)
-					elm_toggle_state_set(secure_entry, TRUE);
+					elm_check_state_set(secure_entry, TRUE);
 				else 
-					elm_toggle_state_set(secure_entry, FALSE);
+					elm_check_state_set(secure_entry, FALSE);
 
 				elm_table_pack(table, secure_entry, 1, 1, 1, 1);
 			evas_object_show(secure_entry);
@@ -1013,14 +1015,14 @@ Evas_Object *settings_browser_hoversel(void) {
 }
 
 void on_toggle_online_changed(void *data, Evas_Object *toggle, void *event_info) {
-	if(elm_toggle_state_get(toggle))
+	if(elm_check_state_get(toggle))
 		settings->online=1;
 	else
 		settings->online=0;
 }
 
 void on_toggle_timestamps(void *data, Evas_Object *toggle, void *event_info) {
-	if(elm_toggle_state_get(toggle)) {
+	if(elm_check_state_get(toggle)) {
 		settings->rel_timestamps=EINA_TRUE;
 		settings->rel_ts_timer = ecore_timer_add(60, ed_statuses_update_time, NULL);
 	} else {
@@ -1051,9 +1053,11 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		
 		frame = elm_frame_add(settings_area);
 			elm_object_text_set(frame, _("Online mode..."));
-			toggle = elm_toggle_add(settings_area);
-			elm_toggle_states_labels_set(toggle, _("Online"), _("Offline"));
-			elm_toggle_state_set(toggle, settings->online);
+			toggle = elm_check_add(settings_area);
+                        elm_object_style_set(toggle, "toggle");
+                        elm_object_part_text_set(toggle, "on", _("Online"));
+                        elm_object_part_text_set(toggle, "off", _("Offline"));
+			elm_check_state_set(toggle, settings->online);
 			evas_object_smart_callback_add(toggle, "changed", on_toggle_online_changed, NULL);
 			elm_object_content_set(frame, toggle);
 			elm_table_pack(options_editor, frame, 1, 0, 1, 1);
@@ -1061,9 +1065,11 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		
 		frame = elm_frame_add(settings_area);
 			elm_object_text_set(frame, _("Timestamps..."));
-			toggle = elm_toggle_add(settings_area);
-			elm_toggle_states_labels_set(toggle, _("Relative"), _("Absolute"));
-			elm_toggle_state_set(toggle, settings->rel_timestamps);
+			toggle = elm_check_add(settings_area);
+                                elm_object_style_set(toggle, "toggle");
+                                elm_object_part_text_set(toggle, "on", _("Relative"));
+                                elm_object_part_text_set(toggle, "off", _("Absolute"));
+			elm_check_state_set(toggle, settings->rel_timestamps);
 			evas_object_smart_callback_add(toggle, "changed", on_toggle_timestamps, NULL);
 			elm_object_content_set(frame, toggle);
 			elm_table_pack(options_editor, frame, 0, 1, 1, 1);

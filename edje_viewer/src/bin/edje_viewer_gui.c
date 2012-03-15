@@ -626,25 +626,34 @@ create_toggles_win(Viewer *v)
    bx = elm_box_add(v->gui.toggles_win);
    evas_object_show(bx);
 
-   o = elm_toggle_add(bx);
+   o = elm_check_add(bx);
+   elm_object_style_set(o, "toggle");
+   elm_object_part_text_set(o, "on", "ON");
+   elm_object_part_text_set(o, "off", "OFF");
    elm_object_text_set(o, "Show parts list");
-   elm_toggle_state_set(o, v->config->show_parts);
+   elm_check_state_set(o, v->config->show_parts);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
                                   on_parts_list_toggle_change, v);
    evas_object_show(o);
 
-   o = elm_toggle_add(bx);
+   o = elm_check_add(bx);
+   elm_object_style_set(o, "toggle");
+   elm_object_part_text_set(o, "on", "ON");
+   elm_object_part_text_set(o, "off", "OFF");
    elm_object_text_set(o, "Show text entry");
-   elm_toggle_state_set(o, v->config->show_entry);
+   elm_check_state_set(o, v->config->show_entry);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
                                   on_text_entry_toggle_change, v);
    evas_object_show(o);
 
-   o = elm_toggle_add(bx);
+   o = elm_check_add(bx);
+   elm_object_style_set(o, "toggle");
+   elm_object_part_text_set(o, "on", "ON");
+   elm_object_part_text_set(o, "off", "OFF");
    elm_object_text_set(o, "Show signals log");
-   elm_toggle_state_set(o, v->config->show_signals);
+   elm_check_state_set(o, v->config->show_signals);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
                                   on_signals_toggle_change, v);
@@ -871,7 +880,7 @@ on_parts_list_toggle_change(void *data, Evas_Object *obj, void *event_info)
 {
    Viewer *v = data;
 
-   v->config->show_parts = elm_toggle_state_get(obj);
+   v->config->show_parts = elm_check_state_get(obj);
    if (v->config->show_parts)
      {
         if (!v->gui.parts_list)
@@ -894,7 +903,7 @@ on_text_entry_toggle_change(void *data, Evas_Object *obj, void *event_info)
 {
    Viewer *v = data;
 
-   v->config->show_entry = elm_toggle_state_get(obj);
+   v->config->show_entry = elm_check_state_get(obj);
    if (v->config->show_entry)
      {
         if (!v->gui.entry)
@@ -917,7 +926,7 @@ on_signals_toggle_change(void *data, Evas_Object *obj, void *event_info)
 {
    Viewer *v = data;
 
-   v->config->show_signals = elm_toggle_state_get(obj);
+   v->config->show_signals = elm_check_state_get(obj);
    if (v->config->show_signals)
      {
         if (!v->gui.sig_box)

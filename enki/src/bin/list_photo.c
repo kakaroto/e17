@@ -103,13 +103,16 @@ list_photo_new(Evas_Object *edje)
    evas_object_size_hint_align_set(lbl, 0.0, 0.5);
    elm_box_pack_end(bx2, lbl);
 
-   tg = elm_toggle_add(edje);
+   tg = elm_check_add(edje);
+   elm_object_style_set(tg, "toggle");
+
    enlil_photo->multiselection = tg;
    evas_object_size_hint_weight_set(tg, -1.0, -1.0);
    evas_object_size_hint_align_set(tg, 1.0, -1.0);
    elm_object_text_set(tg, "Multi selection");
-   elm_toggle_state_set(tg, 1);
-   elm_toggle_states_labels_set(tg, "No", "Yes");
+   elm_check_state_set(tg, 1);
+   elm_object_part_text_set(tg, "on", "No");
+   elm_object_part_text_set(tg, "off", "Yes");
    evas_object_smart_callback_add(tg, "changed", _tg_multiselect_changed_cb,
                                   enlil_photo);
    elm_box_pack_end(bx2, tg);
@@ -690,9 +693,9 @@ _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event_info)
 
    photos_list_object_multiselect_set(
                                       list_photo->o_list,
-                                      !elm_toggle_state_get(
+                                      !elm_check_state_get(
                                                             list_photo->multiselection));
-   if (elm_toggle_state_get(list_photo->multiselection)) _bt_unselect_all_cb(
+   if (elm_check_state_get(list_photo->multiselection)) _bt_unselect_all_cb(
                                                                              data,
                                                                              NULL,
                                                                              NULL);
