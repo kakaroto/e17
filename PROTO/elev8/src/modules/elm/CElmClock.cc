@@ -125,14 +125,13 @@ void CElmClock::edit_set(Handle<Value> val)
     }
 }
 
-template<> CEvasObject::CPropHandler<CElmClock>::property_list
-CEvasObject::CPropHandler<CElmClock>::list[] = {
+PROPERTIES_OF(CElmClock) = {
     PROP_HANDLER(CElmClock, edit),
     PROP_HANDLER(CElmClock, hour),
     PROP_HANDLER(CElmClock, minute),
     PROP_HANDLER(CElmClock, second),
     PROP_HANDLER(CElmClock, show_seconds),
     PROP_HANDLER(CElmClock, show_am_pm),
-    { NULL, NULL, NULL },
+    { NULL }
 };
 

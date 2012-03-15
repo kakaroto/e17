@@ -825,8 +825,7 @@ Handle<Value> CEvasObject::size_hint_aspect_get(void) const
 
 Eina_Hash *CEvasObject::constructor_map;
 
-template<> CEvasObject::CPropHandler<CEvasObject>::property_list
-CEvasObject::CPropHandler<CEvasObject>::list[] = {
+PROPERTIES_OF(CEvasObject) = {
      PROP_HANDLER(CEvasObject, x),
      PROP_HANDLER(CEvasObject, y),
      PROP_HANDLER(CEvasObject, disabled),
@@ -857,5 +856,5 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, antialias),
      PROP_HANDLER(CEvasObject, static_clip),
      PROP_HANDLER(CEvasObject, size_hint_aspect),
-     { NULL, NULL, NULL },
+     { NULL }
 };

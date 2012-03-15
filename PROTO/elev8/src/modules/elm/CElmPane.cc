@@ -48,10 +48,9 @@ Handle<Value> CElmPane::on_press_get(void) const
 }
 
 
-template<> CEvasObject::CPropHandler<CElmPane>::property_list
-CEvasObject::CPropHandler<CElmPane>::list[] = {
+PROPERTIES_OF(CElmPane) = {
      PROP_HANDLER(CElmPane, horizontal),
      PROP_HANDLER(CElmPane, on_press),
-     { NULL, NULL, NULL },
+     { NULL }
 };
 

@@ -89,11 +89,10 @@ Handle<Value> CElmActionSlider::magnet_get() const
    return Integer::New(elm_actionslider_magnet_pos_get(eo));
 }
 
-template<> CEvasObject::CPropHandler<CElmActionSlider>::property_list
-CEvasObject::CPropHandler<CElmActionSlider>::list[] =
+PROPERTIES_OF(CElmActionSlider) =
   {
      PROP_HANDLER(CElmActionSlider, magnet),
      PROP_HANDLER(CElmActionSlider, slider),
      PROP_HANDLER(CElmActionSlider, labels),
-     { NULL, NULL, NULL },
+     { NULL }
   };

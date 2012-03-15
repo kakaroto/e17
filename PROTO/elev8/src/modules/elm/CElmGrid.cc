@@ -121,10 +121,9 @@ Handle<Value> CElmGrid::size_get() const
    return obj;
 }
 
-template<> CEvasObject::CPropHandler<CElmGrid>::property_list
-CEvasObject::CPropHandler<CElmGrid>::list[] = {
+PROPERTIES_OF(CElmGrid) = {
   PROP_HANDLER(CElmGrid, size),
   PROP_HANDLER(CElmGrid, pack),
-  { NULL, NULL, NULL },
+  { NULL }
 };
 

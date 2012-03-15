@@ -67,9 +67,8 @@ CEvasObject *CElmBox::get_child(Handle <Value> name)
     return ret;
 }
 
-template<> CEvasObject::CPropHandler<CElmBox>::property_list CEvasObject::CPropHandler<CElmBox>::list[] =
-{
+PROPERTIES_OF(CElmBox) = {
     PROP_HANDLER(CElmBox, horizontal),
     PROP_HANDLER(CElmBox, homogeneous),
-    {NULL, NULL, NULL},
+    { NULL }
 };

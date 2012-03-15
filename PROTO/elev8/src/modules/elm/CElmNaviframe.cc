@@ -73,7 +73,4 @@ Handle<Value> CElmNaviframe::push(const Arguments& args)
    return Undefined();
 }
 
-template<> CEvasObject::CPropHandler<CElmNaviframe>::property_list
-CEvasObject::CPropHandler<CElmNaviframe>::list[] = {
-  { NULL, NULL, NULL },
-};
+PROPERTIES_OF(CElmNaviframe) = NO_PROPERTIES;

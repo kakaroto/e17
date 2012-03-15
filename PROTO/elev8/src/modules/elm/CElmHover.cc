@@ -188,8 +188,7 @@ Handle<Value> CElmHover::middle_get() const
    return content_get("middle");
 }
 
-template<> CEvasObject::CPropHandler<CElmHover>::property_list
-CEvasObject::CPropHandler<CElmHover>::list[] = {
+PROPERTIES_OF(CElmHover) = {
   PROP_HANDLER(CElmHover, top),
   PROP_HANDLER(CElmHover, top_left),
   PROP_HANDLER(CElmHover, top_right),
@@ -199,5 +198,5 @@ CEvasObject::CPropHandler<CElmHover>::list[] = {
   PROP_HANDLER(CElmHover, left),
   PROP_HANDLER(CElmHover, right),
   PROP_HANDLER(CElmHover, middle),
-  { NULL, NULL, NULL },
+  { NULL }
 };

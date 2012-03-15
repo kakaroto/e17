@@ -109,12 +109,11 @@ Handle<Value> CElmColorSelector::on_changed_get(void) const
    return on_changed_val;
 }
 
-template<> CEvasObject::CPropHandler<CElmColorSelector>::property_list
-CEvasObject::CPropHandler<CElmColorSelector>::list[] = {
+PROPERTIES_OF(CElmColorSelector) = {
      PROP_HANDLER(CElmColorSelector, red),
      PROP_HANDLER(CElmColorSelector, green),
      PROP_HANDLER(CElmColorSelector, blue),
      PROP_HANDLER(CElmColorSelector, alpha),
      PROP_HANDLER(CElmColorSelector, on_changed),
-     { NULL, NULL, NULL },
+     { NULL }
 };

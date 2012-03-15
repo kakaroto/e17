@@ -95,9 +95,8 @@ Handle <Value> CElmScroller::policy_get() const
     return obj;
 }
 
-template<> CEvasObject::CPropHandler<CElmScroller>::property_list
-CEvasObject::CPropHandler<CElmScroller>::list[] = {
+PROPERTIES_OF(CElmScroller) = {
      PROP_HANDLER(CElmScroller, bounce),
      PROP_HANDLER(CElmScroller, policy),
-     { NULL, NULL, NULL },
+     { NULL }
 };

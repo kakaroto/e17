@@ -189,8 +189,7 @@ Handle <Value> CElmSlider::on_changed_get(void) const
     return on_changed_val;
 }
 
-template<> CEvasObject::CPropHandler<CElmSlider>::property_list CEvasObject::CPropHandler<CElmSlider>::list[] =
-{
+PROPERTIES_OF(CElmSlider) = {
   PROP_HANDLER(CElmSlider, units),
   PROP_HANDLER(CElmSlider, indicator),
   PROP_HANDLER(CElmSlider, span),
@@ -202,6 +201,6 @@ template<> CEvasObject::CPropHandler<CElmSlider>::property_list CEvasObject::CPr
   PROP_HANDLER(CElmSlider, end),
   PROP_HANDLER(CElmSlider, horizontal),
   PROP_HANDLER(CElmSlider, on_changed),
-  { NULL, NULL, NULL },
+  { NULL }
 };
 

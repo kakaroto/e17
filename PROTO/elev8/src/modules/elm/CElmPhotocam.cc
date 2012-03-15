@@ -93,12 +93,11 @@ Handle<Value> CElmPhotocam::paused_get() const
    return Boolean::New(elm_photocam_paused_get(eo));
 }
 
-template<> CEvasObject::CPropHandler<CElmPhotocam>::property_list
-CEvasObject::CPropHandler<CElmPhotocam>::list[] = {
+PROPERTIES_OF(CElmPhotocam) = {
   PROP_HANDLER(CElmPhotocam, file),
   PROP_HANDLER(CElmPhotocam, zoom),
   PROP_HANDLER(CElmPhotocam, zoom_mode),
   PROP_HANDLER(CElmPhotocam, paused),
   PROP_HANDLER(CElmPhotocam, bounce),
-  { NULL, NULL, NULL },
+  { NULL }
 };

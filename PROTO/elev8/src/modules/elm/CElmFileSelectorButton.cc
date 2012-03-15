@@ -136,8 +136,7 @@ Handle<Value> CElmFileSelectorButton::on_clicked_get(void) const
    return on_clicked_val;
 }
 
-template<> CEvasObject::CPropHandler<CElmFileSelectorButton>::property_list
-CEvasObject::CPropHandler<CElmFileSelectorButton>::list[] = {
+PROPERTIES_OF(CElmFileSelectorButton) = {
      PROP_HANDLER(CElmFileSelectorButton, win_title),
      PROP_HANDLER(CElmFileSelectorButton, win_size),
      PROP_HANDLER(CElmFileSelectorButton, path),
@@ -145,5 +144,5 @@ CEvasObject::CPropHandler<CElmFileSelectorButton>::list[] = {
      PROP_HANDLER(CElmFileSelectorButton, folder_only),
      PROP_HANDLER(CElmFileSelectorButton, is_save),
      PROP_HANDLER(CElmFileSelectorButton, inwin_mode),
-     { NULL, NULL, NULL },
+     { NULL }
 };

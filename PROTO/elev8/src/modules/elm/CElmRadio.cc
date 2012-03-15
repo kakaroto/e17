@@ -62,10 +62,9 @@ void CElmRadio::value_set(Handle <Value> value)
         elm_radio_state_value_set(eo, value->Int32Value());
 }
 
-template<> CEvasObject::CPropHandler<CElmRadio>::property_list CEvasObject::CPropHandler<CElmRadio>::list[] =
-{
+PROPERTIES_OF(CElmRadio) = {
     PROP_HANDLER(CElmRadio, icon),
     PROP_HANDLER(CElmRadio, group),
     PROP_HANDLER(CElmRadio, value),
-    { NULL, NULL, NULL },
+    { NULL }
 };

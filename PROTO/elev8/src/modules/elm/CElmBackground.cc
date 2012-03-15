@@ -76,10 +76,9 @@ void CElmBackground::blue_set(Handle <Value> val)
     }
 }
 
-template <> CEvasObject::CPropHandler <CElmBackground>::property_list CEvasObject::CPropHandler <CElmBackground>::list[] =
-{
+PROPERTIES_OF(CElmBackground) = {
     PROP_HANDLER(CElmBackground, red),
     PROP_HANDLER(CElmBackground, green),
     PROP_HANDLER(CElmBackground, blue),
-    {NULL, NULL, NULL}
+    { NULL }
 };

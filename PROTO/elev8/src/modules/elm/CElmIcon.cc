@@ -73,10 +73,9 @@ Handle <Value> CElmIcon::image_get(void) const
         return Null();
 }
 
-template<> CEvasObject::CPropHandler<CElmIcon>::property_list CEvasObject::CPropHandler<CElmIcon>::list[] =
-{
+PROPERTIES_OF(CElmIcon) = {
      PROP_HANDLER(CElmIcon, resizable_up),
      PROP_HANDLER(CElmIcon, resizable_down),
      PROP_HANDLER(CElmIcon, prescale),
-     { NULL, NULL, NULL },
+     { NULL }
 };

@@ -25,8 +25,7 @@ void CElmInwin::activate_set(Handle<Value> val)
      elm_win_inwin_activate(eo);
 }
 
-template<> CEvasObject::CPropHandler<CElmInwin>::property_list
-CEvasObject::CPropHandler<CElmInwin>::list[] = {
+PROPERTIES_OF(CElmInwin) = {
      PROP_HANDLER(CElmInwin, activate),
-     { NULL, NULL, NULL },
+     { NULL }
 };

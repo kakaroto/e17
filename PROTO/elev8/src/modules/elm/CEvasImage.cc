@@ -395,8 +395,7 @@ Handle<Value> CEvasImage::on_clicked_get(void) const
    return on_clicked_val;
 }
 
-template<> CEvasObject::CPropHandler<CEvasImage>::property_list
-CEvasObject::CPropHandler<CEvasImage>::list[] = {
+PROPERTIES_OF(CEvasImage) = {
      PROP_HANDLER(CEvasImage, file),
      PROP_HANDLER(CEvasImage, width),
      PROP_HANDLER(CEvasImage, height),
@@ -415,5 +414,5 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, load_region),
      PROP_HANDLER(CEvasImage, load_orientation),
      PROP_HANDLER(CEvasImage, colorspace),
-     { NULL, NULL, NULL }
+     { NULL }
 };

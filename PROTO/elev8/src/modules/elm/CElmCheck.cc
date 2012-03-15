@@ -37,10 +37,9 @@ void CElmCheck::icon_set(Handle<Value> value)
     the_icon = Persistent<Value>::New(icon->get_object());
 }
 
-template<> CEvasObject::CPropHandler<CElmCheck>::property_list
-CEvasObject::CPropHandler<CElmCheck>::list[] = {
+PROPERTIES_OF(CElmCheck) = {
     PROP_HANDLER(CElmCheck, state),
     PROP_HANDLER(CElmCheck, icon),
-    { NULL, NULL, NULL },
+    { NULL }
 };
 

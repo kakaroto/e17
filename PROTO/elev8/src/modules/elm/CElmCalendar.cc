@@ -266,9 +266,7 @@ void CElmCalendar::calendar_interval_set(Handle<Value> val)
      elm_calendar_interval_set(eo, val->ToNumber()->Value());
 }
 
-template<> CEvasObject::CPropHandler<CElmCalendar>::property_list
-CEvasObject::CPropHandler<CElmCalendar>::list[] =
-  {
+PROPERTIES_OF(CElmCalendar) = {
      PROP_HANDLER(CElmCalendar, weekday_names),
      PROP_HANDLER(CElmCalendar, min_year),
      PROP_HANDLER(CElmCalendar, max_year),
@@ -278,5 +276,5 @@ CEvasObject::CPropHandler<CElmCalendar>::list[] =
      PROP_HANDLER(CElmCalendar, selected_year),
      PROP_HANDLER(CElmCalendar, calendar_interval),
      PROP_HANDLER(CElmCalendar, on_changed),
-     { NULL, NULL, NULL },
-  };
+     { NULL }
+};

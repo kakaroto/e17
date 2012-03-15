@@ -166,15 +166,14 @@ Handle<Value> CElmFileSelectorEntry::on_clicked_get(void) const
    return on_clicked_val;
 }
 
-template<> CEvasObject::CPropHandler<CElmFileSelectorEntry>::property_list
-CEvasObject::CPropHandler<CElmFileSelectorEntry>::list[] = {
-     PROP_HANDLER(CElmFileSelectorEntry, win_title),
-     PROP_HANDLER(CElmFileSelectorEntry, win_size),
+PROPERTIES_OF(CElmFileSelectorEntry) = {
+  PROP_HANDLER(CElmFileSelectorEntry, win_title),
+  PROP_HANDLER(CElmFileSelectorEntry, win_size),
   PROP_HANDLER(CElmFileSelectorEntry, path),
   PROP_HANDLER(CElmFileSelectorEntry, expandable),
   PROP_HANDLER(CElmFileSelectorEntry, folder_only),
   PROP_HANDLER(CElmFileSelectorEntry, is_save),
   PROP_HANDLER(CElmFileSelectorEntry, inwin_mode),
   PROP_HANDLER(CElmFileSelectorEntry, selected),
-  { NULL, NULL, NULL },
+  { NULL }
 };

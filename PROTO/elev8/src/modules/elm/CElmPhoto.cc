@@ -55,9 +55,8 @@ void CElmPhoto::fill_set(Handle <Value> val)
         elm_photo_fill_inside_set(eo, val->BooleanValue());
 }
 
-template<> CEvasObject::CPropHandler<CElmPhoto>::property_list CEvasObject::CPropHandler<CElmPhoto>::list[] =
-{
+PROPERTIES_OF(CElmPhoto) = {
     PROP_HANDLER(CElmPhoto, size),
     PROP_HANDLER(CElmPhoto, fill),
-    { NULL, NULL, NULL },
+    { NULL }
 };

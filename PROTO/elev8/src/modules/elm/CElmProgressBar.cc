@@ -113,8 +113,7 @@ void CElmProgressBar::value_set(Handle<Value> value)
      elm_progressbar_value_set(eo, value->NumberValue());
 }
 
-template<> CEvasObject::CPropHandler<CElmProgressBar>::property_list
-CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
+PROPERTIES_OF(CElmProgressBar) = {
      PROP_HANDLER(CElmProgressBar, icon),
      PROP_HANDLER(CElmProgressBar, inverted),
      PROP_HANDLER(CElmProgressBar, horizontal),
@@ -122,6 +121,6 @@ CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
      PROP_HANDLER(CElmProgressBar, span),
      PROP_HANDLER(CElmProgressBar, pulser),
      PROP_HANDLER(CElmProgressBar, value),
-     { NULL, NULL, NULL },
+     { NULL }
 };
 

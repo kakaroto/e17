@@ -378,4 +378,15 @@ public:
    virtual Handle<Value> size_hint_aspect_get(void) const;
 };
 
+#define FACTORY(type_) \
+   public: \
+      static CEvasObject* make(CEvasObject *parent, Local<Object> description) { \
+         return new type_(parent, description); \
+      }
+
+#define PROPERTIES_OF(type_) \
+   template<> CEvasObject::CPropHandler<type_>::property_list CEvasObject::CPropHandler<type_>::list[]
+
+#define NO_PROPERTIES { { NULL } }
+
 #endif

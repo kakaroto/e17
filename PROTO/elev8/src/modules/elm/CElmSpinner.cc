@@ -110,8 +110,7 @@ void CElmSpinner::special_value_set(Handle <Value> val)
     }
 }
 
-template<> CEvasObject::CPropHandler<CElmSpinner>::property_list CEvasObject::CPropHandler<CElmSpinner>::list[] =
-{
+PROPERTIES_OF(CElmSpinner) = {
     PROP_HANDLER(CElmSpinner, label_format),
     PROP_HANDLER(CElmSpinner, step),
     PROP_HANDLER(CElmSpinner, min),
@@ -120,5 +119,5 @@ template<> CEvasObject::CPropHandler<CElmSpinner>::property_list CEvasObject::CP
     PROP_HANDLER(CElmSpinner, disabled),
     PROP_HANDLER(CElmSpinner, editable),
     PROP_HANDLER(CElmSpinner, special_value),
-    { NULL, NULL, NULL },
+    { NULL }
 };

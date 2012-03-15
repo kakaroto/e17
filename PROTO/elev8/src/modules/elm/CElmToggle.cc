@@ -107,12 +107,11 @@ Handle<Value> CElmToggle::state_get() const
    return Boolean::New(elm_check_state_get(eo));
 }
 
-template<> CEvasObject::CPropHandler<CElmToggle>::property_list
-CEvasObject::CPropHandler<CElmToggle>::list[] = {
+PROPERTIES_OF(CElmToggle) = {
      PROP_HANDLER(CElmToggle, offlabel),
      PROP_HANDLER(CElmToggle, onlabel),
      PROP_HANDLER(CElmToggle, icon),
      PROP_HANDLER(CElmToggle, state),
      PROP_HANDLER(CElmToggle, on_changed),
-     { NULL, NULL, NULL },
+     { NULL }
 };

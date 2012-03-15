@@ -19,10 +19,9 @@ Handle <Value> CElmLabel::wrap_get() const
     return Integer::New(elm_label_line_wrap_get(eo));
 }
 
-template<> CEvasObject::CPropHandler<CElmLabel>::property_list CEvasObject::CPropHandler<CElmLabel>::list[] =
-{
+PROPERTIES_OF(CElmLabel) = {
      PROP_HANDLER(CElmLabel, wrap),
      /* PROP_HANDLER(CElmLabel, label), - not necessary, called from CEvasObject */
      /* FIXME: add fontsize, wrap_height, wrap_width, ellipsis, slide, slide_duration */
-     { NULL, NULL, NULL },
+     { NULL }
 };

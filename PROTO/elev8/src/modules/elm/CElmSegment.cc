@@ -46,7 +46,4 @@ Handle<Object> CElmSegment::items_set(Handle<Value> val)
    return out;
 }
 
-template<> CEvasObject::CPropHandler<CElmSegment>::property_list
-CEvasObject::CPropHandler<CElmSegment>::list[] = {
-       { NULL, NULL, NULL },
-};
+PROPERTIES_OF(CElmSegment) = NO_PROPERTIES;

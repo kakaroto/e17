@@ -65,11 +65,10 @@ void CElmNotify::allow_events_set(Handle<Value> val)
      elm_notify_allow_events_set(eo, val->BooleanValue());
 }
 
-template<> CEvasObject::CPropHandler<CElmNotify>::property_list
-CEvasObject::CPropHandler<CElmNotify>::list[] = {
+PROPERTIES_OF(CElmNotify) = {
      PROP_HANDLER(CElmNotify, content),
      PROP_HANDLER(CElmNotify, orient),
      PROP_HANDLER(CElmNotify, timeout),
      PROP_HANDLER(CElmNotify, allow_events),
-     { NULL, NULL, NULL },
+     { NULL }
 };

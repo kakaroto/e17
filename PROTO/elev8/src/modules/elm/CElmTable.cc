@@ -144,11 +144,10 @@ Handle<Value> CElmTable::padding_get() const
    return obj;
 }
 
-template<> CEvasObject::CPropHandler<CElmTable>::property_list
-CEvasObject::CPropHandler<CElmTable>::list[] = {
+PROPERTIES_OF(CElmTable) = {
      PROP_HANDLER(CElmTable, homogeneous),
      PROP_HANDLER(CElmTable, padding),
-     { NULL, NULL, NULL },
+     { NULL }
 };
 
 

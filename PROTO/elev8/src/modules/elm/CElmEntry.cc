@@ -63,13 +63,12 @@ void CElmEntry::single_line_set(Handle <Value> value)
         elm_entry_single_line_set(eo, (Elm_Wrap_Type) value->Int32Value());
 }
 
-template<> CEvasObject::CPropHandler<CElmEntry>::property_list CEvasObject::CPropHandler<CElmEntry>::list[] =
-{
+PROPERTIES_OF(CElmEntry) = {
     PROP_HANDLER(CElmEntry, password),
     PROP_HANDLER(CElmEntry, editable),
     PROP_HANDLER(CElmEntry, line_wrap),
     PROP_HANDLER(CElmEntry, scrollable),
     PROP_HANDLER(CElmEntry, single_line),
-    { NULL, NULL, NULL },
+    { NULL }
 };
 

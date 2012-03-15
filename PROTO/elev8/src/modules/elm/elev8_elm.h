@@ -19,16 +19,9 @@
 
 #define ELM_MODULE_NAME "elm"
 
-#define FACTORY(type_) \
-   public: \
-      static CEvasObject* make(CEvasObject *parent, Local<Object> description) { \
-         return new type_(parent, description); \
-      }
-
 extern int elev8_elm_log_domain;
 
 using namespace v8;
-
 class CEvasObject;
 
 CEvasObject *make_or_get(CEvasObject *parent, Handle<Value> object_val);

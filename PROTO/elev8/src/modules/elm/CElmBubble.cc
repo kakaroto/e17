@@ -43,9 +43,9 @@ void CElmBubble::corner_set(Handle<Value> val)
      elm_bubble_pos_set(eo, (Elm_Bubble_Pos)val->ToNumber()->Value());
 }
 
-template<> CEvasObject::CPropHandler<CElmBubble>::property_list CEvasObject::CPropHandler<CElmBubble>::list[] =
+PROPERTIES_OF(CElmBubble) =
   {
      PROP_HANDLER(CElmBubble, text_part),
      PROP_HANDLER(CElmBubble, corner),
-     { NULL, NULL, NULL },
+     { NULL }
   };

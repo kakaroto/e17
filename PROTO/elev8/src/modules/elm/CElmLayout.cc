@@ -78,10 +78,9 @@ void CElmLayout::theme_set(Handle <Value> val)
     }
 }
 
-template <> CEvasObject::CPropHandler <CElmLayout>::property_list CEvasObject::CPropHandler <CElmLayout>::list[] =
-{
+PROPERTIES_OF(CElmLayout) = {
     PROP_HANDLER(CElmLayout, file),
     PROP_HANDLER(CElmLayout, theme),
     PROP_HANDLER(CElmLayout, contents),
-    { NULL, NULL, NULL}
+    { NULL }
 };

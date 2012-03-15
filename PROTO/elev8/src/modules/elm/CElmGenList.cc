@@ -174,8 +174,7 @@ void CElmGenList::longpress_timeout_set(Handle<Value> value)
      elm_genlist_longpress_timeout_set(eo, value->IntegerValue());
 }
 
-template<> CEvasObject::CPropHandler<CElmGenList>::property_list
-CEvasObject::CPropHandler<CElmGenList>::list[] =
+PROPERTIES_OF(CElmGenList) =
   {
      PROP_HANDLER(CElmGenList, multi_select),
      PROP_HANDLER(CElmGenList, select_mode),
@@ -183,5 +182,5 @@ CEvasObject::CPropHandler<CElmGenList>::list[] =
      PROP_HANDLER(CElmGenList, mode),
      PROP_HANDLER(CElmGenList, block_count),
      PROP_HANDLER(CElmGenList, longpress_timeout),
-     { NULL, NULL, NULL },
+     { NULL }
   };

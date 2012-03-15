@@ -134,8 +134,7 @@ void CElmImage::orient_set(Handle<Value> val)
      }
 }
 
-template<> CEvasObject::CPropHandler<CElmImage>::property_list
-CEvasObject::CPropHandler<CElmImage>::list[] = {
+PROPERTIES_OF(CElmImage) = {
   PROP_HANDLER(CElmImage, file),
   PROP_HANDLER(CElmImage, smooth),
   PROP_HANDLER(CElmImage, no_scale),
@@ -144,5 +143,5 @@ CEvasObject::CPropHandler<CElmImage>::list[] = {
   PROP_HANDLER(CElmImage, orient),
   PROP_HANDLER(CElmImage, editable),
   PROP_HANDLER(CElmImage, aspect_fixed),
-  { NULL, NULL, NULL },
+  { NULL }
 };

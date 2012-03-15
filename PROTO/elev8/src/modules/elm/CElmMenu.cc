@@ -217,8 +217,7 @@ void CElmMenu::move_set(Handle<Value> val)
    elm_menu_move (eo, x_out, y_out);
 }
 
-template<> CEvasObject::CPropHandler<CElmMenu>::property_list
-CEvasObject::CPropHandler<CElmMenu>::list[] = {
+PROPERTIES_OF(CElmMenu) = {
      PROP_HANDLER(CElmMenu, move),
-     { NULL, NULL, NULL },
+     { NULL }
 };

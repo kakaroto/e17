@@ -31,3 +31,5 @@ void CElmFlip::flip(Elm_Flip_Mode mode)
 {
     elm_flip_go(eo, mode);
 }
+
+PROPERTIES_OF(CElmFlip) = NO_PROPERTIES;

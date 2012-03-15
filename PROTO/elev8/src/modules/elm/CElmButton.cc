@@ -26,8 +26,7 @@ void CElmButton::icon_set(Handle <Value> value)
     the_icon = Persistent <Value>::New(icon->get_object());
 }
 
-template <> CEvasObject::CPropHandler <CElmButton>::property_list CEvasObject::CPropHandler <CElmButton>::list[] =
-{
+PROPERTIES_OF(CElmButton) = {
     PROP_HANDLER(CElmButton, icon),
-    { NULL, NULL, NULL},
+    { NULL }
 };
