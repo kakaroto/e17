@@ -36,8 +36,8 @@ public:
    virtual Handle<Value> day_selection_disabled_get(void) const;
    virtual void day_selection_disabled_set(Handle<Value> val);
 
-   virtual Handle<Value> selected_date_get(void) const;
-   virtual void selected_date_set(Handle<Value> val);
+   virtual Handle<Value> selected_day_get(void) const;
+   virtual void selected_day_set(Handle<Value> val);
 
    virtual Handle<Value> selected_month_get(void) const;
    virtual void selected_month_set(Handle<Value> val);

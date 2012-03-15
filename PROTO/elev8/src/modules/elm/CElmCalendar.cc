@@ -28,7 +28,7 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
      {
         struct tm mark_time;
 
-        Local<Value> x = props->Get(Integer::New(i));
+        Local<Value> x = props->Get(i);
         String::Utf8Value val(x);
 
         Local<Value> item = in->Get(x->ToString());
@@ -41,10 +41,10 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
 
         Local<Value> type = item->ToObject()->Get(String::New("type"));
         String::Utf8Value mark_type(type);
-        Local<Value> date = item->ToObject()->Get(String::New("date"));
-        mark_time.tm_mday = date->ToNumber()->Value();
-        Local<Value> mon = item->ToObject()->Get(String::New("mon"));
-        mark_time.tm_mon = mon->ToNumber()->Value();
+        Local<Value> day = item->ToObject()->Get(String::New("day"));
+        mark_time.tm_mday = day->ToNumber()->Value();
+        Local<Value> month = item->ToObject()->Get(String::New("month"));
+        mark_time.tm_mon = month->ToNumber()->Value();
         Local<Value> year = item->ToObject()->Get(String::New("year"));
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
         Local<Value> repeat = item->ToObject()->Get(String::New("repeat"));
@@ -190,7 +190,7 @@ void CElmCalendar::day_selection_disabled_set(Handle<Value> val)
      elm_calendar_day_selection_disabled_set(eo, val->ToBoolean()->Value());
 }
 
-Handle<Value> CElmCalendar::selected_date_get(void) const
+Handle<Value> CElmCalendar::selected_day_get(void) const
 {
    struct tm selected_time;
    elm_calendar_selected_time_get(eo,&selected_time);
@@ -198,7 +198,7 @@ Handle<Value> CElmCalendar::selected_date_get(void) const
    return Number::New(selected_time.tm_mday);
 }
 
-void CElmCalendar::selected_date_set(Handle<Value> val)
+void CElmCalendar::selected_day_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -271,7 +271,7 @@ PROPERTIES_OF(CElmCalendar) = {
      PROP_HANDLER(CElmCalendar, min_year),
      PROP_HANDLER(CElmCalendar, max_year),
      PROP_HANDLER(CElmCalendar, day_selection_disabled),
-     PROP_HANDLER(CElmCalendar, selected_date),
+     PROP_HANDLER(CElmCalendar, selected_day),
      PROP_HANDLER(CElmCalendar, selected_month),
      PROP_HANDLER(CElmCalendar, selected_year),
      PROP_HANDLER(CElmCalendar, calendar_interval),
