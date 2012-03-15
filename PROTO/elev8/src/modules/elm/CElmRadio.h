@@ -11,13 +11,15 @@ protected:
    Persistent<Value> the_icon;
    Persistent<Value> the_group;
 
-public:
    CElmRadio(CEvasObject *parent, Local<Object> obj);
    virtual ~CElmRadio();
+public:
    virtual Handle<Value> icon_get() const;
    virtual void icon_set(Handle<Value> value);
+
    virtual Handle<Value> group_get() const;
    virtual void group_set(Handle<Value> value);
+
    virtual Handle<Value> value_get() const;
    virtual void value_set(Handle<Value> value);
 };
