@@ -1,8 +1,8 @@
 #include "CElmColorSelector.h"
 
-CElmColorSelector::CElmColorSelector(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmColorSelector::CElmColorSelector(CEvasObject *parent, Local<Object> obj) 
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_colorselector_add(parent->top_widget_get());
    construct(eo, obj);
@@ -10,77 +10,75 @@ CElmColorSelector::CElmColorSelector(CEvasObject *parent, Local<Object> obj) :
 
 Handle<Value> CElmColorSelector::red_get() const
 {
-   int r, g, b, a;
-   elm_colorselector_color_get(eo, &r, &g, &b, &a);
+   int r;
+   elm_colorselector_color_get(eo, &r, NULL, NULL, NULL);
    return Number::New(r);
 }
 
 void CElmColorSelector::red_set(Handle<Value> val)
 {
-   if (val->IsNumber())
-     {
-        int r, g, b, a;
-        elm_colorselector_color_get(eo, &r, &g, &b, &a);
-        r = val->ToNumber()->Value();
-        elm_colorselector_color_set(eo, r, g, b, a);
-     }
+   if (!val->IsNumber())
+     return;
+
+   int g, b, a;
+   elm_colorselector_color_get(eo, NULL, &g, &b, &a);
+   elm_colorselector_color_set(eo, val->ToNumber()->Value(), g, b, a);
 }
 
 Handle<Value> CElmColorSelector::green_get() const
 {
-   int r, g, b, a;
-   elm_colorselector_color_get(eo, &r, &g, &b, &a);
+   int g;
+   elm_colorselector_color_get(eo, NULL, &g, NULL, NULL);
    return Number::New(g);
 }
 
 void CElmColorSelector::green_set(Handle<Value> val)
 {
-   if (val->IsNumber())
-     {
-        int r, g, b, a;
-        elm_colorselector_color_get(eo, &r, &g, &b, &a);
-        g = val->ToNumber()->Value();
-        elm_colorselector_color_set(eo, r, g, b, a);
-     }
+   if (!val->IsNumber())
+     return;
+
+   int r, b, a;
+   elm_colorselector_color_get(eo, &r, NULL, &b, &a);
+   elm_colorselector_color_set(eo, r, val->ToNumber()->Value(), b, a);
 }
+
 Handle<Value> CElmColorSelector::blue_get() const
 {
-   int r, g, b, a;
-   elm_colorselector_color_get(eo, &r, &g, &b, &a);
+   int b;
+   elm_colorselector_color_get(eo, NULL, NULL, &b, NULL);
    return Number::New(b);
 }
 
 void CElmColorSelector::blue_set(Handle<Value> val)
 {
-   if (val->IsNumber())
-     {
-        int r, g, b, a;
-        elm_colorselector_color_get(eo, &r, &g, &b, &a);
-        b = val->ToNumber()->Value();
-        elm_colorselector_color_set(eo, r, g, b, a);
-     }
+   if (!val->IsNumber())
+     return;
+
+   int r, g, a;
+   elm_colorselector_color_get(eo, &r, &g, NULL, &a);
+   elm_colorselector_color_set(eo, r, g, val->ToNumber()->Value(), a);
 }
+
 Handle<Value> CElmColorSelector::alpha_get() const
 {
-   int r, g, b, a;
-   elm_colorselector_color_get(eo, &r, &g, &b, &a);
+   int a;
+   elm_colorselector_color_get(eo, NULL, NULL, NULL, &a);
    return Number::New(a);
 }
 
 void CElmColorSelector::alpha_set(Handle<Value> val)
 {
-   if (val->IsNumber())
-     {
-        int r, g, b, a;
-        elm_colorselector_color_get(eo, &r, &g, &b, &a);
-        a = val->ToNumber()->Value();
-        elm_colorselector_color_set(eo, r, g, b, a);
-     }
+   if (!val->IsNumber())
+     return;
+
+   int r, g, b;
+   elm_colorselector_color_get(eo, &r, &g, &b, NULL);
+   elm_colorselector_color_set(eo, r, g, b, val->ToNumber()->Value());
 }
+
 void CElmColorSelector::on_changed(void *)
 {
    Handle<Object> obj = get_object();
-   HandleScope handle_scope;
    Handle<Value> val = on_changed_val;
    assert(val->IsFunction());
    Handle<Function> fn(Function::Cast(*val));
