@@ -123,23 +123,23 @@ void CElmCalendar::weekday_names_set(Handle<Value> val)
      return;
 
    HandleScope scope;
-   const char *weekdays[7];
    Local<Object> obj = val->ToObject();
+   char *weekdays[7];
 
    for (int i = 0; i < 7 ; i++)
      {
-        char fill[2];
-        sprintf(fill, "%d", i);
-        Handle<Value> value = obj->Get(String::New(fill));
+        char c[1];
+        *c = i + '0';
+        Handle<Value> value = obj->Get(String::New(c, 1));
 
-        if (value->IsString())
-          {
-             String::Utf8Value str(value);
-             weekdays[i] = strdup(*str);
-          }
+        weekdays[i] = value->IsString() ?
+                      strdup(*String::Utf8Value(value)) : NULL;
      }
 
-   elm_calendar_weekdays_names_set(eo, weekdays);
+   elm_calendar_weekdays_names_set(eo, (const char**) weekdays);
+
+   for (int i = 0; i < 7; i++)
+     free(weekdays[i]);
 }
 
 Handle<Value> CElmCalendar::min_year_get(void) const
