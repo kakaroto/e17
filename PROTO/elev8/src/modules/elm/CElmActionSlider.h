@@ -16,10 +16,9 @@ private:
 
    bool position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos);
 
-public:
    CElmActionSlider(CEvasObject *parent, Local<Object> obj);
+public:
 
-   /* there's 1 indicator label and 3 position labels */
    virtual void labels_set(Handle<Value> val);
    virtual Handle<Value> labels_get() const;
 

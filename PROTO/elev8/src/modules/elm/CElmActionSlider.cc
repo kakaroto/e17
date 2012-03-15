@@ -17,25 +17,25 @@ CElmActionSlider::CElmActionSlider(CEvasObject *parent, Local<Object> obj)
 /* there's 1 indicator label and 3 position labels */
 void CElmActionSlider::labels_set(Handle<Value> val)
 {
+   HandleScope scope;
+
    if (!val->IsObject())
      return;
 
    Local<Object> obj = val->ToObject();
-   Local<Value> v[3];
-   Local<String> str[3];
-   const char *name[3] = { "left", "center", "right" };
+   Local<Value> label;
 
-   for (int i = 0; i < 3; i++)
-     {
-        v[i] = obj->Get(String::New(name[i]));
-        if (v[i]->IsString())
-          str[i] = v[i]->ToString();
-     }
+   label = obj->Get(String::New("left"));
+   if (label->IsString())
+     elm_object_part_text_set(eo, "left", *String::Utf8Value(label->ToString()));
 
-   String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
-   elm_object_part_text_set(eo, name[0], *left);
-   elm_object_part_text_set(eo,name[1], *middle);
-   elm_object_part_text_set(eo,name[2], *right);
+   label = obj->Get(String::New("center"));
+   if (label->IsString())
+     elm_object_part_text_set(eo, "center", *String::Utf8Value(label->ToString()));
+
+   label = obj->Get(String::New("right"));
+   if (label->IsString())
+     elm_object_part_text_set(eo, "right", *String::Utf8Value(label->ToString()));
 }
 
 Handle<Value> CElmActionSlider::labels_get() const
@@ -46,6 +46,8 @@ Handle<Value> CElmActionSlider::labels_get() const
 
 bool CElmActionSlider::position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos)
 {
+   HandleScope scope;
+
    if (!val->IsString())
      return false;
 
@@ -89,10 +91,9 @@ Handle<Value> CElmActionSlider::magnet_get() const
    return Integer::New(elm_actionslider_magnet_pos_get(eo));
 }
 
-PROPERTIES_OF(CElmActionSlider) =
-  {
-     PROP_HANDLER(CElmActionSlider, magnet),
-     PROP_HANDLER(CElmActionSlider, slider),
-     PROP_HANDLER(CElmActionSlider, labels),
-     { NULL }
-  };
+PROPERTIES_OF(CElmActionSlider) = {
+   PROP_HANDLER(CElmActionSlider, magnet),
+   PROP_HANDLER(CElmActionSlider, slider),
+   PROP_HANDLER(CElmActionSlider, labels),
+   { NULL }
+};
