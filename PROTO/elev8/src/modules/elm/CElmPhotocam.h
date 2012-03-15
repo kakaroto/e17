@@ -12,27 +12,22 @@ class CElmPhotocam : public CEvasObject {
 protected:
    CPropHandler<CElmPhotocam> prop_handler;
 
-public:
    CElmPhotocam(CEvasObject *parent, Local<Object> obj);
+public:
 
    virtual void file_set(Handle<Value> val);
-
    virtual Handle<Value> file_get(void) const;
 
    virtual Handle<Value> zoom_get() const;
-
    virtual void zoom_set(Handle<Value> value);
 
    virtual Handle<Value> zoom_mode_get() const;
-
    virtual void zoom_mode_set(Handle<Value> value);
 
    virtual void bounce_set(Handle<Value> val);
-
    virtual Handle<Value> bounce_get() const;
 
    void paused_set(Handle<Value> val);
-
    virtual Handle<Value> paused_get() const;
 };
 

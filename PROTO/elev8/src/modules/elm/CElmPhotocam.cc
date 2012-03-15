@@ -1,85 +1,75 @@
 #include "CElmPhotocam.h"
 
-CElmPhotocam::CElmPhotocam(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmPhotocam::CElmPhotocam(CEvasObject *parent, Local<Object> obj)
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_photocam_add(parent->top_widget_get());
    construct(eo, obj);
 }
 void CElmPhotocam::file_set(Handle<Value> val)
 {
-   if (val->IsString())
+   if (!val->IsString())
+     return;
+
+   String::Utf8Value str(val);
+   if (!access(*str, R_OK))
      {
-        String::Utf8Value str(val);
-        if (0 > access(*str, R_OK))
-          ELM_ERR( "warning: can't read image file %s", *str);
         elm_photocam_file_set(eo, *str);
-        ELM_INF( "Photcam image file %s", *str);
+        return;
      }
+
+   ELM_ERR("warning: can't read image file %s", *str);
 }
 
 Handle<Value> CElmPhotocam::file_get(void) const
 {
-   const char *f = NULL;
-   f = elm_photocam_file_get (eo);
-   if (f)
-     return String::New(f);
-   else
-     return Null();
+   const char *file = elm_photocam_file_get(eo);
+   return file ? String::New(file) : Null();
 }
 
 Handle<Value> CElmPhotocam::zoom_get() const
 {
-   double zoom;
-   zoom = elm_photocam_zoom_get(eo);
-   return Number::New(zoom);
+   return Number::New(elm_photocam_zoom_get(eo));
 }
 
 void CElmPhotocam::zoom_set(Handle<Value> value)
 {
    if (value->IsNumber())
-     {
-        double zoom;
-        zoom = value->NumberValue();
-        elm_photocam_zoom_set (eo, zoom);
-     }
+     elm_photocam_zoom_set(eo, value->NumberValue());
 }
 
 Handle<Value> CElmPhotocam::zoom_mode_get() const
 {
-   Elm_Photocam_Zoom_Mode zoom_mode;
-   zoom_mode = elm_photocam_zoom_mode_get(eo);
-   return Number::New(zoom_mode);
+   return Number::New(elm_photocam_zoom_mode_get(eo));
 }
 
 void CElmPhotocam::zoom_mode_set(Handle<Value> value)
 {
    if (value->IsNumber())
-     {
-        Elm_Photocam_Zoom_Mode zoom_mode;
-        zoom_mode = (Elm_Photocam_Zoom_Mode)value->NumberValue();
-        elm_photocam_zoom_mode_set(eo, zoom_mode);
-     }
+     elm_photocam_zoom_mode_set(eo, (Elm_Photocam_Zoom_Mode)value->NumberValue());
 }
 
 void CElmPhotocam::bounce_set(Handle<Value> val)
 {
-   bool x_bounce = false, y_bounce = false;
+   bool x_bounce, y_bounce;
+
    if (get_xy_from_object(val, x_bounce, y_bounce))
-     {
-        elm_scroller_bounce_set(eo, x_bounce, y_bounce);
-     }
+     elm_scroller_bounce_set(eo, x_bounce, y_bounce);
 }
 
 Handle<Value> CElmPhotocam::bounce_get() const
 {
+   HandleScope scope;
+
    Eina_Bool x, y;
    elm_scroller_bounce_get(eo, &x, &y);
+
    Local<Object> obj = Object::New();
    obj->Set(String::New("x"), Boolean::New(x));
    obj->Set(String::New("y"), Boolean::New(y));
-   return obj;
+
+   return scope.Close(obj);
 }
 
 void CElmPhotocam::paused_set(Handle<Value> val)
@@ -94,10 +84,10 @@ Handle<Value> CElmPhotocam::paused_get() const
 }
 
 PROPERTIES_OF(CElmPhotocam) = {
-  PROP_HANDLER(CElmPhotocam, file),
-  PROP_HANDLER(CElmPhotocam, zoom),
-  PROP_HANDLER(CElmPhotocam, zoom_mode),
-  PROP_HANDLER(CElmPhotocam, paused),
-  PROP_HANDLER(CElmPhotocam, bounce),
-  { NULL }
+   PROP_HANDLER(CElmPhotocam, file),
+   PROP_HANDLER(CElmPhotocam, zoom),
+   PROP_HANDLER(CElmPhotocam, zoom_mode),
+   PROP_HANDLER(CElmPhotocam, paused),
+   PROP_HANDLER(CElmPhotocam, bounce),
+   { NULL }
 };
