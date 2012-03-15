@@ -11,7 +11,7 @@ CElmBox::CElmBox(CEvasObject *parent, Local<Object> obj)
     * Create elements and attach to parent so children can see siblings
     * that have already been created.  Useful to find radio button groups.
     */
-   Handle <Object> elements = Object::New();
+   Handle<Object> elements = Object::New();
    get_object()->Set(String::New("elements"), elements);
    realize_objects(obj->Get(String::New("elements")), elements);
 }
@@ -24,9 +24,7 @@ void CElmBox::horizontal_set(Handle<Value> val)
 
 Handle<Value> CElmBox::horizontal_get() const
 {
-   HandleScope scope;
-
-   return scope.Close(Boolean::New(elm_box_horizontal_get(eo)));
+   return Boolean::New(elm_box_horizontal_get(eo));
 }
 
 void CElmBox::homogeneous_set(Handle<Value> val)
@@ -37,9 +35,7 @@ void CElmBox::homogeneous_set(Handle<Value> val)
 
 Handle<Value> CElmBox::homogeneous_get() const
 {
-   HandleScope scope;
-
-   return scope.Close(Boolean::New(elm_box_homogeneous_get(eo)));
+   return Boolean::New(elm_box_homogeneous_get(eo));
 }
 
 void CElmBox::add_child(CEvasObject *child)
