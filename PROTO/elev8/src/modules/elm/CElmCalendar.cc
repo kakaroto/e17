@@ -39,15 +39,15 @@ Handle<Object> CElmCalendar::marks_set(Handle<Value> val)
              continue;
           }
 
-        Local<Value> type = item->ToObject()->Get(String::New("mark_type"));
+        Local<Value> type = item->ToObject()->Get(String::New("type"));
         String::Utf8Value mark_type(type);
-        Local<Value> date = item->ToObject()->Get(String::New("mark_date"));
+        Local<Value> date = item->ToObject()->Get(String::New("date"));
         mark_time.tm_mday = date->ToNumber()->Value();
-        Local<Value> mon = item->ToObject()->Get(String::New("mark_mon"));
+        Local<Value> mon = item->ToObject()->Get(String::New("mon"));
         mark_time.tm_mon = mon->ToNumber()->Value();
-        Local<Value> year = item->ToObject()->Get(String::New("mark_year"));
+        Local<Value> year = item->ToObject()->Get(String::New("year"));
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
-        Local<Value> repeat = item->ToObject()->Get(String::New("mark_repeat"));
+        Local<Value> repeat = item->ToObject()->Get(String::New("repeat"));
         String::Utf8Value mark_repeat(repeat);
 
         Elm_Calendar_Mark_Repeat_Type intRepeat;
