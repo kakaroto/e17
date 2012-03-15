@@ -2084,7 +2084,7 @@ EAPI int elm_main(int argc, char **argv)
 		elm_genlist_bounce_set(gui.timeline, EINA_FALSE, EINA_TRUE);
 		elm_genlist_height_for_width_mode_set(gui.timeline, EINA_TRUE);
 		//elm_genlist_select_mode_set(gui.timeline, ELM_OBJECT_SELECT_MODE_NONE);
-		elm_genlist_compress_mode_set(gui.timeline, EINA_TRUE);
+		elm_genlist_mode_set(gui.timeline, ELM_LIST_COMPRESS);
 		elm_genlist_longpress_timeout_set(gui.timeline, 0.5);
 
 		evas_object_smart_callback_add(gui.timeline, "longpressed", on_status_action, NULL);

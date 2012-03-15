@@ -1180,7 +1180,7 @@ void
 elm_genlist_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
 
 void
-elm_genlist_compress_mode_set(Evas_Object *obj, Eina_Bool compress)
+elm_genlist_mode_set(Evas_Object *obj, Elm_List_Mode mode)
 
 void
 elm_genlist_bounce_set(Evas_Object *obj, Eina_Bool h_bounce, Eina_Bool v_bounce)
