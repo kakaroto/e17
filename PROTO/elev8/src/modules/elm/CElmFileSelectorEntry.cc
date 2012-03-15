@@ -1,8 +1,8 @@
 #include "CElmFileSelectorEntry.h"
 
-CElmFileSelectorEntry::CElmFileSelectorEntry(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+CElmFileSelectorEntry::CElmFileSelectorEntry(CEvasObject *parent, Local<Object> obj) 
+   : CEvasObject()
+   , prop_handler(property_list_base)
 {
    eo = elm_fileselector_entry_add (parent->top_widget_get());
    construct(eo, obj);
@@ -11,60 +11,47 @@ CElmFileSelectorEntry::CElmFileSelectorEntry(CEvasObject *parent, Local<Object> 
 Handle<Value> CElmFileSelectorEntry::win_title_get() const
 {
    return String::New(elm_fileselector_entry_window_title_get(eo));
-
 }
 
 void CElmFileSelectorEntry::win_title_set(Handle<Value> val)
 {
    if (val->IsString() || val->IsNumber())
-     {
-        String::Utf8Value str(val);
-        elm_fileselector_entry_window_title_set(eo, *str);
-     }
+     elm_fileselector_entry_window_title_set(eo, *String::Utf8Value(val));
 }
 
 Handle<Value> CElmFileSelectorEntry::selected_get() const
 {
    return String::New(elm_fileselector_entry_selected_get(eo));
-
 }
 
 void CElmFileSelectorEntry::selected_set(Handle<Value> val)
 {
    if (val->IsString() || val->IsNumber())
-     {
-        String::Utf8Value str(val);
-        elm_fileselector_entry_selected_set(eo, *str);
-     }
+     elm_fileselector_entry_selected_set(eo, *String::Utf8Value(val));
 }
 
 Handle<Value> CElmFileSelectorEntry::path_get() const
 {
    return String::New(elm_fileselector_entry_path_get(eo));
-
 }
 
 void CElmFileSelectorEntry::path_set(Handle<Value> val)
 {
    if (val->IsString() || val->IsNumber())
-     {
-        String::Utf8Value str(val);
-        elm_fileselector_entry_path_set(eo, *str);
-     }
+     elm_fileselector_entry_path_set(eo, *String::Utf8Value(val));
 }
+
 void CElmFileSelectorEntry::win_size_set(Handle<Value> val)
 {
    if (!val->IsObject())
-     return ;
-   Evas_Coord width, height;
+     return;
+
    Local<Object> obj = val->ToObject();
    Local<Value> w = obj->Get(String::New("w"));
    Local<Value> h = obj->Get(String::New("h"));
-   if (!w->IsInt32() || !h->IsInt32())
-     return;
-   width = w->Int32Value();
-   height = h->Int32Value();
-   elm_fileselector_entry_window_size_set (eo,  width, height);
+
+   if (w->IsInt32() && h->IsInt32())
+     elm_fileselector_entry_window_size_set(eo,  w->Int32Value(), h->Int32Value());
 }
 
 Handle<Value> CElmFileSelectorEntry::win_size_get(void) const
@@ -135,22 +122,20 @@ void CElmFileSelectorEntry::inwin_mode_set(Handle<Value> val)
 
 void CElmFileSelectorEntry::on_click(void *event_info)
 {
+   if (event_info == NULL)
+     return;
+
    Handle<Object> obj = get_object();
-   HandleScope handle_scope;
    Handle<Value> val = on_clicked_val;
 
-   // also provide x and y positions where it was clicked
-   //
-   if (event_info!=NULL)
-     {
-        Handle<String> path = String::New((const char *)event_info);
-        Handle<Value> args[2] = { obj, path };
-        assert(val->IsFunction());
-        Handle<Function> fn(Function::Cast(*val));
-        elm_fileselector_entry_path_set(eo, (const char *)event_info);
-        fn->Call(obj, 2, args);
-     }
+   Handle<String> path = String::New((const char *)event_info);
+   Handle<Value> args[2] = { obj, path };
+   assert(val->IsFunction());
+   Handle<Function> fn(Function::Cast(*val));
+   elm_fileselector_entry_path_set(eo, (const char *)event_info);
+   fn->Call(obj, 2, args);
 }
+
 void CElmFileSelectorEntry::on_clicked_set(Handle<Value> val)
 {
    on_clicked_val.Dispose();
@@ -167,13 +152,13 @@ Handle<Value> CElmFileSelectorEntry::on_clicked_get(void) const
 }
 
 PROPERTIES_OF(CElmFileSelectorEntry) = {
-  PROP_HANDLER(CElmFileSelectorEntry, win_title),
-  PROP_HANDLER(CElmFileSelectorEntry, win_size),
-  PROP_HANDLER(CElmFileSelectorEntry, path),
-  PROP_HANDLER(CElmFileSelectorEntry, expandable),
-  PROP_HANDLER(CElmFileSelectorEntry, folder_only),
-  PROP_HANDLER(CElmFileSelectorEntry, is_save),
-  PROP_HANDLER(CElmFileSelectorEntry, inwin_mode),
-  PROP_HANDLER(CElmFileSelectorEntry, selected),
-  { NULL }
+   PROP_HANDLER(CElmFileSelectorEntry, win_title),
+   PROP_HANDLER(CElmFileSelectorEntry, win_size),
+   PROP_HANDLER(CElmFileSelectorEntry, path),
+   PROP_HANDLER(CElmFileSelectorEntry, expandable),
+   PROP_HANDLER(CElmFileSelectorEntry, folder_only),
+   PROP_HANDLER(CElmFileSelectorEntry, is_save),
+   PROP_HANDLER(CElmFileSelectorEntry, inwin_mode),
+   PROP_HANDLER(CElmFileSelectorEntry, selected),
+   { NULL }
 };
