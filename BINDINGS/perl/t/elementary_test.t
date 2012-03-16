@@ -175,7 +175,6 @@ elm_list_item_append($li, "Icon Transparent", undef, undef, \&test_icon, undef);
 elm_list_item_append($li, "Box Vert",         undef, undef, \&test_box_vert,       undef);
 elm_list_item_append($li, "Box Horiz",        undef, undef, \&test_box_horiz,      undef);
 elm_list_item_append($li, "Buttons",          undef, undef, \&test_button,         undef);
-elm_list_item_append($li, "Toggles",          undef, undef, \&test_toggle,         undef);
 elm_list_item_append($li, "Table",            undef, undef, \&test_table,          undef);
 elm_list_item_append($li, "Clock",            undef, undef, \&test_clock,          undef);
 elm_list_item_append($li, "Layout",           undef, undef, \&test_layout,         undef);
@@ -483,80 +482,6 @@ sub test_button {
     elm_object_disabled_set($bt, 1);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
-    evas_object_show($ic);
-
-    evas_object_show($win);
-}
-
-sub test_toggle {
-    my ($win, $bg, $bx, $ic, $tg);
-
-    $win = elm_win_add(undef, "toggles", ELM_WIN_BASIC);
-    elm_win_title_set($win, "Toggles");
-    elm_win_autodel_set($win, 1);
-
-    $bg = elm_bg_add($win);
-    elm_win_resize_object_add($win, $bg);
-    evas_object_size_hint_weight_set($bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-    evas_object_show($bg);
-
-    $bx = elm_box_add($win);
-    evas_object_size_hint_weight_set($bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-    elm_win_resize_object_add($win, $bx);
-    evas_object_show($bx);
-
-    $ic = elm_icon_add($win);
-    elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    evas_object_size_hint_aspect_set($ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-
-    $tg = elm_toggle_add($win);
-    evas_object_size_hint_weight_set($tg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-    evas_object_size_hint_align_set($tg, EVAS_HINT_FILL, 0.5);
-    elm_toggle_label_set($tg, "Icon sized to toggle");
-    elm_toggle_icon_set($tg, $ic);
-    elm_toggle_state_set($tg, 1);
-    elm_toggle_states_labels_set($tg, "Yes", "No");
-    elm_box_pack_end($bx, $tg);
-    evas_object_show($tg);
-    evas_object_show($ic);
-
-    $ic = elm_icon_add($win);
-    elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_resizable_set($ic, 0, 0);
-
-    $tg = elm_toggle_add($win);
-    elm_toggle_label_set($tg, "Icon no scale");
-    elm_toggle_icon_set($tg, $ic);
-    elm_box_pack_end($bx, $tg);
-    evas_object_show($tg);
-    evas_object_show($ic);
-
-    $ic = elm_icon_add($win);
-    elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_resizable_set($ic, 0, 0);
-
-    $tg = elm_toggle_add($win);
-    elm_toggle_label_set($tg, "Icon no scale");
-    elm_toggle_icon_set($tg, $ic);
-    elm_object_disabled_set($tg, 1);
-    elm_box_pack_end($bx, $tg);
-    evas_object_show($tg);
-    evas_object_show($ic);
-
-    $tg = elm_toggle_add($win);
-    elm_toggle_label_set($tg, "Label Only");
-    elm_toggle_states_labels_set($tg, "Big long fun times label", "Small long happy fun label");
-    elm_box_pack_end($bx, $tg);
-    evas_object_show($tg);
-
-    $ic = elm_icon_add($win);
-    elm_icon_file_set($ic, $images{'logo_small'}, undef);
-    elm_icon_resizable_set($ic, 0, 0);
-
-    $tg = elm_toggle_add($win);
-    elm_toggle_icon_set($tg, $ic);
-    elm_box_pack_end($bx, $tg);
-    evas_object_show($tg);
     evas_object_show($ic);
 
     evas_object_show($win);

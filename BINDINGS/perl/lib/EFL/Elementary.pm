@@ -258,18 +258,6 @@ my @elm_label = qw(
   elm_label_line_wrap_set
 );
 
-my @elm_toggle = qw(
-  elm_toggle_add
-  elm_toggle_label_set
-  elm_toggle_label_get
-  elm_toggle_icon_set
-  elm_toggle_icon_get
-  elm_toggle_states_labels_set
-  elm_toggle_state_set
-  elm_toggle_state_get
-  elm_toggle_state_pointer_set
-);
-
 my @elm_frame = qw(
   elm_frame_add
 );
@@ -628,7 +616,7 @@ my @elm_scrolled = qw(
 );
 
 our @__funcs = (
-    @elm_general,   @elm_win,          @elm_bg,          @elm_icon,      @elm_box,      @elm_toggle, @elm_frame,    @elm_label,      @elm_list,
+    @elm_general,   @elm_win,          @elm_bg,          @elm_icon,      @elm_box,      @elm_frame,    @elm_label,      @elm_list,
     @elm_table,     @elm_button,       @elm_clock,       @elm_layout,    @elm_hover,    @elm_entry,  @elm_scroller, @elm_anchorview, @elm_notepad,
     @elm_notify,    @elm_anchorblock,  @elm_bubble,      @elm_photo,     @elm_toolbar,  @elm_menu,   @elm_slider,   @elm_check,      @elm_radio,
     @elm_slideshow, @elm_fileselector, @elm_progressbar, @elm_separator, @elm_spinner,  @elm_index,  @elm_photocam, @elm_map,        @elm_panel,
@@ -719,7 +707,6 @@ Sub::Exporter::setup_exporter(
             'slider'       => \@elm_slider,
             'spinner'      => \@elm_spinner,
             'table'        => \@elm_table,
-            'toggle'       => \@elm_toggle,
             'toolbar'      => \@elm_toolbar,
             'win'          => \@elm_win,
         },
@@ -1210,15 +1197,6 @@ may change in future releases.
     elm_theme_flush
     elm_theme_overlay_add
     elm_theme_overlay_del
-    elm_toggle_add
-    elm_toggle_icon_get
-    elm_toggle_icon_set
-    elm_toggle_label_get
-    elm_toggle_label_set
-    elm_toggle_state_get
-    elm_toggle_state_pointer_set
-    elm_toggle_state_set
-    elm_toggle_states_labels_set
     elm_toolbar_add
     elm_toolbar_align_set
     elm_toolbar_homogeneous_set

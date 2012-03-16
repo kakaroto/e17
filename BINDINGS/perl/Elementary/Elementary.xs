@@ -468,37 +468,6 @@ void
 elm_label_line_wrap_set(Evas_Object *obj, Eina_Bool wrap)
 
 
-# toggle
-# ------------------------------------------------------------------------------
-
-Evas_Object *
-elm_toggle_add(Evas_Object *parent)
-
-void
-elm_toggle_label_set(Evas_Object *obj, const char *label)
-
-const char *
-elm_toggle_label_get(Evas_Object *obj)
-
-void
-elm_toggle_icon_set(Evas_Object *obj, Evas_Object *icon)
-
-Evas_Object *
-elm_toggle_icon_get(Evas_Object *obj)
-
-void
-elm_toggle_states_labels_set(Evas_Object *obj, const char *onlabel, const char *offlabel)
-
-void
-elm_toggle_state_set(Evas_Object *obj, Eina_Bool state)
-
-Eina_Bool
-elm_toggle_state_get(const Evas_Object *obj)
-
-void
-elm_toggle_state_pointer_set(Evas_Object *obj, Eina_Bool *statep)
-
-
 # frame
 # ------------------------------------------------------------------------------
 
