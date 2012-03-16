@@ -6,7 +6,6 @@ libelementaryxx_HEADERS = \
 	Button.h \
 	Clock.h \
 	Scroller.h \
-	Toggle.h \
 	Entry.h \
 	Check.h \
 	Icon.h \

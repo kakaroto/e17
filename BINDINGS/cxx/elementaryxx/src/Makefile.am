@@ -22,7 +22,6 @@ libelementaryxx_la_SOURCES = \
 	Button.cpp  \
 	Clock.cpp  \
 	Scroller.cpp  \
-	Toggle.cpp  \
 	Entry.cpp  \
 	Check.cpp  \
 	Icon.cpp  \
