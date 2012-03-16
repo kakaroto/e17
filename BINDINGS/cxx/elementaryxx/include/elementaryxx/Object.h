@@ -55,8 +55,8 @@ public:
    *
    * @ingroup General
    */
-  void setTextPart (const std::string &label);
-  void setTextPart (const std::string &part, const std::string &label);
+  void setText (const std::string &label);
+  void setText (const std::string &part, const std::string &label);
 
   /**
    * Get a label of an object
@@ -69,8 +69,8 @@ public:
    *
    * @ingroup General
    */
-  const std::string getTextPart ();
-  const std::string getTextPart (const std::string &part);
+  const std::string getText ();
+  const std::string getText (const std::string &part);
 
   /**
    * Set a content of an object
@@ -83,8 +83,8 @@ public:
    *
    * @ingroup General
    */
-  void setContentPart (const Evasxx::Object &content);
-  void setContentPart (const std::string &part, const Evasxx::Object &content);
+  void setContent (const Evasxx::Object &content);
+  void setContent (const std::string &part, const Evasxx::Object &content);
 
   /**
    * Get a content of an object
@@ -97,8 +97,8 @@ public:
    *
    * @ingroup General
    */
-  Eflxx::CountedPtr <Evasxx::Object> getContentPart ();
-  Eflxx::CountedPtr <Evasxx::Object> getContentPart (const std::string &part);
+  Eflxx::CountedPtr <Evasxx::Object> getContent ();
+  Eflxx::CountedPtr <Evasxx::Object> getContent (const std::string &part);
 
   /**
    * Unset a content of an object

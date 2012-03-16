@@ -108,37 +108,37 @@ const std::string Object::getWidgetType ()
   return elm_object_widget_type_get (o);
 }
 
-void Object::setTextPart (const std::string &label)
+void Object::setText (const std::string &label)
 {
   elm_object_part_text_set(o, NULL, label.c_str());
 }
 
-void Object::setTextPart (const std::string &part, const std::string &label)
+void Object::setText (const std::string &part, const std::string &label)
 {
   elm_object_part_text_set(o, part.c_str(), label.c_str());
 }
 
-const std::string Object::getTextPart ()
+const std::string Object::getText ()
 {
   return elm_object_part_text_get(o, NULL);
 }
 
-const std::string Object::getTextPart (const std::string &part)
+const std::string Object::getText (const std::string &part)
 {
   return elm_object_part_text_get(o, part.c_str());
 }
 
-void Object::setContentPart (const Evasxx::Object &content)
+void Object::setContent (const Evasxx::Object &content)
 {
   elm_object_part_content_set(o, NULL, content.obj());
 }
 
-void Object::setContentPart (const std::string &part, const Evasxx::Object &content)
+void Object::setContent (const std::string &part, const Evasxx::Object &content)
 {
   elm_object_part_content_set(o, part.c_str(), content.obj());
 }
 
-Eflxx::CountedPtr <Evasxx::Object> Object::getContentPart ()
+Eflxx::CountedPtr <Evasxx::Object> Object::getContent ()
 {
   Evas_Object *eo = elm_object_part_content_get(o, NULL);
  
@@ -147,7 +147,7 @@ Eflxx::CountedPtr <Evasxx::Object> Object::getContentPart ()
   return Eflxx::CountedPtr <Evasxx::Object> (ret_o);
 }
 
-Eflxx::CountedPtr <Evasxx::Object> Object::getContentPart (const std::string &part)
+Eflxx::CountedPtr <Evasxx::Object> Object::getContent (const std::string &part)
 {
   Evas_Object *eo = elm_object_part_content_get(o, part.c_str());
  

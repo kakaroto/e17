@@ -13,7 +13,6 @@
 #include "Button.h"
 #include "Clock.h"
 #include "Scroller.h"
-#include "Toggle.h"
 #include "Entry.h"
 #include "Slider.h"
 #include "Label.h"
