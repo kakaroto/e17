@@ -5,15 +5,15 @@ dnl That code is public domain and can be freely used or copied.
 dnl Macro that checks if a compiler flag is supported by the compiler.
 
 dnl Usage: EFL_COMPILER_FLAG(flag)
-dnl flag is added to CFLAGS if supported.
+dnl flag is added to CXXFLAGS if supported.
 
 AC_DEFUN([EFL_COMPILER_FLAG],
 [
 
-CFLAGS_save="${CFLAGS}"
-CFLAGS="${CFLAGS} $1"
+CXXFLAGS_save="${CXXFLAGS}"
+CXXFLAGS="${CXXFLAGS} $1"
   
-AC_LANG_PUSH([C])
+AC_LANG_PUSH([C++])
 AC_MSG_CHECKING([whether the compiler supports $1])
 
 AC_COMPILE_IFELSE(
@@ -23,9 +23,9 @@ AC_COMPILE_IFELSE(
 AC_MSG_RESULT([${have_flag}])
 
 if test "x${have_flag}" = "xno" ; then
-   CFLAGS="${CFLAGS_save}"
+   CXXFLAGS="${CXXFLAGS_save}"
 fi
-AC_LANG_POP([C])
+AC_LANG_POP([C++])
 
 ])
 
@@ -40,7 +40,7 @@ AC_DEFUN([EFL_LINKER_FLAG],
 LDFLAGS_save="${LDFLAGS}"
 LDFLAGS="${LDFLAGS} $1"
   
-AC_LANG_PUSH([C])
+AC_LANG_PUSH([C++])
 AC_MSG_CHECKING([whether the compiler supports $1])
 
 AC_LINK_IFELSE(
@@ -52,6 +52,6 @@ AC_MSG_RESULT([${have_flag}])
 if test "x${have_flag}" = "xno" ; then
    LDFLAGS="${LDFLAGS_save}"
 fi
-AC_LANG_POP([C])
+AC_LANG_POP([C++])
 
 ])

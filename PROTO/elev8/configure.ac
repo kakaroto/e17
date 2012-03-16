@@ -187,6 +187,7 @@ echo "  edje_cc..................: ${edje_cc}"
 echo
 echo "Compilation................: make (or gmake)"
 echo "  CPPFLAGS.................: $CPPFLAGS"
+echo "  CXXFLAGS.................: $CXXFLAGS"
 echo "  CFLAGS...................: $CFLAGS"
 echo "  LDFLAGS..................: $LDFLAGS"
 echo
