@@ -2008,7 +2008,7 @@ void on_edit_mouse_up(void *data, Evas_Object *obj, const char *emission, const 
 
 	ecore_x_pointer_last_xy_get(&m_x, NULL);
 
-	if( (mouse_x - m_x) > (2 * elm_finger_size_get()) ) {
+	if( (mouse_x - m_x) > (2 * elm_config_finger_size_get()) ) {
 		entry = (Evas_Object*)data;
 		if(entry) elm_entry_entry_set(entry, "");
 	}
@@ -2140,7 +2140,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_weight_set(gui.post, 1, 1);
 				evas_object_size_hint_align_set(gui.post, -1, 0);
 				elm_object_text_set(gui.post, _("Send"));
-				elm_object_part_content_set(gui.post, icon);
+				elm_object_content_set(gui.post, icon);
 				evas_object_smart_callback_add(gui.post, "clicked", on_post, NULL);
 				elm_box_pack_end(box2, gui.post);
 			evas_object_show(gui.post);
@@ -2153,7 +2153,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_weight_set(bt, 1, 1);
 				evas_object_size_hint_align_set(bt, -1, 0);
 				elm_object_text_set(bt, _("DM"));
-				elm_object_part_content_set(bt, icon);
+				elm_object_content_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_dm, NULL);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
@@ -2166,7 +2166,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_weight_set(bt, 1, 1);
 				evas_object_size_hint_align_set(bt, -1, 0);
 				elm_object_text_set(bt, _("Hide"));
-				elm_object_part_content_set(bt, icon);
+				elm_object_content_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_hide, NULL);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
@@ -2210,7 +2210,7 @@ EAPI int elm_main(int argc, char **argv)
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
-	finger_size =  elm_finger_size_get();
+	finger_size =  elm_config_finger_size_get();
 
 	// Statuses list
 	update_status_list(TIMELINE_FRIENDS, EINA_TRUE);

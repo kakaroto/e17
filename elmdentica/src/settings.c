@@ -744,7 +744,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
-				elm_object_part_content_set(button, icon);
+				elm_object_content_set(button, icon);
 				elm_object_text_set(button, _("Add"));
 				evas_object_smart_callback_add(button, "clicked", on_account_add, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
@@ -757,7 +757,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
-				elm_object_part_content_set(button, icon);
+				elm_object_content_set(button, icon);
 				elm_object_text_set(button, _("Edit"));
 				evas_object_smart_callback_add(button, "clicked", on_account_edit, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
@@ -771,7 +771,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
-				elm_object_part_content_set(button, icon);
+				elm_object_content_set(button, icon);
 				elm_object_text_set(button, _("Delete"));
 				evas_object_smart_callback_add(button, "clicked", on_account_delete, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
@@ -1380,7 +1380,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
-				elm_object_part_content_set(button, icon);
+				elm_object_content_set(button, icon);
 				elm_object_text_set(button, _("Add"));
 				evas_object_smart_callback_add(button, "clicked", on_gag_add, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
@@ -1393,7 +1393,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
-				elm_object_part_content_set(button, icon);
+				elm_object_content_set(button, icon);
 				elm_object_text_set(button, _("Edit"));
 				evas_object_smart_callback_add(button, "clicked", on_gag_edit, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
@@ -1406,7 +1406,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_show(icon);
 
 			button = elm_button_add(settings_win);
-				elm_object_part_content_set(button, icon);
+				elm_object_content_set(button, icon);
 				elm_object_text_set(button, _("Delete"));
 				evas_object_smart_callback_add(button, "clicked", on_gag_delete, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
