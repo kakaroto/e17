@@ -143,8 +143,10 @@ static void
 _win_toolbar_eval(Win *w)
 {
    Eina_Bool tb_nowp_state, is_prefs;
+   Elm_Object_Item *nf_it;
 
-   is_prefs = elm_pager_content_top_get(w->list) == w->preferences;
+   nf_it = elm_naviframe_top_item_get(w->list);
+   is_prefs = elm_object_item_part_content_get(nf_it, NULL) == w->preferences;
 
    if (!w->db)
      tb_nowp_state = EINA_FALSE;
@@ -428,7 +430,7 @@ _win_action_prefs(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
    Win *w = data;
    elm_toolbar_item_state_unset(w->action.preferences);
    edje_object_signal_emit(w->edje, "elm,title,hide", "elm");
-   elm_pager_content_promote(w->list, w->preferences);
+   elm_naviframe_item_simple_promote(w->list, w->preferences);
    _win_toolbar_eval(w);
 }
 
@@ -438,7 +440,7 @@ _win_mode_nowplaying(void *data, Evas_Object *obj __UNUSED__, void *event_info _
    Win *w = data;
    edje_object_signal_emit(w->edje, "elm,title,hide", "elm");
    elm_toolbar_item_state_set(w->action.nowplaying, w->action.playlist);
-   elm_pager_content_promote(w->list, w->nowplaying);
+   elm_naviframe_item_simple_promote(w->list, w->nowplaying);
    _win_toolbar_eval(w);
 }
 
@@ -1022,10 +1024,10 @@ win_new(App *app)
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
    edje_object_size_min_restricted_calc
      (w->edje, &(w->min.w), &(w->min.h), w->min.w, w->min.h);
-   elm_pager_content_push(w->list, w->nowplaying);
+   elm_naviframe_item_simple_push(w->list, w->nowplaying);
 
    w->preferences = preferences_add(w->layout);
-   elm_pager_content_push(w->list, w->preferences);
+   elm_naviframe_item_simple_push(w->list, w->preferences);
 
    s = edje_object_data_get(w->edje, "initial_size");
    if (!s)

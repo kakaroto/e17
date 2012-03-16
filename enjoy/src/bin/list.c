@@ -3,7 +3,7 @@
 typedef struct _List
 {
    DB *db;
-   Evas_Object *pager;
+   Evas_Object *nf;
    struct {
       Eina_List *list;
       Evas_Object *current;
@@ -29,7 +29,7 @@ _list_page_promote(List *list, Evas_Object *page)
 
    if (list->page.current == page) return;
    list->page.current = page;
-   elm_pager_content_promote(list->pager, page);
+   elm_naviframe_item_simple_promote(list->nf, page);
 }
 
 static void
@@ -81,7 +81,7 @@ _list_page_add(List *list, Evas_Object *page)
    EINA_SAFETY_ON_NULL_RETURN_VAL(page, EINA_FALSE);
    list->page.list = eina_list_append(list->page.list, page);
    list->page.current = page;
-   elm_pager_content_push(list->pager, page);
+   elm_naviframe_item_simple_push(list->nf, page);
    if (eina_list_count(list->page.list) > 1)
       page_back_show(list->page.current);
    if ((list->page.songs) && (list->page.songs != page))
@@ -128,7 +128,7 @@ _list_page_song(void *data, Evas_Object *page, void *event_info)
         page_playing_hide(page);
      }
 
-   evas_object_smart_callback_call(list->pager, "selected", song);
+   evas_object_smart_callback_call(list->nf, "selected", song);
 }
 
 static void
@@ -171,22 +171,22 @@ list_add(Evas_Object *parent)
 
    memset(list, 0, sizeof(list));
 
-   list->pager = elm_pager_add(parent);
-   elm_object_style_set(list->pager, "fade");
-   if (!list->pager) return NULL;
+   list->nf = add(parent);
+   //elm_object_style_set(list->nf, "fade");
+   if (!list->nf) return NULL;
 
-   evas_object_data_set(list->pager, "_enjoy_list", list);
+   evas_object_data_set(list->nf, "_enjoy_list", list);
    evas_object_event_callback_add
-     (list->pager, EVAS_CALLBACK_DEL, _list_del, list);
+     (list->nf, EVAS_CALLBACK_DEL, _list_del, list);
 
-   return list->pager;
+   return list->nf;
 }
 
 void
 list_promote_current(Evas_Object *obj)
 {
    LIST_GET_OR_RETURN(list, obj);
-   elm_pager_content_promote(obj, list->page.current);
+   elm_naviframe_item_simple_promote(obj, list->page.current);
 }
 
 void
