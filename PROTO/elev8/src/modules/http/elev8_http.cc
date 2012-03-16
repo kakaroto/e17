@@ -370,7 +370,7 @@ void RegisterModule(Handle<ObjectTemplate> target)
    elev8_http_log_domain = eina_log_domain_register(ELEV8_HTTP_MODULE_NAME, EINA_COLOR_ORANGE);
    if (!elev8_http_log_domain)
      {
-        HTTP_ERR( "could not register i%s log domain.", ELEV8_HTTP_MODULE_NAME);
+        HTTP_ERR( "could not register %s log domain.", ELEV8_HTTP_MODULE_NAME);
         elev8_http_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
    HTTP_INF("%s Logging initialized. %d", ELEV8_HTTP_MODULE_NAME, elev8_http_log_domain);
