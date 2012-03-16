@@ -206,13 +206,13 @@ void RegisterModule(Handle<Object> target)
    int argc = 0;
    char *argv[] = {};
 
-   elev8_elm_log_domain = eina_log_domain_register(ELEV8_ELM_MODULE_NAME, EINA_COLOR_GREEN);
+   elev8_elm_log_domain = eina_log_domain_register("elev8-elm", EINA_COLOR_GREEN);
    if (!elev8_elm_log_domain)
      {
-        ELM_ERR( "could not register %s log domain.", ELEV8_ELM_MODULE_NAME);
+        ELM_ERR( "could not register elev8-elm log domain.");
         elev8_elm_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
-   ELM_INF("%s Logging initialized. %d", ELEV8_ELM_MODULE_NAME, elev8_elm_log_domain);
+   ELM_INF("elev8-elm Logging initialized. %d", elev8_elm_log_domain);
 
    elm_init(argc, argv);
 

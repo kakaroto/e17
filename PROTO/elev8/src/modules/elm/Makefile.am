@@ -12,9 +12,9 @@ AM_CPPFLAGS = \
 @ELEMENTARY_CFLAGS@
 
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
-mod_LTLIBRARIES = libelev8_elm.la
+mod_LTLIBRARIES = libelm.la
 
-libelev8_elm_la_SOURCES = \
+libelm_la_SOURCES = \
 	Main.cc \
 	CElmActionSlider.cc \
 	CElmBackground.cc \
@@ -56,6 +56,6 @@ libelev8_elm_la_SOURCES = \
 	CEvasImage.cc \
 	CEvasObject.cc
 
-libelev8_elm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
-libelev8_elm_la_LDFLAGS = -module -avoid-version -no-undefined
-libelev8_elm_la_LIBTOOLFLAGS = --tag=disable-static
+libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
+libelm_la_LDFLAGS = -module -avoid-version -no-undefined
+libelm_la_LIBTOOLFLAGS = --tag=disable-static

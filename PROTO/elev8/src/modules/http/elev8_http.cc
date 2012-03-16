@@ -4,7 +4,7 @@
 using namespace v8;
 int elev8_http_log_domain = -1;
 
-#define ELEV8_HTTP_MODULE_NAME "elev8-http"
+#define HTTP_MODULE_NAME "http"
 
 int XMLHttpRequest::fd_counter = 0;
 Handle<ObjectTemplate> xmlHttpReqObj;
@@ -367,13 +367,13 @@ Handle<Value> createXMLHttpReqInstance(const Arguments&)
 extern "C"
 void RegisterModule(Handle<ObjectTemplate> target)
 {
-   elev8_http_log_domain = eina_log_domain_register(ELEV8_HTTP_MODULE_NAME, EINA_COLOR_ORANGE);
+   elev8_http_log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
    if (!elev8_http_log_domain)
      {
-        HTTP_ERR( "could not register %s log domain.", ELEV8_HTTP_MODULE_NAME);
+        HTTP_ERR( "could not register elev8-http log domain.");
         elev8_http_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
-   HTTP_INF("%s Logging initialized. %d", ELEV8_HTTP_MODULE_NAME, elev8_http_log_domain);
+   HTTP_INF("elev8-http Logging initialized. %d", elev8_http_log_domain);
 
    if (ecore_con_url_init())
      {
