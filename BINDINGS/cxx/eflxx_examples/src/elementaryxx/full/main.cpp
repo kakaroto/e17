@@ -46,7 +46,7 @@ void test_genlist4(void *data, Evas_Object *obj, void *event_info);
 void test_genlist5(void *data, Evas_Object *obj, void *event_info);
 void test_genlist6(void *data, Evas_Object *obj, void *event_info);
 void test_table(void *data, Evas_Object *obj, void *event_info);
-/*void test_pager(void *data, Evas_Object *obj, void *event_info);
+/*
 void test_win_state(void *data, Evas_Object *obj, void *event_info);
 */
 void test_progressbar(void *data, Evas_Object *obj, void *event_info);
