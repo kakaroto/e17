@@ -1,3 +1,9 @@
 This is intended to be a text editor.
 
 It's currently mostly just a PoC, but I hope it'll grow to be more than that.
+
+HOWTO Build
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make && sudo make install
