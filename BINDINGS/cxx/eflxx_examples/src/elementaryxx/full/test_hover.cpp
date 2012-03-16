@@ -29,7 +29,7 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
   Hover *hv = Hover::factory (*win);
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Button");
+  bt->setText ("Button");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_hover_bt), hv));
   bx->packEnd (*bt);
   bt->show ();
@@ -37,8 +37,8 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
   hv->setTarget (*bt);
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Popup");
-  hv->setContentPart ("middle", *bt);
+  bt->setText ("Popup");
+  hv->setContent ("middle", *bt);
   bt->show ();
 
   bx = Box::factory (*win);
@@ -50,37 +50,37 @@ void test_hover (void *data, Evas_Object *obj, void *event_info)
   ic->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Top 1");
+  bt->setText ("Top 1");
   bx->packEnd (*bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Top 2");
+  bt->setText ("Top 2");
   bx->packEnd (*bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Top 3");
+  bt->setText ("Top 3");
   bx->packEnd (*bt);
   bt->show ();
 
   bx->show ();
 
-  hv->setContentPart ("top", *bx);
+  hv->setContent ("top", *bx);
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Bottom");
-  hv->setContentPart ("bottom", *bt);
+  bt->setText ("Bottom");
+  hv->setContent ("bottom", *bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Left");
-  hv->setContentPart ("left", *bt);
+  bt->setText ("Left");
+  hv->setContent ("left", *bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Right");
-  hv->setContentPart ("right", *bt);
+  bt->setText ("Right");
+  hv->setContent ("right", *bt);
   bt->show ();
 
   bg->setMinHintSize (size160x160);
@@ -112,7 +112,7 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
   hv->setStyle ("popout");
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Button");
+  bt->setText ("Button");
   bt->getEventSignal ("clicked")->connect (sigc::bind (sigc::ptr_fun (&my_hover_bt), hv));
   bx->packEnd (*bt);
   bt->show ();
@@ -120,8 +120,8 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
   hv->setTarget (*bt);
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Popup");
-  hv->setContentPart ("middle", *bt);
+  bt->setText ("Popup");
+  hv->setContent ("middle", *bt);
   bt->show ();
 
   bx = Box::factory (*win);
@@ -133,37 +133,37 @@ void test_hover2 (void *data, Evas_Object *obj, void *event_info)
   ic->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Top 1");
+  bt->setText ("Top 1");
   bx->packEnd (*bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Top 2");
+  bt->setText ("Top 2");
   bx->packEnd (*bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Top 3");
+  bt->setText ("Top 3");
   bx->packEnd (*bt);
   bt->show ();
 
   bx->show ();
 
-  hv->setContentPart ("top", *bx);
+  hv->setContent ("top", *bx);
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Bot");
-  hv->setContentPart ("bottom", *bt);
+  bt->setText ("Bot");
+  hv->setContent ("bottom", *bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Left");
-  hv->setContentPart ("left", *bt);
+  bt->setText ("Left");
+  hv->setContent ("left", *bt);
   bt->show ();
 
   bt = Button::factory (*win);
-  bt->setTextPart ("Right");
-  hv->setContentPart ("right", *bt);
+  bt->setText ("Right");
+  hv->setContent ("right", *bt);
   bt->show ();
 
   bg->setMinHintSize (size160x160);

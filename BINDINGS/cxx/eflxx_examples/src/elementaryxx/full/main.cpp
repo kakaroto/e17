@@ -15,7 +15,6 @@ void test_icon (void *data, Evas_Object *obj, void *event_info);
 void test_box_horiz (void *data, Evas_Object *obj, void *event_info);
 void test_box_vert (void *data, Evas_Object *obj, void *event_info);
 void test_button (void *data, Evas_Object *obj, void *event_info);
-void test_toggle (void *data, Evas_Object *obj, void *event_info);
 void test_clock (void *data, Evas_Object *obj, void *event_info);
 void test_layout (void *data, Evas_Object *obj, void *event_info);
 void test_hover (void *data, Evas_Object *obj, void *event_info);
@@ -142,14 +141,16 @@ int main (int argc, char **argv)
   fr->show ();
 
   Label *lb = Label::factory (*win);
-  lb->setLabel("Please select a test from the list below<br>"
+  lb->setText("Please select a test from the list below<br>"
               "by clicking the test button to show the<br>"
               "test window.");
   fr->setContent (*lb);
   lb->show ();
 
   List *li = List::factory (*win);
+
   li->setSelectMode (ELM_OBJECT_SELECT_MODE_ALWAYS);
+
   li->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   li->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx0->packEnd (*li);
@@ -161,7 +162,6 @@ int main (int argc, char **argv)
   li->append ("Box Vert", test_box_vert, NULL);
   li->append ("Box Horiz", test_box_horiz, NULL);
   li->append ("Buttons", test_button, NULL);
-  li->append ("Toggles", test_toggle, NULL);
   li->append ("Table", test_table, NULL);
   li->append ("Clock", test_clock, NULL);
   li->append ("Layout", test_layout, NULL);

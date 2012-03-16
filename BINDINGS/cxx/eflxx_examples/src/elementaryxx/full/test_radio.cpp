@@ -26,8 +26,8 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   rd->setAlignHintSize (EVAS_HINT_FILL, 0.5);
-  rd->setTextPart ("Icon sized to radio");
-  rd->setContentPart (*ic);
+  rd->setText ("Icon sized to radio");
+  rd->setContent (*ic);
   bx->packEnd (*rd);
   rd->show ();
   ic->show ();
@@ -39,8 +39,8 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setStateValue (1);
   rd->addGroup (*rdg);
-  rd->setTextPart ("Icon no scale");
-  rd->setContentPart (*ic);
+  rd->setText ("Icon no scale");
+  rd->setContent (*ic);
   bx->packEnd (*rd);
   rd->show ();
   ic->show ();
@@ -48,14 +48,14 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setStateValue (2);
   rd->addGroup (*rdg);
-  rd->setTextPart ("Label Only");
+  rd->setText ("Label Only");
   bx->packEnd (*rd);
   rd->show ();
 
   rd = Radio::factory (*win);
   rd->setStateValue (3);
   rd->addGroup (*rdg);
-  rd->setTextPart ("Disabled");
+  rd->setText ("Disabled");
   rd->setDisabled (true);
   bx->packEnd (*rd);
   rd->show ();
@@ -66,7 +66,7 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setStateValue (4);
   rd->addGroup (*rdg);
-  rd->setContentPart (*ic);
+  rd->setContent (*ic);
   bx->packEnd (*rd);
   rd->show ();
   ic->show ();
@@ -77,7 +77,7 @@ void test_radio (void *data, Evas_Object *obj, void *event_info)
   rd = Radio::factory (*win);
   rd->setStateValue (5);
   rd->addGroup (*rdg);
-  rd->setContentPart (*ic);
+  rd->setContent (*ic);
   rd->setDisabled (true);
   bx->packEnd (*rd);
   rd->show ();

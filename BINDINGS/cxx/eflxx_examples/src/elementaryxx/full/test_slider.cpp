@@ -25,8 +25,8 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   ic->show ();
 
   sl = Slider::factory (*win);
-  sl->setTextPart ("Label");
-  sl->setContentPart (*ic);
+  sl->setText ("Label");
+  sl->setContent (*ic);
   sl->setUnitFormat ("%1.1f units");
   sl->setSpanSize (120);
   sl->setAlignHintSize (EVAS_HINT_FILL, 0.5);
@@ -35,7 +35,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   sl->show ();
 
   sl = Slider::factory (*win);
-  sl->setTextPart ("Label 2");
+  sl->setText ("Label 2");
   sl->setSpanSize (80);
   sl->setIndicatorFormat ("%3.0f");
   sl->setMinMax (50, 150);
@@ -47,7 +47,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   sl->show ();
 
   sl = Slider::factory (*win);
-  sl->setTextPart ("Label 3");
+  sl->setText ("Label 3");
   sl->setUnitFormat ("units");
   sl->setSpanSize (40);
   sl->setAlignHintSize (EVAS_HINT_FILL, 0.5);
@@ -66,8 +66,8 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   ic->show ();
 
   sl = Slider::factory (*win);
-  sl->setTextPart ("Label 4");
-  sl->setContentPart (*ic);
+  sl->setText ("Label 4");
+  sl->setContent (*ic);
   sl->setUnitFormat ("units");
   sl->setSpanSize (60);
   sl->setAlignHintSize (0.5L, EVAS_HINT_FILL);

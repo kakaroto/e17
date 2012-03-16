@@ -25,8 +25,8 @@ void test_check (void *data, Evas_Object *obj, void *event_info)
   ck = Check::factory (*win);
   ck->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   ck->setAlignHintSize (EVAS_HINT_FILL, 0.5);
-  ck->setTextPart ("Icon sized to check");
-  ck->setContentPart (*ic);
+  ck->setText ("Icon sized to check");
+  ck->setContent (*ic);
   ck->setState (true);
   bx->packEnd (*ck);
   ck->show ();
@@ -36,14 +36,14 @@ void test_check (void *data, Evas_Object *obj, void *event_info)
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setNoScale (true);
   ck = Check::factory (*win);
-  ck->setTextPart ("Icon no scale");
-  ck->setContentPart (*ic);
+  ck->setText ("Icon no scale");
+  ck->setContent (*ic);
   bx->packEnd (*ck);
   ck->show ();
   ic->show ();
 
   ck = Check::factory (*win);
-  ck->setTextPart ("Label Only");
+  ck->setText ("Label Only");
   bx->packEnd (*ck);
   ck->show ();
 
@@ -53,8 +53,8 @@ void test_check (void *data, Evas_Object *obj, void *event_info)
   ck = Check::factory (*win);
   ck->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   ck->setAlignHintSize (EVAS_HINT_FILL, 0.5);
-  ck->setTextPart ("Disabled check");
-  ck->setContentPart (*ic);
+  ck->setText ("Disabled check");
+  ck->setContent (*ic);
   ck->setState (true);
   bx->packEnd (*ck);
   ck->setDisabled (true);
@@ -65,7 +65,7 @@ void test_check (void *data, Evas_Object *obj, void *event_info)
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setNoScale (true);
   ck = Check::factory (*win);
-  ck->setContentPart (*ic);
+  ck->setContent (*ic);
   bx->packEnd (*ck);
   ck->show ();
   ic->show ();

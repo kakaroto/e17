@@ -20,17 +20,17 @@ void test_layout (void *data, Evas_Object *obj, void *event_info)
   ly->show ();
 
   Button *bt = Button::factory (*win);
-  bt->setTextPart ("Button 1");
+  bt->setText ("Button 1");
   ly->setContent ("element1", *bt);
   bt->show ();
 
   Button *bt2 = Button::factory (*win);
-  bt2->setTextPart ("Button 2");
+  bt2->setText ("Button 2");
   ly->setContent ("element2", *bt2);
   bt2->show ();
 
   Button *bt3 = Button::factory (*win);
-  bt3->setTextPart ("Button 3");
+  bt3->setText ("Button 3");
   ly->setContent ("element3", *bt3);
   bt3->show ();
 
