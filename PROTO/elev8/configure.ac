@@ -45,7 +45,25 @@ AC_FUNC_ALLOCA
 
 EFL_COMPILER_FLAG([-Wall])
 EFL_COMPILER_FLAG([-Wextra])
+EFL_COMPILER_FLAG([-Wundef])
+EFL_COMPILER_FLAG([-Wcast-align])
+EFL_COMPILER_FLAG([-Wformat=2])
+EFL_COMPILER_FLAG([-Wmissing-include-dirs])
+EFL_COMPILER_FLAG([-Wmissing-format-attribute])
+EFL_COMPILER_FLAG([-Wuninitialized])
+EFL_COMPILER_FLAG([-Winit-self])
+EFL_COMPILER_FLAG([-Wfloat-equal])
+EFL_COMPILER_FLAG([-Wmissing-declarations])
+EFL_COMPILER_FLAG([-Wshadow])
+EFL_COMPILER_FLAG([-Wendif-labels])
+EFL_COMPILER_FLAG([-Wstrict-aliasing])
+EFL_COMPILER_FLAG([-Wno-long-long])
+EFL_COMPILER_FLAG([-Wno-overlength-strings])
 EFL_COMPILER_FLAG([-Wno-missing-field-initializers])
+EFL_COMPILER_FLAG([-Wno-format-y2k])
+EFL_COMPILER_FLAG([-Wno-parentheses])
+EFL_COMPILER_FLAG([-Wpointer-arith])
+EFL_COMPILER_FLAG([-Wreturn-type])
 
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
