@@ -449,14 +449,6 @@ cdef extern from "Elementary.h":
     # Label object
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
 
-    # Toggle object
-    evas.c_evas.Evas_Object *elm_toggle_add(evas.c_evas.Evas_Object *parent)
-    void elm_toggle_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
-    void elm_toggle_states_labels_set(evas.c_evas.Evas_Object *obj, char *onlabel, char *offlabel)
-    void elm_toggle_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
-    evas.c_evas.Eina_Bool    elm_toggle_state_get(evas.c_evas.Evas_Object *obj)
-    void elm_toggle_state_pointer_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *statep)
-
     # Frame object
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
 
