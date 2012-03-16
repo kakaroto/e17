@@ -51,6 +51,7 @@
 #include "CEvasObject.h"
 
 int elev8_elm_log_domain = -1;
+extern "C" void RegisterModule(Handle<Object> target);
 
 using namespace v8;
 

@@ -2,7 +2,9 @@
 #include <elev8_http.h>
 
 using namespace v8;
+
 int elev8_http_log_domain = -1;
+extern "C" void RegisterModule(Handle<ObjectTemplate> target);
 
 #define HTTP_MODULE_NAME "http"
 
@@ -147,8 +149,8 @@ status_getter(Local<String>, const AccessorInfo& info)
    return reqObj->status;
 }
 
-Handle<Value> 
-readystate_getter(Local<String>, const AccessorInfo& info)
+static Handle<Value> readystate_getter(Local<String>,
+                                       const AccessorInfo& info)
 {
    Local<Object> self = info.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -157,9 +159,9 @@ readystate_getter(Local<String>, const AccessorInfo& info)
    return reqObj->readyState;
 }
 
-void onreadystatechange_setter(Local<String> property,
-		 Local<Value> value,
-		 const AccessorInfo& info)
+static void onreadystatechange_setter(Local<String> property,
+                                      Local<Value> value,
+                                      const AccessorInfo& info)
 {
    Local<Object> self = info.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -198,7 +200,7 @@ Handle<Value> get_response_header(const Arguments& args)
    return Null();
 }
 
-Handle<Value> get_response_headers(const Arguments& args)
+static Handle<Value> get_response_headers(const Arguments& args)
 {
    Local<Object> self = args.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
@@ -308,7 +310,7 @@ ecore_con_send(const Arguments& args)
    return Undefined();
 }
 
-Handle<Value> createXMLHttpReqInstance(const Arguments&)
+static Handle<Value> createXMLHttpReqInstance(const Arguments&)
 {
    HandleScope scope;
 

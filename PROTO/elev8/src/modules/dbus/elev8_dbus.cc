@@ -1,8 +1,11 @@
 #include <elev8_dbus.h>
 
 using namespace v8;
+
 int elev8_dbus_log_domain = -1;
 Handle<ObjectTemplate> dbusObj;
+
+extern "C" void RegisterModule(Handle<ObjectTemplate>);
 
 #define DBUS_MODULE_NAME "dbus"
 
@@ -639,7 +642,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
    return EINA_TRUE;
 }
 
-Handle<Value> dbus_method_invoke(const Arguments&)
+static Handle<Value> dbus_method_invoke(const Arguments&)
 {
    HandleScope scope;
 
@@ -648,7 +651,7 @@ Handle<Value> dbus_method_invoke(const Arguments&)
    return Undefined();
 }
 
-void invoke_js_callback(void *data)
+static void invoke_js_callback(void *data)
 {
    DBus *dbus = ((struct dbus_cache *)(data))->dbus;
    if (dbus->js_introspect_cb->IsFunction())
@@ -735,7 +738,7 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
 }
 
 
-Handle<Value> dbus_msg_introspect(const Arguments &args)
+static Handle<Value> dbus_msg_introspect(const Arguments &args)
 {
    HandleScope scope;
 
@@ -771,7 +774,7 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
    return Undefined();
 }
 
-void on_introspect(Local<String> property,
+static void on_introspect(Local<String> property,
                                 Local<Value> value,
                                 const AccessorInfo& info)
 {
@@ -786,7 +789,7 @@ void on_introspect(Local<String> property,
    DBUS_INF( "Introspect result set.");
 }
 
-Handle<Value> createDBusInstance(const Arguments& args)
+static Handle<Value> createDBusInstance(const Arguments& args)
 {
    HandleScope scope;
 
