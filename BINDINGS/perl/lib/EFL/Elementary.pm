@@ -559,13 +559,6 @@ my @elm_map = qw(
   elm_map_zoom_mode_set
   elm_map_paused_set
   elm_map_paused_get
-  elm_map_marker_add
-  elm_map_marker_remove
-  elm_map_marker_bring_in
-  elm_map_marker_show
-  elm_map_markers_list_show
-  elm_map_marker_object_get
-  elm_map_marker_update
 );
 
 my @elm_panel = qw(
@@ -1020,13 +1013,6 @@ may change in future releases.
     elm_list_items_get
     elm_list_multi_select_set
     elm_map_add
-    elm_map_marker_add
-    elm_map_marker_bring_in
-    elm_map_marker_object_get
-    elm_map_marker_remove
-    elm_map_marker_show
-    elm_map_marker_update
-    elm_map_markers_list_show
     elm_map_paused_get
     elm_map_paused_set
     elm_map_zoom_get

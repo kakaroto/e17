@@ -1488,27 +1488,6 @@ elm_map_paused_set(Evas_Object *obj, Eina_Bool paused)
 Eina_Bool
 elm_map_paused_get(Evas_Object *obj)
 
-Elm_Map_Marker *
-elm_map_marker_add(Evas_Object *obj, double lon, double lat, Elm_Map_Marker_Class *clas, Elm_Map_Group_Class *group, void *data);
-
-void
-elm_map_marker_remove(Elm_Map_Marker *marker)
-
-void
-elm_map_marker_bring_in(Elm_Map_Marker *marker)
-
-void
-elm_map_marker_show(Elm_Map_Marker *marker)
-
-void
-elm_map_markers_list_show(Eina_List *markers)
-
-Evas_Object *
-elm_map_marker_object_get(Elm_Map_Marker *marker)
-
-void
-elm_map_marker_update(Elm_Map_Marker *marker)
-
 
 # panel
 # ------------------------------------------------------------------------------

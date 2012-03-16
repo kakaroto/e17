@@ -2361,35 +2361,6 @@ public class MapGroupClass
    public void hide_set( Elm.Map obj, bool hide );
 }
 
-//=======================================================================
-[Compact]
-[CCode (cname = "Elm_Map_Marker_Class", free_function = "")]
-public class MapMarkerClass
-{
-    [CCode (cname = "elm_map_marker_class_new")]
-    public MapMarkerClass( Elm.Map? map );
-
-    public void style_set( string style );
-    //public void icon_cb_set( ElmMapMarkerIconGetFunc icon_get );
-    //public void get_cb_set( ElmMapMarkerGetFunc get );
-    //public void del_cb_set( ElmMapMarkerDelFunc del );
-}
-
-//=======================================================================
-[Compact]
-[CCode (cname = "Elm_Map_Marker", free_function = "elm_map_marker_remove")]
-public class MapMarker : Elm.Object
-{
-    public static unowned MapMarker? add( Elm.Object parent, double lon, double lat, MapMarkerClass klass, MapGroupClass group, void* data );
-
-    public void remove();
-    public void region_get( out double lon, out double lat );
-    public static void markers_list_show( Eina.List<MapMarker> list );
-    public void bring_in();
-    public void show();
-    public unowned Map? object_get();
-    public void         update();
-}
 
 //=======================================================================
 [CCode (cname = "Evas_Object", free_function = "evas_object_del")]
@@ -2424,17 +2395,6 @@ public class Map : Elm.Object
     public bool paused_get();
     public void paused_markers_set( bool paused );
     public bool paused_markers_get();
-
-    [CCode (cname = "elm_map_utils_downloading_status_get")]
-    public void downloading_status_get( out int try_num, out int finish_num );
-    [CCode (cname = "elm_map_utils_convert_coord_into_geo")]
-    public void convert_coord_into_geo( int x, int y, int size, out double lon, out double lat );
-    [CCode (cname = "elm_map_utils_convert_geo_into_coord")]
-    public void convert_geo_into_coord( double lon, double lat, int size, out int x, out int y );
-    [CCode (cname = "elm_map_utils_convert_coord_into_name")]
-    public MapName convert_coord_into_name( double lon, double lat );
-    [CCode (cname = "elm_map_utils_convert_name_into_coord")]
-    public MapName convert_name_into_coord( string address );
 
     public void canvas_to_geo_convert(Evas.Coord x, Evas.Coord y, out double lon, out double lat );
     public MapMarker marker_add( double lon, double lat, ref MapMarkerClass clas, ref MapGroupClass clas_group, void* data );
