@@ -269,7 +269,7 @@ public:
   
   Elm_List_Mode getHorizontal ();
 
-  Elm_Object_Select_Mode setSelectMode (Elm_Object_Select_Mode mode);
+  void setSelectMode (Elm_Object_Select_Mode mode);
 
   void setHomogeneous (bool homogeneous);
   
