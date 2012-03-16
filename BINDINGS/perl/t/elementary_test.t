@@ -205,7 +205,7 @@ elm_list_item_append($li, "Genlist",          undef, undef, \&test_genlist,     
 # elm_list_item_append($li, "Genlist Tree",     undef, undef, \&test_genlist6,       undef);
 elm_list_item_append($li, "Checks",           undef, undef, \&test_check,          undef);
 elm_list_item_append($li, "Radios",           undef, undef, \&test_radio,          undef);
-elm_list_item_append($li, "Pager",         undef, undef, \&test_pager,     undef);
+elm_list_item_append($li, "Naviframe",         undef, undef, \&test_naviframe,     undef);
 elm_list_item_append($li, "Window States", undef, undef, \&test_win_state, undef);
 elm_list_item_append($li, "Progressbar",      undef, undef, \&test_progressbar,    undef);
 # elm_list_item_append($li, "File Selector",    undef, undef, \&test_fileselector,   undef);
@@ -3647,37 +3647,37 @@ sub test_radio {
     evas_object_show($win);
 }
 
-sub my_pager_1 {
+sub my_naviframe_1 {
 
-    #Pginfo *info = data;
-    #elm_pager_content_promote(info->pager, info->pg2);
+    Pginfo *info = data;
+    elm_naviframe_item_simple_promote(info->nf, info->pg2);
 }
 
-sub my_pager_2 {
+sub my_naviframe_2 {
 
-    #Pginfo *info = data;
-    #elm_pager_content_promote(info->pager, info->pg3);
+    Pginfo *info = data;
+    elm_naviframe_item_simple_promote(info->nf, info->pg3);
 }
 
-sub my_pager_3 {
+sub my_naviframe_3 {
 
-    #Pginfo *info = data;
-    #elm_pager_content_promote(info->pager, info->pg1);
+    Pginfo *info = data;
+    elm_naviframe_item_simple_promote(info->nf, info->pg1);
 }
 
-sub my_pager_pop {
+sub my_naviframe_pop {
 
-    #Pginfo *info = data;
-    #elm_pager_content_pop(info->pager);
+    Pginfo *info = data;
+    elm_naviframe_item_pop(info->nf);
 }
 
-sub test_pager {
+sub test_naviframe {
     my ($win, $bg, $pg, $bx, $lb, $bt);
 
     my %info;
 
-    $win = elm_win_add(undef, "pager", ELM_WIN_BASIC);
-    elm_win_title_set($win, "Pager");
+    $win = elm_win_add(undef, "naviframe", ELM_WIN_BASIC);
+    elm_win_title_set($win, "Naviframe");
     elm_win_autodel_set($win, 1);
 
     $bg = elm_bg_add($win);
@@ -3685,11 +3685,11 @@ sub test_pager {
     evas_object_size_hint_weight_set($bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_show($bg);
 
-    $pg = elm_pager_add($win);
+    $pg = elm_naviframe_add($win);
     elm_win_resize_object_add($win, $pg);
     evas_object_show($pg);
 
-    $info{'pager'} = $pg;
+    $info{'naviframe'} = $pg;
 
     $bx = elm_box_add($win);
     evas_object_size_hint_weight_set($bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -3697,8 +3697,8 @@ sub test_pager {
 
     $lb = elm_label_add($win);
     elm_object_text_set($lb,
-            "This is page 1 in a pager stack.<br>" . "<br>"
-          . "So what is a pager stack? It is a stack<br>"
+            "This is page 1 in a naviframe stack.<br>" . "<br>"
+          . "So what is a naviframe stack? It is a stack<br>"
           . "of pages that hold widgets in it. The<br>"
           . "pages can be pushed and popped on and<br>"
           . "off the stack, activated and otherwise<br>"
@@ -3712,16 +3712,16 @@ sub test_pager {
 
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Flip to 2");
-    evas_object_smart_callback_add($bt, "clicked", \&my_pager_1, \%info);
+    evas_object_smart_callback_add($bt, "clicked", \&my_naviframe_1, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Popme");
-    evas_object_smart_callback_add($bt, "clicked", \&my_pager_pop, \%info);
+    evas_object_smart_callback_add($bt, "clicked", \&my_naviframe_pop, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
-    elm_pager_content_push($pg, $bx);
+    elm_naviframe_item_simple_push($pg, $bx);
     $info{'pg1'} = $bx;
 
     $bx = elm_box_add($win);
@@ -3729,22 +3729,22 @@ sub test_pager {
     evas_object_show($bx);
 
     $lb = elm_label_add($win);
-    elm_object_text_set($lb, "This is page 2 in a pager stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the pager stack.");
+    elm_object_text_set($lb, "This is page 2 in a naviframe stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the naviframe stack.");
     elm_box_pack_end($bx, $lb);
     evas_object_show($lb);
 
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Flip to 3");
-    evas_object_smart_callback_add($bt, "clicked", \&my_pager_2, \%info);
+    evas_object_smart_callback_add($bt, "clicked", \&my_naviframe_2, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Popme");
-    evas_object_smart_callback_add($bt, "clicked", \&my_pager_pop, \%info);
+    evas_object_smart_callback_add($bt, "clicked", \&my_naviframe_pop, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
-    elm_pager_content_push($pg, $bx);
+    elm_naviframe_item_simple_push($pg, $bx);
     $info{'pg2'} = $bx;
 
     $bx = elm_box_add($win);
@@ -3752,22 +3752,22 @@ sub test_pager {
     evas_object_show($bx);
 
     $lb = elm_label_add($win);
-    elm_object_text_set($lb, "This is page 3 in a pager stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the pager stack.");
+    elm_object_text_set($lb, "This is page 3 in a naviframe stack.<br>" . "<br>" . "This is just like the previous page in<br>" . "the naviframe stack.");
     elm_box_pack_end($bx, $lb);
     evas_object_show($lb);
 
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Flip to 1");
-    evas_object_smart_callback_add($bt, "clicked", \&my_pager_3, \%info);
+    evas_object_smart_callback_add($bt, "clicked", \&my_naviframe_3, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
 
     $bt = elm_button_add($win);
     elm_object_text_set($bt, "Popme");
-    evas_object_smart_callback_add($bt, "clicked", \&my_pager_pop, \%info);
+    evas_object_smart_callback_add($bt, "clicked", \&my_naviframe_pop, \%info);
     elm_box_pack_end($bx, $bt);
     evas_object_show($bt);
-    elm_pager_content_push($pg, $bx);
+    elm_naviframe_item_simple_push($pg, $bx);
     $info{'pg3'} = $bx;
 
     evas_object_show($win);

@@ -454,13 +454,29 @@ my @elm_radio = qw(
 
 );
 
-my @elm_pager = qw(
-  elm_pager_add
-  elm_pager_content_push
-  elm_pager_content_pop
-  elm_pager_content_promote
-  elm_pager_content_bottom_get
-  elm_pager_content_top_get
+my @elm_naviframe = qw(
+  elm_naviframe_add
+  elm_naviframe_item_push
+  elm_naviframe_item_insert_before
+  elm_naviframe_item_insert_after
+  elm_naviframe_item_pop
+  elm_naviframe_item_pop_to
+  elm_naviframe_item_promote
+  elm_naviframe_content_preserve_on_pop_set
+  elm_naviframe_content_preserve_on_pop_get
+  elm_naviframe_bottom_item_get
+  elm_naviframe_top_item_get
+  elm_naviframe_item_style_set
+  elm_naviframe_item_style_get
+  elm_naviframe_item_title_visible_set
+  elm_naviframe_item_title_visible_get
+  elm_naviframe_prev_btn_auto_pushed_set
+  elm_naviframe_prev_btn_auto_pushed_get
+  elm_naviframe_items_get
+  elm_naviframe_event_enabled_set
+  elm_naviframe_event_enabled_get
+  elm_naviframe_item_simple_push
+  elm_naviframe_item_simple_promote
 );
 
 my @elm_slideshow = qw(
@@ -613,7 +629,7 @@ our @__funcs = (
     @elm_table,     @elm_button,       @elm_clock,       @elm_layout,    @elm_hover,    @elm_entry,  @elm_scroller, @elm_anchorview, @elm_notepad,
     @elm_notify,    @elm_anchorblock,  @elm_bubble,      @elm_photo,     @elm_toolbar,  @elm_menu,   @elm_slider,   @elm_check,      @elm_radio,
     @elm_slideshow, @elm_fileselector, @elm_progressbar, @elm_separator, @elm_spinner,  @elm_index,  @elm_photocam, @elm_map,        @elm_panel,
-    @elm_flip,      @elm_scrolled,     @elm_pager,       @elm_image,     @elm_hoversel, @elm_genlist
+    @elm_flip,      @elm_scrolled,     @elm_naviframe,   @elm_image,     @elm_hoversel, @elm_genlist
 );
 
 my @__todo = qw(
@@ -687,8 +703,8 @@ Sub::Exporter::setup_exporter(
             'menu'         => \@elm_menu,
             'notepad'      => \@elm_notepad,
             'notify'       => \@elm_notify,
-            'pager'        => \@elm_pager,
-            'pager'        => \@elm_slideshow,
+            'naviframe'    => \@elm_navifame,
+            'slideshow'    => \@elm_slideshow,
             'panel'        => \@elm_panel,
             'photo'        => \@elm_photo,
             'photocam'     => \@elm_photocam,
@@ -1048,12 +1064,12 @@ may change in future releases.
     elm_object_scroll_hold_push
     elm_object_style_get
     elm_object_style_set
-    elm_pager_add
-    elm_pager_content_bottom_get
-    elm_pager_content_pop
-    elm_pager_content_promote
-    elm_pager_content_push
-    elm_pager_content_top_get
+    elm_naviframe_add
+    elm_naviframe_bottom_item_get
+    elm_naviframe_item_push
+    elm_naviframe_item_promote
+    elm_naviframe_item_pop
+    elm_naviframe_top_item_get
     elm_panel_add
     elm_panel_orient_set
     elm_photo_add

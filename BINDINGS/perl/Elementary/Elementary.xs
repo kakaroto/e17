@@ -1194,27 +1194,71 @@ elm_radio_value_get(const Evas_Object *obj)
 #elm_radio_value_pointer_set(Evas_Object *obj, int *valuep)
 
 
-# pager
+# naviframe
 # ------------------------------------------------------------------------------
 
-Evas_Object *
-elm_pager_add(Evas_Object *parent)
+EAPI Evas_Object
+*elm_naviframe_add(Evas_Object *parent)
 
-void
-elm_pager_content_push(Evas_Object *obj, Evas_Object *content)
+EAPI Elm_Object_Item *
+elm_naviframe_item_push(Evas_Object *obj, const char *title_label, Evas_Object *prev_btn, Evas_Object *next_btn, Evas_Object *content, const char *item_style)
 
-void
-elm_pager_content_pop(Evas_Object *obj)
+EAPI Elm_Object_Item *
+elm_naviframe_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, const char *title_label, Evas_Object *prev_btn, Evas_Object *next_btn, Evas_Object *content, const char *item_style)
 
-void
-elm_pager_content_promote(Evas_Object *obj, Evas_Object *content)
+EAPI Evas_Object *
+elm_naviframe_item_pop(Evas_Object *obj)
 
-Evas_Object *
-elm_pager_content_bottom_get(Evas_Object *obj)
+EAPI void
+elm_naviframe_item_pop_to(Elm_Object_Item *it)
 
-Evas_Object *
-elm_pager_content_top_get(Evas_Object *obj)
+EAPI void
+elm_naviframe_item_promote(Elm_Object_Item *it)
 
+EAPI void
+elm_naviframe_content_preserve_on_pop_set(Evas_Object *obj, Eina_Bool preserve)
+
+EAPI Eina_Bool
+elm_naviframe_content_preserve_on_pop_get(const Evas_Object *obj)
+
+EAPI Elm_Object_Item *
+elm_naviframe_top_item_get(const Evas_Object *obj)
+
+EAPI Elm_Object_Item *
+elm_naviframe_bottom_item_get(const Evas_Object *obj)
+
+EAPI void
+elm_naviframe_item_style_set(Elm_Object_Item *it, const char *item_style)
+
+EAPI const char *
+elm_naviframe_item_style_get(const Elm_Object_Item *it)
+
+EAPI void
+elm_naviframe_item_title_visible_set(Elm_Object_Item *it, Eina_Bool visible)
+
+EAPI Eina_Bool
+elm_naviframe_item_title_visible_get(const Elm_Object_Item *it)
+
+EAPI void
+elm_naviframe_prev_btn_auto_pushed_set(Evas_Object *obj, Eina_Bool auto_pushed)
+
+EAPI Eina_Bool
+elm_naviframe_prev_btn_auto_pushed_get(const Evas_Object *obj)
+
+EAPI Eina_List *
+elm_naviframe_items_get(const Evas_Object *obj)
+
+EAPI void
+elm_naviframe_event_enabled_set(Evas_Object *obj, Eina_Bool enabled)
+
+EAPI Eina_Bool
+elm_naviframe_event_enabled_get(const Evas_Object *obj)
+
+Elm_Object_Item *
+elm_naviframe_item_simple_push(Evas_Object *obj, Evas_Object *content)
+
+EAPI void
+elm_naviframe_item_simple_promote(Evas_Object *obj, Evas_Object *content)
 
 # slideshow
 # ------------------------------------------------------------------------------
