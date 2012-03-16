@@ -12,10 +12,10 @@ AM_CPPFLAGS = \
 @ECORECON_CFLAGS@
 
 moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
-mod_LTLIBRARIES = libhttp.la
+mod_LTLIBRARIES = libelev8_http.la
 
-libhttp_la_SOURCES = elev8_http.cc
+libelev8_http_la_SOURCES = elev8_http.cc
 
-libhttp_la_LIBADD = @ECORECON_LIBS@ @V8_LIBS@
-libhttp_la_LDFLAGS = -module -avoid-version -no-undefined
-libhttp_la_LIBTOOLFLAGS = --tag=disable-static
+libelev8_http_la_LIBADD = @ECORECON_LIBS@ @V8_LIBS@
+libelev8_http_la_LDFLAGS = -module -avoid-version -no-undefined
+libelev8_http_la_LIBTOOLFLAGS = --tag=disable-static

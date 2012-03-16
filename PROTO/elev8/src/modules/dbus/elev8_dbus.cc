@@ -4,7 +4,7 @@ using namespace v8;
 int elev8_dbus_log_domain = -1;
 Handle<ObjectTemplate> dbusObj;
 
-#define DBUS_MODULE_NAME "dbus"
+#define ELEV8_DBUS_MODULE_NAME "elev8-dbus"
 
 static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key, const char *value)
 {
@@ -850,13 +850,13 @@ Handle<Value> createDBusInstance(const Arguments& args)
 extern "C"
 void RegisterModule(Handle<ObjectTemplate>)
 {
-   elev8_dbus_log_domain = eina_log_domain_register("elev8-dbus", EINA_COLOR_ORANGE);
+   elev8_dbus_log_domain = eina_log_domain_register(ELEV8_DBUS_MODULE_NAME, EINA_COLOR_ORANGE);
    if (!elev8_dbus_log_domain)
      {
-        DBUS_ERR( "could not register elev8-dbus log domain.");
+        DBUS_ERR( "could not register %s log domain.", ELEV8_DBUS_MODULE_NAME);
         elev8_dbus_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
-   DBUS_INF("elev8-dbus Logging initialized. %d", elev8_dbus_log_domain);
+   DBUS_INF("%s Logging initialized. %d",ELEV8_DBUS_MODULE_NAME, elev8_dbus_log_domain);
 
    if (e_dbus_init())
      {

@@ -17,7 +17,7 @@
 #define ELM_ERR(...) EINA_LOG_DOM_ERR(elev8_elm_log_domain, __VA_ARGS__)
 #define ELM_CRT(...) EINA_LOG_DOM_CRITICAL(elev8_elm_log_domain, __VA_ARGS__)
 
-#define ELM_MODULE_NAME "elm"
+#define ELEV8_ELM_MODULE_NAME "elev8-elm"
 
 extern int elev8_elm_log_domain;
 
