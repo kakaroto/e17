@@ -44,6 +44,8 @@ AC_C___ATTRIBUTE__
 AC_FUNC_ALLOCA
 
 EFL_COMPILER_FLAG([-Wall])
+EFL_COMPILER_FLAG([-Wextra])
+EFL_COMPILER_FLAG([-Wno-missing-field-initializers])
 
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl

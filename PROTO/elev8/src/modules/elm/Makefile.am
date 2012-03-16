@@ -3,7 +3,6 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
--Wall -Wextra -Wno-missing-field-initializers \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/include \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
