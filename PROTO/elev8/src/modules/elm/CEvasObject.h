@@ -76,8 +76,8 @@ protected:
    private:
      struct CPropertyList {
        const char *name;
-       prop_getter get;
-       prop_setter set;
+       prop_getter getter;
+       prop_setter setter;
      };
 
      /* base class property list, setup in constructor */
@@ -105,8 +105,8 @@ protected:
             {
                if (!strcmp(prop->name, prop_name))
                  {
-                    prop_setter set = prop->set;
-                    (self->*set)(value);
+                    prop_setter setter = prop->setter;
+                    (self->*setter)(value);
                     return true;
                  }
             }
@@ -128,8 +128,8 @@ protected:
             {
                if (!strcmp(prop->name, prop_name))
                  {
-                    prop_getter get = prop->get;
-                    return (self->*get)();
+                    prop_getter getter = prop->getter;
+                    return (self->*getter)();
                  }
             }
           /* traverse into base classes */
