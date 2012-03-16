@@ -261,7 +261,7 @@ void elmdentica_init(void) {
 	gui.win=NULL;
 	gui.win_evas=NULL;
 	gui.timeline=NULL;
-	gui.pager=NULL;
+	gui.nf=NULL;
 	gui.main=NULL;
 	gui.status_detail=NULL;
 
@@ -1047,18 +1047,18 @@ static void on_close_status_status_action(void *data, Evas_Object *obj, void *ev
 }
 
 static void on_status_show_page_users(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *pager = (Evas_Object*)data;
-	elm_pager_content_promote(pager, gui.status_detail_users);
+	Evas_Object *nf = (Evas_Object*)data;
+	elm_naviframe_item_simple_promote(nf, gui.status_detail_users);
 }
 
 static void on_status_show_page_links(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *pager = (Evas_Object*)data;
-	elm_pager_content_promote(pager, gui.status_detail_links);
+	Evas_Object *nf = (Evas_Object*)data;
+	elm_naviframe_item_simple_promote(nf, gui.status_detail_links);
 }
 
 static void on_status_show_page_tags(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *pager = (Evas_Object*)data;
-	elm_pager_content_promote(pager, gui.status_detail_tags);
+	Evas_Object *nf = (Evas_Object*)data;
+	elm_naviframe_item_simple_promote(nf, gui.status_detail_tags);
 }
 
 static void ed_open_file(void* data, Evas_Object *obj, void* event_info) {
@@ -1212,13 +1212,13 @@ static void on_attachment_click(void *data, Evas_Object *obj, void *event_info) 
 }
 
 static void on_status_show_page_groups(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *pager = (Evas_Object*)data;
-	elm_pager_content_promote(pager, gui.status_detail_groups);
+	Evas_Object *nf = (Evas_Object*)data;
+	elm_naviframe_item_simple_promote(nf, gui.status_detail_groups);
 }
 
 static void on_status_show_page_attachments(void* data, Evas_Object *obj, void *event_info) {
-	Evas_Object *pager = (Evas_Object*)data;
-	elm_pager_content_promote(pager, gui.status_detail_attachments);
+	Evas_Object *nf = (Evas_Object*)data;
+	elm_naviframe_item_simple_promote(nf, gui.status_detail_attachments);
 }
 
 static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_info) {
@@ -1244,7 +1244,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	Elm_Object_Item *li=NULL;
 	Elm_Object_Item *ti=NULL;
-	Evas_Object *box=NULL, *toolbar=NULL, *pager=NULL, *list=NULL, *button=NULL;
+	Evas_Object *box=NULL, *toolbar=NULL, *nf=NULL, *list=NULL, *button=NULL;
 	aStatus *as = (aStatus*)elm_object_item_data_get(gli);
 	anUser *au=NULL;
 	GMatchInfo *user_matches=NULL, *link_matches=NULL, *tags_matches=NULL, *group_matches=NULL;
@@ -1258,11 +1258,11 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 
 	gui.status_detail=elm_win_inwin_add(gui.win);
 
-	pager = elm_pager_add(gui.win);
-		elm_object_style_set(pager, "fade");
-		evas_object_size_hint_weight_set(pager, 1, 1);
-		evas_object_size_hint_align_set(pager, -1, -1);
-	evas_object_show(pager);
+	nf = elm_naviframe_add(gui.win);
+		//elm_object_style_set(nf, "fade");
+		evas_object_size_hint_weight_set(nf, 1, 1);
+		evas_object_size_hint_align_set(nf, -1, -1);
+	evas_object_show(nf);
 
 	box = elm_box_add(gui.win);
 		elm_box_homogeneous_set(box, EINA_FALSE);
@@ -1272,7 +1272,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 		toolbar = elm_toolbar_add(gui.win);
 			evas_object_size_hint_weight_set(toolbar, 1, 1);
 			evas_object_size_hint_align_set(toolbar, -1, 0);
-			ti = elm_toolbar_item_append(toolbar, NULL, _("Users"), on_status_show_page_users, pager);
+			ti = elm_toolbar_item_append(toolbar, NULL, _("Users"), on_status_show_page_users, nf);
 
 			list = elm_list_add(gui.win);
 				evas_object_size_hint_weight_set(list, 1, 1);
@@ -1296,12 +1296,12 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 
 				elm_list_go(list);
 				gui.status_detail_users=list;
-				elm_pager_content_push(pager, gui.status_detail_users);
-				elm_pager_content_promote(pager, gui.status_detail_users);
+				elm_naviframe_item_simple_push(nf, gui.status_detail_users);
+				elm_naviframe_item_simple_promote(nf, gui.status_detail_users);
 			evas_object_show(list);
 
 			if(g_regex_match(re_link, as->status->text, 0, &link_matches)) {
-				elm_toolbar_item_append(toolbar, NULL, _("Links"), on_status_show_page_links, pager);
+				elm_toolbar_item_append(toolbar, NULL, _("Links"), on_status_show_page_links, nf);
 
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
@@ -1313,14 +1313,14 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 						g_match_info_next(link_matches, &re_err);
 					}
 					elm_list_go(list);
-					elm_pager_content_push(pager, list);
+					elm_naviframe_item_simple_push(nf, list);
 					gui.status_detail_links=list;
 				evas_object_show(list);
 			}
 			g_match_info_free(link_matches);
 
 			if(re_tags && g_regex_match(re_tags, as->status->text, 0, &tags_matches)) {
-				elm_toolbar_item_append(toolbar, NULL, _("Tags"), on_status_show_page_tags, pager);
+				elm_toolbar_item_append(toolbar, NULL, _("Tags"), on_status_show_page_tags, nf);
 
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
@@ -1331,14 +1331,14 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 						g_match_info_next(tags_matches, &re_err);
 					}
 					elm_list_go(list);
-					elm_pager_content_push(pager, list);
+					elm_naviframe_item_simple_push(nf, list);
 					gui.status_detail_tags=list;
 				evas_object_show(list);
 			}
 			g_match_info_free(tags_matches);
 
 			if(re_group && g_regex_match(re_group, as->status->text, 0, &group_matches)) {
-				elm_toolbar_item_append(toolbar, NULL, _("Groups"), on_status_show_page_groups, pager);
+				elm_toolbar_item_append(toolbar, NULL, _("Groups"), on_status_show_page_groups, nf);
 
 				list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
@@ -1350,13 +1350,13 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 						g_match_info_next(group_matches, &re_err);
 					}
 					elm_list_go(list);
-					elm_pager_content_push(pager, list);
+					elm_naviframe_item_simple_push(nf, list);
 					gui.status_detail_groups=list;
 				evas_object_show(list);
 			}
 
             if(as->status->attachments) {
-                elm_toolbar_item_append(toolbar, NULL, _("Attachments"), on_status_show_page_attachments, pager);
+                elm_toolbar_item_append(toolbar, NULL, _("Attachments"), on_status_show_page_attachments, nf);
                 list = elm_list_add(gui.win);
 					evas_object_size_hint_weight_set(list, 1, 1);
 					evas_object_size_hint_align_set(list, -1, -1);
@@ -1377,7 +1377,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
                         li = elm_list_item_sorted_insert(list, p + 1, mime_icon, NULL, on_attachment_click, a, NULL);
                     }
                     elm_list_go(list);
-                    elm_pager_content_push(pager, list);
+                    elm_naviframe_item_simple_push(nf, list);
                     gui.status_detail_attachments=list;
                 evas_object_show(list);
             }
@@ -1386,7 +1386,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 			elm_box_pack_end(box, toolbar);
 		evas_object_show(toolbar);
 
-		elm_box_pack_end(box, pager);
+		elm_box_pack_end(box, nf);
 
 		button = elm_button_add(gui.win);
 			evas_object_size_hint_weight_set(button, 1, 1);
@@ -2071,12 +2071,12 @@ EAPI int elm_main(int argc, char **argv)
 	edje_object_signal_callback_add(gui.edje, "mouse,clicked,1", "tb_event", auto_hide_toolbar, NULL);
 	edje_object_signal_callback_add(gui.edje, "mouse,clicked,1", "edit_event", show_edit, NULL);
 
-	//gui.pager = elm_pager_add(gui.win);
-		//elm_object_style_set(gui.pager, "fade");
-		//elm_win_resize_object_add(gui.win, gui.pager);
-	//evas_object_show(gui.pager);
+	//gui.nf = elm_naviframe_add(gui.win);
+		//elm_object_style_set(gui.nf, "fade");
+		//elm_win_resize_object_add(gui.win, gui.nf);
+	//evas_object_show(gui.nf);
 
-	//elm_pager_content_promote(gui.pager, gui.main);
+	//elm_naviframe_item_simple_promote(gui.nf, gui.main);
 
 	gui.timeline = elm_genlist_add(gui.win);
 		evas_object_size_hint_weight_set(gui.timeline, 1, 1);

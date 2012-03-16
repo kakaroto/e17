@@ -43,7 +43,7 @@ typedef struct _StatusesList {
 } StatusesList;
 
 typedef struct _Gui {
-	Evas_Object *win, *timeline, *pager, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups, *hover,
+	Evas_Object *win, *timeline, *nf, *main, *status_detail, *status_detail_users, *status_detail_links, *status_detail_tags, *status_detail_groups, *hover,
 			    *download_win, *fileselector_win, *status_detail_attachments, *edje, *edit, *post;
 	Elm_Object_Item *timelines;
 	Evas *win_evas;
