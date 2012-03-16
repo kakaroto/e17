@@ -16,7 +16,7 @@ struct _Elfe_Allapps
    Evas_Object *widgets_list;
    Evas_Object *config_list;
    Evas_Object *selector;
-   Evas_Object *pager;
+   Evas_Object *nf;
    Eina_List *buttons;
    Eina_List *grid_items;
 };
@@ -200,7 +200,7 @@ _apps_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UN
    bt = eina_list_nth(allapps->buttons, 2);
    elm_object_disabled_set(bt, EINA_FALSE);
 
-   elm_pager_content_promote(allapps->pager, allapps->grid);
+   elm_naviframe_item_simple_promote(allapps->nf, allapps->grid);
 
 }
 
@@ -220,7 +220,7 @@ _widgets_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info _
    bt = eina_list_nth(allapps->buttons, 2);
    elm_object_disabled_set(bt, EINA_FALSE);
 
-   elm_pager_content_promote(allapps->pager, allapps->widgets_list);
+   elm_naviframe_item_simple_promote(allapps->nf, allapps->widgets_list);
 }
 
 
@@ -239,7 +239,7 @@ _config_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __
    bt = eina_list_nth(allapps->buttons, 2);
    elm_object_disabled_set(bt, EINA_TRUE);
 
-   elm_pager_content_promote(allapps->pager, allapps->config_list);
+   elm_naviframe_item_simple_promote(allapps->nf, allapps->config_list);
 
 }
 
@@ -306,10 +306,10 @@ elfe_allapps_add(Evas_Object *parent)
    evas_object_show(allapps->selector);
    elm_box_pack_end(allapps->box, allapps->selector);
 
-   allapps->pager = elm_pager_add(allapps->box);
-   evas_object_show(allapps->pager);
-   elm_box_pack_end(allapps->box, allapps->pager);
-   elm_object_style_set(allapps->pager, "slide_invisible");
+   allapps->nf = elm_naviframe_add(allapps->box);
+   evas_object_show(allapps->nf);
+   elm_box_pack_end(allapps->box, allapps->nf);
+   elm_object_style_set(allapps->nf, "slide_invisible");
 
    allapps->grid = elm_gengrid_add(parent);
    elm_gengrid_item_size_set(allapps->grid, 0, 0);
@@ -339,17 +339,17 @@ elfe_allapps_add(Evas_Object *parent)
    evas_object_show(allapps->grid);
 
 
-   allapps->widgets_list = elfe_gadget_list_add(allapps->pager);
+   allapps->widgets_list = elfe_gadget_list_add(allapps->nf);
    evas_object_smart_callback_add(allapps->widgets_list, "list,longpressed", _widget_longpress, allapps);
    evas_object_show(allapps->widgets_list);
 
    evas_object_show(allapps->box);
 
-   evas_object_size_hint_weight_set(allapps->pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(allapps->pager, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(allapps->nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(allapps->nf, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   elm_pager_content_push(allapps->pager, allapps->widgets_list);
-   elm_pager_content_push(allapps->pager, allapps->grid);
+   elm_naviframe_item_simple_push(allapps->nf, allapps->widgets_list);
+   elm_naviframe_item_simple_push(allapps->nf, allapps->grid);
 
    return allapps->box;
 }
