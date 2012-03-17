@@ -5,7 +5,6 @@ includedir=@includedir@
 
 Name: ebluez
 Description: bluetooth device manager (bluez)
-@pkgconfig_requires_private@: @requirement_ebluez@
 Version: @VERSION@
 Libs: -L${libdir} -lebluez
 Cflags: -I${includedir}/e_dbus-@VMAJ@

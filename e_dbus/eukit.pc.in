@@ -5,7 +5,6 @@ includedir=@includedir@
 
 Name: eukit
 Description: udisks/upower convenience library
-@pkgconfig_requires_private@: @requirement_eofono@
 Version: @VERSION@
 Libs: -L${libdir} -leukit
 Cflags: -I${includedir}/e_dbus-@VMAJ@
