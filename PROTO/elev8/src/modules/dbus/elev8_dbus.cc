@@ -866,6 +866,6 @@ void RegisterModule(Handle<ObjectTemplate>)
         /* Add support for DBus Service Introspection */
         dbusObj = ObjectTemplate::New();
         dbusObj->SetInternalFieldCount(1);
-        target->Set(String::NewSymbol("dbus"), FunctionTemplate::New(createDBusInstance)->GetFunction());
+        dbusObj->Set(String::NewSymbol("dbus"), FunctionTemplate::New(createDBusInstance)->GetFunction());
      }
 }
