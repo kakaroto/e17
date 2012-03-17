@@ -171,7 +171,7 @@ list_add(Evas_Object *parent)
 
    memset(list, 0, sizeof(list));
 
-   list->nf = add(parent);
+   list->nf = elm_naviframe_add(parent);
    //elm_object_style_set(list->nf, "fade");
    if (!list->nf) return NULL;
 
