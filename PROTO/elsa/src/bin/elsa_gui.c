@@ -364,6 +364,7 @@ elsa_gui_init(const char *theme)
 
 
    i = ecore_x_xinerama_screen_count_get();
+   if (i < 1) i = 1;
    for(ii = 0; ii < i; ++ii)
      {
         screen = calloc(1, sizeof(Elsa_Screen));
