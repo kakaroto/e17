@@ -81,13 +81,13 @@ case "$host_os" in
       ;;
 esac
 
-requirement_ebluez="edbus >= 1.1.0"
-requirement_econnman0_7x="edbus >= 1.1.0"
-requirement_edbus="ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62"
-requirement_ehal="edbus >= 1.1.0"
-requirement_enotify="edbus >= 1.1.0"
-requirement_eofono="edbus >= 1.1.0"
-requirement_eukit="edbus >= 1.1.0"
+requirement_ebluez="edbus >= 1.2.0"
+requirement_econnman0_7x="edbus >= 1.2.0"
+requirement_edbus="ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62"
+requirement_ehal="edbus >= 1.2.0"
+requirement_enotify="edbus >= 1.2.0"
+requirement_eofono="edbus >= 1.2.0"
+requirement_eukit="edbus >= 1.2.0"
 requirement_dbus="dbus-1 >= 0.62"
 
 ### Additional options to configure
@@ -152,7 +152,7 @@ dbus_libs="$DBUS_LIBS"
 dbus_cflags="$DBUS_CFLAGS"
 AC_SUBST(dbus_libs)
 AC_SUBST(dbus_cflags)
-PKG_CHECK_MODULES([EDBUS], [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62])
+PKG_CHECK_MODULES([EDBUS], [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62])
 
 # Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`
@@ -180,8 +180,8 @@ AC_SUBST(DBUS_VERSION_CFLAGS)
 # Dependencies for the libraries
 if test "x${enable_enotify}" = "xyes" ; then
    PKG_CHECK_MODULES([EVAS],
-      [evas >= 1.1.0],
-      [requirement_enotify="evas >= 1.1.0 ${requirement_enotify}"],
+      [evas >= 1.2.0],
+      [requirement_enotify="evas >= 1.2.0 ${requirement_enotify}"],
       [enable_enotify="no"])
 fi
 
@@ -206,63 +206,63 @@ EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
 
 if test "x${have_edbus_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_TEST],
-      [ecore >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_test="yes"],
       [have_edbus_test="no"])
 fi
 
 if test "x${have_edbus_test_client}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_TEST_CLIENT],
-      [ecore >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_test_client="yes"],
       [have_edbus_test_client="no"])
 fi
 
 if test "x${have_edbus_bluez_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_BLUEZ_TEST],
-      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_bluez_test="yes"],
       [have_edbus_bluez_test="no"])
 fi
 
 if test "x${have_edbus_connman0_7x_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_CONNMAN0_7X_TEST],
-      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_connman0_7x_test="yes"],
       [have_edbus_connman0_7x_test="no"])
 fi
 
 if test "x${have_edbus_notification_daemon_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DAEMON_TEST],
-      [ecore >= 1.1.0 evas >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 evas >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_notification_daemon_test="yes"],
       [have_edbus_notification_daemon_test="no"])
 fi
 
 if test "x${have_edbus_notify_send}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFY_SEND],
-      [ecore >= 1.1.0 evas >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 evas >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_notify_send="yes"],
       [have_edbus_notify_send="no"])
 fi
 
 if test "x${have_edbus_notify_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFY_TEST],
-      [ecore >= 1.1.0 ecore-evas >= 1.1.0 evas >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 ecore-evas >= 1.2.0 evas >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_notify_test="yes"],
       [have_edbus_notify_test="no"])
 fi
 
 if test "x${have_edbus_ofono_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_OFONO_TEST],
-      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_ofono_test="yes"],
       [have_edbus_ofono_test="no"])
 fi
 
 if test "x${have_edbus_ukit_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_UKIT_TEST],
-      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
+      [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62],
       [have_edbus_ukit_test="yes"],
       [have_edbus_ukit_test="no"])
 fi

@@ -134,11 +134,11 @@ esac
 
 # Eina
 
-PKG_CHECK_MODULES([EINA], eina >= 1.1.0)
+PKG_CHECK_MODULES([EINA], eina >= 1.2.0)
 
 # Evas
 
-PKG_CHECK_MODULES([EVAS], evas >= 1.1.0 eet >= 1.5.0)
+PKG_CHECK_MODULES([EVAS], evas >= 1.2.0 eet >= 1.6.0)
 
 # Xlib
 
