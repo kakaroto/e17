@@ -5,10 +5,10 @@
 # Tristan D. <trinine@free.fr>, 2007-2012
 msgid ""
 msgstr ""
-"Project-Id-Version: e16 svn-rev67394\n"
+"Project-Id-Version: e16 svn-rev69488\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2012-03-11 18:16+0100\n"
-"PO-Revision-Date: 2012-01-20 17:25+0100\n"
+"PO-Revision-Date: 2012-03-17 16:02+0100\n"
 "Last-Translator: Trinine <trinine@free.fr>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -1716,17 +1716,14 @@ msgid "Window Shading speed:"
 msgstr "Vitesse d'enroulement des fenêtres:"
 
 #: src/settings.c:500
-#, fuzzy
 msgid "Ignore struts/panels for placing normal windows"
 msgstr "Ignorer les docks/panneaux pour placer les fenêtres"
 
 #: src/settings.c:505
-#, fuzzy
 msgid "Ignore struts/panels when windows are fullscreen"
-msgstr "Ignorer les docks/panneaux pour placer les fenêtres en plein écran"
+msgstr "Ignorer les docks/panneaux quand les fenêtres sont en plein écran"
 
 #: src/settings.c:510
-#, fuzzy
 msgid "Ignore struts/panels when maximizing windows"
 msgstr "Ignorer les docks/panneaux lors de la maximisation des fenêtres"
 
