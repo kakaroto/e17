@@ -244,7 +244,6 @@ void CEvasObject::on_click(void *event_info)
         Handle<Value> args[3] = { obj, ox, oy };
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
-        printf("Hello2\n");
         fn->Call(obj, 3, args);
      }
    else
@@ -254,7 +253,6 @@ void CEvasObject::on_click(void *event_info)
         Handle<Value> args[1] = { obj };
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
-        printf("Hello1\n");
         fn->Call(obj, 1, args);
      }
 

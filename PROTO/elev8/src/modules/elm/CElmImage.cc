@@ -38,7 +38,7 @@ void CElmImage::file_set(Handle<Value> val)
           ELM_WRN( "warning: can't read image file %s", *str);
         elm_image_file_set(eo, *str, NULL);
      }
-   printf("Value is not string.\n");
+   ELM_ERR("Value is not string.\n");
 }
 
 Handle<Value> CElmImage::file_get(void) const
