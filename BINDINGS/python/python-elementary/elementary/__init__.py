@@ -17,7 +17,7 @@
 #
 
 from c_elementary import Object, Window, Background, Icon, \
-    Box, Button, Scroller, Label, Toggle, Frame, Flip, Table, \
+    Box, Button, Scroller, Label, Frame, Flip, Table, \
     Clock, Layout, Hover, Entry, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
     Radio, Check, Naviframe, InnerWindow, Image, Spinner, Fileselector, FileselectorEntry, Notify, \
