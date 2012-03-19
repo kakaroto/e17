@@ -37,6 +37,19 @@ var my_window = new elm.window({
                     icon : logo_icon,
                     state : true,
                 },
+                toggle1 : {
+                    type : "check",
+                    style : "toggle",
+                    label : "Spades",
+                    onlabel : "Numbers",
+                    offlabel : "Alphabets",
+                    icon : logo_icon,
+                    weight : { x : -1.0, y : -1.0 },
+                    align : { x : -1.0, y : 0.5 },
+                    on_changed : function(arg) {
+                        print("Numbers or Alphabets\n" + elm.datadir);
+                    },
+                },
                 icon_check : {
                     type : "check",
                     label : "Icon no scale",

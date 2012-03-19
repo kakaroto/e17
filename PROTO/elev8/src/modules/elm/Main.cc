@@ -45,7 +45,6 @@
 #include "CElmSlider.h"
 #include "CElmSpinner.h"
 #include "CElmTable.h"
-#include "CElmToggle.h"
 #include "CElmDaySelector.h"
 #include "CEvasImage.h"
 #include "CEvasObject.h"
@@ -261,7 +260,6 @@ void RegisterModule(Handle<Object> target)
    REGISTER("calendar", CElmCalendar);
    REGISTER("table", CElmTable);
    REGISTER("photocam", CElmPhotocam);
-   REGISTER("toggle", CElmToggle);
    REGISTER("fileselectorbutton", CElmFileSelectorButton);
    REGISTER("fileselectorentry", CElmFileSelectorEntry);
    REGISTER("inwin", CElmInwin);

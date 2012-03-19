@@ -43,7 +43,6 @@ files_SCRIPTS = \
 	spinner.js \
 	stock.js \
 	table.js \
-	toggle.js \
 	twitter.js
 
 EXTRA_DIST = $(files_SCRIPTS)
