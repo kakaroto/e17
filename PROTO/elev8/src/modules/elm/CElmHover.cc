@@ -6,11 +6,11 @@ const char *CElmHover::position_as_string[] = {
    "left", "right", "middle"
 };
 
-CElmHover::CElmHover(CEvasObject *parent, Local<Object> obj)
+CElmHover::CElmHover(CEvasObject *par, Local<Object> obj)
    : CEvasObject()
    , prop_handler(property_list_base)
 {
-   eo = elm_hover_add(parent->top_widget_get());
+   eo = elm_hover_add(par->top_widget_get());
    construct(eo, obj);
 }
 

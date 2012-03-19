@@ -20,10 +20,10 @@ Handle<Value> CElmInwin::activate(const Arguments& args)
 
 Handle<Value> CElmInwin::content_get() const
 {
-   Evas_Object *content = elm_win_inwin_content_get(eo);
-   if (!content)
+   Evas_Object *con = elm_win_inwin_content_get(eo);
+   if (!con)
      return Undefined();
-   CEvasObject *content_obj = static_cast<CEvasObject*>(evas_object_data_get(content, "cppobj"));
+   CEvasObject *content_obj = static_cast<CEvasObject*>(evas_object_data_get(con, "cppobj"));
    if (content_obj)
      return content_obj->get_object();
    return Undefined();
@@ -31,9 +31,9 @@ Handle<Value> CElmInwin::content_get() const
 
 void CElmInwin::content_set(Handle<Value> object)
 {
-   CEvasObject *content = make_or_get(this, object);
-   if (content)
-     elm_win_inwin_content_set(eo, content->get());
+   CEvasObject *con = make_or_get(this, object);
+   if (con)
+     elm_win_inwin_content_set(eo, con->get());
 }
 
 PROPERTIES_OF(CElmInwin) = {

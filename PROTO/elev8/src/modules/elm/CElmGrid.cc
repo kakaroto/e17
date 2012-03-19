@@ -45,8 +45,8 @@ void CElmGrid::items_set(Handle<Value> val)
    /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
      {
-        Local<Value> val = props->Get(Integer::New(i));
-        pack_set(in->Get(val->ToString()));
+        Local<Value> value = props->Get(Integer::New(i));
+        pack_set(in->Get(value->ToString()));
      }
 }
 

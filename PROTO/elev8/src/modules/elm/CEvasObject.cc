@@ -78,9 +78,9 @@ CEvasObject *CEvasObject::get_parent() const
    return parent;
 }
 
-void CEvasObject::object_set_eo(Handle<Object> obj, CEvasObject *eo)
+void CEvasObject::object_set_eo(Handle<Object> obj, CEvasObject *leo)
 {
-   obj->Set(String::New("_eo"), External::Wrap(eo));
+   obj->Set(String::New("_eo"), External::Wrap(leo));
 }
 
 CEvasObject *CEvasObject::eo_from_info(Handle<Object> obj)
@@ -509,9 +509,9 @@ Handle<Value> CEvasObject::image_get(void) const
    return Undefined();
 }
 
-void CEvasObject::show(bool show)
+void CEvasObject::show(bool enabled)
 {
-   if (show)
+   if (enabled)
      {
         evas_object_show(eo);
      }
@@ -536,7 +536,6 @@ Handle<Object> CEvasObject::realize_objects(Handle<Value> val, Handle<Object> &o
      {
 
         Handle<Value> x = props->Get(Integer::New(i));
-        String::Utf8Value val(x);
 
         CEvasObject *child = make_or_get(this, in->Get(x->ToString()));
         if (!child)
