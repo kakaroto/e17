@@ -141,10 +141,12 @@ create_main_win(void)
    evas_object_size_hint_weight_set(box, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
    elm_win_resize_object_add(win, box);
    
-   toggle = elm_toggle_add(win);
-   elm_toggle_label_set(toggle, "Enabled");
-   elm_toggle_states_labels_set(toggle, "ON", "OFF");
-   elm_toggle_state_pointer_set(toggle, &(alm.on));   
+   toggle = elm_check_add(win);
+   elm_object_style_set(toggle, "toggle");
+   elm_object_text_set(toggle, "Enabled");
+   elm_object_part_text_set(toggle, "on", "ON");
+   elm_object_part_text_set(toggle, "off", "OFF");
+   elm_check_state_pointer_set(toggle, &(alm.on));   
    evas_object_size_hint_weight_set(toggle, 1.0, 0.0); // expand h/v 1/0
    evas_object_size_hint_align_set(toggle, -1.0, 0.0); // fill h/v 1/0
    elm_box_pack_end(box, toggle);
@@ -158,10 +160,12 @@ create_main_win(void)
    elm_box_pack_end(box, cloc);
    evas_object_show(cloc);
    
-   toggle = elm_toggle_add(win);
-   elm_toggle_label_set(toggle, "Repeat");
-   elm_toggle_states_labels_set(toggle, "ON", "OFF");
-   elm_toggle_state_pointer_set(toggle, &(alm.repeat));   
+   toggle = elm_check_add(win);
+   elm_object_style_set(toggle, "toggle");
+   elm_object_text_set(toggle, "Repeat");
+   elm_object_part_text_set(toggle, "on", "ON");
+   elm_object_part_text_set(toggle, "off", "OFF");
+   elm_check_state_pointer_set(toggle, &(alm.repeat));   
    evas_object_size_hint_weight_set(toggle, 1.0, 0.0); // expand h/v 1/0
    evas_object_size_hint_align_set(toggle, -1.0, 0.0); // fill h/v 1/0
    elm_box_pack_end(box, toggle);
@@ -174,7 +178,7 @@ create_main_win(void)
    evas_object_show(cloc);
    
    button = elm_button_add(win);
-   elm_button_label_set(button, "OK");
+   elm_object_text_set(button, "OK");
    evas_object_smart_callback_add(button, "clicked", on_button_activate, NULL);
    evas_object_size_hint_weight_set(button, 1.0, 1.0); // expand h/v 1/0
    evas_object_size_hint_align_set(button, -1.0, 1.0); // fill h/v 1/0, align h/v ?/1.0
@@ -265,13 +269,13 @@ create_alarm_win(void)
    frame = elm_frame_add(win);
    evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
    evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
-   elm_frame_label_set(frame, "State");
+   elm_object_text_set(frame, "State");
    
    subbox = elm_box_add(win);
-   elm_frame_content_set(frame, subbox);
+   elm_object_content_set(frame, subbox);
 
    label = elm_label_add(win);
-   elm_label_label_set(label,
+   elm_object_text_set(label,
 		       "<br>"
 		       "<b>Alarm Message</b><br>"
 		       "<br>");
@@ -286,10 +290,10 @@ create_alarm_win(void)
    frame = elm_frame_add(win);
    evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
    evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
-   elm_frame_label_set(frame, "Current Time");
+   elm_object_text_set(frame, "Current Time");
    
    subbox = elm_box_add(win);
-   elm_frame_content_set(frame, subbox);
+   elm_object_content_set(frame, subbox);
 
    cloc = elm_clock_add(win);
    elm_clock_show_am_pm_set(cloc, 1);
@@ -303,7 +307,7 @@ create_alarm_win(void)
    evas_object_show(frame);
    
    button = elm_button_add(win);
-   elm_button_label_set(button, "Set new alarm");
+   elm_object_text_set(button, "Set new alarm");
    evas_object_smart_callback_add(button, "clicked", on_set_button_activate, NULL);
    evas_object_size_hint_weight_set(button, 1.0, 1.0); // expand h/v 1/0
    evas_object_size_hint_align_set(button, -1.0, 0.0); // fill h/v 1/0, align h/v ?/1.0
@@ -311,7 +315,7 @@ create_alarm_win(void)
    evas_object_show(button);
    
    button = elm_button_add(win);
-   elm_button_label_set(button, "OK");
+   elm_object_text_set(button, "OK");
    evas_object_smart_callback_add(button, "clicked", on_button_activate, NULL);
    evas_object_size_hint_weight_set(button, 1.0, 1.0); // expand h/v 1/0
    evas_object_size_hint_align_set(button, -1.0, 1.0); // fill h/v 1/0, align h/v ?/1.0
