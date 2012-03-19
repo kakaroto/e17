@@ -39,7 +39,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_menu.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
-	elementary/elementary.c_elementary_pager.pxi \
+	elementary/elementary.c_elementary_naviframe.pxi \
 	elementary/elementary.c_elementary_panel.pxi \
 	elementary/elementary.c_elementary_photo.pxi \
 	elementary/elementary.c_elementary_progressbar.pxi \

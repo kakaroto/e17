@@ -17,26 +17,21 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Pager(Object):
+cdef class Naviframe(Object):
     def __init__(self, c_evas.Object parent):
-        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
         Object.__init__(self, parent.evas)
         self._set_obj(elm_naviframe_add(parent.obj))
 
-    def content_push(self, c_evas.Object content):
-        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
+    def item_simple_push(self, c_evas.Object content):
         elm_naviframe_item_simple_push(self.obj, content.obj);
 
-    def content_pop(self):
-        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
+    def item_pop(self):
         elm_naviframe_item_pop(self.obj)
 
-    def content_promote(self, c_evas.Object content):
-        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
+    def item_simple_promote(self, c_evas.Object content):
         elm_naviframe_item_simple_promote(self.obj, content.obj)
 
-    def bottom_get(self):
-        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
+    def bottom_item_get(self):
         cdef c_evas.Evas_Object* o
         cdef Object obj
         cdef Elm_Object_Item *it
@@ -49,8 +44,7 @@ cdef class Pager(Object):
 
         return obj
 
-    def top_get(self):
-        _METHOD_DEPRECATED(self, "Naviframe", "use Naviframe instead")
+    def top_item_get(self):
         cdef c_evas.Evas_Object* o
         cdef Object obj
         cdef Elm_Object_Item *it
@@ -64,4 +58,4 @@ cdef class Pager(Object):
         return obj
 
 
-_elm_widget_type_register("pager", Pager)
+_elm_widget_type_register("naviframe", Naviframe)
