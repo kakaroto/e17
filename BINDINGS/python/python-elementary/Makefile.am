@@ -51,6 +51,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_spinner.pxi \
 	elementary/elementary.c_elementary_table.pxi \
 	elementary/elementary.c_elementary_toolbar.pxi \
+	elementary/elementary.c_elementary_web.pxi \
 	elementary/elementary.c_elementary_widget_item.pxi \
 	elementary/elementary.c_elementary_window.pxi
 
@@ -85,7 +86,9 @@ examples_files = \
 	tests/test_spinner.py \
 	tests/test_table.py \
 	tests/test_toolbar.py \
-	tests/test_tooltip.py
+	tests/test_tooltip.py \
+	tests/test_web.py
+
 examples_images_files = \
 	tests/images/icon_00.png \
 	tests/images/logo.png \

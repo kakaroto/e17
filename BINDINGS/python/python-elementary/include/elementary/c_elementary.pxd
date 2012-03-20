@@ -117,6 +117,16 @@ cdef extern from "Elementary.h":
         ELM_LIST_SCROLL
         ELM_LIST_LIMIT
         ELM_LIST_EXPAND
+	
+
+    ctypedef enum Elm_Web_Zoom_Mode:
+        ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
+        ELM_WEB_ZOOM_MODE_AUTO_FIT 	#Zoom until content fits in web object
+        ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object. 
+
+
+
+
 
     ctypedef enum Elm_Flip_Mode:
         ELM_FLIP_ROTATE_Y_CENTER_AXIS
@@ -434,6 +444,32 @@ cdef extern from "Elementary.h":
     # Button object
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
 
+    # Web object
+    ctypedef struct Elm_Web_Frame_Load_Error:
+        int code
+        evas.c_evas.Eina_Bool is_cancellation
+        const_char_ptr domain
+        const_char_ptr description
+        const_char_ptr failing_url
+        evas.c_evas.Evas_Object *frame
+
+    ctypedef void (*Elm_Web_Console_Message)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id)
+
+    evas.c_evas.Eina_Bool elm_need_web()
+    evas.c_evas.Eina_Bool elm_web_history_enabled_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_web_webkit_view_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_web_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Eina_Bool elm_web_uri_set(evas.c_evas.Evas_Object *obj,char *uri)
+    const_char_ptr elm_web_uri_get(evas.c_evas.Evas_Object *obj)
+    const_char_ptr elm_web_useragent_get(evas.c_evas.Evas_Object *obj)
+    double elm_web_zoom_get(evas.c_evas.Evas_Object *obj)
+    Elm_Web_Zoom_Mode elm_web_zoom_mode_get(evas.c_evas.Evas_Object *obj)
+
+    evas.c_evas.Eina_Bool elm_web_back(evas.c_evas.Evas_Object *obj)
+
+    void elm_web_console_message_hook_set(evas.c_evas.Evas_Object *obj, Elm_Web_Console_Message func, void *data)
+
+
     # Scroller object
     evas.c_evas.Evas_Object *elm_scroller_add(evas.c_evas.Evas_Object *parent)
     void elm_scroller_content_min_limit(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool w, evas.c_evas.Eina_Bool h)
@@ -506,13 +542,18 @@ cdef extern from "Elementary.h":
     # Entry Object
     evas.c_evas.Evas_Object *elm_entry_add(evas.c_evas.Evas_Object *parent)
     void elm_entry_single_line_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool single_line)
+    evas.c_evas.Eina_Bool elm_entry_single_line_get(evas.c_evas.Evas_Object *obj)
     void elm_entry_password_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool password)
+    evas.c_evas.Eina_Bool elm_entry_password_get(evas.c_evas.Evas_Object *obj)
     void elm_entry_entry_set(evas.c_evas.Evas_Object *obj, char *entry)
     char *elm_entry_entry_get(evas.c_evas.Evas_Object *obj)
     char *elm_entry_selection_get(evas.c_evas.Evas_Object *obj)
     void elm_entry_entry_insert(evas.c_evas.Evas_Object *obj, char *entry)
     void elm_entry_line_wrap_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool wrap)
     void elm_entry_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
+    evas.c_evas.Eina_Bool elm_entry_editable_get(evas.c_evas.Evas_Object *obj)
+    void elm_entry_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
+    evas.c_evas.Eina_Bool elm_entry_scrollable_get(evas.c_evas.Evas_Object *obj)
     void elm_entry_select_none(evas.c_evas.Evas_Object *obj)
     void elm_entry_select_all(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_Bool elm_entry_cursor_next(evas.c_evas.Evas_Object *obj)

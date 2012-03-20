@@ -17,7 +17,7 @@
 #
 
 from c_elementary import Object, Window, Background, Icon, \
-    Box, Button, Scroller, Label, Frame, Flip, Table, \
+    Box, Button, Web, Scroller, Label, Frame, Flip, Table, \
     Clock, Layout, Hover, Entry, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
     Radio, Check, Naviframe, InnerWindow, Image, Spinner, Fileselector, FileselectorEntry, Notify, \
@@ -111,5 +111,9 @@ ELM_BUBBLE_POS_TOP_LEFT = 0
 ELM_BUBBLE_POS_TOP_RIGHT = 1
 ELM_BUBBLE_POS_BOTTOM_LEFT = 2
 ELM_BUBBLE_POS_BOTTOM_RIGHT = 3
+
+ELM_WEB_ZOOM_MODE_MANUAL = 0
+ELM_WEB_ZOOM_MODE_AUTO_FIT = 1
+ELM_WEB_ZOOM_MODE_AUTO_FILL = 2
 
 c_elementary.init()

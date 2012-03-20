@@ -42,6 +42,12 @@ cdef class Entry(Object):
     def callback_changed_del(self, func):
         self._callback_del("changed", func)
 
+    def callback_changed_user_add(self, func, *args, **kwargs):
+        self._callback_add("changed,user", func, *args, **kwargs)
+
+    def callback_changed_user_del(self, func):
+        self._callback_del("changed,user", func)
+
     def callback_selection_start_add(self, func, *args, **kwargs):
         self._callback_add("selection,start", func, *args, **kwargs)
 
@@ -120,17 +126,57 @@ cdef class Entry(Object):
     def callback_unfocused_del(self, func):
         self._callback_del("unfocused", func)
 
+    def scrollable_set(self, scrollable):
+        elm_entry_scrollable_set(self.obj, scrollable)
+
+    def scrollable_get(self):
+        return bool(elm_entry_scrollable_get(self.obj))
+
+    property scrollable:
+        def __get__(self):
+            return self.scrollable_get()
+
+        def __set__(self, value):
+            self.scrollable_set(value)
+
     def single_line_set(self, single_line):
         elm_entry_single_line_set(self.obj, single_line)
 
+    def single_line_get(self):
+        return bool(elm_entry_single_line_get(self.obj))
+
+    property single_line:
+        def __get__(self):
+            return self.single_line_get()
+
+        def __set__(self, value):
+            self.single_line_set(value)
+
     def password_set(self, password):
         elm_entry_password_set(self.obj, password)
+
+    def password_get(self):
+        return bool(elm_entry_password_get(self.obj))
+
+    property password:
+        def __get__(self):
+            return self.password_get()
+
+        def __set__(self, value):
+            self.password_set(value)
 
     def entry_set(self, entry):
         elm_entry_entry_set(self.obj, entry)
 
     def entry_get(self):
         return elm_entry_entry_get(self.obj)
+
+    property entry:
+        def __get__(self):
+            return self.entry_get()
+
+        def __set__(self, value):
+            self.entry_set(value)
 
     def selection_get(self):
         cdef const_char_ptr s
@@ -147,6 +193,16 @@ cdef class Entry(Object):
 
     def editable_set(self, editable):
         elm_entry_editable_set(self.obj, editable)
+
+    def editable_get(self):
+        return bool(elm_entry_editable_get(self.obj))
+
+    property editable:
+        def __get__(self):
+            return self.editable_get()
+
+        def __set__(self, value):
+            self.editable_set(value)
 
     def select_none(self):
         elm_entry_select_none(self.obj)

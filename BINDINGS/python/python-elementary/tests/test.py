@@ -33,6 +33,7 @@ from test_gengrid import gengrid_clicked
 from test_flip import flip_clicked
 from test_tooltip import tooltip_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
+from test_web import web_clicked
 
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
@@ -150,6 +151,9 @@ if __name__ == "__main__":
             ]),
             ("Toolbars", [
                 ("Toolbar", toolbar_clicked),
+            ]),
+             ("Web", [
+                ("Web", web_clicked),
             ]),
              ("Window / Backgroud", [
                 ("Bg Plain", bg_plain_clicked),
