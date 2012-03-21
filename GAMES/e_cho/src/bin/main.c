@@ -2,7 +2,6 @@
 #include "config.h"
 #endif
 #include <Elementary.h>
-#include <Edje.h>
 #include <Evas.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -28,7 +27,7 @@ typedef enum _Mode
 typedef struct _Game
 {
     Ecore_Timer *play_timer, *turn_timer;
-    Evas_Object *base;
+    Evas_Object *layout;
     double speed;
     int step, level, score, hi_score;
     int seq[LEVEL_MAX];
@@ -53,19 +52,19 @@ _score_inc(Game *game, int score_inc)
     char buf[32];
     game->score += score_inc;
     snprintf(buf, sizeof(buf), "%i", game->score);
-    edje_object_part_text_set(game->base, "score", buf);
+    elm_object_part_text_set(game->layout, "score", buf);
 }
 
 static void
 _player_fail(Game *game)
 {
-    edje_object_signal_emit(game->base, "fail", "");
+    elm_object_signal_emit(game->layout, "fail", "");
     if (game->score > game->hi_score)
     {
         char buf[32];
         game->hi_score = game->score;
         snprintf(buf, sizeof(buf), "%i", game->hi_score);
-        edje_object_part_text_set(game->base, "hi-score", buf);
+        elm_object_part_text_set(game->layout, "hi-score", buf);
     }
     game->score = 0;
     game->mode = OFF;
@@ -76,7 +75,7 @@ _player_turn(Game *game)
 {
     game->next = 0;
     game->mode = REPEATING;
-    edje_object_signal_emit(game->base, "repeating", "");
+    elm_object_signal_emit(game->layout, "repeating", "");
 }
 
 static Eina_Bool
@@ -87,16 +86,16 @@ _play_next(void *data)
     switch (game->seq[game->next])
     {
         case 0:
-            edje_object_signal_emit(game->base, "hi", "up");
+            elm_object_signal_emit(game->layout, "hi", "up");
             break;
         case 1:
-            edje_object_signal_emit(game->base, "hi", "right");
+            elm_object_signal_emit(game->layout, "hi", "right");
             break;
         case 2:
-            edje_object_signal_emit(game->base, "hi", "down");
+            elm_object_signal_emit(game->layout, "hi", "down");
             break;
         case 3:
-            edje_object_signal_emit(game->base, "hi", "left");
+            elm_object_signal_emit(game->layout, "hi", "left");
             break;
         default:
             fprintf(stderr, "Wrong number on sequence\n");
@@ -119,7 +118,7 @@ _play_next(void *data)
 static void
 _cpu_turn(Game *game)
 {
-    edje_object_signal_emit(game->base, "playing", "");
+    elm_object_signal_emit(game->layout, "playing", "");
     game->next = 0;
     game->mode = PLAYING;
     game->step++;
@@ -142,16 +141,16 @@ _next_level(Game *game, int level)
 
     if (level > LEVEL_MAX)
     {
-        edje_object_signal_emit(game->base, "player_won", "");
+        elm_object_signal_emit(game->layout, "player_won", "");
         game->mode = OFF;
         return;
     }
 
     _score_inc(game, 100 * (level - LEVEL_DEFAULT));
     snprintf(buf, sizeof(buf), "%i", level - LEVEL_DEFAULT + 1);
-    edje_object_part_text_set(game->base, "level", buf);
+    elm_object_part_text_set(game->layout, "level", buf);
     if (level != LEVEL_DEFAULT)
-        edje_object_signal_emit(game->base, "next_level", "");
+        elm_object_signal_emit(game->layout, "next_level", "");
     game->mode = PLAYING;
     game->level = level;
     _create_seq(game);
@@ -166,7 +165,7 @@ _next_level(Game *game, int level)
 static void
 _start_new_game(Game *game)
 {
-    edje_object_signal_emit(game->base, "new_game", "");
+    elm_object_signal_emit(game->layout, "new_game", "");
     _next_level(game, LEVEL_DEFAULT);
 }
 
@@ -238,14 +237,12 @@ _win_delete_request(void *data __UNUSED__, Evas_Object *obj, void *event_info __
 static Eina_Bool
 _win_new(Game *game)
 {
-    Evas_Object *win, *layout, *edje;
-    Evas_Coord min_w, min_h;
+    Evas_Object *win, *layout;
 
     win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
     if (!win) return EINA_FALSE;
     evas_object_smart_callback_add(win, "delete,request",
             _win_delete_request, NULL);
-
 
     layout = elm_layout_add(win);
     if (!layout) return EINA_FALSE;
@@ -262,19 +259,14 @@ _win_new(Game *game)
         return EINA_FALSE;
     }
 
-    edje = elm_layout_edje_get(layout);
-    edje_object_size_min_get(edje, &min_w, &min_h);
-    edje_object_size_min_restricted_calc(edje, &min_w, &min_h, min_w, min_h);
-    edje_object_signal_callback_add(edje, "*", "sound", sound_play_cb, NULL);
-    edje_object_signal_callback_add(edje, "gamebt,clicked", "*",
+    elm_object_signal_callback_add(layout, "*", "sound", sound_play_cb, NULL);
+    elm_object_signal_callback_add(layout, "gamebt,clicked", "*",
             _bt_clicked, game);
-    edje_object_signal_callback_add(edje, "clicked", "bt_start",
+    elm_object_signal_callback_add(layout, "clicked", "bt_start",
             _start_new_game_cb, game);
-    game->base = edje;
+    game->layout = layout;
     evas_object_show(layout);
 
-    evas_object_resize(win, min_w, min_h);
-    evas_object_size_hint_min_set(win, min_w, min_h);
     elm_win_title_set(win, "Echo");
     evas_object_show(win);
 
