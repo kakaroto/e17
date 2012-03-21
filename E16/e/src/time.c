@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2012 Kim Woelders
+ * Copyright (C) 2011-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -21,28 +20,46 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _TIMERS_H_
-#define _TIMERS_H_
+#include "config.h"
+#if USE_MONOTONIC_CLOCK
+#include <time.h>
+#else
+#include <sys/time.h>
+#endif
+#include "util.h"
 
-#include "etypes.h"
+unsigned int
+GetTimeMs(void)
+{
+#if USE_MONOTONIC_CLOCK
+   struct timespec     ts;
 
-Timer              *TimerAdd(int dt_ms, int (*func) (void *data), void *data);
-void                TimerDel(Timer * timer);
-void                TimerSetInterval(Timer * timer, int dt_ms);
-unsigned int        TimersRun(unsigned int t_ms);
+   clock_gettime(CLOCK_MONOTONIC, &ts);
 
-#define TIMER_ADD(timer, in, func, prm) \
-   timer = TimerAdd(in, func, prm)
-#define TIMER_ADD_NP(in, func, prm) \
-   TimerAdd(in, func, prm)
-#define TIMER_DEL(timer) \
-   if (timer) { TimerDel(timer); timer = NULL; }
+   return (unsigned int)(ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
+#else
+   struct timeval      timev;
 
-Idler              *IdlerAdd(void (*func) (void *data), void *data);
-void                IdlerDel(Idler * id);
-void                IdlersRun(void);
+   gettimeofday(&timev, NULL);
 
-Animator           *AnimatorAdd(int (*func) (void *data), void *data);
-void                AnimatorDel(Animator * an);
+   return (unsigned int)(timev.tv_sec * 1000 + timev.tv_usec / 1000);
+#endif
+}
 
-#endif /* _TIMERS_H_ */
+unsigned int
+GetTimeUs(void)
+{
+#if USE_MONOTONIC_CLOCK
+   struct timespec     ts;
+
+   clock_gettime(CLOCK_MONOTONIC, &ts);
+
+   return (unsigned int)(ts.tv_sec * 1000000 + ts.tv_nsec / 1000);
+#else
+   struct timeval      timev;
+
+   gettimeofday(&timev, NULL);
+
+   return (unsigned int)(timev.tv_sec * 1000000 + timev.tv_usec);
+#endif
+}

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2006-2011 Kim Woelders
+ * Copyright (C) 2006-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,11 +24,6 @@
 #include "E.h"
 #include "e16-ecore_list.h"
 #include "timers.h"
-#if USE_MONOTONIC_CLOCK
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
 
 #define DEBUG_TIMERS 0
 
@@ -40,42 +35,6 @@ struct _timer {
    void               *data;
    char                again;
 };
-
-unsigned int
-GetTimeMs(void)
-{
-#if USE_MONOTONIC_CLOCK
-   struct timespec     ts;
-
-   clock_gettime(CLOCK_MONOTONIC, &ts);
-
-   return (unsigned int)(ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
-#else
-   struct timeval      timev;
-
-   gettimeofday(&timev, NULL);
-
-   return (unsigned int)(timev.tv_sec * 1000 + timev.tv_usec / 1000);
-#endif
-}
-
-unsigned int
-GetTimeUs(void)
-{
-#if USE_MONOTONIC_CLOCK
-   struct timespec     ts;
-
-   clock_gettime(CLOCK_MONOTONIC, &ts);
-
-   return (unsigned int)(ts.tv_sec * 1000000 + ts.tv_nsec / 1000);
-#else
-   struct timeval      timev;
-
-   gettimeofday(&timev, NULL);
-
-   return (unsigned int)(timev.tv_sec * 1000000 + timev.tv_usec);
-#endif
-}
 
 static int
 tdiff(unsigned int t1, unsigned int t2)

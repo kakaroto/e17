@@ -30,7 +30,6 @@
 #include "groups.h"
 #include "settings.h"
 #include "snaps.h"
-#include "timers.h"
 
 #define DEBUG_GROUPS 0
 #if DEBUG_GROUPS
