@@ -46,6 +46,7 @@
 #include "CElmSpinner.h"
 #include "CElmTable.h"
 #include "CElmDaySelector.h"
+#include "CElmConform.h"
 #include "CEvasImage.h"
 #include "CEvasObject.h"
 
@@ -267,6 +268,7 @@ void RegisterModule(Handle<Object> target)
    REGISTER("naviframe", CElmNaviframe);
    REGISTER("grid", CElmGrid);
    REGISTER("dayselector", CElmDaySelector);
+   REGISTER("conform", CElmConform);
 
 #undef REGISTER
 }
