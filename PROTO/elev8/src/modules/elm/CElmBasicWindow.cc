@@ -43,9 +43,13 @@ Handle<Value> CElmBasicWindow::label_get() const
    return String::New(elm_win_title_get(eo));
 }
 
-void CElmBasicWindow::label_set(const char *str)
+void CElmBasicWindow::label_set(Handle<Value> val)
 {
-   elm_win_title_set(eo, str);
+   if (val->IsString())
+     {
+        String::Utf8Value str(val);
+        elm_win_title_set(eo, *str);
+     }
 }
 
 void CElmBasicWindow::on_delete(void *, Evas_Object *, void *)

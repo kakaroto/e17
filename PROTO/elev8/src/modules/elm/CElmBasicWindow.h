@@ -16,8 +16,9 @@ public:
    static Handle<Value> add(const Arguments& args);
 
    virtual Handle<Value> type_get(void) const;
+
    virtual Handle<Value> label_get() const;
-   virtual void label_set(const char *str);
+   virtual void label_set(Handle<Value>);
    static void on_delete(void *, Evas_Object *, void *);
    virtual void resize_set(Handle<Value>);
 };
