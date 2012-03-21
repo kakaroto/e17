@@ -52,6 +52,19 @@ void CElmBasicWindow::label_set(Handle<Value> val)
      }
 }
 
+Handle<Value> CElmBasicWindow::conformant_get() const
+{
+   return Boolean::New(elm_win_conformant_get(eo));
+}
+
+void CElmBasicWindow::conformant_set(Handle<Value> conformant)
+{
+   if (conformant->IsBoolean())
+     {
+        elm_win_conformant_set(eo, conformant->BooleanValue());
+     }
+}
+
 void CElmBasicWindow::on_delete(void *, Evas_Object *, void *)
 {
    elm_exit();
@@ -61,3 +74,8 @@ void CElmBasicWindow::resize_set(Handle<Value>)
 {
    ELM_ERR("warning: resize=true ignored on main window");
 }
+
+PROPERTIES_OF(CElmBasicWindow) = {
+   PROP_HANDLER(CElmBasicWindow, conformant),
+   { NULL }
+};

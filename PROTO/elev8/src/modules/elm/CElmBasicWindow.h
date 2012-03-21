@@ -19,6 +19,10 @@ public:
 
    virtual Handle<Value> label_get() const;
    virtual void label_set(Handle<Value>);
+
+   virtual Handle<Value> conformant_get() const;
+   virtual void conformant_set(Handle<Value> conformant);
+
    static void on_delete(void *, Evas_Object *, void *);
    virtual void resize_set(Handle<Value>);
 };
