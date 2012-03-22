@@ -296,7 +296,6 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
         return -1;
     }
 
-    sound_disabled = EINA_FALSE;
     if (!sound_init())
         return -1;
 

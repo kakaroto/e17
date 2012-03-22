@@ -15,9 +15,6 @@ void sound_play_cb(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char 
     char buf[256];
     int ret;
 
-    if (sound_disabled)
-        return;
-
     snprintf(buf, sizeof(buf), "%s/%s", SOUNDDIR, sig);
     ret = ca_context_play(_sound_context, 0, CA_PROP_MEDIA_FILENAME, buf,
             CA_PROP_CANBERRA_CACHE_CONTROL, "permanent", NULL);
