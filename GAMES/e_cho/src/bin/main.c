@@ -2,11 +2,15 @@
 #include "config.h"
 #endif
 #include <Elementary.h>
-#include <Evas.h>
+
 #ifndef ELM_LIB_QUICKLAUNCH
 
+#include <Eina.h>
+#include <Evas.h>
 #include <stdlib.h>
+
 #include "gettext.h"
+#include "log.h"
 #include "sound.h"
 
 #define LEVEL_DEFAULT 3
@@ -34,6 +38,8 @@ typedef struct _Game
     int next;
     Mode mode;
 } Game;
+
+int _log_domain = -1;
 
 static void
 _create_seq(Game *game)
@@ -98,7 +104,7 @@ _play_next(void *data)
             elm_object_signal_emit(game->layout, "hi", "left");
             break;
         default:
-            fprintf(stderr, "Wrong number on sequence\n");
+            ERR("Wrong number on sequence");
             game->play_timer = NULL;
             return ECORE_CALLBACK_CANCEL;
     }
@@ -203,7 +209,7 @@ _bt_clicked(void *data, Evas_Object *o __UNUSED__, const char *sig __UNUSED__, c
         clicked = 3;
     else
     {
-        fprintf(stderr, "Wrong source of button clicked\n");
+        ERR("Wrong source of button clicked");
         return;
     }
 
@@ -253,8 +259,7 @@ _win_new(Game *game)
 
     if (!elm_layout_file_set(layout, PACKAGE_DATA_DIR DF_THEME, "win"))
     {
-        fprintf(stderr, "Couldn't find theme for 'win' at %s\n",
-                PACKAGE_DATA_DIR DF_THEME);
+        ERR("Couldn't find theme for 'win' at %s", PACKAGE_DATA_DIR DF_THEME);
         evas_object_del(win);
         return EINA_FALSE;
     }
@@ -285,6 +290,12 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     textdomain(GETTEXT_PACKAGE);
 #endif
 
+    _log_domain = eina_log_domain_register("e_cho", EINA_COLOR_GREEN);
+    if (_log_domain < 0) {
+        EINA_LOG_CRIT("Could not register log domain: e_cho");
+        return -1;
+    }
+
     sound_disabled = EINA_FALSE;
     if (!sound_init())
         return -1;
@@ -306,11 +317,14 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
         goto end;
     }
 
+    DBG("Game initialized");
     elm_run();
+    DBG("Game shutdown");
 
 end:
-    elm_shutdown();
     sound_shutdown();
+    eina_log_domain_unregister(_log_domain);
+    elm_shutdown();
     return r;
 }
 

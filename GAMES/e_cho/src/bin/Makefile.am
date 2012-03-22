@@ -39,5 +39,5 @@ e_cho_ql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
 e_cho_ql_LDFLAGS =
 endif
 
-noinst_HEADERS = gettext.h sound.h
-EXTRA_DIST = gettext.h sound.h
+noinst_HEADERS = gettext.h log.h sound.h
+EXTRA_DIST = gettext.h log.h sound.h

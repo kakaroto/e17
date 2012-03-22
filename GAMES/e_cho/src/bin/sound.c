@@ -1,7 +1,12 @@
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <canberra.h>
 #include <Evas.h>
-#include <sound.h>
+
+#include "log.h"
+#include "sound.h"
 
 static ca_context *_sound_context = NULL;
 
@@ -18,7 +23,7 @@ void sound_play_cb(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char 
             CA_PROP_CANBERRA_CACHE_CONTROL, "permanent", NULL);
 
     if (ret != CA_SUCCESS)
-        fprintf(stderr, "Failed to play %s: %s\n", buf, ca_strerror(ret));
+        ERR("Failed to play %s: %s", buf, ca_strerror(ret));
 }
 
 Eina_Bool
@@ -26,11 +31,12 @@ sound_init(void)
 {
     int ret;
 
+    DBG("Sound system initialized");
+
     ret = ca_context_create(&_sound_context);
     if (ret != CA_SUCCESS)
     {
-        fprintf(stderr, "Couldn't create context on libcanberra %s\n",
-                ca_strerror(ret));
+        ERR("Couldn't create context on libcanberra %s", ca_strerror(ret));
         return EINA_FALSE;
     }
 
@@ -39,8 +45,7 @@ sound_init(void)
 
     if (ret != CA_SUCCESS)
     {
-        fprintf(stderr, "Couldn't set context properties: %s\n",
-                ca_strerror(ret));
+        ERR("Couldn't set context properties: %s", ca_strerror(ret));
         return EINA_FALSE;
     }
 
@@ -54,11 +59,12 @@ sound_shutdown(void)
 
     ret = ca_context_destroy(_sound_context);
     if (ret != CA_SUCCESS) {
-        fprintf(stderr, "Couldn't destroy sound context: %s\n",
-                ca_strerror(ret));
+        ERR("Couldn't destroy sound context: %s", ca_strerror(ret));
         return EINA_FALSE;
     }
     _sound_context = NULL;
+
+    DBG("Sound system shutdown");
 
     return EINA_TRUE;
 }
