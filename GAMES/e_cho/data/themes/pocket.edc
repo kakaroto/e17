@@ -68,7 +68,7 @@ collections {
       image: "pk_yel_off.png" COMP;
       image: "pk_yel_on.png" COMP;
    }
-   group { name: "win";
+   group { name: "elm/e_cho/win/pocket";
       parts {
          /* bg */
          part { name: "bg";

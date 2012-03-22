@@ -19,7 +19,7 @@
 #define SPEED_MIN     0.3
 #define SPEED_MAX     3.0
 
-#define DF_THEME "/pocket.edj"
+#define DF_THEME "pocket"
 
 typedef enum _Mode
 {
@@ -257,9 +257,10 @@ _win_new(Game *game)
     evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
     elm_win_resize_object_add(win, layout);
 
-    if (!elm_layout_file_set(layout, PACKAGE_DATA_DIR DF_THEME, "win"))
+    if (!elm_layout_theme_set(layout, "e_cho", "win", DF_THEME))
     {
-        ERR("Couldn't find theme for 'win' at %s", PACKAGE_DATA_DIR DF_THEME);
+        ERR("Couldn't find theme for 'win' at %s.edj",
+                PACKAGE_DATA_DIR "/" DF_THEME);
         evas_object_del(win);
         return EINA_FALSE;
     }
@@ -299,8 +300,7 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     if (!sound_init())
         return -1;
 
-    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR DF_THEME);
-    elm_theme_overlay_add(NULL, PACKAGE_DATA_DIR DF_THEME);
+    elm_theme_overlay_add(NULL, PACKAGE_DATA_DIR "/" DF_THEME ".edj");
 
     game.speed = SPEED_DEFAULT;
     game.level = LEVEL_DEFAULT;
