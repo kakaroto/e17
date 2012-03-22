@@ -350,7 +350,7 @@ collections {
             signal: "mouse,down,1";
             source: "label";
             filter: "label" "default";
-            action: STATE_SET "pressed" "label";
+            action: STATE_SET "pressed" 0.0;
             target: "label";
          }
          program { name: "start_up";
