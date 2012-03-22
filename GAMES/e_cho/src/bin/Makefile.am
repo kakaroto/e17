@@ -33,7 +33,7 @@ e_cho_ql_la_SOURCES = main.c sound.c
 e_cho_ql_la_LIBADD = @ELEMENTARY_LIBS@ @LIBCANBERRA_LIBS@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
 e_cho_ql_la_CFLAGS =
 e_cho_ql_la_LDFLAGS = -module -avoid-version -no-undefined
-e_cho_ql_SOURCES = main.c sound.c
+e_cho_ql_SOURCES = main.c
 e_cho_ql_LDADD = @ELEMENTARY_LIBS@ @LIBCANBERRA_LIBS@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
 e_cho_ql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
 e_cho_ql_LDFLAGS =
