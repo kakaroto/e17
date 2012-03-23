@@ -412,14 +412,14 @@ void e_xkb_update_layout(void)
     EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
     {
         strcat(buf, cl->name);
-        strcat(buf, ",");
+        if (l->next) strcat(buf, ",");
     }
 
     strcat(buf, " -variant ");
     EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
     {
         strcat(buf, cl->variant);
-        strcat(buf, ",");
+        if (l->next) strcat(buf, ",");
     }
 
     strcat(buf, " -model ");
