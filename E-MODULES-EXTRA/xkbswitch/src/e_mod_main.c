@@ -419,7 +419,7 @@ void e_xkb_update_layout(void)
     EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
     {
         strcat(buf, cl->variant);
-        if (l->next) strcat(buf, ",");
+        strcat(buf, ",");
     }
 
     strcat(buf, " -model ");
@@ -436,6 +436,7 @@ void e_xkb_update_layout(void)
         strcat(buf, op->name);
     }
 
+   printf("RUN: '%s'\n", buf);
     ecore_exe_run(buf, NULL);
 }
 
