@@ -66,9 +66,18 @@ _cb_exit(void *data, int ev_type, void *ev)
 }
 
 static void
-_cb_delete_request(Ecore_Evas *ee)
+_cb_theme_exit_done(void *data)
 {
    ecore_main_loop_quit();
+}
+
+static void
+_cb_delete_request(Ecore_Evas *ee)
+{
+   if (clean_vt_lose)
+     theme_exit(_cb_theme_exit_done, NULL);
+   else
+     ecore_main_loop_quit();
 }
 
 static void
@@ -83,12 +92,6 @@ _cb_idle_enterer(void *data)
 {
    ipc_init();
    return EINA_FALSE;
-}
-
-static void
-_cb_theme_exit_done(void *data)
-{
-   ecore_main_loop_quit();
 }
 
 static void
