@@ -23,6 +23,7 @@ files_SCRIPTS = \
 	entry.js \
 	fileselectorbutton.js \
 	fileselectorentry.js \
+	fileselector.js \
 	flip.js \
 	genlist.js \
 	grid.js \

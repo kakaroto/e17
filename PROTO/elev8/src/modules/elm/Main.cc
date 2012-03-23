@@ -23,6 +23,7 @@
 #include "CElmEntry.h"
 #include "CElmFileSelectorButton.h"
 #include "CElmFileSelectorEntry.h"
+#include "CElmFileSelector.h"
 #include "CElmFlip.h"
 #include "CElmGenList.h"
 #include "CElmGrid.h"
@@ -264,6 +265,7 @@ void RegisterModule(Handle<Object> target)
    REGISTER("photocam", CElmPhotocam);
    REGISTER("fileselectorbutton", CElmFileSelectorButton);
    REGISTER("fileselectorentry", CElmFileSelectorEntry);
+   REGISTER("fileselector", CElmFileSelector);
    REGISTER("inwin", CElmInwin);
    REGISTER("notify", CElmNotify);
    REGISTER("naviframe", CElmNaviframe);
