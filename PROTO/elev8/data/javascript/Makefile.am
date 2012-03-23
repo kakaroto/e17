@@ -17,6 +17,7 @@ files_SCRIPTS = \
 	check.js \
 	clock.js \
 	colorselector.js \
+	datetime.js \
 	dbus_test.js \
 	dilbert.js \
 	entry.js \

@@ -49,6 +49,7 @@
 #include "CElmConform.h"
 #include "CEvasImage.h"
 #include "CEvasObject.h"
+#include "CElmDateTime.h"
 
 int elev8_elm_log_domain = -1;
 extern "C" void RegisterModule(Handle<Object> target);
@@ -268,6 +269,7 @@ void RegisterModule(Handle<Object> target)
    REGISTER("naviframe", CElmNaviframe);
    REGISTER("grid", CElmGrid);
    REGISTER("dayselector", CElmDaySelector);
+   REGISTER("datetime", CElmDateTime);
    REGISTER("conform", CElmConform);
 
 #undef REGISTER
