@@ -14,6 +14,7 @@ int          engine = SOFT_X;
 int          scr_w, scr_h;
 int          flags;
 char        *method;
+int          clean_vt_lose = 0;
 
 static char *theme = NULL;
 
@@ -85,9 +86,18 @@ _cb_idle_enterer(void *data)
 }
 
 static void
-_cb_fb_lose(void *data)
+_cb_theme_exit_done(void *data)
 {
    ecore_main_loop_quit();
+}
+
+static void
+_cb_fb_lose(void *data)
+{
+   if (clean_vt_lose)
+     theme_exit(_cb_theme_exit_done, NULL);
+   else
+     ecore_main_loop_quit();
 }
     
 static int
@@ -134,6 +144,10 @@ _args(void)
 	     i++;
 	     rot = atoi(argv[i]);
 	  }
+        else if ((!strcmp(argv[i], "-cleanvt")))
+          {
+             clean_vt_lose = 1;
+          }
 	else if ((!strcmp(argv[i], "-ic")) && (i < (argc - 1)))
 	  {
 	     i++;
@@ -193,6 +207,7 @@ _args(void)
 		    "-fps fps     Set attempted framerate in frames per second\n"
 		    "-verbose     Run Exquisite in verbose mode\n"
                     "-ipc [mode]  Choose ipc mechanism (fifo [default], socket, abstract_socket)\n"
+		    "-cleanvt     On VT change signal, show end anim before giving up the VT\n"
 		    "-h           Display this help\n"
 		    "\n"
 		    "Notes:\n"

@@ -1,0 +1,10 @@
+2012-02-10  Carsten Haitzler (The Rasterman)
+
+        1.0.0 release
+
+2012-03-23  Carsten Haitzler (The Rasterman)
+
+        * add -cleanvt to enable clean "fade out" animation before giving
+        up the VT.
+        
+        
