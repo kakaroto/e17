@@ -1,7 +1,4 @@
 MAINTAINERCLEANFILES = Makefile.in
-INCLUDES = -I$(top_srcdir) \
-	   -I$(top_srcdir)/src/bin \
-	   @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@ @ECORE_FB_CFLAGS@ @EINA_CFLAGS@
 
 bin_PROGRAMS = exquisite exquisite-write
 
@@ -12,9 +9,15 @@ theme.c \
 ipc.c \
 ipc.h
 
-exquisite_LDADD = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @ECORE_FB_LIBS@ @EINA_LIBS@
+exquisite_CPPFLAGS = \
+-I. \
+-DPACKAGE_BIN_DIR=\"$(bindir)\" \
+-DPACKAGE_LIB_DIR=\"$(libdir)\" \
+-DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" \
+@EXQUISITE_CFLAGS@
 
-exquisite_write_SOURCES = \
-write.c
+exquisite_LDADD = @EXQUISITE_LIBS@
 
-exquisite_write_LDADD = @ECORE_LIBS@
+exquisite_write_SOURCES = write.c
+exquisite_write_CPPFLAGS = -I. @EXQUISITE_WRITE_CFLAGS@
+exquisite_write_LDADD = @EXQUISITE_WRITE_LIBS@

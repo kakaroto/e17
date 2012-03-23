@@ -7,9 +7,6 @@ AC_INIT([exquisite], [1.0.0], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CANONICAL_BUILD
-AC_CANONICAL_HOST
-AC_ISC_POSIX
 
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([
@@ -23,122 +20,40 @@ AH_BOTTOM([
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-AC_ISC_POSIX
-AC_PROG_CC
 AM_PROG_CC_STDC
-AC_HEADER_STDC
-AC_C_CONST
-AM_ENABLE_SHARED
-AM_PROG_LIBTOOL
 
-if test "x${bindir}" = 'x${exec_prefix}/bin'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      bindir="${ac_default_prefix}/bin";
-    else
-      bindir="${prefix}/bin";
-    fi
-  else
-    if test "x${prefix}" = "xNONE"; then
-      bindir="${ac_default_prefix}/bin";
-    else
-      bindir="${prefix}/bin";
-    fi
-  fi
-fi
+requirements="eina >= 1.0.0 eet >= 1.4.0 evas >= 1.0.0 ecore >= 1.0.0 ecore-evas >= 1.0.0 ecore-con >= 1.0.0 edje >= 1.0.0"
 
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      libdir="${ac_default_prefix}/lib";
-    else
-      libdir="${prefix}/lib";
-    fi
-  else
-    if test "x${prefix}" = "xNONE"; then
-      libdir="${ac_default_prefix}/lib";
-    else
-      libdir="${prefix}/lib";
-    fi
-  fi
-fi
+have_ecore_fb"yes"
+PKG_CHECK_EXISTS([ecore-fb >= 1.0.0],
+   [
+    AC_DEFINE(HAVE_ECORE_FB, 1, [Have Ecore-Fb support])
+    requirements="${requirements} ecore-fb >= 1.0.0"
+   ],
+   [have_ecore_fb="no"])
 
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${bindir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", "Package installed binaries destination")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", "Package installed binaries destination")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", "Package installed binaries destination")
-fi
+PKG_CHECK_MODULES([EXQUISITE],
+   [
+    eina >= 1.0.0
+    eet >= 1.4.0
+    evas >= 1.0.0
+    ecore >= 1.0.0
+    ecore-evas >= 1.0.0
+    ecore-con >= 1.0.0
+    edje >= 1.0.0
+   ])
 
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", "Package installed libraries destination")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", "Package installed libraries destination")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", "Package installed libraries destination")
-fi
+PKG_CHECK_MODULES([EXQUISITE_WRITE],
+   [
+    ecore >= 1.0.0
+    ecore-evas >= 1.0.0
+    ecore-con >= 1.0.0
+   ])
 
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", "Package installed data destination")
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", "Package installed data destination")
-fi
 
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${bindir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Install Location for Executables])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Install Location for Executables])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Install Location for Executables])
-fi
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Install Location for Libraries])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Install Location for Libraries])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Install Location for Libraries])
-fi
-
-PKG_CHECK_MODULES([EINA], eina >= 1.0.0)
-PKG_CHECK_MODULES([EET], eet >= 1.4.0)
-PKG_CHECK_MODULES([EVAS], evas >= 1.0.0)
-PKG_CHECK_MODULES([EDJE], edje >= 1.0.0)
-PKG_CHECK_MODULES([ECORE], [
-   ecore >= 1.0.0
-   ecore-evas >= 1.0.0
-   ecore-con >= 1.0.0])
-
-PKG_CHECK_MODULES([ECORE_FB], [ecore-fb >= 1.0.0], [
-  AC_DEFINE(HAVE_ECORE_FB, 1, [Have Ecore-Fb support])
-], [have_ecore_fb=xno])
-
-AC_ARG_WITH(edje-cc,
-[  --with-edje-cc=PATH              specify a specific path to edje_cc],
-[
-  v=$withval;
-  edje_cc=$v
-  echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
-],[
-  edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc
-])
-AC_SUBST(edje_cc)
-	
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/bin/Makefile
@@ -148,3 +63,28 @@ data/themes/Makefile
 data/themes/images/Makefile
 demo/Makefile
 ])
+
+AC_OUTPUT
+
+#####################################################################
+## Info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Frame Buffer.............: ${have_ecore_fb}"
+echo
+echo "Compilation................: make (or gmake)"
+echo "  CPPFLAGS.................: $CPPFLAGS"
+echo "  CFLAGS...................: $CFLAGS"
+echo "  LDFLAGS..................: $LDFLAGS"
+echo
+echo "Installation...............: make install (as root if needed, with 'su' or 'sudo')"
+echo "  prefix...................: $prefix"
+echo
