@@ -11,7 +11,7 @@ Emotion and Elementary.
 Emotion is a library to handle video playback using Gstreamer, Xine or
 other external plugins (VLC) and display video in Evas as a standard
 object. It also can handle audio playback too. Eio is here to support
-Emotion with Async IO API's.
+Emotion with async IO API's.
 </p>
 <p>
 Ethumb is a thumbnail generator library that supports the
@@ -21,7 +21,7 @@ service for you.
 </p>
 <p>
 Elementary is our new widget set, built on top of the rest of EFL, to
-provide you with standard widgets and behavior to make it easy to
+provide you with standard widgets and behaviour to make it easy to
 write GUI applications.
 </p>
 
