@@ -1,0 +1,106 @@
+New EFL release cycle 1.0/1.2/1.6 ALPHA
+Carsten Haitzler
+raster@rasterman.com
+
+<p>
+We'd like to announce a new release cycle alpha release of several
+Enlightenment components. This round we have added Eio, Ethumb,
+Emotion and Elementary.
+</p>
+<p>
+Emotion is a library to handle video playback using Gstreamer, Xine or
+other external plugins (VLC) and display video in Evas as a standard
+object. It also can handle audio playback too. Eio is here to support
+Emotion with Async IO API's.
+</p>
+<p>
+Ethumb is a thumbnail generator library that supports the
+freedesktop.org thumbnailing standards, and is implemented as a dbus
+service and a client-side library that handles dealing with that
+service for you.
+</p>
+<p>
+Elementary is our new widget set, built on top of the rest of EFL, to
+provide you with standard widgets and behavior to make it easy to
+write GUI applications.
+</p>
+
+<p><ul>
+
+<li>Eina 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.6.0 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.6.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.6.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Embryo 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/embryo-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Efreet 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/efreet-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/efreet-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eeze 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/eeze-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Expedite 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/expedite-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/expedite-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas Generic Loaders 1.2.0 - 
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.2.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.2.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eio 1.0.0 - 
+[<a href="http://download.enlightenment.org/releases/eio-1.0.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eio-1.0.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Emotion 1.0.0 - 
+[<a href="http://download.enlightenment.org/releases/emotion-1.0.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/emotion-1.0.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ethumb 1.0.0 - 
+[<a href="http://download.enlightenment.org/releases/ethumb-1.0.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ethumb-1.0.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Elementary 1.0.0 - 
+[<a href="http://download.enlightenment.org/releases/elementary-1.0.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/elementary-1.0.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
