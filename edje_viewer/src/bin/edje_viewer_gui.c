@@ -37,6 +37,7 @@ static void text_entry_toggle(Viewer *v, Eina_Bool show);
 
 static void on_win_del_req(void *data, Evas_Object *obj, void *event_info);
 static void on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void on_toggles_win_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static Eina_Bool on_typebuf_timer(void *data);
 static void on_group_check_changed(void *data, Evas_Object *obj, void *event_info);
 static void on_toolbar_changed(void *data, Evas_Object *obj, void *event_info);
@@ -622,6 +623,8 @@ create_toggles_win(Viewer *v)
 
    v->gui.toggles_win = o = elm_win_inwin_add(v->gui.win);
    elm_object_style_set(o, "minimal_vertical");
+   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
+                                  on_toggles_win_key_down, v);
 
    bx = elm_box_add(v->gui.toggles_win);
    evas_object_show(bx);
@@ -764,7 +767,7 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Viewer *v = data;
    Evas_Event_Key_Down *ev = event_info;
 
-   if (evas_focus_get(e) != v->gui.ly)
+   if (evas_focus_get(e) == v->gui.entry)
      return;
 
    if (!strcmp(ev->keyname, "F9"))
@@ -795,6 +798,16 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
              typebuf_char_append(v, ev->string);
           }
      }
+}
+
+static void
+on_toggles_win_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Viewer *v = data;
+   Evas_Event_Key_Down *ev = event_info;
+
+   if (!strcmp(ev->keyname, "F9"))
+     show_toggles(v);
 }
 
 static Eina_Bool
