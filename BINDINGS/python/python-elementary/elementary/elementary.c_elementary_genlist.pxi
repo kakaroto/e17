@@ -79,6 +79,21 @@ cdef c_evas.Eina_Bool _py_elm_genlist_item_state_get(void *data, c_evas.Evas_Obj
     else:
         return False
 
+cdef void _py_elm_genlist_object_item_del(void *data, c_evas.Evas_Object *obj) with gil:
+    cdef object prm = <object>data
+    cdef GenlistItemClass itc = prm[0]
+    cdef GenlistItem item = prm[2]
+
+    func = itc._del_func
+    if func is not None:
+        try:
+            o = evas.c_evas._Object_from_instance(<long>obj)
+            func(o, prm[1])
+        except Exception, e:
+            traceback.print_exc()
+
+    item._unset_obj()
+
 cdef void _py_elm_genlist_item_func(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
     cdef object prm = <object>data
     cdef object func = prm[3]
@@ -122,7 +137,7 @@ cdef class GenlistItemClass:
         self.obj.func.text_get = _py_elm_genlist_item_text_get
         self.obj.func.content_get = _py_elm_genlist_item_content_get
         self.obj.func.state_get = _py_elm_genlist_item_state_get
-        self.obj.func.del_ = _py_elm_object_item_del
+        self.obj.func.del_ = _py_elm_genlist_object_item_del
 
     def __init__(self, item_style=None, text_get_func=None,
                  content_get_func=None, state_get_func=None, del_func=None):

@@ -829,7 +829,6 @@ cdef extern from "Elementary.h":
     void         elm_naviframe_item_title_visible_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool visible)
     evas.c_evas.Eina_Bool elm_naviframe_item_title_visible_get(Elm_Object_Item *it)
     void         elm_naviframe_prev_btn_auto_pushed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool auto_pushed)
-    evas.c_evas.Eina_Bool elm_naviframe_prev_btn_auto_pushed_set(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Eina_List *elm_naviframe_items_get(evas.c_evas.Evas_Object *obj)
     void         elm_naviframe_event_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
     evas.c_evas.Eina_Bool elm_naviframe_event_enabled_get(evas.c_evas.Evas_Object *obj)

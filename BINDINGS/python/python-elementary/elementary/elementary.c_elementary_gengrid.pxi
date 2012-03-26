@@ -79,7 +79,7 @@ cdef c_evas.Eina_Bool _py_elm_gengrid_item_state_get(void *data, c_evas.Evas_Obj
     else:
         return False
 
-cdef void _py_elm_object_item_del(void *data, c_evas.Evas_Object *obj) with gil:
+cdef void _py_elm_gengrid_object_item_del(void *data, c_evas.Evas_Object *obj) with gil:
     cdef object prm = <object>data
     cdef GengridItemClass itc = prm[0]
     cdef GengridItem item = prm[2]
@@ -137,7 +137,7 @@ cdef class GengridItemClass:
         self.obj.func.text_get = _py_elm_gengrid_item_text_get
         self.obj.func.content_get = _py_elm_gengrid_item_content_get
         self.obj.func.state_get = _py_elm_gengrid_item_state_get
-        self.obj.func.del_ = _py_elm_object_item_del
+        self.obj.func.del_ = _py_elm_gengrid_object_item_del
 
     def __init__(self, item_style=None, text_get_func=None,
                  content_get_func=None, state_get_func=None, del_func=None):
