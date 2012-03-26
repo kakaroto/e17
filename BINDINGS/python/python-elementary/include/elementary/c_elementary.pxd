@@ -105,28 +105,22 @@ cdef extern from "Elementary.h":
         ELM_TEXT_FORMAT_MARKUP_UTF8
 
     ctypedef enum Elm_Object_Select_Mode:
-        ELM_OBJECT_SELECT_MODE_DEFAUL         # default select mode
+        ELM_OBJECT_SELECT_MODE_DEFAULT        # default select mode
         ELM_OBJECT_SELECT_MODE_ALWAYS         # always select mode
         ELM_OBJECT_SELECT_MODE_NONE           # no select mode 
         ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY   # no select mode with no finger size rule
         ELM_OBJECT_SELECT_MODE_MAX
-
 
     ctypedef enum Elm_List_Mode:
         ELM_LIST_COMPRESS
         ELM_LIST_SCROLL
         ELM_LIST_LIMIT
         ELM_LIST_EXPAND
-	
 
     ctypedef enum Elm_Web_Zoom_Mode:
         ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
         ELM_WEB_ZOOM_MODE_AUTO_FIT 	#Zoom until content fits in web object
         ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object. 
-
-
-
-
 
     ctypedef enum Elm_Flip_Mode:
         ELM_FLIP_ROTATE_Y_CENTER_AXIS
