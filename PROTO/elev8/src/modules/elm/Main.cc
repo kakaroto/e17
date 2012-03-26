@@ -49,6 +49,7 @@
 #include "CElmDaySelector.h"
 #include "CElmConform.h"
 #include "CEvasImage.h"
+#include "CElmCtxPopup.h"
 #include "CEvasObject.h"
 #include "CElmDateTime.h"
 
@@ -273,6 +274,7 @@ void RegisterModule(Handle<Object> target)
    REGISTER("dayselector", CElmDaySelector);
    REGISTER("datetime", CElmDateTime);
    REGISTER("conform", CElmConform);
+   REGISTER("ctxpopup", CElmCtxPopup);
 
 #undef REGISTER
 }
