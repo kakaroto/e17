@@ -24,7 +24,7 @@ Evas_Object *tabpanel_create()
     //
 
     //
-    _pager = elm_pager_add(win);
+    _pager = elm_naviframe_add(win);
     evas_object_size_hint_weight_set(_pager, 1.0, 1.0);
     evas_object_size_hint_align_set(_pager, -1.0, -1.0);
     elm_box_pack_end(vbox, _pager);
@@ -33,8 +33,8 @@ Evas_Object *tabpanel_create()
     Evas_Object *presentation = presentation_create();
     Evas_Object *slides_grid = slides_grid_create();
 
-    elm_pager_content_push(_pager, presentation);
-    elm_pager_content_push(_pager, slides_grid);
+    elm_naviframe_item_simple_push(_pager, presentation);
+    elm_naviframe_item_simple_push(_pager, slides_grid);
     //
 
     Elm_Object_Item *item = elm_toolbar_item_append(tb, NULL, D_("Presentation"), _tb_presentation, presentation);
@@ -47,11 +47,11 @@ Evas_Object *tabpanel_create()
 static void _tb_presentation(void *data, Evas_Object *obj, void *event_info)
 {
     Evas_Object *content = (Evas_Object*) data;
-    elm_pager_content_promote(_pager, content);
+    elm_naviframe_item_simple_promote(_pager, content);
 }
 
 static void _tb_slidelist(void *data, Evas_Object *obj, void *event_info)
 {
     Evas_Object *content = (Evas_Object*) data;
-    elm_pager_content_promote(_pager, content);
+    elm_naviframe_item_simple_promote(_pager, content);
 }

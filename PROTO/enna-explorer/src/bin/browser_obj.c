@@ -138,7 +138,7 @@ _browser_view_list_add(Smart_Data *sd)
 
    view = enna_list_add(sd->o_layout);
 
-   elm_pager_content_push(sd->o_pager, view);
+   elm_naviframe_item_simple_push(sd->o_pager, view);
    evas_object_smart_callback_add(view, "hilight", _view_hilight_cb, sd);
    evas_object_smart_callback_add(view, "checked", _view_checked_cb, sd);
    evas_object_smart_callback_add(view, "unchecked", _view_unchecked_cb, sd);
@@ -158,7 +158,7 @@ _browser_view_grid_add(Smart_Data *sd)
 
    view = enna_grid_add(sd->o_layout);
 
-   elm_pager_content_push(sd->o_pager, view);
+   elm_naviframe_item_simple_push(sd->o_pager, view);
    evas_object_smart_callback_add(view, "hilight", _view_hilight_cb, sd);
    evas_object_smart_callback_add(view, "checked", _view_checked_cb, sd);
    evas_object_smart_callback_add(view, "unchecked", _view_unchecked_cb, sd);
@@ -403,7 +403,7 @@ _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back)
      elm_object_style_set(sd->o_pager, "slide_invisible");
    else
      elm_object_style_set(sd->o_pager, "slide_invisible_back");
-   elm_pager_content_pop(sd->o_pager);
+   elm_naviframe_item_pop(sd->o_pager);
 
    evas_object_smart_callback_del(sd->o_view, "hilight", _view_hilight_cb);
 
@@ -525,7 +525,7 @@ enna_browser_obj_add(Evas_Object *parent, const char *style)
    evas_object_smart_callback_add(sd->o_header, "previous,clicked", _previous_clicked_cb, sd);
    evas_object_smart_callback_add(sd->o_header, "path,changed", _path_changed_cb, sd);
 
-   sd->o_pager = elm_pager_add(sd->o_layout);
+   sd->o_pager = elm_naviframe_add(sd->o_layout);
    evas_object_show(sd->o_pager);
    elm_object_style_set(sd->o_pager, "slide_invisible");
    elm_object_part_content_set(sd->o_layout, "enna.swallow.content", sd->o_pager);

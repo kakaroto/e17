@@ -140,7 +140,7 @@ container_browse(void *data, Evas_Object *obj, void *event_info)
 
    list = elm_list_add(pager);
    evas_object_show(list);
-   elm_pager_content_push(pager, list);
+   elm_naviframe_item_simple_push(pager, list);
 
    browse(ms->cds, eupnp_av_didl_object_id_get(DIDL_OBJECT_GET(c)), ms);
 }
@@ -150,32 +150,36 @@ on_container_found(void *data, DIDL_Container *c)
 {
    Evas_Object *box;
    Elm_Object_Item *list_item;
+   Elm_Object_Item *nf_item;
 
    DBG("Found container %s", eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)));
 
-   list_item = elm_list_item_append(elm_pager_content_top_get(pager),
+   nf_item = elm_naviframe_top_item_get(pager);
+   list_item = elm_list_item_append(elm_object_item_content_get(nf_item),
                              eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)),
                                     folder_icon_get(pager), NULL,
                                     &container_browse, c);
 
    elm_list_item_show(list_item);
-   elm_list_go(elm_pager_content_top_get(pager));
+   elm_list_go(elm_object_item_content_get(nf_item));
 }
 
 void
 on_item_found(void *data, DIDL_Item *i)
 {
    Elm_Object_Item *list_item;
+   Elm_Object_Item *nf_item;
 
    DBG("Found item %s", eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)));
 
-   list_item = elm_list_item_append(elm_pager_content_top_get(pager),
+   nf_item = elm_naviframe_top_item_get(pager);
+   list_item = elm_list_item_append(elm_object_item_content_get(nf_item),
                             eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)),
                                     file_icon_get(pager), NULL,
                                     &item_select, i);
 
    elm_list_item_show(list_item);
-   elm_list_go(elm_pager_content_top_get(pager));
+   elm_list_go(elm_object_item_content_get(nf_item));
 }
 
 static void
@@ -238,7 +242,7 @@ server_browse(void *data, Evas_Object *obj, void *event_info)
 
    list = elm_list_add(pager);
    evas_object_show(list);
-   elm_pager_content_push(pager, list);
+   elm_naviframe_item_simple_push(pager, list);
    evas_object_show(bt);
 
    browse(ms->cds, "0", ms);
@@ -345,9 +349,12 @@ on_device_gone(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 static void
 on_back_clicked(void *data, Evas_Object *obj, void *event_info)
 {
-   if (elm_pager_content_top_get(pager) != elm_pager_content_bottom_get(pager))
+   Elm_Object_Item *nf_it = elm_naviframe_top_item_get(pager);
+   Elm_Object_Item *nf_it2 = elm_naviframe_bottom_item_get(pager);
+   if (elm_object_item_content_get(nf_it) !=
+       elm_object_item_content_get(nf_it2))
      {
-	elm_pager_content_pop(pager);
+	elm_naviframe_item_pop(pager);
 
 	if (browsing)
 	 {
@@ -477,7 +484,7 @@ av_browser_win_create(void)
    evas_object_show(main_label);
    elm_box_pack_start(box, main_label);
 
-   pager = elm_pager_add(win);
+   pager = elm_naviframe_add(win);
    evas_object_size_hint_align_set(pager, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(pager);
@@ -487,7 +494,7 @@ av_browser_win_create(void)
    root = elm_list_add(win);
    evas_object_size_hint_weight_set(root, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(root);
-   elm_pager_content_push(pager, root);
+   elm_naviframe_item_simple_push(pager, root);
 
    evas_object_resize(win, 600, 480);
    evas_object_show(win);

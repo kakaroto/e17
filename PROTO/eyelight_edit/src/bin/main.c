@@ -33,7 +33,7 @@ static void win_main(void)
     Evas_Object *bg, *tb;
 
         //TODO delete
-    elm_finger_size_set(1);
+    elm_config_finger_size_set(1);
 
     win = elm_win_add(NULL, "Eyelight", ELM_WIN_BASIC);
     elm_win_title_set(win, "Eyelight - presentation viewer");

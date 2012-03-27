@@ -36,7 +36,7 @@ Evas_Object *rightpanel_create()
     elm_box_pack_end(vbox, bt);
 
     //
-    _pager = elm_pager_add(win);
+    _pager = elm_naviframe_add(win);
     evas_object_size_hint_weight_set(_pager, 1.0, 1.0);
     evas_object_size_hint_align_set(_pager, -1.0, -1.0);
     elm_box_pack_end(vbox, _pager);
@@ -46,7 +46,7 @@ Evas_Object *rightpanel_create()
     //Empty
     bx = elm_box_add(win);
     _empty = bx;
-    elm_pager_content_push(_pager, bx);
+    elm_naviframe_item_simple_push(_pager, bx);
 
     //Area
     bx = elm_box_add(win);
@@ -117,7 +117,7 @@ Evas_Object *rightpanel_create()
     evas_object_show(bt);
     elm_box_pack_end(bx, bt);
 
-    elm_pager_content_push(_pager, fr);
+    elm_naviframe_item_simple_push(_pager, fr);
     //
 
     //Image
@@ -228,9 +228,9 @@ Evas_Object *rightpanel_create()
     evas_object_show(bt);
     elm_box_pack_end(bx, bt);
 
-    elm_pager_content_push(_pager, fr);
+    elm_naviframe_item_simple_push(_pager, fr);
     //
-    elm_pager_content_promote(_pager, _empty);
+    elm_naviframe_item_simple_promote(_pager, _empty);
 
     return vbox;
 }
@@ -243,17 +243,17 @@ void rightpanel_noslide_disabled_set(Eina_Bool disabled)
 
 void rightpanel_area_show()
 {
-    elm_pager_content_promote(_pager, _area);
+    elm_naviframe_item_simple_promote(_pager, _area);
 }
 
 void rightpanel_empty_show()
 {
-    elm_pager_content_promote(_pager, _empty);
+    elm_naviframe_item_simple_promote(_pager, _empty);
 }
 
 void rightpanel_image_show()
 {
-    elm_pager_content_promote(_pager, _image);
+    elm_naviframe_item_simple_promote(_pager, _image);
 }
 
 void rightpanel_area_layout_set(const char *layout)
