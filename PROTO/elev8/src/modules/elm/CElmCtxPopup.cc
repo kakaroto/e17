@@ -19,20 +19,15 @@ Handle<Value> CElmCtxPopup::hover_parent_get() const
 
 void CElmCtxPopup::hover_parent_set(Handle<Value> val)
 {
-   if (val->IsObject())
-     {
-        parent.Dispose();
-        parent = Persistent<Value>::New(val);
-        CEvasObject *p = make_or_get(this, val);
+   if (!val->IsObject()) return;
+   parent.Dispose();
+   parent = Persistent<Value>::New(val);
+   CEvasObject *p = make_or_get(this, val);
 
-        if (p)
-          {
-             elm_ctxpopup_hover_parent_set(eo, p->get());
-          }
-        else
-          printf("Failed Setting parent\n");
-
-     }
+   if (p)
+     elm_ctxpopup_hover_parent_set(eo, p->get());
+   else
+     printf("Failed Setting parent\n");
 }
 
 Handle<Value> CElmCtxPopup::horizontal_get() const
@@ -48,6 +43,7 @@ void CElmCtxPopup::horizontal_set(Handle<Value> val)
 
 Handle<Value> CElmCtxPopup::direction_priority_get() const
 {
+   HandleScope handle_scope;
    Elm_Ctxpopup_Direction f, s, q, t;
    elm_ctxpopup_direction_priority_get(eo, &f, &s, &t, &q);
    Local<Object> obj = Object::New();
@@ -55,31 +51,28 @@ Handle<Value> CElmCtxPopup::direction_priority_get() const
    obj->Set(String::New("second"), Number::New(s));
    obj->Set(String::New("third"), Number::New(t));
    obj->Set(String::New("fourth"), Number::New(q));
-   return obj;
+   return handle_scope.Close(obj);
 }
 
 void CElmCtxPopup::direction_priority_set(Handle<Value> val)
 {
-   if (val->IsObject())
-     {
-        HandleScope handle_scope;
-        if (!val->IsObject())
-          return;
-        Local<Object> obj = val->ToObject();
-        Local<Value> first  = obj->Get(String::New("first"));
-        Local<Value> second  = obj->Get(String::New("second"));
-        Local<Value> third  = obj->Get(String::New("third"));
-        Local<Value> fourth  = obj->Get(String::New("fourth"));
-        if (!first->IsNumber() || !second->IsNumber() || !third->IsNumber() || !fourth->IsNumber())
-          return;
+   if (!val->IsObject()) return;
+   HandleScope handle_scope;
+   if (!val->IsObject())
+     return;
+   Local<Object> obj = val->ToObject();
+   Local<Value> first  = obj->Get(String::New("first"));
+   Local<Value> second  = obj->Get(String::New("second"));
+   Local<Value> third  = obj->Get(String::New("third"));
+   Local<Value> fourth  = obj->Get(String::New("fourth"));
+   if (!first->IsNumber() || !second->IsNumber() || !third->IsNumber() || !fourth->IsNumber())
+     return;
 
-        Elm_Ctxpopup_Direction f=(Elm_Ctxpopup_Direction)first->NumberValue();
-        Elm_Ctxpopup_Direction s=(Elm_Ctxpopup_Direction)second->NumberValue();
-        Elm_Ctxpopup_Direction t=(Elm_Ctxpopup_Direction)third->NumberValue();
-        Elm_Ctxpopup_Direction q=(Elm_Ctxpopup_Direction)fourth->NumberValue();
-
-        elm_ctxpopup_direction_priority_set(eo, f, s, t, q);
-     }
+    Elm_Ctxpopup_Direction f=(Elm_Ctxpopup_Direction)first->NumberValue();
+    Elm_Ctxpopup_Direction s=(Elm_Ctxpopup_Direction)second->NumberValue();
+    Elm_Ctxpopup_Direction t=(Elm_Ctxpopup_Direction)third->NumberValue();
+    Elm_Ctxpopup_Direction q=(Elm_Ctxpopup_Direction)fourth->NumberValue();
+    elm_ctxpopup_direction_priority_set(eo, f, s, t, q);
 }
 
 Handle<Value> CElmCtxPopup::direction_get() const
@@ -143,13 +136,13 @@ Handle<Value> CElmCtxPopup::clear(const Arguments& args)
 
 void CElmCtxPopup::sel(void *data, Evas_Object *, void *)
 {
-    CtxPopupItemClass *itc = (CtxPopupItemClass *)data;
-    if (itc->on_select.IsEmpty())
-        return;
-    Handle<Function> fn(Function::Cast(*(itc->on_select)));
-    Local<Object> temp = Object::New();
-    temp->Set(String::New("data"), itc->data);
-    fn->Call(temp, 0, 0);
+   CtxPopupItemClass *itc = (CtxPopupItemClass *)data;
+   if (itc->on_select.IsEmpty())
+     return;
+   Handle<Function> fn(Function::Cast(*(itc->on_select)));
+   Local<Object> temp = Object::New();
+   temp->Set(String::New("data"), itc->data);
+   fn->Call(temp, 0, 0);
 }
 
 Handle<Value> CElmCtxPopup::append(const Arguments& args)
@@ -161,23 +154,27 @@ Handle<Value> CElmCtxPopup::append(const Arguments& args)
         CtxPopupItemClass *itc = new CtxPopupItemClass();
 
         Local<Object> obj = args[0]->ToObject();
-        String::Utf8Value str(obj->Get(String::New("label")));
-        itc->label = std::string(*str);
-        itc->icon = make_or_get(ctxpopup->get_parent(), obj->Get(String::New("icon")));
-        itc->on_select = Persistent<Value>::New(obj->Get(String::New("on_select")));
-        itc->data = Persistent<Value>::New(obj->Get(String::New("data")));
+
+        String::Utf8Value str(obj->Get(String::NewSymbol("label")));
+
+        itc->label = strdup(*str);
+
+        itc->icon = make_or_get(ctxpopup->get_parent(), obj->Get(String::NewSymbol("icon")));
+
+        itc->on_select = Persistent<Value>::New(obj->Get(String::NewSymbol("on_select")));
+
+        itc->data = Persistent<Value>::New(obj->Get(String::NewSymbol("data")));
 
         elm_ctxpopup_item_append(ctxpopup->get(), *str, itc->icon->get(), sel, itc);
     }
    return Undefined();
 }
 
-PROPERTIES_OF(CElmCtxPopup) = 
-{
-     PROP_HANDLER(CElmCtxPopup, hover_parent),
-     PROP_HANDLER(CElmCtxPopup, direction_priority),
-     PROP_HANDLER(CElmCtxPopup, direction),
-     PROP_HANDLER(CElmCtxPopup, horizontal),
-     PROP_HANDLER(CElmCtxPopup, on_dismissed),
-     { NULL, NULL, NULL },
+PROPERTIES_OF(CElmCtxPopup) = {
+   PROP_HANDLER(CElmCtxPopup, hover_parent),
+   PROP_HANDLER(CElmCtxPopup, direction_priority),
+   PROP_HANDLER(CElmCtxPopup, direction),
+   PROP_HANDLER(CElmCtxPopup, horizontal),
+   PROP_HANDLER(CElmCtxPopup, on_dismissed),
+   { NULL }
 };

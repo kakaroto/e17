@@ -13,51 +13,53 @@ protected:
 
     /* the dismissed function */
     Persistent<Value> on_dismissed_val;
+
+    /* The parent for the ctx popup */
     Persistent<Value> parent;
 
    struct CtxPopupItemClass {
-       std::string label;
+       char *label;
        CEvasObject *icon;
        Persistent<Value> data;
        Persistent<Value> on_select;
    };
 
+   void on_dismissed(void *);
+
+   static void eo_on_dismissed(void *data, Evas_Object *, void *event_info);
+
 public:
-    CElmCtxPopup(CEvasObject *parent, Local<Object> obj);
+   CElmCtxPopup(CEvasObject *parent, Local<Object> obj);
 
-    virtual ~CElmCtxPopup() { };
+   virtual ~CElmCtxPopup() { };
 
-    Handle<Value> hover_parent_get() const;
+   virtual Handle<Value> hover_parent_get() const;
 
-    void hover_parent_set(Handle<Value> val);
+   virtual void hover_parent_set(Handle<Value> val);
 
-    Handle<Value> horizontal_get() const;
+   virtual Handle<Value> horizontal_get() const;
 
-    void horizontal_set(Handle<Value> val);
+   virtual void horizontal_set(Handle<Value> val);
 
-    Handle<Value> direction_priority_get() const;
+   virtual Handle<Value> direction_priority_get() const;
 
-    void direction_priority_set(Handle<Value> val);
+   virtual void direction_priority_set(Handle<Value> val);
 
-    Handle<Value> direction_get() const;
+   virtual Handle<Value> direction_get() const;
 
-    void direction_set(Handle<Value> val);
+   virtual void direction_set(Handle<Value> val);
 
-    void on_dismissed(void *);
+   virtual void on_dismissed_set(Handle<Value> val);
 
-    static void eo_on_dismissed(void *data, Evas_Object *, void *event_info);
+   virtual Handle<Value> on_dismissed_get(void) const;
 
-    void on_dismissed_set(Handle<Value> val);
+   static Handle<Value> dismiss(const Arguments& args);
 
-    Handle<Value> on_dismissed_get(void) const;
+   static Handle<Value> clear(const Arguments& args);
 
-    static Handle<Value> dismiss(const Arguments& args);
+   static Handle<Value> append(const Arguments& args);
 
-    static Handle<Value> clear(const Arguments& args);
-
-    static Handle<Value> append(const Arguments& args);
-
-    static void sel(void *data, Evas_Object *, void *);
+   static void sel(void *data, Evas_Object *, void *);
 
 };
 
