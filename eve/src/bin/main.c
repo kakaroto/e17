@@ -135,7 +135,7 @@ tab_focus_chrome(Browser_Window *win, Evas_Object *chrome)
 
    evas_object_show(win->current_chrome);
    evas_object_focus_set(win->current_view, EINA_TRUE);
-   elm_pager_content_promote(win->pager, win->current_chrome);
+   elm_naviframe_item_simple_promote(win->pager, win->current_chrome);
 
    chrome_focused_notify(win->current_chrome);
 
@@ -276,7 +276,7 @@ win_add(App *app, const char *url, Session_Window *session_window, Session_Item 
    evas_object_layer_set(win->bg, EVAS_LAYER_MIN);
    evas_object_show(win->bg);
 
-   win->pager = elm_pager_add(win->win);
+   win->pager = elm_naviframe_add(win->win);
    if (!win->pager)
      {
         CRITICAL("Could not create pager");

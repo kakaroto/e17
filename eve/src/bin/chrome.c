@@ -2627,7 +2627,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    if (url)
       ewk_view_uri_set(view, url);
 
-   elm_pager_content_push(win->pager, chrome);
+   elm_naviframe_item_simple_push(win->pager, chrome);
    return chrome;
 
 error_session_create:
