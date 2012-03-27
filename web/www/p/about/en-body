@@ -114,16 +114,16 @@
    
    <p>
     <ul>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Evas>Evas</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Eina>Eina</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Edje>Edje</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Eet>Eet</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Ecore>Ecore</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Efreet>Efreet</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/E_Dbus>E_Dbus</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Embryo>Embryo</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Eeze>Eeze</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Elementary>Elementary</a> (window manager will use this in 0.18)</li>
+     <li><a href=http://docs.enlightenment.org/auto/evas>Evas</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/eina>Eina</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/edje>Edje</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/eet>Eet</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/ecore>Ecore</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/efreet>Efreet</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/e_dbus>E_Dbus</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/embryo>Embryo</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/eeze>Eeze</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/elementary>Elementary</a> (window manager will use this in 0.18)</li>
     </ul>
    </p>
    
@@ -153,8 +153,8 @@
    
    <p>
     <ul>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Emotion>Emotion</a></li>
-     <li><a href=http://trac.enlightenment.org/e/wiki/Ethumb>Ethumb</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/emotion>Emotion</a></li>
+     <li><a href=http://docs.enlightenment.org/auto/ethumb>Ethumb</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Exquisite>Exquisite</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/Eve>Eve</a></li>
      <li><a href=http://trac.enlightenment.org/e/wiki/EdjeEditor>Edje Editor</a></li>
