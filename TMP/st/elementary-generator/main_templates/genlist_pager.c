@@ -72,9 +72,9 @@ _gl_sel(void *data, Evas_Object *obj, void *event_info)
    Genlist_Data *g_data = (Genlist_Data*) data;
 
    if(g_data->p_pager == g_data->app->pager.p_welcome)
-     elm_pager_content_promote(g_data->app->pager.pager, g_data->app->pager.p_welcome);
+     elm_naviframe_item_simple_promote(g_data->app->pager.pager, g_data->app->pager.p_welcome);
    else if(g_data->p_pager == g_data->app->pager.p_wolf)
-      elm_pager_content_promote(g_data->app->pager.pager, g_data->app->pager.p_wolf);
+      elm_naviframe_item_simple_promote(g_data->app->pager.pager, g_data->app->pager.p_wolf);
 }
 
    static void
@@ -126,7 +126,7 @@ create_main_win(App *app)
    evas_object_show(app->box.hbox);
    elm_box_pack_end(app->box.vbox, app->box.hbox);
 
-   app->pager.pager = elm_pager_add(app->win);
+   app->pager.pager = elm_naviframe_add(app->win);
    evas_object_size_hint_weight_set(app->pager.pager, 1.0, 1.0);
    evas_object_size_hint_align_set(app->pager.pager, 1.0, -1.0);
    elm_box_pack_end(app->box.hbox, app->pager.pager);
@@ -144,7 +144,7 @@ create_main_win(App *app)
 		       );
    elm_box_pack_end(app->pager.p_welcome, lb);
    evas_object_show(lb);
-   elm_pager_content_push(app->pager.pager, app->pager.p_welcome);
+   elm_naviframe_item_simple_push(app->pager.pager, app->pager.p_welcome);
    //
 
    //page 2
@@ -159,10 +159,10 @@ create_main_win(App *app)
 		       );
    elm_box_pack_end(app->pager.p_wolf, lb);
    evas_object_show(lb);
-   elm_pager_content_push(app->pager.pager, app->pager.p_wolf);
+   elm_naviframe_item_simple_push(app->pager.pager, app->pager.p_wolf);
    //
 
-   elm_pager_content_promote(app->pager.pager, app->pager.p_welcome);
+   elm_naviframe_item_simple_promote(app->pager.pager, app->pager.p_welcome);
 
    //the genlist
    app->genlist = elm_genlist_add(app->win);

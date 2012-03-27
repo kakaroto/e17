@@ -238,7 +238,7 @@ edit_done(void *data, Evas_Object *obj, void *event_info)
    slide_content(s);
    ten = NULL;
    ben = NULL;
-   elm_pager_content_pop(pge);
+   elm_naviframe_item_pop(pge);
 }
 static void
 edit_slide(void *data, Evas_Object *obj, void *event_info)
@@ -300,7 +300,7 @@ edit_slide(void *data, Evas_Object *obj, void *event_info)
    elm_box_pack_end(bx, bt);
    evas_object_show(bt);
    
-   elm_pager_content_push(pge, bx);
+   elm_naviframe_item_simple_push(pge, bx);
 }
 static void
 save_slide(void *data, Evas_Object *obj, void *event_info)
@@ -350,7 +350,7 @@ settings_done(void *data, Evas_Object *obj, void *event_info)
    scale_timeout = NULL;
    if (finger_size_timeout) ecore_timer_del(finger_size_timeout);
    finger_size_timeout = NULL;
-   elm_pager_content_pop(pg);
+   elm_naviframe_item_pop(pg);
 }
 static void
 settings(void *data, Evas_Object *obj, void *event_info)
@@ -392,7 +392,7 @@ settings(void *data, Evas_Object *obj, void *event_info)
    elm_box_pack_end(bx, bt);
    evas_object_show(bt);
    
-   elm_pager_content_push(pg, bx);
+   elm_naviframe_item_simple_push(pg, bx);
 }
 
 static void
@@ -403,7 +403,7 @@ edit_toggle(void)
    
    if (bx)
      {
-        elm_pager_content_pop(pg);
+        elm_naviframe_item_pop(pg);
         bx = NULL;
         return;
      }
@@ -485,7 +485,7 @@ edit_toggle(void)
    elm_box_pack_end(bx2, bt);
    evas_object_show(bt);
    
-   elm_pager_content_push(pg, bx);
+   elm_naviframe_item_simple_push(pg, bx);
 }
 
 static void
@@ -599,7 +599,7 @@ create_main_win(void)
    evas_object_size_hint_weight_set(bx, 1.0, 1.0);
    elm_win_resize_object_add(win, bx);
    
-   pg = elm_pager_add(win);
+   pg = elm_naviframe_add(win);
    evas_object_size_hint_weight_set(pg, 0.0, 0.0);
    evas_object_size_hint_align_set(pg, 0.5, 0.5);
    elm_box_pack_end(bx, pg);
@@ -607,7 +607,7 @@ create_main_win(void)
    
    evas_object_show(bx);
 
-   pge = elm_pager_add(win);
+   pge = elm_naviframe_add(win);
    elm_win_resize_object_add(win, pge);
    evas_object_size_hint_weight_set(pge, 1.0, 1.0);
    evas_object_size_hint_align_set(pge, 0.5, 0.5);
