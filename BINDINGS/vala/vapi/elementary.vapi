@@ -3257,20 +3257,6 @@ public class Win : Elm.Object
 /////////////////////////////////////////////////////////////////////////
 // STUFF under this line is DEPRECATED (can be probably found in elm_deprecated.h)
 /////////////////////////////////////////////////////////////////////////
-//=======================================================================
-[CCode (cname = "Evas_Object", free_function = "evas_object_del")]
-public class Pager : Elm.Object
-{
-    public static unowned Pager? add( Elm.Object parent ); 
-
-    public void content_push( Elm.Object? content );
-    public void content_pop();
-    public void content_promote( Elm.Object content );
-    public unowned Elm.Object? content_bottom_get();
-    public unowned Elm.Object? content_top_get();
-
-    public void style_set( string style );
-}
 
 // elc_anchorblock.h
 //=======================================================================

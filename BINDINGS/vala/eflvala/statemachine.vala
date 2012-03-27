@@ -37,21 +37,21 @@ public class EflVala.ViewState
 
 public class EflVala.ViewStateMachine
 {
-    private unowned Elm.Pager pager;
+    private unowned Elm.Naviframe navi;
     private ViewState current_state;
 
     public ViewStateMachine(Elm.Win win)
     {
         current_state = null;
 
-        pager = Elm.Pager.add(win);
-        win.resize_object_add(pager);
-        pager.show();
+        navi = Elm.Naviframe.add(win);
+        win.resize_object_add(navi);
+        navi.show();
     }
 
     public new void state_register(ViewState? state)
     {
-        pager.content_push(state.object_get());
+        navi.item_push("", null, null, state.object_get(), null),
     }
     
     public void current_state_set(ViewState state)
@@ -76,7 +76,7 @@ public class EflVala.ViewStateMachine
         if(new_state != null)
             current_state_set(new_state);
  
-        pager.content_promote(((ViewState)current_state).object_get());
+        navi.content_promote(((ViewState)current_state).object_get());
     }
 }
 
