@@ -44,7 +44,7 @@ back_page_1(void *data, Evas_Object *obj, const char *emission,
 		const char *source)
 {
    Pginfo *info = data;
-   elm_pager_content_promote(info->pager, info->pg1);
+   elm_naviframe_item_simple_promote(info->pager, info->pg1);
 }
 
 void
@@ -159,7 +159,7 @@ create_pager(Evas_Object *parent, Evas_Object *pg, Pginfo *info,
 		Measurements_Lists *ml)
 {
    Evas_Object *ed, *converters_list, *layout;
-   pg = elm_pager_add(parent);
+   pg = elm_naviframe_add(parent);
    elm_win_resize_object_add(parent, pg);
    evas_object_size_hint_weight_set(pg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(pg, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -174,7 +174,7 @@ create_pager(Evas_Object *parent, Evas_Object *pg, Pginfo *info,
 	return;
      }
    evas_object_show(layout);
-   elm_pager_content_push(pg, layout);
+   elm_naviframe_item_simple_push(pg, layout);
    info->pg1 = layout;
 
    converters_list = elm_list_add(parent);
@@ -245,7 +245,7 @@ create_pager(Evas_Object *parent, Evas_Object *pg, Pginfo *info,
 					on_number_button_enter, ml);
    edje_object_signal_callback_add(ed, "mouse,clicked,1", "back",
 					 back_page_1, info);
-   elm_pager_content_push(pg, layout);
+   elm_naviframe_item_simple_push(pg, layout);
    info->pg2 = layout;
-   elm_pager_content_promote(info->pager, info->pg1);
+   elm_naviframe_item_simple_promote(info->pager, info->pg1);
 }

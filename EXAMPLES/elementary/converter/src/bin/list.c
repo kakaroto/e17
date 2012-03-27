@@ -51,7 +51,7 @@ converter_distance(void *data, Evas_Object *obj, void *event_info)
    elm_list_item_selected_set(list_it, EINA_FALSE);
 
    Pginfo *info = data;
-   elm_pager_content_promote(info->pager, info->pg2);
+   elm_naviframe_item_simple_promote(info->pager, info->pg2);
 }
 
 void

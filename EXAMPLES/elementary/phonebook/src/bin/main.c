@@ -107,7 +107,7 @@ add_update_user(Db_Entry NewContact)
 static void
 load_values(Db_Entry *NewUser)
 {
-   elm_pager_content_promote(App.info.pager, App.info.pgBrowse);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgBrowse);
 
    GET_ED_FROM_PAGE(pgBrowse);
 
@@ -145,7 +145,7 @@ delete_clicked (void *data, Evas_Object *obj, const char *emission, const char *
    contact = elm_object_item_data_get(App.selection);
    elm_object_item_del(App.selection);
    db_remove(App._db, contact);
-   elm_pager_content_promote(App.info.pager, App.info.pgMain);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgMain);
 }
 
 /* Button "Save" from Register Page */
@@ -163,7 +163,7 @@ save_clicked (void *data, Evas_Object *obj, const char *emission, const char *so
 
    add_update_user(ContactReg);
 
-   elm_pager_content_promote(App.info.pager, App.info.pgMain);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgMain);
 
    if (App.selection)
      elm_list_item_selected_set(App.selection, EINA_FALSE);
@@ -173,7 +173,7 @@ save_clicked (void *data, Evas_Object *obj, const char *emission, const char *so
 static void
 cancel_clicked (void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   elm_pager_content_promote(App.info.pager, App.info.pgMain);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgMain);
 
    if (App.selection)
      elm_list_item_selected_set(App.selection, EINA_FALSE);
@@ -184,7 +184,7 @@ static void
 new_clicked (void *data, Evas_Object *obj, const char *emission, const char *source)
 {
 
-   elm_pager_content_promote(App.info.pager, App.info.pgRegister);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgRegister);
 
    GET_ED_FROM_PAGE(pgRegister);
 
@@ -242,7 +242,7 @@ edit_clicked (void *data, Evas_Object *obj, const char *emission, const char *so
 {
    Db_Entry *contact;
 
-   elm_pager_content_promote(App.info.pager, App.info.pgRegister);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgRegister);
 
    contact = elm_object_item_data_get(App.selection);
 
@@ -346,7 +346,7 @@ create_win(){
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
 
-   pg = elm_pager_add(win);
+   pg = elm_naviframe_add(win);
    elm_win_resize_object_add(win, pg);
    evas_object_size_hint_weight_set(pg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(pg, 0.0,0.0);
@@ -374,7 +374,7 @@ create_win(){
    evas_object_smart_callback_add(entrysearch, "unfocused", entry_unfocused,
 				  ed);
    evas_object_show(layout);
-   elm_pager_content_push(pg, layout);
+   elm_naviframe_item_simple_push(pg, layout);
    App.info.pgMain = layout;
 
    App.contactlist = edje_object_part_external_object_get(ed, "ContactList");
@@ -407,7 +407,7 @@ create_win(){
    edje_object_signal_callback_add(ed, "delete,signal", "BtnDelete",
 				   delete_clicked, NULL);
    evas_object_show(layout);
-   elm_pager_content_push(pg, layout);
+   elm_naviframe_item_simple_push(pg, layout);
    App.info.pgRegister = layout;
 
    /* Browse - Page */
@@ -432,11 +432,11 @@ create_win(){
    edje_object_signal_callback_add(ed, "edit,signal", "BtnEdit", edit_clicked,
 				   NULL);
    evas_object_show(layout);
-   elm_pager_content_push(pg, layout);
+   elm_naviframe_item_simple_push(pg, layout);
    App.info.pgBrowse = layout;
 
    /* Show up the Main Page */
-   elm_pager_content_promote(App.info.pager, App.info.pgMain);
+   elm_naviframe_item_simple_promote(App.info.pager, App.info.pgMain);
 
    /* Show Main Window */
    evas_object_show(win);
