@@ -26,7 +26,7 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 
    ephoto_single_browser_entry_set(ephoto->single_browser, NULL);
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
-   elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
+   elm_naviframe_item_simple_promote(ephoto->pager, ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
    ephoto_title_set(ephoto, ephoto->config->directory);
 
@@ -39,7 +39,7 @@ _ephoto_single_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
    DBG("entry '%s'", entry->path);
    ephoto_single_browser_entry_set(ephoto->single_browser, entry);
-   elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
+   elm_naviframe_item_simple_promote(ephoto->pager, ephoto->single_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SINGLE);
 }
 
@@ -48,7 +48,7 @@ _ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
 {
    DBG("entry '%s'", entry->path);
    ephoto_slideshow_entry_set(ephoto->slideshow, entry);
-   elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
+   elm_naviframe_item_simple_promote(ephoto->pager, ephoto->slideshow);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
 }
 
@@ -165,7 +165,7 @@ ephoto_window_add(const char *path)
    elm_win_resize_object_add(ephoto->win, ephoto->bg);
    evas_object_show(ephoto->bg);
 
-   ephoto->pager = elm_pager_add(ephoto->win);
+   ephoto->pager = elm_naviframe_add(ephoto->win);
    elm_object_style_set(ephoto->pager, "fade_invisible");
    evas_object_size_hint_weight_set
      (ephoto->pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -181,7 +181,7 @@ ephoto_window_add(const char *path)
         evas_object_del(ephoto->win);
         return NULL;
      }
-   elm_pager_content_push(ephoto->pager, ephoto->thumb_browser);
+   elm_naviframe_item_simple_push(ephoto->pager, ephoto->thumb_browser);
    evas_object_smart_callback_add
      (ephoto->thumb_browser, "view", _ephoto_thumb_browser_view, ephoto);
    evas_object_smart_callback_add
@@ -198,7 +198,7 @@ ephoto_window_add(const char *path)
         evas_object_del(ephoto->win);
         return NULL;
      }
-   elm_pager_content_push(ephoto->pager, ephoto->single_browser);
+   elm_naviframe_item_simple_push(ephoto->pager, ephoto->single_browser);
    evas_object_smart_callback_add
      (ephoto->single_browser, "back", _ephoto_single_browser_back, ephoto);
    evas_object_smart_callback_add
@@ -212,7 +212,7 @@ ephoto_window_add(const char *path)
         evas_object_del(ephoto->win);
         return NULL;
      }
-   elm_pager_content_push(ephoto->pager, ephoto->slideshow);
+   elm_naviframe_item_simple_push(ephoto->pager, ephoto->slideshow);
    evas_object_smart_callback_add
      (ephoto->slideshow, "back", _ephoto_slideshow_back, ephoto);
 
@@ -241,7 +241,7 @@ ephoto_window_add(const char *path)
         free(dir);
         ephoto_single_browser_path_pending_set(ephoto->single_browser, path);
 
-        elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
+        elm_naviframe_item_simple_promote(ephoto->pager, ephoto->single_browser);
         ephoto->state = EPHOTO_STATE_SINGLE;
      }
 
