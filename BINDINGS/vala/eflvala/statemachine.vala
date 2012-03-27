@@ -51,7 +51,7 @@ public class EflVala.ViewStateMachine
 
     public new void state_register(ViewState? state)
     {
-        navi.item_push("", null, null, state.object_get(), null),
+        navi.item_push("", null, null, state.object_get(), null);
     }
     
     public void current_state_set(ViewState state)
@@ -75,8 +75,8 @@ public class EflVala.ViewStateMachine
         new_state = current_state.transition_handle(condition);
         if(new_state != null)
             current_state_set(new_state);
- 
-        navi.content_promote(((ViewState)current_state).object_get());
+
+        navi.item_push("", null, null, ((ViewState)current_state).object_get(), null);
     }
 }
 
