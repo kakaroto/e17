@@ -34,7 +34,7 @@ _tb_select_cb(void *data, Evas_Object *obj, void *event_info)
    if (item->signal)
       edje_object_signal_emit(item->content, item->signal, "");
    else
-      elm_pager_content_promote(item->tab->panels, item->content);
+      elm_naviframe_item_simple_promote(item->tab->panels, item->content);
    if (item->select_cb) item->select_cb(item->data, item->tab, item);
 }
 
@@ -45,7 +45,7 @@ tabpanel_add(Evas_Object *parent)
 
    tab->tabs = elm_toolbar_add(parent);
    elm_toolbar_homogeneous_set(tab->tabs, EINA_FALSE);
-   tab->panels = elm_pager_add(parent);
+   tab->panels = elm_naviframe_add(parent);
    evas_object_size_hint_weight_set(tab->panels, 1.0, 1.0);
    evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
 
@@ -64,7 +64,7 @@ tabpanel_add_with_edje(Evas_Object *parent, Evas_Object *tabs)
 
    tab->tabs = tabs;
    elm_toolbar_homogeneous_set(tab->tabs, EINA_FALSE);
-   tab->panels = elm_pager_add(parent);
+   tab->panels = elm_naviframe_add(parent);
    evas_object_size_hint_weight_set(tab->panels, 1.0, 1.0);
    evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
 
@@ -101,7 +101,7 @@ tabpanel_item_add(Tabpanel *tab, const char *label, Evas_Object *content,
                                            _tb_select_cb, item);
    item->content = content;
    item->del = EINA_FALSE;
-   if (content) elm_pager_content_push(tab->panels, content);
+   if (content) elm_naviframe_item_simple_push(tab->panels, content);
    item->data = data;
    item->select_cb = select_cb;
 
@@ -168,7 +168,7 @@ tabpanel_item_del(Tabpanel_Item *item)
 {
    if (!item->signal)
    {
-      elm_pager_content_pop(item->tab->panels);
+      elm_naviframe_item_pop(item->tab->panels);
       evas_object_del(item->content);
    }
    if (item->tab->items) tabpanel_item_select(

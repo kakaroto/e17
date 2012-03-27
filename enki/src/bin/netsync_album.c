@@ -228,7 +228,7 @@ netsync_sync_update(Enlil_Album *album)
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
-      pager = elm_pager_add(inwin);
+      pager = elm_naviframe_add(inwin);
       album_data->netsync.inwin.notinlocal.pager = pager;
       evas_object_size_hint_align_set(pager, 0.5, 0.5);
       evas_object_size_hint_weight_set(pager, 1.0, 0.0);
@@ -245,7 +245,7 @@ netsync_sync_update(Enlil_Album *album)
       evas_object_smart_callback_add(bt, "clicked", _photos_notinlocal_cb,
                                      album);
       evas_object_show(bt);
-      elm_pager_content_push(pager, bt);
+      elm_naviframe_item_simple_push(pager, bt);
 
       pb = elm_progressbar_add(inwin);
       album_data->netsync.inwin.notinlocal.pb = pb;
@@ -254,16 +254,16 @@ netsync_sync_update(Enlil_Album *album)
       elm_progressbar_pulse_set(pb, EINA_TRUE);
       elm_object_text_set(pb, D_("Downloads in progress ..."));
       evas_object_show(pb);
-      elm_pager_content_push(pager, pb);
+      elm_naviframe_item_simple_push(pager, pb);
       evas_object_size_hint_max_set(pb, 0, 0);
 
       if (album_data->netsync.inwin.notinlocal.is_updating)
       {
          elm_progressbar_pulse(pb, EINA_TRUE);
-         elm_pager_content_promote(pager, pb);
+         elm_naviframe_item_simple_promote(pager, pb);
       }
       else
-         elm_pager_content_promote(pager, bt);
+         elm_naviframe_item_simple_promote(pager, bt);
 
       i++;
 
@@ -280,7 +280,7 @@ netsync_sync_update(Enlil_Album *album)
   elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
 #define PAGER(TARGET)                                \
-  pager = elm_pager_add(inwin);                      \
+  pager = elm_naviframe_add(inwin);                      \
   TARGET = pager;                                    \
   evas_object_size_hint_align_set(pager, 0.5, 0.5);  \
   evas_object_size_hint_weight_set(pager, 1.0, 0.0); \
@@ -296,7 +296,7 @@ netsync_sync_update(Enlil_Album *album)
   elm_object_text_set(bt, D_(LABEL));                      \
   evas_object_smart_callback_add(bt, "clicked", CB, album); \
   evas_object_show(bt);                                     \
-  elm_pager_content_push(pager, bt);                        \
+  elm_naviframe_item_simple_push(pager, bt);                        \
 
 #define BUTTON(TARGET, LABEL, CB)                           \
   bt = elm_button_add(inwin);                               \
@@ -316,16 +316,16 @@ netsync_sync_update(Enlil_Album *album)
   elm_progressbar_pulse_set(pb, EINA_TRUE);                  \
   elm_object_text_set(pb, D_("Send in progress ...")); \
   evas_object_show(pb);                                      \
-  elm_pager_content_push(pager, pb);                         \
+  elm_naviframe_item_simple_push(pager, pb);                         \
   evas_object_size_hint_max_set(pb, 0, 0);                   \
                                                              \
   if(album_data->netsync.inwin.notinnetsync.is_updating)     \
     {                                                        \
        elm_progressbar_pulse(pb, EINA_TRUE);                 \
-       elm_pager_content_promote(pager, pb);                 \
+       elm_naviframe_item_simple_promote(pager, pb);                 \
     }                                                        \
   else                                                       \
-    elm_pager_content_promote(pager, bt);
+    elm_naviframe_item_simple_promote(pager, bt);
 
 #define SEPARATOR()                     \
   sep = elm_separator_add(inwin);       \
@@ -506,7 +506,7 @@ _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info)
                                                           NULL, album);
 
    album_data->netsync.inwin.notinlocal.is_updating = EINA_TRUE;
-   elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
+   elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinlocal.pager,
                              album_data->netsync.inwin.notinlocal.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_TRUE);
 }
@@ -587,7 +587,7 @@ _photos_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info)
    }
 
    album_data->netsync.inwin.notinnetsync.is_updating = EINA_TRUE;
-   elm_pager_content_promote(album_data->netsync.inwin.notinnetsync.pager,
+   elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinnetsync.pager,
                              album_data->netsync.inwin.notinnetsync.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinnetsync.pb, EINA_TRUE);
 }
@@ -717,7 +717,7 @@ _photos_netsync_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info)
    }
 
    album_data->netsync.inwin.notinnetsync.is_updating = EINA_TRUE;
-   elm_pager_content_promote(album_data->netsync.inwin.notinnetsync.pager,
+   elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinnetsync.pager,
                              album_data->netsync.inwin.notinnetsync.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinnetsync.pb, EINA_TRUE);
 }

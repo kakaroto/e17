@@ -188,7 +188,7 @@ flickr_sync_update(Enlil_Album *album)
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
-      pager = elm_pager_add(inwin);
+      pager = elm_naviframe_add(inwin);
       album_data->netsync.inwin.notinlocal.pager = pager;
       evas_object_size_hint_align_set(pager, 0.5, 0.5);
       evas_object_size_hint_weight_set(pager, 1.0, 0.0);
@@ -205,7 +205,7 @@ flickr_sync_update(Enlil_Album *album)
       evas_object_smart_callback_add(bt, "clicked", _photos_notinlocal_cb,
                                      album);
       evas_object_show(bt);
-      elm_pager_content_push(pager, bt);
+      elm_naviframe_item_simple_push(pager, bt);
 
       pb = elm_progressbar_add(inwin);
       album_data->netsync.inwin.notinlocal.pb = pb;
@@ -214,16 +214,16 @@ flickr_sync_update(Enlil_Album *album)
       elm_progressbar_pulse_set(pb, EINA_TRUE);
       elm_object_text_set(pb, D_("Downloads in progress ..."));
       evas_object_show(pb);
-      elm_pager_content_push(pager, pb);
+      elm_naviframe_item_simple_push(pager, pb);
       evas_object_size_hint_max_set(pb, 0, 0);
 
       if (album_data->netsync.inwin.notinlocal.is_updating)
       {
          elm_progressbar_pulse(pb, EINA_TRUE);
-         elm_pager_content_promote(pager, pb);
+         elm_naviframe_item_simple_promote(pager, pb);
       }
       else
-         elm_pager_content_promote(pager, bt);
+         elm_naviframe_item_simple_promote(pager, bt);
 
       i++;
 
@@ -255,7 +255,7 @@ flickr_sync_update(Enlil_Album *album)
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
-      pager = elm_pager_add(inwin);
+      pager = elm_naviframe_add(inwin);
       album_data->netsync.inwin.notinflickr.pager = pager;
       evas_object_size_hint_align_set(pager, 0.5, 0.5);
       evas_object_size_hint_weight_set(pager, 1.0, 0.0);
@@ -272,7 +272,7 @@ flickr_sync_update(Enlil_Album *album)
       evas_object_smart_callback_add(bt, "clicked",
                                      _photos_netsync_notinnetsync_cb, album);
       evas_object_show(bt);
-      elm_pager_content_push(pager, bt);
+      elm_naviframe_item_simple_push(pager, bt);
 
       pb = elm_progressbar_add(inwin);
       album_data->netsync.inwin.notinflickr.pb = pb;
@@ -281,16 +281,16 @@ flickr_sync_update(Enlil_Album *album)
       elm_progressbar_pulse_set(pb, EINA_TRUE);
       elm_object_text_set(pb, D_("Send in progress ..."));
       evas_object_show(pb);
-      elm_pager_content_push(pager, pb);
+      elm_naviframe_item_simple_push(pager, pb);
       evas_object_size_hint_max_set(pb, 0, 0);
 
       if (album_data->netsync.inwin.notinflickr.is_updating)
       {
          elm_progressbar_pulse(pb, EINA_TRUE);
-         elm_pager_content_promote(pager, pb);
+         elm_naviframe_item_simple_promote(pager, pb);
       }
       else
-         elm_pager_content_promote(pager, bt);
+         elm_naviframe_item_simple_promote(pager, bt);
 
       i++;
 
@@ -359,7 +359,7 @@ flickr_sync_update(Enlil_Album *album)
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
-      pager = elm_pager_add(inwin);
+      pager = elm_naviframe_add(inwin);
       album_data->netsync.inwin.flickrupdate.pager = pager;
       evas_object_size_hint_align_set(pager, 0.5, 0.5);
       evas_object_size_hint_weight_set(pager, 1.0, 0.0);
@@ -376,7 +376,7 @@ flickr_sync_update(Enlil_Album *album)
       evas_object_smart_callback_add(bt, "clicked",
                                      _photos_netsync_notuptodate_cb, album);
       evas_object_show(bt);
-      elm_pager_content_push(pager, bt);
+      elm_naviframe_item_simple_push(pager, bt);
 
       pb = elm_progressbar_add(inwin);
       album_data->netsync.inwin.flickrupdate.pb = pb;
@@ -385,16 +385,16 @@ flickr_sync_update(Enlil_Album *album)
       elm_progressbar_pulse_set(pb, EINA_TRUE);
       elm_object_text_set(pb, D_("Updating in progress ..."));
       evas_object_show(pb);
-      elm_pager_content_push(pager, pb);
+      elm_naviframe_item_simple_push(pager, pb);
       evas_object_size_hint_max_set(pb, 0, 0);
 
       if (album_data->netsync.inwin.flickrupdate.is_updating)
       {
          elm_progressbar_pulse(pb, EINA_TRUE);
-         elm_pager_content_promote(pager, pb);
+         elm_naviframe_item_simple_promote(pager, pb);
       }
       else
-         elm_pager_content_promote(pager, bt);
+         elm_naviframe_item_simple_promote(pager, bt);
 
       i++;
 
@@ -548,7 +548,7 @@ _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info)
             = eina_list_append(album_data->netsync.jobs, job);
 
    album_data->netsync.inwin.notinlocal.is_updating = EINA_TRUE;
-   elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
+   elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinlocal.pager,
                              album_data->netsync.inwin.notinlocal.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_TRUE);
 }
@@ -634,7 +634,7 @@ _photos_notinflickr_cb(void *data, Evas_Object *obj, void *event_info)
    }
 
    album_data->netsync.inwin.notinflickr.is_updating = EINA_TRUE;
-   elm_pager_content_promote(album_data->netsync.inwin.notinflickr.pager,
+   elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinflickr.pager,
                              album_data->netsync.inwin.notinflickr.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinflickr.pb, EINA_TRUE);
 }
@@ -745,7 +745,7 @@ _photos_netsync_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info)
    }
 
    album_data->netsync.inwin.notinflickr.is_updating = EINA_TRUE;
-   elm_pager_content_promote(album_data->netsync.inwin.notinflickr.pager,
+   elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinflickr.pager,
                              album_data->netsync.inwin.notinflickr.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinflickr.pb, EINA_TRUE);
 }

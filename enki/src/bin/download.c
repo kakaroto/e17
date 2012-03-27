@@ -111,7 +111,7 @@ _done_cb(void *data, Enlil_Photo *photo, int status)
       photos_list_object_header_update(album_data->list_photo_item);
 
       album_data->netsync.inwin.notinlocal.is_updating = EINA_FALSE;
-      elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
+      elm_naviframe_item_simple_promote(album_data->netsync.inwin.notinlocal.pager,
                                 album_data->netsync.inwin.notinlocal.pb);
       elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_FALSE);
 
