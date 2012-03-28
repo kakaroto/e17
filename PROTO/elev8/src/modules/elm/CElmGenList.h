@@ -57,6 +57,9 @@ public:
    virtual void bounce_set(Handle<Value> val);
    virtual Handle<Value> bounce_get() const;
 
+   virtual Handle<Value> highlight_mode_get() const;
+   virtual void highlight_mode_set(Handle<Value> value);
+
 };
 
 #endif

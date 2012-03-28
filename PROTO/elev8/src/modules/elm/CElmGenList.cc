@@ -211,6 +211,17 @@ Handle<Value> CElmGenList::bounce_get() const
    return scope.Close(obj);
 }
 
+Handle<Value> CElmGenList::highlight_mode_get() const
+{
+   return Boolean::New(elm_genlist_highlight_mode_get(eo));
+}
+
+void CElmGenList::highlight_mode_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_genlist_highlight_mode_set(eo, value->BooleanValue());
+}
+
 PROPERTIES_OF(CElmGenList) =
   {
      PROP_HANDLER(CElmGenList, multi_select),
@@ -220,5 +231,6 @@ PROPERTIES_OF(CElmGenList) =
      PROP_HANDLER(CElmGenList, block_count),
      PROP_HANDLER(CElmGenList, longpress_timeout),
      PROP_HANDLER(CElmGenList, bounce),
+     PROP_HANDLER(CElmGenList, highlight_mode),
      { NULL }
   };
