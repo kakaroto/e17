@@ -60,6 +60,9 @@ public:
    virtual Handle<Value> highlight_mode_get() const;
    virtual void highlight_mode_set(Handle<Value> value);
 
+   virtual Handle<Value> tree_effect_enabled_get() const;
+   virtual void tree_effect_enabled_set(Handle<Value> value);
+
 };
 
 #endif

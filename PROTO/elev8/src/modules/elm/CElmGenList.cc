@@ -222,6 +222,16 @@ void CElmGenList::highlight_mode_set(Handle<Value> value)
      elm_genlist_highlight_mode_set(eo, value->BooleanValue());
 }
 
+Handle<Value> CElmGenList::tree_effect_enabled_get() const
+{
+   return Boolean::New(elm_genlist_tree_effect_enabled_get(eo));
+}
+
+void CElmGenList::tree_effect_enabled_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_genlist_tree_effect_enabled_set(eo, value->BooleanValue());
+}
 PROPERTIES_OF(CElmGenList) =
   {
      PROP_HANDLER(CElmGenList, multi_select),
@@ -232,5 +242,6 @@ PROPERTIES_OF(CElmGenList) =
      PROP_HANDLER(CElmGenList, longpress_timeout),
      PROP_HANDLER(CElmGenList, bounce),
      PROP_HANDLER(CElmGenList, highlight_mode),
+     PROP_HANDLER(CElmGenList, tree_effect_enabled),
      { NULL }
   };
