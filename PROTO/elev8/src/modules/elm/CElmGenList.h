@@ -66,6 +66,9 @@ public:
    virtual Handle<Value> decorate_mode_get() const;
    virtual void decorate_mode_set(Handle<Value> value);
 
+   virtual Handle<Value> homogeneous_get() const;
+   virtual void homogeneous_set(Handle<Value> value);
+
 };
 
 #endif

@@ -244,6 +244,17 @@ void CElmGenList::decorate_mode_set(Handle<Value> value)
      elm_genlist_decorate_mode_set(eo, value->BooleanValue());
 }
 
+Handle<Value> CElmGenList::homogeneous_get() const
+{
+   return Number::New(elm_genlist_homogeneous_get(eo));
+}
+
+void CElmGenList::homogeneous_set(Handle<Value> value)
+{
+   if (value->IsNumber())
+     elm_genlist_homogeneous_set(eo, value->IntegerValue());
+}
+
 PROPERTIES_OF(CElmGenList) =
   {
      PROP_HANDLER(CElmGenList, multi_select),
@@ -256,5 +267,6 @@ PROPERTIES_OF(CElmGenList) =
      PROP_HANDLER(CElmGenList, highlight_mode),
      PROP_HANDLER(CElmGenList, tree_effect_enabled),
      PROP_HANDLER(CElmGenList, decorate_mode),
+     PROP_HANDLER(CElmGenList, homogeneous),
      { NULL }
   };
