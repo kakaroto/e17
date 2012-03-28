@@ -63,6 +63,9 @@ public:
    virtual Handle<Value> tree_effect_enabled_get() const;
    virtual void tree_effect_enabled_set(Handle<Value> value);
 
+   virtual Handle<Value> decorate_mode_get() const;
+   virtual void decorate_mode_set(Handle<Value> value);
+
 };
 
 #endif
