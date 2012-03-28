@@ -25,6 +25,10 @@ libelm_la_SOURCES = \
 	CElmCheck.cc \
 	CElmClock.cc \
 	CElmColorSelector.cc \
+	CElmConform.cc \
+	CElmCtxPopup.cc \
+	CElmDateTime.cc \
+	CElmDaySelector.cc \
 	CElmEntry.cc \
 	CElmFileSelectorButton.cc \
 	CElmFileSelectorEntry.cc \
@@ -51,10 +55,6 @@ libelm_la_SOURCES = \
 	CElmSlider.cc \
 	CElmSpinner.cc \
 	CElmTable.cc \
-	CElmDaySelector.cc \
-	CElmCtxPopup.cc \
-	CElmDateTime.cc \
-	CElmConform.cc \
 	CEvasImage.cc \
 	CEvasObject.cc
 
