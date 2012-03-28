@@ -174,6 +174,43 @@ void CElmGenList::longpress_timeout_set(Handle<Value> value)
      elm_genlist_longpress_timeout_set(eo, value->IntegerValue());
 }
 
+bool CElmGenList::get_hv_from_object(Handle<Value> val, bool &h, bool &v)
+{
+   HandleScope handle_scope;
+   if (!val->IsObject())
+     return false;
+   Local<Object> obj = val->ToObject();
+   Local<Value> x = obj->Get(String::New("h"));
+   Local<Value> y = obj->Get(String::New("v"));
+   if (!x->IsBoolean() || !y->IsBoolean())
+     return false;
+   h = x->BooleanValue();
+   v = y->BooleanValue();
+   return true;
+}
+
+void CElmGenList::bounce_set(Handle<Value> val)
+{
+   bool h, v;
+
+   if (get_hv_from_object(val, h, v))
+     elm_genlist_bounce_set(eo, h, v);
+}
+
+Handle<Value> CElmGenList::bounce_get() const
+{
+   HandleScope scope;
+
+   Eina_Bool h, v;
+   elm_genlist_bounce_get(eo, &h, &v);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::New("h"), Boolean::New(h));
+   obj->Set(String::New("v"), Boolean::New(v));
+
+   return scope.Close(obj);
+}
+
 PROPERTIES_OF(CElmGenList) =
   {
      PROP_HANDLER(CElmGenList, multi_select),
@@ -182,5 +219,6 @@ PROPERTIES_OF(CElmGenList) =
      PROP_HANDLER(CElmGenList, mode),
      PROP_HANDLER(CElmGenList, block_count),
      PROP_HANDLER(CElmGenList, longpress_timeout),
+     PROP_HANDLER(CElmGenList, bounce),
      { NULL }
   };

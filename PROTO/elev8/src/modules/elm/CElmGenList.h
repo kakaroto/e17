@@ -28,6 +28,7 @@ protected:
    static Eina_Bool state_get(void *, Evas_Object *, const char *);
    static void del(void *data, Evas_Object *);
    static void sel(void *data, Evas_Object *, void *);
+   static bool get_hv_from_object(Handle<Value> val, bool &h, bool &v);
 
 public:
    CElmGenList(CEvasObject *parent, Local<Object> obj);
@@ -52,6 +53,10 @@ public:
 
    virtual Handle<Value>longpress_timeout_get() const;
    virtual void longpress_timeout_set(Handle<Value> value);
+
+   virtual void bounce_set(Handle<Value> val);
+   virtual Handle<Value> bounce_get() const;
+
 };
 
 #endif
