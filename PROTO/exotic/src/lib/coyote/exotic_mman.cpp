@@ -63,13 +63,134 @@ exotic_filesystem_set(void *fs)
    fatfs = (FileSystem *) fs;
 }
 
+static void
+slprintf(char *str, size_t size, const char *format, ...)
+{
+   va_list ap;
+
+   va_start(ap, format);
+
+   vsnprintf(str, size, format, ap);
+   str[size - 1] = 0;
+
+   va_end(ap);
+}
+
+static char *
+_exotic_file_escape(const char *path, int *length)
+{
+   char *result = strdup(path ? path : "");
+   char *p = result;
+   char *q = result;
+   int len;
+
+   if (!result)
+     return NULL;
+
+   if (length) len = *length;
+   else len = strlen(result);
+
+   while ((p = strchr(p, '/')))
+     {
+	// remove double `/'
+	if (p[1] == '/')
+	  {
+	     memmove(p, p + 1, --len - (p - result));
+	     result[len] = '\0';
+	  }
+	else
+	  if (p[1] == '.'
+	      && p[2] == '.')
+	    {
+	       // remove `/../'
+	       if (p[3] == '/')
+		 {
+		    char tmp;
+
+		    len -= p + 3 - q;
+		    memmove(q, p + 3, len - (q - result));
+		    result[len] = '\0';
+		    p = q;
+
+		    /* Update q correctly. */
+		    tmp = *p;
+		    *p = '\0';
+		    q = strrchr(result, '/');
+		    if (!q) q = result;
+		    *p = tmp;
+		 }
+	       else
+		 // remove '/..$'
+		 if (p[3] == '\0')
+		   {
+		      len -= p + 2 - q;
+		      result[len] = '\0';
+		      q = p;
+		      ++p;
+		   }
+		 else
+		   {
+		      q = p;
+		      ++p;
+		   }
+	    }
+	  else
+	    {
+	       q = p;
+	       ++p;
+	    }
+     }
+
+   if (length)
+     *length = len;
+   return result;
+}
+
+#define PATH_MAX 1024
+
+static char *
+exotic_file_path_sanitize(const char *path)
+{
+   char *result = NULL;
+   int len;
+
+   if (!path) return NULL;
+
+   len = strlen(path);
+
+   if (*path != '/')
+     {
+        char cwd[PATH_MAX];
+        char *tmp = NULL;
+
+        tmp = getcwd(cwd, PATH_MAX);
+        if (!tmp) return NULL;
+
+        len += strlen(cwd) + 2;
+        tmp = (char*) alloca(sizeof (char) * len);
+
+        slprintf(tmp, len, "%s/%s", cwd, path);
+
+        result = tmp;
+     }
+
+   return _exotic_file_escape(result ? result : path, &len);
+}
+
 static EXOTIC_FILE *
 _exotic_lookup_from_file(const char *pathname)
 {
    EXOTIC_FILE *tmp = _exotic_files;
+   char *real = exotic_file_path_sanitize(pathname);
 
-   while (tmp && strcmp(tmp->file, pathname))
-     tmp = tmp->next;
+   if (!real) return NULL;
+
+   while (tmp && strcmp(tmp->file, real))
+     {
+        tmp = tmp->next;
+     }
+
+   free(real);
 
    return tmp;
 }
@@ -137,13 +258,21 @@ _exotic_file_new(const char *pathname)
 {
    EXOTIC_FILE *r;
    size_t length;
+   char *real;
 
-   length = strlen(pathname);
+   real = exotic_file_path_sanitize(pathname);
+
+   length = strlen(real);
 
    r = (EXOTIC_FILE *) calloc(1, sizeof (EXOTIC_FILE) + length);
-   if (!r) return NULL;
+   if (!r)
+     {
+        free(real);
+        return NULL;
+     }
 
-   memcpy((void*) r->file, pathname, length + 1);
+   memcpy((void*) r->file, real, length + 1);
+   free(real);
 
    r->next = _exotic_files;
    _exotic_files = r;
