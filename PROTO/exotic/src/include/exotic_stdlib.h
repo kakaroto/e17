@@ -49,4 +49,15 @@ EAPI void *exotic_realloc(void *in, size_t size);
 
 #endif
 
+#ifdef EXOTIC_PROVIDE_FREE
+
+#ifdef free
+# undef free
+#endif
+#define free exotic_free
+
+EAPI void exotic_free(void *in);
+
+#endif
+
 #endif /* EXOTIC_STDLIB_H_ */

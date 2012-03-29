@@ -32,3 +32,11 @@ exotic_realloc(void *in, size_t size)
 
    return realloc(in, size);
 }
+
+#undef free
+
+EAPI void
+exotic_free(void *in)
+{
+   if (in) free(in);
+}
