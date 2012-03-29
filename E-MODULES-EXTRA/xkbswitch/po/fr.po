@@ -6,131 +6,106 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Xkbswitch module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-03-12 06:11+0100\n"
-"PO-Revision-Date: 2012-03-12 08:10+0100\n"
+"POT-Creation-Date: 2012-03-29 06:48+0200\n"
+"PO-Revision-Date: 2012-03-29 11:07+0100\n"
 "Last-Translator: dazibao <dazibao@sfr.fr>\n"
-"Language-Team: français <sansgourou@gmail.com>\n"
+"Language-Team: Enlightenment French Team <sansgourou@gmail.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_config.c:66
+#: src/e_mod_config.c:59
 msgid "XKB Switcher Module"
-msgstr "Module XKB Switcher"
+msgstr "Module Services XKB"
 
-#: src/e_mod_config.c:254
+#: src/e_mod_config.c:244
 msgid "Up"
 msgstr "Monter"
 
-#: src/e_mod_config.c:264
+#: src/e_mod_config.c:254
 msgid "Down"
 msgstr "Descendre"
 
-#: src/e_mod_config.c:274
+#: src/e_mod_config.c:264
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/e_mod_config.c:283
+#: src/e_mod_config.c:273
 msgid "Remove"
 msgstr "Supprimer"
 
-#: src/e_mod_config.c:296
+#: src/e_mod_config.c:286
 msgid "Configurations"
-msgstr "Configurations"
+msgstr "Tables"
 
-#: src/e_mod_config.c:310
+#: src/e_mod_config.c:300
 msgid "Models"
 msgstr "Modèles"
 
-#: src/e_mod_config.c:325
+#: src/e_mod_config.c:314
 msgid "General"
 msgstr "Général"
 
-#: src/e_mod_config.c:329
+#: src/e_mod_config.c:318
 msgid "Label only"
 msgstr "Texte seul"
 
-#: src/e_mod_config.c:374
+#: src/e_mod_config.c:363
 msgid "Options"
 msgstr "Options"
 
-#: src/e_mod_config.c:551
+#: src/e_mod_config.c:540
 msgid "Add New Configuration"
 msgstr "Ajouter une nouvelle configuration"
 
-#: src/e_mod_config.c:563
+#: src/e_mod_config.c:552
 msgid "Available"
 msgstr "Disponibilité"
 
-#: src/e_mod_config.c:573
+#: src/e_mod_config.c:562
 msgid "Model"
 msgstr "Modèle"
 
-#: src/e_mod_config.c:583
+#: src/e_mod_config.c:572
 msgid "Variant"
 msgstr "Variante"
 
-#: src/e_mod_config.c:605
+#: src/e_mod_config.c:594
 msgid "OK"
 msgstr "OK"
 
-#: src/e_mod_config.c:606
+#: src/e_mod_config.c:595
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/e_mod_main.c:109
+#: src/e_mod_main.c:117
 msgid "Input"
 msgstr "Entrée"
 
-#: src/e_mod_main.c:114 src/e_mod_main.c:571
+#: src/e_mod_main.c:121
+#: src/e_mod_main.c:588
 msgid "XKB Switcher"
-msgstr "XKB Switcher"
+msgstr "Services XKB"
 
-#: src/e_mod_main.c:176
-msgid ""
-"XKB Switcher Module Configuration data needed upgrading. Your old "
-"configuration<br> has been wiped and a new set of defaults initialized. "
-"This<br>will happen regularly during development, so don't report a<br>bug. "
-"This simply means the module needs new configuration<br>data by default for "
-"usable functionality that your old<br>configuration simply lacks. This new "
-"set of defaults will fix<br>that by adding it in. You can re-configure "
-"things now to your<br>liking. Sorry for the inconvenience.<br>"
-msgstr ""
-"La configuration du module XKB Switcher a dû être mise à jour. <br>Votre "
-"ancienne configuration a été supprimée et de nouveaux paramètres<br>par "
-"défaut sont en place. Cela risque d'arriver en phase de<br>développement, "
-"aussi est-il inutile de faire un rapport de bogue.<br>Cela signifie "
-"simplement que le module a besoin<br>de cette mise à niveau pour être à "
-"nouveau fonctionnel.<br>Vous pouvez maintenant tout reconfigurer selon votre "
-"goût.<br>Désolé pour la gêne occasionnée.<br>"
+#: src/e_mod_main.c:183
+msgid "XKB Switcher Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "La configuration du module Services XKB a dû être mise à jour. <br>Votre ancienne configuration a été supprimée et de nouveaux paramètres<br>par défaut sont en place. Cela risque d'arriver en phase de<br>développement, aussi est-il inutile de faire un rapport de bogue.<br>Cela signifie simplement que le module a besoin<br>de cette mise à niveau pour être à nouveau fonctionnel.<br>Vous pouvez maintenant tout reconfigurer selon votre goût.<br>Désolé pour la gêne occasionnée.<br>"
 
-#: src/e_mod_main.c:197
-msgid ""
-"Your XKB Switcher Module configuration is NEWER than the module version. "
-"This is very<br>strange. This should not happen unless you downgraded<br>the "
-"module or copied the configuration from a place where<br>a newer version of "
-"the module was running. This is bad and<br>as a precaution your "
-"configuration has been now restored to<br>defaults. Sorry for the "
-"inconvenience.<br>"
-msgstr ""
-"Votre configuration du module XKB Switcher est PLUS RÉCENTE que la "
-"version<br>actuelle du module. C'est vraiment étonnant. Cela ne devrait pas "
-"se produire, à moins<br>que vous n'ayez installé une version antérieure ou "
-"copié la configuration du module<br>depuis une machine sur laquelle une "
-"version plus récente était en cours. Ce n'est<br>pas bon et, par mesure de "
-"précaution, les valeurs par défaut de votre configuration<br>ont été "
-"restaurées.<br>Désolé pour le désagrément.<br>"
+#: src/e_mod_main.c:204
+msgid "Your XKB Switcher Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "Votre configuration du module Services XKB est PLUS RÉCENTE que la version<br>actuelle du module. C'est vraiment étonnant. Cela ne devrait pas se produire, à moins<br>que vous n'ayez installé une version antérieure ou copié la configuration du module<br>depuis une machine sur laquelle une version plus récente était en cours. Ce n'est<br>pas bon et, par mesure de précaution, les valeurs par défaut de votre configuration<br>ont été restaurées.<br>Désolé pour le désagrément.<br>"
 
-#: src/e_mod_main.c:653
+#: src/e_mod_main.c:670
 msgid "XKB Switcher Configuration Updated"
-msgstr "Configuration de XKB Switcher à jour"
+msgstr "Configuration de Services XKB à jour"
 
-#: src/e_mod_main.c:683
+#: src/e_mod_main.c:694
+#: src/e_mod_main.c:754
 msgid "Settings"
 msgstr "Configuration"
 

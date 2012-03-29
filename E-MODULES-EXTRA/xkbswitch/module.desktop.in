@@ -1,9 +1,10 @@
 [Desktop Entry]
 Type=Link
 Name=XKB Switcher
+Name[fr]=Services XKB
 Icon=e-module-xkbswitch
 Comment=Keyboard switcher module for Enlightenment.
 Comment[it]=Modulo per il cambio del layout di tastiera in Enlightenment.
-Comment[fr]=Module pour basculer l'agencement du clavier dans Enlightenment.
+Comment[fr]=Module pour changer l'agencement du clavier dans Enlightenment.
 Comment[pt]=Módulo para trocar o esquema do teclado no Enlightenment
 X-Enlightenment-ModuleType=utils
