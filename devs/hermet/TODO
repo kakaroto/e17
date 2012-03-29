@@ -10,13 +10,13 @@ text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
 
 <Elementary>
-ctxpopup - use elm_list internally
-transit - check the transit to use the ecore_animator functionalities.
 transit - use clip for wipe effect
 naviframe - need to block the style set while transiton is going on
-naviframe - more transition efffect styles. 
-panel - check the elementary_test. looks are crazy.
+naviframe - more transition effect styles.
+naviframe - focus problem (shotgun -> open a couple chat tabs -> switching between them, discomfitor)
+naviframe - visible problem (normal style naviframe -> naviframe in naviframe -> switching items outside naviframe -> the content inner naviframe do not properly hide all the time)
 menu - check the elementary_test. Remove the ERR evas_object_smart_need_recalculate_set()
 hoversel - add horizontal mode style. 
 dayselector - side button image looks not good.
 colorselector - add mode set test to elementary_test
+gengrid - segfault with elm_gengrid_item_sorted_insert func (#984)
