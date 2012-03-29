@@ -33,29 +33,29 @@
 
 int main()
 {
-  HANDLE hDefaultProcessHeap;
-  void *data;
+    HANDLE hDefaultProcessHeap;
+    void *data;
 
-  printf ("process launched...\n");
+    printf ("process launched...\n");
 
-  hDefaultProcessHeap = GetProcessHeap();
-  data = HeapAlloc(hDefaultProcessHeap, 0, 10);
-  if (!data)
+    hDefaultProcessHeap = GetProcessHeap();
+    data = HeapAlloc(hDefaultProcessHeap, 0, 10);
+    if (!data)
     {
-      printf ("no heap alloc...\n");
-      return -1;
+        printf ("no heap alloc...\n");
+        return -1;
     }
-  HeapFree(hDefaultProcessHeap, 0, data);
+    HeapFree(hDefaultProcessHeap, 0, data);
 
-  data = malloc(10);
-  if (!data)
+    data = malloc(10);
+    if (!data)
     {
-      printf ("no malloc...\n");
-      return -1;
+        printf ("no malloc...\n");
+        return -1;
     }
-  free(data);
+    free(data);
 
-  printf ("process finished...\n");
+    printf ("process finished...\n");
 
-  return 0;
+    return 0;
 }

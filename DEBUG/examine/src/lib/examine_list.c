@@ -31,62 +31,43 @@
 Exm_List *
 exm_list_append(Exm_List *l, void *data)
 {
-  Exm_List *iter;
-  Exm_List *n;
+    Exm_List *iter;
+    Exm_List *n;
 
-  if (!data)
+    if (!data)
+        return l;
+
+    n = (Exm_List *)malloc(sizeof(Exm_List));
+    if (!n)
+        return l;
+
+    n->data = data;
+    n->next = NULL;
+
+    if (!l)
+        return n;
+
+    iter = l;
+    while (iter->next)
+        iter = iter->next;
+
+    iter->next = n;
+
     return l;
-
-  n = (Exm_List *)malloc(sizeof(Exm_List));
-  if (!n)
-    return l;
-
-  n->data = data;
-  n->next = NULL;
-
-  if (!l)
-    return n;
-
-  iter = l;
-  while (iter->next)
-    iter = iter->next;
-
-  iter->next = n;
-
-  return l;
 }
 
 void
 exm_list_free(Exm_List *l, void (*free_cb)(void *ptr))
 {
-  Exm_List *iter;
+    Exm_List *iter;
 
-  if (!l)
-    return;
+    if (!l)
+        return;
 
-  iter = l;
-  while (iter)
+    iter = l;
+    while (iter)
     {
         free_cb(iter->data);
         iter = iter->next;
-    }
-}
-
-void
-exm_list_print(Exm_List *l)
-{
-  Exm_List *iter;
-  int i;
-
-  if (!l)
-    return;
-
-  i = 0;
-  iter = l;
-  while (iter)
-    {
-      printf("[%d] %s\n", i, (char *)iter->data);
-      iter = iter->next;
-      i++;
     }
 }

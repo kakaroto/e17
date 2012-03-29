@@ -32,7 +32,6 @@ struct _Exm_List
 
 Exm_List *exm_list_append(Exm_List *l, void *data);
 void      exm_list_free(Exm_List *l, void (*free_cb)(void *ptr));
-void      exm_list_print(Exm_List *l);
 
 
 #endif /* EXAMINE_LIST_H */

@@ -59,7 +59,8 @@ struct _Exm
     char          *dll_fullname;
     int            dll_length;
 
-    struct {
+    struct
+    {
         HANDLE     process1;
         HANDLE     thread;
         HANDLE     process2;
