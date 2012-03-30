@@ -15,7 +15,7 @@ LIBS="$(pkg-config --libs eina evas ecore ecore-evas)"
 link=0
 compile=0
 
-for x in test_{rotate,spin,zoom,zoomspin} ; do
+for x in test_{rotate,spin,zoom,zoomspin,multiobject} ; do
 	if [[ -f ./${x} ]] ; then
 		for x in *.h ; do # src/{bin,include,lib}/*.h ; do
 			if [[ "$x" -nt ./${x} ]] ; then
@@ -37,7 +37,7 @@ done
 [[ $link == 0 ]] && exit 1
 wait
 #echo "$CXX *.o -o efx -L/usr/lib -lc $LIBS"
-for x in test_{rotate,spin,zoom,zoomspin} ; do
+for x in test_{rotate,spin,zoom,zoomspin,multiobject} ; do
 	echo "$CC e*.o ${x}.c -o $x"
 	$CC e*.o ${x}.o -o $x -L/usr/lib -lc $LIBS
 done

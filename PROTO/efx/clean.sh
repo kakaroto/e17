@@ -1,2 +1,2 @@
 rm -f *.{o,a}
-rm -f test_{rotate,spin,zoom,zoomspin}
+rm -f test_{rotate,spin,zoom,zoomspin,multiobject}
