@@ -7,7 +7,6 @@ typedef struct Efx_Zoom_Data
    Ecore_Animator *anim;
    Efx_Effect_Speed speed;
    double ending_zoom;
-   double current_zoom;
    double starting_zoom;
    Evas_Point focus;
    Efx_End_Cb cb;
@@ -62,9 +61,9 @@ _zoom_cb(Efx_Zoom_Data *ezd, double pos)
         x = ezd->focus.x;
         y = ezd->focus.y;
      }
-   ezd->current_zoom = (zoom * (ezd->ending_zoom - ezd->starting_zoom)) + ezd->starting_zoom;
-   //DBG("total: %g || zoom (pos %g): %g || endzoom: %g || startzoom: %g", ezd->current_zoom, zoom, pos, ezd->ending_zoom, ezd->starting_zoom);
-   _zoom(ezd->e, ezd->e->obj, ezd->current_zoom, x, y);
+   ezd->e->current_zoom = (zoom * (ezd->ending_zoom - ezd->starting_zoom)) + ezd->starting_zoom;
+   //DBG("total: %g || zoom (pos %g): %g || endzoom: %g || startzoom: %g", ezd->e->current_zoom, zoom, pos, ezd->ending_zoom, ezd->starting_zoom);
+   _zoom(ezd->e, ezd->e->obj, ezd->e->current_zoom, x, y);
 
    if (pos != 1.0) return EINA_TRUE;
 
@@ -116,7 +115,7 @@ _efx_zoom_calc(void *data, Evas_Map *map)
         x = ezd->focus.x;
         y = ezd->focus.y;
      }
-   evas_map_util_zoom(map, ezd->current_zoom, ezd->current_zoom, x, y);
+   evas_map_util_zoom(map, ezd->e->current_zoom, ezd->e->current_zoom, x, y);
 }
 
 Eina_Bool
@@ -127,7 +126,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
  
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    if (ending_zoom <= 0.0) return EINA_FALSE;
-   if (starting_zoom <= 0.0) return EINA_FALSE;
+   if (starting_zoom < 0.0) return EINA_FALSE;
    if (total_time < 0.0) return EINA_FALSE;
    if (speed > EFX_EFFECT_SPEED_SINUSOIDAL) return EINA_FALSE;
    if (zoom_point)
@@ -136,10 +135,10 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
         if (zoom_point->y < 0) return EINA_FALSE;
      }
 
-   INF("zoom: %p - %g%%->%g%% over %gs: %s", obj, starting_zoom * 100.0, ending_zoom * 100.0, total_time, efx_speed_str[speed]);
    e = eina_hash_find(_efx_object_manager, obj);
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
+   INF("zoom: %p - %g%%->%g%% over %gs: %s", obj, (starting_zoom ?: e->current_zoom) * 100.0, ending_zoom * 100.0, total_time, efx_speed_str[speed]);
    if (!total_time)
      {
         Evas_Coord x, y, w, h;
@@ -164,7 +163,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
         EINA_SAFETY_ON_NULL_RETURN_VAL(e->zoom_data, EINA_FALSE);
         _zoom(e, obj, ending_zoom, x, y);
         ezd = e->zoom_data;
-        ezd->current_zoom = ending_zoom;
+        ezd->e->current_zoom = ending_zoom;
         if (zoom_point)
           ezd->focus.x = zoom_point->x, ezd->focus.y = zoom_point->y;
         else
@@ -181,7 +180,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    ezd->e = e;
    ezd->speed = speed;
    ezd->ending_zoom = ending_zoom;
-   ezd->starting_zoom = ezd->current_zoom = starting_zoom;
+   ezd->starting_zoom = starting_zoom ?: ezd->e->current_zoom;
    if (zoom_point)
      ezd->focus.x = zoom_point->x, ezd->focus.y = zoom_point->y;
    else

@@ -6,6 +6,7 @@ typedef struct Efx_Rotate_Data
    Evas_Map *map;
    Ecore_Animator *anim;
    Efx_Effect_Speed speed;
+   double start_degrees;
    double current_degrees;
    double degrees;
    Efx_End_Cb cb;
@@ -49,8 +50,8 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    double degrees;
 
    degrees = ecore_animator_pos_map(pos, erd->speed, 0, 0);
-   erd->current_degrees = degrees * erd->degrees;
-   _rotate(erd->e, erd->e->obj, erd->current_degrees);
+   erd->e->current_rotate = degrees * erd->degrees + erd->start_degrees;
+   _rotate(erd->e, erd->e->obj, erd->e->current_rotate);
 
    if (pos != 1.0) return EINA_TRUE;
 
@@ -72,6 +73,7 @@ _rotate_stop(Evas_Object *obj, Eina_Bool reset)
      {
         _rotate(e, obj, 0);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, erd);
+        erd->e->current_rotate = 0;
         _obj_del(erd, NULL, NULL, NULL);
         INF("reset rotating object %p", obj);
      }
@@ -89,7 +91,7 @@ _efx_rotate_calc(void *data, Evas_Map *map)
    Efx_Rotate_Data *erd = data;
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(erd->e->obj, &x, &y, &w, &h);
-   evas_map_util_rotate(map, erd->current_degrees, x + (w / 2), y + (h / 2));
+   evas_map_util_rotate(map, erd->e->current_rotate, x + (w / 2), y + (h / 2));
 }
 
 Eina_Bool
@@ -129,8 +131,8 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
           }
         EINA_SAFETY_ON_NULL_RETURN_VAL(e->rotate_data, EINA_FALSE);
         erd = e->rotate_data;
-        erd->current_degrees = degrees;
-        _rotate(e, obj, degrees);
+        e->current_rotate += degrees;
+        _rotate(e, obj, e->current_rotate);
         return EINA_TRUE;
      }
    if (!e->rotate_data)
@@ -143,6 +145,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
    erd->e = e;
    erd->speed = speed;
    erd->degrees = degrees;
+   erd->start_degrees = e->current_rotate;
    erd->cb = cb;
    erd->data = (void*)data;
    if (erd->anim) ecore_animator_del(erd->anim);

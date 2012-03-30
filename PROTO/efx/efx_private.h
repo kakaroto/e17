@@ -34,6 +34,8 @@ typedef struct EFX
    void *spin_data;
    void *rotate_data;
    void *zoom_data;
+   double current_rotate;
+   double current_zoom;
 } EFX;
 
 void _efx_zoom_calc(void *, Evas_Map *map);
