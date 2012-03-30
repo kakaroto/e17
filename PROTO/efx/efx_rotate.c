@@ -128,9 +128,13 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
         _rotate(e, obj, degrees);
         return EINA_TRUE;
      }
-   if (!e->rotate_data) e->rotate_data = calloc(1, sizeof(Efx_Rotate_Data));
+   if (!e->rotate_data)
+     {
+        e->rotate_data = calloc(1, sizeof(Efx_Rotate_Data));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(e->rotate_data, EINA_FALSE);
+        evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e->rotate_data);
+     }
    erd = e->rotate_data;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(erd, EINA_FALSE);
    erd->e = e;
    erd->speed = speed;
    erd->degrees = degrees;
@@ -138,7 +142,6 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
    erd->data = (void*)data;
    if (erd->anim) ecore_animator_del(erd->anim);
    erd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_rotate_cb, erd);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, erd);
    return EINA_TRUE;
 }
 

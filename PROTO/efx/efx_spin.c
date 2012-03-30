@@ -113,14 +113,16 @@ efx_spin_start(Evas_Object *obj, long dps)
         return EINA_TRUE;
      }
    else
-     e->spin_data = esd = calloc(1, sizeof(Efx_Spin_Data));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(esd, EINA_FALSE);
+     {
+        e->spin_data = esd = calloc(1, sizeof(Efx_Spin_Data));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(esd, EINA_FALSE);
+        evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e->spin_data);
+     }
 
    esd->e = e;
    esd->dps = dps;
    INF("spin: %p - %s || %lddps", obj, (dps > 0) ? "clockwise" : "counter-clockwise", dps);
    esd->anim = ecore_animator_add((Ecore_Task_Cb)_spin_cb, esd);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, esd);
    return EINA_TRUE;
    (void)efx_speed_str;
 }

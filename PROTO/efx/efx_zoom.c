@@ -171,9 +171,13 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
           ezd->focus.x = ezd->focus.y = -1;
         return EINA_TRUE;
      }
-   if (!e->zoom_data) e->zoom_data = calloc(1, sizeof(Efx_Zoom_Data));
+   if (!e->zoom_data)
+     {
+        e->zoom_data = calloc(1, sizeof(Efx_Zoom_Data));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(e->zoom_data, EINA_FALSE);
+        evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e->zoom_data);
+     }
    ezd = e->zoom_data;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(ezd, EINA_FALSE);
    ezd->e = e;
    ezd->speed = speed;
    ezd->ending_zoom = ending_zoom;
@@ -186,7 +190,6 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    ezd->data = (void*)data;
    if (ezd->anim) ecore_animator_del(ezd->anim);
    ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_zoom_cb, ezd);
-   evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, ezd);
    return EINA_TRUE;
 }
 
