@@ -67,10 +67,16 @@ _button4(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    zoom++;
 }
 
+static void
+_flip(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   elm_flip_go(data, ELM_FLIP_ROTATE_X_CENTER_AXIS);
+}
+
 int
 main(int argc, char *argv[])
 {
-   Evas_Object *win, *o, *box;
+   Evas_Object *win, *flip, *o, *box;
 
    efx_init();
    eina_log_domain_level_set("efx", EINA_LOG_LEVEL_DBG);
@@ -84,6 +90,8 @@ main(int argc, char *argv[])
 
    o = elm_bg_add(win);
    EXPAND(o);
+   FILL(o);
+   elm_bg_color_set(o, 0, 0, 0);
    elm_win_resize_object_add(win, o);
    evas_object_show(o);
 
@@ -92,6 +100,30 @@ main(int argc, char *argv[])
    FILL(box);
    elm_win_resize_object_add(win, box);
    evas_object_show(box);
+
+   flip = elm_flip_add(win);
+   EXPAND(flip);
+   FILL(flip);
+   elm_box_pack_end(box, flip);
+
+   box = elm_box_add(win);
+   EXPAND(box);
+   FILL(box);
+   elm_object_part_content_set(flip, "front", box);
+   evas_object_show(box);
+
+   o = elm_box_add(win);
+   EXPAND(o);
+   FILL(o);
+   elm_box_pack_end(box, o);
+   evas_object_show(o);
+   box = o;
+
+   o = elm_button_add(win);
+   elm_object_text_set(o, "test");
+   elm_box_pack_end(box, o);
+   evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_flip, flip);
+   evas_object_show(o);
 
    o = elm_button_add(win);
    elm_object_text_set(o, "test1");
@@ -117,6 +149,13 @@ main(int argc, char *argv[])
    evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_button4, box);
    evas_object_show(o);
 
+   o = elm_button_add(win);
+   elm_object_text_set(o, "flip");
+   elm_object_part_content_set(flip, "back", o);
+   evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_flip, flip);
+   evas_object_show(o);
+
+   evas_object_show(flip);
    ecore_main_loop_begin();
    return 0;
 }
