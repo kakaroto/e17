@@ -55,6 +55,7 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    if (pos != 1.0) return EINA_TRUE;
 
    if (erd->cb) erd->cb(erd->data, erd->degrees, erd->e->obj);
+   erd->anim = NULL;
    return EINA_TRUE;
 }
 
@@ -106,7 +107,11 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
    if (e)
      {
         if (e->spin_data) efx_spin_stop(obj);
-        if (e->rotate_data) efx_rotate_stop(obj);
+        if (e->rotate_data)
+          {
+             erd = e->rotate_data;
+             if (erd->anim) efx_rotate_stop(obj);
+          }
      }
    else
      {
