@@ -47,11 +47,11 @@ extern "C" {
 EAPI int efx_init(void);
 EAPI void efx_shutdown(void);
 
-EAPI Eina_Bool efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_Point *center, double total_time, Efx_End_Cb cb, const void *data);
 void efx_rotate_reset(Evas_Object *obj);
 void efx_rotate_stop(Evas_Object *obj);
 
-EAPI Eina_Bool efx_spin_start(Evas_Object *obj, long dps);
+EAPI Eina_Bool efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center);
 EAPI void efx_spin_reset(Evas_Object *obj);
 EAPI void efx_spin_stop(Evas_Object *obj);
 

@@ -42,7 +42,7 @@ static Eina_Bool
 _spin4(void *data)
 {
    printf("starting spin #4\n");
-   efx_spin_start(data, -200);
+   efx_spin_start(data, -200, NULL);
    ecore_timer_add(5.0, _spin, data);
    _zoom(NULL, 1.0, data);
    return EINA_FALSE;
@@ -51,8 +51,10 @@ _spin4(void *data)
 static Eina_Bool
 _spin3(void *data)
 {
+   Evas_Coord px, py;
    printf("starting spin #3\n");
-   efx_spin_start(data, 100);
+   evas_output_size_get(evas_object_evas_get(data), &px, &py);
+   efx_spin_start(data, 100, &(Evas_Point){px / 2, py / 2});
    ecore_timer_add(5.0, _spin4, data);
    return EINA_FALSE;
 }
@@ -62,7 +64,7 @@ _spin2(void *data)
 {
    efx_spin_stop(data);
    printf("starting spin #2\n");
-   efx_spin_start(data, -5);
+   efx_spin_start(data, -5, NULL);
    ecore_timer_add(5.0, _spin3, data);
    return EINA_FALSE;
 }
@@ -71,7 +73,7 @@ static Eina_Bool
 _spin(void *data)
 {
    printf("starting spin\n");
-   efx_spin_start(data, 15);
+   efx_spin_start(data, 15, NULL);
    ecore_timer_add(5.0, _spin2, data);
    return EINA_FALSE;
 }

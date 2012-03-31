@@ -19,10 +19,7 @@ _obj_del(Efx_Zoom_Data *ezd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, vo
    if (ezd->anim) ecore_animator_del(ezd->anim);
    ezd->e->zoom_data = NULL;
    if ((!ezd->e->rotate_data) && (!ezd->e->spin_data))
-     {
-        eina_hash_del_by_key(_efx_object_manager, ezd->e->obj);
-        free(ezd->e);
-     }
+     efx_free(ezd->e, ezd->e->obj);
    free(ezd);
 }
 
@@ -34,7 +31,7 @@ _zoom(EFX *e, Evas_Object *obj, double zoom, Evas_Coord x, Evas_Coord y)
    map = evas_map_new(4);
    evas_map_smooth_set(map, EINA_FALSE);
    evas_map_util_points_populate_from_object(map, obj);
-   //DBG("ZOOM: %g: %d,%d", zoom, x, y);
+   //DBG("ZOOM %p: %g: %d,%d", obj, zoom, x, y);
    evas_map_util_zoom(map, zoom, zoom, x, y);
    if (e->rotate_data) _efx_rotate_calc(e->rotate_data, map);
    else if (e->spin_data) _efx_spin_calc(e->spin_data, map);

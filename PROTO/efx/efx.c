@@ -63,3 +63,28 @@ efx_new(Evas_Object *obj)
    eina_hash_direct_add(_efx_object_manager, obj, e);
    return e;
 }
+
+void
+efx_free(EFX *e, const Evas_Object *obj)
+{
+   eina_hash_del_by_key(_efx_object_manager, obj);
+   free(e->rotate.center);
+   free(e);
+}
+
+Eina_Bool
+efx_rotate_center_init(EFX *e, const Evas_Point *center)
+{
+   if (center)
+     {
+        if (!e->rotate.center) e->rotate.center = malloc(sizeof(Evas_Point));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(e->rotate.center, EINA_FALSE);
+        e->rotate.center->x = center->x, e->rotate.center->y = center->y;
+     }
+   else
+     {
+        free(e->rotate.center);
+        e->rotate.center = NULL;
+     }
+   return EINA_TRUE;
+}

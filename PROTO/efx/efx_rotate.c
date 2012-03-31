@@ -19,25 +19,19 @@ _obj_del(Efx_Rotate_Data *erd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, 
    if (erd->anim) ecore_animator_del(erd->anim);
    erd->e->rotate_data = NULL;
    if ((!erd->e->zoom_data) && (!erd->e->spin_data))
-     {
-        eina_hash_del_by_key(_efx_object_manager, erd->e);
-        free(erd->e);
-     }
+     efx_free(erd->e, erd->e->obj);
    free(erd);
 }
 
 static void
 _rotate(EFX *e, Evas_Object *obj, double degrees)
 {
-   Evas_Coord x, y, w, h;
    Evas_Map *map;
-
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
 
    map = evas_map_new(4);
    evas_map_smooth_set(map, EINA_FALSE);
    evas_map_util_points_populate_from_object(map, obj);
-   evas_map_util_rotate(map, degrees, x + (w / 2), y + (h / 2));
+   efx_rotate_helper(e, map, degrees);
    if (e->zoom_data) _efx_zoom_calc(e->zoom_data, map);
    evas_object_map_set(obj, map);
    evas_object_map_enable_set(obj, EINA_TRUE);
@@ -50,8 +44,8 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    double degrees;
 
    degrees = ecore_animator_pos_map(pos, erd->speed, 0, 0);
-   erd->e->current_rotate = degrees * erd->degrees + erd->start_degrees;
-   _rotate(erd->e, erd->e->obj, erd->e->current_rotate);
+   erd->e->rotate.current = degrees * erd->degrees + erd->start_degrees;
+   _rotate(erd->e, erd->e->obj, erd->e->rotate.current);
 
    if (pos != 1.0) return EINA_TRUE;
 
@@ -73,13 +67,13 @@ _rotate_stop(Evas_Object *obj, Eina_Bool reset)
      {
         _rotate(e, obj, 0);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, erd);
-        erd->e->current_rotate = 0;
+        erd->e->rotate.current = 0;
         _obj_del(erd, NULL, NULL, NULL);
         INF("reset rotating object %p", obj);
      }
    else
      {
-        ecore_animator_del(erd->anim);
+        if (erd->anim) ecore_animator_del(erd->anim);
         erd->anim = NULL;
         INF("stopped rotating object %p", obj);
      }
@@ -91,11 +85,11 @@ _efx_rotate_calc(void *data, Evas_Map *map)
    Efx_Rotate_Data *erd = data;
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(erd->e->obj, &x, &y, &w, &h);
-   evas_map_util_rotate(map, erd->e->current_rotate, x + (w / 2), y + (h / 2));
+   evas_map_util_rotate(map, erd->e->rotate.current, x + (w / 2), y + (h / 2));
 }
 
 Eina_Bool
-efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double total_time, Efx_End_Cb cb, const void *data)
+efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_Point *center, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Rotate_Data *erd;
@@ -121,6 +115,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
          EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
      }
 
+   if (!efx_rotate_center_init(e, center)) return EINA_FALSE;
    INF("rotate: %p - %g degrees over %gs: %s", obj, degrees, total_time, efx_speed_str[speed]);
    if (!total_time)
      {
@@ -131,8 +126,8 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
           }
         EINA_SAFETY_ON_NULL_RETURN_VAL(e->rotate_data, EINA_FALSE);
         erd = e->rotate_data;
-        e->current_rotate += degrees;
-        _rotate(e, obj, e->current_rotate);
+        e->rotate.current += degrees;
+        _rotate(e, obj, e->rotate.current);
         return EINA_TRUE;
      }
    if (!e->rotate_data)
@@ -145,7 +140,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, double tota
    erd->e = e;
    erd->speed = speed;
    erd->degrees = degrees;
-   erd->start_degrees = e->current_rotate;
+   erd->start_degrees = e->rotate.current;
    erd->cb = cb;
    erd->data = (void*)data;
    if (erd->anim) ecore_animator_del(erd->anim);

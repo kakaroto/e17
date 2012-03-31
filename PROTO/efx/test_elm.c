@@ -19,9 +19,9 @@ _button1(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
    static unsigned char spin;
 
    if (spin++ % 2 == 0)
-     efx_spin_start(obj, 75);
+     efx_spin_start(obj, 75, NULL);
    else
-     efx_spin_start(obj, -140);
+     efx_spin_start(obj, -140, NULL);
 }
 
 static void
@@ -50,7 +50,7 @@ _button2(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 static void
 _button3(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
-   efx_rotate(data, EFX_EFFECT_SPEED_ACCELERATE, 270, 3.0, NULL, NULL);
+   efx_rotate(data, EFX_EFFECT_SPEED_ACCELERATE, 270, NULL, 3.0, NULL, NULL);
 }
 
 static void
@@ -68,9 +68,43 @@ _button4(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 }
 
 static void
+_button5(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   static unsigned char spin;
+   Evas_Coord x, y;
+   Evas_Object *win;
+   win = elm_object_top_widget_get(obj);
+   evas_object_geometry_get(win, NULL, NULL, &x, &y);
+
+   if (spin++ % 2 == 0)
+     efx_spin_start(obj, -30, &(Evas_Point){x / 2, y / 2});
+   else
+     efx_spin_start(obj, 30, &(Evas_Point){x / 2, y / 2});
+}
+
+static void
 _flip(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    elm_flip_go(data, ELM_FLIP_ROTATE_X_CENTER_AXIS);
+}
+
+static void
+_bird(void *data)
+{
+   Evas_Coord x, y;
+   Evas_Object *win;
+   win = elm_object_top_widget_get(data);
+   evas_object_geometry_get(win, NULL, NULL, &x, &y);
+   efx_spin_start(data, 30, &(Evas_Point){x / 2, y / 2});
+}
+
+static void
+_flip_start(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   if (elm_flip_front_visible_get(obj))
+     evas_object_hide(data);
+   else
+     evas_object_show(data);
 }
 
 int
@@ -120,7 +154,7 @@ main(int argc, char *argv[])
    box = o;
 
    o = elm_button_add(win);
-   elm_object_text_set(o, "test");
+   elm_object_text_set(o, "flip");
    elm_box_pack_end(box, o);
    evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_flip, flip);
    evas_object_show(o);
@@ -147,6 +181,15 @@ main(int argc, char *argv[])
    elm_object_text_set(o, "test4");
    elm_box_pack_end(box, o);
    evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_button4, box);
+   evas_object_show(o);
+
+   o = elm_button_add(win);
+   elm_object_text_set(o, "I'm a bird!");
+   evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_button5, NULL);
+   evas_object_smart_callback_add(flip, "animate,begin", (Evas_Smart_Cb)_flip_start, o);
+   evas_object_resize(o, 100, 35);
+   evas_object_move(o, 150, 125);
+   ecore_job_add(_bird, o);
    evas_object_show(o);
 
    o = elm_button_add(win);
