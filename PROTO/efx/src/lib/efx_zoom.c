@@ -132,7 +132,6 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
      }
 
    e = evas_object_data_get(obj, "efx-data");
-   printf("found %p\n", e);
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    INF("zoom: %p - %g%%->%g%% over %gs: %s", obj, (starting_zoom ?: e->current_zoom) * 100.0, ending_zoom * 100.0, total_time, efx_speed_str[speed]);
