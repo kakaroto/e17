@@ -17,6 +17,7 @@ efx_new(Evas_Object *obj)
 void
 efx_free(EFX *e)
 {
+   evas_object_data_del(e->obj, "efx-data");
    free(e->rotate.center);
    free(e);
 }
