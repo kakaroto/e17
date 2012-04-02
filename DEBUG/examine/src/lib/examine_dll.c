@@ -326,7 +326,7 @@ exm_modules_get(void)
         memcpy(tmp, name, l);
         exm_hook_instance.modules = exm_list_append(exm_hook_instance.modules, tmp);
     }
-    exm_list_print(exm_hook_instance.modules);
+    /* exm_list_print(exm_hook_instance.modules); */
     return 1;
 }
 
