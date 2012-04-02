@@ -88,7 +88,7 @@ AC_PROG_CC
 
 
 ### Checks for compiler characteristics
-EFL_ATTRIBUTE_UNUSED
+EXM_ATTRIBUTE_UNUSED
 
 EXM_CFLAGS="-ansi -pedantic -Wall -Wextra -Wshadow -Wdeclaration-after-statement -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls"
 
