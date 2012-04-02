@@ -18,7 +18,7 @@ void
 efx_free(EFX *e)
 {
    EFX *ef;
-   if (e->zoom_data || e->rotate_data || e->spin_data) return;
+   if (e->zoom_data || e->rotate_data || e->spin_data || e->move_data) return;
    EINA_LIST_FREE(e->followers, ef)
      efx_free(ef);
    evas_object_data_del(e->obj, "efx-data");
@@ -76,6 +76,22 @@ efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
      }
 
    //_size_debug(e->obj);
+}
+
+void
+efx_maps_apply(EFX *e, Evas_Object *obj, Evas_Map *map, Eina_Bool rotate, Eina_Bool spin, Eina_Bool zoom)
+{
+   Eina_Bool new = EINA_FALSE;
+   if ((!e->rotate_data) && (!e->spin_data) && (!e->zoom_data)) return;
+   if (!map)
+     {
+        map = efx_map_new(e->obj);
+        new = EINA_TRUE;
+     }
+   if (rotate && e->rotate_data) _efx_rotate_calc(e->rotate_data, obj, map);
+   if (spin && e->spin_data) _efx_spin_calc(e->spin_data, obj, map);
+   if (zoom && e->zoom_data) _efx_zoom_calc(e->zoom_data, obj, map);
+   if (new) efx_map_set(obj, map);
 }
 
 EAPI int

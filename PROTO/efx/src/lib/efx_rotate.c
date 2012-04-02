@@ -16,8 +16,7 @@ _obj_del(Efx_Rotate_Data *erd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, 
 {
    if (erd->anim) ecore_animator_del(erd->anim);
    erd->e->rotate_data = NULL;
-   if ((!erd->e->zoom_data) && (!erd->e->spin_data))
-     efx_free(erd->e);
+   efx_free(erd->e);
    free(erd);
 }
 
@@ -33,13 +32,13 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    erd->e->rotate.current = degrees * erd->degrees + erd->start_degrees;
    map = efx_map_new(erd->e->obj);
    efx_rotate_helper(erd->e, erd->e->obj, map, erd->e->rotate.current);
-   if (erd->e->zoom_data) _efx_zoom_calc(erd->e->zoom_data, erd->e->obj, map);
+   efx_maps_apply(erd->e, erd->e->obj, map, EFX_MAPS_APPLY_ZOOM);
    efx_map_set(erd->e->obj, map);
    EINA_LIST_FOREACH(erd->e->followers, l, e)
      {
         map = efx_map_new(e->obj);
         efx_rotate_helper(erd->e, e->obj, map, erd->e->rotate.current);
-        if (erd->e->zoom_data) _efx_zoom_calc(erd->e->zoom_data, e->obj, map);
+        efx_maps_apply(erd->e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
         efx_map_set(e->obj, map);
      }
 
@@ -142,13 +141,13 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
    return EINA_TRUE;
 }
 
-void
+EAPI void
 efx_rotate_reset(Evas_Object *obj)
 {
    _rotate_stop(obj, EINA_FALSE);
 }
 
-void
+EAPI void
 efx_rotate_stop(Evas_Object *obj)
 {
    _rotate_stop(obj, EINA_FALSE);

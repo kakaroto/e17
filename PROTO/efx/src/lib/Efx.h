@@ -51,16 +51,18 @@ EAPI Eina_Bool efx_follow(Evas_Object *obj, Evas_Object *follower);
 EAPI void efx_unfollow(Evas_Object *obj);
 
 EAPI Eina_Bool efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_Point *center, double total_time, Efx_End_Cb cb, const void *data);
-void efx_rotate_reset(Evas_Object *obj);
-void efx_rotate_stop(Evas_Object *obj);
+EAPI void efx_rotate_reset(Evas_Object *obj);
+EAPI void efx_rotate_stop(Evas_Object *obj);
 
 EAPI Eina_Bool efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center);
 EAPI void efx_spin_reset(Evas_Object *obj);
 EAPI void efx_spin_stop(Evas_Object *obj);
 
-Eina_Bool efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double ending_zoom, Evas_Point *zoom_point, double total_time, Efx_End_Cb cb, const void *data);
-void efx_zoom_reset(Evas_Object *obj);
-void efx_zoom_stop(Evas_Object *obj);
+EAPI Eina_Bool efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double ending_zoom, Evas_Point *zoom_point, double total_time, Efx_End_Cb cb, const void *data);
+EAPI void efx_zoom_reset(Evas_Object *obj);
+EAPI void efx_zoom_stop(Evas_Object *obj);
+
+EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time);
 #ifdef __cplusplus
 }
 #endif

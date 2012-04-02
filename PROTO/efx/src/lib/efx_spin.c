@@ -25,8 +25,7 @@ _obj_del(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj, void *e
         e->spin_data = NULL;
         free(esd);
      }
-   if ((!e->zoom_data) && (!e->rotate_data))
-     efx_free(e);
+   efx_free(e);
 }
 
 static Eina_Bool
@@ -42,13 +41,13 @@ _spin_cb(Efx_Spin_Data *esd)
    esd->e->rotate.current = (double)esd->frame * ((double)esd->dps / fps) + esd->start;
    map = efx_map_new(esd->e->obj);
    efx_rotate_helper(esd->e, esd->e->obj, map, esd->e->rotate.current);
-   if (esd->e->zoom_data) _efx_zoom_calc(esd->e->zoom_data, esd->e->obj, map);
+   efx_maps_apply(esd->e, esd->e->obj, map, EFX_MAPS_APPLY_ZOOM);
    efx_map_set(esd->e->obj, map);
    EINA_LIST_FOREACH(esd->e->followers, l, e)
      {
         map = efx_map_new(e->obj);
         efx_rotate_helper(esd->e, e->obj, map, esd->e->rotate.current);
-        if (esd->e->zoom_data) _efx_zoom_calc(esd->e->zoom_data, e->obj, map);
+        efx_maps_apply(esd->e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
         efx_map_set(e->obj, map);
      }
 /*
@@ -143,12 +142,12 @@ efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center)
    (void)efx_speed_str;
 }
 
-void
+EAPI void
 efx_spin_reset(Evas_Object *obj)
 {
    _spin_stop(obj, EINA_TRUE);
 }
-void
+EAPI void
 efx_spin_stop(Evas_Object *obj)
 {
    _spin_stop(obj, EINA_FALSE);

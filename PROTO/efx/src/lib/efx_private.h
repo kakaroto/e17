@@ -36,6 +36,7 @@ struct EFX
    void *spin_data;
    void *rotate_data;
    void *zoom_data;
+   void *move_data;
    struct
      {
         double current;
@@ -49,6 +50,12 @@ void _efx_zoom_calc(void *, Evas_Object *obj, Evas_Map *map);
 void _efx_rotate_calc(void *, Evas_Object *obj, Evas_Map *map);
 void _efx_spin_calc(void *, Evas_Object *obj, Evas_Map *map);
 
+#define EFX_MAPS_APPLY_ALL EINA_TRUE, EINA_TRUE, EINA_TRUE
+#define EFX_MAPS_APPLY_ROTATE EINA_TRUE, EINA_FALSE, EINA_FALSE
+#define EFX_MAPS_APPLY_SPIN EINA_FALSE, EINA_TRUE, EINA_FALSE
+#define EFX_MAPS_APPLY_ZOOM EINA_FALSE, EINA_FALSE, EINA_TRUE
+#define EFX_MAPS_APPLY_ROTATE_SPIN EINA_TRUE, EINA_TRUE, EINA_FALSE
+void efx_maps_apply(EFX *e, Evas_Object *obj, Evas_Map *map, Eina_Bool rotate, Eina_Bool spin, Eina_Bool zoom);
 
 EFX *efx_new(Evas_Object *obj);
 void efx_free(EFX *e);
