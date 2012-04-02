@@ -8,6 +8,7 @@ EXTRA_DIST = efx_private.h
 lib_LTLIBRARIES = libefx.la
 libefx_la_SOURCES = \
 efx.c \
+efx_helpers.c \
 efx_move.c \
 efx_rotate.c \
 efx_spin.c \
