@@ -92,7 +92,7 @@ _efx_spin_calc(void *data, Evas_Map *map)
    efx_rotate_helper(esd->e, map, esd->e->rotate.current);
 }
 
-Eina_Bool
+EAPI Eina_Bool
 efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center)
 {
    EFX *e;

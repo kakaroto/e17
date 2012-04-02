@@ -88,7 +88,7 @@ _efx_rotate_calc(void *data, Evas_Map *map)
    evas_map_util_rotate(map, erd->e->rotate.current, x + (w / 2), y + (h / 2));
 }
 
-Eina_Bool
+EAPI Eina_Bool
 efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_Point *center, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
