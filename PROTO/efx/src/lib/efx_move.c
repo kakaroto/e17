@@ -52,12 +52,12 @@ _move_cb(Efx_Move_Data *emd, double pos)
    emd->current.y += y;
    if (pos != 1.0) return EINA_TRUE;
 
-   //if (emd->cb) emd->cb(emd->data, emd->ending_zoom, emd->e->obj);
+   if (emd->cb) emd->cb(emd->data, &emd->e->map_data, emd->e->obj);
    return EINA_TRUE;
 }
 
 EAPI Eina_Bool
-efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time)
+efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Move_Data *emd;
@@ -93,10 +93,8 @@ efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double
    emd->diff.x = end_point->x - x;
    emd->diff.y = end_point->y - y;
    emd->current.x = emd->current.y = 0;
-/*
    emd->cb = cb;
    emd->data = (void*)data;
-*/
    if (emd->anim) ecore_animator_del(emd->anim);
    ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_move_cb, emd);
    return EINA_TRUE;

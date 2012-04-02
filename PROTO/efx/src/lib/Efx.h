@@ -71,7 +71,7 @@ EAPI Eina_Bool efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double startin
 EAPI void efx_zoom_reset(Evas_Object *obj);
 EAPI void efx_zoom_stop(Evas_Object *obj);
 
-EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time);
+EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
 #endif

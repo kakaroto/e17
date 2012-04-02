@@ -6,44 +6,36 @@
 # define __UNUSED__ __attribute__((unused))
 #endif
 
-static Eina_Bool _move1(Evas_Object *r);
+static void _move1(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *r);
 
-static Eina_Bool
-_move4(Evas_Object *r)
+static void
+_move4(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *r)
 {
-   efx_move(r, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){ 25, 25 }, 3.0);
-   ecore_timer_add(3.0, (Ecore_Task_Cb)_move1, r);
-   return EINA_FALSE;
+   efx_move(r, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){ 25, 25 }, 3.0, _move1, NULL);
 }
 
-static Eina_Bool
-_move3(Evas_Object *r)
+static void
+_move3(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *r)
 {
-   efx_move(r, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 25, 350 }, 3.0);
-   ecore_timer_add(3.0, (Ecore_Task_Cb)_move4, r);
-   return EINA_FALSE;
+   efx_move(r, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 25, 350 }, 3.0, _move4, NULL);
 }
 
-static Eina_Bool
-_move2(Evas_Object *r)
+static void
+_move2(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *r)
 {
-   efx_move(r, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){ 350, 350 }, 3.0);
-   ecore_timer_add(3.0, (Ecore_Task_Cb)_move3, r);
-   return EINA_FALSE;
+   efx_move(r, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){ 350, 350 }, 3.0, _move3, NULL);
 }
 
-static Eina_Bool
-_move1(Evas_Object *r)
+static void
+_move1(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *r)
 {
-   efx_move(r, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 350, 25 }, 3.0);
-   ecore_timer_add(3.0, (Ecore_Task_Cb)_move2, r);
-   return EINA_FALSE;
+   efx_move(r, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 350, 25 }, 3.0, _move2, NULL);
 }
 
 static Eina_Bool
 _start(Evas_Object *r)
 {
-   _move1(r);
+   _move1(NULL, NULL, r);
    return EINA_FALSE;
 }
 
