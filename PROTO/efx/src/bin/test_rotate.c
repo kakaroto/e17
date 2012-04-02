@@ -6,31 +6,31 @@
 # define __UNUSED__ __attribute__((unused))
 #endif
 
-static void _rotate(void *data __UNUSED__, double value __UNUSED__, Evas_Object *obj);
+static void _rotate(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj);
 
 static void
-_rotate4(void *data __UNUSED__, double value __UNUSED__, Evas_Object *obj)
+_rotate4(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
    printf("starting rotate #4\n");
    efx_rotate(obj, EFX_EFFECT_SPEED_SINUSOIDAL, 3600, NULL, 3.0, _rotate, NULL);
 }
 
 static void
-_rotate3(void *data __UNUSED__, double value __UNUSED__, Evas_Object *obj)
+_rotate3(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
    printf("starting rotate #3\n");
    efx_rotate(obj, EFX_EFFECT_SPEED_ACCELERATE, -1080, NULL, 3.0, _rotate4, NULL);
 }
 
 static void
-_rotate2(void *data __UNUSED__, double value __UNUSED__, Evas_Object *obj)
+_rotate2(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
    printf("starting rotate #2\n");
    efx_rotate(obj, EFX_EFFECT_SPEED_DECELERATE, 720, NULL, 3.0, _rotate3, NULL);
 }
 
 static void
-_rotate(void *data __UNUSED__, double value __UNUSED__, Evas_Object *obj)
+_rotate(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
    printf("starting rotate\n");
    efx_rotate(obj, EFX_EFFECT_SPEED_LINEAR, 360, NULL, 3.0, _rotate2, NULL);
@@ -39,7 +39,7 @@ _rotate(void *data __UNUSED__, double value __UNUSED__, Evas_Object *obj)
 static Eina_Bool
 _start(void *data)
 {
-   _rotate(NULL, 0.0, data);
+   _rotate(NULL, NULL, data);
    return EINA_FALSE;
 }
 

@@ -6,41 +6,41 @@
 # define __UNUSED__ __attribute__((unused))
 #endif
 
-static void _zoom(void *data, double value, Evas_Object *obj);
+static void _zoom(void *data, Efx_Map_Data *e, Evas_Object *obj);
 
 static void
-_zoom4(void *data __UNUSED__, double value, Evas_Object *obj)
+_zoom4(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj)
 {
    printf("starting zoom #4\n");
-   efx_zoom(obj, EFX_EFFECT_SPEED_SINUSOIDAL, value, 2.0, NULL, 3.0, _zoom, NULL);
+   efx_zoom(obj, EFX_EFFECT_SPEED_SINUSOIDAL, e->zoom, 2.0, NULL, 3.0, _zoom, NULL);
    efx_zoom(obj, EFX_EFFECT_SPEED_SINUSOIDAL, 0.7, 2.0, NULL, 3.0, _zoom, NULL);
 }
 
 static void
-_zoom3(void *data __UNUSED__, double value, Evas_Object *obj)
+_zoom3(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj)
 {
    printf("starting zoom #3\n");
-   efx_zoom(obj, EFX_EFFECT_SPEED_ACCELERATE, value, 0.1, NULL, 3.0, _zoom4, NULL);
+   efx_zoom(obj, EFX_EFFECT_SPEED_ACCELERATE, e->zoom, 0.1, NULL, 3.0, _zoom4, NULL);
 }
 
 static void
-_zoom2(void *data __UNUSED__, double value, Evas_Object *obj)
+_zoom2(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj)
 {
    printf("starting zoom #2\n");
-   efx_zoom(obj, EFX_EFFECT_SPEED_DECELERATE, value, 0.5, NULL, 3.0, _zoom3, NULL);
+   efx_zoom(obj, EFX_EFFECT_SPEED_DECELERATE, e->zoom, 0.5, NULL, 3.0, _zoom3, NULL);
 }
 
 static void
-_zoom(void *data __UNUSED__, double value, Evas_Object *obj)
+_zoom(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj)
 {
    printf("starting zoom\n");
-   efx_zoom(obj, EFX_EFFECT_SPEED_LINEAR, value, 1.5, NULL, 1.0, _zoom2, NULL);
+   efx_zoom(obj, EFX_EFFECT_SPEED_LINEAR, e ? e->zoom : 1.0, 1.5, NULL, 1.0, _zoom2, NULL);
 }
 
 static Eina_Bool
 _start(void *data)
 {
-   _zoom(NULL, 1.0, data);
+   _zoom(NULL, NULL, data);
    return EINA_FALSE;
 }
 

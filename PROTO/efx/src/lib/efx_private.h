@@ -37,12 +37,7 @@ struct EFX
    void *rotate_data;
    void *zoom_data;
    void *move_data;
-   struct
-     {
-        double current;
-        Evas_Point *center;
-     } rotate;
-   double current_zoom;
+   Efx_Map_Data map_data;
    Eina_List *followers;
 };
 
@@ -62,6 +57,7 @@ void efx_free(EFX *e);
 Evas_Map *efx_map_new(Evas_Object *obj);
 void efx_map_set(Evas_Object *obj, Evas_Map *map);
 Eina_Bool efx_rotate_center_init(EFX *e, const Evas_Point *center);
+Eina_Bool efx_zoom_center_init(EFX *e, const Evas_Point *center);
 void efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees);
 
 static inline void

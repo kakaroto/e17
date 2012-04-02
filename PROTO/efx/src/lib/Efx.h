@@ -30,7 +30,16 @@
 # endif /* ifdef __GNUC__ */
 #endif /* ! _WIN32 */
 
-typedef void (*Efx_End_Cb)(void *data, double value, Evas_Object *obj);
+typedef struct Efx_Map_Data Efx_Map_Data;
+typedef void (*Efx_End_Cb)(void *data, Efx_Map_Data *e, Evas_Object *obj);
+
+struct Efx_Map_Data
+{
+   double rotation;
+   Evas_Point *rotate_center;
+   double zoom;
+   Evas_Point *zoom_center;
+};
 
 typedef enum Efx_Effect_Speed
 {

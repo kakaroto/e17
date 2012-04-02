@@ -22,7 +22,8 @@ efx_free(EFX *e)
    EINA_LIST_FREE(e->followers, ef)
      efx_free(ef);
    evas_object_data_del(e->obj, "efx-data");
-   free(e->rotate.center);
+   free(e->map_data.rotate_center);
+   free(e->map_data.zoom_center);
    free(e);
 }
 
@@ -31,14 +32,31 @@ efx_rotate_center_init(EFX *e, const Evas_Point *center)
 {
    if (center)
      {
-        if (!e->rotate.center) e->rotate.center = malloc(sizeof(Evas_Point));
-        EINA_SAFETY_ON_NULL_RETURN_VAL(e->rotate.center, EINA_FALSE);
-        e->rotate.center->x = center->x, e->rotate.center->y = center->y;
+        if (!e->map_data.rotate_center) e->map_data.rotate_center = malloc(sizeof(Evas_Point));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(e->map_data.rotate_center, EINA_FALSE);
+        e->map_data.rotate_center->x = center->x, e->map_data.rotate_center->y = center->y;
      }
    else
      {
-        free(e->rotate.center);
-        e->rotate.center = NULL;
+        free(e->map_data.rotate_center);
+        e->map_data.rotate_center = NULL;
+     }
+   return EINA_TRUE;
+}
+
+Eina_Bool
+efx_zoom_center_init(EFX *e, const Evas_Point *center)
+{
+   if (center)
+     {
+        if (!e->map_data.zoom_center) e->map_data.zoom_center = malloc(sizeof(Evas_Point));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(e->map_data.zoom_center, EINA_FALSE);
+        e->map_data.zoom_center->x = center->x, e->map_data.zoom_center->y = center->y;
+     }
+   else
+     {
+        free(e->map_data.zoom_center);
+        e->map_data.zoom_center = NULL;
      }
    return EINA_TRUE;
 }
@@ -66,8 +84,8 @@ void
 efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
 {
 
-   if (e->rotate.center)
-     evas_map_util_rotate(map, degrees, e->rotate.center->x, e->rotate.center->y);
+   if (e->map_data.rotate_center)
+     evas_map_util_rotate(map, degrees, e->map_data.rotate_center->x, e->map_data.rotate_center->y);
    else
      {
         Evas_Coord x, y, w, h;

@@ -38,23 +38,23 @@ _spin_cb(Efx_Spin_Data *esd)
 
    fps = 1.0 / ecore_animator_frametime_get();
 
-   esd->e->rotate.current = (double)esd->frame * ((double)esd->dps / fps) + esd->start;
+   esd->e->map_data.rotation = (double)esd->frame * ((double)esd->dps / fps) + esd->start;
    map = efx_map_new(esd->e->obj);
-   efx_rotate_helper(esd->e, esd->e->obj, map, esd->e->rotate.current);
+   efx_rotate_helper(esd->e, esd->e->obj, map, esd->e->map_data.rotation);
    efx_maps_apply(esd->e, esd->e->obj, map, EFX_MAPS_APPLY_ZOOM);
    efx_map_set(esd->e->obj, map);
    EINA_LIST_FOREACH(esd->e->followers, l, e)
      {
         map = efx_map_new(e->obj);
-        efx_rotate_helper(esd->e, e->obj, map, esd->e->rotate.current);
+        efx_rotate_helper(esd->e, e->obj, map, esd->e->map_data.rotation);
         efx_maps_apply(esd->e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
         efx_map_set(e->obj, map);
      }
 /*
    if (esd->frame % (int)fps == 0)
-     DBG("frame: %u || rotate: %g", esd->frame, esd->e->rotate.current);
+     DBG("frame: %u || rotate: %g", esd->frame, esd->e->map_data.rotation);
 */
-   if (!fmod(esd->e->rotate.current, 360.0)) esd->frame = 0;
+   if (!fmod(esd->e->map_data.rotation, 360.0)) esd->frame = 0;
    esd->frame++; /* FIXME: this may overflow */
 
    return EINA_TRUE;
@@ -72,7 +72,7 @@ _spin_stop(Evas_Object *obj, Eina_Bool reset)
    esd->frame = 0;
    if (reset)
      {
-        esd->e->rotate.current = 0;
+        esd->e->map_data.rotation = 0;
         efx_rotate_center_init(esd->e, NULL);
         _spin_cb(esd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, esd);
@@ -92,7 +92,7 @@ void
 _efx_spin_calc(void *data, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Spin_Data *esd = data;
-   efx_rotate_helper(esd->e, obj, map, esd->e->rotate.current);
+   efx_rotate_helper(esd->e, obj, map, esd->e->map_data.rotation);
 }
 
 EAPI Eina_Bool
@@ -113,11 +113,11 @@ efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center)
    if (esd)
      {
         esd->dps = dps;
-        esd->start = esd->e->rotate.current;
+        esd->start = esd->e->map_data.rotation;
         if (!esd->anim) esd->anim = ecore_animator_add((Ecore_Task_Cb)_spin_cb, esd);
-        if (e->rotate.center)
+        if (e->map_data.rotate_center)
           INF("spin modified: %p - %s around (%d,%d) || %lddps", obj, (dps > 0) ? "clockwise" : "counter-clockwise",
-              e->rotate.center->x, e->rotate.center->y, dps);
+              e->map_data.rotate_center->x, e->map_data.rotate_center->y, dps);
         else
           INF("spin modified: %p - %s || %lddps", obj, (dps > 0) ? "clockwise" : "counter-clockwise", dps);
         return EINA_TRUE;
@@ -131,10 +131,10 @@ efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center)
 
    esd->e = e;
    esd->dps = dps;
-   esd->start = e->rotate.current;
-   if (e->rotate.center)
+   esd->start = e->map_data.rotation;
+   if (e->map_data.rotate_center)
      INF("spin: %p - %s around (%d,%d) || %lddps", obj, (dps > 0) ? "clockwise" : "counter-clockwise",
-         e->rotate.center->x, e->rotate.center->y, dps);
+         e->map_data.rotate_center->x, e->map_data.rotate_center->y, dps);
    else
      INF("spin: %p - %s || %lddps", obj, (dps > 0) ? "clockwise" : "counter-clockwise", dps);
    esd->anim = ecore_animator_add((Ecore_Task_Cb)_spin_cb, esd);

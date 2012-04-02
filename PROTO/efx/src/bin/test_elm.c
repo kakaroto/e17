@@ -25,15 +25,15 @@ _button1(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 }
 
 static void
-_zoom_end(void *data __UNUSED__, double value, Evas_Object *obj __UNUSED__)
+_zoom_end(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj __UNUSED__)
 {
-   button_factor = value;
+   button_factor = e->zoom;
 }
 
 static void
-_zoom_end2(void *data __UNUSED__, double value, Evas_Object *obj __UNUSED__)
+_zoom_end2(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj __UNUSED__)
 {
-   box_factor = value;
+   box_factor = e->zoom;
 }
 
 static void
