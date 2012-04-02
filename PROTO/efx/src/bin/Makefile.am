@@ -5,7 +5,7 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/
 AM_CFLAGS = @EFX_DEPS_CFLAGS@ @ECORE_EVAS_CFLAGS@
 
-LDADD = $(top_builddir)/src/lib/libefx.la @ECORE_EVAS_LIBS@
+LDADD = $(top_builddir)/src/lib/libefx.la @ECORE_EVAS_LIBS@ @EFX_DEPS_LIBS@
 
 if BUILD_TESTS
 
