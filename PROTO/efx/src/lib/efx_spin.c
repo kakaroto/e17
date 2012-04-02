@@ -3,7 +3,6 @@
 typedef struct Efx_Spin_Data
 {
    EFX *e;
-   Evas_Map *map;
    Ecore_Animator *anim;
    long dps;
    double start;

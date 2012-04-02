@@ -3,11 +3,9 @@
 typedef struct Efx_Rotate_Data
 {
    EFX *e;
-   Evas_Map *map;
    Ecore_Animator *anim;
    Efx_Effect_Speed speed;
    double start_degrees;
-   double current_degrees;
    double degrees;
    Efx_End_Cb cb;
    void *data;

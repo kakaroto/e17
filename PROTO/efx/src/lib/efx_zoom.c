@@ -3,7 +3,6 @@
 typedef struct Efx_Zoom_Data
 {
    EFX *e;
-   Evas_Map *map;
    Ecore_Animator *anim;
    Efx_Effect_Speed speed;
    double ending_zoom;
