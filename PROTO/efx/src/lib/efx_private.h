@@ -26,7 +26,6 @@ static const char *efx_speed_str[] =
 };
 
 extern int _efx_log_dom;
-extern Eina_Hash *_efx_object_manager;
 
 typedef struct EFX
 {
@@ -48,7 +47,7 @@ void _efx_spin_calc(void *, Evas_Map *map);
 
 
 EFX *efx_new(Evas_Object *obj);
-void efx_free(EFX *e, const Evas_Object *obj);
+void efx_free(EFX *e);
 Eina_Bool efx_rotate_center_init(EFX *e, const Evas_Point *center);
 
 static inline void

@@ -19,7 +19,7 @@ _obj_del(Efx_Rotate_Data *erd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, 
    if (erd->anim) ecore_animator_del(erd->anim);
    erd->e->rotate_data = NULL;
    if ((!erd->e->zoom_data) && (!erd->e->spin_data))
-     efx_free(erd->e, erd->e->obj);
+     efx_free(erd->e);
    free(erd);
 }
 
@@ -60,7 +60,7 @@ _rotate_stop(Evas_Object *obj, Eina_Bool reset)
    EFX *e;
    Efx_Rotate_Data *erd;
 
-   e = eina_hash_find(_efx_object_manager, &obj);
+   e = evas_object_data_get(obj, "efx-data");
    if ((!e) || (!e->rotate_data)) return;
    erd = e->rotate_data;
    if (reset)
@@ -99,7 +99,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
    if (total_time < 0.0) return EINA_FALSE;
    if (speed > EFX_EFFECT_SPEED_SINUSOIDAL) return EINA_FALSE;
    /* can't rotate a spinning object, so we stop it first */
-   e = eina_hash_find(_efx_object_manager, &obj);
+   e = evas_object_data_get(obj, "efx-data");
    if (e)
      {
         if (e->spin_data) efx_spin_stop(obj);
