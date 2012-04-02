@@ -24,43 +24,53 @@ _obj_del(Efx_Zoom_Data *ezd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, vo
 }
 
 static void
+_zoom_center_calc(Efx_Zoom_Data *ezd, Evas_Object *obj, Evas_Coord *x, Evas_Coord *y)
+{
+   Evas_Coord w, h;
+   if (ezd->focus.x == -1)
+     {
+        evas_object_geometry_get(obj, x, y, &w, &h);
+        *x += (w / 2);
+        *y += (h / 2);
+     }
+   else
+     {
+        *x = ezd->focus.x;
+        *y = ezd->focus.y;
+     }
+}
+
+static void
 _zoom(EFX *e, Evas_Object *obj, double zoom, Evas_Coord x, Evas_Coord y)
 {
    Evas_Map *map;
 
-   map = evas_map_new(4);
-   evas_map_smooth_set(map, EINA_FALSE);
-   evas_map_util_points_populate_from_object(map, obj);
+   map = efx_map_new(obj);
    //DBG("ZOOM %p: %g: %d,%d", obj, zoom, x, y);
    evas_map_util_zoom(map, zoom, zoom, x, y);
-   if (e->rotate_data) _efx_rotate_calc(e->rotate_data, map);
-   else if (e->spin_data) _efx_spin_calc(e->spin_data, map);
-   evas_object_map_set(obj, map);
-   evas_object_map_enable_set(obj, EINA_TRUE);
-   evas_map_free(map);
+   if (e->rotate_data) _efx_rotate_calc(e->rotate_data, obj, map);
+   else if (e->spin_data) _efx_spin_calc(e->spin_data, obj, map);
+   efx_map_set(obj, map);
 }
 
 static Eina_Bool
 _zoom_cb(Efx_Zoom_Data *ezd, double pos)
 {
-   Evas_Coord x, y, w, h;
+   Evas_Coord x, y;
    double zoom;
+   Eina_List *l;
+   EFX *e;
 
    zoom = ecore_animator_pos_map(pos, ezd->speed, 0, 0);
-   if (ezd->focus.x == -1)
-     {
-        evas_object_geometry_get(ezd->e->obj, &x, &y, &w, &h);
-        x += (w / 2);
-        y += (h / 2);
-     }
-   else
-     {
-        x = ezd->focus.x;
-        y = ezd->focus.y;
-     }
+   _zoom_center_calc(ezd, ezd->e->obj, &x, &y);
    ezd->e->current_zoom = (zoom * (ezd->ending_zoom - ezd->starting_zoom)) + ezd->starting_zoom;
    //DBG("total: %g || zoom (pos %g): %g || endzoom: %g || startzoom: %g", ezd->e->current_zoom, zoom, pos, ezd->ending_zoom, ezd->starting_zoom);
    _zoom(ezd->e, ezd->e->obj, ezd->e->current_zoom, x, y);
+   EINA_LIST_FOREACH(ezd->e->followers, l, e)
+     {
+        _zoom_center_calc(ezd, e->obj, &x, &y);
+        _zoom(ezd->e, e->obj, ezd->e->current_zoom, x, y);
+     }
 
    if (pos != 1.0) return EINA_TRUE;
 
@@ -97,21 +107,11 @@ _zoom_stop(Evas_Object *obj, Eina_Bool reset)
 }
 
 void
-_efx_zoom_calc(void *data, Evas_Map *map)
+_efx_zoom_calc(void *data, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Zoom_Data *ezd = data;
-   Evas_Coord x, y, w, h;
-   if (ezd->focus.x == -1)
-     {
-        evas_object_geometry_get(ezd->e->obj, &x, &y, &w, &h);
-        x += (w / 2);
-        y += (h / 2);
-     }
-   else
-     {
-        x = ezd->focus.x;
-        y = ezd->focus.y;
-     }
+   Evas_Coord x, y;
+   _zoom_center_calc(ezd, obj, &x, &y);
    evas_map_util_zoom(map, ezd->e->current_zoom, ezd->e->current_zoom, x, y);
 }
 

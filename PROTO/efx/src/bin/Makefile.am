@@ -9,7 +9,7 @@ LDADD = $(top_builddir)/src/lib/libefx.la @ECORE_EVAS_LIBS@ @EFX_DEPS_LIBS@
 
 if BUILD_TESTS
 
-bin_PROGRAMS = test_rotate test_spin test_zoom test_zoomspin test_multiobject
+bin_PROGRAMS = test_rotate test_spin test_zoom test_zoomspin test_multiobject test_follow
 
 if BUILD_TEST_ELM
 
@@ -25,5 +25,6 @@ test_spin_SOURCES = test_spin.c
 test_zoom_SOURCES = test_zoom.c
 test_zoomspin_SOURCES = test_zoomspin.c
 test_multiobject_SOURCES = test_multiobject.c
+test_follow_SOURCES = test_follow.c
 
 endif

@@ -47,6 +47,9 @@ extern "C" {
 EAPI int efx_init(void);
 EAPI void efx_shutdown(void);
 
+EAPI Eina_Bool efx_follow(Evas_Object *obj, Evas_Object *follower);
+EAPI void efx_unfollow(Evas_Object *obj);
+
 EAPI Eina_Bool efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_Point *center, double total_time, Efx_End_Cb cb, const void *data);
 void efx_rotate_reset(Evas_Object *obj);
 void efx_rotate_stop(Evas_Object *obj);

@@ -17,6 +17,10 @@ efx_new(Evas_Object *obj)
 void
 efx_free(EFX *e)
 {
+   EFX *ef;
+   if (e->zoom_data || e->rotate_data || e->spin_data) return;
+   EINA_LIST_FREE(e->followers, ef)
+     efx_free(ef);
    evas_object_data_del(e->obj, "efx-data");
    free(e->rotate.center);
    free(e);
@@ -37,6 +41,41 @@ efx_rotate_center_init(EFX *e, const Evas_Point *center)
         e->rotate.center = NULL;
      }
    return EINA_TRUE;
+}
+
+Evas_Map *
+efx_map_new(Evas_Object *obj)
+{
+   Evas_Map *map;
+
+   map = evas_map_new(4);
+   evas_map_smooth_set(map, EINA_FALSE);
+   evas_map_util_points_populate_from_object(map, obj);
+   return map;
+}
+
+void
+efx_map_set(Evas_Object *obj, Evas_Map *map)
+{
+   evas_object_map_set(obj, map);
+   evas_object_map_enable_set(obj, EINA_TRUE);
+   evas_map_free(map);
+}
+
+void
+efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
+{
+
+   if (e->rotate.center)
+     evas_map_util_rotate(map, degrees, e->rotate.center->x, e->rotate.center->y);
+   else
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(obj, &x, &y, &w, &h);
+        evas_map_util_rotate(map, degrees, x + (w / 2), y + (h / 2));
+     }
+
+   //_size_debug(e->obj);
 }
 
 EAPI int
@@ -66,4 +105,43 @@ efx_shutdown(void)
    _efx_log_dom = -1;
    ecore_evas_shutdown();
    eina_shutdown();
+}
+
+EAPI Eina_Bool
+efx_follow(Evas_Object *obj, Evas_Object *follower)
+{
+   EFX *e, *ef;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(follower, EINA_FALSE);
+
+   e = evas_object_data_get(obj, "efx-data");
+   if (!e) return EINA_FALSE;
+
+   ef = evas_object_data_get(follower, "efx-data");
+   if (ef)
+     {
+        if (ef->owner)
+          ef->owner->followers = eina_list_remove(ef->owner->followers, ef);
+     }
+   else
+     ef = efx_new(follower);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ef, EINA_FALSE);
+
+   ef->owner = e;
+   e->followers = eina_list_append(e->followers, ef);
+   return EINA_FALSE;
+}
+
+EAPI void
+efx_unfollow(Evas_Object *obj)
+{
+   EFX *e;
+
+   EINA_SAFETY_ON_NULL_RETURN(obj);
+   e = evas_object_data_get(obj, "efx-data");
+   if (!e) return;
+   if (!e->owner) return;
+   e->owner->followers = eina_list_remove(e->owner->followers, e);
+   e->owner = NULL;
+   efx_free(e);
 }

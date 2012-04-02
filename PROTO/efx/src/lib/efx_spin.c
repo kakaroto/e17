@@ -35,22 +35,27 @@ _spin_cb(Efx_Spin_Data *esd)
 {
    Evas_Map *map;
    double fps;
+   Eina_List *l;
+   EFX *e;
 
    fps = 1.0 / ecore_animator_frametime_get();
 
-   map = evas_map_new(4);
-   evas_map_smooth_set(map, EINA_FALSE);
-   evas_map_util_points_populate_from_object(map, esd->e->obj);
    esd->e->rotate.current = (double)esd->frame * ((double)esd->dps / fps) + esd->start;
-   efx_rotate_helper(esd->e, map, esd->e->rotate.current);
-   if (esd->e->zoom_data) _efx_zoom_calc(esd->e->zoom_data, map);
+   map = efx_map_new(esd->e->obj);
+   efx_rotate_helper(esd->e, esd->e->obj, map, esd->e->rotate.current);
+   if (esd->e->zoom_data) _efx_zoom_calc(esd->e->zoom_data, esd->e->obj, map);
+   efx_map_set(esd->e->obj, map);
+   EINA_LIST_FOREACH(esd->e->followers, l, e)
+     {
+        map = efx_map_new(e->obj);
+        efx_rotate_helper(esd->e, e->obj, map, esd->e->rotate.current);
+        if (esd->e->zoom_data) _efx_zoom_calc(esd->e->zoom_data, e->obj, map);
+        efx_map_set(e->obj, map);
+     }
 /*
    if (esd->frame % (int)fps == 0)
      DBG("frame: %u || rotate: %g", esd->frame, esd->e->rotate.current);
 */
-   evas_object_map_set(esd->e->obj, map);
-   evas_object_map_enable_set(esd->e->obj, EINA_TRUE);
-   evas_map_free(map);
    if (!fmod(esd->e->rotate.current, 360.0)) esd->frame = 0;
    esd->frame++; /* FIXME: this may overflow */
 
@@ -86,10 +91,10 @@ _spin_stop(Evas_Object *obj, Eina_Bool reset)
 }
 
 void
-_efx_spin_calc(void *data, Evas_Map *map)
+_efx_spin_calc(void *data, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Spin_Data *esd = data;
-   efx_rotate_helper(esd->e, map, esd->e->rotate.current);
+   efx_rotate_helper(esd->e, obj, map, esd->e->rotate.current);
 }
 
 EAPI Eina_Bool
