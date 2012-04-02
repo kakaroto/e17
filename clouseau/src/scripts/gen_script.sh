@@ -5,7 +5,7 @@ if [ \$# -lt 1 ]
 then
    echo "Usage: clouseau <executable> [executable parameters]"
 fi
-LD_PRELOAD="$1/libclouseau.so" \$*
+LD_PRELOAD="$1/libclouseau.so" "\$@"
 ENDOFMESSAGE
 
 chmod +x clouseau
