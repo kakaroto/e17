@@ -60,7 +60,7 @@ _rotate_stop(Evas_Object *obj, Eina_Bool reset)
    EFX *e;
    Efx_Rotate_Data *erd;
 
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if ((!e) || (!e->rotate_data)) return;
    erd = e->rotate_data;
    if (reset)
@@ -99,7 +99,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
    if (total_time < 0.0) return EINA_FALSE;
    if (speed > EFX_EFFECT_SPEED_SINUSOIDAL) return EINA_FALSE;
    /* can't rotate a spinning object, so we stop it first */
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if (e)
      {
         if (e->spin_data) efx_spin_stop(obj);

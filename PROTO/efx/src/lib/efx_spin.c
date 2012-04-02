@@ -17,7 +17,7 @@ _obj_del(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj, void *e
    EFX *e;
    Efx_Spin_Data *esd;
 
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if (!e) return; /* bug? */
    esd = e->spin_data;
    if (esd)
@@ -63,7 +63,7 @@ _spin_stop(Evas_Object *obj, Eina_Bool reset)
    EFX *e;
    Efx_Spin_Data *esd;
 
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if ((!e) || (!e->spin_data)) return;
    esd = e->spin_data;
    esd->frame = 0;
@@ -102,7 +102,7 @@ efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center)
    EINA_SAFETY_ON_FALSE_RETURN_VAL(dps, EINA_FALSE);
    /* must stop rotating if object is in motion */
    efx_rotate_stop(obj);
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    if (!efx_rotate_center_init(e, center)) return EINA_FALSE;

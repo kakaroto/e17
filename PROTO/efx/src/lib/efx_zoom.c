@@ -74,7 +74,7 @@ _zoom_stop(Evas_Object *obj, Eina_Bool reset)
    EFX *e;
    Efx_Zoom_Data *ezd;
 
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if ((!e) || (!e->zoom_data)) return;
    ezd = e->zoom_data;
    if (reset)
@@ -132,7 +132,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
         if (zoom_point->y < 0) return EINA_FALSE;
      }
 
-   e = eina_hash_find(_efx_object_manager, obj);
+   e = eina_hash_find(_efx_object_manager, &obj);
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    INF("zoom: %p - %g%%->%g%% over %gs: %s", obj, (starting_zoom ?: e->current_zoom) * 100.0, ending_zoom * 100.0, total_time, efx_speed_str[speed]);
