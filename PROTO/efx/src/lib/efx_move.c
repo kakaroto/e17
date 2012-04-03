@@ -67,8 +67,6 @@ efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double
    if (!end_point) return EINA_FALSE;
    if (total_time < 0.0) return EINA_FALSE;
    if (speed > EFX_EFFECT_SPEED_SINUSOIDAL) return EINA_FALSE;
-   if (end_point->x < 0) return EINA_FALSE;
-   if (end_point->y < 0) return EINA_FALSE;
 
    e = evas_object_data_get(obj, "efx-data");
    if (!e) e = efx_new(obj);
