@@ -12,6 +12,7 @@ efx_helpers.c \
 efx_move.c \
 efx_rotate.c \
 efx_spin.c \
+efx_util.c \
 efx_zoom.c
 
 libefx_la_LIBADD = @EFX_DEPS_LIBS@

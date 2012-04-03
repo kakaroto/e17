@@ -217,6 +217,8 @@ EAPI void efx_zoom_stop(Evas_Object *obj);
  * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
  */
 EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data);
+
+EAPI void efx_realize(Evas_Object *obj);
 #ifdef __cplusplus
 }
 #endif
