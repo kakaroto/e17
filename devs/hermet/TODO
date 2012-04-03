@@ -1,5 +1,6 @@
 <Evas>
-direct3d - start hurry (vicent torri)
+win32_gl - start hurry (vincent)  
+d3d_gl - start hurry (vincent)
 map - afterimage problem 
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
@@ -8,6 +9,7 @@ line - does not shown on glbackend.
 image  - check the image smooth effect in gl backend
 text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
+rectangle - incorrect clipping on gl backend.
 
 <Elementary>
 transit - use clip for wipe effect
@@ -17,6 +19,5 @@ naviframe - focus problem (shotgun -> open a couple chat tabs -> switching betwe
 naviframe - visible problem (normal style naviframe -> naviframe in naviframe -> switching items outside naviframe -> the content inner naviframe do not properly hide all the time)
 menu - check the elementary_test. Remove the ERR evas_object_smart_need_recalculate_set()
 hoversel - add horizontal mode style. 
-dayselector - side button image looks not good.
-colorselector - add mode set test to elementary_test
 gengrid - segfault with elm_gengrid_item_sorted_insert func (#984)
+widget  - Raw evas objects are not proper as the child member of the widget cause of the color. 
