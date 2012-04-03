@@ -110,6 +110,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
 
    if (!efx_rotate_center_init(e, center)) return EINA_FALSE;
    INF("rotate: %p - %g degrees over %gs: %s", obj, degrees, total_time, efx_speed_str[speed]);
+   evas_object_geometry_get(obj, &e->start.x, &e->start.y, NULL, NULL);
    if (!total_time)
      {
         if (!e->rotate_data)

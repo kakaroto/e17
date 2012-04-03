@@ -9,7 +9,7 @@
 static void
 _move1(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
-   efx_realize(obj);
+   //efx_realize(obj);
 }
 
 static void

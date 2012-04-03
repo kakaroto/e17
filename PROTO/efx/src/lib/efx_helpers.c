@@ -56,16 +56,27 @@ efx_map_set(Evas_Object *obj, Evas_Map *map)
 void
 efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
 {
+   double x, y, xx, yy, r;
+   Evas_Coord ox, oy, w, h;
 
+   evas_object_geometry_get(obj, &ox, &oy, &w, &h);
    if (e->map_data.rotate_center)
-     evas_map_util_rotate(map, degrees, e->map_data.rotate_center->x, e->map_data.rotate_center->y);
-   else
      {
-        Evas_Coord x, y, w, h;
-        evas_object_geometry_get(obj, &x, &y, &w, &h);
-        evas_map_util_rotate(map, degrees, x + (w / 2), y + (h / 2));
-     }
+        r = (degrees * M_PI) / 180.0;
+        x = e->start.x - e->map_data.rotate_center->x;
+        y = e->start.y - e->map_data.rotate_center->y;
 
+        xx = x * cos(r);
+        yy = x * sin(r);
+        x = xx - (y * sin(r));
+        y = yy + (y * cos(r));
+
+        DBG("rotate: %g || %ld,%ld", degrees, lround(x + e->map_data.rotate_center->x - ox), lround(y + e->map_data.rotate_center->y - oy));
+        ox = lround(x + e->map_data.rotate_center->x);
+        oy = lround(y + e->map_data.rotate_center->y);
+        evas_object_move(obj, ox, oy);
+     }
+   evas_map_util_rotate(map, degrees, ox + (w / 2), oy + (h / 2));
    //_size_debug(e->obj);
 }
 

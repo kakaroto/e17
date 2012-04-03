@@ -38,6 +38,7 @@ struct EFX
    void *zoom_data;
    void *move_data;
    Efx_Map_Data map_data;
+   Evas_Point start;
    Eina_List *followers;
 };
 
