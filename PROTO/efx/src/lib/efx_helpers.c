@@ -8,6 +8,8 @@ efx_rotate_center_init(EFX *e, const Evas_Point *center)
         if (!e->map_data.rotate_center) e->map_data.rotate_center = malloc(sizeof(Evas_Point));
         EINA_SAFETY_ON_NULL_RETURN_VAL(e->map_data.rotate_center, EINA_FALSE);
         e->map_data.rotate_center->x = center->x, e->map_data.rotate_center->y = center->y;
+        evas_object_geometry_get(e->obj, &e->start.x, &e->start.y, NULL, NULL);
+        DBG("dist (%d,%d) from center (%d,%d): %g", e->start.x, e->start.y, e->map_data.rotate_center->x, e->map_data.rotate_center->y, sqrt(pow(e->start.x - e->map_data.rotate_center->x, 2) + pow(e->start.y - e->map_data.rotate_center->y, 2)));
      }
    else
      {
@@ -56,7 +58,7 @@ efx_map_set(Evas_Object *obj, Evas_Map *map)
 void
 efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
 {
-   double x, y, xx, yy, r;
+   double x, y, xx, yy, r, norm;
    Evas_Coord ox, oy, w, h;
 
    evas_object_geometry_get(obj, &ox, &oy, &w, &h);
@@ -71,12 +73,13 @@ efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
         x = xx - (y * sin(r));
         y = yy + (y * cos(r));
 
-        DBG("rotate: %g || %ld,%ld", degrees, lround(x + e->map_data.rotate_center->x - ox), lround(y + e->map_data.rotate_center->y - oy));
         ox = lround(x + e->map_data.rotate_center->x);
         oy = lround(y + e->map_data.rotate_center->y);
+        DBG("rotate: %g || %d,%d", degrees, ox, oy);
+        DBG("dist (%d,%d) from center (%d,%d): %g", ox, oy, e->map_data.rotate_center->x, e->map_data.rotate_center->y, sqrt(pow(ox - e->map_data.rotate_center->x, 2) + pow(oy - e->map_data.rotate_center->y, 2)));
         evas_object_move(obj, ox, oy);
      }
-   evas_map_util_rotate(map, degrees, ox + (w / 2), oy + (h / 2));
+//   evas_map_util_rotate(map, degrees, ox + (w / 2), oy + (h / 2));
    //_size_debug(e->obj);
 }
 

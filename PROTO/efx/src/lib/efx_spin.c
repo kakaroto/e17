@@ -109,7 +109,6 @@ efx_spin_start(Evas_Object *obj, long dps, const Evas_Point *center)
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    if (!efx_rotate_center_init(e, center)) return EINA_FALSE;
-   evas_object_geometry_get(obj, &e->start.x, &e->start.y, NULL, NULL);
    esd = e->spin_data;
    if (esd)
      {
