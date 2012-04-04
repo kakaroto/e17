@@ -1,3 +1,5 @@
+Tool for development, to help understand how evas_object are setuped in an app
+
 Usage:
 Just run your wanted ecore/elm based app with "clouseau" e.g:
 clouseau elementary_test
