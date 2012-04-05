@@ -21,7 +21,7 @@
 #include <limits.h>
 #include <Ecore_File.h>
 
-#define ITEM_CLICK(snum, num) else if (!strcmp(emission, "click,"snum) && !strcmp(source, "table:item")) _item_click(num);
+#define ITEM_CLICK(snum, num) else if (!strcmp(emission, "click,"snum)) _item_click(num);
 
 static Evas *evas = NULL;
 static Evas_Object *file_chooser = NULL;
