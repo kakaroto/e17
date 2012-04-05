@@ -29,6 +29,8 @@ static Eet_Data_Descriptor *edd_level = NULL;
  */
 void level_init(void)
 {
+        char filepath[PATH_MAX];
+
         if (edd_level)
         {
                 WARN("level_init already done");
@@ -67,6 +69,10 @@ void level_init(void)
         EET_DATA_DESCRIPTOR_ADD_BASIC(edd_level, Level, "ball.y", ball.y, EET_T_INT);
         EET_DATA_DESCRIPTOR_ADD_BASIC(edd_level, Level, "goal.x", goal.x, EET_T_INT);
         EET_DATA_DESCRIPTOR_ADD_BASIC(edd_level, Level, "goal.y", goal.y, EET_T_INT);
+
+        //create user levels dir
+        sprintf(filepath, "%s/.eskiss/levels", getenv("HOME"));
+        ecore_file_mkpath(filepath);
 }
 
 /**
