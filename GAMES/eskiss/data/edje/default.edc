@@ -854,6 +854,7 @@ collections
                         {
                                 name: "button_clip";
                                 clip_to: "main_clip";
+                                type: RECT;
                                 description
                                 {
                                         state: "default" 0.0;
