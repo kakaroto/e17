@@ -15,7 +15,8 @@ if ($jpeg_match == $jpeg_magic) $ext = ".jpg";
 else if ($png_match == $png_magic) $ext = ".png";
 ############ not a correct matching file - abort
 else {
-        echo "bzzt";
+        header("HTTP/1.1 400 Bad Request");
+        echo "Invalid File Format";
         ob_end_flush();
         die();
 }
