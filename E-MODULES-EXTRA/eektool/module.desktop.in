@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Link
+Name=Eektool
+Icon=e-module-eektool
+X-Enlightenment-ModuleType=utils
+Comment=Redirects the output of a cmd to an edje textblock
+Comment[de]=Stellt die Ausgabe eines Kommandos als Edje Textblock da

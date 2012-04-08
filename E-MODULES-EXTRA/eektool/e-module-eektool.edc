@@ -1,0 +1,95 @@
+collections
+{
+images {
+  image: "icon.png" COMP;
+}
+   group
+     {
+     name: "icon";
+      parts
+        {
+           part
+            {
+                name:         "icon";
+                type:         IMAGE;
+                mouse_events: 1;
+                description
+                {
+                    state:    "default" 0.0;
+                    aspect:   1.0 1.0;
+                    aspect_preference: BOTH;
+                    align:    0.0 0.0;
+                    image {
+                        normal: "icon.png";
+                    }
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                        offset:   0   0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                        offset:   -1  -1;
+                    }
+                }
+             }
+        }
+     }
+
+group {
+name: "sel_group";
+      parts {
+         part {
+name: "rect";
+type: RECT;
+      description {
+state: "default" 0.0;
+color: 0 255 0 255; /* green */
+       rel1.relative: 0.0 0.0;
+       rel2.relative: 1.0 1.0;
+      }
+         }
+      }
+}
+
+   group
+     {
+      name: "modules/eektool/text";
+      max: 500 500;
+      min: 50 50;
+
+      styles {
+         style {
+            name: "style";
+            base: "font=Sans font_size=22 color=#000000 wrap=word";
+            tag:  "br" "\n";
+            tag:  "hilight" "+ font_weight=Bold";
+            tag:  "b" "+ font_weight=Bold";
+            tag:  "tab" "\t";
+         }
+      }
+      parts
+        {
+           part
+            {
+                name:         "command_output";
+                type:         TEXTBLOCK;
+                mouse_events: 1;
+                entry_mode:   NONE;
+                description
+                {
+                    state:    "default" 0.0;
+                    aspect:   1.0 1.0;
+                    aspect_preference: BOTH;
+                    align:    0.0 0.0;
+                    min: 20 20;
+                    text {
+                        style: "style";
+                        min: 1 1;
+                    }
+                }
+             }
+        }
+     }
+}
