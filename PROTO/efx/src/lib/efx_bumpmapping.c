@@ -63,6 +63,7 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
 
    o = ebd->e->obj;
    evas_object_image_size_get(o, &w, &h);
+   if ((!w) || (!h)) return;
 
    d1 = malloc(w * h * sizeof(int));
    memcpy(d1, ebd->img_data, w * h * sizeof(int));
@@ -86,10 +87,11 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
        mpy = mpp;
        mx = w;
        x2 = -x;
-       for (i = w; --i >= 0;)
+       i = w - 1;
+       do
          {
-            double              x1, y1, v;
-            int                 r, g, b, gr;
+            double x1, y1, v;
+            int r, g, b, gr;
 
             gr = A_VAL(mp) * (R_VAL(mp) + G_VAL(mp) + B_VAL(mp));
             y1 = depth * (double)(A_VAL(mpy) * (R_VAL(mpy) +
@@ -115,15 +117,15 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
             b = v * B_VAL(src) * blue;
             if (r < 0)
               r = 0;
-            if (r > 255)
+            else if (r > 255)
               r = 255;
             if (g < 0)
               g = 0;
-            if (g > 255)
+            else if (g > 255)
               g = 255;
             if (b < 0)
               b = 0;
-            if (b > 255)
+            else if (b > 255)
               b = 255;
             R_VAL(src) = r;
             G_VAL(src) = g;
@@ -131,7 +133,7 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
 
             x2++;
             src++;
-         }
+         } while (--i >= 0);
        y2++;
      }
 
