@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-04-08 21:16+0200\n"
+"POT-Creation-Date: 2012-04-09 12:48+0200\n"
 "PO-Revision-Date: 2009-07-04 17:31+0000\n"
 "Last-Translator: Leif Middelschulte <leif.middelschulte@gmail.com>\n"
 "Language-Team: German <de@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:34
+#: src/e_mod_config.c:35
 msgid "Eektool Settings"
 msgstr "Einstellungen Eektool"
 
-#: src/e_mod_config.c:73
+#: src/e_mod_config.c:77
 msgid "Command"
 msgstr "Kommando"
 
-#: src/e_mod_config.c:80
+#: src/e_mod_config.c:84
 #, c-format
 msgid "%4.0f seconds"
 msgstr "%4.0f Sekunden"
 
-#: src/e_mod_main.c:148
+#: src/e_mod_main.c:174
 msgid "Settings"
 msgstr "Einstellungen"

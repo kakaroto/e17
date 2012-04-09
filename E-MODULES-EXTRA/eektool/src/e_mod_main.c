@@ -3,6 +3,7 @@
 #include "e_mod_main.h"
 
 #define MAX_CMD_LINE_LENGTH 4096
+#define LF 10
 
 /* Gadcon Function Protos */
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
@@ -356,29 +357,39 @@ static void
 _eektool_exec_cmd(Instance *inst)
 {
    FILE* pipe;
+   char buf[256], *c;
+   unsigned int len = 0;
 
    if (!inst) return;
 
-   fprintf(stderr, "Eektool: executing \"%s\"\n", inst->ci->cmd);
+   inst->cmd_return_buffer[0] = '\0';
 
    if (!inst->ci->cmd || !strcmp(inst->ci->cmd, "") || !(pipe = popen((const char*)inst->ci->cmd, "r")))
-     goto _exec_cmd_set_null_ret;
+     return;
 
-   /*
-   while(!feof(pipe)) {
-   */
-   if(!fgets(inst->cmd_return_buffer, MAX_CMD_LINE_LENGTH, pipe))
-     goto _exec_cmd_close_set_null_ret;
-   /*
-   }
-   */
+   while (fgets(buf, sizeof(buf), pipe))
+     {
+        if ((strlen(inst->cmd_return_buffer) + strlen(buf) - 1) > MAX_CMD_LINE_LENGTH)
+          break;
+        strcat(inst->cmd_return_buffer, buf);
+        len = strlen(inst->cmd_return_buffer);
+        c = &inst->cmd_return_buffer[len - 1];
+        if (*c == LF)
+          {
+             len += sizeof("<br/>");
+             if (len > MAX_CMD_LINE_LENGTH)
+               break;
+             snprintf(c, (sizeof("<br/>") + 1), "<br/>");
+          }
+     }
+
+   //make sure the string is NULL terminated.
+   inst->cmd_return_buffer[len] = '\0';
+
    pclose(pipe);
    return;
 
-_exec_cmd_close_set_null_ret:
    pclose(pipe);
-_exec_cmd_set_null_ret:
-   inst->cmd_return_buffer[0] = '\0';
 }
 
 void
