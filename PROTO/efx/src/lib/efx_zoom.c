@@ -182,7 +182,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
 EAPI void
 efx_zoom_reset(Evas_Object *obj)
 {
-   _zoom_stop(obj, EINA_FALSE);
+   _zoom_stop(obj, EINA_TRUE);
 }
 
 EAPI void
