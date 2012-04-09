@@ -55,6 +55,7 @@ Evas_Map *efx_map_new(Evas_Object *obj);
 void efx_map_set(Evas_Object *obj, Evas_Map *map);
 Eina_Bool efx_rotate_center_init(EFX *e, const Evas_Point *center);
 Eina_Bool efx_zoom_center_init(EFX *e, const Evas_Point *center);
+Eina_Bool efx_move_center_init(EFX *e, const Evas_Point *center);
 void efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees);
 
 static inline void

@@ -54,6 +54,7 @@ struct Efx_Map_Data
    Evas_Point *rotate_center; /**< The current rotation center for the object */
    double zoom; /**< The current zoom amount of an object */
    Evas_Point *zoom_center; /**< The current zoom center for the object */
+   Evas_Point *move_center; /**< The current move center for the object */
 };
 
 /**
@@ -217,6 +218,7 @@ EAPI void efx_zoom_stop(Evas_Object *obj);
  * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
  */
 EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *center, int degrees, double total_time, Efx_End_Cb cb, const void *data);
 
 /**
  * Attempt to automatically move+resize an object according to its map

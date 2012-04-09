@@ -19,6 +19,7 @@ test_zoomspin \
 test_multiobject \
 test_follow \
 test_move \
+test_move_circle \
 test_path \
 test_bumpmap
 
@@ -38,6 +39,7 @@ test_zoomspin_SOURCES = test_zoomspin.c
 test_multiobject_SOURCES = test_multiobject.c
 test_follow_SOURCES = test_follow.c
 test_move_SOURCES = test_move.c
+test_move_circle_SOURCES = test_move_circle.c
 test_path_SOURCES = test_path.c
 test_bumpmap_SOURCES = test_bumpmap.c
 

@@ -34,6 +34,23 @@ efx_zoom_center_init(EFX *e, const Evas_Point *center)
    return EINA_TRUE;
 }
 
+Eina_Bool
+efx_move_center_init(EFX *e, const Evas_Point *center)
+{
+   if (center)
+     {
+        if (!e->map_data.move_center) e->map_data.move_center = malloc(sizeof(Evas_Point));
+        EINA_SAFETY_ON_NULL_RETURN_VAL(e->map_data.move_center, EINA_FALSE);
+        e->map_data.move_center->x = center->x, e->map_data.move_center->y = center->y;
+     }
+   else
+     {
+        free(e->map_data.move_center);
+        e->map_data.move_center = NULL;
+     }
+   return EINA_TRUE;
+}
+
 Evas_Map *
 efx_map_new(Evas_Object *obj)
 {
