@@ -1,9 +1,8 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <Efx.h>
 #include <Elementary.h>
-
-#ifndef __UNUSED__
-# define __UNUSED__ __attribute__((unused))
-#endif
 
 #define WEIGHT evas_object_size_hint_weight_set
 #define ALIGN evas_object_size_hint_align_set

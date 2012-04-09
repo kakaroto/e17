@@ -1,10 +1,10 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Efx.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
-
-#ifndef __UNUSED__
-# define __UNUSED__ __attribute__((unused))
-#endif
 
 static void _rotate(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj);
 

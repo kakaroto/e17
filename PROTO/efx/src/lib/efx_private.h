@@ -10,10 +10,6 @@
 #include <Ecore_Evas.h>
 #include "Efx.h"
 
-#ifndef __UNUSED__
-# define __UNUSED__ __attribute__((unused))
-#endif
-
 #define DBG(...)            EINA_LOG_DOM_DBG(_efx_log_dom, __VA_ARGS__)
 #define INF(...)            EINA_LOG_DOM_INFO(_efx_log_dom, __VA_ARGS__)
 #define WRN(...)            EINA_LOG_DOM_WARN(_efx_log_dom, __VA_ARGS__)

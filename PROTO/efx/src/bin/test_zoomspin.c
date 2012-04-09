@@ -1,10 +1,10 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Efx.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
-
-#ifndef __UNUSED__
-# define __UNUSED__ __attribute__((unused))
-#endif
 
 static Eina_Bool _spin(void *data);
 static void _zoom(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *obj);
