@@ -218,6 +218,15 @@ EAPI void efx_zoom_stop(Evas_Object *obj);
  */
 EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data);
 
+/**
+ * Attempt to automatically move+resize an object according to its map
+ *
+ * This function attempts to move an object to its mapped position and resize it according
+ * to its mapped zoom. It will, after calculating, reset the zoom and rotat effects on the object,
+ * preserving only its orientation. Ideally, you will not notice any visible change after running this function,
+ * but it should be used carefully, as successive effects on a realized object will likely not behave as intended.
+ * @param obj The object on which to realize effects
+ */
 EAPI void efx_realize(Evas_Object *obj);
 #ifdef __cplusplus
 }
