@@ -33,6 +33,7 @@ struct EFX
    void *rotate_data;
    void *zoom_data;
    void *move_data;
+   void *bumpmap_data;
    Efx_Map_Data map_data;
    Eina_List *followers;
 };

@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src
+SUBDIRS = src data
 EXTRA_DIST = \
   AUTHORS \
   COPYING

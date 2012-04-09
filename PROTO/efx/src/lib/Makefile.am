@@ -13,9 +13,10 @@ efx_move.c \
 efx_rotate.c \
 efx_spin.c \
 efx_util.c \
-efx_zoom.c
+efx_zoom.c \
+efx_bumpmapping.c
 
-libefx_la_LIBADD = @EFX_DEPS_LIBS@
+libefx_la_LIBADD = @EFX_DEPS_LIBS@ -lm
 libefx_la_LDFLAGS = -no-undefined
 libefx_la_CFLAGS = @EFX_DEPS_CFLAGS@
 

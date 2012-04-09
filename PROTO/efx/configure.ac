@@ -70,10 +70,18 @@ fi
 AM_CONDITIONAL([BUILD_TESTS], [test "x$want_tests" != "xno"])
 AM_CONDITIONAL([BUILD_TEST_ELM], [test -n "${ELM_LIBS}"])
 
+m4_ifdef([v_mic],
+   [
+    EFL_COMPILER_FLAG([-Wshadow])
+    EFL_COMPILER_FLAG([-Wall])
+    EFL_COMPILER_FLAG([-Wextra])
+   ])
+
 #EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 # write output
 AC_CONFIG_FILES([
   Makefile
+  data/Makefile
   src/Makefile
   src/lib/Makefile
   src/bin/Makefile

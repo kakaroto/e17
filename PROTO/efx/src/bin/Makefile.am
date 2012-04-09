@@ -2,7 +2,9 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
--I$(top_builddir)/
+-I$(top_builddir) \
+-DPACKAGE_DATADIR=\"$(datadir)/efx/\" \
+-DBUILD_DATADIR=\"$(top_srcdir)/data/\"
 AM_CFLAGS = @EFX_DEPS_CFLAGS@ @ECORE_EVAS_CFLAGS@
 
 LDADD = $(top_builddir)/src/lib/libefx.la @ECORE_EVAS_LIBS@ @EFX_DEPS_LIBS@
@@ -17,7 +19,8 @@ test_zoomspin \
 test_multiobject \
 test_follow \
 test_move \
-test_path
+test_path \
+test_bumpmap
 
 if BUILD_TEST_ELM
 
@@ -36,5 +39,6 @@ test_multiobject_SOURCES = test_multiobject.c
 test_follow_SOURCES = test_follow.c
 test_move_SOURCES = test_move.c
 test_path_SOURCES = test_path.c
+test_bumpmap_SOURCES = test_bumpmap.c
 
 endif

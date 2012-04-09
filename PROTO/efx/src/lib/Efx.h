@@ -228,6 +228,10 @@ EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *en
  * @param obj The object on which to realize effects
  */
 EAPI void efx_realize(Evas_Object *obj);
+
+
+EAPI Eina_Bool efx_bumpmap(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+
 #ifdef __cplusplus
 }
 #endif
