@@ -30,6 +30,7 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
 
    degrees = ecore_animator_pos_map(pos, erd->speed, 0, 0);
    erd->e->map_data.rotation = degrees * erd->degrees + erd->start_degrees;
+   //DBG("erd->e->map_data.rotation=%g,erd->degrees=%g,erd->start_degrees=%g", erd->e->map_data.rotation, erd->degrees, erd->start_degrees);
    map = efx_map_new(erd->e->obj);
    efx_rotate_helper(erd->e, erd->e->obj, map, erd->e->map_data.rotation);
    efx_maps_apply(erd->e, erd->e->obj, map, EFX_MAPS_APPLY_ZOOM);
@@ -144,7 +145,7 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
 EAPI void
 efx_rotate_reset(Evas_Object *obj)
 {
-   _rotate_stop(obj, EINA_FALSE);
+   _rotate_stop(obj, EINA_TRUE);
 }
 
 EAPI void

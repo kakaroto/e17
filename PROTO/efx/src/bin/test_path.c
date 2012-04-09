@@ -6,22 +6,49 @@
 # define __UNUSED__ __attribute__((unused))
 #endif
 
+static void _rotate(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj);
+
+static void
+_move2(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
+{
+   Evas_Coord x;
+
+   evas_object_geometry_get(obj, &x, NULL, NULL, NULL);
+   if (!x)
+     efx_move(obj, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 100, (450 / 2) - (72 / 2) }, 1.0, _rotate, NULL);
+   else
+     efx_move(obj, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 278, (450 / 2) - (72 / 2) }, 1.0, _rotate, NULL);
+}
+
 static void
 _move1(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
-   //efx_realize(obj);
+   Evas_Coord x;
+   efx_realize(obj);
+   evas_object_geometry_get(obj, &x, NULL, NULL, NULL);
+   if (x > 225)
+     efx_move(obj, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){ 450 - 72, (450 / 2) - (72 / 2) }, 1.0, _move2, NULL);
+   else
+     efx_move(obj, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){ 0, (450 / 2) - (72 / 2) }, 1.0, _move2, NULL);
 }
 
 static void
 _rotate(void *data __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
+   Evas_Coord x;
+   evas_object_geometry_get(obj, &x, NULL, NULL, NULL);
+   /* a reset here is necessary to prevent successive rotations from
+    * starting in the wrong place. the alternative, which is more complex but preserves orientation,
+    * would be to use a container box for the movement and set a follow on the object for the rotates
+    */
+   efx_rotate_reset(obj);
    efx_rotate(obj, EFX_EFFECT_SPEED_SINUSOIDAL, 180, &(Evas_Point){ 225, 225 }, 1.0, _move1, NULL);
 }
 
 static Eina_Bool
 _start(void *data)
 {
-   efx_move(data, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){ 100, (450 / 2) - (72 / 2) }, 1.0, _rotate, NULL);
+   _move2(NULL, NULL, data);
    return EINA_FALSE;
 }
 

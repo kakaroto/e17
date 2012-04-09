@@ -97,3 +97,22 @@ efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double
    ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_move_cb, emd);
    return EINA_TRUE;
 }
+
+/*
+   double x, y, xx, yy, r, rad;
+   Evas_Coord ox, oy, w, h;
+
+   evas_object_geometry_get(obj, &ox, &oy, &w, &h);
+   if (e->map_data.rotate_center)
+     {
+        r = (degrees * M_PI) / 180.0;
+        rad = sqrt((e->start.x - e->map_data.rotate_center->x) * (e->start.x - e->map_data.rotate_center->x) +
+                   (e->start.y - e->map_data.rotate_center->y) * (e->start.y - e->map_data.rotate_center->y));
+        x = e->start.x + (rad - (double)w / 2.) * cos(r);
+        y = e->start.y + (rad - (double)h / 2.) * sin(r);
+        ox = lround(x - (double)w / 2.);
+        oy = lround(y - (double)h / 2.);
+        DBG("rotate: %g || %d,%d", degrees, ox, oy);
+        evas_object_move(obj, ox, oy);
+     }
+*/

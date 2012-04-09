@@ -107,6 +107,7 @@ _efx_zoom_calc(void *data, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Zoom_Data *ezd = data;
    Evas_Coord x, y;
+   if (ezd->e->map_data.zoom <= 0) return;
    _zoom_center_calc(ezd, obj, &x, &y);
    evas_map_util_zoom(map, ezd->e->map_data.zoom, ezd->e->map_data.zoom, x, y);
 }

@@ -198,30 +198,6 @@ main(int argc, char *argv[])
    evas_object_smart_callback_add(o, "clicked", (Evas_Smart_Cb)_flip, flip);
    evas_object_show(o);
 
-{
-   Evas_Object *r;
-   r = evas_object_rectangle_add(evas_object_evas_get(win));
-   evas_object_resize(r, 160, 10);
-   evas_object_color_set(r, 255, 0, 0, 255);
-   evas_object_move(r, 250, 245);
-   evas_object_show(r);
-   r = evas_object_rectangle_add(evas_object_evas_get(win));
-   evas_object_resize(r, 160, 10);
-   evas_object_color_set(r, 255, 0, 0, 255);
-   evas_object_move(r, 250 - 160, 245);
-   evas_object_show(r);
-   r = evas_object_rectangle_add(evas_object_evas_get(win));
-   evas_object_resize(r, 10, 160);
-   evas_object_color_set(r, 255, 0, 0, 255);
-   evas_object_move(r, 245, 250 - 160);
-   evas_object_show(r);
-   r = evas_object_rectangle_add(evas_object_evas_get(win));
-   evas_object_resize(r, 10, 160);
-   evas_object_color_set(r, 255, 0, 0, 255);
-   evas_object_move(r, 245, 250);
-   evas_object_show(r);
-}
-
    evas_object_show(flip);
    ecore_main_loop_begin();
    return 0;
