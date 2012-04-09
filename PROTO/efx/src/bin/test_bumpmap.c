@@ -5,16 +5,24 @@
 #include <Efx.h>
 #include <Ecore_Evas.h>
 
-static void _move_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *event_info)
+static void _move_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Mouse_Move *ev)
 {
-   Evas_Event_Mouse_Move *ev;
    int x, y;
 
-   ev = (Evas_Event_Mouse_Move *)event_info;
    x = ev->cur.output.x;
    y = ev->cur.output.y;
 
    efx_bumpmap(obj, x, y);
+}
+
+static void _zoomout_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Mouse_Up *ev)
+{
+   efx_zoom(obj, EFX_EFFECT_SPEED_DECELERATE, 0.0, 1.0, &ev->output, 0.5, NULL, NULL);
+}
+
+static void _zoomin_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Mouse_Down *ev)
+{
+   efx_zoom(obj, EFX_EFFECT_SPEED_ACCELERATE, 1.0, 2.0, &ev->output, 0.5, NULL, NULL);
 }
 
 static void
@@ -60,7 +68,9 @@ main(void)
    evas_object_move(o, 0, 0);
    evas_object_resize(o, w, h);
    evas_object_show(o);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _move_cb, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, (Evas_Object_Event_Cb)_move_cb, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, (Evas_Object_Event_Cb)_zoomin_cb, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, (Evas_Object_Event_Cb)_zoomout_cb, NULL);
 
    ecore_evas_resize(ee, w, h);
    ecore_evas_show(ee);
