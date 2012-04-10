@@ -30,6 +30,25 @@ def Entry_utf8_to_markup(str):
         return None
     return string
 
+class EntryAnchorInfo:
+    def __init__(self):
+        self.name = None
+        self.button = 0
+        self.x = 0
+        self.y = 0
+        self.w = 0
+        self.h = 0
+
+def _entryanchor_conv(long addr):
+    cdef Elm_Entry_Anchor_Info *ei = <Elm_Entry_Anchor_Info *>addr
+    eai = EntryAnchorInfo()
+    eai.name = ei.name
+    eai.button = ei.button
+    eai.x = ei.x
+    eai.y = ei.y
+    eai.w = ei.w
+    eai.h = ei.h
+    return eai
 
 cdef class Entry(Object):
     def __init__(self, c_evas.Object parent):
@@ -91,10 +110,12 @@ cdef class Entry(Object):
         self._callback_del("cursor,changed", func)
 
     def callback_anchor_clicked_add(self, func, *args, **kwargs):
-        self._callback_add("anchor,clicked", func, *args, **kwargs)
+        self._callback_add_full("anchor,clicked", _entryanchor_conv,
+                                       func, *args, **kwargs)
 
     def callback_anchor_clicked_del(self, func):
-        self._callback_del("anchor,clicked", func)
+        self._callback_del_full("anchor,clicked", _entryanchor_conv,
+                                       func)
 
     def callback_activated_add(self, func, *args, **kwargs):
         self._callback_add("activated", func, *args, **kwargs)

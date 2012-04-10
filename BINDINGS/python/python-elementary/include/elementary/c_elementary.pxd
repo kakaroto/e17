@@ -181,7 +181,13 @@ cdef extern from "Elementary.h":
         ELM_BUBBLE_POS_BOTTOM_LEFT
         ELM_BUBBLE_POS_BOTTOM_RIGHT
 
-    ctypedef struct Elm_Entry_Anchor_Info
+    ctypedef struct Elm_Entry_Anchor_Info:
+        char *name
+        int   button
+        evas.c_evas.Evas_Coord x
+        evas.c_evas.Evas_Coord y
+        evas.c_evas.Evas_Coord w
+        evas.c_evas.Evas_Coord h
 
     ctypedef char *(*GenlistItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
     ctypedef evas.c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
