@@ -1,23 +1,31 @@
 #ifndef C_ELM_NAVIFRAME_H
 #define C_ELM_NAVIFRAME_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-using namespace v8;
+namespace elm {
 
-class CElmNaviframe : public CEvasObject {
-   FACTORY(CElmNaviframe)
+class CElmNaviframe : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+   Persistent<Array> stack;
 
 protected:
-   CPropHandler<CElmNaviframe> prop_handler;
+   CElmNaviframe(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmNaviframe();
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   CElmNaviframe(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-   static Handle<Value> pop(const Arguments& args);
+   Handle<Value> pop(const Arguments& args);
+   Handle<Value> push(const Arguments& args);
 
-   static Handle<Value> push(const Arguments& args);
+   friend Handle<Value> CElmObject::New<CElmNaviframe>(const Arguments &args);
 };
+
+}
 
 #endif

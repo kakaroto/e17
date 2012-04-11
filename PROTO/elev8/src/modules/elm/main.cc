@@ -25,6 +25,7 @@ using namespace v8;
 #include "CElmImage.h"
 #include "CElmInwin.h"
 #include "CElmLabel.h"
+#include "CElmNaviframe.h"
 #include "CElmObject.h"
 #include "CElmPane.h"
 #include "CElmPhotocam.h"
@@ -164,6 +165,7 @@ void RegisterModule(Handle<Object> target)
    CElmImage::Initialize(target);
    CElmInwin::Initialize(target);
    CElmLabel::Initialize(target);
+   CElmNaviframe::Initialize(target);
    CElmObject::Initialize(target);
    CElmPane::Initialize(target);
    CElmPhotocam::Initialize(target);
