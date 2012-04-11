@@ -32,8 +32,8 @@ Handle<Value> CElmWindow::conformant_get() const
 
 void CElmWindow::conformant_set(Handle<Value> val)
 {
-   if (val->IsString())
-     elm_win_title_set(eo, *String::Utf8Value(val));
+   if (val->IsBoolean())
+     elm_win_conformant_set(eo, val->BooleanValue());
 }
 
 //---------------------
