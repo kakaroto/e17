@@ -20,6 +20,7 @@ libelm_la_SOURCES = \
 	CElmWindow.cc \
 	CElmBackground.cc \
 	CElmBox.cc \
+	CElmClock.cc \
 	CElmIcon.cc
 
 #	Main.cc \
@@ -29,7 +30,6 @@ libelm_la_SOURCES = \
 #	CElmButton.cc \
 #	CElmCalendar.cc \
 #	CElmCheck.cc \
-#	CElmClock.cc \
 #	CElmColorSelector.cc \
 #	CElmConform.cc \
 #	CElmCtxPopup.cc \

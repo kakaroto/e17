@@ -1,33 +1,45 @@
 #ifndef C_ELM_CLOCK_H
 #define C_ELM_CLOCK_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmClock : public CEvasObject {
-   FACTORY(CElmClock)
+namespace elm {
+
+using namespace v8;
+
+class CElmClock : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmClock> prop_handler;
-   CElmClock(CEvasObject *parent, Local<Object> obj);
+   CElmClock(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   virtual Handle<Value> show_am_pm_get() const;
-   virtual void show_am_pm_set(Handle<Value> val);
+   static void Initialize(Handle<Object> target);
 
-   virtual Handle<Value> show_seconds_get() const;
-   virtual void show_seconds_set(Handle<Value> val);
+   Handle<Value> show_am_pm_get() const;
+   void show_am_pm_set(Handle<Value> val);
 
-   virtual Handle<Value> hour_get() const;
-   virtual Handle<Value> minute_get() const;
-   virtual Handle<Value> second_get() const;
+   Handle<Value> show_seconds_get() const;
+   void show_seconds_set(Handle<Value> val);
 
-   virtual void hour_set(Handle<Value> val);
-   virtual void minute_set(Handle<Value> val);
-   virtual void second_set(Handle<Value> val);
+   Handle<Value> hour_get() const;
+   void hour_set(Handle<Value> val);
 
-   virtual Handle<Value> edit_get() const;
-   virtual void edit_set(Handle<Value> val);
+   Handle<Value> minute_get() const;
+   void minute_set(Handle<Value> val);
+
+   Handle<Value> second_get() const;
+   void second_set(Handle<Value> val);
+
+   Handle<Value> edit_get() const;
+   void edit_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmClock>(const Arguments& args);
 };
 
-#endif
+}
 
+#endif
