@@ -20,6 +20,11 @@ template<class T> inline T *GetObjectFromAccessorInfo(const AccessorInfo &info)
      return static_cast<T *>(info.This()->GetPointerFromInternalField(0));
 }
 
+template<class T> inline T *GetObjectFromArguments(const Arguments &args)
+{
+     return static_cast<T *>(args.This()->GetPointerFromInternalField(0));
+}
+
 inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
 {
    va_list arg;
@@ -27,10 +32,15 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
    va_start(arg, prototype);
    for (const char *name = va_arg(arg, const char *); name; name = va_arg(arg, const char *))
      {
+
         AccessorGetter get_callback = va_arg(arg, AccessorGetter);
         AccessorSetter set_callback = va_arg(arg, AccessorSetter);
-        prototype->SetAccessor(String::NewSymbol(name),
-                               get_callback, set_callback);
+        InvocationCallback inv_callback = va_arg(arg, InvocationCallback);
+
+        if (inv_callback)
+          prototype->Set(String::NewSymbol(name), FunctionTemplate::New(inv_callback));
+        else
+          prototype->SetAccessor(String::NewSymbol(name), get_callback, set_callback);
      }
    va_end(arg);
 }
@@ -45,7 +55,10 @@ extern int log_domain;
 }
 
 #define PROPERTY(name_) \
-   #name_, Callback_## name_ ##_get, Callback_## name_ ##_set
+   #name_, Callback_## name_ ##_get, Callback_## name_ ##_set, NULL
+
+#define METHOD(name_) \
+   #name_, NULL, NULL, Callback_## name_
 
 #define GENERATE_PROPERTY_CALLBACKS(class_,name_) \
    static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
@@ -55,6 +68,12 @@ extern int log_domain;
    static void Callback_## name_ ##_set(Local<String>, Local<Value> value, const AccessorInfo &info) { \
       HandleScope scope; \
       GetObjectFromAccessorInfo<class_>(info)->name_ ##_set(value); \
+   }
+
+#define GENERATE_METHOD_CALLBACKS(class_,name_) \
+   static Handle<Value> Callback_## name_(const Arguments& args) { \
+      HandleScope scope; \
+      return scope.Close(GetObjectFromArguments<class_>(args)->name_(args)); \
    }
 
 #define GENERATE_TEMPLATE_FULL(super_class_,this_class_,...) \
