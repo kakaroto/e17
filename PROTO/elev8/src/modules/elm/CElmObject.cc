@@ -658,6 +658,10 @@ Handle<Value> CElmObject::Realise(const Arguments& args)
         obj->Set(key, val);
      }
 
+   Local<Value> visible = desc->Get(String::NewSymbol("visible"));
+   if (visible->IsUndefined())
+     obj->Set(String::New("visible"), Boolean::New(true));
+
    return obj;
 }
 
