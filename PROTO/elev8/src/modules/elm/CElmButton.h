@@ -1,21 +1,34 @@
 #ifndef C_ELM_BUTTON_H
 #define C_ELM_BUTTON_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmButton : public CEvasObject {
-   FACTORY(CElmButton)
+namespace elm {
+
+class CElmButton : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   Persistent<Value> the_icon;
-   CPropHandler<CElmButton> prop_handler;
-
-   CElmButton(CEvasObject *parent, Local<Object> obj);
-public:
+   CElmButton(Local<Object> _jsObject, CElmObject *parent);
    virtual ~CElmButton();
 
-   virtual Handle<Value> icon_get() const;
-   virtual void icon_set(Handle<Value> value);
+   struct {
+      Persistent<Value> icon;
+   } cached;
+
+   static Handle<FunctionTemplate> GetTemplate();
+
+public:
+   static void Initialize(Handle<Object> val);
+
+   Handle<Value> icon_get() const;
+   void icon_set(Handle<Value> value);
+
+   friend Handle<Value> CElmObject::New<CElmButton>(const Arguments& args);
 };
 
-#endif // C_ELM_BUTTON_H
+}
+
+#endif

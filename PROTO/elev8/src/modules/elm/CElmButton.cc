@@ -1,33 +1,44 @@
+#include "elm.h"
 #include "CElmButton.h"
+#include "CElmIcon.h"
 
-CElmButton::CElmButton(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmButton, icon);
+
+GENERATE_TEMPLATE(CElmButton,
+                  PROPERTY(icon));
+
+CElmButton::CElmButton(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_button_add(parent->GetEvasObject()))
 {
-   eo = elm_button_add(parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmButton::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Button"),
+               GetTemplate()->GetFunction());
 }
 
 CElmButton::~CElmButton()
 {
-   the_icon.Dispose();
+   cached.icon.Dispose();
 }
 
 Handle<Value> CElmButton::icon_get() const
 {
-   return the_icon;
+   return cached.icon;
 }
 
 void CElmButton::icon_set(Handle<Value> value)
 {
-   the_icon.Dispose();
+   cached.icon.Dispose();
 
-   CEvasObject *icon = make_or_get(this, value);
-   elm_object_content_set(eo, icon->get());
-   the_icon = Persistent<Value>::New(icon->get_object());
+   cached.icon = Persistent<Value>::New(Realise(value, jsObject));
+   elm_object_content_set(eo,
+                          GetEvasObjectFromJavascript<CElmIcon>(cached.icon));
 }
 
-PROPERTIES_OF(CElmButton) = {
-   PROP_HANDLER(CElmButton, icon),
-   { NULL }
-};
+}
