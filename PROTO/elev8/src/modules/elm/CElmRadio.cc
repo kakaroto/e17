@@ -53,12 +53,12 @@ void CElmRadio::group_set(Handle<Value> value)
      return;
 
    Handle<Object> js_parent = parent->GetJSObject();
-   Local<Value> groups = js_parent->Get(String::New("elm:radio:groups"));
+   Local<Value> groups = js_parent->GetHiddenValue(String::New("elm::radio::groups"));
 
-   if (groups == Undefined())
+   if (groups.IsEmpty())
      {
         groups = Object::New();
-        js_parent->Set(String::NewSymbol("elm:radio:groups"), groups, ReadOnly);
+        js_parent->SetHiddenValue(String::NewSymbol("elm::radio::groups"), groups);
      }
 
    cached.group.Dispose();
