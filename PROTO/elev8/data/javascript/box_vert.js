@@ -1,12 +1,12 @@
-#!/usr/local/bin/elev8
-
 elm = require('elm');
 
 var EXPAND_BOTH = { x: 1.0, y: 1.0 };
 var FILL_BOTH = { x: -1.0, y: -1.0 };
 
-var my_window = elm.Window({
+var w = elm.Window({
     title: "Horizontal Box example",
+    width: 320,
+    height: 480,
     elements: {
         background: elm.Background({
             weight: EXPAND_BOTH,
@@ -39,3 +39,5 @@ var my_window = elm.Window({
         })
     }
 });
+
+var e = elm.realise(w);
