@@ -15,6 +15,7 @@ private:
 protected:
    CElmBubble(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
+   virtual ~CElmBubble();
 
    struct {
       Persistent<Value> content;

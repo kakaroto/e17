@@ -24,6 +24,11 @@ void CElmBubble::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Bubble"), GetTemplate()->GetFunction());
 }
 
+CElmBubble::~CElmBubble()
+{
+   cached.content.Dispose();
+}
+
 Handle<Value> CElmBubble::text_part_get() const
 {
    return Undefined();
@@ -31,7 +36,6 @@ Handle<Value> CElmBubble::text_part_get() const
 
 void CElmBubble::text_part_set(Handle<Value> val)
 {
-   HandleScope scope;
    if (!val->IsObject()) {
         ELM_ERR("%s: value is not an object!", __FUNCTION__);
         return;
@@ -71,7 +75,6 @@ Handle<Value> CElmBubble::content_get() const
 
 void CElmBubble::content_set(Handle<Value> val)
 {
-   HandleScope scope;
    cached.content.Dispose();
    cached.content = Persistent<Value>::New(Realise(val, jsObject));
    elm_object_content_set(eo, GetEvasObjectFromJavascript(cached.content));
