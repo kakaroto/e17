@@ -1,13 +1,49 @@
+#include "elm.h"
 #include "CElmGenList.h"
 
-CElmGenList::CElmGenList(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, homogeneous);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, decorate_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, tree_effect);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, highlight_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, vertical_bounce);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, horizontal_bounce);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, longpress_timeout);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, block_count);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, select_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, mode);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, reorder_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
+GENERATE_METHOD_CALLBACKS(CElmGenList, append);
+GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
+
+GENERATE_TEMPLATE(CElmGenList,
+                  PROPERTY(homogeneous),
+                  PROPERTY(decorate_mode),
+                  PROPERTY(tree_effect),
+                  PROPERTY(highlight_mode),
+                  PROPERTY(horizontal_bounce),
+                  PROPERTY(vertical_bounce),
+                  PROPERTY(longpress_timeout),
+                  PROPERTY(block_count),
+                  PROPERTY(select_mode),
+                  PROPERTY(mode),
+                  PROPERTY(reorder_mode),
+                  PROPERTY(multi_select),
+                  METHOD(append),
+                  METHOD(clear));
+
+CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
 {
-   eo = elm_genlist_add(parent->top_widget_get());
-   construct(eo, obj);
-   get_object()->Set(String::New("append"), FunctionTemplate::New(append)->GetFunction());
-   get_object()->Set(String::New("clear"), FunctionTemplate::New(clear)->GetFunction());
+}
+
+void CElmGenList::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Genlist"), GetTemplate()->GetFunction());
 }
 
 /* GenList functions that are going to do the heavy weight lifting */
@@ -40,8 +76,11 @@ Evas_Object *CElmGenList::content_get(void *data, Evas_Object *, const char *par
    if (!retval->IsObject())
      return NULL;
 
-   CEvasObject *content = make_or_get(itc->genlist, retval->ToObject());
-   return content ? content->get() : NULL;
+   /* FIXME: This leaks -- properly handle these resources. */
+   Handle<Value> content = Realise(retval->ToObject(), itc->genlist->GetJSObject());
+   if (content.IsEmpty())
+     return NULL;
+   return GetEvasObjectFromJavascript(content);
 }
 
 Eina_Bool CElmGenList::state_get(void *, Evas_Object *, const char *)
@@ -67,20 +106,15 @@ void CElmGenList::sel(void *data, Evas_Object *, void *)
    fn->Call(temp, 0, 0);
 }
 
-Handle<Value> CElmGenList::clear(const Arguments& args)
+Handle<Value> CElmGenList::clear(const Arguments&)
 {
-   CEvasObject *self = eo_from_info(args.This());
-
-   elm_genlist_clear(static_cast<CElmGenList *>(self)->get());
-
+   /* FIXME: Properly dispose of resources */
+   elm_genlist_clear(eo);
    return Undefined();
 }
 
 Handle<Value> CElmGenList::append(const Arguments& args)
 {
-   CEvasObject *self = eo_from_info(args.This());
-   CElmGenList *genlist = static_cast<CElmGenList *>(self);
-
    if (!args[0]->IsObject())
      return Undefined();
 
@@ -100,8 +134,8 @@ Handle<Value> CElmGenList::append(const Arguments& args)
    itc->eitc.func.content_get = content_get;
    itc->eitc.func.state_get = state_get;
    itc->eitc.func.del = del;
-   itc->genlist = genlist;
-   elm_genlist_item_append(genlist->get(), &itc->eitc, itc, NULL,
+   itc->genlist = this;
+   elm_genlist_item_append(eo, &itc->eitc, itc, NULL,
                            ELM_GENLIST_ITEM_NONE,
                            sel, itc);
 
@@ -132,13 +166,28 @@ void CElmGenList::reorder_mode_set(Handle<Value> value)
 
 Handle<Value> CElmGenList::mode_get() const
 {
-   return Number::New(elm_genlist_mode_get(eo));
+   switch (elm_genlist_mode_get(eo))
+     {
+        case ELM_LIST_COMPRESS: return String::NewSymbol("compress");
+        case ELM_LIST_SCROLL: return String::NewSymbol("scroll");
+        case ELM_LIST_LIMIT: return String::NewSymbol("limit");
+        case ELM_LIST_EXPAND: return String::NewSymbol("expand");
+        default: return String::NewSymbol("unknown");
+     }
 }
 
 void CElmGenList::mode_set(Handle<Value> value)
 {
-   if (value->IsNumber())
-     elm_genlist_mode_set(eo, (Elm_List_Mode)value->ToNumber()->Value());
+   String::Utf8Value mode_string(value->ToString());
+
+   if (!strcmp(*mode_string, "compress"))
+     elm_genlist_mode_set(eo, ELM_LIST_COMPRESS);
+   else if (!strcmp(*mode_string, "scroll"))
+     elm_genlist_mode_set(eo, ELM_LIST_SCROLL);
+   else if (!strcmp(*mode_string, "limit"))
+     elm_genlist_mode_set(eo, ELM_LIST_LIMIT);
+   else if (!strcmp(*mode_string, "expand"))
+     elm_genlist_mode_set(eo, ELM_LIST_EXPAND);
 }
 
 Handle<Value> CElmGenList::select_mode_get() const
@@ -174,41 +223,32 @@ void CElmGenList::longpress_timeout_set(Handle<Value> value)
      elm_genlist_longpress_timeout_set(eo, value->IntegerValue());
 }
 
-bool CElmGenList::get_hv_from_object(Handle<Value> val, bool &h, bool &v)
+void CElmGenList::vertical_bounce_set(Handle<Value> val)
 {
-   HandleScope handle_scope;
-   if (!val->IsObject())
-     return false;
-   Local<Object> obj = val->ToObject();
-   Local<Value> x = obj->Get(String::New("h"));
-   Local<Value> y = obj->Get(String::New("v"));
-   if (!x->IsBoolean() || !y->IsBoolean())
-     return false;
-   h = x->BooleanValue();
-   v = y->BooleanValue();
-   return true;
+   Eina_Bool h;
+   elm_genlist_bounce_get(eo, &h, NULL);
+   elm_genlist_bounce_set(eo, h, val->IsBoolean() && val->BooleanValue());
 }
 
-void CElmGenList::bounce_set(Handle<Value> val)
+Handle<Value> CElmGenList::vertical_bounce_get() const
 {
-   bool h, v;
-
-   if (get_hv_from_object(val, h, v))
-     elm_genlist_bounce_set(eo, h, v);
+   Eina_Bool v;
+   elm_genlist_bounce_get(eo, NULL, &v);
+   return Boolean::New(v);
 }
 
-Handle<Value> CElmGenList::bounce_get() const
+void CElmGenList::horizontal_bounce_set(Handle<Value> val)
 {
-   HandleScope scope;
+   Eina_Bool v;
+   elm_genlist_bounce_get(eo, NULL, &v);
+   elm_genlist_bounce_set(eo, val->IsBoolean() && val->BooleanValue(), v);
+}
 
-   Eina_Bool h, v;
-   elm_genlist_bounce_get(eo, &h, &v);
-
-   Local<Object> obj = Object::New();
-   obj->Set(String::New("h"), Boolean::New(h));
-   obj->Set(String::New("v"), Boolean::New(v));
-
-   return scope.Close(obj);
+Handle<Value> CElmGenList::horizontal_bounce_get() const
+{
+   Eina_Bool h;
+   elm_genlist_bounce_get(eo, &h, NULL);
+   return Boolean::New(h);
 }
 
 Handle<Value> CElmGenList::highlight_mode_get() const
@@ -222,12 +262,12 @@ void CElmGenList::highlight_mode_set(Handle<Value> value)
      elm_genlist_highlight_mode_set(eo, value->BooleanValue());
 }
 
-Handle<Value> CElmGenList::tree_effect_enabled_get() const
+Handle<Value> CElmGenList::tree_effect_get() const
 {
    return Boolean::New(elm_genlist_tree_effect_enabled_get(eo));
 }
 
-void CElmGenList::tree_effect_enabled_set(Handle<Value> value)
+void CElmGenList::tree_effect_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_genlist_tree_effect_enabled_set(eo, value->BooleanValue());
@@ -255,18 +295,4 @@ void CElmGenList::homogeneous_set(Handle<Value> value)
      elm_genlist_homogeneous_set(eo, value->IntegerValue());
 }
 
-PROPERTIES_OF(CElmGenList) =
-  {
-     PROP_HANDLER(CElmGenList, multi_select),
-     PROP_HANDLER(CElmGenList, select_mode),
-     PROP_HANDLER(CElmGenList, reorder_mode),
-     PROP_HANDLER(CElmGenList, mode),
-     PROP_HANDLER(CElmGenList, block_count),
-     PROP_HANDLER(CElmGenList, longpress_timeout),
-     PROP_HANDLER(CElmGenList, bounce),
-     PROP_HANDLER(CElmGenList, highlight_mode),
-     PROP_HANDLER(CElmGenList, tree_effect_enabled),
-     PROP_HANDLER(CElmGenList, decorate_mode),
-     PROP_HANDLER(CElmGenList, homogeneous),
-     { NULL }
-  };
+}

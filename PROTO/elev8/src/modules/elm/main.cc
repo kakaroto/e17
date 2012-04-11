@@ -20,6 +20,7 @@ using namespace v8;
 #include "CElmFileSelectorButton.h"
 #include "CElmFileSelectorEntry.h"
 #include "CElmFlip.h"
+#include "CElmGenList.h"
 #include "CElmHover.h"
 #include "CElmIcon.h"
 #include "CElmImage.h"
@@ -160,6 +161,7 @@ void RegisterModule(Handle<Object> target)
    CElmFileSelectorButton::Initialize(target);
    CElmFileSelectorEntry::Initialize(target);
    CElmFlip::Initialize(target);
+   CElmGenList::Initialize(target);
    CElmHover::Initialize(target);
    CElmIcon::Initialize(target);
    CElmImage::Initialize(target);

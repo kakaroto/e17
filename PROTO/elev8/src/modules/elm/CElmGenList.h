@@ -1,14 +1,17 @@
 #ifndef C_ELM_GEN_LIST_H
 #define C_ELM_GEN_LIST_H
 
-#include <string>
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmGenList : public CEvasObject {
-   FACTORY(CElmGenList)
+namespace elm {
+
+class CElmGenList : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmGenList> prop_handler;
+   CElmGenList(Local<Object> _jsObject, CElmObject *parent);
 
    struct GenListItemClass {
        Persistent<Value> type;
@@ -18,7 +21,7 @@ protected:
        Persistent<Value> on_state;
        Persistent<Value> on_delete;
        Persistent<Value> on_select;
-       std::string item_style;
+       const char *item_style;
        Elm_Genlist_Item_Class eitc;
        CElmGenList *genlist;
    };
@@ -28,48 +31,55 @@ protected:
    static Eina_Bool state_get(void *, Evas_Object *, const char *);
    static void del(void *data, Evas_Object *);
    static void sel(void *data, Evas_Object *, void *);
-   static bool get_hv_from_object(Handle<Value> val, bool &h, bool &v);
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   CElmGenList(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-   static Handle<Value> clear(const Arguments& args);
-   static Handle<Value> append(const Arguments& args);
+   Handle<Value> clear(const Arguments& args);
+   Handle<Value> append(const Arguments& args);
 
-   virtual Handle<Value> multi_select_get() const;
-   virtual void multi_select_set(Handle<Value> value);
+   Handle<Value> multi_select_get() const;
+   void multi_select_set(Handle<Value> value);
 
-   virtual Handle<Value> reorder_mode_get() const;
-   virtual void reorder_mode_set(Handle<Value> value);
+   Handle<Value> reorder_mode_get() const;
+   void reorder_mode_set(Handle<Value> value);
 
-   virtual Handle<Value> mode_get() const;
-   virtual void mode_set(Handle<Value> value);
+   Handle<Value> mode_get() const;
+   void mode_set(Handle<Value> value);
 
-   virtual Handle<Value> select_mode_get() const;
-   virtual void select_mode_set(Handle<Value> value);
+   Handle<Value> select_mode_get() const;
+   void select_mode_set(Handle<Value> value);
 
-   virtual Handle<Value> block_count_get() const;
-   virtual void block_count_set(Handle<Value> value);
+   Handle<Value> block_count_get() const;
+   void block_count_set(Handle<Value> value);
 
-   virtual Handle<Value>longpress_timeout_get() const;
-   virtual void longpress_timeout_set(Handle<Value> value);
+   Handle<Value>longpress_timeout_get() const;
+   void longpress_timeout_set(Handle<Value> value);
 
-   virtual void bounce_set(Handle<Value> val);
-   virtual Handle<Value> bounce_get() const;
+   void vertical_bounce_set(Handle<Value> val);
+   Handle<Value> vertical_bounce_get() const;
 
-   virtual Handle<Value> highlight_mode_get() const;
-   virtual void highlight_mode_set(Handle<Value> value);
+   void horizontal_bounce_set(Handle<Value> val);
+   Handle<Value> horizontal_bounce_get() const;
 
-   virtual Handle<Value> tree_effect_enabled_get() const;
-   virtual void tree_effect_enabled_set(Handle<Value> value);
+   Handle<Value> highlight_mode_get() const;
+   void highlight_mode_set(Handle<Value> value);
 
-   virtual Handle<Value> decorate_mode_get() const;
-   virtual void decorate_mode_set(Handle<Value> value);
+   Handle<Value> tree_effect_get() const;
+   void tree_effect_set(Handle<Value> value);
 
-   virtual Handle<Value> homogeneous_get() const;
-   virtual void homogeneous_set(Handle<Value> value);
+   Handle<Value> decorate_mode_get() const;
+   void decorate_mode_set(Handle<Value> value);
 
+   Handle<Value> homogeneous_get() const;
+   void homogeneous_set(Handle<Value> value);
+
+   friend Handle<Value> CElmObject::New<CElmGenList>(const Arguments&);
 };
+
+}
 
 #endif
 
