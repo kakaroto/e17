@@ -42,9 +42,11 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
 
 #define GENERATE_PROPERTY_CALLBACKS(class_,name_) \
    static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
-      return GetObjectFromAccessorInfo<class_>(info)->name_ ##_get(); \
+      HandleScope scope; \
+      return scope.Close(GetObjectFromAccessorInfo<class_>(info)->name_ ##_get()); \
    } \
    static void Callback_## name_ ##_set(Local<String>, Local<Value> value, const AccessorInfo &info) { \
+      HandleScope scope; \
       GetObjectFromAccessorInfo<class_>(info)->name_ ##_set(value); \
    }
 

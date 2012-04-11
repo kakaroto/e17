@@ -201,13 +201,12 @@ void CElmObject::height_set(Handle<Value> val)
 
 Handle<Value> CElmObject::align_get() const
 {
-   HandleScope scope;
    double x, y;
    evas_object_size_hint_align_get(eo, &x, &y);
    Local<Object> align = Object::New();
    align->Set(String::NewSymbol("x"), Number::New(x));
    align->Set(String::NewSymbol("y"), Number::New(y));
-   return scope.Close(align);
+   return align;
 }
 
 void CElmObject::align_set(Handle<Value> value)
@@ -223,13 +222,12 @@ void CElmObject::align_set(Handle<Value> value)
 
 Handle<Value> CElmObject::weight_get() const
 {
-   HandleScope scope;
    double x, y;
    evas_object_size_hint_weight_get(eo, &x, &y);
    Local<Object> align = Object::New();
    align->Set(String::NewSymbol("x"), Number::New(x));
    align->Set(String::NewSymbol("y"), Number::New(y));
-   return scope.Close(align);
+   return align;
 }
 
 void CElmObject::weight_set(Handle<Value> value)
@@ -266,7 +264,6 @@ void CElmObject::enabled_set(Handle<Value> val)
 
 Handle<Value> CElmObject::hint_min_get() const
 {
-   HandleScope scope;
    Evas_Coord w, h;
 
    evas_object_size_hint_min_get(eo,  &w, &h);
@@ -275,7 +272,7 @@ Handle<Value> CElmObject::hint_min_get() const
    obj->Set(String::New("width"), Number::New(w));
    obj->Set(String::New("height"), Number::New(h));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmObject::hint_min_set(Handle<Value> val)
@@ -291,7 +288,6 @@ void CElmObject::hint_min_set(Handle<Value> val)
 
 Handle<Value> CElmObject::hint_max_get() const
 {
-   HandleScope scope;
    Evas_Coord w, h;
 
    evas_object_size_hint_max_get(eo, &w, &h);
@@ -300,7 +296,7 @@ Handle<Value> CElmObject::hint_max_get() const
    obj->Set(String::New("width"), Number::New(w));
    obj->Set(String::New("height"), Number::New(h));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmObject::hint_max_set(Handle<Value> val)
@@ -314,7 +310,6 @@ void CElmObject::hint_max_set(Handle<Value> val)
 
 Handle<Value> CElmObject::hint_req_get() const
 {
-   HandleScope scope;
    Evas_Coord w, h;
 
    evas_object_size_hint_request_get(eo, &w, &h);
@@ -323,7 +318,7 @@ Handle<Value> CElmObject::hint_req_get() const
    obj->Set(String::New("width"), Number::New(w));
    obj->Set(String::New("height"), Number::New(h));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmObject::hint_req_set(Handle<Value> val)
@@ -362,7 +357,6 @@ void CElmObject::layer_set(Handle<Value> val)
 
 Handle<Value> CElmObject::padding_get() const
 {
-   HandleScope scope;
    Evas_Coord l, r, t, b;
 
    evas_object_size_hint_padding_get (eo, &l, &r, &t, &b);
@@ -373,7 +367,7 @@ Handle<Value> CElmObject::padding_get() const
    obj->Set(String::New("top"), Number::New(t));
    obj->Set(String::New("bottom"), Number::New(b));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmObject::padding_set(Handle<Value> val)
@@ -439,7 +433,6 @@ void CElmObject::static_clip_set(Handle<Value> val)
 
 Handle<Value> CElmObject::size_hint_aspect_get() const
 {
-   HandleScope scope;
    Local<Object> obj = Object::New();
    Evas_Aspect_Control aspect;
    Evas_Coord w, h;
@@ -452,7 +445,7 @@ Handle<Value> CElmObject::size_hint_aspect_get() const
    obj->Set(String::NewSymbol("width"), Number::New(w));
    obj->Set(String::NewSymbol("height"), Number::New(h));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmObject::size_hint_aspect_set(Handle<Value> val)
@@ -499,7 +492,6 @@ void CElmObject::name_set(Handle<Value> val)
 
 Handle<Value> CElmObject::pointer_get() const
 {
-   HandleScope scope;
    Evas_Coord x, y;
 
    evas_pointer_canvas_xy_get(evas_object_evas_get(eo), &x, &y);
@@ -507,7 +499,7 @@ Handle<Value> CElmObject::pointer_get() const
    obj->Set(String::New("x"), Integer::New(x));
    obj->Set(String::New("y"), Integer::New(y));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmObject::pointer_set(Handle<Value>)
@@ -516,7 +508,6 @@ void CElmObject::pointer_set(Handle<Value>)
 
 void CElmObject::OnAnimate()
 {
-   HandleScope scope;
    Handle<Function> callback(Function::Cast(*cb.animate));
    Handle<Value> arguments[1] = { jsObject };
    callback->Call(jsObject, 1, arguments);
@@ -552,7 +543,6 @@ void CElmObject::on_animate_set(Handle<Value> val)
 
 void CElmObject::OnClick(void *event_info)
 {
-   HandleScope scope;
    Handle<Function> callback(Function::Cast(*cb.click));
 
    if (event_info)
@@ -597,7 +587,6 @@ void CElmObject::on_click_set(Handle<Value> val)
 
 void CElmObject::OnKeyDown(Evas_Event_Key_Down *event)
 {
-   HandleScope scope;
    Handle<Function> callback(Function::Cast(*cb.key_down));
    Handle<Value> args[2] = { jsObject, String::New(event->keyname) };
    callback->Call(jsObject, 2, args);
@@ -633,8 +622,6 @@ void CElmObject::on_key_down_set(Handle<Value> val)
 
 Handle<Value> CElmObject::Realise(const Arguments& args)
 {
-   HandleScope scope;
-
    Local<Object> desc = args[0]->ToObject();
    Local<Array> props = desc->GetOwnPropertyNames();
    Local<Value> func = desc->GetHiddenValue(String::New("type"));
