@@ -35,6 +35,8 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
    va_end(arg);
 }
 
+extern int log_domain;
+
 }
 
 #define PROPERTY(name_) \

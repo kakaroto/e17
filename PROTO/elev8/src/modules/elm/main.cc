@@ -12,24 +12,27 @@ using namespace v8;
 namespace elm {
 
 int log_domain;
+extern "C" void RegisterModule(Handle<Object> target);
 
 #ifdef USE_NODE
-void InitElm(Handle<Object> target)
+static const char *log_domain_name = "node-elm";
+NODE_MODULE(elm, elm::RegisterModule);
 #else
+static const char *log_domain_name = "elev8-elm";
+#endif
+
 extern "C"
 void RegisterModule(Handle<Object> target)
-#endif
 {
    int argc = 0;
    char *argv[] = {};
 
-   eina_init();
-   log_domain = eina_log_domain_register("node-elm", EINA_COLOR_GREEN);
+   log_domain = eina_log_domain_register(log_domain_name, EINA_COLOR_GREEN);
    if (!log_domain) {
-      ELM_ERR("Could not register node-elm log domain.");
+      ELM_ERR("Could not register %s log domain.", log_domain_name);
       log_domain = EINA_LOG_DOMAIN_GLOBAL;
    }
-   ELM_INF("node-elm log domain initialized %d", log_domain);
+   ELM_INF("%s log domain initialized %d", log_domain_name, log_domain);
    elm_init(argc, argv);
 
    target->Set(String::New("realise"), FunctionTemplate::New(CElmObject::Realise)->GetFunction());
@@ -38,7 +41,3 @@ void RegisterModule(Handle<Object> target)
 }
 
 }
-
-#ifdef USE_NODE
-NODE_MODULE(elm, elm::InitElm);
-#endif
