@@ -29,21 +29,22 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
      {
         AccessorGetter get_callback = va_arg(arg, AccessorGetter);
         AccessorSetter set_callback = va_arg(arg, AccessorSetter);
-        prototype->SetAccessor(String::NewSymbol(name), get_callback, set_callback);
+        prototype->SetAccessor(String::NewSymbol(name),
+                               get_callback, set_callback);
      }
    va_end(arg);
 }
 
 }
 
-#define PROPERTY(n_) \
-   #n_, CallbackGet ## n_, CallbackSet ## n_
+#define PROPERTY(name_) \
+   #name_, Callback_## name_ ##_get, Callback_## name_ ##_set
 
 #define GENERATE_PROPERTY_CALLBACKS(class_,name_) \
-   static Handle<Value> CallbackGet ## name_(Local<String>, const AccessorInfo &info) { \
+   static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
       return GetObjectFromAccessorInfo<class_>(info)->Get ## name_(); \
    } \
-   static void CallbackSet ## name_(Local<String>, Local<Value> value, const AccessorInfo &info) { \
+   static void Callback_## name_ ##_set(Local<String>, Local<Value> value, const AccessorInfo &info) { \
       GetObjectFromAccessorInfo<class_>(info)->Set ## name_(value); \
    }
 
