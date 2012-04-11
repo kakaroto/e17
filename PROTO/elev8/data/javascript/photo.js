@@ -3,34 +3,32 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var my_window = new elm.window({
-        type : "main",
+var desc = elm.Window({
         label : "Photo Demo",
         width : 320,
         height : 480,
         align : FILL_BOTH,
         elements : {
-            the_background : {
-                type : "background",
+            the_background : elm.Background ({
                 weight : EXPAND_BOTH,
                 align : FILL_BOTH,
                 resize : true,
-            },
-            the_box : {
-                type : "box",
+            }),
+            the_box : elm.Box ({
                 weight : EXPAND_BOTH,
                 resize : true,
                 elements : {
-                    the_photo : {
-                        type : "photo",
+                    the_photo : elm.Photo ({
                         size : 80,
                         weight : EXPAND_BOTH,
                         align : FILL_BOTH,
                         resize : true,
                         image : elm.datadir + "data/images/logo_small.png",
                         fill : true,
-                    },
+                    }),
                 },
-            },
+            }),
         },
 });
+
+var win = elm.realise(desc);

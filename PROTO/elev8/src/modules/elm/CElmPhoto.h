@@ -1,23 +1,36 @@
 #ifndef C_ELM_PHOTO_H
 #define C_ELM_PHOTO_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmPhoto : public CEvasObject {
-   FACTORY(CElmPhoto)
+namespace elm {
+
+using namespace v8;
+
+class CElmPhoto : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-  CPropHandler<CElmPhoto> prop_handler;
+   CElmPhoto(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-  CElmPhoto(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-  virtual Handle<Value> image_get() const;
-  virtual void image_set(Handle<Value> val);
-  virtual Handle<Value> size_get() const;
-  virtual void size_set(Handle<Value> val);
-  virtual Handle<Value> fill_get() const;
-  virtual void fill_set(Handle<Value> val);
+   Handle<Value> image_get() const;
+   void image_set(Handle<Value> val);
+
+   Handle<Value> size_get() const;
+   void size_set(Handle<Value> val);
+
+   Handle<Value> fill_get() const;
+   void fill_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmPhoto>(const Arguments& args);
 };
+
+}
 
 #endif // C_ELM_PHOTO_H

@@ -23,6 +23,7 @@ using namespace v8;
 #include "CElmInwin.h"
 #include "CElmLabel.h"
 #include "CElmObject.h"
+#include "CElmPhoto.h"
 #include "CElmProgressBar.h"
 #include "CElmRadio.h"
 #include "CElmSegment.h"
@@ -154,6 +155,7 @@ void RegisterModule(Handle<Object> target)
    CElmInwin::Initialize(target);
    CElmLabel::Initialize(target);
    CElmObject::Initialize(target);
+   CElmPhoto::Initialize(target);
    CElmProgressBar::Initialize(target);
    CElmRadio::Initialize(target);
    CElmSegment::Initialize(target);
