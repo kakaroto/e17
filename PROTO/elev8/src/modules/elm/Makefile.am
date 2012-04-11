@@ -54,11 +54,6 @@ libelm_la_SOURCES = \
 	CElmTable.cc \
 	CElmWindow.cc
 
-#	Main.cc \
-#	CElmBasicWindow.cc \
-#	CElmCtxPopup.cc \
-#	CElmLayout.cc
-
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
 libelm_la_LIBTOOLFLAGS = --tag=disable-static
