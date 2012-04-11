@@ -15,8 +15,6 @@ private:
 protected:
    CElmBackground(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
-
-   static Handle<Value> New(const Arguments& args);
    static void Delete(Persistent<Value>, void *parameter);
 
 public:
@@ -33,6 +31,8 @@ public:
 
    Handle<Value> blue_get() const;
    void blue_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmBackground>(const Arguments& args);
 };
 
 }

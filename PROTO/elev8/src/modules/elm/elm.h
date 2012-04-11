@@ -59,7 +59,7 @@ extern int log_domain;
       \
       HandleScope scope; \
       Handle<FunctionTemplate> parentTmpl = super_class_::GetTemplate(); \
-      tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New(this_class_::New)); \
+      tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New(New<this_class_>)); \
       tmpl->Inherit(parentTmpl); \
       tmpl->InstanceTemplate()->SetInternalFieldCount(1); \
       RegisterProperties(tmpl->PrototypeTemplate(), ##__VA_ARGS__, NULL); \

@@ -13,12 +13,9 @@ private:
    static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CElmWindow(Local<Object> _jsObject, CElmObject *parent, const char *name, Elm_Win_Type type);
+   CElmWindow(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
-
-   static Handle<Value> New(const Arguments& args);
    static void Delete(Persistent<Value>, void *parameter);
-
    static void quit(void *, Evas_Object *, void *);
 
 public:
@@ -29,6 +26,8 @@ public:
 
    Handle<Value> conformant_get() const;
    void conformant_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
 }

@@ -38,8 +38,8 @@ void CElmWindow::conformant_set(Handle<Value> val)
 
 //---------------------
 
-CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent, const char *name, Elm_Win_Type type)
-   : CElmObject(_jsObject, elm_win_add(parent ? parent->GetEvasObject() : NULL, name, type))
+CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_win_add(parent ? parent->GetEvasObject() : NULL, "main", ELM_WIN_BASIC))
 {
    evas_object_focus_set(eo, 1);
    evas_object_smart_callback_add(eo, "delete,request", &quit, NULL);
@@ -50,23 +50,6 @@ void CElmWindow::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Window"),
                GetTemplate()->GetFunction());
-}
-
-Handle<Value> CElmWindow::New(const Arguments& args)
-{
-   HandleScope scope;
-
-   if (!args.IsConstructCall())
-     {
-        Local<Object> obj = args[0]->ToObject();
-        obj->SetHiddenValue(String::New("type"), GetTemplate()->GetFunction());
-        return obj;
-     }
-
-   CElmWindow *w = new CElmWindow(args.This(), NULL, "bla", ELM_WIN_BASIC);
-   w->jsObject.MakeWeak(w, Delete);
-
-   return Undefined();
 }
 
 void CElmWindow::Delete(Persistent<Value>, void *paramenter)

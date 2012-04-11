@@ -27,24 +27,6 @@ void CElmBackground::Initialize(Handle<Object> target)
                GetTemplate()->GetFunction());
 }
 
-Handle<Value> CElmBackground::New(const Arguments& args)
-{
-   HandleScope scope;
-
-   if (!args.IsConstructCall())
-     {
-        Local<Object> obj = args[0]->ToObject();
-        obj->SetHiddenValue(String::New("type"), GetTemplate()->GetFunction());
-        return obj;
-     }
-
-   CElmObject *parent = static_cast<CElmObject *>(args[1]->ToObject()->GetPointerFromInternalField(0));
-   CElmBackground *bg = new CElmBackground(args.This(), parent);
-   bg->jsObject.MakeWeak(bg, Delete);
-
-   return Undefined();
-}
-
 void CElmBackground::Delete(Persistent<Value>, void *paramenter)
 {
    delete static_cast<CElmBackground *>(paramenter);

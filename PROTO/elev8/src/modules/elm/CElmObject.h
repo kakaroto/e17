@@ -34,6 +34,26 @@ protected:
 
    void ApplyProperties(Handle<Object> obj);
 
+   template <class T>
+   static Handle<Value> New(const Arguments& args)
+     {
+        HandleScope scope;
+
+        if (!args.IsConstructCall())
+          {
+             args[0]->ToObject()->SetHiddenValue(String::New("type"), T::GetTemplate()->GetFunction());
+             return args[0];
+          }
+
+        CElmObject *parent = (args[1] == Undefined()) ? NULL :
+           static_cast<CElmObject *>(args[1]->ToObject()->GetPointerFromInternalField(0));
+
+        T *obj = new T(args.This(), parent);
+        obj->jsObject.MakeWeak(obj, T::Delete);
+
+        return Undefined();
+     }
+
 public:
    static void Initialize(Handle<Object> target);
 
