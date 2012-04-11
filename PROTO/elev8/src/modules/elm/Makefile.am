@@ -40,6 +40,7 @@ libelm_la_SOURCES = \
 	CElmInwin.cc \
 	CElmLabel.cc \
 	CElmNaviframe.cc \
+	CElmNotify.cc \
 	CElmObject.cc \
 	CElmPane.cc \
 	CElmPhoto.cc \

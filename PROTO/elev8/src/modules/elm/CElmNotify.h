@@ -1,36 +1,45 @@
 #ifndef C_ELM_NOTIFY_H
 #define C_ELM_NOTIFY_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
+
+namespace elm {
 
 using namespace v8;
 
-class CElmNotify : public CEvasObject {
-   FACTORY(CElmNotify)
+class CElmNotify : public CElmObject {
+private:
+  static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmNotify> prop_handler;
-   CEvasObject *content;
+   CElmNotify(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmNotify();
+
+   struct {
+      Persistent<Value> content;
+   } cached;
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   CElmNotify(CEvasObject *parent, Local<Object> obj);
+   static void  Initialize(Handle<Object> target);
 
-   virtual Handle<Value> content_get() const;
+   Handle<Value> content_get() const;
+   void content_set(Handle<Value> val);
 
-   virtual void content_set(Handle<Value> val);
+   Handle<Value> orient_get() const;
+   void orient_set(Handle<Value> val);
 
-   virtual Handle<Value> orient_get() const;
+   Handle<Value> timeout_get() const;
+   void timeout_set(Handle<Value> val);
 
-   virtual void orient_set(Handle<Value> val);
+   Handle<Value> allow_events_get() const;
+   void allow_events_set(Handle<Value> val);
 
-   virtual Handle<Value> timeout_get() const;
-
-   virtual void timeout_set(Handle<Value> val);
-
-   virtual Handle<Value> allow_events_get() const;
-
-   virtual void allow_events_set(Handle<Value> val);
+   friend Handle<Value> CElmObject::New<CElmNotify>(const Arguments& args);
 };
+
+}
 
 #endif
