@@ -33,6 +33,7 @@ libelm_la_SOURCES = \
 	CElmInwin.cc \
 	CElmLabel.cc \
 	CElmObject.cc \
+	CElmPane.cc \
 	CElmPhoto.cc \
 	CElmProgressBar.cc \
 	CElmRadio.cc \
@@ -55,7 +56,6 @@ libelm_la_SOURCES = \
 #	CElmLayout.cc \
 #	CElmNaviframe.cc \
 #	CElmNotify.cc \
-#	CElmPane.cc \
 #	CElmPhotocam.cc \
 #	CElmTable.cc \
 #	CEvasImage.cc \
