@@ -26,6 +26,7 @@ using namespace v8;
 #include "CElmPhoto.h"
 #include "CElmProgressBar.h"
 #include "CElmRadio.h"
+#include "CElmScroller.h"
 #include "CElmSegment.h"
 #include "CElmSlider.h"
 #include "CElmSpinner.h"
@@ -158,6 +159,7 @@ void RegisterModule(Handle<Object> target)
    CElmPhoto::Initialize(target);
    CElmProgressBar::Initialize(target);
    CElmRadio::Initialize(target);
+   CElmScroller::Initialize(target);
    CElmSegment::Initialize(target);
    CElmSlider::Initialize(target);
    CElmSpinner::Initialize(target);

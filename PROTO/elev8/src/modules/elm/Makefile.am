@@ -36,6 +36,7 @@ libelm_la_SOURCES = \
 	CElmPhoto.cc \
 	CElmProgressBar.cc \
 	CElmRadio.cc \
+	CElmScroller.cc \
 	CElmSegment.cc \
 	CElmSlider.cc \
 	CElmSpinner.cc \
@@ -57,7 +58,6 @@ libelm_la_SOURCES = \
 #	CElmNotify.cc \
 #	CElmPane.cc \
 #	CElmPhotocam.cc \
-#	CElmScroller.cc \
 #	CElmTable.cc \
 #	CEvasImage.cc \
 #	CEvasObject.cc
