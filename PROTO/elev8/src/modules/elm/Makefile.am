@@ -25,6 +25,7 @@ libelm_la_SOURCES = \
 	CElmClock.cc \
 	CElmLabel.cc \
 	CElmBubble.cc \
+	CElmEntry.cc \
 	CElmIcon.cc
 
 #	Main.cc \
@@ -37,7 +38,6 @@ libelm_la_SOURCES = \
 #	CElmCtxPopup.cc \
 #	CElmDateTime.cc \
 #	CElmDaySelector.cc \
-#	CElmEntry.cc \
 #	CElmFileSelectorButton.cc \
 #	CElmFileSelectorEntry.cc \
 #	CElmFileSelector.cc \
