@@ -35,6 +35,11 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
    va_end(arg);
 }
 
+template <class T> inline Evas_Object *GetEvasObjectFromJavascript(Local<Value> obj)
+{
+   return static_cast<T*>(obj->ToObject()->GetPointerFromInternalField(0))->GetEvasObject();
+}
+
 extern int log_domain;
 
 }
