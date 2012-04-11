@@ -53,13 +53,13 @@ void CElmBackground::Delete(Persistent<Value>, void *paramenter)
    delete static_cast<CElmBackground *>(paramenter);
 }
 
-void CElmBackground::Setimage(Handle<Value> val)
+void CElmBackground::image_set(Handle<Value> val)
 {
    if (val->IsString())
       elm_bg_file_set(eo, *String::Utf8Value(val), NULL);
 }
 
-Handle<Value> CElmBackground::Getimage(void) const
+Handle<Value> CElmBackground::image_get(void) const
 {
    const char *file = NULL;
    elm_bg_file_get(eo, &file, NULL);
@@ -70,14 +70,14 @@ Handle<Value> CElmBackground::Getimage(void) const
    return Null();
 }
 
-Handle<Value> CElmBackground::Getred() const
+Handle<Value> CElmBackground::red_get() const
 {
    int r;
    elm_bg_color_get(eo, &r, NULL, NULL);
    return Number::New(r);
 }
 
-void CElmBackground::Setred(Handle<Value> val)
+void CElmBackground::red_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -89,14 +89,14 @@ void CElmBackground::Setred(Handle<Value> val)
    elm_bg_color_set(eo, val->ToNumber()->Value(), g, b);
 }
 
-Handle<Value> CElmBackground::Getgreen() const
+Handle<Value> CElmBackground::green_get() const
 {
    int g;
    elm_bg_color_get(eo, NULL, &g, NULL);
    return Number::New(g);
 }
 
-void CElmBackground::Setgreen(Handle<Value> val)
+void CElmBackground::green_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -106,14 +106,14 @@ void CElmBackground::Setgreen(Handle<Value> val)
    elm_bg_color_set(eo, r, val->ToNumber()->Value(), b);
 }
 
-Handle<Value> CElmBackground::Getblue() const
+Handle<Value> CElmBackground::blue_get() const
 {
    int b;
    elm_bg_color_get(eo, NULL, NULL, &b);
    return Number::New(b);
 }
 
-void CElmBackground::Setblue(Handle<Value> val)
+void CElmBackground::blue_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;

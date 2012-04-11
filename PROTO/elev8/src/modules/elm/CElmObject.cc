@@ -31,12 +31,12 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, on_animate);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_click);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_key_down);
 
-static inline Handle<Value> CallbackGetelements(Local<String>, const AccessorInfo &info) 
+static Handle<Value> Callback_elements_get(Local<String>, const AccessorInfo &info) 
 {
    return info.This()->GetHiddenValue(String::New("elements"));
 }
 
-static inline void CallbackSetelements(Local<String>, Local<Value> value, const AccessorInfo &info) 
+static void Callback_elements_set(Local<String>, Local<Value> value, const AccessorInfo &info) 
 {
    HandleScope scope;
 
@@ -54,7 +54,7 @@ static inline void CallbackSetelements(Local<String>, Local<Value> value, const 
         Local<Function> realise = Local<Function>::Cast(elm->Get(String::New("realise")));
         printf("%s:%d %d\n", __FUNCTION__, __LINE__, realise->IsFunction());
 
-        elements->Set(key, realise->Call(info.This(), 2, params));      
+        elements->Set(key, realise->Call(info.This(), 2, params));
      }
 
    info.This()->SetHiddenValue(String::New("elements"), elements);
@@ -73,9 +73,9 @@ CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
 
 CElmObject::~CElmObject()
 {
-   Seton_animate(Undefined());
-   Seton_click(Undefined());
-   Seton_key_down(Undefined());
+   on_animate_set(Undefined());
+   on_click_set(Undefined());
+   on_key_down_set(Undefined());
 
    jsObject.Dispose();
    jsObject.Clear();
@@ -133,14 +133,14 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
 
 // Getters and Settters
 
-Handle<Value> CElmObject::Getx() const
+Handle<Value> CElmObject::x_get() const
 {
    int x;
    evas_object_geometry_get(eo, &x, NULL, NULL, NULL);
    return Integer::New(x);
 }
 
-void CElmObject::Setx(Handle<Value> val)
+void CElmObject::x_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -149,14 +149,14 @@ void CElmObject::Setx(Handle<Value> val)
    evas_object_move(eo, val->ToInt32()->Value(), y);
 }
 
-Handle<Value> CElmObject::Gety() const
+Handle<Value> CElmObject::y_get() const
 {
    int y;
    evas_object_geometry_get(eo, NULL, &y, NULL, NULL);
    return Integer::New(y);
 }
 
-void CElmObject::Sety(Handle<Value> val)
+void CElmObject::y_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -165,14 +165,14 @@ void CElmObject::Sety(Handle<Value> val)
    evas_object_move(eo, x, val->ToInt32()->Value());
 }
 
-Handle<Value> CElmObject::Getwidth() const
+Handle<Value> CElmObject::width_get() const
 {
    int width;
    evas_object_geometry_get(eo, NULL, NULL, &width, NULL);
    return Integer::New(width);
 }
 
-void CElmObject::Setwidth(Handle<Value> val)
+void CElmObject::width_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -181,14 +181,14 @@ void CElmObject::Setwidth(Handle<Value> val)
    evas_object_resize(eo, val->ToInt32()->Value(), height);
 }
 
-Handle<Value> CElmObject::Getheight() const
+Handle<Value> CElmObject::height_get() const
 {
    int height;
    evas_object_geometry_get(eo, NULL, NULL, NULL, &height);
    return Integer::New(height);
 }
 
-void CElmObject::Setheight(Handle<Value> val)
+void CElmObject::height_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -197,7 +197,7 @@ void CElmObject::Setheight(Handle<Value> val)
    evas_object_resize(eo, width, val->ToInt32()->Value());
 }
 
-Handle<Value> CElmObject::Getalign() const
+Handle<Value> CElmObject::align_get() const
 {
    HandleScope scope;
    double x, y;
@@ -208,7 +208,7 @@ Handle<Value> CElmObject::Getalign() const
    return scope.Close(align);
 }
 
-void CElmObject::Setalign(Handle<Value> value)
+void CElmObject::align_set(Handle<Value> value)
 {
    if (!value->IsObject())
      return;
@@ -219,7 +219,7 @@ void CElmObject::Setalign(Handle<Value> value)
         align->Get(String::NewSymbol("y"))->ToNumber()->Value());
 }
 
-Handle<Value> CElmObject::Getweight() const
+Handle<Value> CElmObject::weight_get() const
 {
    HandleScope scope;
    double x, y;
@@ -230,7 +230,7 @@ Handle<Value> CElmObject::Getweight() const
    return scope.Close(align);
 }
 
-void CElmObject::Setweight(Handle<Value> value)
+void CElmObject::weight_set(Handle<Value> value)
 {
    if (!value->IsObject())
      return;
@@ -241,28 +241,28 @@ void CElmObject::Setweight(Handle<Value> value)
         align->Get(String::NewSymbol("y"))->ToNumber()->Value());
 }
 
-Handle<Value> CElmObject::Getvisible() const
+Handle<Value> CElmObject::visible_get() const
 {
    return Boolean::New(evas_object_visible_get(eo));
 }
 
-void CElmObject::Setvisible(Handle<Value> val)
+void CElmObject::visible_set(Handle<Value> val)
 {
    ((val->IsBoolean() && val->BooleanValue()) ? evas_object_show : evas_object_hide)(eo);
 }
 
-Handle<Value> CElmObject::Getenabled() const
+Handle<Value> CElmObject::enabled_get() const
 {
    return Boolean::New(!elm_object_disabled_get(eo));
 }
 
-void CElmObject::Setenabled(Handle<Value> val)
+void CElmObject::enabled_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_object_disabled_set(eo, !val->BooleanValue());
 }
 
-Handle<Value> CElmObject::Gethint_min() const
+Handle<Value> CElmObject::hint_min_get() const
 {
    HandleScope scope;
    Evas_Coord w, h;
@@ -276,7 +276,7 @@ Handle<Value> CElmObject::Gethint_min() const
    return scope.Close(obj);
 }
 
-void CElmObject::Sethint_min(Handle<Value> val)
+void CElmObject::hint_min_set(Handle<Value> val)
 {
    if (!val->IsObject())
     return;
@@ -287,7 +287,7 @@ void CElmObject::Sethint_min(Handle<Value> val)
      evas_object_size_hint_min_set(eo, w->Int32Value(), h->Int32Value());
 }
 
-Handle<Value> CElmObject::Gethint_max() const
+Handle<Value> CElmObject::hint_max_get() const
 {
    HandleScope scope;
    Evas_Coord w, h;
@@ -301,7 +301,7 @@ Handle<Value> CElmObject::Gethint_max() const
    return scope.Close(obj);
 }
 
-void CElmObject::Sethint_max(Handle<Value> val)
+void CElmObject::hint_max_set(Handle<Value> val)
 {
    Local<Object> obj = val->ToObject();
    Local<Value> w = obj->Get(String::New("x"));
@@ -310,7 +310,7 @@ void CElmObject::Sethint_max(Handle<Value> val)
      evas_object_size_hint_max_set(eo, w->Int32Value(), h->Int32Value());
 }
 
-Handle<Value> CElmObject::Gethint_req() const
+Handle<Value> CElmObject::hint_req_get() const
 {
    HandleScope scope;
    Evas_Coord w, h;
@@ -324,7 +324,7 @@ Handle<Value> CElmObject::Gethint_req() const
    return scope.Close(obj);
 }
 
-void CElmObject::Sethint_req(Handle<Value> val)
+void CElmObject::hint_req_set(Handle<Value> val)
 {
    if (!val->IsObject())
      return;
@@ -336,29 +336,29 @@ void CElmObject::Sethint_req(Handle<Value> val)
      evas_object_size_hint_request_set(eo, w->Int32Value(), h->Int32Value());
 }
 
-Handle<Value> CElmObject::Getfocus() const
+Handle<Value> CElmObject::focus_get() const
 {
    return Boolean::New(evas_object_focus_get(eo));
 }
 
-void CElmObject::Setfocus(Handle<Value> val)
+void CElmObject::focus_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      evas_object_focus_set(eo, val->BooleanValue());
 }
 
-Handle<Value> CElmObject::Getlayer() const
+Handle<Value> CElmObject::layer_get() const
 {
    return Number::New(evas_object_layer_get(eo));
 }
 
-void CElmObject::Setlayer(Handle<Value> val)
+void CElmObject::layer_set(Handle<Value> val)
 {
    if (val->IsNumber())
      evas_object_layer_set(eo, val->NumberValue());
 }
 
-Handle<Value> CElmObject::Getpadding() const
+Handle<Value> CElmObject::padding_get() const
 {
    HandleScope scope;
    Evas_Coord l, r, t, b;
@@ -374,7 +374,7 @@ Handle<Value> CElmObject::Getpadding() const
    return scope.Close(obj);
 }
 
-void CElmObject::Setpadding(Handle<Value> val)
+void CElmObject::padding_set(Handle<Value> val)
 {
    if (!val->IsObject())
      return;
@@ -388,13 +388,13 @@ void CElmObject::Setpadding(Handle<Value> val)
                                       bottom->Int32Value());
 }
 
-Handle<Value> CElmObject::Getpointer_mode() const
+Handle<Value> CElmObject::pointer_mode_get() const
 {
    const char *mode_to_string[] = { "autograb", "nograb", "nograb-norepeat-updown" };
    return String::New(mode_to_string[evas_object_pointer_mode_get(eo)]);
 }
 
-void CElmObject::Setpointer_mode(Handle<Value> val)
+void CElmObject::pointer_mode_set(Handle<Value> val)
 {
    if (!val->IsString())
      return;
@@ -413,29 +413,29 @@ void CElmObject::Setpointer_mode(Handle<Value> val)
    evas_object_pointer_mode_set(eo, mode);
 }
 
-Handle<Value> CElmObject::Getantialias() const
+Handle<Value> CElmObject::antialias_get() const
 {
    return Boolean::New(evas_object_anti_alias_get(eo));
 }
 
-void CElmObject::Setantialias(Handle<Value> val)
+void CElmObject::antialias_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      evas_object_anti_alias_set(eo, val->BooleanValue());
 }
 
-Handle<Value> CElmObject::Getstatic_clip() const
+Handle<Value> CElmObject::static_clip_get() const
 {
    return Boolean::New(evas_object_static_clip_get(eo));
 }
 
-void CElmObject::Setstatic_clip(Handle<Value> val)
+void CElmObject::static_clip_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      evas_object_static_clip_set(eo, val->BooleanValue());
 }
 
-Handle<Value> CElmObject::Getsize_hint_aspect() const
+Handle<Value> CElmObject::size_hint_aspect_get() const
 {
    HandleScope scope;
    Local<Object> obj = Object::New();
@@ -453,7 +453,7 @@ Handle<Value> CElmObject::Getsize_hint_aspect() const
    return scope.Close(obj);
 }
 
-void CElmObject::Setsize_hint_aspect(Handle<Value> val)
+void CElmObject::size_hint_aspect_set(Handle<Value> val)
 {
    if (!val->IsObject())
      return;
@@ -483,19 +483,19 @@ void CElmObject::Setsize_hint_aspect(Handle<Value> val)
                                     h->Int32Value());
 }
 
-Handle<Value> CElmObject::Getname() const
+Handle<Value> CElmObject::name_get() const
 {
    return Undefined();
    return String::New(evas_object_name_get(eo));
 }
 
-void CElmObject::Setname(Handle<Value> val)
+void CElmObject::name_set(Handle<Value> val)
 {
    if (val->IsString())
      evas_object_name_set(eo, *String::Utf8Value(val));
 }
 
-Handle<Value> CElmObject::Getpointer() const
+Handle<Value> CElmObject::pointer_get() const
 {
    HandleScope scope;
    Evas_Coord x, y;
@@ -508,7 +508,7 @@ Handle<Value> CElmObject::Getpointer() const
    return scope.Close(obj);
 }
 
-void CElmObject::Setpointer(Handle<Value>)
+void CElmObject::pointer_set(Handle<Value>)
 {
 }
 
@@ -526,12 +526,12 @@ Eina_Bool CElmObject::OnAnimateWrapper(void *data)
    return ECORE_CALLBACK_RENEW;
 }
 
-Handle<Value> CElmObject::Geton_animate() const
+Handle<Value> CElmObject::on_animate_get() const
 {
    return cb.animate;
 }
 
-void CElmObject::Seton_animate(Handle<Value> val)
+void CElmObject::on_animate_set(Handle<Value> val)
 {
    if (!cb.animate.IsEmpty())
      {
@@ -572,12 +572,12 @@ void CElmObject::OnClickWrapper(void *data, Evas_Object *, void *event_info)
    static_cast<CElmObject*>(data)->OnClick(event_info);
 }
 
-Handle<Value> CElmObject::Geton_click() const
+Handle<Value> CElmObject::on_click_get() const
 {
    return cb.click;
 }
 
-void CElmObject::Seton_click(Handle<Value> val)
+void CElmObject::on_click_set(Handle<Value> val)
 {
    if (!cb.click.IsEmpty())
      {
@@ -606,12 +606,12 @@ void CElmObject::OnKeyDownWrapper(void *data, Evas *, Evas_Object *, void *event
    static_cast<CElmObject *>(data)->OnKeyDown(static_cast<Evas_Event_Key_Down *>(event_info));
 }
 
-Handle<Value> CElmObject::Geton_key_down() const
+Handle<Value> CElmObject::on_key_down_get() const
 {
    return cb.key_down;
 }
 
-void CElmObject::Seton_key_down(Handle<Value> val)
+void CElmObject::on_key_down_set(Handle<Value> val)
 {
    if (!cb.key_down.IsEmpty())
      {
@@ -639,14 +639,14 @@ Handle<Value> CElmObject::Realise(const Arguments& args)
 
    Local<Value> params[] = {args[0], args[1]};
    Local<Object> obj = Local<Function>::Cast(func)->NewInstance(2, params);
-   
-   for (unsigned int i = 0; i < props->Length(); i++) 
+
+   for (unsigned int i = 0; i < props->Length(); i++)
      {
         Local<String> key = props->Get(i)->ToString();
         Local<Value> val = desc->Get(key);
         obj->Set(key, val);
      }
-   
+
    return obj;
 }
 

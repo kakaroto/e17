@@ -14,23 +14,23 @@ GENERATE_TEMPLATE(CElmWindow,
 
 // Getters and Settters
 
-Handle<Value> CElmWindow::Gettitle() const
+Handle<Value> CElmWindow::title_get() const
 {
    return String::New(elm_win_title_get(eo));
 }
 
-void CElmWindow::Settitle(Handle<Value> val)
+void CElmWindow::title_set(Handle<Value> val)
 {
    if (val->IsString())
      elm_win_title_set(eo, *String::Utf8Value(val));
 }
 
-Handle<Value> CElmWindow::Getconformant() const
+Handle<Value> CElmWindow::conformant_get() const
 {
    return Boolean::New(elm_win_conformant_get(eo));
 }
 
-void CElmWindow::Setconformant(Handle<Value> val)
+void CElmWindow::conformant_set(Handle<Value> val)
 {
    if (val->IsString())
      elm_win_title_set(eo, *String::Utf8Value(val));

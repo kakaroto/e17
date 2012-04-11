@@ -24,11 +24,11 @@ protected:
 public:
    static void Initialize(Handle<Object> target);
 
-   Handle<Value> Gettitle() const;
-   void Settitle(Handle<Value> val);
+   Handle<Value> title_get() const;
+   void title_set(Handle<Value> val);
 
-   Handle<Value> Getconformant() const;
-   void Setconformant(Handle<Value> val);
+   Handle<Value> conformant_get() const;
+   void conformant_set(Handle<Value> val);
 };
 
 }

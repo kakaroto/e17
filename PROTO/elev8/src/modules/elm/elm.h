@@ -42,10 +42,10 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
 
 #define GENERATE_PROPERTY_CALLBACKS(class_,name_) \
    static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
-      return GetObjectFromAccessorInfo<class_>(info)->Get ## name_(); \
+      return GetObjectFromAccessorInfo<class_>(info)->name_ ##_get(); \
    } \
    static void Callback_## name_ ##_set(Local<String>, Local<Value> value, const AccessorInfo &info) { \
-      GetObjectFromAccessorInfo<class_>(info)->Set ## name_(value); \
+      GetObjectFromAccessorInfo<class_>(info)->name_ ##_set(value); \
    }
 
 #define GENERATE_TEMPLATE_FULL(super_class_,this_class_,...) \

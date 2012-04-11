@@ -33,86 +33,86 @@ protected:
 public:
    Evas_Object *GetEvasObject() const { return eo; }
 
-   Handle<Value> Getx() const;
-   void Setx(Handle<Value> value);
+   Handle<Value> x_get() const;
+   void x_set(Handle<Value> value);
 
-   Handle<Value> Gety() const;
-   void Sety(Handle<Value> val);
+   Handle<Value> y_get() const;
+   void y_set(Handle<Value> val);
 
-   Handle<Value> Getwidth() const;
-   void Setwidth(Handle<Value> val);
+   Handle<Value> width_get() const;
+   void width_set(Handle<Value> val);
 
-   Handle<Value> Getheight() const;
-   void Setheight(Handle<Value> val);
+   Handle<Value> height_get() const;
+   void height_set(Handle<Value> val);
 
-   Handle<Value> Getalign() const;
-   void Setalign(Handle<Value> align);
+   Handle<Value> align_get() const;
+   void align_set(Handle<Value> align);
 
-   Handle<Value> Getweight() const;
-   void Setweight(Handle<Value> align);
+   Handle<Value> weight_get() const;
+   void weight_set(Handle<Value> align);
 
-   Handle<Value> Getvisible() const;
-   void Setvisible(Handle<Value> val);
+   Handle<Value> visible_get() const;
+   void visible_set(Handle<Value> val);
 
-   Handle<Value> Getenabled() const;
-   void Setenabled(Handle<Value> val);
+   Handle<Value> enabled_get() const;
+   void enabled_set(Handle<Value> val);
 
-   Handle<Value> Gethint_min() const;
-   void Sethint_min(Handle<Value> val);
+   Handle<Value> hint_min_get() const;
+   void hint_min_set(Handle<Value> val);
 
-   Handle<Value> Gethint_max() const;
-   void Sethint_max(Handle<Value> val);
+   Handle<Value> hint_max_get() const;
+   void hint_max_set(Handle<Value> val);
 
-   Handle<Value> Gethint_req() const;
-   void Sethint_req(Handle<Value> val);
+   Handle<Value> hint_req_get() const;
+   void hint_req_set(Handle<Value> val);
 
-   Handle<Value> Getfocus() const;
-   void Setfocus(Handle<Value> val);
+   Handle<Value> focus_get() const;
+   void focus_set(Handle<Value> val);
 
-   Handle<Value> Getlayer() const;
-   void Setlayer(Handle<Value> val);
+   Handle<Value> layer_get() const;
+   void layer_set(Handle<Value> val);
 
-   Handle<Value> Getpadding() const;
-   void Setpadding(Handle<Value> val);
+   Handle<Value> padding_get() const;
+   void padding_set(Handle<Value> val);
 
-   void Setpointer_mode(Handle<Value> val);
-   Handle<Value> Getpointer_mode() const;
+   void pointer_mode_set(Handle<Value> val);
+   Handle<Value> pointer_mode_get() const;
 
-   Handle<Value> Getantialias() const;
-   void Setantialias(Handle<Value> val);
+   Handle<Value> antialias_get() const;
+   void antialias_set(Handle<Value> val);
 
-   Handle<Value> Getstatic_clip() const;
-   void Setstatic_clip(Handle<Value> val);
+   Handle<Value> static_clip_get() const;
+   void static_clip_set(Handle<Value> val);
 
-   Handle<Value> Getsize_hint_aspect() const;
-   void Setsize_hint_aspect(Handle<Value> val);
+   Handle<Value> size_hint_aspect_get() const;
+   void size_hint_aspect_set(Handle<Value> val);
 
-   Handle<Value> Getname() const;
-   void Setname(Handle<Value> val);
+   Handle<Value> name_get() const;
+   void name_set(Handle<Value> val);
 
-   Handle<Value> Getpointer() const;
-   void Setpointer(Handle<Value>);
+   Handle<Value> pointer_get() const;
+   void pointer_set(Handle<Value>);
 
    void OnAnimate();
    static Eina_Bool OnAnimateWrapper(void *data);
 
-   Handle<Value> Geton_animate() const;
-   void Seton_animate(Handle<Value> val);
+   Handle<Value> on_animate_get() const;
+   void on_animate_set(Handle<Value> val);
 
    void OnClick(void *event_info);
    static void OnClickWrapper(void *data, Evas_Object *, void *event_info);
 
-   Handle<Value> Geton_click() const;
-   void Seton_click(Handle<Value> val);
+   Handle<Value> on_click_get() const;
+   void on_click_set(Handle<Value> val);
 
    void OnKeyDown(Evas_Event_Key_Down *event);
    static void OnKeyDownWrapper(void *data, Evas *, Evas_Object *, void *event_info);
 
-   Handle<Value> Geton_key_down() const;
-   void Seton_key_down(Handle<Value> val);
+   Handle<Value> on_key_down_get() const;
+   void on_key_down_set(Handle<Value> val);
 
-   Handle<Value> Getelements() const;
-   void Setelements(Handle<Value> val);
+   Handle<Value> elements_get() const;
+   void elements_set(Handle<Value> val);
 
    static Handle<Value> Realise(const Arguments& args);
 };

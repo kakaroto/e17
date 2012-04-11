@@ -22,17 +22,17 @@ protected:
 public:
    static void Initialize(Handle<Object> target);
 
-   void Setimage(Handle<Value> val);
-   Handle<Value> Getimage(void) const;
+   void image_set(Handle<Value> val);
+   Handle<Value> image_get(void) const;
 
-   Handle<Value> Getred() const;
-   void Setred(Handle<Value> val);
+   Handle<Value> red_get() const;
+   void red_set(Handle<Value> val);
 
-   Handle<Value> Getgreen() const;
-   void Setgreen(Handle<Value> val);
+   Handle<Value> green_get() const;
+   void green_set(Handle<Value> val);
 
-   Handle<Value> Getblue() const;
-   void Setblue(Handle<Value> val);
+   Handle<Value> blue_get() const;
+   void blue_set(Handle<Value> val);
 };
 
 }
