@@ -694,13 +694,14 @@ void CElmObject::on_key_down_set(Handle<Value> val)
                                   &OnKeyDownWrapper, this);
 }
 
-Handle<Value> CElmObject::Realise(const Arguments& args)
+Local<Value> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
-   Local<Object> desc = args[0]->ToObject();
+   HandleScope scope;
+   Local<Object> desc = descValue->ToObject();
    Local<Array> props = desc->GetOwnPropertyNames();
-   Local<Value> func = desc->GetHiddenValue(String::New("type"));
+   Local<Value> func = desc->GetHiddenValue(String::NewSymbol("type"));
 
-   Local<Value> params[] = {args[0], args[1]};
+   Handle<Value> params[] = { descValue, parent };
    Local<Object> obj = Local<Function>::Cast(func)->NewInstance(2, params);
 
    for (unsigned int i = 0; i < props->Length(); i++)
@@ -714,7 +715,18 @@ Handle<Value> CElmObject::Realise(const Arguments& args)
    if (visible->IsUndefined())
      obj->Set(String::New("visible"), Boolean::New(true));
 
-   return obj;
+   return scope.Close(obj);
+}
+
+Handle<Value> CElmObject::Realise(const Arguments& args)
+{
+   if (args.Length() != 1)
+     {
+        ELM_ERR("Realise needs object description");
+        return Undefined();
+     }
+
+   return Realise(args[0], Undefined());
 }
 
 }

@@ -156,6 +156,8 @@ public:
    void elements_set(Handle<Value> val);
 
    static Handle<Value> Realise(const Arguments& args);
+
+   static Local<Value> Realise(Handle<Value> desc, Handle<Value> parent);
 };
 
 }
