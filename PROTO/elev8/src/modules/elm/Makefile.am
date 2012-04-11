@@ -58,7 +58,6 @@ libelm_la_SOURCES = \
 #	CElmDateTime.cc \
 #	CElmLayout.cc \
 #	CElmNotify.cc \
-#	CEvasImage.cc \
 #	CEvasObject.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
