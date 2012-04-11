@@ -21,6 +21,10 @@ protected:
       Persistent<Value> key_down;
    } cb;
 
+   struct {
+      bool isResize;
+   } cached;
+
    Ecore_Animator *current_animator;
 
    CElmObject(Local<Object> _jsObject, Evas_Object *_eo);
@@ -89,6 +93,9 @@ public:
 
    Handle<Value> name_get() const;
    void name_set(Handle<Value> val);
+
+   Handle<Value> resize_get() const;
+   void resize_set(Handle<Value>);
 
    Handle<Value> pointer_get() const;
    void pointer_set(Handle<Value>);

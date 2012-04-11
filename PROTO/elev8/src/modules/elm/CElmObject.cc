@@ -26,6 +26,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, antialias);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, static_clip);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, size_hint_aspect);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, name);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, resize);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, pointer);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_animate);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_click);
@@ -122,6 +123,7 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(static_clip),
                       PROPERTY(size_hint_aspect),
                       PROPERTY(name),
+                      PROPERTY(resize),
                       PROPERTY(pointer),
                       PROPERTY(on_animate),
                       PROPERTY(on_click),
@@ -487,6 +489,27 @@ void CElmObject::name_set(Handle<Value> val)
 {
    if (val->IsString())
      evas_object_name_set(eo, *String::Utf8Value(val));
+}
+
+Handle<Value> CElmObject::resize_get() const
+{
+   return Boolean::New(cached.isResize);
+}
+
+void CElmObject::resize_set(Handle<Value> val)
+{
+   if (!val->IsBoolean())
+     return;
+
+   Evas_Object *parent = elm_object_parent_widget_get(eo);
+   if (!parent)
+     return;
+
+   cached.isResize = val->BooleanValue();
+   if (cached.isResize)
+     elm_win_resize_object_add(parent, eo);
+   else
+     elm_win_resize_object_del(parent, eo);
 }
 
 Handle<Value> CElmObject::pointer_get() const
