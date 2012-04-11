@@ -41,7 +41,7 @@ Handle<Value> CElmBox::homogeneous_get() const
 
 void CElmBox::DidRealiseElement(Local<Value> obj)
 {
-   elm_box_pack_end(eo, GetEvasObjectFromJavascript<CElmBox>(obj));
+   elm_box_pack_end(eo, GetEvasObjectFromJavascript(obj));
 }
 
 void CElmBox::Initialize(Handle<Object> target)

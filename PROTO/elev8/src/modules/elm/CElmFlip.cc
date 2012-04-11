@@ -40,7 +40,7 @@ void CElmFlip::front_set(Handle<Value> object)
    cached.front.Dispose();
    cached.front = Persistent<Value>::New(Realise(object, jsObject));
    elm_object_part_content_set(eo, "front",
-                               GetEvasObjectFromJavascript<CElmObject>(cached.front));
+                               GetEvasObjectFromJavascript(cached.front));
 }
 
 Handle<Value> CElmFlip::back_get() const
@@ -53,7 +53,7 @@ void CElmFlip::back_set(Handle<Value> object)
    cached.back.Dispose();
    cached.back = Persistent<Value>::New(Realise(object, jsObject));
    elm_object_part_content_set(eo, "back",
-                               GetEvasObjectFromJavascript<CElmObject>(cached.back));
+                               GetEvasObjectFromJavascript(cached.back));
 }
 
 }

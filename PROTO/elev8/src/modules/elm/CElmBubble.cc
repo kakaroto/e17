@@ -74,7 +74,7 @@ void CElmBubble::content_set(Handle<Value> val)
    HandleScope scope;
    cached.content.Dispose();
    cached.content = Persistent<Value>::New(Realise(val, jsObject));
-   elm_object_content_set(eo, GetEvasObjectFromJavascript<CElmObject>(cached.content));
+   elm_object_content_set(eo, GetEvasObjectFromJavascript(cached.content));
 }
 
 }

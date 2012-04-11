@@ -93,7 +93,7 @@ void CElmCheck::icon_set(Handle<Value> value)
 
    cached.icon = Persistent<Value>::New(Realise(value, jsObject));
    elm_object_content_set(eo,
-                          GetEvasObjectFromJavascript<CElmIcon>(cached.icon));
+                          GetEvasObjectFromJavascript(cached.icon));
 }
 
 void CElmCheck::onlabel_set(Handle<Value> val)

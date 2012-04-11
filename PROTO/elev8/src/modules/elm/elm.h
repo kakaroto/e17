@@ -11,6 +11,8 @@
 #include <v8.h>
 #include <stdarg.h>
 
+#include "CElmObject.h"
+
 namespace elm {
 
 using namespace v8;
@@ -45,9 +47,9 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
    va_end(arg);
 }
 
-template <class T> inline Evas_Object *GetEvasObjectFromJavascript(Handle<Value> obj)
+inline Evas_Object *GetEvasObjectFromJavascript(Handle<Value> obj)
 {
-   return static_cast<T*>(obj->ToObject()->GetPointerFromInternalField(0))->GetEvasObject();
+   return static_cast<CElmObject*>(obj->ToObject()->GetPointerFromInternalField(0))->GetEvasObject();
 }
 
 extern int log_domain;
