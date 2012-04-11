@@ -125,6 +125,7 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(pointer),
                       PROPERTY(on_animate),
                       PROPERTY(on_click),
+                      PROPERTY(on_key_down),
                       PROPERTY(elements),
                       NULL);
 
