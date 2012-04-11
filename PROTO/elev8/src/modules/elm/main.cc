@@ -35,7 +35,7 @@ void RegisterModule(Handle<Object> target)
    ELM_INF("%s log domain initialized %d", log_domain_name, log_domain);
    elm_init(argc, argv);
 
-   target->Set(String::New("realise"), FunctionTemplate::New(CElmObject::Realise)->GetFunction());
+   CElmObject::Initialize(target);
    CElmWindow::Initialize(target);
    CElmBackground::Initialize(target);
 }

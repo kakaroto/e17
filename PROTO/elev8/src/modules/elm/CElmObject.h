@@ -35,6 +35,8 @@ protected:
    void ApplyProperties(Handle<Object> obj);
 
 public:
+   static void Initialize(Handle<Object> target);
+
    Evas_Object *GetEvasObject() const { return eo; }
 
    Handle<Value> x_get() const;

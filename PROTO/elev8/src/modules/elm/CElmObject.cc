@@ -94,6 +94,12 @@ void CElmObject::ApplyProperties(Handle<Object> obj)
      }
 }
 
+void CElmObject::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("realise"),
+               FunctionTemplate::New(Realise)->GetFunction());
+}
+
 Handle<FunctionTemplate> CElmObject::GetTemplate()
 {
    if (!tmpl.IsEmpty())
