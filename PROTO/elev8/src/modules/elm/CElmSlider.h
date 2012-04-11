@@ -1,56 +1,71 @@
 #ifndef C_ELM_SLIDER_H
 #define C_ELM_SLIDER_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmSlider : public CEvasObject {
-   FACTORY(CElmSlider)
+namespace elm {
+
+class CElmSlider : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   Persistent<Value> the_icon;
-   Persistent<Value> the_end_object;
-   Persistent<Value> on_changed_val;
-   CPropHandler<CElmSlider> prop_handler;
-
-   static void eo_on_changed(void *data, Evas_Object *, void *event_info);
-   virtual void on_changed(void *);
-
-   CElmSlider(CEvasObject *parent, Local<Object> obj);
-public:
+   CElmSlider(Local<Object> _jsObject, CElmObject *parent);
    virtual ~CElmSlider();
 
-   virtual void units_set(Handle<Value> value);
-   virtual Handle<Value> units_get() const;
+   struct {
+      Persistent<Value> icon;
+      Persistent<Value> end;
+   } cached;
 
-   virtual void indicator_set(Handle<Value> value);
-   virtual Handle<Value> indicator_get() const;
+   struct {
+      Persistent<Value> change;
+   } cb;
 
-   virtual Handle<Value> span_get() const;
-   virtual void span_set(Handle<Value> value);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   virtual Handle<Value> icon_get() const;
-   virtual void icon_set(Handle<Value> value);
+public:
+   static void Initialize(Handle<Object> target);
 
-   virtual Handle<Value> end_get() const;
-   virtual void end_set(Handle<Value> value);
+   void OnChange(void *);
+   static void OnChangeWrapper(void *, Evas_Object *, void *);
 
-   virtual Handle<Value> value_get() const;
-   virtual void value_set(Handle<Value> value);
+   void on_change_set(Handle<Value> val);
+   Handle<Value> on_change_get(void) const;
 
-   virtual Handle<Value> min_get() const;
-   virtual void min_set(Handle<Value> value);
+   void units_set(Handle<Value> value);
+   Handle<Value> units_get() const;
 
-   virtual Handle<Value> max_get() const;
-   virtual void max_set(Handle<Value> value);
+   void indicator_set(Handle<Value> value);
+   Handle<Value> indicator_get() const;
 
-   virtual Handle<Value> inverted_get() const;
-   virtual void inverted_set(Handle<Value> value);
+   Handle<Value> span_get() const;
+   void span_set(Handle<Value> value);
 
-   virtual Handle<Value> horizontal_get() const;
-   virtual void horizontal_set(Handle<Value> value);
+   Handle<Value> icon_get() const;
+   void icon_set(Handle<Value> value);
 
-   virtual void on_changed_set(Handle<Value> val);
-   virtual Handle<Value> on_changed_get(void) const;
+   Handle<Value> end_get() const;
+   void end_set(Handle<Value> value);
+
+   Handle<Value> value_get() const;
+   void value_set(Handle<Value> value);
+
+   Handle<Value> min_get() const;
+   void min_set(Handle<Value> value);
+
+   Handle<Value> max_get() const;
+   void max_set(Handle<Value> value);
+
+   Handle<Value> inverted_get() const;
+   void inverted_set(Handle<Value> value);
+
+   Handle<Value> horizontal_get() const;
+   void horizontal_set(Handle<Value> value);
+
+   friend Handle<Value> CElmObject::New<CElmSlider>(const Arguments& args);
 };
 
-#endif // C_ELM_SLIDER_H
+}
+#endif
