@@ -48,8 +48,7 @@ CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
 
 void CElmWindow::Initialize(Handle<Object> target)
 {
-   target->Set(String::NewSymbol("Window"),
-               GetTemplate()->GetFunction());
+   target->Set(String::NewSymbol("Window"), GetTemplate()->GetFunction());
 }
 
 void CElmWindow::Delete(Persistent<Value>, void *paramenter)
