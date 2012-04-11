@@ -1,26 +1,29 @@
-#!/usr/local/bin/elev8
+//elm = require('../build/Release/elm')
+elm = require('elm');
+//console.log(1 + 1)
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var small_icon = elm.datadir + "data/images/logo_small.png";
+var bg = elm.Background({
+});
 
-var my_window = new elm.Window({
-    type : "main",
-    title : "Background Demo",
-    width : 320,
-    height : 480,
-    align : FILL_BOTH,
-    weight : EXPAND_BOTH,
-    elements : {
-        the_background : {
-            type : "background",
+var w = elm.Window({
+    title: "test",
+    x: 100,
+    y: 200,
+    width: 800,
+    height: 600,
+    elements: {
+        background: elm.Background({
             weight : EXPAND_BOTH,
             align : FILL_BOTH,
             resize : true,
             red : 255,
             green : 0,
             blue : 0,
-        },
+        }),
     },
 });
+
+var e = elm.realise(w);
