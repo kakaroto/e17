@@ -16,33 +16,31 @@ mod_LTLIBRARIES = libelm.la
 libelm_la_SOURCES = \
 	main.cc \
 	CElmActionSlider.cc \
-	CElmObject.cc \
-	CElmWindow.cc \
 	CElmBackground.cc \
 	CElmBox.cc \
+	CElmBubble.cc \
 	CElmButton.cc \
 	CElmCalendar.cc \
 	CElmCheck.cc \
 	CElmClock.cc \
 	CElmColorSelector.cc \
 	CElmDaySelector.cc \
-	CElmLabel.cc \
-	CElmBubble.cc \
 	CElmEntry.cc \
 	CElmFlip.cc \
 	CElmHover.cc \
 	CElmIcon.cc \
-	CElmRadio.cc \
 	CElmInwin.cc \
+	CElmLabel.cc \
+	CElmObject.cc \
 	CElmProgressBar.cc \
-	CElmSlider.cc \
+	CElmRadio.cc \
 	CElmSegment.cc \
-	CElmSpinner.cc
+	CElmSlider.cc \
+	CElmSpinner.cc \
+	CElmWindow.cc
 
 #	Main.cc \
-#	CElmBackground.cc \
 #	CElmBasicWindow.cc \
-#	CElmBubble.cc \
 #	CElmConform.cc \
 #	CElmCtxPopup.cc \
 #	CElmDateTime.cc \
@@ -51,7 +49,6 @@ libelm_la_SOURCES = \
 #	CElmFileSelector.cc \
 #	CElmGenList.cc \
 #	CElmGrid.cc \
-#	CElmIcon.cc \
 #	CElmImage.cc \
 #	CElmLayout.cc \
 #	CElmMenu.cc \

@@ -6,10 +6,9 @@ using namespace v8;
 
 #include "elm.h"
 #include "CElmActionSlider.h"
-#include "CElmObject.h"
-#include "CElmWindow.h"
 #include "CElmBackground.h"
 #include "CElmBox.h"
+#include "CElmBubble.h"
 #include "CElmButton.h"
 #include "CElmCalendar.h"
 #include "CElmCheck.h"
@@ -17,17 +16,18 @@ using namespace v8;
 #include "CElmColorSelector.h"
 #include "CElmDaySelector.h"
 #include "CElmEntry.h"
+#include "CElmFlip.h"
 #include "CElmHover.h"
 #include "CElmIcon.h"
+#include "CElmInwin.h"
 #include "CElmLabel.h"
-#include "CElmBubble.h"
-#include "CElmFlip.h"
+#include "CElmObject.h"
+#include "CElmProgressBar.h"
+#include "CElmRadio.h"
 #include "CElmSegment.h"
 #include "CElmSlider.h"
 #include "CElmSpinner.h"
-#include "CElmRadio.h"
-#include "CElmInwin.h"
-#include "CElmProgressBar.h"
+#include "CElmWindow.h"
 
 namespace elm {
 
@@ -135,29 +135,29 @@ void RegisterModule(Handle<Object> target)
    elm_init(argc, argv);
 
    Initialize(target);
-   CElmObject::Initialize(target);
-   CElmWindow::Initialize(target);
+   CElmActionSlider::Initialize(target);
    CElmBackground::Initialize(target);
    CElmBox::Initialize(target);
+   CElmBubble::Initialize(target);
    CElmButton::Initialize(target);
    CElmCalendar::Initialize(target);
-   CElmClock::Initialize(target);
    CElmCheck::Initialize(target);
+   CElmClock::Initialize(target);
    CElmColorSelector::Initialize(target);
    CElmDaySelector::Initialize(target);
    CElmEntry::Initialize(target);
-   CElmActionSlider::Initialize(target);
+   CElmFlip::Initialize(target);
    CElmHover::Initialize(target);
    CElmIcon::Initialize(target);
+   CElmInwin::Initialize(target);
    CElmLabel::Initialize(target);
-   CElmBubble::Initialize(target);
-   CElmFlip::Initialize(target);
+   CElmObject::Initialize(target);
+   CElmProgressBar::Initialize(target);
+   CElmRadio::Initialize(target);
    CElmSegment::Initialize(target);
    CElmSlider::Initialize(target);
    CElmSpinner::Initialize(target);
-   CElmRadio::Initialize(target);
-   CElmInwin::Initialize(target);
-   CElmProgressBar::Initialize(target);
+   CElmWindow::Initialize(target);
 }
 
 }
