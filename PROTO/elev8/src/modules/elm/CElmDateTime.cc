@@ -227,7 +227,7 @@ void CElmDateTime::OnLangChangeWrapper(void *data, Evas_Object *, void *event_in
 
 void CElmDateTime::on_lang_change_set(Handle<Value> val)
 {
-   if (cb.change.IsEmpty())
+   if (!cb.change.IsEmpty())
      {
         evas_object_smart_callback_del(eo, "language,changed", &OnLangChangeWrapper);
         cb.change.Dispose();
