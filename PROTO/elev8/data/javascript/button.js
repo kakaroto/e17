@@ -1,3 +1,5 @@
+var elm = require('elm');
+
 var EXPAND_BOTH = { x: 1.0, y: 1.0 };
 var FILL_BOTH = { x: -1.0, y: -1.0 };
 
@@ -11,7 +13,7 @@ var logo_icon_unscaled = elm.Icon({
     resizable_down: false,
 });
 
-var w = new elm.Window({
+var w = elm.Window({
     label: "Button demo",
     width: 320,
     height: 480,
@@ -31,7 +33,7 @@ var w = new elm.Window({
                     icon_button: elm.Button({
                         label: "Icon sized to button",
                         weight: { x: -1.0, y: -1.0 },
-                        on_clicked: function(arg) {
+                        on_click: function(arg) {
                             print("clicked event on Button: 1 " + this.label);
                         },
                         on_unpressed: function(arg) {
@@ -47,11 +49,11 @@ var w = new elm.Window({
                     disabled: elm.Button({
                         label: "Disabled Button",
                         icon: logo_icon,
-                        disabled: true
+                        enabled: false
                     }),
                     disabled_icon: elm.Button({
                         icon: logo_icon,
-                        disabled: true
+                        enabled: false
                     }),
                     label_only: elm.Button({
                         label: "Label Only"
@@ -69,7 +71,7 @@ var w = new elm.Window({
                     }),
                     icon_anchor_style_disabled: elm.Button({
                         style: "anchor",
-                        disabled: true,
+                        enabled: false,
                         icon: logo_icon
                     })
                 }
