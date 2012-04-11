@@ -110,6 +110,11 @@ public:
 
    Handle<Value> Geton_key_down() const;
    void Seton_key_down(Handle<Value> val);
+
+   Handle<Value> Getelements() const;
+   void Setelements(Handle<Value> val);
+
+   static Handle<Value> Realise(const Arguments& args);
 };
 
 }

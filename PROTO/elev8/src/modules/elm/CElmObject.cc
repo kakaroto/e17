@@ -31,6 +31,36 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, on_animate);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_click);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_key_down);
 
+static inline Handle<Value> CallbackGetelements(Local<String>, const AccessorInfo &info) 
+{
+   return Undefined(); //info.This()->Get(String::New("_elements"));
+}
+
+static inline void CallbackSetelements(Local<String>, Local<Value> value, const AccessorInfo &info) 
+{
+   HandleScope scope;
+
+   Local<Object> obj = value->ToObject();
+   Local<Array> props = obj->GetOwnPropertyNames();
+   Handle<ObjectTemplate> elements = ObjectTemplate::New();
+
+   //obj->Set(String::New("_elements"), Handle<Value>::New(elements));
+
+   for (unsigned int i = 0; i < props->Length(); i++)
+     {
+        Local<String> key = props->Get(i)->ToString();
+        Local<Value> val = obj->Get(key);
+        Local<Value> params[2] = {val, info.This()};
+
+        Local<Object> elm = Context::GetCurrent()->Global()->Get(String::New("elm"))->ToObject();
+        Local<Function> realise = Local<Function>::Cast(elm->Get(String::New("realise")));
+        printf("%s:%d %d\n", __FUNCTION__, __LINE__, realise->IsFunction());
+
+        elements->Set(key, realise->Call(info.This(), 2, params));      
+     }
+}
+
+
 
 CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
    : eo(_eo)
@@ -94,6 +124,7 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(pointer),
                       PROPERTY(on_animate),
                       PROPERTY(on_click),
+                      PROPERTY(elements),
                       NULL);
 
    return tmpl;
@@ -594,6 +625,27 @@ void CElmObject::Seton_key_down(Handle<Value> val)
    cb.key_down = Persistent<Value>::New(val);
    evas_object_event_callback_add(eo, EVAS_CALLBACK_KEY_DOWN,
                                   &OnKeyDownWrapper, this);
+}
+
+Handle<Value> CElmObject::Realise(const Arguments& args)
+{
+   HandleScope scope;
+
+   Local<Object> desc = args[0]->ToObject();
+   Local<Array> props = desc->GetOwnPropertyNames();
+   Local<Value> func = desc->Get(String::New("type"));
+
+   Local<Value> params[] = {args[0], args[1]};
+   Local<Object> obj = Local<Function>::Cast(func)->NewInstance(2, params);
+   
+   for (unsigned int i = 0; i < props->Length(); i++) 
+     {
+        Local<String> key = props->Get(i)->ToString();
+        Local<Value> val = desc->Get(key);
+        obj->Set(key, val);
+     }
+   
+   return obj;
 }
 
 }

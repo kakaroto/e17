@@ -57,9 +57,17 @@ Handle<Value> CElmWindow::New(const Arguments& args)
 {
    HandleScope scope;
 
+   if (!args.IsConstructCall())
+     {
+        printf("seta o template\n");
+        Local<Object> obj = args[0]->ToObject();
+        if (obj->Get(String::New("type")) == Undefined())
+          obj->Set(String::New("type"), GetTemplate()->GetFunction());
+        return obj;
+     }
+
    CElmWindow *w = new CElmWindow(args.This(), NULL, "bla", ELM_WIN_BASIC);
    w->jsObject.MakeWeak(w, Delete);
-   w->ApplyProperties(args[0]->ToObject());
 
    return Undefined();
 }
