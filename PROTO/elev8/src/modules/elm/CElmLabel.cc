@@ -27,9 +27,7 @@ void CElmLabel::wrap_set(Handle<Value> wrap)
 
 Handle<Value> CElmLabel::wrap_get() const
 {
-   HandleScope scope;
-
-   return scope.Close(Integer::New(elm_label_line_wrap_get(eo)));
+   return Integer::New(elm_label_line_wrap_get(eo));
 }
 
 }
