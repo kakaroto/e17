@@ -1,11 +1,57 @@
 #include "CElmFileSelectorEntry.h"
 
-CElmFileSelectorEntry::CElmFileSelectorEntry(CEvasObject *parent, Local<Object> obj) 
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+//TODO : Add support for more events.
+//"changed"
+//"activated"
+//"press"
+//"longpressed"
+//"clicked"
+//"clicked,double"
+//"focused"
+//"unfocused"
+//"selection,paste"
+//"selection,copy"
+//"selection,cut"
+//"unpressed"
+
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, win_title);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, win_size);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, path);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, expandable);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, folder_only);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, is_save);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, inwin_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, selected);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorEntry, on_file_choose);
+
+GENERATE_TEMPLATE(CElmFileSelectorEntry,
+                  PROPERTY(win_title),
+                  PROPERTY(win_size),
+                  PROPERTY(path),
+                  PROPERTY(expandable),
+                  PROPERTY(folder_only),
+                  PROPERTY(is_save),
+                  PROPERTY(inwin_mode),
+                  PROPERTY(selected),
+                  PROPERTY(on_file_choose));
+
+CElmFileSelectorEntry::CElmFileSelectorEntry(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_fileselector_entry_add(parent->GetEvasObject()))
 {
-   eo = elm_fileselector_entry_add (parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmFileSelectorEntry::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("FileSelectorEntry"), GetTemplate()->GetFunction());
+}
+
+CElmFileSelectorEntry::~CElmFileSelectorEntry()
+{
+   on_file_choose_set(Undefined());
 }
 
 Handle<Value> CElmFileSelectorEntry::win_title_get() const
@@ -106,59 +152,40 @@ void CElmFileSelectorEntry::inwin_mode_set(Handle<Value> val)
      elm_fileselector_entry_inwin_mode_set(eo, val->BooleanValue());
 }
 
-//TODO : Add support for more events.
-//"changed" 
-//"activated" 
-//"press" 
-//"longpressed" 
-//"clicked" 
-//"clicked,double" 
-//"focused" 
-//"unfocused" 
-//"selection,paste" 
-//"selection,copy" 
-//"selection,cut" 
-//"unpressed" 
 
-void CElmFileSelectorEntry::on_click(void *event_info)
+void CElmFileSelectorEntry::OnFileChoose(void *event_info)
 {
    if (event_info == NULL)
      return;
 
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_clicked_val;
-
-   Handle<String> path = String::New((const char *)event_info);
-   Handle<Value> args[2] = { obj, path };
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   elm_fileselector_entry_path_set(eo, (const char *)event_info);
-   fn->Call(obj, 2, args);
+   Handle<Function> callback(Function::Cast(*cb.file_choose));
+   Handle<Value> args[2] = { jsObject, String::New((const char *)event_info) };
+   callback->Call(jsObject, 2, args);
 }
 
-void CElmFileSelectorEntry::on_clicked_set(Handle<Value> val)
+void CElmFileSelectorEntry::OnFileChooseWrapper(void *data, Evas_Object *, void *event_info)
 {
-   on_clicked_val.Dispose();
-   on_clicked_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "file,chosen", &eo_on_click, this);
-   else
-     evas_object_smart_callback_del(eo, "file,chosen", &eo_on_click);
+   static_cast<CElmFileSelectorEntry*>(data)->OnFileChoose(event_info);
 }
 
-Handle<Value> CElmFileSelectorEntry::on_clicked_get(void) const
+Handle<Value> CElmFileSelectorEntry::on_file_choose_get() const
 {
-   return on_clicked_val;
+   return cb.file_choose;
 }
 
-PROPERTIES_OF(CElmFileSelectorEntry) = {
-   PROP_HANDLER(CElmFileSelectorEntry, win_title),
-   PROP_HANDLER(CElmFileSelectorEntry, win_size),
-   PROP_HANDLER(CElmFileSelectorEntry, path),
-   PROP_HANDLER(CElmFileSelectorEntry, expandable),
-   PROP_HANDLER(CElmFileSelectorEntry, folder_only),
-   PROP_HANDLER(CElmFileSelectorEntry, is_save),
-   PROP_HANDLER(CElmFileSelectorEntry, inwin_mode),
-   PROP_HANDLER(CElmFileSelectorEntry, selected),
-   { NULL }
-};
+void CElmFileSelectorEntry::on_file_choose_set(Handle<Value> val)
+{
+   if (!cb.file_choose.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "file,chosen", &OnFileChooseWrapper);
+        cb.file_choose.Dispose();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.file_choose = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "file,chosen", &OnFileChooseWrapper, this);
+}
+
+}
