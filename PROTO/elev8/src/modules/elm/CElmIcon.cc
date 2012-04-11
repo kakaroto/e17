@@ -1,11 +1,29 @@
 #include "CElmIcon.h"
 
-CElmIcon::CElmIcon(CEvasObject * parent, Local <Object> obj)
-    : CEvasObject()
-    , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_up);
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_down);
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, prescale);
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, image);
+
+GENERATE_TEMPLATE(CElmIcon,
+   PROPERTY(resizable_up),
+   PROPERTY(resizable_down),
+   PROPERTY(prescale),
+   PROPERTY(image));
+
+CElmIcon::CElmIcon(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_icon_add(parent->GetEvasObject()))
 {
-    eo = elm_icon_add(parent->top_widget_get());
-    construct(eo, obj);
+}
+
+void CElmIcon::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Icon"),
+               GetTemplate()->GetFunction());
 }
 
 void CElmIcon::resizable_up_set(Handle<Value> val)
@@ -83,9 +101,4 @@ Handle<Value> CElmIcon::image_get(void) const
    return Null();
 }
 
-PROPERTIES_OF(CElmIcon) = {
-   PROP_HANDLER(CElmIcon, resizable_up),
-   PROP_HANDLER(CElmIcon, resizable_down),
-   PROP_HANDLER(CElmIcon, prescale),
-   { NULL }
-};
+}

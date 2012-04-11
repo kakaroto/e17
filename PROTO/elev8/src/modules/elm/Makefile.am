@@ -19,7 +19,8 @@ libelm_la_SOURCES = \
 	CElmObject.cc \
 	CElmWindow.cc \
 	CElmBackground.cc \
-	CElmBox.cc
+	CElmBox.cc \
+	CElmIcon.cc
 
 #	Main.cc \
 #	CElmBackground.cc \
