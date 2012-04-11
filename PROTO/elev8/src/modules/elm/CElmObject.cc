@@ -429,7 +429,8 @@ void CElmObject::layer_set(Handle<Value> val)
 
 Handle<Value> CElmObject::label_get() const
 {
-   return String::New(elm_object_text_get(eo));
+   const char *s = elm_object_text_get(eo);
+   return s ? String::New(s) : Undefined();
 }
 
 void CElmObject::label_set(Handle<Value> val)
