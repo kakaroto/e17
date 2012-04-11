@@ -1,50 +1,64 @@
+#include "elm.h"
 #include "CElmSegment.h"
 
-CElmSegment::CElmSegment(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
-{
-   eo = elm_segment_control_add(parent->get());
-   construct(eo, obj);
+namespace elm {
 
-   items_set(obj->Get(String::New("items")));
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmSegment, items);
+
+GENERATE_TEMPLATE(CElmSegment,
+                  PROPERTY(items));
+
+CElmSegment::CElmSegment(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_segment_control_add(parent->GetEvasObject()))
+{
+}
+
+CElmSegment::~CElmSegment()
+{
+   cached.items.Dispose();
+}
+
+void CElmSegment::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Segment"), GetTemplate()->GetFunction());
 }
 
 void CElmSegment::items_set(Handle<Value> val)
 {
-   HandleScope scope;
-
    if (!val->IsObject())
      {
-        ELM_ERR("not an object!");
+        ELM_ERR("Expecting an object to set the segment item names");
         return;
      }
 
    Local<Object> in = val->ToObject();
    Local<Array> props = in->GetPropertyNames();
-
-   /* iterate through elements and instantiate them */
    for (unsigned int i = 0; i < props->Length(); i++)
      {
         Local<Value> item = in->Get(props->Get(Integer::New(i))->ToString());
-        if (!item->IsObject())
+        Local<Value> label;
+
+        if (item->IsObject())
+          label = item->ToObject()->Get(String::NewSymbol("label"));
+        else if (item->IsString() || item->IsNumber())
+          label = item->ToString();
+        else
           {
-             // FIXME: permit adding strings here?
-             ELM_ERR("list item is not an object");
+             ELM_ERR("Invalid object type for segment label.");
              continue;
           }
 
-        Local<Value> label = item->ToObject()->Get(String::New("label"));
         elm_segment_control_item_add(eo, NULL, *String::Utf8Value(label));
      }
+
+   cached.items = Persistent<Value>::New(val);
 }
 
 Handle<Value> CElmSegment::items_get() const
 {
-   return Undefined();
+   return cached.items;
 }
 
-PROPERTIES_OF(CElmSegment) = {
-   PROP_HANDLER(CElmSegment, items),
-   { NULL }
-};
+}

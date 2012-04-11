@@ -1,21 +1,34 @@
 #ifndef C_ELM_SEGMENT_H
 #define C_ELM_SEGMENT_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-using namespace v8;
+namespace elm {
 
-class CElmSegment : public CEvasObject {
-   FACTORY(CElmSegment)
+class CElmSegment : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmSegment> prop_handler;
+   CElmSegment(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmSegment();
 
-   CElmSegment(CEvasObject *parent, Local<Object> obj);
+   struct {
+      Persistent<Value> items;
+   } cached;
+
+   static Handle<FunctionTemplate> GetTemplate();
+
 public:
-   void items_set(Handle<Value> val);
+   static void Initialize(Handle<Object> target);
+
    Handle<Value> items_get() const;
+   void items_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmSegment>(const Arguments& args);
 };
+
+}
 
 #endif
