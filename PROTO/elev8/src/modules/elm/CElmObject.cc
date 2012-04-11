@@ -53,11 +53,28 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
    for (unsigned int i = 0; i < props->Length(); i++)
      {
         Local<String> key = props->Get(i)->ToString();
-        Local<Value> val = obj->Get(key);
-        Local<Value> realizedObject = CElmObject::Realise(val, info.This());
+        Local<Object> val = obj->Get(key)->ToObject();
+        Local<Value> type = val->GetHiddenValue(String::NewSymbol("type"));
+        Local<Object> realisedObject;
 
-        elements->Set(key, realizedObject);
-        GetObjectFromAccessorInfo<CElmObject>(info)->DidRealiseElement(realizedObject);
+        if (!type.IsEmpty())
+          realisedObject = CElmObject::Realise(val, info.This());
+        else
+          {
+             Local<String> elementstr = String::NewSymbol("element");
+             if (!val->Has(elementstr))
+               {
+                  ELM_ERR("Need an object with 'element' property");
+                  continue;
+               }
+
+             realisedObject = val->Clone();
+             realisedObject->Set(elementstr,
+                                 CElmObject::Realise(val->Get(elementstr), info.This()));
+          }
+
+        elements->Set(key, realisedObject);
+        GetObjectFromAccessorInfo<CElmObject>(info)->DidRealiseElement(realisedObject);
      }
 
    info.This()->SetHiddenValue(String::NewSymbol("elements"), elements);
