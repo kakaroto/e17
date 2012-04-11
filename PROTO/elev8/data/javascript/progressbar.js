@@ -3,17 +3,15 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var logo_icon = {
-    type : "icon",
+var logo_icon = elm.Icon({
     image : elm.datadir + "data/images/logo_small.png",
-};
+});
 
-var logo_icon_unscaled = {
-    type : "icon",
+var logo_icon_unscaled = elm.Icon ({
     image : elm.datadir + "data/images/logo_small.png",
     resizable_up : false,
     resizable_down : false,
-};
+});
 
 var bars = new Array(4);
 var bouncers = new Array(3);
@@ -40,34 +38,28 @@ function bouncing(on) {
     }
 }
 
-var my_window = new elm.window({
-    type : "main",
-    label : "Progressbar",
+var desc = elm.Window({
+    title : "Progressbar",
     elements : {
-        the_background : {
-            type : "background",
+        the_background : elm.Background ({
             weight : EXPAND_BOTH,
             resize : true,
-        },
-        the_box : {
-            type : "box",
+        }),
+        the_box : elm.Box ({
             weight : EXPAND_BOTH,
             resize : true,
             elements : {
-                progress_plain : {
-                    type : "progressbar",
+                progress_plain : elm.ProgressBar ({
                     align : { x : -1.0, y : 0.5 },
                     weight : EXPAND_BOTH,
-                },
-                infinite_bounce : {
-                    type : "progressbar",
+                }),
+                infinite_bounce : elm.ProgressBar ({
                     label : "Infinite bounce",
                     align : { x : -1.0, y : 0.5 },
                     weight : EXPAND_BOTH,
-                    pulse : true,
-                },
-                icon_progress : {
-                    type : "progressbar",
+                    pulser : true,
+                }),
+                icon_progress : elm.ProgressBar ({
                     label : "Label",
                     icon : logo_icon,
                     inverted : true,
@@ -75,33 +67,29 @@ var my_window = new elm.window({
                     span : 200,
                     align : { x : -1.0, y : 0.5 },
                     weight : EXPAND_BOTH,
-                },
-                hbox : {
-                    type : "box",
+                }),
+                hbox : elm.Box ({
                     align : FILL_BOTH,
                     weight : EXPAND_BOTH,
                     horizontal : true,
                     elements : {
-                        vertical_pb : {
-                            type : "progressbar",
+                        vertical_pb : elm.ProgressBar ({
                             horizontal : false,
                             label : "percent",
                             align : FILL_BOTH,
                             weight : EXPAND_BOTH,
                             span : 60,
-                        },
-                        vert_infinite : {
-                            type : "progressbar",
+                        }),
+                        vert_infinite : elm.ProgressBar ({
                             horizontal : false,
                             label : "Infinite bounce",
                             align : { x : -1.0, y : 0.5 },
                             weight : EXPAND_BOTH,
                             units : "",
                             span : 80,
-                            pulse : true,
-                        },
-                        vert_icon : {
-                            type : "progressbar",
+                            pulser : true,
+                        }),
+                        vert_icon : elm.ProgressBar ({
                             label : "Label",
                             horizontal : false,
                             icon : logo_icon,
@@ -110,52 +98,48 @@ var my_window = new elm.window({
                             span : 200,
                             align : { x : -1.0, y : 0.5 },
                             weight : EXPAND_BOTH,
-                        },
+                        }),
                     },
-                },
-                wheel : {
-                    type : "progressbar",
+                }),
+                wheel : elm.ProgressBar ({
                     style : "wheel",
                     label : "Style: wheel",
                     align : { x : -1.0, y : 0.5 },
                     weight : EXPAND_BOTH,
-                },
-                button_box : {
-                    type : "box",
+                }),
+                button_box : elm.Box ({
                     weight : EXPAND_BOTH,
                     horizontal : true,
                     elements : {
-                        start : {
-                            type : "button",
+                        start : elm.Button ({
                             label : "Start",
-                            on_clicked : function() {
+                            on_click : function() {
                                 bouncing(true);
                                 set_animator(true);
                             },
-                        },
-                        stop : {
-                            type : "button",
+                        }),
+                        stop : elm.Button ({
                             label : "Stop",
-                            on_clicked : function() {
+                            on_click : function() {
                                 bouncing(false);
                                 set_animator(false);
                             },
-                        },
-                        exit : {
-                            type : "button",
+                        }),
+                        exit : elm.Button ({
                             label : "Exit",
-                            on_clicked : function() {
+                            on_click : function() {
                                 elm.exit();
                             },
-                        }
+                        })
                     },
-                },
+                }),
             },
-        },
+        }),
     },
 });
 
-var el = my_window.elements.the_box.elements;
+var win = elm.realise(desc);
+var el = win.elements.the_box.elements;
 
 bars[0] = el.progress_plain;
 bars[1] = el.icon_progress;

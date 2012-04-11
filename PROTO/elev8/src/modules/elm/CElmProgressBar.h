@@ -1,51 +1,55 @@
 #ifndef C_ELM_PROGRESS_BAR_H
 #define C_ELM_PROGRESS_BAR_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmProgressBar : public CEvasObject {
-     FACTORY(CElmProgressBar)
-   protected:
-        CPropHandler<CElmProgressBar> prop_handler;
-        Persistent<Value> the_icon;
+namespace elm {
 
-        static Handle<Value> do_pulse(const Arguments& args);
+using namespace v8;
 
-   public:
-        CElmProgressBar(CEvasObject *parent, Local<Object> obj);
+class CElmProgressBar : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
-        virtual ~CElmProgressBar();
+protected:
+   CElmProgressBar(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
+   virtual ~CElmProgressBar();
 
-        virtual void pulse(bool on);
+   struct {
+      Persistent<Value> icon;
+   } cached;
 
-        virtual Handle<Value> icon_get() const;
+public:
+   static void Initialize(Handle<Object> target);
 
-        virtual void icon_set(Handle<Value> value);
+   Handle<Value> pulse(const Arguments& args);
 
-        virtual Handle<Value> inverted_get() const;
+   Handle<Value> icon_get() const;
+   void icon_set(Handle<Value> value);
 
-        virtual void inverted_set(Handle<Value> value);
+   Handle<Value> inverted_get() const;
+   void inverted_set(Handle<Value> value);
 
-        virtual Handle<Value> horizontal_get() const;
+   Handle<Value> horizontal_get() const;
+   void horizontal_set(Handle<Value> value);
 
-        virtual void horizontal_set(Handle<Value> value);
+   Handle<Value> units_get() const;
+   void units_set(Handle<Value> value);
 
-        virtual Handle<Value> units_get() const;
+   Handle<Value> span_get() const;
+   void span_set(Handle<Value> value);
 
-        virtual void units_set(Handle<Value> value);
+   Handle<Value> pulser_get() const;
+   void pulser_set(Handle<Value> value);
 
-        virtual Handle<Value> span_get() const;
+   Handle<Value> value_get() const;
+   void value_set(Handle<Value> value);
 
-        virtual void span_set(Handle<Value> value);
-
-        virtual Handle<Value> pulser_get() const;
-
-        virtual void pulser_set(Handle<Value> value);
-
-        virtual Handle<Value> value_get() const;
-
-        virtual void value_set(Handle<Value> value);
+   friend Handle<Value> CElmObject::New<CElmProgressBar>(const Arguments& args);
 };
+
+}
 
 #endif

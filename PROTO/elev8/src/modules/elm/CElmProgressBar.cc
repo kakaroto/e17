@@ -1,44 +1,60 @@
 #include "CElmProgressBar.h"
 
-Handle<Value> CElmProgressBar::do_pulse(const Arguments& args)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, icon);
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, inverted);
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, horizontal);
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, units);
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, span);
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, pulser);
+GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, value);
+GENERATE_METHOD_CALLBACKS(CElmProgressBar, pulse);
+
+GENERATE_TEMPLATE(CElmProgressBar,
+                  PROPERTY(icon),
+                  PROPERTY(inverted),
+                  PROPERTY(horizontal),
+                  PROPERTY(units),
+                  PROPERTY(span),
+                  PROPERTY(pulser),
+                  PROPERTY(value),
+                  METHOD(pulse));
+
+Handle<Value> CElmProgressBar::pulse(const Arguments& args)
 {
-   CEvasObject *self = eo_from_info(args.This());
-   CElmProgressBar *progress = static_cast<CElmProgressBar *>(self);
    if (args[0]->IsBoolean())
-     progress->pulse(args[0]->BooleanValue());
+     elm_progressbar_pulse(eo, args[0]->BooleanValue());
    return Undefined();
 }
 
-CElmProgressBar::CElmProgressBar(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+CElmProgressBar::CElmProgressBar(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_progressbar_add(parent->GetEvasObject()))
 {
-   eo = elm_progressbar_add(parent->get());
-   construct(eo, obj);
-   get_object()->Set(String::New("pulse"), FunctionTemplate::New(do_pulse)->GetFunction());
+}
+
+void CElmProgressBar::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("ProgressBar"), GetTemplate()->GetFunction());
 }
 
 CElmProgressBar::~CElmProgressBar()
 {
-   the_icon.Dispose();
-}
-
-void CElmProgressBar::pulse(bool on)
-{
-   elm_progressbar_pulse(eo, on);
+   cached.icon.Dispose();
 }
 
 Handle<Value> CElmProgressBar::icon_get() const
 {
-   return the_icon;
+   return cached.icon;
 }
 
 void CElmProgressBar::icon_set(Handle<Value> value)
 {
-   the_icon.Dispose();
-   CEvasObject *icon = make_or_get(this, value);
-   elm_object_content_set(eo, icon->get());
-   the_icon = Persistent<Value>::New(icon->get_object());
+   cached.icon.Dispose();
+   cached.icon = Persistent<Value>::New(Realise(value, jsObject));
+   elm_object_content_set(eo, GetEvasObjectFromJavascript(cached.icon));
 }
 
 Handle<Value> CElmProgressBar::inverted_get() const
@@ -107,14 +123,4 @@ void CElmProgressBar::value_set(Handle<Value> value)
      elm_progressbar_value_set(eo, value->NumberValue());
 }
 
-PROPERTIES_OF(CElmProgressBar) = {
-     PROP_HANDLER(CElmProgressBar, icon),
-     PROP_HANDLER(CElmProgressBar, inverted),
-     PROP_HANDLER(CElmProgressBar, horizontal),
-     PROP_HANDLER(CElmProgressBar, units),
-     PROP_HANDLER(CElmProgressBar, span),
-     PROP_HANDLER(CElmProgressBar, pulser),
-     PROP_HANDLER(CElmProgressBar, value),
-     { NULL }
-};
-
+}
