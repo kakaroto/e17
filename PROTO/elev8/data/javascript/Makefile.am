@@ -27,12 +27,10 @@ files_SCRIPTS = \
 	flip.js \
 	genlist.js \
 	grid.js \
-	http_menu.js \
 	http_test.js \
 	inwin.js \
 	label.js \
 	layout.js \
-	menu.js \
 	notepad.js \
 	notify.js \
 	panes.js \

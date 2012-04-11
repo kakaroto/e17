@@ -53,7 +53,6 @@ libelm_la_SOURCES = \
 #	CElmGenList.cc \
 #	CElmGrid.cc \
 #	CElmLayout.cc \
-#	CElmMenu.cc \
 #	CElmNaviframe.cc \
 #	CElmNotify.cc \
 #	CElmPane.cc \
