@@ -51,14 +51,14 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
         Local<Value> val = obj->Get(key);
         Local<Value> params[2] = {val, info.This()};
 
-        Local<Object> elm = Context::GetCurrent()->Global()->Get(String::New("elm"))->ToObject();
-        Local<Function> realise = Local<Function>::Cast(elm->Get(String::New("realise")));
+        Local<Object> elm = Context::GetCurrent()->Global()->Get(String::NewSymbol("elm"))->ToObject();
+        Local<Function> realise = Local<Function>::Cast(elm->Get(String::NewSymbol("realise")));
         printf("%s:%d %d\n", __FUNCTION__, __LINE__, realise->IsFunction());
 
         elements->Set(key, realise->Call(info.This(), 2, params));
      }
 
-   info.This()->SetHiddenValue(String::New("elements"), elements);
+   info.This()->SetHiddenValue(String::NewSymbol("elements"), elements);
 }
 
 
@@ -69,7 +69,7 @@ CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
 {
    jsObject = Persistent<Object>::New(_jsObject);
    jsObject->SetPointerInInternalField(0, this);
-   jsObject->SetHiddenValue(String::New("elements"), Undefined());
+   jsObject->SetHiddenValue(String::NewSymbol("elements"), Undefined());
 }
 
 CElmObject::~CElmObject()
