@@ -14,49 +14,53 @@ moddir = $(libdir)/$(PACKAGE)/$(MODULE_ARCH)
 mod_LTLIBRARIES = libelm.la
 
 libelm_la_SOURCES = \
-	Main.cc \
-	CElmActionSlider.cc \
-	CElmBackground.cc \
-	CElmBasicWindow.cc \
-	CElmBox.cc \
-	CElmBubble.cc \
-	CElmButton.cc \
-	CElmCalendar.cc \
-	CElmCheck.cc \
-	CElmClock.cc \
-	CElmColorSelector.cc \
-	CElmConform.cc \
-	CElmCtxPopup.cc \
-	CElmDateTime.cc \
-	CElmDaySelector.cc \
-	CElmEntry.cc \
-	CElmFileSelectorButton.cc \
-	CElmFileSelectorEntry.cc \
-	CElmFileSelector.cc \
-	CElmFlip.cc \
-	CElmGenList.cc \
-	CElmGrid.cc \
-	CElmHover.cc \
-	CElmIcon.cc \
-	CElmImage.cc \
-	CElmInwin.cc \
-	CElmLabel.cc \
-	CElmLayout.cc \
-	CElmMenu.cc \
-	CElmNaviframe.cc \
-	CElmNotify.cc \
-	CElmPane.cc \
-	CElmPhotocam.cc \
-	CElmPhoto.cc \
-	CElmProgressBar.cc \
-	CElmRadio.cc \
-	CElmScroller.cc \
-	CElmSegment.cc \
-	CElmSlider.cc \
-	CElmSpinner.cc \
-	CElmTable.cc \
-	CEvasImage.cc \
-	CEvasObject.cc
+	main.cc \
+	CElmObject.cc \
+	CElmWindow.cc
+
+#	Main.cc \
+#	CElmActionSlider.cc \
+#	CElmBackground.cc \
+#	CElmBasicWindow.cc \
+#	CElmBox.cc \
+#	CElmBubble.cc \
+#	CElmButton.cc \
+#	CElmCalendar.cc \
+#	CElmCheck.cc \
+#	CElmClock.cc \
+#	CElmColorSelector.cc \
+#	CElmConform.cc \
+#	CElmCtxPopup.cc \
+#	CElmDateTime.cc \
+#	CElmDaySelector.cc \
+#	CElmEntry.cc \
+#	CElmFileSelectorButton.cc \
+#	CElmFileSelectorEntry.cc \
+#	CElmFileSelector.cc \
+#	CElmFlip.cc \
+#	CElmGenList.cc \
+#	CElmGrid.cc \
+#	CElmHover.cc \
+#	CElmIcon.cc \
+#	CElmImage.cc \
+#	CElmInwin.cc \
+#	CElmLabel.cc \
+#	CElmLayout.cc \
+#	CElmMenu.cc \
+#	CElmNaviframe.cc \
+#	CElmNotify.cc \
+#	CElmPane.cc \
+#	CElmPhotocam.cc \
+#	CElmPhoto.cc \
+#	CElmProgressBar.cc \
+#	CElmRadio.cc \
+#	CElmScroller.cc \
+#	CElmSegment.cc \
+#	CElmSlider.cc \
+#	CElmSpinner.cc \
+#	CElmTable.cc \
+#	CEvasImage.cc \
+#	CEvasObject.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
