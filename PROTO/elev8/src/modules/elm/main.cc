@@ -17,6 +17,7 @@ using namespace v8;
 #include "CElmDaySelector.h"
 #include "CElmEntry.h"
 #include "CElmFileSelector.h"
+#include "CElmFileSelectorButton.h"
 #include "CElmFileSelectorEntry.h"
 #include "CElmFlip.h"
 #include "CElmHover.h"
@@ -154,6 +155,7 @@ void RegisterModule(Handle<Object> target)
    CElmDaySelector::Initialize(target);
    CElmEntry::Initialize(target);
    CElmFileSelector::Initialize(target);
+   CElmFileSelectorButton::Initialize(target);
    CElmFileSelectorEntry::Initialize(target);
    CElmFlip::Initialize(target);
    CElmHover::Initialize(target);

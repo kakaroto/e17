@@ -1,11 +1,41 @@
 #include "CElmFileSelectorButton.h"
 
-CElmFileSelectorButton::CElmFileSelectorButton(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, win_title);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, win_size);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, path);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, expandable);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, folder_only);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, is_save);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, inwin_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, on_file_choose);
+
+GENERATE_TEMPLATE(CElmFileSelectorButton,
+                  PROPERTY(win_title),
+                  PROPERTY(win_size),
+                  PROPERTY(path),
+                  PROPERTY(expandable),
+                  PROPERTY(folder_only),
+                  PROPERTY(is_save),
+                  PROPERTY(inwin_mode),
+                  PROPERTY(on_file_choose));
+
+CElmFileSelectorButton::CElmFileSelectorButton(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_fileselector_button_add(parent->GetEvasObject()))
 {
-   eo = elm_fileselector_button_add (parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmFileSelectorButton::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("FileSelectorButton"), GetTemplate()->GetFunction());
+}
+
+CElmFileSelectorButton::~CElmFileSelectorButton()
+{
+   on_file_choose_set(Undefined());
 }
 
 Handle<Value> CElmFileSelectorButton::win_title_get() const
@@ -102,46 +132,39 @@ void CElmFileSelectorButton::inwin_mode_set(Handle<Value> val)
      elm_fileselector_button_inwin_mode_set(eo, val->BooleanValue());
 }
 
-void CElmFileSelectorButton::on_click(void *event_info)
+void CElmFileSelectorButton::OnFileChoose(void *event_info)
 {
-   HandleScope handle_scope;
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_clicked_val;
-
-   if (!event_info)
+   if (event_info == NULL)
      return;
 
-   // FIXME: Also provide click coordinates.
-   Handle<String> path = String::New((const char *)event_info);
-   Handle<Value> args[2] = { obj, path };
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   fn->Call(obj, 2, args);
+   Handle<Function> callback(Function::Cast(*cb.file_choose));
+   Handle<Value> args[2] = { jsObject, String::New((const char *)event_info) };
+   callback->Call(jsObject, 2, args);
 }
 
-void CElmFileSelectorButton::on_clicked_set(Handle<Value> val)
+void CElmFileSelectorButton::OnFileChooseWrapper(void *data, Evas_Object *, void *event_info)
 {
-   on_clicked_val.Dispose();
-
-   on_clicked_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "file,chosen", &eo_on_click, this);
-   else
-     evas_object_smart_callback_del(eo, "file,chosen", &eo_on_click);
+   static_cast<CElmFileSelectorButton*>(data)->OnFileChoose(event_info);
 }
 
-Handle<Value> CElmFileSelectorButton::on_clicked_get(void) const
+Handle<Value> CElmFileSelectorButton::on_file_choose_get() const
 {
-   return on_clicked_val;
+   return cb.file_choose;
 }
 
-PROPERTIES_OF(CElmFileSelectorButton) = {
-   PROP_HANDLER(CElmFileSelectorButton, win_title),
-   PROP_HANDLER(CElmFileSelectorButton, win_size),
-   PROP_HANDLER(CElmFileSelectorButton, path),
-   PROP_HANDLER(CElmFileSelectorButton, expandable),
-   PROP_HANDLER(CElmFileSelectorButton, folder_only),
-   PROP_HANDLER(CElmFileSelectorButton, is_save),
-   PROP_HANDLER(CElmFileSelectorButton, inwin_mode),
-   { NULL }
-};
+void CElmFileSelectorButton::on_file_choose_set(Handle<Value> val)
+{
+   if (!cb.file_choose.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "file,chosen", &OnFileChooseWrapper);
+        cb.file_choose.Dispose();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.file_choose = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "file,chosen", &OnFileChooseWrapper, this);
+}
+
+}
