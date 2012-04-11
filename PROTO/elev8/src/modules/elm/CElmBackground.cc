@@ -18,10 +18,7 @@ GENERATE_TEMPLATE(CElmBackground,
 
 CElmBackground::CElmBackground(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_bg_add(parent->GetEvasObject()))
-//   , prop_handler(property_list_base)
 {
-//   eo = elm_bg_add(parent->get());
-//   construct(eo, obj);
 }
 
 void CElmBackground::Initialize(Handle<Object> target)
@@ -44,7 +41,7 @@ Handle<Value> CElmBackground::New(const Arguments& args)
    CElmObject *parent = static_cast<CElmObject *>(args[1]->ToObject()->GetPointerFromInternalField(0));
    CElmBackground *bg = new CElmBackground(args.This(), parent);
    bg->jsObject.MakeWeak(bg, Delete);
-   printf("%s::%s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+
    return Undefined();
 }
 
@@ -81,8 +78,6 @@ void CElmBackground::red_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
-
-   printf("%s::%s:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
    int g, b;
    elm_bg_color_get(eo, NULL, &g, &b);

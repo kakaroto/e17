@@ -43,7 +43,6 @@ CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent, const char *
 {
    evas_object_focus_set(eo, 1);
    evas_object_smart_callback_add(eo, "delete,request", &quit, NULL);
-   evas_object_resize(eo, 320, 320);
    evas_object_show(eo);
 }
 
@@ -59,7 +58,6 @@ Handle<Value> CElmWindow::New(const Arguments& args)
 
    if (!args.IsConstructCall())
      {
-        printf("seta o template\n");
         Local<Object> obj = args[0]->ToObject();
         obj->SetHiddenValue(String::New("type"), GetTemplate()->GetFunction());
         return obj;

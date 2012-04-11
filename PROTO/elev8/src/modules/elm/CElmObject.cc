@@ -53,7 +53,6 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
 
         Local<Object> elm = Context::GetCurrent()->Global()->Get(String::NewSymbol("elm"))->ToObject();
         Local<Function> realise = Local<Function>::Cast(elm->Get(String::NewSymbol("realise")));
-        printf("%s:%d %d\n", __FUNCTION__, __LINE__, realise->IsFunction());
 
         elements->Set(key, realise->Call(info.This(), 2, params));
      }
