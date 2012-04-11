@@ -45,6 +45,9 @@ fail:
    return ret;
 }
 
+#define JSERR(...) eina_log_print(elev8_log_domain,\
+                             EINA_LOG_LEVEL_ERR, ## __VA_ARGS__)
+
 void
 boom(TryCatch &try_catch)
 {
@@ -57,31 +60,30 @@ boom(TryCatch &try_catch)
      {
         String::Utf8Value file(msg->GetScriptResourceName());
         int line = msg->GetLineNumber();
-        ERR("%s:%d %s", *file, line, *error);
+        JSERR(*file, "", line, "%s", *error);
 
         Handle<StackTrace> trace = msg->GetStackTrace();
         if (trace.IsEmpty())
           {
-             ERR("   No stack trace available.");
+             JSERR(*file, "", line, "   No stack trace available.");
              goto end;
           }
 
         unsigned frame_count = trace->GetFrameCount();
         if (!frame_count)
           {
-             ERR("   Stack trace is empty.");
+             JSERR(*file, "", line, "   Stack trace is empty.");
              goto end;
           }
 
-        ERR("Stack trace:");
+        JSERR(*file, "", line, "   Stack trace:");
         for (unsigned i = 0; i < frame_count; i++)
           {
              Local<StackFrame> frame = trace->GetFrame(i);
-             ERR("   %s:%d,%d: %s",
-                *String::AsciiValue(frame->GetScriptName()),
-                frame->GetLineNumber(),
-                frame->GetColumn(),
-                *String::AsciiValue(frame->GetFunctionName()));
+
+             JSERR(*String::AsciiValue(frame->GetScriptName()),
+                   *String::AsciiValue(frame->GetFunctionName()),
+                   frame->GetLineNumber(), "   <- #%d", i);
           }
      }
 
