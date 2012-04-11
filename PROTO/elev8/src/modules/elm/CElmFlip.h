@@ -14,13 +14,14 @@ private:
 
 protected:
    CElmFlip(Local<Object> _jsObject, CElmObject *parent);
-   static Handle<FunctionTemplate> GetTemplate();
    virtual ~CElmFlip();
 
    struct {
       Persistent<Value> front;
       Persistent<Value> back;
    } cached;
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
    static void Initialize(Handle<Object> target);
