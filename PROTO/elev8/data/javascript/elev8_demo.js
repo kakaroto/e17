@@ -48,7 +48,7 @@ var logo_icon = {
 var logo_end = {
     type : "icon",
     prescale : 20,
-    image : elm.datadir + "bubble.png",
+    image : elm.datadir + "bubble_bb.png",
 };
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };

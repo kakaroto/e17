@@ -19,6 +19,7 @@ using namespace v8;
 #include "CElmFlip.h"
 #include "CElmHover.h"
 #include "CElmIcon.h"
+#include "CElmImage.h"
 #include "CElmInwin.h"
 #include "CElmLabel.h"
 #include "CElmObject.h"
@@ -149,6 +150,7 @@ void RegisterModule(Handle<Object> target)
    CElmFlip::Initialize(target);
    CElmHover::Initialize(target);
    CElmIcon::Initialize(target);
+   CElmImage::Initialize(target);
    CElmInwin::Initialize(target);
    CElmLabel::Initialize(target);
    CElmObject::Initialize(target);

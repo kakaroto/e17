@@ -1,50 +1,54 @@
+#include "elm.h"
 #include "CElmImage.h"
 
-CElmImage::CElmImage(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmImage, file);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, smooth);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, no_scale);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, fill_outside);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, editable);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, aspect_fixed);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, prescale);
+GENERATE_PROPERTY_CALLBACKS(CElmImage, orient);
+
+GENERATE_TEMPLATE(CElmImage,
+                  PROPERTY(file),
+                  PROPERTY(smooth),
+                  PROPERTY(no_scale),
+                  PROPERTY(fill_outside),
+                  PROPERTY(editable),
+                  PROPERTY(aspect_fixed),
+                  PROPERTY(prescale),
+                  PROPERTY(orient));
+
+CElmImage::CElmImage(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_image_add(parent->GetEvasObject()))
 {
-   eo = elm_image_add(parent->top_widget_get());
-   construct(eo, obj);
 }
 
-void CElmImage::resize_set(Handle<Value> val)
+void CElmImage::Initialize(Handle<Object> target)
 {
-   if (val->IsBoolean())
-     {
-        Evas_Object *parent = elm_object_top_widget_get(eo);
-        if (!parent)
-          ELM_ERR( "resize object has no parent!");
-        else
-          {
-             is_resize = val->BooleanValue();
-             if (is_resize)
-               elm_win_resize_object_add(parent, eo);
-             else
-               elm_win_resize_object_del(parent, eo);
-          }
-     }
-   else
-     ELM_ERR( "Resize value not boolean!");
+   target->Set(String::NewSymbol("Image"), GetTemplate()->GetFunction());
 }
-
 
 void CElmImage::file_set(Handle<Value> val)
 {
-   if (val->IsString())
-     {
-        String::Utf8Value str(val);
-        if (0 > access(*str, R_OK))
-          ELM_WRN( "warning: can't read image file %s", *str);
-        elm_image_file_set(eo, *str, NULL);
-     }
-   ELM_ERR("Value is not string.\n");
+   if (!val->IsString())
+     return;
+
+   String::Utf8Value str(val);
+   if (!elm_image_file_set(eo, *str, NULL))
+     ELM_WRN( "warning: can't set image file %s", *str);
 }
 
 Handle<Value> CElmImage::file_get(void) const
 {
-   const char *f = NULL, *key = NULL;
-   elm_image_file_get(eo, &f, &key);
+   const char *f = NULL;
+
+   elm_image_file_get(eo, &f, NULL);
    if (f)
      return String::New(f);
    else
@@ -108,40 +112,26 @@ void CElmImage::aspect_fixed_set(Handle<Value> val)
 
 Handle<Value> CElmImage::prescale_get() const
 {
-   int prescale=elm_image_prescale_get(eo);
+   int prescale = elm_image_prescale_get(eo);
    return Integer::New(prescale);
 }
 
 void CElmImage::prescale_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        elm_image_prescale_set(eo, val->IntegerValue());
-     }
+     elm_image_prescale_set(eo, val->IntegerValue());
 }
 
 Handle<Value> CElmImage::orient_get() const
 {
-   int orient=elm_image_orient_get(eo);
+   int orient = elm_image_orient_get(eo);
    return Integer::New(orient);
 }
 
 void CElmImage::orient_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     {
-        elm_image_orient_set(eo, (Elm_Image_Orient)val->IntegerValue());
-     }
+     elm_image_orient_set(eo, (Elm_Image_Orient)val->IntegerValue());
 }
 
-PROPERTIES_OF(CElmImage) = {
-  PROP_HANDLER(CElmImage, file),
-  PROP_HANDLER(CElmImage, smooth),
-  PROP_HANDLER(CElmImage, no_scale),
-  PROP_HANDLER(CElmImage, fill_outside),
-  PROP_HANDLER(CElmImage, prescale),
-  PROP_HANDLER(CElmImage, orient),
-  PROP_HANDLER(CElmImage, editable),
-  PROP_HANDLER(CElmImage, aspect_fixed),
-  { NULL }
-};
+}

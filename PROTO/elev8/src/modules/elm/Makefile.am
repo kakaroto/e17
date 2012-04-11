@@ -29,6 +29,7 @@ libelm_la_SOURCES = \
 	CElmFlip.cc \
 	CElmHover.cc \
 	CElmIcon.cc \
+	CElmImage.cc \
 	CElmInwin.cc \
 	CElmLabel.cc \
 	CElmObject.cc \
@@ -49,7 +50,6 @@ libelm_la_SOURCES = \
 #	CElmFileSelector.cc \
 #	CElmGenList.cc \
 #	CElmGrid.cc \
-#	CElmImage.cc \
 #	CElmLayout.cc \
 #	CElmMenu.cc \
 #	CElmNaviframe.cc \

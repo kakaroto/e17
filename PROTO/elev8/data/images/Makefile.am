@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 filesdir = $(pkgdatadir)/data/images
 files_DATA = \
 	bg.png	\
-	bubble.png \
+	bubble_bb.png \
 	bubble_sh.png \
 	logo_small.png \
 	pt.png \

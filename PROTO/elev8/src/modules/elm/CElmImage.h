@@ -1,53 +1,49 @@
 #ifndef C_ELM_IMAGE_H
 #define C_ELM_IMAGE_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-using namespace v8;
+namespace elm {
 
-class CElmImage : public CEvasObject {
-   FACTORY(CElmImage)
+class CElmImage : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmImage> prop_handler;
+   CElmImage(Local<Object> _jsObject, CElmObject *parent);
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   CElmImage(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-   virtual void resize_set(Handle<Value> val);
+   Handle<Value> file_get(void) const;
+   void file_set(Handle<Value> val);
 
-   virtual void file_set(Handle<Value> val);
+   Handle<Value> smooth_get() const;
+   void smooth_set(Handle<Value> val);
 
-   virtual Handle<Value> file_get(void) const;
+   Handle<Value> no_scale_get() const;
+   void no_scale_set(Handle<Value> val);
 
-   virtual Handle<Value> smooth_get() const;
+   Handle<Value> fill_outside_get() const;
+   void fill_outside_set(Handle<Value> val);
 
-   virtual void smooth_set(Handle<Value> val);
+   Handle<Value> editable_get() const;
+   void editable_set(Handle<Value> val);
 
-   virtual Handle<Value> no_scale_get() const;
+   Handle<Value> aspect_fixed_get() const;
+   void aspect_fixed_set(Handle<Value> val);
 
-   virtual void no_scale_set(Handle<Value> val);
+   Handle<Value> prescale_get() const;
+   void prescale_set(Handle<Value> val);
 
-   virtual Handle<Value> fill_outside_get() const;
+   Handle<Value> orient_get() const;
+   void orient_set(Handle<Value> val);
 
-   virtual void fill_outside_set(Handle<Value> val);
-
-   virtual Handle<Value> editable_get() const;
-
-   virtual void editable_set(Handle<Value> val);
-
-   virtual Handle<Value> aspect_fixed_get() const;
-
-   virtual void aspect_fixed_set(Handle<Value> val);
-
-   virtual Handle<Value> prescale_get() const;
-
-   virtual void prescale_set(Handle<Value> val);
-
-   virtual Handle<Value> orient_get() const;
-
-   virtual void orient_set(Handle<Value> val);
+   friend Handle<Value> CElmObject::New<CElmImage>(const Arguments& args);
 };
 
+}
 #endif
