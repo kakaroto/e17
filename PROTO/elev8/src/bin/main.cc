@@ -63,7 +63,7 @@ run_script(const char *filename)
    Handle<String> source = string_from_file(filename);
    if (!source.IsEmpty())
      {
-        compile_and_run(source);
+        compile_and_run(source, filename);
         return true;
      }
 

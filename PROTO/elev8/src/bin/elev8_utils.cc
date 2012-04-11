@@ -89,12 +89,13 @@ end:
    exit(1);
 }
 
-void compile_and_run(Handle<String> source)
+void compile_and_run(Handle<String> source, const char *filename)
 {
    TryCatch try_catch;
 
    /* compile */
-   Local<Script> script = Script::Compile(source);
+   Local<Script> script = Script::Compile(source,
+                                          String::New(filename));
    if (try_catch.HasCaught())
      boom(try_catch);
 
