@@ -1,18 +1,30 @@
 #ifndef C_ELM_LABEL_H
 #define C_ELM_LABEL_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmLabel : public CEvasObject {
-   FACTORY(CElmLabel)
+namespace elm {
+
+using namespace v8;
+
+class CElmLabel : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmLabel> prop_handler;
+   CElmLabel(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   CElmLabel(CEvasObject *parent, Local<Object> obj);
 public:
+   static void Initialize(Handle<Object> target);
+
    virtual void wrap_set(Handle<Value> wrap);
    virtual Handle<Value> wrap_get() const;
+
+   friend Handle<Value> CElmObject::New<CElmLabel>(const Arguments& args);
 };
+
+}
 
 #endif // C_ELM_LABEL_H

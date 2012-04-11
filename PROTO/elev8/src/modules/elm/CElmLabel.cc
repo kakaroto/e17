@@ -1,11 +1,22 @@
 #include "CElmLabel.h"
 
-CElmLabel::CElmLabel(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap);
+
+GENERATE_TEMPLATE(CElmLabel,
+                  PROPERTY(wrap));
+
+CElmLabel::CElmLabel(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_label_add(parent->GetEvasObject()))
 {
-   eo = elm_label_add(parent->get());
-   construct(eo, obj);
+}
+
+void CElmLabel::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Label"), GetTemplate()->GetFunction());
 }
 
 void CElmLabel::wrap_set(Handle<Value> wrap)
@@ -21,7 +32,4 @@ Handle<Value> CElmLabel::wrap_get() const
    return scope.Close(Integer::New(elm_label_line_wrap_get(eo)));
 }
 
-PROPERTIES_OF(CElmLabel) = {
-   PROP_HANDLER(CElmLabel, wrap),
-   { NULL }
-};
+}

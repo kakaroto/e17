@@ -22,6 +22,7 @@ libelm_la_SOURCES = \
 	CElmBox.cc \
 	CElmButton.cc \
 	CElmClock.cc \
+	CElmLabel.cc \
 	CElmIcon.cc
 
 #	Main.cc \
@@ -46,7 +47,6 @@ libelm_la_SOURCES = \
 #	CElmIcon.cc \
 #	CElmImage.cc \
 #	CElmInwin.cc \
-#	CElmLabel.cc \
 #	CElmLayout.cc \
 #	CElmMenu.cc \
 #	CElmNaviframe.cc \
