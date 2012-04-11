@@ -21,6 +21,7 @@ using namespace v8;
 #include "CElmFlip.h"
 #include "CElmSpinner.h"
 #include "CElmRadio.h"
+#include "CElmInwin.h"
 
 namespace elm {
 
@@ -144,6 +145,7 @@ void RegisterModule(Handle<Object> target)
    CElmFlip::Initialize(target);
    CElmSpinner::Initialize(target);
    CElmRadio::Initialize(target);
+   CElmInwin::Initialize(target);
 }
 
 }

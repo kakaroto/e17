@@ -1,42 +1,48 @@
 #include "CElmInwin.h"
 
-CElmInwin::CElmInwin(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
-{
-   eo = elm_win_inwin_add(parent->top_widget_get());
-   construct(eo, obj);
+namespace elm {
 
-   get_object()->Set(String::NewSymbol("activate"), FunctionTemplate::New(activate)->GetFunction());
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmInwin, content);
+GENERATE_METHOD_CALLBACKS(CElmInwin, activate);
+
+GENERATE_TEMPLATE(CElmInwin,
+                  PROPERTY(content),
+                  METHOD(activate));
+
+CElmInwin::CElmInwin(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject,
+                elm_win_inwin_add(elm_object_top_widget_get(parent->GetEvasObject())))
+{
 }
 
-Handle<Value> CElmInwin::activate(const Arguments& args)
+void CElmInwin::Initialize(Handle<Object> target)
 {
-   CElmInwin *inwin = static_cast<CElmInwin *>(eo_from_info(args.This()));
+   target->Set(String::NewSymbol("Inwin"), GetTemplate()->GetFunction());
+}
 
-   elm_win_inwin_activate(inwin->get());
+CElmInwin::~CElmInwin()
+{
+   cached.content.Dispose();
+}
+
+Handle<Value> CElmInwin::activate(const Arguments&)
+{
+   elm_win_inwin_activate(GetEvasObject());
    return Undefined();
 }
 
 Handle<Value> CElmInwin::content_get() const
 {
-   Evas_Object *con = elm_win_inwin_content_get(eo);
-   if (!con)
-     return Undefined();
-   CEvasObject *content_obj = static_cast<CEvasObject*>(evas_object_data_get(con, "cppobj"));
-   if (content_obj)
-     return content_obj->get_object();
-   return Undefined();
+   return cached.content;
 }
 
 void CElmInwin::content_set(Handle<Value> object)
 {
-   CEvasObject *con = make_or_get(this, object);
-   if (con)
-     elm_win_inwin_content_set(eo, con->get());
+   cached.content.Dispose();
+   cached.content = Persistent<Value>::New(Realise(object, jsObject));
+   elm_win_inwin_content_set(eo, GetEvasObjectFromJavascript(cached.content));
 }
 
-PROPERTIES_OF(CElmInwin) = {
-   PROP_HANDLER(CElmInwin, content),
-   { NULL },
-};
+}
