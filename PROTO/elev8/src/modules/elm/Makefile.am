@@ -27,6 +27,7 @@ libelm_la_SOURCES = \
 	CElmLabel.cc \
 	CElmBubble.cc \
 	CElmEntry.cc \
+	CElmFlip.cc \
 	CElmIcon.cc
 
 #	Main.cc \
@@ -41,7 +42,6 @@ libelm_la_SOURCES = \
 #	CElmFileSelectorButton.cc \
 #	CElmFileSelectorEntry.cc \
 #	CElmFileSelector.cc \
-#	CElmFlip.cc \
 #	CElmGenList.cc \
 #	CElmGrid.cc \
 #	CElmHover.cc \

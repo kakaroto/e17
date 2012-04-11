@@ -1,23 +1,41 @@
 #ifndef C_ELM_FLIP_H
 #define C_ELM_FLIP_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmFlip : public CEvasObject {
-   FACTORY(CElmFlip)
+namespace elm {
+
+using namespace v8;
+
+class CElmFlip : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmFlip> prop_handler;
+   CElmFlip(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   CElmFlip(CEvasObject *parent, Local<Object> obj);
-   static Handle<Value> do_flip(const Arguments& args);
-   virtual void flip(Elm_Flip_Mode mode);
+   struct {
+      Persistent<Value> front;
+      Persistent<Value> back;
+   } cached;
+
 public:
-   virtual Handle<Value> front_get() const;
-   virtual void front_set(Handle<Value> obj);
+   static void Initialize(Handle<Object> target);
 
-   virtual Handle<Value> back_get() const;
-   virtual void back_set(Handle<Value> obj);
+   static Handle<Value> do_flip(const Arguments& args);
+   Handle<Value> flip(const Arguments& args);
+
+   Handle<Value> front_get() const;
+   void front_set(Handle<Value> obj);
+
+   Handle<Value> back_get() const;
+   void back_set(Handle<Value> obj);
+
+   friend Handle<Value> CElmObject::New<CElmFlip>(const Arguments& args);
 };
+
+}
 
 #endif // C_ELM_FLIP_H

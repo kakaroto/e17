@@ -18,6 +18,7 @@ using namespace v8;
 #include "CElmIcon.h"
 #include "CElmLabel.h"
 #include "CElmBubble.h"
+#include "CElmFlip.h"
 
 namespace elm {
 
@@ -138,6 +139,7 @@ void RegisterModule(Handle<Object> target)
    CElmIcon::Initialize(target);
    CElmLabel::Initialize(target);
    CElmBubble::Initialize(target);
+   CElmFlip::Initialize(target);
 }
 
 }

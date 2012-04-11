@@ -1,66 +1,59 @@
 #include "CElmFlip.h"
 
-CElmFlip::CElmFlip(CEvasObject* parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
-{
-   eo = elm_flip_add(parent->get());
-   construct(eo, obj);
+namespace elm {
 
-   get_object()->Set(String::NewSymbol("flip"), FunctionTemplate::New(do_flip)->GetFunction());
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmFlip, front);
+GENERATE_PROPERTY_CALLBACKS(CElmFlip, back);
+GENERATE_METHOD_CALLBACKS(CElmFlip, flip);
+
+GENERATE_TEMPLATE(CElmFlip,
+                  PROPERTY(front),
+                  PROPERTY(back),
+                  METHOD(flip));
+
+CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_flip_add(parent->GetEvasObject()))
+{
 }
 
-Handle<Value> CElmFlip::do_flip(const Arguments& args)
+void CElmFlip::Initialize(Handle<Object> target)
 {
-   CEvasObject *self = eo_from_info(args.This());
-   CElmFlip *flipper = static_cast <CElmFlip *>(self);
-   flipper->flip(ELM_FLIP_ROTATE_Y_CENTER_AXIS);
+   target->Set(String::NewSymbol("Flip"),
+               GetTemplate()->GetFunction());
+}
+
+Handle<Value> CElmFlip::flip(const Arguments&)
+{
+   elm_flip_go(eo, ELM_FLIP_ROTATE_Y_CENTER_AXIS);
    return Undefined();
-}
-
-void CElmFlip::flip(Elm_Flip_Mode mode)
-{
-   elm_flip_go(eo, mode);
 }
 
 Handle<Value> CElmFlip::front_get() const
 {
-   Evas_Object *front = elm_object_part_content_get(eo, "front");
-   if (!front)
-     return Undefined();
-   CEvasObject *front_obj = static_cast<CEvasObject*>(evas_object_data_get(front, "cppobj"));
-   if (front_obj)
-     return front_obj->get_object();
-   return Undefined();
+   return cached.front;
 }
 
 void CElmFlip::front_set(Handle<Value> object)
 {
-   CEvasObject *front = make_or_get(this, object);
-   if (front)
-     elm_object_part_content_set(eo, "front", front->get());
+   cached.front.Dispose();
+   cached.front = Persistent<Value>::New(Realise(object, jsObject));
+   elm_object_part_content_set(eo, "front",
+                               GetEvasObjectFromJavascript<CElmObject>(cached.front));
 }
 
 Handle<Value> CElmFlip::back_get() const
 {
-   Evas_Object *back = elm_object_part_content_get(eo, "back");
-   if (!back)
-     return Undefined();
-   CEvasObject *back_obj = static_cast<CEvasObject*>(evas_object_data_get(back, "cppobj"));
-   if (back_obj)
-     return back_obj->get_object();
-   return Undefined();
+   return cached.back;
 }
 
 void CElmFlip::back_set(Handle<Value> object)
 {
-   CEvasObject *back = make_or_get(this, object);
-   if (back)
-     elm_object_part_content_set(eo, "back", back->get());
+   cached.back.Dispose();
+   cached.back = Persistent<Value>::New(Realise(object, jsObject));
+   elm_object_part_content_set(eo, "back",
+                               GetEvasObjectFromJavascript<CElmObject>(cached.back));
 }
 
-PROPERTIES_OF(CElmFlip) = {
-   PROP_HANDLER(CElmFlip, front),
-   PROP_HANDLER(CElmFlip, back),
-   { NULL },
-};
+}
