@@ -20,6 +20,7 @@ files_DATA = \
 	yellow.png \
 	rock_01.jpg \
 	space.png \
-        alien.png
+        alien.png \
+        sky_01.jpg
 
 EXTRA_DIST = $(files_DATA)

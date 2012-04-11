@@ -1,34 +1,43 @@
 #ifndef C_ELM_PHOTOCAM_H
 #define C_ELM_PHOTOCAM_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-using namespace v8;
+namespace elm {
 
-class CElmPhotocam : public CEvasObject {
-   FACTORY(CElmPhotocam)
+class CElmPhotocam : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmPhotocam> prop_handler;
+   CElmPhotocam(Local<Object> _jsObject, CElmObject *parent);
 
-   CElmPhotocam(CEvasObject *parent, Local<Object> obj);
+   static Handle<FunctionTemplate> GetTemplate();
 public:
+   static void Initialize(Handle<Object> target);
 
-   virtual void file_set(Handle<Value> val);
-   virtual Handle<Value> file_get(void) const;
+   void file_set(Handle<Value> val);
+   Handle<Value> file_get(void) const;
 
-   virtual Handle<Value> zoom_get() const;
-   virtual void zoom_set(Handle<Value> value);
+   Handle<Value> zoom_get() const;
+   void zoom_set(Handle<Value> value);
 
-   virtual Handle<Value> zoom_mode_get() const;
-   virtual void zoom_mode_set(Handle<Value> value);
+   Handle<Value> zoom_mode_get() const;
+   void zoom_mode_set(Handle<Value> value);
 
-   virtual void bounce_set(Handle<Value> val);
-   virtual Handle<Value> bounce_get() const;
+   void vertical_bounce_set(Handle<Value> val);
+   Handle<Value> vertical_bounce_get() const;
+
+   void horizontal_bounce_set(Handle<Value> val);
+   Handle<Value> horizontal_bounce_get() const;
 
    void paused_set(Handle<Value> val);
-   virtual Handle<Value> paused_get() const;
+   Handle<Value> paused_get() const;
+
+   friend Handle<Value> CElmObject::New<CElmPhotocam>(const Arguments &args);
 };
+
+}
 
 #endif
