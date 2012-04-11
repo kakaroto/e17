@@ -58,6 +58,7 @@ public:
    static void Initialize(Handle<Object> target);
 
    Evas_Object *GetEvasObject() const { return eo; }
+   virtual void DidRealiseElement(Local<Value>) {}
 
    Handle<Value> x_get() const;
    void x_set(Handle<Value> value);
