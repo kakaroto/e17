@@ -1,5 +1,7 @@
 #!/usr/local/bin/elev8
 
+var elm = require('elm');
+
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
@@ -81,98 +83,94 @@ function any_button() {
 }
 
 function number_button(num) {
-    this.label = num;
-    this.on_clicked = append_number;
+    return elm.Button({
+        label : num,
+        on_click : append_number
+    });
 }
 
 number_button.prototype = new any_button;
 
 function op_button(str, op) {
-    this.label = str;
-    this.on_clicked = function () {
-        push_entry();
-        push(op);
-        clear = 1;
-    };
+    return elm.Button ({
+        label : str,
+        on_click : function () {
+             push_entry();
+             push(op);
+             clear = 1;
+        }
+     });
 }
 
 op_button.prototype = new any_button;
 
-var calc = new elm.window({
-    type : "main",
-    label : "Calculator demo",
+var calc = elm.realise(elm.Window({
+    title : "Calculator demo",
     elements : {
-        the_background : {
-            type : "background",
+        the_background : elm.Background ({
             weight : EXPAND_BOTH,
             resize : true,
-        },
-        vbox : {
-            type : "box",
+        }),
+        vbox : elm.Box ({
             resize : true,
             elements : {
-                entry : {
-                    type : "entry",
+                entry : elm.Entry ({
                     label : "<align=right>0",
                     align : { x : -1, y : 0 },
-                },
-                hbox1 : {
-                    type : "box",
+                }),
+                hbox1 : elm.Box ({
                     horizontal : true,
                     homogeneous : true,
                     elements : {
-                        b7 : new number_button("7"),
-                        b8 : new number_button("8"),
-                        b9 : new number_button("9"),
-                        divide : new op_button("/", divide),
+                        b7 : number_button("7"),
+                        b8 : number_button("8"),
+                        b9 : number_button("9"),
+                        divide : op_button("/", divide),
                     },
-                },
-                hbox2 : {
-                    type : "box",
+                }),
+                hbox2 : elm.Box ({
                     horizontal : true,
                     homogeneous : true,
                     elements : {
-                        b4 : new number_button("4"),
-                        b5 : new number_button("5"),
-                        b6 : new number_button("6"),
-                        multiply : new op_button("*", multiply),
+                        b4 : number_button("4"),
+                        b5 : number_button("5"),
+                        b6 : number_button("6"),
+                        multiply : op_button("*", multiply),
                     },
-                },
-                hbox3 : {
-                    type : "box",
+                }),
+                hbox3 : elm.Box ({
                     horizontal : true,
                     homogeneous : true,
                     elements : {
-                        b1 : new number_button("1"),
-                        b2 : new number_button("2"),
-                        b3 : new number_button("3"),
-                        subtract : new op_button("-", subtract),
+                        b1 : number_button("1"),
+                        b2 : number_button("2"),
+                        b3 : number_button("3"),
+                        subtract : op_button("-", subtract),
                     },
-                },
-                hbox4 : {
-                    type : "box",
+                }),
+                hbox4 : elm.Box ({
                     horizontal : true,
                     homogeneous : true,
                     elements : {
-                        b0 : new number_button("0"),
-                        bdot : new number_button("."),
-                        equals : {
+                        b0 : number_button("0"),
+                        bdot : number_button("."),
+                        equals : elm.Button ({
                             type : "button",
                             label : "=",
                             weight : { x : -1.0, y : -1.0 },
-                            on_clicked : function () {
+                            on_click : function () {
                                 push_entry();
                                 set_entry("");
                                 var answer = evaluate();
                                 set_entry(answer);
                                 clear = 1;
                             },
-                        },
-                        add : new op_button("+", add),
+                        }),
+                        add : op_button("+", add),
                     },
-                },
+                }),
             },
-        },
+        }),
     },
-});
+}));
 
