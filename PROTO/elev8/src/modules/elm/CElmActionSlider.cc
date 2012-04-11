@@ -1,39 +1,53 @@
-#include <Eina.h>
-#include <Evas.h>
-
-#include "elev8_elm.h"
+#include "elm.h"
 #include "CElmActionSlider.h"
+
+namespace elm {
 
 using namespace v8;
 
-CElmActionSlider::CElmActionSlider(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, labels);
+GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, slider);
+GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, magnet);
+
+GENERATE_TEMPLATE(CElmActionSlider,
+                  PROPERTY(labels),
+                  PROPERTY(slider),
+                  PROPERTY(magnet));
+
+CElmActionSlider::CElmActionSlider(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_actionslider_add(parent->GetEvasObject()))
 {
-   eo = elm_actionslider_add(parent->get());
-   construct(eo, obj);
+}
+
+void CElmActionSlider::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("ActionSlider"),
+               GetTemplate()->GetFunction());
+}
+
+void CElmActionSlider::Delete(Persistent<Value>, void *paramenter)
+{
+   delete static_cast<CElmActionSlider *>(paramenter);
 }
 
 /* there's 1 indicator label and 3 position labels */
 void CElmActionSlider::labels_set(Handle<Value> val)
 {
-   HandleScope scope;
-
    if (!val->IsObject())
      return;
 
    Local<Object> obj = val->ToObject();
    Local<Value> label;
 
-   label = obj->Get(String::New("left"));
+   label = obj->Get(String::NewSymbol("left"));
    if (label->IsString())
      elm_object_part_text_set(eo, "left", *String::Utf8Value(label->ToString()));
 
-   label = obj->Get(String::New("center"));
+   label = obj->Get(String::NewSymbol("center"));
    if (label->IsString())
      elm_object_part_text_set(eo, "center", *String::Utf8Value(label->ToString()));
 
-   label = obj->Get(String::New("right"));
+   label = obj->Get(String::NewSymbol("right"));
    if (label->IsString())
      elm_object_part_text_set(eo, "right", *String::Utf8Value(label->ToString()));
 }
@@ -46,8 +60,6 @@ Handle<Value> CElmActionSlider::labels_get() const
 
 bool CElmActionSlider::position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos)
 {
-   HandleScope scope;
-
    if (!val->IsString())
      return false;
 
@@ -68,7 +80,7 @@ bool CElmActionSlider::position_from_string(Handle<Value> val, Elm_Actionslider_
 
 void CElmActionSlider::slider_set(Handle<Value> val)
 {
-   Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
+   Elm_Actionslider_Pos pos;
    if (position_from_string(val, pos))
      elm_actionslider_indicator_pos_set(eo, pos);
 }
@@ -80,7 +92,7 @@ Handle<Value> CElmActionSlider::slider_get() const
 
 void CElmActionSlider::magnet_set(Handle<Value> val)
 {
-   Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
+   Elm_Actionslider_Pos pos;
 
    if (position_from_string(val, pos))
      elm_actionslider_magnet_pos_set(eo, pos);
@@ -91,9 +103,4 @@ Handle<Value> CElmActionSlider::magnet_get() const
    return Integer::New(elm_actionslider_magnet_pos_get(eo));
 }
 
-PROPERTIES_OF(CElmActionSlider) = {
-   PROP_HANDLER(CElmActionSlider, magnet),
-   PROP_HANDLER(CElmActionSlider, slider),
-   PROP_HANDLER(CElmActionSlider, labels),
-   { NULL }
-};
+}

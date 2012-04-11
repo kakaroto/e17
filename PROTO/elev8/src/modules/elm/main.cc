@@ -5,6 +5,7 @@
 using namespace v8;
 
 #include "elm.h"
+#include "CElmActionSlider.h"
 #include "CElmObject.h"
 #include "CElmWindow.h"
 #include "CElmBackground.h"
@@ -120,6 +121,7 @@ void RegisterModule(Handle<Object> target)
    CElmWindow::Initialize(target);
    CElmBackground::Initialize(target);
    CElmBox::Initialize(target);
+   CElmActionSlider::Initialize(target);
 }
 
 }

@@ -1,32 +1,38 @@
 #ifndef C_ELM_ACTION_SLIDER_H
 #define C_ELM_ACTION_SLIDER_H
 
-#include <v8.h>
+#include "elm.h"
+#include "CElmObject.h"
 
-#include "elev8_elm.h"
-#include "CEvasObject.h"
+namespace elm {
 
 using namespace v8;
 
-class CElmActionSlider : public CEvasObject {
-   FACTORY(CElmActionSlider)
-
+class CElmActionSlider : public CElmObject {
 private:
-   CPropHandler<CElmActionSlider> prop_handler;
+   static Persistent<FunctionTemplate> tmpl;
 
    bool position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos);
+protected:
+   CElmActionSlider(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
+   static void Delete(Persistent<Value>, void *parameter);
 
-   CElmActionSlider(CEvasObject *parent, Local<Object> obj);
 public:
+   static void Initialize(Handle<Object> target);
 
-   virtual void labels_set(Handle<Value> val);
-   virtual Handle<Value> labels_get() const;
+   void labels_set(Handle<Value> val);
+   Handle<Value> labels_get() const;
 
-   virtual void slider_set(Handle<Value> val);
-   virtual Handle<Value> slider_get() const;
+   void slider_set(Handle<Value> val);
+   Handle<Value> slider_get() const;
 
-   virtual void magnet_set(Handle<Value> val);
-   virtual Handle<Value> magnet_get() const;
+   void magnet_set(Handle<Value> val);
+   Handle<Value> magnet_get() const;
+
+   friend Handle<Value> CElmObject::New<CElmActionSlider>(const Arguments& args);
 };
+
+}
 
 #endif
