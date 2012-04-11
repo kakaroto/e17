@@ -11,6 +11,7 @@ using namespace v8;
 #include "CElmBackground.h"
 #include "CElmBox.h"
 #include "CElmButton.h"
+#include "CElmCalendar.h"
 #include "CElmCheck.h"
 #include "CElmClock.h"
 #include "CElmColorSelector.h"
@@ -138,6 +139,7 @@ void RegisterModule(Handle<Object> target)
    CElmBackground::Initialize(target);
    CElmBox::Initialize(target);
    CElmButton::Initialize(target);
+   CElmCalendar::Initialize(target);
    CElmClock::Initialize(target);
    CElmCheck::Initialize(target);
    CElmColorSelector::Initialize(target);

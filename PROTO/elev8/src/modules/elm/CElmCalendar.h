@@ -1,50 +1,70 @@
 #ifndef C_ELM_CALENDAR_H
 #define C_ELM_CALENDAR_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
+
+namespace elm {
 
 using namespace v8;
 
-class CElmCalendar : public CEvasObject {
-   FACTORY(CElmCalendar)
+class CElmCalendar : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CElmCalendar(CEvasObject *parent, Local<Object> obj);
+   CElmCalendar(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmCalendar();
 
-   static void eo_didChange(void *data, Evas_Object *, void *event_info);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   CPropHandler<CElmCalendar> prop_handler;
+   struct {
+      Persistent<Value> change;
+   } cb;
 
-   Persistent<Value> didChange;
+   struct {
+      Persistent<Object> marks;
+   } cached;
+
+   static void OnChangeWrapper(void *data, Evas_Object *obj, void *event_info);
 
 public:
-   virtual void didChange_set(Handle<Value> val);
-   virtual Handle<Value> didChange_get(void) const;
+   static void Initialize(Handle<Object> target);
+   void OnChange();
 
-   virtual Handle<Value> weekday_names_get(void) const;
-   virtual void weekday_names_set(Handle<Value> val);
+   void on_change_set(Handle<Value> val);
+   Handle<Value> on_change_get() const;
 
-   virtual Handle<Value> min_year_get(void) const;
-   virtual void min_year_set(Handle<Value> val);
+   Handle<Value> weekday_names_get() const;
+   void weekday_names_set(Handle<Value> val);
 
-   virtual Handle<Value> max_year_get(void) const;
-   virtual void max_year_set(Handle<Value> val);
+   Handle<Value> min_year_get() const;
+   void min_year_set(Handle<Value> val);
 
-   virtual Handle<Value> day_selection_disabled_get(void) const;
-   virtual void day_selection_disabled_set(Handle<Value> val);
+   Handle<Value> max_year_get() const;
+   void max_year_set(Handle<Value> val);
 
-   virtual Handle<Value> selected_day_get(void) const;
-   virtual void selected_day_set(Handle<Value> val);
+   Handle<Value> enable_day_selection_get() const;
+   void enable_day_selection_set(Handle<Value> val);
 
-   virtual Handle<Value> selected_month_get(void) const;
-   virtual void selected_month_set(Handle<Value> val);
+   Handle<Value> day_get() const;
+   void day_set(Handle<Value> val);
 
-   virtual Handle<Value> selected_year_get(void) const;
-   virtual void selected_year_set(Handle<Value> val);
+   Handle<Value> month_get() const;
+   void month_set(Handle<Value> val);
 
-   virtual Handle<Value> calendar_interval_get(void) const;
-   virtual void calendar_interval_set(Handle<Value> val);
+   Handle<Value> year_get() const;
+   void year_set(Handle<Value> val);
+
+   Handle<Value> interval_get() const;
+   void interval_set(Handle<Value> val);
+
+   Handle<Value> marks_get() const;
+   void marks_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmCalendar>(const Arguments& args);
 };
+
+}
 
 #endif

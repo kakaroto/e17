@@ -1,24 +1,49 @@
+#include "elm.h"
 #include "CElmCalendar.h"
 
-CElmCalendar::CElmCalendar(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, weekday_names);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, min_year);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, max_year);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, enable_day_selection);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, day);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, month);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, year);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, interval);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, marks);
+
+GENERATE_TEMPLATE(CElmCalendar,
+                  PROPERTY(weekday_names),
+                  PROPERTY(min_year),
+                  PROPERTY(max_year),
+                  PROPERTY(enable_day_selection),
+                  PROPERTY(day),
+                  PROPERTY(month),
+                  PROPERTY(year),
+                  PROPERTY(interval),
+                  PROPERTY(marks));
+
+CElmCalendar::CElmCalendar(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_calendar_add(parent->GetEvasObject()))
 {
-   eo = elm_calendar_add(parent->top_widget_get());
-   construct(eo, obj);
+}
 
-   HandleScope scope;
+CElmCalendar::~CElmCalendar()
+{
+   cached.marks.Dispose();
+   cb.change.Dispose();
+}
 
-   Local<Value> val = obj->Get(String::New("marks"));
-   if (val->IsUndefined())
-     return;
+void CElmCalendar::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Calendar"), GetTemplate()->GetFunction());
+}
 
-   if (!val->IsObject())
-     {
-        ELM_ERR("not an object!");
-        return;
-     }
-
+void CElmCalendar::marks_set(Handle<Value> val)
+{
    Local<Object> marks = val->ToObject();
    Local<Array> props = marks->GetOwnPropertyNames();
 
@@ -32,35 +57,36 @@ CElmCalendar::CElmCalendar(CEvasObject *parent, Local<Object> obj)
 
         if (!item->IsObject())
           {
-             String::Utf8Value xval(x->ToString());
-             ELM_ERR( "mark %s is not an object", *xval);
+             ELM_ERR("mark %s is not an object", *String::Utf8Value(x->ToString()));
              continue;
           }
 
-        Local<Value> type = item->ToObject()->Get(String::New("type"));
+        Local<Object> mark = item->ToObject();
+
+        Local<Value> type = mark->Get(String::NewSymbol("type"));
         String::Utf8Value mark_type(type);
 
-        Local<Value> day = item->ToObject()->Get(String::New("day"));
+        Local<Value> day = mark->Get(String::NewSymbol("day"));
         mark_time.tm_mday = day->ToNumber()->Value();
 
-        Local<Value> month = item->ToObject()->Get(String::New("month"));
+        Local<Value> month = mark->Get(String::NewSymbol("month"));
         mark_time.tm_mon = month->ToNumber()->Value() - 1;
 
-        Local<Value> year = item->ToObject()->Get(String::New("year"));
+        Local<Value> year = mark->Get(String::NewSymbol("year"));
         mark_time.tm_year = year->ToNumber()->Value() - 1900;
 
-        Local<Value> repeat = item->ToObject()->Get(String::New("repeat"));
+        Local<Value> repeat = mark->Get(String::NewSymbol("repeat"));
         String::Utf8Value mark_repeat(repeat);
 
         Elm_Calendar_Mark_Repeat_Type intRepeat;
 
-        if (!strcasecmp(*mark_repeat, "annually"))
+        if (!strcmp(*mark_repeat, "annually"))
           intRepeat = ELM_CALENDAR_ANNUALLY;
-        else if (!strcasecmp(*mark_repeat, "monthly"))
+        else if (!strcmp(*mark_repeat, "monthly"))
           intRepeat = ELM_CALENDAR_MONTHLY;
-        else if (!strcasecmp(*mark_repeat, "weekly"))
+        else if (!strcmp(*mark_repeat, "weekly"))
           intRepeat = ELM_CALENDAR_WEEKLY;
-        else if (!strcasecmp(*mark_repeat, "daily"))
+        else if (!strcmp(*mark_repeat, "daily"))
           intRepeat = ELM_CALENDAR_DAILY;
         else
           intRepeat = ELM_CALENDAR_UNIQUE;
@@ -69,73 +95,66 @@ CElmCalendar::CElmCalendar(CEvasObject *parent, Local<Object> obj)
      }
 
    elm_calendar_marks_draw(eo);
+   cached.marks = Persistent<Object>::New(marks);
 }
 
-void CElmCalendar::eo_didChange(void *data, Evas_Object *, void *)
+Handle<Value> CElmCalendar::marks_get() const
 {
-   CElmCalendar *cal = static_cast<CElmCalendar*>(data);
+   return cached.marks;
+}
 
-   Handle<Object> obj = cal->get_object();
-   Handle<Value> val = cal->didChange;
-   assert(val->IsFunction());
-
+void CElmCalendar::OnChange()
+{
    HandleScope scope;
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
+   Handle<Function> callback(Function::Cast(*cb.change));
+   Handle<Value> arguments[1] = { jsObject };
+   callback->Call(jsObject, 1, arguments);
 }
 
-void CElmCalendar::didChange_set(Handle<Value> val)
+void CElmCalendar::OnChangeWrapper(void *data, Evas_Object *, void *)
 {
-   didChange.Dispose();
-   didChange = Persistent<Value>::New(val);
+   static_cast<CElmCalendar*>(data)->OnChange();
+}
+
+void CElmCalendar::on_change_set(Handle<Value> val)
+{
+   cb.change.Dispose();
+   cb.change = Persistent<Value>::New(val);
 
    if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "changed", &eo_didChange, this);
+     evas_object_smart_callback_add(eo, "changed", &OnChangeWrapper, this);
    else
-     evas_object_smart_callback_del(eo, "changed", &eo_didChange);
+     evas_object_smart_callback_del(eo, "changed", &OnChangeWrapper);
 }
 
-Handle<Value> CElmCalendar::didChange_get(void) const
+Handle<Value> CElmCalendar::on_change_get(void) const
 {
-   return didChange;
+   return cb.change;
 }
 
 Handle<Value> CElmCalendar::weekday_names_get(void) const
 {
-   HandleScope scope;
-   Local<Object> obj = Object::New();
+   Local<Object> obj = Array::New(7);
+   const char **weekdays = elm_calendar_weekdays_names_get(eo);
+   for (int i = 0; i < 7; i++)
+     obj->Set(i, String::New(weekdays[i]));
 
-   const char **wds = elm_calendar_weekdays_names_get(eo);
-   obj->Set(String::New("0"), String::New(wds[0]));
-   obj->Set(String::New("1"), String::New(wds[1]));
-   obj->Set(String::New("2"), String::New(wds[2]));
-   obj->Set(String::New("3"), String::New(wds[3]));
-   obj->Set(String::New("4"), String::New(wds[4]));
-   obj->Set(String::New("5"), String::New(wds[5]));
-   obj->Set(String::New("6"), String::New(wds[6]));
-
-   return scope.Close(obj);
+   return obj;
 }
 
 void CElmCalendar::weekday_names_set(Handle<Value> val)
 {
-   if (!val->IsObject())
+   if (!val->IsArray())
      return;
 
-   HandleScope scope;
-   Local<Object> obj = val->ToObject();
    char *weekdays[7];
+   Local<Object> weekdaysArray = val->ToObject();
 
    for (int i = 0; i < 7 ; i++)
      {
-        char c[1];
-        *c = i + '0';
-        Handle<Value> value = obj->Get(String::New(c, 1));
-
-        weekdays[i] = value->IsString() ?
-                      strdup(*String::Utf8Value(value)) : NULL;
-     }
+        Local<Value> weekday = weekdaysArray->Get(i);
+        weekdays[i] = (weekday->IsString() || weekday->IsNumber()) ?
+             strdup(*String::Utf8Value(weekday)) : NULL; }
 
    elm_calendar_weekdays_names_set(eo, (const char**) weekdays);
 
@@ -145,8 +164,8 @@ void CElmCalendar::weekday_names_set(Handle<Value> val)
 
 Handle<Value> CElmCalendar::min_year_get(void) const
 {
-   int year_min, year_max;
-   elm_calendar_min_max_year_get(eo, &year_min, &year_max);
+   int year_min;
+   elm_calendar_min_max_year_get(eo, &year_min, NULL);
    return Number::New(year_min);
 }
 
@@ -155,10 +174,9 @@ void CElmCalendar::min_year_set(Handle<Value> val)
    if (!val->IsNumber())
      return;
 
-   int year_min, year_max;
+   int year_max;
    elm_calendar_min_max_year_get(eo, NULL, &year_max);
-   year_min = val->ToNumber()->Value();
-   elm_calendar_min_max_year_set(eo, year_min, year_max);
+   elm_calendar_min_max_year_set(eo, val->ToNumber()->Value(), year_max);
 }
 
 Handle<Value> CElmCalendar::max_year_get(void) const
@@ -173,25 +191,23 @@ void CElmCalendar::max_year_set(Handle<Value> val)
    if (!val->IsNumber())
      return;
 
-   int year_min, year_max;
+   int year_min;
    elm_calendar_min_max_year_get(eo, &year_min, NULL);
-   year_max = val->ToNumber()->Value();
-   elm_calendar_min_max_year_set(eo, year_min, year_max);
+   elm_calendar_min_max_year_set(eo, year_min, val->ToNumber()->Value());
 }
 
-Handle<Value> CElmCalendar::day_selection_disabled_get(void) const
+Handle<Value> CElmCalendar::enable_day_selection_get(void) const
 {
-   Eina_Bool day_select = elm_calendar_day_selection_disabled_get(eo);
-   return Boolean::New(day_select);
+   return Boolean::New(!elm_calendar_day_selection_disabled_get(eo));
 }
 
-void CElmCalendar::day_selection_disabled_set(Handle<Value> val)
+void CElmCalendar::enable_day_selection_set(Handle<Value> val)
 {
    if (val->IsBoolean())
-     elm_calendar_day_selection_disabled_set(eo, val->ToBoolean()->Value());
+     elm_calendar_day_selection_disabled_set(eo, !val->ToBoolean()->Value());
 }
 
-Handle<Value> CElmCalendar::selected_day_get(void) const
+Handle<Value> CElmCalendar::day_get(void) const
 {
    struct tm selected_time;
    elm_calendar_selected_time_get(eo,&selected_time);
@@ -199,7 +215,7 @@ Handle<Value> CElmCalendar::selected_day_get(void) const
    return Number::New(selected_time.tm_mday);
 }
 
-void CElmCalendar::selected_day_set(Handle<Value> val)
+void CElmCalendar::day_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -210,15 +226,14 @@ void CElmCalendar::selected_day_set(Handle<Value> val)
    elm_calendar_selected_time_set(eo, &selected_time);
 }
 
-Handle<Value> CElmCalendar::selected_month_get(void) const
+Handle<Value> CElmCalendar::month_get(void) const
 {
    struct tm selected_time;
    elm_calendar_selected_time_get(eo, &selected_time);
-
    return Number::New(selected_time.tm_mon);
 }
 
-void CElmCalendar::selected_month_set(Handle<Value> val)
+void CElmCalendar::month_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -233,15 +248,14 @@ void CElmCalendar::selected_month_set(Handle<Value> val)
    elm_calendar_selected_time_set(eo, &selected_time);
 }
 
-Handle<Value> CElmCalendar::selected_year_get(void) const
+Handle<Value> CElmCalendar::year_get(void) const
 {
    struct tm selected_time;
-   elm_calendar_selected_time_get (eo,&selected_time);
-
+   elm_calendar_selected_time_get(eo,&selected_time);
    return Number::New(selected_time.tm_year);
 }
 
-void CElmCalendar::selected_year_set(Handle<Value> val)
+void CElmCalendar::year_set(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -256,26 +270,15 @@ void CElmCalendar::selected_year_set(Handle<Value> val)
    elm_calendar_selected_time_set(eo, &selected_time);
 }
 
-Handle<Value> CElmCalendar::calendar_interval_get(void) const
+Handle<Value> CElmCalendar::interval_get(void) const
 {
    return Number::New(elm_calendar_interval_get(eo));
 }
 
-void CElmCalendar::calendar_interval_set(Handle<Value> val)
+void CElmCalendar::interval_set(Handle<Value> val)
 {
    if (val->IsNumber())
      elm_calendar_interval_set(eo, val->ToNumber()->Value());
 }
 
-PROPERTIES_OF(CElmCalendar) = {
-     PROP_HANDLER(CElmCalendar, weekday_names),
-     PROP_HANDLER(CElmCalendar, min_year),
-     PROP_HANDLER(CElmCalendar, max_year),
-     PROP_HANDLER(CElmCalendar, day_selection_disabled),
-     PROP_HANDLER(CElmCalendar, selected_day),
-     PROP_HANDLER(CElmCalendar, selected_month),
-     PROP_HANDLER(CElmCalendar, selected_year),
-     PROP_HANDLER(CElmCalendar, calendar_interval),
-     PROP_HANDLER(CElmCalendar, didChange),
-     { NULL }
-};
+}
