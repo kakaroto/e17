@@ -1,27 +1,43 @@
 #ifndef C_ELM_RADIO_H
 #define C_ELM_RADIO_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmRadio : public CEvasObject {
-   FACTORY(CElmRadio)
+namespace elm {
+
+using namespace v8;
+
+class CElmRadio : public CElmObject {
+private:
+   CElmObject *parent;
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmRadio> prop_handler;
-   Persistent<Value> the_icon;
-   Persistent<Value> the_group;
-
-   CElmRadio(CEvasObject *parent, Local<Object> obj);
+   CElmRadio(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
    virtual ~CElmRadio();
+
+   struct {
+        Persistent<Value> icon;
+        Persistent<Value> group;
+   } cached;
+
 public:
-   virtual Handle<Value> icon_get() const;
-   virtual void icon_set(Handle<Value> value);
+   static void Initialize(Handle<Object> target);
 
-   virtual Handle<Value> group_get() const;
-   virtual void group_set(Handle<Value> value);
+   Handle<Value> icon_get() const;
+   void icon_set(Handle<Value> value);
 
-   virtual Handle<Value> value_get() const;
-   virtual void value_set(Handle<Value> value);
+   Handle<Value> group_get() const;
+   void group_set(Handle<Value> value);
+
+   Handle<Value> value_get() const;
+   void value_set(Handle<Value> value);
+
+   friend Handle<Value> CElmObject::New<CElmRadio>(const Arguments& args);
 };
+
+}
 
 #endif // C_ELM_RADIO_H

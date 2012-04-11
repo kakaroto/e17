@@ -1,52 +1,74 @@
 #include "CElmRadio.h"
 
-CElmRadio::CElmRadio(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmRadio, icon);
+GENERATE_PROPERTY_CALLBACKS(CElmRadio, group);
+GENERATE_PROPERTY_CALLBACKS(CElmRadio, value);
+
+GENERATE_TEMPLATE(CElmRadio,
+   PROPERTY(icon),
+   PROPERTY(group),
+   PROPERTY(value));
+
+CElmRadio::CElmRadio(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmObject(_jsObject, elm_radio_add(_parent->GetEvasObject()))
+   , parent(_parent)
 {
-   eo = elm_radio_add(parent->get());
-   construct(eo, obj);
+}
+
+void CElmRadio::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Radio"), GetTemplate()->GetFunction());
 }
 
 CElmRadio::~CElmRadio()
 {
-   the_icon.Dispose();
-   the_group.Dispose();
+   cached.icon.Dispose();
+   cached.group.Dispose();
 }
 
 Handle<Value> CElmRadio::icon_get() const
 {
-   return the_icon;
+   return cached.icon;
 }
 
 void CElmRadio::icon_set(Handle<Value> value)
 {
-   the_icon.Dispose();
-   CEvasObject *icon = make_or_get(this, value);
-   elm_object_content_set(eo, icon->get());
-   the_icon = Persistent<Value>::New(icon->get_object());
+   cached.icon.Dispose();
+   cached.icon = Persistent<Value>::New(Realise(value, jsObject));
+   elm_object_content_set(eo, GetEvasObjectFromJavascript(cached.icon));
 }
 
 Handle<Value> CElmRadio::group_get() const
 {
-   return the_group;
+   return cached.group;
 }
 
 void CElmRadio::group_set(Handle<Value> value)
 {
-   the_group = Persistent<Value>::New(value);
-
-   CEvasObject *parent = get_parent();
-   if (!parent)
+   if (!value->IsString())
      return;
 
-   CEvasObject *group = parent->get_child(value);
-   if (!group)
-     ELM_ERR("child %s not found!", *String::Utf8Value(value->ToString()));
-   else if (dynamic_cast<CElmRadio *>(group))
-     elm_radio_group_add(eo, group->get());
+   Handle<Object> js_parent = parent->GetJSObject();
+   Local<Value> groups = js_parent->Get(String::New("elm:radio:groups"));
+
+   if (groups == Undefined())
+     {
+        groups = Object::New();
+        js_parent->Set(String::NewSymbol("elm:radio:groups"), groups, ReadOnly);
+     }
+
+   cached.group.Dispose();
+   cached.group = Persistent<Value>::New(value);
+   Local<Value> sibling = groups->ToObject()->Get(value);
+
+   if (sibling == Undefined())
+     groups->ToObject()->Set(value, jsObject, ReadOnly);
    else
-     ELM_ERR("%p not a radio button!", group);
+     elm_radio_group_add(eo, GetEvasObjectFromJavascript(sibling));
 }
 
 Handle<Value> CElmRadio::value_get() const
@@ -60,9 +82,4 @@ void CElmRadio::value_set(Handle<Value> value)
      elm_radio_state_value_set(eo, value->Int32Value());
 }
 
-PROPERTIES_OF(CElmRadio) = {
-   PROP_HANDLER(CElmRadio, icon),
-   PROP_HANDLER(CElmRadio, group),
-   PROP_HANDLER(CElmRadio, value),
-   { NULL }
-};
+}

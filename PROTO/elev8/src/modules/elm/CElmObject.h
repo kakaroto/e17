@@ -59,6 +59,7 @@ protected:
 public:
    static void Initialize(Handle<Object> target);
 
+   Handle<Object> GetJSObject() const { return jsObject; }
    Evas_Object *GetEvasObject() const { return eo; }
    virtual void DidRealiseElement(Local<Value>) {}
 

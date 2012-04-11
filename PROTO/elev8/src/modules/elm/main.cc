@@ -20,6 +20,7 @@ using namespace v8;
 #include "CElmBubble.h"
 #include "CElmFlip.h"
 #include "CElmSpinner.h"
+#include "CElmRadio.h"
 
 namespace elm {
 
@@ -142,6 +143,7 @@ void RegisterModule(Handle<Object> target)
    CElmBubble::Initialize(target);
    CElmFlip::Initialize(target);
    CElmSpinner::Initialize(target);
+   CElmRadio::Initialize(target);
 }
 
 }

@@ -3,77 +3,68 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var logo_icon = {
-    type : "icon",
+var logo_icon = elm.Icon ({
     image : elm.datadir + "data/images/logo_small.png",
-};
+});
 
-var logo_icon_unscaled = {
-    type : "icon",
+var logo_icon_unscaled = elm.Icon ({
     image : elm.datadir + "data/images/logo_small.png",
     resizable_up : false,
     resizable_down : false,
-};
+});
 
-var my_window = new elm.window({
-    type : "main",
-    label : "Radios demo",
+var desc = elm.Window({
+    title : "Radios demo",
     elements : {
-        the_background : {
-            type : "background",
+        the_background : elm.Background ({
             weight : EXPAND_BOTH,
             resize : true,
-        },
-        radio_box : {
-            type : "box",
+        }),
+        radio_box : elm.Box ({
             weight : EXPAND_BOTH,
             resize : true,
             elements : {
-                rdg : {
-                    type : "radio",
+                sized_radio_icon : elm.Radio ({
                     label : "Icon sized to radio",
                     weight : EXPAND_BOTH,
                     align : { x : 1.0, y : 0.5 },
                     icon : logo_icon,
                     value : 0,
-                },
-                unscaled_radio_icon : {
-                    type : "radio",
+                    group : "rdg",
+                }),
+                unscaled_radio_icon : elm.Radio ({
                     label : "Icon no scale",
                     weight : EXPAND_BOTH,
                     align : { x : 1.0, y : 0.5 },
                     icon : logo_icon_unscaled,
                     value : 1,
                     group : "rdg",
-                },
-                label_only_radio : {
-                    type : "radio",
+                }),
+                label_only_radio : elm.Radio ({
                     label : "Label Only",
                     value : 2,
                     group : "rdg",
-                },
-                disabled_radio : {
-                    type : "radio",
+                }),
+                disabled_radio : elm.Radio ({
                     label : "Disabled",
-                    disabled : true,
+                    enabled : false,
                     value : 3,
                     group : "rdg",
-                },
-                icon_radio : {
-                    type : "radio",
+                }),
+                icon_radio : elm.Radio ({
                     icon : logo_icon_unscaled,
                     value : 4,
                     group : "rdg",
-                },
-                disabled_icon_radio : {
-                    type : "radio",
-                    disabled : true,
+                }),
+                disabled_icon_radio : elm.Radio ({
+                    enabled : false,
                     icon : logo_icon_unscaled,
                     value : 5,
                     group : "rdg",
-                },
+                }),
             },
-        },
+        }),
     },
 });
 
+var win = elm.realise(desc);
