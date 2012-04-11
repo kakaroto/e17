@@ -223,8 +223,12 @@ Handle<Value> CElmObject::text_get() const
 
 void CElmObject::text_set(Handle<Value> val)
 {
-   if (val->IsString())
-      elm_object_text_set(eo, elm_entry_utf8_to_markup(*String::Utf8Value(val)));
+   if (!val->IsString())
+     return;
+
+   char *text = elm_entry_utf8_to_markup(*String::Utf8Value(val));
+   elm_object_text_set(eo, text);
+   free(text);
 }
 
 Handle<Value> CElmObject::scale_get() const
