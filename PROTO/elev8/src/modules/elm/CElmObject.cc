@@ -53,11 +53,7 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
      {
         Local<String> key = props->Get(i)->ToString();
         Local<Value> val = obj->Get(key);
-        Local<Value> params[2] = {val, info.This()};
-
-        Local<Object> elm = Context::GetCurrent()->Global()->Get(String::NewSymbol("elm"))->ToObject();
-        Local<Function> realise = Local<Function>::Cast(elm->Get(String::NewSymbol("realise")));
-        Local<Value> realizedObject = realise->Call(info.This(), 2, params);
+        Local<Value> realizedObject = CElmObject::Realise(val, info.This());
 
         elements->Set(key, realizedObject);
         GetObjectFromAccessorInfo<CElmObject>(info)->DidRealiseElement(realizedObject);
