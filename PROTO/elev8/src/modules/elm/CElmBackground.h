@@ -1,29 +1,40 @@
 #ifndef C_ELM_BACKGROUND_H
 #define C_ELM_BACKGROUND_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmBackground : public CEvasObject {
-   FACTORY(CElmBackground)
+namespace elm {
+
+using namespace v8;
+
+class CElmBackground : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmBackground> prop_handler;
+   CElmBackground(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
+
+   static Handle<Value> New(const Arguments& args);
+   static void Delete(Persistent<Value>, void *parameter);
 
 public:
-   explicit CElmBackground(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-   virtual void image_set(Handle<Value> val);
-   virtual Handle<Value> image_get(void) const;
+   void Setimage(Handle<Value> val);
+   Handle<Value> Getimage(void) const;
 
-   virtual Handle<Value> red_get() const;
-   virtual void red_set(Handle<Value> val);
+   Handle<Value> Getred() const;
+   void Setred(Handle<Value> val);
 
-   virtual Handle<Value> green_get() const;
-   virtual void green_set(Handle<Value> val);
+   Handle<Value> Getgreen() const;
+   void Setgreen(Handle<Value> val);
 
-   virtual Handle<Value> blue_get() const;
-   virtual void blue_set(Handle<Value> val);
+   Handle<Value> Getblue() const;
+   void Setblue(Handle<Value> val);
 };
+
+}
 
 #endif // C_ELM_BACKGROUND_H

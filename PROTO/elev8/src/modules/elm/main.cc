@@ -7,6 +7,7 @@ using namespace v8;
 #include "elm.h"
 #include "CElmObject.h"
 #include "CElmWindow.h"
+#include "CElmBackground.h"
 
 namespace elm {
 

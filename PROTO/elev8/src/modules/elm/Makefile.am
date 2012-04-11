@@ -16,7 +16,8 @@ mod_LTLIBRARIES = libelm.la
 libelm_la_SOURCES = \
 	main.cc \
 	CElmObject.cc \
-	CElmWindow.cc
+	CElmWindow.cc \
+	CElmBackground.cc
 
 #	Main.cc \
 #	CElmActionSlider.cc \

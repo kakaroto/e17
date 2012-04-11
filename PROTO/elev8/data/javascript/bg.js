@@ -5,9 +5,9 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var small_icon = elm.datadir + "data/images/logo_small.png";
 
-var my_window = new elm.window({
+var my_window = new elm.Window({
     type : "main",
-    label : "Background Demo",
+    title : "Background Demo",
     width : 320,
     height : 480,
     align : FILL_BOTH,

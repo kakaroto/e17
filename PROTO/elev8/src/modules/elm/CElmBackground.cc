@@ -1,20 +1,66 @@
+#include "elm.h"
 #include "CElmBackground.h"
 
-CElmBackground::CElmBackground(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmBackground, image);
+GENERATE_PROPERTY_CALLBACKS(CElmBackground, red);
+GENERATE_PROPERTY_CALLBACKS(CElmBackground, green);
+GENERATE_PROPERTY_CALLBACKS(CElmBackground, blue);
+
+GENERATE_TEMPLATE(CElmBackground,
+                  PROPERTY(image),
+                  PROPERTY(red),
+                  PROPERTY(green),
+                  PROPERTY(blue));
+
+CElmBackground::CElmBackground(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_bg_add(parent->GetEvasObject()))
+//   , prop_handler(property_list_base)
 {
-   eo = elm_bg_add(parent->get());
-   construct(eo, obj);
+//   eo = elm_bg_add(parent->get());
+//   construct(eo, obj);
 }
 
-void CElmBackground::image_set(Handle<Value> val)
+void CElmBackground::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Background"),
+               GetTemplate()->GetFunction());
+}
+
+Handle<Value> CElmBackground::New(const Arguments& args)
+{
+   HandleScope scope;
+
+   if (!args.IsConstructCall())
+     {
+        Local<Object> obj = args[0]->ToObject();
+        if (obj->Get(String::New("type")) == Undefined())
+          obj->Set(String::New("type"), GetTemplate()->GetFunction());
+        return obj;
+     }
+
+   CElmObject *parent = static_cast<CElmObject *>(args[1]->ToObject()->GetPointerFromInternalField(0));
+   CElmBackground *bg = new CElmBackground(args.This(), parent);
+   bg->jsObject.MakeWeak(bg, Delete);
+   printf("%s::%s:%d\n", __FILE__, __FUNCTION__, __LINE__);
+   return Undefined();
+}
+
+void CElmBackground::Delete(Persistent<Value>, void *paramenter)
+{
+   delete static_cast<CElmBackground *>(paramenter);
+}
+
+void CElmBackground::Setimage(Handle<Value> val)
 {
    if (val->IsString())
       elm_bg_file_set(eo, *String::Utf8Value(val), NULL);
 }
 
-Handle<Value> CElmBackground::image_get(void) const
+Handle<Value> CElmBackground::Getimage(void) const
 {
    const char *file = NULL;
    elm_bg_file_get(eo, &file, NULL);
@@ -25,31 +71,33 @@ Handle<Value> CElmBackground::image_get(void) const
    return Null();
 }
 
-Handle<Value> CElmBackground::red_get() const
+Handle<Value> CElmBackground::Getred() const
 {
    int r;
    elm_bg_color_get(eo, &r, NULL, NULL);
    return Number::New(r);
 }
 
-void CElmBackground::red_set(Handle<Value> val)
+void CElmBackground::Setred(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
+
+   printf("%s::%s:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
    int g, b;
    elm_bg_color_get(eo, NULL, &g, &b);
    elm_bg_color_set(eo, val->ToNumber()->Value(), g, b);
 }
 
-Handle<Value> CElmBackground::green_get() const
+Handle<Value> CElmBackground::Getgreen() const
 {
    int g;
    elm_bg_color_get(eo, NULL, &g, NULL);
    return Number::New(g);
 }
 
-void CElmBackground::green_set(Handle<Value> val)
+void CElmBackground::Setgreen(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -59,14 +107,14 @@ void CElmBackground::green_set(Handle<Value> val)
    elm_bg_color_set(eo, r, val->ToNumber()->Value(), b);
 }
 
-Handle<Value> CElmBackground::blue_get() const
+Handle<Value> CElmBackground::Getblue() const
 {
    int b;
    elm_bg_color_get(eo, NULL, NULL, &b);
    return Number::New(b);
 }
 
-void CElmBackground::blue_set(Handle<Value> val)
+void CElmBackground::Setblue(Handle<Value> val)
 {
    if (!val->IsNumber())
      return;
@@ -76,9 +124,4 @@ void CElmBackground::blue_set(Handle<Value> val)
    elm_bg_color_set(eo, r, g, val->ToNumber()->Value());
 }
 
-PROPERTIES_OF(CElmBackground) = {
-    PROP_HANDLER(CElmBackground, red),
-    PROP_HANDLER(CElmBackground, green),
-    PROP_HANDLER(CElmBackground, blue),
-    { NULL }
-};
+}
