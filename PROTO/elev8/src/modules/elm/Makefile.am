@@ -51,14 +51,11 @@ libelm_la_SOURCES = \
 	CElmTable.cc \
 	CElmWindow.cc
 
-#	Main.cc \
-#	CElmBasicWindow.cc \
 #	CElmConform.cc \
 #	CElmCtxPopup.cc \
 #	CElmDateTime.cc \
 #	CElmLayout.cc \
-#	CElmNotify.cc \
-#	CEvasObject.cc
+#	CElmNotify.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
