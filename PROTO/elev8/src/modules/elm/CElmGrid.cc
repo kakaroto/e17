@@ -1,108 +1,85 @@
 #include "CElmGrid.h"
 
-CElmGrid::CElmGrid(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmGrid, size);
+GENERATE_METHOD_CALLBACKS(CElmGrid, clear);
+GENERATE_METHOD_CALLBACKS(CElmGrid, pack);
+
+GENERATE_TEMPLATE(CElmGrid,
+                  PROPERTY(size),
+                  METHOD(pack),
+                  METHOD(clear));
+
+CElmGrid::CElmGrid(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_grid_add(parent->GetEvasObject()))
 {
-   eo = elm_grid_add(parent->top_widget_get());
-   construct(eo, obj);
-
-   get_object()->Set(String::NewSymbol("add"), FunctionTemplate::New(add)->GetFunction());
-   get_object()->Set(String::NewSymbol("clear"), FunctionTemplate::New(clear)->GetFunction());
-
-   items_set(obj->Get(String::New("subobjects")));
 }
 
-Handle<Value> CElmGrid::add(const Arguments& args)
+void CElmGrid::Initialize(Handle<Object> target)
 {
-   CElmGrid *grid = static_cast<CElmGrid *>(eo_from_info(args.This()));
+   target->Set(String::NewSymbol("Grid"), GetTemplate()->GetFunction());
+}
 
-   if (args[0]->IsObject())
-     grid->pack_set(args[0]);
+Handle<Value> CElmGrid::clear(const Arguments&)
+{
    return Undefined();
 }
 
-Handle<Value> CElmGrid::clear(const Arguments& args)
+void CElmGrid::DidRealiseElement(Local<Value> val)
 {
-   CElmGrid *grid = static_cast<CElmGrid *>(eo_from_info(args.This()));
-
-   elm_grid_clear(grid->get(), true);
-   grid->grid_items.clear();
-   return Undefined();
+   pack(val->ToObject());
 }
 
-void CElmGrid::items_set(Handle<Value> val)
+void CElmGrid::pack(Handle<Object> obj)
 {
-   if (!val->IsObject())
-     {
-        ELM_ERR( "not an object!");
-        return;
-     }
+   int x, y, w, h;
+   Local<Object> element = obj->Get(String::NewSymbol("element"))->ToObject();
 
-   Local<Object> in = val->ToObject();
-   Local<Array> props = in->GetPropertyNames();
+   x = obj->Get(String::NewSymbol("x"))->IntegerValue();
+   y = obj->Get(String::NewSymbol("y"))->IntegerValue();
+   w = obj->Get(String::NewSymbol("w"))->IntegerValue();
+   h = obj->Get(String::NewSymbol("h"))->IntegerValue();
 
-   /* iterate through elements and instantiate them */
-   for (unsigned int i = 0; i < props->Length(); i++)
-     {
-        Local<Value> value = props->Get(Integer::New(i));
-        pack_set(in->Get(value->ToString()));
-     }
+   elm_grid_pack(GetEvasObject(), GetEvasObjectFromJavascript(element), x, y, w, h);
 }
 
-void CElmGrid::pack_set(Handle<Value> item)
+Handle<Value> CElmGrid::pack(const Arguments &args)
 {
-   CEvasObject *child = NULL;
+   if (!args[0]->IsObject())
+     return Undefined();
 
-   if (!item->IsObject())
+   Local<Object> desc = args[0]->ToObject();
+
+   if (!desc->Has(String::NewSymbol("element")))
      {
-        // FIXME: permit adding strings here?
-        ELM_ERR("grid item is not an object");
-        return;
+        ELM_ERR("Need an elm element to be packed");
+        return Undefined();
      }
 
-   Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
-   if (!subobj->IsObject())
-     return;
+   Local<Object> obj = desc->Clone();
+   obj->Set(String::NewSymbol("element"),
+            Realise(desc->Get(String::New("element")), jsObject));
+   pack(obj);
 
-   //TODO : need to check if this is an existing child.
-   child = make_or_get(this, subobj);
-   if (!child)
-      return;
-
-   Local<Value> xpos = item->ToObject()->Get(String::New("x"));
-   Local<Value> ypos = item->ToObject()->Get(String::New("y"));
-   Local<Value> width = item->ToObject()->Get(String::New("w"));
-   Local<Value> height = item->ToObject()->Get(String::New("h"));
-
-   if (!xpos->IsNumber() || !ypos->IsNumber() || !width->IsNumber() ||
-       !height->IsNumber())
-     {
-        ELM_ERR("Coordinates not set or not a number? x=%d, y=%d, w=%d or h=%d",
-                xpos->IsNumber(), ypos->IsNumber(), width->IsNumber(),
-                height->IsNumber());
-        return;
-     }
-
-   elm_grid_pack(this->get(), child->get(),
-                 xpos->IntegerValue(), ypos->IntegerValue(),
-                 width->IntegerValue(), height->IntegerValue());
-   grid_items.push_back(child);
-}
-
-Handle<Value> CElmGrid::pack_get() const
-{
    return Undefined();
 }
 
 void CElmGrid::size_set(Handle<Value> val)
 {
-   int x, y;
-   if (get_xy_from_object(val, x, y))
-     {
-        ELM_INF("Grid Size = %d %d", x,y);
-        elm_grid_size_set(eo, x, y);
-     }
+   Local<Object> obj = val->ToObject();
+   Local<Value> x = obj->Get(String::NewSymbol("x"));
+   Local<Value> y = obj->Get(String::NewSymbol("y"));
+
+   if (x.IsEmpty() || !x->IsNumber())
+     return;
+
+   if (y.IsEmpty() || !y->IsNumber())
+     return;
+
+   elm_grid_size_set(eo, x->IntegerValue(), y->IntegerValue());
 }
 
 Handle<Value> CElmGrid::size_get() const
@@ -119,9 +96,4 @@ Handle<Value> CElmGrid::size_get() const
    return scope.Close(obj);
 }
 
-PROPERTIES_OF(CElmGrid) = {
-   PROP_HANDLER(CElmGrid, size),
-   PROP_HANDLER(CElmGrid, pack),
-   { NULL }
-};
-
+}

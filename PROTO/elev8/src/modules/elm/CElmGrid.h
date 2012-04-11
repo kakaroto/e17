@@ -1,30 +1,37 @@
 #ifndef C_ELM_GRID_H
 #define C_ELM_GRID_H
 
-#include <v8.h>
-#include <list>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
+
+namespace elm {
 
 using namespace v8;
 
-class CElmGrid : public CEvasObject {
-   FACTORY(CElmGrid)
+class CElmGrid : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmGrid> prop_handler;
-   std::list<CEvasObject *> grid_items;
+   CElmGrid(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   CElmGrid(CEvasObject *parent, Local<Object> obj);
 public:
+   static void Initialize(Handle<Object> target);
+   virtual void DidRealiseElement(Local<Value>);
 
    static Handle<Value> add(const Arguments& args);
    static Handle<Value> clear(const Arguments& args);
-   virtual void items_set(Handle<Value> val);
 
-   void pack_set(Handle<Value> item);
-   virtual Handle<Value> pack_get() const;
+   void pack(Handle<Object> obj);
+   Handle<Value> pack(const Arguments&);
 
    void size_set(Handle<Value> val);
-   virtual Handle<Value> size_get() const;
+   Handle<Value> size_get() const;
+
+   friend Handle<Value> CElmObject::New<CElmGrid>(const Arguments& args);
 };
+
+}
+
 #endif

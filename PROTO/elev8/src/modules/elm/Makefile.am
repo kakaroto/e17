@@ -31,6 +31,7 @@ libelm_la_SOURCES = \
 	CElmFileSelectorEntry.cc \
 	CElmFlip.cc \
 	CElmGenList.cc \
+	CElmGrid.cc \
 	CElmHover.cc \
 	CElmIcon.cc \
 	CElmImage.cc \
@@ -55,7 +56,6 @@ libelm_la_SOURCES = \
 #	CElmConform.cc \
 #	CElmCtxPopup.cc \
 #	CElmDateTime.cc \
-#	CElmGrid.cc \
 #	CElmLayout.cc \
 #	CElmNotify.cc \
 #	CEvasImage.cc \
