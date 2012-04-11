@@ -1,19 +1,20 @@
+#include "elm.h"
 #include "CElmBox.h"
 
-CElmBox::CElmBox(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
-{
-   eo = elm_box_add(parent->top_widget_get());
-   construct(eo, obj);
+namespace elm {
 
-   /*
-    * Create elements and attach to parent so children can see siblings
-    * that have already been created.  Useful to find radio button groups.
-    */
-   Handle<Object> elements = Object::New();
-   get_object()->Set(String::New("elements"), elements);
-   realize_objects(obj->Get(String::New("elements")), elements);
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmBox, horizontal);
+GENERATE_PROPERTY_CALLBACKS(CElmBox, homogeneous);
+
+GENERATE_TEMPLATE(CElmBox,
+                  PROPERTY(horizontal),
+                  PROPERTY(homogeneous));
+
+CElmBox::CElmBox(Local <Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_box_add(parent->GetEvasObject()))
+{
 }
 
 void CElmBox::horizontal_set(Handle<Value> val)
@@ -38,34 +39,19 @@ Handle<Value> CElmBox::homogeneous_get() const
    return Boolean::New(elm_box_homogeneous_get(eo));
 }
 
-void CElmBox::add_child(CEvasObject *child)
+void CElmBox::DidRealiseElement(Local<Value> obj)
 {
-   elm_box_pack_end(eo, child->get());
+   elm_box_pack_end(eo, GetEvasObjectFromJavascript<CElmBox>(obj));
 }
 
-CEvasObject *CElmBox::get_child(Handle<Value> name)
+void CElmBox::Initialize(Handle<Object> target)
 {
-   Handle<Object> obj = get_object();
-   Local<Value> elements_val = obj->Get(String::New("elements"));
-
-   if (!elements_val->IsObject())
-     {
-        ELM_ERR("elements not an object");
-        return NULL;
-     }
-
-   Local<Object> elements = elements_val->ToObject();
-   Local<Value> val = elements->Get(name);
-
-   if (val->IsObject())
-     return eo_from_info(val->ToObject());
-
-   ELM_ERR("value %s not an object", *String::Utf8Value(val->ToString()));
-   return NULL;
+   target->Set(String::NewSymbol("Box"), GetTemplate()->GetFunction());
 }
 
-PROPERTIES_OF(CElmBox) = {
-   PROP_HANDLER(CElmBox, horizontal),
-   PROP_HANDLER(CElmBox, homogeneous),
-   { NULL }
-};
+void CElmBox::Delete(Persistent<Value>, void *parameter)
+{
+   delete static_cast<CElmBox *>(parameter);
+}
+
+}

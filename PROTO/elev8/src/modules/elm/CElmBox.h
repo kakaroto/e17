@@ -1,24 +1,37 @@
 #ifndef C_ELM_BOX_H
 #define C_ELM_BOX_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmBox : public CEvasObject {
-   FACTORY(CElmBox)
+namespace elm {
+
+using namespace v8;
+
+class CElmBox : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   virtual void add_child(CEvasObject *child);
-   virtual CEvasObject *get_child(Handle<Value> name);
+   CElmBox(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   CPropHandler<CElmBox> prop_handler;
+   static void Delete(Persistent<Value>, void *);
 
-   CElmBox(CEvasObject *parent, Local<Object> obj);
 public:
+   static void Initialize(Handle<Object> target);
+
+   virtual void DidRealiseElement(Local<Value> obj);
+
    void horizontal_set(Handle<Value> val);
    virtual Handle<Value> horizontal_get() const;
 
    void homogeneous_set(Handle<Value> val);
    virtual Handle<Value> homogeneous_get() const;
+
+   friend Handle<Value> CElmObject::New<CElmBox>(const Arguments& args);
 };
+
+}
 
 #endif // C_ELM_BOX_H

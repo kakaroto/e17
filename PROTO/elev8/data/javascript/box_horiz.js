@@ -1,44 +1,41 @@
 #!/usr/local/bin/elev8
 
-var EXPAND_BOTH = { x : 1.0, y : 1.0 };
-var FILL_BOTH = { x : -1.0, y : -1.0 };
+elm = require('elm');
 
-var my_window = new elm.window({
-    label : "Horizontal Box example",
-    elements : {
-        the_background : {
-            type : "background",
-            weight : EXPAND_BOTH,
-            resize : true,
-        },
-        the_box : {
-            type : "box",
-            weight : EXPAND_BOTH,
-            horizontal : true,
-            resize : true,
-            elements : {
-                logo_top : {
-                    type : "icon",
-                    image : elm.datadir + "data/images/logo_small.png",
-                    resizable_up : false,
-                    resizable_down : false,
-                    align : { x : 0.5, y : 0.5 },
-                },
-                logo_middle : {
-                    type : "icon",
-                    image : elm.datadir + "data/images/logo_small.png",
-                    resizable_up : false,
-                    resizable_down : false,
-                    align : { x : 0.5, y : 0.0 },
-                },
-                logo_bottom : {
-                    type : "icon",
-                    image : elm.datadir + "data/images/logo_small.png",
-                    resizable_up : false,
-                    resizable_down : false,
-                    align : { x : 0.0, y : 1.0 },
-                },
-            },
-        },
-    },
+var EXPAND_BOTH = { x: 1.0, y: 1.0 };
+var FILL_BOTH = { x: -1.0, y: -1.0 };
+
+var my_window = elm.Window({
+    title: "Horizontal Box example",
+    elements: {
+        background: elm.Background({
+            weight: EXPAND_BOTH,
+            resize: true
+        }),
+        box: elm.Box({
+            weight: EXPAND_BOTH,
+            horizontal: true,
+            resize: true,
+            elements: {
+                logo_top: elm.Icon({
+                    image: elm.datadir + "data/images/logo_small.png",
+                    resizable_up: false,
+                    resizable_down: false,
+                    align: { x: 0.5, y: 0.5 }
+                }),
+                logo_middle: elm.Icon({
+                    image: elm.datadir + "data/images/logo_small.png",
+                    resizable_up: false,
+                    resizable_down: false,
+                    align: { x: 0.5, y: 0.0 }
+                }),
+                logo_bottom: elm.Icon({
+                    image: elm.datadir + "data/images/logo_small.png",
+                    resizable_up: false,
+                    resizable_down: false,
+                    align: { x: 0.0, y: 1.0 }
+                })
+            }
+        })
+    }
 });

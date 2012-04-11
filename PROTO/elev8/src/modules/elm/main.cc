@@ -8,6 +8,7 @@ using namespace v8;
 #include "CElmObject.h"
 #include "CElmWindow.h"
 #include "CElmBackground.h"
+#include "CElmBox.h"
 
 namespace elm {
 
@@ -118,6 +119,7 @@ void RegisterModule(Handle<Object> target)
    CElmObject::Initialize(target);
    CElmWindow::Initialize(target);
    CElmBackground::Initialize(target);
+   CElmBox::Initialize(target);
 }
 
 }

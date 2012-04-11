@@ -17,13 +17,13 @@ libelm_la_SOURCES = \
 	main.cc \
 	CElmObject.cc \
 	CElmWindow.cc \
-	CElmBackground.cc
+	CElmBackground.cc \
+	CElmBox.cc
 
 #	Main.cc \
 #	CElmActionSlider.cc \
 #	CElmBackground.cc \
 #	CElmBasicWindow.cc \
-#	CElmBox.cc \
 #	CElmBubble.cc \
 #	CElmButton.cc \
 #	CElmCalendar.cc \
