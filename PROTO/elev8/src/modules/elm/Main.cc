@@ -151,13 +151,13 @@ elm_main_window(const Arguments& args)
 }
 
 static Handle<Value>
-elm_loop_time(const Arguments&)
+loop_time(const Arguments&)
 {
    return Number::New(ecore_loop_time_get());
 }
 
 static Handle<Value>
-elm_exit(const Arguments&)
+exit(const Arguments&)
 {
    elm_exit();
    return Undefined();

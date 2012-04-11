@@ -26,6 +26,19 @@ static Persistent<Value> tmpdir;
 static Persistent<Value> theme;
 
 static Handle<Value>
+loop_time(const Arguments&)
+{
+   return Number::New(ecore_loop_time_get());
+}
+
+static Handle<Value>
+exit(const Arguments&)
+{
+   elm_exit();
+   return Undefined();
+}
+
+static Handle<Value>
 datadir_getter(Local<String>, const AccessorInfo&)
 {
    return datadir;
@@ -70,6 +83,11 @@ theme_setter(Local<String>, Local<Value> value, const AccessorInfo&)
 static void Initialize(Handle<Object> target)
 {
    HandleScope scope;
+
+   target->Set(String::NewSymbol("exit"),
+               FunctionTemplate::New(exit)->GetFunction());
+   target->Set(String::NewSymbol("loop_time"),
+               FunctionTemplate::New(loop_time)->GetFunction());
    target->SetAccessor(String::NewSymbol("tmpdir"),
                        tmpdir_getter, tmpdir_setter);
    target->SetAccessor(String::NewSymbol("datadir"),
