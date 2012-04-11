@@ -1,11 +1,52 @@
+#include "elm.h"
 #include "CElmDaySelector.h"
 
-CElmDaySelector::CElmDaySelector(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, on_change);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, on_lang_change);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, monday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, tuesday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, wednesday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, thursday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, friday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, saturday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, sunday);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, week_start);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, weekend_start);
+GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, weekend_length);
+
+GENERATE_TEMPLATE(CElmDaySelector,
+                  PROPERTY(on_change),
+                  PROPERTY(on_lang_change),
+                  PROPERTY(monday),
+                  PROPERTY(tuesday),
+                  PROPERTY(wednesday),
+                  PROPERTY(thursday),
+                  PROPERTY(friday),
+                  PROPERTY(saturday),
+                  PROPERTY(sunday),
+                  PROPERTY(week_start),
+                  PROPERTY(weekend_start),
+                  PROPERTY(weekend_length));
+
+CElmDaySelector::CElmDaySelector(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_dayselector_add(parent->GetEvasObject()))
 {
-   eo = elm_dayselector_add(parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmDaySelector::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("DaySelector"),
+               GetTemplate()->GetFunction());
+}
+
+CElmDaySelector::~CElmDaySelector()
+{
+   on_change_set(Undefined());
+   on_lang_change_set(Undefined());
 }
 
 Handle<Value> CElmDaySelector::day_selected_get(int day) const
@@ -122,82 +163,74 @@ void CElmDaySelector::weekend_length_set(Handle<Value> val)
      elm_dayselector_weekend_length_set(eo, val->ToNumber()->Value());
 }
 
-void CElmDaySelector::on_changed(void *)
+void CElmDaySelector::OnChange(void *)
 {
-   HandleScope handle_scope;
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_changed_val;
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
+   HandleScope scope;
+   Local<Function> callback(Function::Cast(*cb.change));
+   Handle<Value> args[1] = { jsObject };
+
+   callback->Call(jsObject, 1, args);
 }
 
-void CElmDaySelector::eo_on_changed(void *data, Evas_Object *, void *event_info)
+void CElmDaySelector::OnChangeWrapper(void *data, Evas_Object *, void *event_info)
 {
-   CElmDaySelector *changed = static_cast<CElmDaySelector*>(data);
-   changed->on_changed(event_info);
+   static_cast<CElmDaySelector*>(data)->OnChange(event_info);
 }
 
-void CElmDaySelector::on_changed_set(Handle<Value> val)
+Handle<Value> CElmDaySelector::on_change_get(void) const
 {
-   on_changed_val.Dispose();
-   on_changed_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "dayselector,changed", &eo_on_changed, this);
-   else
-     evas_object_smart_callback_del(eo, "dayselector,changed", &eo_on_changed);
+   return cb.change;
 }
 
-Handle<Value> CElmDaySelector::on_changed_get(void) const
+void CElmDaySelector::on_change_set(Handle<Value> val)
 {
-   return on_changed_val;
+   if (!cb.change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "dayselector,changed", &OnChangeWrapper);
+        cb.change.Dispose();
+        cb.change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "dayselector,changed", &OnChangeWrapper, this);
 }
 
-void CElmDaySelector::on_lang_changed(void *)
+void CElmDaySelector::OnLangChange(void *)
 {
-   HandleScope handle_scope;
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_lang_changed_val;
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
+   HandleScope scope;
+   Local<Function> callback(Function::Cast(*cb.lang_change));
+   Handle<Value> args[1] = { jsObject };
+
+   callback->Call(jsObject, 1, args);
 }
 
-void CElmDaySelector::eo_on_lang_changed(void *data, Evas_Object *, void *event_info)
+void CElmDaySelector::OnLangChangeWrapper(void *data, Evas_Object *, void *event_info)
 {
-   static_cast<CElmDaySelector*>(data)->on_lang_changed(event_info);
+   static_cast<CElmDaySelector*>(data)->OnLangChange(event_info);
 }
 
-void CElmDaySelector::on_lang_changed_set(Handle<Value> val)
+Handle<Value> CElmDaySelector::on_lang_change_get(void) const
 {
-   on_lang_changed_val.Dispose();
-
-   on_lang_changed_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "language,changed", &eo_on_lang_changed, this);
-   else
-     evas_object_smart_callback_del(eo, "language,changed", &eo_on_lang_changed);
+   return cb.lang_change;
 }
 
-Handle<Value> CElmDaySelector::on_lang_changed_get(void) const
+void CElmDaySelector::on_lang_change_set(Handle<Value> val)
 {
-   return on_lang_changed_val;
+   if (!cb.lang_change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "language,changed", &OnLangChangeWrapper);
+        cb.lang_change.Dispose();
+        cb.lang_change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.lang_change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "language,changed", &OnLangChangeWrapper, this);
 }
 
-PROPERTIES_OF(CElmDaySelector) = {
-   PROP_HANDLER(CElmDaySelector, monday),
-   PROP_HANDLER(CElmDaySelector, tuesday),
-   PROP_HANDLER(CElmDaySelector, wednesday),
-   PROP_HANDLER(CElmDaySelector, thursday),
-   PROP_HANDLER(CElmDaySelector, friday),
-   PROP_HANDLER(CElmDaySelector, saturday),
-   PROP_HANDLER(CElmDaySelector, sunday),
-   PROP_HANDLER(CElmDaySelector, weekend_start),
-   PROP_HANDLER(CElmDaySelector, week_start),
-   PROP_HANDLER(CElmDaySelector, weekend_length),
-   PROP_HANDLER(CElmDaySelector, on_changed),
-   PROP_HANDLER(CElmDaySelector, on_lang_changed),
-   { NULL },
-};
+}

@@ -1,86 +1,76 @@
 #ifndef C_ELM_DAY_SELECTOR_H
 #define C_ELM_DAY_SELECTOR_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmDaySelector : public CEvasObject {
-    FACTORY(CElmDaySelector)
+namespace elm {
+
+class CElmDaySelector : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-    CPropHandler<CElmDaySelector> prop_handler;
+   CElmDaySelector(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmDaySelector();
 
-    /* the on_changed function */
-    Persistent<Value> on_changed_val;
+   struct {
+      Persistent<Value> change;
+      Persistent<Value> lang_change;
+   } cb;
 
-    /* the on_lang_changed function */
-    Persistent<Value> on_lang_changed_val;
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-    CElmDaySelector(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-    virtual ~CElmDaySelector() { }
+   Handle<Value> day_selected_get(int day) const;
+   void day_selected_set(int day, Handle<Value> val);
 
-    Handle<Value> day_selected_get(int day) const;
+   Handle<Value> monday_get() const;
+   void monday_set(Handle<Value> val);
 
-    void day_selected_set(int day, Handle<Value> val);
+   Handle<Value> tuesday_get() const;
+   void tuesday_set(Handle<Value> val);
 
-    Handle<Value> monday_get() const;
+   Handle<Value> wednesday_get() const;
+   void wednesday_set(Handle<Value> val);
 
-    void monday_set(Handle<Value> val);
+   Handle<Value> thursday_get() const;
+   void thursday_set(Handle<Value> val);
 
-    Handle<Value> tuesday_get() const;
+   Handle<Value> friday_get() const;
+   void friday_set(Handle<Value> val);
 
-    void tuesday_set(Handle<Value> val);
+   Handle<Value> saturday_get() const;
+   void saturday_set(Handle<Value> val);
 
-    Handle<Value> wednesday_get() const;
+   Handle<Value> sunday_get() const;
+   void sunday_set(Handle<Value> val);
 
-    void wednesday_set(Handle<Value> val);
+   Handle<Value> week_start_get() const;
+   void week_start_set(Handle<Value> val);
 
-    Handle<Value> thursday_get() const;
+   Handle<Value> weekend_start_get() const;
+   void weekend_start_set(Handle<Value> val);
 
-    void thursday_set(Handle<Value> val);
+   Handle<Value> weekend_length_get() const;
+   void weekend_length_set(Handle<Value> val);
 
-    Handle<Value> friday_get() const;
+   void OnChange(void *);
+   static void OnChangeWrapper(void *, Evas_Object *, void *);
 
-    void friday_set(Handle<Value> val);
+   void on_change_set(Handle<Value> val);
+   Handle<Value> on_change_get(void) const;
 
-    Handle<Value> saturday_get() const;
+   void OnLangChange(void *);
+   static void OnLangChangeWrapper(void *, Evas_Object *, void *);
 
-    void saturday_set(Handle<Value> val);
+   void on_lang_change_set(Handle<Value> val);
+   Handle<Value> on_lang_change_get(void) const;
 
-    Handle<Value> sunday_get() const;
-
-    void sunday_set(Handle<Value> val);
-
-    Handle<Value> week_start_get() const;
-
-    void week_start_set(Handle<Value> val);
-
-    Handle<Value> weekend_start_get() const;
-
-    void weekend_start_set(Handle<Value> val);
-
-    Handle<Value> weekend_length_get() const;
-
-    void weekend_length_set(Handle<Value> val);
-
-    void on_changed(void *);
-
-    static void eo_on_changed(void *data, Evas_Object *, void *event_info);
-
-    void on_changed_set(Handle<Value> val);
-
-    Handle<Value> on_changed_get(void) const;
-
-    void on_lang_changed(void *);
-
-    static void eo_on_lang_changed(void *data, Evas_Object *, void *event_info);
-
-    void on_lang_changed_set(Handle<Value> val);
-
-    Handle<Value> on_lang_changed_get(void) const;
-
+   friend Handle<Value> CElmObject::New<CElmDaySelector>(const Arguments& args);
 };
 
+}
 #endif

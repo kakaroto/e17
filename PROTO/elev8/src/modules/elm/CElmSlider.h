@@ -34,6 +34,12 @@ public:
    void on_change_set(Handle<Value> val);
    Handle<Value> on_change_get(void) const;
 
+   void OnLangChange(void *);
+   static void OnLangChangeWrapper(void *, Evas_Object *, void *);
+
+   void on_lang_change_set(Handle<Value> val);
+   Handle<Value> on_lang_change_get(void) const;
+
    void units_set(Handle<Value> value);
    Handle<Value> units_get() const;
 
