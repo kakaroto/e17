@@ -1,12 +1,7 @@
-//elm = require('../build/Release/elm')
 elm = require('elm');
-//console.log(1 + 1)
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
-
-var bg = elm.Background({
-});
 
 var w = elm.Window({
     title: "test",
