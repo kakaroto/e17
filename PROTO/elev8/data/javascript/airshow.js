@@ -1,4 +1,4 @@
-#!/usr/local/bin/elev8
+var elm = require('elm');
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var EXPAND_X = { x : 1.0, y : 0.0 };
@@ -10,14 +10,13 @@ var FILL_Y = { x : 0.0, y : -1.0 };
 var myplane=null;
 var num_planes = 4;
 
-var alien = {
-    type : "image",
+var alien = elm.Image ({
     file : elm.datadir + "data/images/alien.png",
     width : 30,
     height : 40,
     x : 10,
     y : 10,
-};
+});
 
 function move_up()
 {
@@ -82,29 +81,26 @@ function init()
 
 }
 
-var my_win = new elm.window({
-        type : "main",
-        label : "Air Show",
+var my_win = elm.realise(elm.Window({
+        title : "Air Show",
         width : 800,
         height : 600,
         weight : EXPAND_BOTH,
         align : FILL_BOTH,
         elements : {
-            the_background : {
-                type : "background",
+            the_background : elm.Background ({
                 weight : EXPAND_BOTH,
                 align : FILL_BOTH,
                 image : elm.datadir + "data/images/space.png",
                 resize : true,
-            },
-            plane1 : {
-                type : "image",
+            }),
+            plane1 : elm.Image ({
                 file : elm.datadir + "data/images/plane1.png",
                 width : 50,
                 height : 70,
                 x : 350,
                 y : 100,
-                on_clicked : function() {
+                on_click : function() {
                     if(myplane==null)
                     {
                         print(this.height + " " + this.weight);
@@ -113,15 +109,14 @@ var my_win = new elm.window({
                     }
                 },
                 on_animate : choose_plane,
-            },
-            plane2 : {
-                type : "image",
+            }),
+            plane2 : elm.Image ({
                 file : elm.datadir + "data/images/plane2.png",
                 width : 50,
                 height : 70,
                 x : 200,
                 y : 250,
-                on_clicked : function() {
+                on_click : function() {
                     if(myplane==null)
                     {
                         print(this.height + " " + this.weight);
@@ -130,15 +125,14 @@ var my_win = new elm.window({
                     }
                 },
                 on_animate : choose_plane,
-            },
-            plane3 : {
-                type : "image",
+            }),
+            plane3 : elm.Image ({
                 file : elm.datadir + "data/images/plane3.png",
                 width : 50,
                 height : 70,
                 x : 500,
                 y : 250,
-                on_clicked : function() {
+                on_click : function() {
                     if(myplane==null)
                     {
                         print(this.height + " " + this.weight);
@@ -147,15 +141,14 @@ var my_win = new elm.window({
                     }
                 },
                 on_animate : choose_plane,
-            },
-            plane4 : {
-                type : "image",
+            }),
+            plane4 : elm.Image ({
                 file : elm.datadir + "data/images/plane4.png",
                 width : 50,
                 height : 70,
                 x : 350,
                 y : 400,
-                on_clicked : function() {
+                on_click : function() {
                     print("On Click Triggered");
                     if(myplane==null)
                     {
@@ -165,9 +158,9 @@ var my_win = new elm.window({
                     }
                 },
                 on_animate : choose_plane,
-            },
+            }),
         },
-        on_keydown : function () {
+        on_key_down : function () {
             print("Argument = " + arguments[1] + "\n");
             print("title = " + this.label + "\n");
 
@@ -180,4 +173,4 @@ var my_win = new elm.window({
             if (arguments[1] == "Right")
                 move_right();
         },
-});
+}));
