@@ -583,15 +583,15 @@ void CElmObject::resize_set(Handle<Value> val)
    if (!val->IsBoolean())
      return;
 
-   Evas_Object *parent = elm_object_parent_widget_get(eo);
-   if (!parent)
+   Evas_Object *top = elm_object_top_widget_get(eo);
+   if (!top)
      return;
 
    cached.isResize = val->BooleanValue();
    if (cached.isResize)
-     elm_win_resize_object_add(parent, eo);
+     elm_win_resize_object_add(top, eo);
    else
-     elm_win_resize_object_del(parent, eo);
+     elm_win_resize_object_del(top, eo);
 }
 
 Handle<Value> CElmObject::pointer_get() const
