@@ -40,10 +40,10 @@ inline void RegisterProperties(Handle<ObjectTemplate> prototype, ...)
    #n_, CallbackGet ## n_, CallbackSet ## n_
 
 #define GENERATE_PROPERTY_CALLBACKS(class_,name_) \
-   static inline Handle<Value> CallbackGet ## name_(Local<String>, const AccessorInfo &info) { \
+   static Handle<Value> CallbackGet ## name_(Local<String>, const AccessorInfo &info) { \
       return GetObjectFromAccessorInfo<class_>(info)->Get ## name_(); \
    } \
-   static inline void CallbackSet ## name_(Local<String>, Local<Value> value, const AccessorInfo &info) { \
+   static void CallbackSet ## name_(Local<String>, Local<Value> value, const AccessorInfo &info) { \
       GetObjectFromAccessorInfo<class_>(info)->Set ## name_(value); \
    }
 
