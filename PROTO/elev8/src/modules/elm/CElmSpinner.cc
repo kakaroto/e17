@@ -1,11 +1,36 @@
+#include "elm.h"
 #include "CElmSpinner.h"
 
-CElmSpinner::CElmSpinner(CEvasObject * parent, Local <Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, label_format);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, step);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, min);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, max);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, editable);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, disabled);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, special_value);
+
+GENERATE_TEMPLATE(CElmSpinner,
+                  PROPERTY(label_format),
+                  PROPERTY(step),
+                  PROPERTY(min),
+                  PROPERTY(max),
+                  PROPERTY(editable),
+                  PROPERTY(disabled),
+                  PROPERTY(special_value));
+
+CElmSpinner::CElmSpinner(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_spinner_add(parent->GetEvasObject()))
 {
-   eo = elm_spinner_add(parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmSpinner::Initialize(Handle<Object> target)
+{
+      target->Set(String::NewSymbol("Spinner"),
+                                 GetTemplate()->GetFunction());
 }
 
 Handle<Value> CElmSpinner::label_format_get() const
@@ -95,23 +120,13 @@ Handle<Value> CElmSpinner::special_value_get() const
 
 void CElmSpinner::special_value_set(Handle<Value> val)
 {
-   HandleScope scope;
-
    if (val->IsObject())
      return;
 
-   Local<Value> value = val->ToObject()->Get(String::New("value"));
-   Local<Value> label = val->ToObject()->Get(String::New("label"));
-   elm_spinner_special_value_add(eo, value->ToInt32()->Value(), *String::Utf8Value(label));
+   Local<Value> value = val->ToObject()->Get(String::NewSymbol("value"));
+   Local<Value> label = val->ToObject()->Get(String::NewSymbol("label"));
+   elm_spinner_special_value_add(eo, value->ToInt32()->Value(),
+                                 *String::Utf8Value(label));
 }
 
-PROPERTIES_OF(CElmSpinner) = {
-   PROP_HANDLER(CElmSpinner, label_format),
-   PROP_HANDLER(CElmSpinner, step),
-   PROP_HANDLER(CElmSpinner, min),
-   PROP_HANDLER(CElmSpinner, max),
-   PROP_HANDLER(CElmSpinner, disabled),
-   PROP_HANDLER(CElmSpinner, editable),
-   PROP_HANDLER(CElmSpinner, special_value),
-   { NULL }
-};
+}

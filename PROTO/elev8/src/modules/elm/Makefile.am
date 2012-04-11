@@ -28,7 +28,8 @@ libelm_la_SOURCES = \
 	CElmBubble.cc \
 	CElmEntry.cc \
 	CElmFlip.cc \
-	CElmIcon.cc
+	CElmIcon.cc \
+	CElmSpinner.cc
 
 #	Main.cc \
 #	CElmBackground.cc \
@@ -60,7 +61,6 @@ libelm_la_SOURCES = \
 #	CElmScroller.cc \
 #	CElmSegment.cc \
 #	CElmSlider.cc \
-#	CElmSpinner.cc \
 #	CElmTable.cc \
 #	CEvasImage.cc \
 #	CEvasObject.cc

@@ -1,37 +1,46 @@
 #ifndef C_ELM_SPINNER_H
 #define C_ELM_SPINNER_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmSpinner : public CEvasObject {
-   FACTORY(CElmSpinner)
+namespace elm {
+
+class CElmSpinner : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmSpinner> prop_handler;
+   CElmSpinner(Local<Object> _jsObject, CElmObject *parent);
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   CElmSpinner(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> val);
 
-   virtual Handle<Value> label_format_get() const;
-   virtual void label_format_set(Handle<Value> val);
+   Handle<Value> label_format_get() const;
+   void label_format_set(Handle<Value> val);
 
-   virtual Handle<Value> step_get() const;
-   virtual void step_set(Handle<Value> val);
+   Handle<Value> step_get() const;
+   void step_set(Handle<Value> val);
 
-   virtual Handle<Value> min_get() const;
-   virtual void min_set(Handle<Value> value);
+   Handle<Value> min_get() const;
+   void min_set(Handle<Value> value);
 
-   virtual Handle<Value> max_get() const;
-   virtual void max_set(Handle<Value> value);
+   Handle<Value> max_get() const;
+   void max_set(Handle<Value> value);
 
-   virtual Handle<Value> editable_get() const;
-   virtual void editable_set(Handle<Value> val);
+   Handle<Value> editable_get() const;
+   void editable_set(Handle<Value> val);
 
-   virtual Handle<Value> disabled_get() const;
-   virtual void disabled_set(Handle<Value> val);
+   Handle<Value> disabled_get() const;
+   void disabled_set(Handle<Value> val);
 
-   virtual Handle<Value> special_value_get() const;
-   virtual void special_value_set(Handle<Value> val);
+   Handle<Value> special_value_get() const;
+   void special_value_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmSpinner>(const Arguments& args);
 };
 
-#endif // C_ELM_SPINNER_H
+}
+#endif
