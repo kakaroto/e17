@@ -1,103 +1,97 @@
 #include "CElmTable.h"
 
-CElmTable::CElmTable(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmTable, homogeneous);
+GENERATE_PROPERTY_CALLBACKS(CElmTable, padding);
+GENERATE_METHOD_CALLBACKS(CElmTable, pack);
+GENERATE_METHOD_CALLBACKS(CElmTable, unpack);
+GENERATE_METHOD_CALLBACKS(CElmTable, clear);
+
+GENERATE_TEMPLATE(CElmTable,
+                  PROPERTY(homogeneous),
+                  PROPERTY(padding),
+                  METHOD(pack),
+                  METHOD(unpack),
+                  METHOD(clear));
+
+CElmTable::CElmTable(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_table_add(parent->GetEvasObject()))
 {
-   eo = elm_table_add(parent->top_widget_get());
-   construct(eo, obj);
-
-   get_object()->Set(String::NewSymbol("unpack"), FunctionTemplate::New(unpack)->GetFunction());
-   get_object()->Set(String::NewSymbol("pack"), FunctionTemplate::New(pack)->GetFunction());
-   get_object()->Set(String::NewSymbol("clear"), FunctionTemplate::New(clear)->GetFunction());
-
-   items_set(obj->Get(String::New("subobjects")));
 }
 
-Handle<Value> CElmTable::pack(const Arguments& args)
+void CElmTable::Initialize(Handle<Object> target)
 {
-   if (args[0]->IsObject())
+   target->Set(String::NewSymbol("Table"), GetTemplate()->GetFunction());
+}
+
+void CElmTable::DidRealiseElement(Local<Value> val)
+{
+   pack(val->ToObject());
+}
+
+void CElmTable::pack(Handle<Object> obj)
+{
+   Local<Value> x, y, colspan, rowspan;
+   Local<Object> element = obj->Get(String::NewSymbol("element"))->ToObject();
+
+   x = obj->Get(String::NewSymbol("col"));
+   y = obj->Get(String::NewSymbol("row"));
+   colspan = obj->Get(String::NewSymbol("colspan"));
+   rowspan = obj->Get(String::NewSymbol("rowspan"));
+
+   if (colspan.IsEmpty() || !colspan->IsNumber())
+     colspan = Integer::New(1);
+
+   if (rowspan.IsEmpty() || !rowspan->IsNumber())
+     rowspan = Integer::New(1);
+
+   if (!x->IsNumber() || !y->IsNumber())
      {
-        CElmTable *self = static_cast<CElmTable *>(eo_from_info(args.This()));
-        return self->new_item_set(args[0]);
+        ELM_ERR("Coordinates not set or not a number? elem=%s x=%d, y=%d, w=%d or h=%d",
+                *String::Utf8Value(obj), x->IsNumber(), y->IsNumber(),
+                colspan->IsNumber(), rowspan->IsNumber());
+        return;
      }
+
+   elm_table_pack(GetEvasObject(), GetEvasObjectFromJavascript(element),
+                  x->IntegerValue(), y->IntegerValue(),
+                  colspan->IntegerValue(), rowspan->IntegerValue());
+}
+
+Handle<Value> CElmTable::pack(const Arguments &args)
+{
+   if (!args[0]->IsObject())
+     return Undefined();
+
+   Local<Object> desc = args[0]->ToObject();
+
+   if (!desc->Has(String::NewSymbol("element")))
+     {
+        ELM_ERR("Need an elm element to be packed");
+        return Undefined();
+     }
+
+   Local<Object> obj = desc->Clone();
+   obj->Set(String::NewSymbol("element"),
+            Realise(desc->Get(String::New("element")), jsObject));
+   pack(obj);
 
    return Undefined();
 }
 
 Handle<Value> CElmTable::unpack(const Arguments&)
 {
+   ELM_DBG("unpack");
    return Undefined();
 }
 
-Handle<Value> CElmTable::clear(const Arguments& args)
+Handle<Value> CElmTable::clear(const Arguments&)
 {
-   CElmTable *table = static_cast<CElmTable *>(eo_from_info(args.This()));
-
-   elm_table_clear(table->get(), true);
-   table->table_items.clear();
+   ELM_DBG("clear");
    return Undefined();
-}
-
-void CElmTable::items_set(Handle<Value> val)
-{
-   HandleScope scope;
-
-   if (!val->IsObject())
-     {
-        ELM_ERR("not an object!");
-        return;
-     }
-
-   Local<Object> in = val->ToObject();
-   Local<Array> props = in->GetPropertyNames();
-
-   /* iterate through elements and instantiate them */
-   for (unsigned int i = 0; i < props->Length(); i++)
-     {
-        Local<Value> item = in->Get(props->Get(Integer::New(i))->ToString());
-        new_item_set(item);
-     }
-}
-
-Handle<Value> CElmTable::new_item_set(Handle<Value> item)
-{
-   HandleScope scope;
-
-   if (!item->IsObject())
-     {
-        // FIXME: permit adding strings here?
-        ELM_ERR("list item is not an object");
-        return Undefined();
-     }
-
-   Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
-   if (!subobj->IsObject())
-     return Undefined();
-
-   CEvasObject *child = make_or_get(this, subobj);
-   if (!child)
-     return Undefined();
-
-   Local<Value> xpos = item->ToObject()->Get(String::New("x"));
-   Local<Value> ypos = item->ToObject()->Get(String::New("y"));
-   Local<Value> width = item->ToObject()->Get(String::New("w"));
-   Local<Value> height = item->ToObject()->Get(String::New("h"));
-
-   if (!xpos->IsNumber() || !ypos->IsNumber() || !width->IsNumber() ||
-       !height->IsNumber())
-     {
-        ELM_ERR("Coordinates not set or not a number? x=%d, y=%d, w=%d or h=%d",
-                xpos->IsNumber(), ypos->IsNumber(), width->IsNumber(),
-                height->IsNumber());
-        return Undefined();
-     }
-
-   elm_table_pack(this->get(), child->get(),
-                  xpos->IntegerValue(), ypos->IntegerValue(),
-                  width->IntegerValue(), height->IntegerValue());
-   table_items.push_back(child);
-   return child->get_object();
 }
 
 void CElmTable::homogeneous_set(Handle<Value> val)
@@ -113,14 +107,12 @@ Handle<Value> CElmTable::homogeneous_get() const
 
 void CElmTable::padding_set(Handle<Value> val)
 {
-   HandleScope scope;
-
    if (!val->IsObject())
      return;
 
    Local<Object> obj = val->ToObject();
-   Local<Value> x = obj->Get(String::New("x"));
-   Local<Value> y = obj->Get(String::New("y"));
+   Local<Value> x = obj->Get(String::NewSymbol("x"));
+   Local<Value> y = obj->Get(String::NewSymbol("y"));
 
    if (!x->IsNumber() || !y->IsNumber())
      return;
@@ -130,20 +122,15 @@ void CElmTable::padding_set(Handle<Value> val)
 
 Handle<Value> CElmTable::padding_get() const
 {
-   HandleScope scope;
    Evas_Coord x, y;
 
    elm_table_padding_get(eo, &x, &y);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), Boolean::New(x));
-   obj->Set(String::New("y"), Boolean::New(y));
+   obj->Set(String::NewSymbol("x"), Boolean::New(x));
+   obj->Set(String::NewSymbol("y"), Boolean::New(y));
 
-   return scope.Close(obj);
+   return obj;
 }
 
-PROPERTIES_OF(CElmTable) = {
-   PROP_HANDLER(CElmTable, homogeneous),
-   PROP_HANDLER(CElmTable, padding),
-   { NULL }
-};
+}

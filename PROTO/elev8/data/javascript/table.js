@@ -1,109 +1,75 @@
-#!/usr/local/bin/elev8
+var elm = require('elm');
 
-var EXPAND_BOTH = { x : 1.0, y : 1.0 };
-var FILL_BOTH = { x : -1.0, y : -1.0 };
+var EXPAND_BOTH = { x: 1.0, y: 1.0 };
+var FILL_BOTH = { x: -1.0, y: -1.0 };
 
-elm.datadir=elm.datadir + "/data/images/";
-
-var green = {
-    subobject : {
-        type : "photo",
-        size : 80,
-        weight : EXPAND_BOTH,
-        align : FILL_BOTH,
-        image : elm.datadir + "green.png",
-        fill : true,
-    },
-    x : 1,
-    y : 1,
-    w : 2,
-    h : 1,
-
-};
-var yellow = {
-    subobject : {
-        type : "photo",
-        size : 80,
-        weight : EXPAND_BOTH,
-        align : FILL_BOTH,
-        image : elm.datadir + "yellow.png",
-        fill : true,
-    },
-    x : 2,
-    y : 1,
-    w : 2,
-    h : 1,
+var outlier = {
+    row: 2, col: 1,
+    element: elm.Label({
+        label: "I was outside"
+    })
 };
 
-var gbl;;
-
-var my_window = new elm.window({
-        type : "main",
-        label : "Table Demo",
-        width : 320,
-        height : 480,
-        align : FILL_BOTH,
-        elements : {
-            the_background : {
-                type : "background",
-                weight : EXPAND_BOTH,
-                align : FILL_BOTH,
-                resize : true,
-            },
-            the_table : {
-                type : "table",
-                weight : EXPAND_BOTH,
-                align : FILL_BOTH,
-                subobjects : {
-                    0 : {
-                        subobject : {
-                            type : "button",
-                            label : "I am the one.",
-                            on_clicked : function(arg) {
-                                gbl = my_window.elements.the_table.pack(green);
-
+var win = elm.realise(elm.Window({
+        title: "Table Demo",
+        width: 320,
+        height: 480,
+        align: FILL_BOTH,
+        elements: {
+            bg: elm.Background({
+                type: "background",
+                weight: EXPAND_BOTH,
+                align: FILL_BOTH,
+                resize: true
+            }),
+            the_table: elm.Table({
+                weight: EXPAND_BOTH,
+                align: FILL_BOTH,
+                elements: {
+                    etitle: {
+                        row: 0, col: 0, rowspan: 1, colspan: 2,
+                        element: elm.Label({
+                            label: "<b>This is a small table</b>",
+                            weight: EXPAND_BOTH,
+                            align : FILL_BOTH,
+                        })
+                    },
+                    e1: {
+                        row: 1, col: 0,
+                        element: elm.Button({
+                            label: "I am the one.",
+                            on_click: function(me) {
+                                print("click: " + me.label);
+                            }
+                        })
+                    },
+                    e2: {
+                        row: 1, col: 1,
+                        element: elm.Button({
+                            label: "Dodge Bullets",
+                            on_click: function(me) {
+                                print("click: " + me.label);
                             },
-                        },
-                        x : 0,
-                        y : 0,
-                        w : 1,
-                        h : 1,
+                        }),
                     },
-                    1 : {
-                        subobject : {
-                            type : "button",
-                            label : "Dodge Bullets",
-                            on_clicked : function(arg) {
-                                my_window.elements.the_table.clear();
-                            },
-                        },
-                        x : 1,
-                        y : 0,
-                        w : 1,
-                        h : 1,
+                    e3: {
+                        row: 2, col: 0,
+                        element: elm.Button({
+                            label: "Pack outlier",
+                            on_click: function(me) {
+                                win.elements.the_table.pack(outlier)
+                            }
+                        }),
                     },
-                    2 : {
-                        subobject : {
-                            type : "button",
-                            label : "Kill'em All",
-                        },
-                        x : 2,
-                        y : 0,
-                        w : 1,
-                        h : 1,
-                    },
-                    3 : {
-                        subobject : {
-                            type : "button",
-                            label : "Astala Vista Baby",
-                        },
-                        x : 0,
-                        y : 1,
-                        w : 2,
-                        h : 1,
-                    },
-                },
-            },
-        },
-});
-
+                    e4: {
+                        row: 3, col: 0, rowspan: 2, colspan: 2,
+                        element: elm.Button({
+                            label: "Big button",
+                            weight: EXPAND_BOTH,
+                            align : FILL_BOTH,
+                        })
+                    }
+                }
+            })
+        }
+}));

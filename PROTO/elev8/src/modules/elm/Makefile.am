@@ -45,6 +45,7 @@ libelm_la_SOURCES = \
 	CElmSegment.cc \
 	CElmSlider.cc \
 	CElmSpinner.cc \
+	CElmTable.cc \
 	CElmWindow.cc
 
 #	Main.cc \
@@ -57,7 +58,6 @@ libelm_la_SOURCES = \
 #	CElmLayout.cc \
 #	CElmNaviframe.cc \
 #	CElmNotify.cc \
-#	CElmTable.cc \
 #	CEvasImage.cc \
 #	CEvasObject.cc
 

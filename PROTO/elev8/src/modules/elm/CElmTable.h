@@ -1,31 +1,41 @@
 #ifndef C_ELM_TABLE_H
 #define C_ELM_TABLE_H
 
-#include <v8.h>
-#include <list>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmTable : public CEvasObject {
-   FACTORY(CElmTable)
+namespace elm {
+
+using namespace v8;
+
+class CElmTable : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmTable> prop_handler;
-   std::list<CEvasObject *> table_items;
+   CElmTable(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
 
-   CElmTable(CEvasObject *parent, Local<Object> obj);
-
-   static Handle<Value> pack(const Arguments& args);
-   static Handle<Value> unpack(const Arguments&);
-   static Handle<Value> clear(const Arguments& args);
 public:
-   virtual void items_set(Handle<Value> val);
-   virtual Handle<Value> new_item_set(Handle<Value> item);
+   static void Initialize(Handle<Object> target);
+
+   virtual void DidRealiseElement(Local<Value>);
 
    void homogeneous_set(Handle<Value> val);
-   virtual Handle<Value> homogeneous_get() const;
+   Handle<Value> homogeneous_get() const;
 
    void padding_set(Handle<Value> val);
-   virtual Handle<Value> padding_get() const;
+   Handle<Value> padding_get() const;
+
+   void pack(Handle<Object> obj);
+   Handle<Value> pack(const Arguments&);
+
+   Handle<Value> unpack(const Arguments&);
+
+   Handle<Value> clear(const Arguments&);
+
+   friend Handle<Value> CElmObject::New<CElmTable>(const Arguments& args);
 };
 
+}
 #endif
