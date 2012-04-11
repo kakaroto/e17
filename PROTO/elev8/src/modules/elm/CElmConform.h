@@ -1,20 +1,35 @@
 #ifndef C_ELM_CONFORM_H
 #define C_ELM_CONFORM_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmConform : public CEvasObject {
-   FACTORY(CElmConform)
+namespace elm {
+
+using namespace v8;
+
+class CElmConform : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-   CPropHandler<CElmConform> prop_handler;
-
-   CElmConform(CEvasObject *parent, Local<Object> obj);
-public:
+   CElmConform(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
    virtual ~CElmConform();
 
-   virtual void content_set(Handle<Value> val);
-   virtual Handle<Value> content_get() const;
+   struct {
+      Persistent<Value> content;
+   } cached;
+
+public:
+   static void Initialize (Handle<Object> target);
+
+   void content_set(Handle<Value> val);
+   Handle<Value> content_get() const;
+
+   friend Handle<Value> CElmObject::New<CElmConform>(const Arguments& args);
 };
 
-#endif // C_ELM_CONFORM_H
+}
+
+#endif

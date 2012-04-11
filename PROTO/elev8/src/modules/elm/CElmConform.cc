@@ -1,36 +1,40 @@
+#include "elm.h"
 #include "CElmConform.h"
 
-CElmConform::CElmConform(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmConform, content);
+
+GENERATE_TEMPLATE(CElmConform,
+                  PROPERTY(content));
+
+CElmConform::CElmConform(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_conformant_add(parent->GetEvasObject()))
 {
-   eo = elm_conformant_add(parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmConform::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Conform"), GetTemplate()->GetFunction());
 }
 
 void CElmConform::content_set(Handle<Value> val)
 {
-   CEvasObject *content = make_or_get(this, val);
-   if (content)
-     elm_object_content_set(eo, content->get());
+   cached.content.Dispose();
+   cached.content = Persistent<Value>::New(Realise(val, jsObject));
+   elm_object_content_set(eo, GetEvasObjectFromJavascript(cached.content));
 }
 
 Handle<Value> CElmConform::content_get() const
 {
-   Evas_Object *content = elm_object_content_get(eo);
-   if (!content)
-     return Undefined();
-   CEvasObject *content_obj = static_cast<CEvasObject*>(evas_object_data_get(content, "cppobj"));
-   if (content_obj)
-     return content_obj->get_object();
-   return Undefined();
+   return cached.content;
 }
 
 CElmConform::~CElmConform()
 {
+   cached.content.Dispose();
 }
 
-PROPERTIES_OF(CElmConform) = {
-   PROP_HANDLER(CElmConform, content),
-   { NULL }
-};
+}

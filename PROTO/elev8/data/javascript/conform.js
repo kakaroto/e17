@@ -1,4 +1,4 @@
-#!/usr/local/bin/elev8
+var elm = require('elm')
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
@@ -14,51 +14,45 @@ var entry_text =
             "<br>";
 
 
-var my_window = new elm.window({
-    label : "Conform example",
-    conformant : true,
+var w = elm.realise(elm.Window({
+    title : "Conform example",
+    conform : true,
     align : FILL_BOTH,
     weight : EXPAND_BOTH,
-    x : 240,
-    y : 240,
+    width : 240,
+    height : 360,
     elements : {
-        the_background : {
-            type : "background",
+        the_background : elm.Background ({
             weight : EXPAND_BOTH,
             resize : true,
-        },
-        the_conformant : {
-            type : "conform",
+        }),
+        the_conform : elm.Conform ({
             weight : EXPAND_BOTH,
-            content : {
-                type : "box",
+            resize : true,
+            content : elm.Box ({
                 weight : EXPAND_BOTH,
                 align : FILL_BOTH,
                 resize : true,
                 elements : {
-                    the_entry : {
-                        type : "entry",
+                    the_entry : elm.Entry ({
                         text : entry_text,
                         weight : {x:-1.0, y:0.0},
                         align : FILL_BOTH,
                         line_wrap : 3,
-                        single_line : 1,
                         editable : true,
-                    },
-                    icon_no_scale : {
-                        type : "button",
+                    }),
+                    icon_no_scale : elm.Button ({
                         label : "Icon no scale",
                         weight : { x : -1.0, y : -1.0 },
-                    },
-                    the_pass : {
-                        type : "entry",
+                    }),
+                    the_pass : elm.Entry ({
                         text : "Password",
                         weight : {x:-1.0, y:0.0},
                         editable : false,
                         password : true,
-                    },
+                    }),
                 },
-            },
-        },
+            }),
+        }),
     },
-});
+}));
