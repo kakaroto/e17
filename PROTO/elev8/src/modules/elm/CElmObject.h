@@ -110,6 +110,9 @@ public:
    Handle<Value> layer_get() const;
    void layer_set(Handle<Value> val);
 
+   Handle<Value> label_get() const;
+   void label_set(Handle<Value> val);
+
    Handle<Value> padding_get() const;
    void padding_set(Handle<Value> val);
 

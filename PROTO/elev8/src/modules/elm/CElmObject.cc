@@ -23,6 +23,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, hint_max);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, hint_req);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, focus);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, layer);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, label);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, padding);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, pointer_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, antialias);
@@ -130,6 +131,7 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(hint_req),
                       PROPERTY(focus),
                       PROPERTY(layer),
+                      PROPERTY(label),
                       PROPERTY(padding),
                       PROPERTY(pointer_mode),
                       PROPERTY(antialias),
@@ -402,6 +404,17 @@ void CElmObject::layer_set(Handle<Value> val)
 {
    if (val->IsNumber())
      evas_object_layer_set(eo, val->NumberValue());
+}
+
+Handle<Value> CElmObject::label_get() const
+{
+   return String::New(elm_object_text_get(eo));
+}
+
+void CElmObject::label_set(Handle<Value> val)
+{
+   if (val->IsString() || val->IsNumber())
+     elm_object_text_set(eo, elm_entry_utf8_to_markup(*String::Utf8Value(val)));
 }
 
 Handle<Value> CElmObject::padding_get() const
