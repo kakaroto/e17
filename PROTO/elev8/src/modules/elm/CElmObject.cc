@@ -528,8 +528,8 @@ void CElmObject::size_hint_aspect_set(Handle<Value> val)
 
 Handle<Value> CElmObject::name_get() const
 {
-   return Undefined();
-   return String::New(evas_object_name_get(eo));
+   const char *s = evas_object_name_get(eo);
+   return s ? String::New(s) : Undefined();
 }
 
 void CElmObject::name_set(Handle<Value> val)
