@@ -1,11 +1,72 @@
+#include "elm.h"
 #include "CElmColorSelector.h"
 
-CElmColorSelector::CElmColorSelector(CEvasObject *parent, Local<Object> obj) 
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, on_change);
+GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, red);
+GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, green);
+GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, blue);
+GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, alpha);
+
+GENERATE_TEMPLATE(CElmColorSelector,
+                  PROPERTY(on_change),
+                  PROPERTY(red),
+                  PROPERTY(green),
+                  PROPERTY(blue),
+                  PROPERTY(alpha));
+
+CElmColorSelector::CElmColorSelector(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_colorselector_add(parent->GetEvasObject()))
 {
-   eo = elm_colorselector_add(parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmColorSelector::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("ColorSelector"),
+               GetTemplate()->GetFunction());
+}
+
+CElmColorSelector::~CElmColorSelector()
+{
+   on_change_set(Undefined());
+}
+
+void CElmColorSelector::OnChange(void *)
+{
+   HandleScope scope;
+   Local<Function> callback(Function::Cast(*cb.change));
+   Handle<Value> args[1] = { jsObject };
+
+   callback->Call(jsObject, 1, args);
+}
+
+void CElmColorSelector::OnChangeWrapper(void *data, Evas_Object *, void *event_info)
+{
+   static_cast<CElmColorSelector*>(data)->OnChange(event_info);
+}
+
+Handle<Value> CElmColorSelector::on_change_get(void) const
+{
+   return cb.change;
+}
+
+void CElmColorSelector::on_change_set(Handle<Value> val)
+{
+   if (!cb.change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "changed", &OnChangeWrapper);
+        cb.change.Dispose();
+        cb.change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "changed", &OnChangeWrapper, this);
 }
 
 Handle<Value> CElmColorSelector::red_get() const
@@ -76,42 +137,4 @@ void CElmColorSelector::alpha_set(Handle<Value> val)
    elm_colorselector_color_set(eo, r, g, b, val->ToNumber()->Value());
 }
 
-void CElmColorSelector::on_changed(void *)
-{
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_changed_val;
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
 }
-
-void CElmColorSelector::eo_on_changed(void *data, Evas_Object *, void *event_info)
-{
-   CElmColorSelector *changed = static_cast<CElmColorSelector*>(data);
-   changed->on_changed(event_info);
-}
-
-void CElmColorSelector::on_changed_set(Handle<Value> val)
-{
-   on_changed_val.Dispose();
-   on_changed_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
-   else
-     evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
-}
-
-Handle<Value> CElmColorSelector::on_changed_get(void) const
-{
-   return on_changed_val;
-}
-
-PROPERTIES_OF(CElmColorSelector) = {
-     PROP_HANDLER(CElmColorSelector, red),
-     PROP_HANDLER(CElmColorSelector, green),
-     PROP_HANDLER(CElmColorSelector, blue),
-     PROP_HANDLER(CElmColorSelector, alpha),
-     PROP_HANDLER(CElmColorSelector, on_changed),
-     { NULL }
-};

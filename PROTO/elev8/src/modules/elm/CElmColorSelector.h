@@ -1,44 +1,48 @@
 #ifndef C_ELM_COLOR_SELECTOR_H
 #define C_ELM_COLOR_SELECTOR_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmColorSelector : public CEvasObject {
-    FACTORY(CElmColorSelector)
+namespace elm {
+
+class CElmColorSelector : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-    CPropHandler<CElmColorSelector> prop_handler;
-    /* the on_clicked function */
-    Persistent<Value> on_changed_val;
+   CElmColorSelector(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmColorSelector();
+
+   struct {
+      Persistent<Value> change;
+   } cb;
+
+   static Handle<FunctionTemplate> GetTemplate();
 
 public:
-    CElmColorSelector(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-    virtual ~CElmColorSelector() { }
+   void OnChange(void *);
+   static void OnChangeWrapper(void *, Evas_Object *, void *);
 
-    virtual Handle<Value> red_get() const;
+   void on_change_set(Handle<Value> val);
+   Handle<Value> on_change_get(void) const;
 
-    virtual void red_set(Handle<Value> val);
+   Handle<Value> red_get() const;
+   void red_set(Handle<Value> val);
 
-    virtual Handle<Value> green_get() const;
+   Handle<Value> green_get() const;
+   void green_set(Handle<Value> val);
 
-    virtual void green_set(Handle<Value> val);
+   Handle<Value> blue_get() const;
+   void blue_set(Handle<Value> val);
 
-    virtual Handle<Value> blue_get() const;
+   Handle<Value> alpha_get() const;
+   void alpha_set(Handle<Value> val);
 
-    virtual void blue_set(Handle<Value> val);
-
-    virtual Handle<Value> alpha_get() const;
-
-    virtual void alpha_set(Handle<Value> val);
-
-    virtual void on_changed(void *);
-
-    static void eo_on_changed(void *data, Evas_Object *, void *event_info);
-
-    virtual void on_changed_set(Handle<Value> val);
-
-    virtual Handle<Value> on_changed_get(void) const;
+   friend Handle<Value> CElmObject::New<CElmColorSelector>(const Arguments& args);
 };
+
+}
 #endif
