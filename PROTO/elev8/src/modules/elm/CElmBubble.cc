@@ -1,15 +1,27 @@
 #include "CElmBubble.h"
 
-CElmBubble::CElmBubble(CEvasObject * parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
-{
-   eo = elm_bubble_add(parent->top_widget_get());
-   construct(eo, obj);
+namespace elm {
 
-   CEvasObject *content = make_or_get(this, obj->Get(String::New("content")));
-   if (content)
-     elm_object_content_set(eo, content->get());
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmBubble, text_part);
+GENERATE_PROPERTY_CALLBACKS(CElmBubble, corner);
+GENERATE_PROPERTY_CALLBACKS(CElmBubble, content);
+
+GENERATE_TEMPLATE(CElmBubble,
+                  PROPERTY(text_part),
+                  PROPERTY(corner),
+                  PROPERTY(content));
+
+CElmBubble::CElmBubble(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_bubble_add(parent->GetEvasObject()))
+{
+   jsObject->SetHiddenValue(String::NewSymbol("content"), Undefined());
+}
+
+void CElmBubble::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Bubble"), GetTemplate()->GetFunction());
 }
 
 Handle<Value> CElmBubble::text_part_get() const
@@ -35,19 +47,34 @@ void CElmBubble::text_part_set(Handle<Value> val)
 
 Handle<Value> CElmBubble::corner_get() const
 {
-   return Number::New(elm_bubble_pos_get(eo));
+   const char *corner_to_string[] =
+     { "top_left", "top_right", "bottom_left", "bottom_right", NULL };
+   return String::New(corner_to_string[elm_bubble_pos_get(eo)]);
 }
 
 void CElmBubble::corner_set(Handle<Value> val)
 {
-   HandleScope scope;
+   const char *corner_to_string[] =
+     { "top_left", "top_right", "bottom_left", "bottom_right", NULL };
 
-   if (val->IsNumber())
-     elm_bubble_pos_set(eo, (Elm_Bubble_Pos)val->ToNumber()->Value());
+   String::Utf8Value new_corner(val);
+
+   for (unsigned int i = 0; corner_to_string[i]; i++)
+     if (!strcmp(*new_corner, corner_to_string[i]))
+        elm_bubble_pos_set(eo, (Elm_Bubble_Pos)i);
 }
 
-PROPERTIES_OF(CElmBubble) = {
-   PROP_HANDLER(CElmBubble, text_part),
-   PROP_HANDLER(CElmBubble, corner),
-   { NULL }
-};
+Handle<Value> CElmBubble::content_get() const
+{
+   return cached.content;
+}
+
+void CElmBubble::content_set(Handle<Value> val)
+{
+   HandleScope scope;
+   cached.content.Dispose();
+   cached.content = Persistent<Value>::New(Realise(val, jsObject));
+   elm_object_content_set(eo, GetEvasObjectFromJavascript<CElmObject>(cached.content));
+}
+
+}

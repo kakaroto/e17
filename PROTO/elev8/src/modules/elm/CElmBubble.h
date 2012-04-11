@@ -1,22 +1,40 @@
 #ifndef C_ELM_BUBBLE_H
 #define C_ELM_BUBBLE_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmBubble : public CEvasObject {
-    FACTORY(CElmBubble)
+namespace elm {
+
+using namespace v8;
+
+class CElmBubble : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+
 protected:
-    CPropHandler<CElmBubble> prop_handler;
+   CElmBubble(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
+
+   struct {
+      Persistent<Value> content;
+   } cached;
 
 public:
-    CElmBubble(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-    virtual Handle<Value> text_part_get() const;
-    virtual void text_part_set(Handle<Value> val);
+   Handle<Value> text_part_get() const;
+   void text_part_set(Handle<Value> val);
 
-    virtual Handle<Value> corner_get() const;
-    virtual void corner_set(Handle<Value> val);
+   Handle<Value> corner_get() const;
+   void corner_set(Handle<Value> val);
+
+   Handle<Value> content_get() const;
+   void content_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmBubble>(const Arguments& args);
 };
+
+}
 
 #endif

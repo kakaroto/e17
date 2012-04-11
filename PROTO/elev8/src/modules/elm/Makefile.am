@@ -23,6 +23,7 @@ libelm_la_SOURCES = \
 	CElmButton.cc \
 	CElmClock.cc \
 	CElmLabel.cc \
+	CElmBubble.cc \
 	CElmIcon.cc
 
 #	Main.cc \
