@@ -39,7 +39,7 @@ var w = elm.Window({
                     icon: logo_icon,
                     weight: { x: -1.0, y: -1.0 },
                     align: { x: -1.0, y: 0.5 },
-                    on_changed: function(arg) {
+                    on_change: function(arg) {
                         print("Numbers or Alphabets\n" + elm.datadir);
                     }
                 }),
@@ -56,9 +56,10 @@ var w = elm.Window({
                     align: { x: -1.0, y: 0.5 },
                     icon: logo_icon,
                     state: true,
-                    disabled: true
+                    enabled: false
                 }),
                 disabled_icon_only: elm.Check({
+                    enabled: false,
                     icon: logo_icon_unscaled
                 }),
             }
