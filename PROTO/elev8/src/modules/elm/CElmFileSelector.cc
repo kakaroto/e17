@@ -1,11 +1,53 @@
 #include "CElmFileSelector.h"
 
-CElmFileSelector::CElmFileSelector(CEvasObject *parent, Local<Object> obj) 
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+//TODO : Add support for more events.
+//"changed"
+//"activated"
+//"press"
+//"longpressed"
+//"clicked"
+//"clicked,double"
+//"focused"
+//"unfocused"
+//"selection,paste"
+//"selection,copy"
+//"selection,cut"
+//"unpressed"
+
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, path);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, expandable);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, folder_only);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, is_save);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, mode);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, selected);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, on_done);
+
+GENERATE_TEMPLATE(CElmFileSelector,
+                  PROPERTY(path),
+                  PROPERTY(expandable),
+                  PROPERTY(folder_only),
+                  PROPERTY(is_save),
+                  PROPERTY(mode),
+                  PROPERTY(selected),
+                  PROPERTY(on_done));
+
+CElmFileSelector::CElmFileSelector(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_fileselector_add(parent->GetEvasObject()))
 {
-   eo = elm_fileselector_add (parent->top_widget_get());
-   construct(eo, obj);
+}
+
+void CElmFileSelector::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("FileSelector"), GetTemplate()->GetFunction());
+}
+
+CElmFileSelector::~CElmFileSelector()
+{
+   on_done_set(Undefined());
 }
 
 Handle<Value> CElmFileSelector::selected_get() const
@@ -72,57 +114,39 @@ void CElmFileSelector::mode_set(Handle<Value> val)
      elm_fileselector_mode_set(eo, (Elm_Fileselector_Mode)val->NumberValue());
 }
 
-//TODO : Add support for more events.
-//"changed" 
-//"activated" 
-//"press" 
-//"longpressed" 
-//"clicked" 
-//"clicked,double" 
-//"focused" 
-//"unfocused" 
-//"selection,paste" 
-//"selection,copy" 
-//"selection,cut" 
-//"unpressed" 
-
-void CElmFileSelector::on_click(void *event_info)
+void CElmFileSelector::OnDone(void *event_info)
 {
    if (event_info == NULL)
      return;
 
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_clicked_val;
-
-   Handle<String> path = String::New((const char *)event_info);
-   Handle<Value> args[2] = { obj, path };
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   elm_fileselector_path_set(eo, (const char *)event_info);
-   fn->Call(obj, 2, args);
+   Handle<Function> callback(Function::Cast(*cb.done));
+   Handle<Value> args[2] = { jsObject, String::New((const char *)event_info) };
+   callback->Call(jsObject, 2, args);
 }
 
-void CElmFileSelector::on_clicked_set(Handle<Value> val)
+void CElmFileSelector::OnDoneWrapper(void *data, Evas_Object *, void *event_info)
 {
-   on_clicked_val.Dispose();
-   on_clicked_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "file,chosen", &eo_on_click, this);
-   else
-     evas_object_smart_callback_del(eo, "file,chosen", &eo_on_click);
+   static_cast<CElmFileSelector*>(data)->OnDone(event_info);
 }
 
-Handle<Value> CElmFileSelector::on_clicked_get(void) const
+Handle<Value> CElmFileSelector::on_done_get() const
 {
-   return on_clicked_val;
+   return cb.done;
 }
 
-PROPERTIES_OF(CElmFileSelector) = {
-   PROP_HANDLER(CElmFileSelector, path),
-   PROP_HANDLER(CElmFileSelector, expandable),
-   PROP_HANDLER(CElmFileSelector, folder_only),
-   PROP_HANDLER(CElmFileSelector, is_save),
-   PROP_HANDLER(CElmFileSelector, mode),
-   PROP_HANDLER(CElmFileSelector, selected),
-   { NULL }
-};
+void CElmFileSelector::on_done_set(Handle<Value> val)
+{
+   if (!cb.done.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "done", &OnDoneWrapper);
+        cb.done.Dispose();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.done = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "done", &OnDoneWrapper, this);
+}
+
+}

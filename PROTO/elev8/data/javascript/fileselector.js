@@ -3,28 +3,24 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var my_window = new elm.window({
-    type : "main",
-    label : "File Selector",
+var desc = elm.Window({
+    title : "File Selector",
     width : 320,
     height : 480,
     weight : EXPAND_BOTH,
     align : FILL_BOTH,
     elements : {
-        the_background : {
-            type : "background",
+        the_background : elm.Background ({
             weight : EXPAND_BOTH,
             align : FILL_BOTH,
             resize : true,
-        },
-        the_box : {
-            type : "box",
+        }),
+        the_box : elm.Box ({
             weight : EXPAND_BOTH,
             align : FILL_BOTH,
             resize : true,
             elements : {
-                fse : {
-                    type : "fileselector",
+                fse : elm.FileSelector ({
                     label : "Choose File",
                     align : FILL_BOTH,
                     weight : EXPAND_BOTH,
@@ -33,11 +29,13 @@ var my_window = new elm.window({
                     folder_only : false,
                     is_save : false,
                     mode : 0,
-                    on_clicked : function(arg) {
+                    on_done : function(arg) {
                         print("File Selected = " + arguments[1]);
                     }
-                },
+                }),
             },
-        },
+        }),
     },
 });
+
+var win = elm.realise(desc);

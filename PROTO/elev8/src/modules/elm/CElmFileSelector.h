@@ -1,65 +1,55 @@
 #ifndef C_ELM_FILE_SELECTOR_H
 #define C_ELM_FILE_SELECTOR_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
+
+namespace elm {
 
 using namespace v8;
 
-class CElmFileSelector : public CEvasObject {
-   FACTORY(CElmFileSelector)
+class CElmFileSelector : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmFileSelector> prop_handler;
+   CElmFileSelector(Local<Object> _jsObject, CElmObject *parent);
+   static Handle<FunctionTemplate> GetTemplate();
+   virtual ~CElmFileSelector();
+
+   struct {
+      Persistent<Value> done;
+   } cb;
 
 public:
-   CElmFileSelector(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-   virtual Handle<Value> selected_get() const;
+   Handle<Value> selected_get() const;
+   void selected_set(Handle<Value> val);
 
-   virtual void selected_set(Handle<Value> val);
+   Handle<Value> path_get() const;
+   void path_set(Handle<Value> val);
 
-   virtual Handle<Value> path_get() const;
+   Handle<Value> expandable_get() const;
+   void expandable_set(Handle<Value> val);
 
-   virtual void path_set(Handle<Value> val);
+   Handle<Value> folder_only_get() const;
+   void folder_only_set(Handle<Value> val);
 
-   virtual Handle<Value> expandable_get() const;
+   Handle<Value> is_save_get() const;
+   void is_save_set(Handle<Value> val);
 
-   virtual void expandable_set(Handle<Value> val);
+   Handle<Value> mode_get() const;
+   void mode_set(Handle<Value> val);
 
-   virtual Handle<Value> folder_only_get() const;
+   static void OnDoneWrapper(void *data, Evas_Object *, void *event_info);
+   void OnDone(void *event_info);
+   void on_done_set(Handle<Value> val);
+   Handle<Value> on_done_get(void) const;
 
-   virtual void folder_only_set(Handle<Value> val);
-
-   virtual Handle<Value> is_save_get() const;
-
-   virtual void is_save_set(Handle<Value> val);
-
-   virtual Handle<Value> mode_get() const;
-
-   virtual void mode_set(Handle<Value> val);
-
-   //TODO : Add support for more events.
-   //"changed" 
-   //"activated" 
-   //"press" 
-   //"longpressed" 
-   //"clicked" 
-   //"clicked,double" 
-   //"focused" 
-   //"unfocused" 
-   //"selection,paste" 
-   //"selection,copy" 
-   //"selection,cut" 
-   //"unpressed" 
-
-   virtual void on_click(void *event_info);
-
-   virtual void on_clicked_set(Handle<Value> val);
-
-   virtual Handle<Value> on_clicked_get(void) const;
+   friend Handle<Value> CElmObject::New<CElmFileSelector>(const Arguments& args);
 };
 
-
+}
 
 #endif
