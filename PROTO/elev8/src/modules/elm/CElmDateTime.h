@@ -1,77 +1,69 @@
 #ifndef C_ELM_DATE_TIME_H
 #define C_ELM_DATE_TIME_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmDateTime : public CEvasObject {
-    FACTORY(CElmDateTime)
+namespace elm {
+
+class CElmDateTime : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-    CPropHandler<CElmDateTime> prop_handler;
+   CElmDateTime(Local<Object> _jsObject, CElmObject *parent);
+   virtual ~CElmDateTime();
 
-    /* the on_changed function */
-    Persistent<Value> on_changed_val;
+   struct {
+      Persistent<Value> change;
+      Persistent<Value> lang_change;
+   } cb;
 
-    /* the on_lang_changed function */
-    Persistent<Value> on_lang_changed_val;
+   static Handle<FunctionTemplate> GetTemplate();
+
+   Local<Object> TimeGet(struct tm *time) const;
+   bool TimeSet(struct tm *time, Handle<Value> val) const;
+
+   bool GetMinMaxFromObject(Handle<Value> val, int &min_out, int &max_out) const;
+
+   Local<Object> GetFieldLimits(Elm_Datetime_Field_Type type) const;
 
 public:
-    CElmDateTime(CEvasObject *parent, Local<Object> obj);
+   static void Initialize(Handle<Object> target);
 
-    virtual ~CElmDateTime() { }
+   Handle<Value> format_get() const;
+   void format_set(Handle<Value> val);
 
-    Local<Object> fill_tm(struct tm *) const;
+   Handle<Value> value_max_get() const;
+   void value_max_set(Handle<Value> val);
 
-    Handle<Value> day_selected_get(int day) const;
+   Handle<Value> value_min_get() const;
+   void value_min_set(Handle<Value> val);
 
-    void day_selected_set(int day, Handle<Value> val);
+   Handle<Value> value_get() const;
+   void value_set(Handle<Value> val);
 
-    Handle<Value> format_get() const;
+   Handle<Value> field_limit_get() const;
+   void field_limit_set(Handle<Value> val);
 
-    void format_set(Handle<Value> val);
+   Handle<Value> field_visible_get() const;
+   void field_visible_set(Handle<Value> value);
 
-    struct tm * get_tm(Handle<Value> val) const;
+   void OnChange(void *);
+   static void OnChangeWrapper(void *, Evas_Object *, void *);
 
-    Handle<Value> value_max_get() const;
+   void on_change_set(Handle<Value> val);
+   Handle<Value> on_change_get(void) const;
 
-    void value_max_set(Handle<Value> timevar);
+   void OnLangChange(void *);
+   static void OnLangChangeWrapper(void *, Evas_Object *, void *);
 
-    Handle<Value> value_min_get() const;
+   void on_lang_change_set(Handle<Value> val);
+   Handle<Value> on_lang_change_get(void) const;
 
-    void value_min_set(Handle<Value> timevar);
-
-    Handle<Value> value_get() const;
-
-    void value_set(Handle<Value> timevar);
-
-    bool get_min_max_from_object(Handle<Value> val, int &min_out, int &max_out) const;
-
-    Local<Object> get_field_limits(Elm_Datetime_Field_Type type) const;
-
-    Handle<Value> field_limit_get() const;
-
-    void field_limit_set(Handle<Value> obj);
-
-    Handle<Value> field_visible_get() const;
-
-    void field_visible_set(Handle<Value> obj);
-
-    void on_changed(void *);
-
-    static void eo_on_changed(void *data, Evas_Object *, void *event_info);
-
-    void on_changed_set(Handle<Value> val);
-
-    Handle<Value> on_changed_get(void) const;
-
-    void on_lang_changed(void *);
-
-    static void eo_on_lang_changed(void *data, Evas_Object *, void *event_info);
-
-    void on_lang_changed_set(Handle<Value> val);
-
-    Handle<Value> on_lang_changed_get(void) const;
+   friend Handle<Value> CElmObject::New<CElmDateTime>(const Arguments& args);
 };
+
+}
 
 #endif

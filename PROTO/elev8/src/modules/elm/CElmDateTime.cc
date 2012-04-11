@@ -1,326 +1,331 @@
+#include "elm.h"
 #include "CElmDateTime.h"
 
-CElmDateTime::CElmDateTime(CEvasObject *parent, Local<Object> obj) :
-   CEvasObject(),
-   prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, format);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, value_max);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, value_min);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, value);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, field_limit);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, field_visible);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, on_change);
+GENERATE_PROPERTY_CALLBACKS(CElmDateTime, on_lang_change);
+
+GENERATE_TEMPLATE(CElmDateTime,
+                  PROPERTY(format),
+                  PROPERTY(value_max),
+                  PROPERTY(value_min),
+                  PROPERTY(value),
+                  PROPERTY(field_limit),
+                  PROPERTY(field_visible),
+                  PROPERTY(on_change),
+                  PROPERTY(on_lang_change));
+
+CElmDateTime::CElmDateTime(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_datetime_add(parent->GetEvasObject()))
 {
-   eo = elm_datetime_add(parent->top_widget_get());
-   construct(eo, obj);
 }
 
-Handle<Value> CElmDateTime::format_get() const
+void CElmDateTime::Initialize(Handle<Object> target)
 {
-   return (String::New(elm_datetime_format_get(eo)));
+   target->Set(String::NewSymbol("DateTime"), GetTemplate()->GetFunction());
+}
+
+CElmDateTime::~CElmDateTime()
+{
+   on_change_set(Undefined());
+   on_lang_change_set(Undefined());
 }
 
 void CElmDateTime::format_set(Handle<Value> val)
 {
    if (val->IsString())
-     {
-        String::Utf8Value str(val);
-        elm_datetime_format_set(eo, *str);
-     }
+     elm_datetime_format_set(eo, *String::Utf8Value(val));
 }
 
-Local<Object> CElmDateTime::fill_tm(struct tm *timevar) const
+Handle<Value> CElmDateTime::format_get() const
 {
-   Local<Object> obj = Object::New();
-   obj->Set(String::New("sec"), Number::New(timevar->tm_sec));
-   obj->Set(String::New("min"), Number::New(timevar->tm_min));
-   obj->Set(String::New("hour"), Number::New(timevar->tm_hour));
-   obj->Set(String::New("dayofmonth"), Number::New(timevar->tm_mday));
-   obj->Set(String::New("month"), Number::New(timevar->tm_mon));
-   obj->Set(String::New("year"), Number::New(timevar->tm_year));
-   obj->Set(String::New("dayofweek"), Number::New(timevar->tm_wday));
-   obj->Set(String::New("daysinyear"), Number::New(timevar->tm_yday));
-   obj->Set(String::New("dst"), Number::New(timevar->tm_isdst));
-   return obj;
+   return (String::NewSymbol(elm_datetime_format_get(eo)));
 }
 
-struct tm * CElmDateTime::get_tm(Handle<Value> val) const
+Handle<Value> CElmDateTime::value_max_get() const
 {
-   if (val->IsObject())
-     {
-        tm *var = new tm();
-        Local<Object> obj = val->ToObject();
-        Handle<Value> temp = obj->Get(String::New("sec"));
-        var->tm_sec = temp->NumberValue();
-        temp = obj->Get(String::New("min"));
-        var->tm_min = temp->NumberValue();
-        temp = obj->Get(String::New("hour"));
-        var->tm_hour = temp->NumberValue();
-        temp = obj->Get(String::New("dayofmonth"));
-        var->tm_mday = temp->NumberValue();
-        temp = obj->Get(String::New("month"));
-        var->tm_mon = temp->NumberValue();
-        temp = obj->Get(String::New("year"));
-        var->tm_year = temp->NumberValue();
-        temp = obj->Get(String::New("dayofweek"));
-        var->tm_wday = temp->NumberValue();
-        temp = obj->Get(String::New("daysinyear"));
-        var->tm_yday = temp->NumberValue();
-        temp = obj->Get(String::New("dst"));
-        var->tm_isdst = temp->NumberValue();
-        return var;
-     }
-   return NULL;
+   struct tm timeval;
+   elm_datetime_value_max_get(eo, &timeval);
+   return TimeGet(&timeval);
 }
 
-bool CElmDateTime::get_min_max_from_object(Handle<Value> val, int &min_out, int &max_out) const
+void CElmDateTime::value_max_set(Handle<Value> timevar)
 {
-   HandleScope handle_scope;
-   if (!val->IsObject())
-     return false;
-   Local<Object> obj = val->ToObject();
-   Local<Value> min = obj->Get(String::New("min"));
-   Local<Value> max = obj->Get(String::New("max"));
-   if (!min->IsNumber() || !max->IsNumber())
-     return false;
-   min_out = min->NumberValue();
-   max_out = max->NumberValue();
-   return true;
+   struct tm retval;
+   if (TimeSet(&retval, timevar))
+     elm_datetime_value_max_set(eo, &retval);
+}
+
+Handle<Value> CElmDateTime::value_min_get() const
+{
+   struct tm timeval;
+   elm_datetime_value_min_get(eo, &timeval);
+   return TimeGet(&timeval);
+}
+
+void CElmDateTime::value_min_set(Handle<Value> timevar)
+{
+   struct tm timeval;
+   if (TimeSet(&timeval, timevar))
+     elm_datetime_value_min_set(eo, &timeval);
+}
+
+Handle<Value> CElmDateTime::value_get() const
+{
+   struct tm timeval;
+   elm_datetime_value_get(eo, &timeval);
+   return TimeGet(&timeval);
+}
+
+void CElmDateTime::value_set(Handle<Value> timevar)
+{
+   struct tm timeval;
+   if (TimeSet(&timeval, timevar))
+     elm_datetime_value_set(eo, &timeval);
 }
 
 void CElmDateTime::field_limit_set(Handle<Value> val)
 {
    int min, max;
    Local<Object> obj = val->ToObject();
-   Handle<Value> temp = obj->Get(String::New("ampm"));
-   if (temp->IsObject())
-     {
-        if (get_min_max_from_object(temp, min, max))
-          elm_datetime_field_limit_set(eo, ELM_DATETIME_AMPM, min, max);
-     }
+   Handle<Value> temp = obj->Get(String::NewSymbol("ampm"));
 
-   temp = obj->Get(String::New("mon"));
-   if (temp->IsObject())
-     {
-        if (get_min_max_from_object(temp, min, max))
-          elm_datetime_field_limit_set(eo, ELM_DATETIME_MONTH, min, max);
-     }
+   if (temp->IsObject() && GetMinMaxFromObject(temp, min, max))
+     elm_datetime_field_limit_set(eo, ELM_DATETIME_AMPM, min, max);
 
-   temp = obj->Get(String::New("year"));
-   if (temp->IsObject())
-     {
-        if (get_min_max_from_object(temp, min, max))
-          elm_datetime_field_limit_set(eo, ELM_DATETIME_YEAR, min, max);
-     }
+   temp = obj->Get(String::NewSymbol("month"));
+   if (temp->IsObject() && GetMinMaxFromObject(temp, min, max))
+     elm_datetime_field_limit_set(eo, ELM_DATETIME_MONTH, min, max);
 
-   temp = obj->Get(String::New("date"));
-   if (temp->IsObject())
-     {
-        if (get_min_max_from_object(temp, min, max))
-          elm_datetime_field_limit_set(eo, ELM_DATETIME_DATE, min, max);
-     }
+   temp = obj->Get(String::NewSymbol("year"));
+   if (temp->IsObject() && GetMinMaxFromObject(temp, min, max))
+     elm_datetime_field_limit_set(eo, ELM_DATETIME_YEAR, min - 1900, max - 1900);
 
-   temp = obj->Get(String::New("hour"));
-   if (temp->IsObject())
-     {
-        if (get_min_max_from_object(temp, min, max))
-          elm_datetime_field_limit_set(eo, ELM_DATETIME_HOUR, min, max);
-     }
+   temp = obj->Get(String::NewSymbol("date"));
+   if (temp->IsObject() && GetMinMaxFromObject(temp, min, max))
+     elm_datetime_field_limit_set(eo, ELM_DATETIME_DATE, min, max);
 
-   temp = obj->Get(String::New("min"));
-   if (temp->IsObject())
-     {
-        if (get_min_max_from_object(temp, min, max))
-          elm_datetime_field_limit_set(eo, ELM_DATETIME_MINUTE, min, max);
-     }
-}
+   temp = obj->Get(String::NewSymbol("hour"));
+   if (temp->IsObject() && GetMinMaxFromObject(temp, min, max))
+     elm_datetime_field_limit_set(eo, ELM_DATETIME_HOUR, min, max);
 
-Local<Object> CElmDateTime::get_field_limits(Elm_Datetime_Field_Type type) const
-{
-   int min = 0, max = 0;
-   elm_datetime_field_limit_get(eo, type, &min, &max);
-   Local<Object> obj = Object::New();
-   obj->Set(String::New("min"), Number::New(min));
-   obj->Set(String::New("max"), Number::New(max));
-   return obj;
+   temp = obj->Get(String::NewSymbol("min"));
+   if (temp->IsObject() && GetMinMaxFromObject(temp, min, max))
+     elm_datetime_field_limit_set(eo, ELM_DATETIME_MINUTE, min, max);
 }
 
 Handle<Value> CElmDateTime::field_limit_get() const
 {
    Local<Object> obj = Object::New();
-   obj->Set(String::New("ampm"), get_field_limits(ELM_DATETIME_AMPM));
-   obj->Set(String::New("min"), get_field_limits(ELM_DATETIME_MINUTE));
-   obj->Set(String::New("hour"), get_field_limits(ELM_DATETIME_HOUR));
-   obj->Set(String::New("date"), get_field_limits(ELM_DATETIME_DATE));
-   obj->Set(String::New("month"), get_field_limits(ELM_DATETIME_MONTH));
-   obj->Set(String::New("year"), get_field_limits(ELM_DATETIME_YEAR));
+   obj->Set(String::NewSymbol("ampm"), GetFieldLimits(ELM_DATETIME_AMPM));
+   obj->Set(String::NewSymbol("min"), GetFieldLimits(ELM_DATETIME_MINUTE));
+   obj->Set(String::NewSymbol("hour"), GetFieldLimits(ELM_DATETIME_HOUR));
+   obj->Set(String::NewSymbol("date"), GetFieldLimits(ELM_DATETIME_DATE));
+   obj->Set(String::NewSymbol("month"), GetFieldLimits(ELM_DATETIME_MONTH));
+   obj->Set(String::NewSymbol("year"), GetFieldLimits(ELM_DATETIME_YEAR));
+   return obj;
+}
+
+Handle<Value> CElmDateTime::field_visible_get() const
+{
+   Local<Object> obj = Object::New();
+   obj->Set(String::NewSymbol("ampm"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_AMPM)));
+   obj->Set(String::NewSymbol("minute"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_MINUTE)));
+   obj->Set(String::NewSymbol("hour"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_HOUR)));
+   obj->Set(String::NewSymbol("date"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_DATE)));
+   obj->Set(String::NewSymbol("month"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_MONTH)));
+   obj->Set(String::NewSymbol("year"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_YEAR)));
    return obj;
 }
 
 void CElmDateTime::field_visible_set(Handle<Value> val)
 {
    Local<Object> obj = val->ToObject();
-   Local<Value> temp = obj->Get(String::New("ampm"));
+   Local<Value> temp = obj->Get(String::NewSymbol("ampm"));
+
    if (temp->IsBoolean())
-     {
-        elm_datetime_field_visible_set(eo, ELM_DATETIME_AMPM, temp->BooleanValue());
-     }
+     elm_datetime_field_visible_set(eo, ELM_DATETIME_AMPM, temp->BooleanValue());
 
-   temp = obj->Get(String::New("mon"));
+   temp = obj->Get(String::NewSymbol("month"));
    if (temp->IsBoolean())
-     {
-        elm_datetime_field_visible_set(eo, ELM_DATETIME_MONTH, temp->BooleanValue());
-     }
+     elm_datetime_field_visible_set(eo, ELM_DATETIME_MONTH, temp->BooleanValue());
 
-
-   temp = obj->Get(String::New("year"));
+   temp = obj->Get(String::NewSymbol("year"));
    if (temp->IsBoolean())
-     {
-        elm_datetime_field_visible_set(eo, ELM_DATETIME_YEAR, temp->BooleanValue());
-     }
+     elm_datetime_field_visible_set(eo, ELM_DATETIME_YEAR, temp->BooleanValue());
 
-
-   temp = obj->Get(String::New("date"));
+   temp = obj->Get(String::NewSymbol("date"));
    if (temp->IsBoolean())
-     {
-        elm_datetime_field_visible_set(eo, ELM_DATETIME_DATE, temp->BooleanValue());
-     }
+     elm_datetime_field_visible_set(eo, ELM_DATETIME_DATE, temp->BooleanValue());
 
-
-   temp = obj->Get(String::New("hour"));
+   temp = obj->Get(String::NewSymbol("hour"));
    if (temp->IsBoolean())
-     {
-        elm_datetime_field_visible_set(eo, ELM_DATETIME_HOUR, temp->BooleanValue());
-     }
+     elm_datetime_field_visible_set(eo, ELM_DATETIME_HOUR, temp->BooleanValue());
 
-   temp = obj->Get(String::New("minute"));
+   temp = obj->Get(String::NewSymbol("minute"));
    if (temp->IsBoolean())
-     {
-        elm_datetime_field_visible_set(eo, ELM_DATETIME_MINUTE, temp->BooleanValue());
-     }
+     elm_datetime_field_visible_set(eo, ELM_DATETIME_MINUTE, temp->BooleanValue());
+
 }
 
-Handle<Value> CElmDateTime::field_visible_get() const
+void CElmDateTime::OnChange(void *)
+{
+   HandleScope scope;
+   Local<Function> callback(Function::Cast(*cb.change));
+   Handle<Value> args[1] = { jsObject };
+
+   callback->Call(jsObject, 1, args);
+}
+
+void CElmDateTime::OnChangeWrapper(void *data, Evas_Object *, void *event_info)
+{
+   static_cast<CElmDateTime*>(data)->OnChange(event_info);
+}
+
+void CElmDateTime::on_change_set(Handle<Value> val)
+{
+   if (!cb.change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "changed", &OnChangeWrapper);
+        cb.change.Dispose();
+        cb.change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "changed", &OnChangeWrapper, this);
+}
+
+Handle<Value> CElmDateTime::on_change_get(void) const
+{
+   return cb.change;
+}
+
+void CElmDateTime::OnLangChange(void *)
+{
+   HandleScope scope;
+   Local<Function> callback(Function::Cast(*cb.lang_change));
+   Handle<Value> args[1] = { jsObject };
+   callback->Call(jsObject, 1, args);
+}
+
+void CElmDateTime::OnLangChangeWrapper(void *data, Evas_Object *, void *event_info)
+{
+   static_cast<CElmDateTime*>(data)->OnLangChange(event_info);
+}
+
+void CElmDateTime::on_lang_change_set(Handle<Value> val)
+{
+   if (cb.change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "language,changed", &OnLangChangeWrapper);
+        cb.change.Dispose();
+        cb.change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "language,changed", &OnLangChangeWrapper, this);
+}
+
+Handle<Value> CElmDateTime::on_lang_change_get(void) const
+{
+   return cb.lang_change;
+}
+
+bool CElmDateTime::TimeSet(struct tm *time, Handle<Value> val) const
+{
+   if (!val->IsObject())
+     return false;
+
+   Local<Object> obj = val->ToObject();
+
+   Handle<Value> temp = obj->Get(String::NewSymbol("sec"));
+   time->tm_sec = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("min"));
+   time->tm_min = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("hour"));
+   time->tm_hour = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("dayofmonth"));
+   time->tm_mday = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("month"));
+   time->tm_mon = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("year"));
+   time->tm_year = temp->Int32Value() - 1900;
+   temp = obj->Get(String::NewSymbol("dayofweek"));
+   time->tm_wday = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("daysinyear"));
+   time->tm_yday = temp->Int32Value();
+   temp = obj->Get(String::NewSymbol("dst"));
+   time->tm_isdst = temp->Int32Value();
+
+   return true;
+}
+
+Local<Object> CElmDateTime::TimeGet(struct tm *time) const
 {
    Local<Object> obj = Object::New();
-   obj->Set(String::New("ampm"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_AMPM)));
-   obj->Set(String::New("minute"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_MINUTE)));
-   obj->Set(String::New("hour"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_HOUR)));
-   obj->Set(String::New("date"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_DATE)));
-   obj->Set(String::New("month"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_MONTH)));
-   obj->Set(String::New("year"), Boolean::New(elm_datetime_field_visible_get(eo, ELM_DATETIME_YEAR)));
+
+   obj->Set(String::NewSymbol("sec"), Int32::New(time->tm_sec));
+   obj->Set(String::NewSymbol("min"), Int32::New(time->tm_min));
+   obj->Set(String::NewSymbol("hour"), Int32::New(time->tm_hour));
+   obj->Set(String::NewSymbol("dayofmonth"), Int32::New(time->tm_mday));
+   obj->Set(String::NewSymbol("month"), Int32::New(time->tm_mon));
+   obj->Set(String::NewSymbol("year"), Int32::New(time->tm_year + 1900));
+   obj->Set(String::NewSymbol("dayofweek"), Int32::New(time->tm_wday));
+   obj->Set(String::NewSymbol("daysinyear"), Int32::New(time->tm_yday));
+   obj->Set(String::NewSymbol("dst"), Int32::New(time->tm_isdst));
+
    return obj;
 }
 
-Handle<Value> CElmDateTime::value_max_get() const
+Local<Object> CElmDateTime::GetFieldLimits(Elm_Datetime_Field_Type type) const
 {
-   struct tm timevar;
-   elm_datetime_value_max_get(eo, &timevar);
-   return fill_tm(&timevar);
+   int min, max;
+   Local<Object> obj = Object::New();
+
+   elm_datetime_field_limit_get(eo, type, &min, &max);
+   if (type == ELM_DATETIME_YEAR)
+     {
+        min += 1900;
+        max += 1900;
+     }
+
+   obj->Set(String::NewSymbol("min"), Int32::New(min));
+   obj->Set(String::NewSymbol("max"), Int32::New(max));
+
+   return obj;
 }
 
-void CElmDateTime::value_max_set(Handle<Value> timevar)
+bool CElmDateTime::GetMinMaxFromObject(Handle<Value> val, int &min_out, int &max_out) const
 {
-   struct tm *retval = get_tm(timevar);
+   if (!val->IsObject())
+     return false;
 
-   if (retval)
-     elm_datetime_value_max_set(eo, retval);
+   Local<Object> obj = val->ToObject();
+   Local<Value> min = obj->Get(String::NewSymbol("min"));
+   Local<Value> max = obj->Get(String::NewSymbol("max"));
+
+   if (!min->IsNumber() || !max->IsNumber())
+     return false;
+
+   min_out = min->Int32Value();
+   max_out = max->Int32Value();
+
+   return true;
 }
 
-Handle<Value> CElmDateTime::value_min_get() const
-{
-   struct tm timevar;
-   elm_datetime_value_min_get(eo, &timevar);
-   return fill_tm(&timevar);
 }
-
-void CElmDateTime::value_min_set(Handle<Value> timevar)
-{
-   struct tm *retval = get_tm(timevar);
-
-   if (retval)
-     elm_datetime_value_min_set(eo, retval);
-}
-
-Handle<Value> CElmDateTime::value_get() const
-{
-   struct tm timevar;
-   elm_datetime_value_get(eo, &timevar);
-   return fill_tm(&timevar);
-}
-
-void CElmDateTime::value_set(Handle<Value> timevar)
-{
-   struct tm *retval = get_tm(timevar);
-
-   if (retval)
-     elm_datetime_value_set(eo, retval);
-}
-
-void CElmDateTime::on_changed(void *)
-{
-   HandleScope handle_scope;
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_changed_val;
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
-}
-
-void CElmDateTime::eo_on_changed(void *data, Evas_Object *, void *event_info)
-{
-   CElmDateTime *changed = static_cast<CElmDateTime*>(data);
-   changed->on_changed(event_info);
-}
-
-void CElmDateTime::on_changed_set(Handle<Value> val)
-{
-   on_changed_val.Dispose();
-   on_changed_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
-   else
-     evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
-}
-
-Handle<Value> CElmDateTime::on_changed_get(void) const
-{
-   return on_changed_val;
-}
-
-void CElmDateTime::on_lang_changed(void *)
-{
-   HandleScope handle_scope;
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_lang_changed_val;
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
-}
-
-void CElmDateTime::eo_on_lang_changed(void *data, Evas_Object *, void *event_info)
-{
-   static_cast<CElmDateTime*>(data)->on_lang_changed(event_info);
-}
-
-void CElmDateTime::on_lang_changed_set(Handle<Value> val)
-{
-   on_lang_changed_val.Dispose();
-
-   on_lang_changed_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "language,changed", &eo_on_lang_changed, this);
-   else
-     evas_object_smart_callback_del(eo, "language,changed", &eo_on_lang_changed);
-}
-
-Handle<Value> CElmDateTime::on_lang_changed_get(void) const
-{
-   return on_lang_changed_val;
-}
-
-
-PROPERTIES_OF(CElmDateTime) = {
-   PROP_HANDLER(CElmDateTime, format),
-   PROP_HANDLER(CElmDateTime, value_max),
-   PROP_HANDLER(CElmDateTime, value_min),
-   PROP_HANDLER(CElmDateTime, value),
-   PROP_HANDLER(CElmDateTime, field_limit),
-   PROP_HANDLER(CElmDateTime, field_visible),
-   { NULL },
-};

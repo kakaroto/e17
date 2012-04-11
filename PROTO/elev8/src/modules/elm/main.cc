@@ -16,6 +16,7 @@ using namespace v8;
 #include "CElmColorSelector.h"
 #include "CElmConform.h"
 #include "CElmDaySelector.h"
+#include "CElmDateTime.h"
 #include "CElmEntry.h"
 #include "CElmFileSelector.h"
 #include "CElmFileSelectorButton.h"
@@ -159,6 +160,7 @@ void RegisterModule(Handle<Object> target)
    CElmColorSelector::Initialize(target);
    CElmConform::Initialize(target);
    CElmDaySelector::Initialize(target);
+   CElmDateTime::Initialize(target);
    CElmEntry::Initialize(target);
    CElmFileSelector::Initialize(target);
    CElmFileSelectorButton::Initialize(target);

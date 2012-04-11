@@ -25,6 +25,7 @@ libelm_la_SOURCES = \
 	CElmClock.cc \
 	CElmColorSelector.cc \
 	CElmConform.cc \
+	CElmDateTime.cc \
 	CElmDaySelector.cc \
 	CElmEntry.cc \
 	CElmFileSelector.cc \
@@ -55,9 +56,7 @@ libelm_la_SOURCES = \
 #	Main.cc \
 #	CElmBasicWindow.cc \
 #	CElmCtxPopup.cc \
-#	CElmDateTime.cc \
-#	CElmLayout.cc \
-#	CElmNotify.cc
+#	CElmLayout.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
 libelm_la_LDFLAGS = -module -avoid-version -no-undefined
