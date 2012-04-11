@@ -31,13 +31,13 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, on_animate);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_click);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_key_down);
 
-static Handle<Value> Callback_elements_get(Local<String>, const AccessorInfo &info) 
+static Handle<Value> Callback_elements_get(Local<String>, const AccessorInfo &info)
 {
    HandleScope scope;
    return info.This()->GetHiddenValue(String::NewSymbol("elements"));
 }
 
-static void Callback_elements_set(Local<String>, Local<Value> value, const AccessorInfo &info) 
+static void Callback_elements_set(Local<String>, Local<Value> value, const AccessorInfo &info)
 {
    HandleScope scope;
 
