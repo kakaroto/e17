@@ -13,6 +13,9 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, width);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, height);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, align);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, weight);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, text);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, scale);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, style);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, visible);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, hint_min);
@@ -116,6 +119,9 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(height),
                       PROPERTY(align),
                       PROPERTY(weight),
+                      PROPERTY(text),
+                      PROPERTY(scale),
+                      PROPERTY(style),
                       PROPERTY(visible),
                       PROPERTY(enabled),
                       PROPERTY(hint_min),
@@ -204,6 +210,41 @@ void CElmObject::height_set(Handle<Value> val)
    int width;
    evas_object_geometry_get(eo, NULL, NULL, &width, NULL);
    evas_object_resize(eo, width, val->ToInt32()->Value());
+}
+
+Handle<Value> CElmObject::text_get() const
+{
+   const char *s = elm_object_text_get(eo);
+   return s ? String::New(s) : Undefined();
+}
+
+void CElmObject::text_set(Handle<Value> val)
+{
+   if (val->IsString())
+      elm_object_text_set(eo, elm_entry_utf8_to_markup(*String::Utf8Value(val)));
+}
+
+Handle<Value> CElmObject::scale_get() const
+{
+   return Number::New(elm_object_scale_get(eo));
+}
+
+void CElmObject::scale_set(Handle<Value> val)
+{
+   if (val->IsNumber())
+     elm_object_scale_set(eo, val->NumberValue());
+}
+
+void CElmObject::style_set(Handle<Value> val)
+{
+   if (val->IsString())
+     elm_object_style_set(eo, *String::Utf8Value(val));
+}
+
+Handle<Value> CElmObject::style_get(void) const
+{
+   const char *s = elm_object_style_get(eo);
+   return s ? String::New(s) : Undefined();
 }
 
 Handle<Value> CElmObject::align_get() const

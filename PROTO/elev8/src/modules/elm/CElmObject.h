@@ -51,6 +51,15 @@ public:
    Handle<Value> height_get() const;
    void height_set(Handle<Value> val);
 
+   Handle<Value> text_get() const;
+   void text_set(Handle<Value> val);
+
+   Handle<Value> scale_get() const;
+   void scale_set(Handle<Value> val);
+
+   Handle<Value> style_get() const;
+   void style_set(Handle<Value> val);
+
    Handle<Value> align_get() const;
    void align_set(Handle<Value> align);
 
