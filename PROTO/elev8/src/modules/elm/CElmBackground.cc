@@ -37,8 +37,7 @@ Handle<Value> CElmBackground::New(const Arguments& args)
    if (!args.IsConstructCall())
      {
         Local<Object> obj = args[0]->ToObject();
-        if (obj->Get(String::New("type")) == Undefined())
-          obj->Set(String::New("type"), GetTemplate()->GetFunction());
+        obj->SetHiddenValue(String::New("type"), GetTemplate()->GetFunction());
         return obj;
      }
 

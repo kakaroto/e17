@@ -33,7 +33,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, on_key_down);
 
 static inline Handle<Value> CallbackGetelements(Local<String>, const AccessorInfo &info) 
 {
-   return Undefined(); //info.This()->Get(String::New("_elements"));
+   return info.This()->GetHiddenValue(String::New("elements"));
 }
 
 static inline void CallbackSetelements(Local<String>, Local<Value> value, const AccessorInfo &info) 
@@ -42,9 +42,7 @@ static inline void CallbackSetelements(Local<String>, Local<Value> value, const 
 
    Local<Object> obj = value->ToObject();
    Local<Array> props = obj->GetOwnPropertyNames();
-   Handle<ObjectTemplate> elements = ObjectTemplate::New();
-
-   //obj->Set(String::New("_elements"), Handle<Value>::New(elements));
+   Handle<Object> elements = Object::New();
 
    for (unsigned int i = 0; i < props->Length(); i++)
      {
@@ -58,6 +56,8 @@ static inline void CallbackSetelements(Local<String>, Local<Value> value, const 
 
         elements->Set(key, realise->Call(info.This(), 2, params));      
      }
+
+   info.This()->SetHiddenValue(String::New("elements"), elements);
 }
 
 
@@ -68,6 +68,7 @@ CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
 {
    jsObject = Persistent<Object>::New(_jsObject);
    jsObject->SetPointerInInternalField(0, this);
+   jsObject->SetHiddenValue(String::New("elements"), Undefined());
 }
 
 CElmObject::~CElmObject()
@@ -484,6 +485,7 @@ void CElmObject::Setsize_hint_aspect(Handle<Value> val)
 
 Handle<Value> CElmObject::Getname() const
 {
+   return Undefined();
    return String::New(evas_object_name_get(eo));
 }
 
@@ -633,7 +635,7 @@ Handle<Value> CElmObject::Realise(const Arguments& args)
 
    Local<Object> desc = args[0]->ToObject();
    Local<Array> props = desc->GetOwnPropertyNames();
-   Local<Value> func = desc->Get(String::New("type"));
+   Local<Value> func = desc->GetHiddenValue(String::New("type"));
 
    Local<Value> params[] = {args[0], args[1]};
    Local<Object> obj = Local<Function>::Cast(func)->NewInstance(2, params);
