@@ -1,43 +1,52 @@
 #ifndef C_ELM_CHECK_H
 #define C_ELM_CHECK_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmCheck : public CEvasObject {
-   FACTORY(CElmCheck)
+namespace elm {
+
+class CElmCheck : public CElmObject {
+private:
+   static Persistent<FunctionTemplate> tmpl;
 
 protected:
-   CPropHandler<CElmCheck> prop_handler;
-
-   Persistent<Value> on_changed_val;
-   Persistent<Value> the_icon;
-
-   static void eo_on_changed(void *data, Evas_Object *, void *event_info);
-   virtual void on_changed(void *);
-
-public:
-   virtual void on_changed_set(Handle<Value> val);
-   virtual Handle<Value> on_changed_get(void) const;
-   CElmCheck(CEvasObject *parent, Local<Object> obj); 
-
+   CElmCheck(Local<Object> _jsObject, CElmObject *parent);
    virtual ~CElmCheck();
 
-   virtual void state_set(Handle<Value> value);
+   struct {
+      Persistent<Value> icon;
+   } cached;
 
-   virtual Handle<Value> state_get() const;
+   struct {
+      Persistent<Value> change;
+   } cb;
 
-   virtual Handle<Value> icon_get() const;
+   static Handle<FunctionTemplate> GetTemplate();
 
-   virtual void icon_set(Handle<Value> value);
+public:
+   static void Initialize(Handle<Object> target);
 
-   virtual void onlabel_set(Handle<Value> val);
+   void OnChange(void *);
+   static void OnChangeWrapper(void *, Evas_Object *, void *);
 
-   virtual Handle<Value> onlabel_get(void) const;
+   void on_change_set(Handle<Value> val);
+   Handle<Value> on_change_get(void) const;
 
-   virtual void offlabel_set(Handle<Value> val);
+   Handle<Value> state_get() const;
+   void state_set(Handle<Value> value);
 
-   virtual Handle<Value> offlabel_get(void) const;
+   Handle<Value> icon_get() const;
+   void icon_set(Handle<Value> value);
+
+   Handle<Value> onlabel_get(void) const;
+   void onlabel_set(Handle<Value> val);
+
+   Handle<Value> offlabel_get(void) const;
+   void offlabel_set(Handle<Value> val);
+
+   friend Handle<Value> CElmObject::New<CElmCheck>(const Arguments& args);
 };
 
+}
 #endif

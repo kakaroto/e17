@@ -1,60 +1,79 @@
+#include "elm.h"
 #include "CElmCheck.h"
+#include "CElmIcon.h"
 
-CElmCheck::CElmCheck(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmCheck, on_change);
+GENERATE_PROPERTY_CALLBACKS(CElmCheck, state);
+GENERATE_PROPERTY_CALLBACKS(CElmCheck, icon);
+GENERATE_PROPERTY_CALLBACKS(CElmCheck, onlabel);
+GENERATE_PROPERTY_CALLBACKS(CElmCheck, offlabel);
+
+GENERATE_TEMPLATE(CElmCheck,
+                  PROPERTY(on_change),
+                  PROPERTY(state),
+                  PROPERTY(icon),
+                  PROPERTY(onlabel),
+                  PROPERTY(offlabel));
+
+CElmCheck::CElmCheck(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject, elm_check_add(parent->GetEvasObject()))
 {
-   eo = elm_check_add(parent->get());
-   //differs only in style from toggle.
-   construct(eo, obj);
 }
 
-void CElmCheck::eo_on_changed(void *data, Evas_Object *, void *)
+void CElmCheck::Initialize(Handle<Object> target)
 {
-   static_cast<CElmCheck*>(data)->on_changed(0);
+   target->Set(String::NewSymbol("Check"),
+               GetTemplate()->GetFunction());
 }
 
-void CElmCheck::on_changed(void *)
+CElmCheck::~CElmCheck()
 {
-   HandleScope handle_scope;
-
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_changed_val;
-   // FIXME: pass event_info to the callback
-   // FIXME: turn the pieces below into a do_callback method
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
+   cached.icon.Dispose();
+   on_change_set(Undefined());
 }
 
-void CElmCheck::on_changed_set(Handle<Value> val)
+void CElmCheck::OnChange(void *)
 {
-   on_changed_val.Dispose();
-   on_changed_val = Persistent<Value>::New(val);
+   HandleScope scope;
+   Local<Function> callback(Function::Cast(*cb.change));
+   Handle<Value> args[1] = { jsObject };
 
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
-   else
-     evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
+   callback->Call(jsObject, 1, args);
 }
 
-Handle<Value> CElmCheck::on_changed_get(void) const
+void CElmCheck::OnChangeWrapper(void *data, Evas_Object *, void *event_info)
 {
-   return on_changed_val;
+   static_cast<CElmCheck*>(data)->OnChange(event_info);
 }
 
-Handle<Value> CElmCheck::icon_get() const
+Handle<Value> CElmCheck::on_change_get(void) const
 {
-   return the_icon;
+   return cb.change;
 }
 
-void CElmCheck::icon_set(Handle<Value> value)
+void CElmCheck::on_change_set(Handle<Value> val)
 {
-   the_icon.Dispose();
-   CEvasObject *icon = make_or_get(this, value);
-   elm_object_content_set(eo, icon->get());
-   the_icon = Persistent<Value>::New(icon->get_object());
+   if (!cb.change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "changed", &OnChangeWrapper);
+        cb.change.Dispose();
+        cb.change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "changed", &OnChangeWrapper, this);
+}
+
+Handle<Value> CElmCheck::state_get() const
+{
+   return Boolean::New(elm_check_state_get(eo));
 }
 
 void CElmCheck::state_set(Handle<Value> value)
@@ -63,15 +82,18 @@ void CElmCheck::state_set(Handle<Value> value)
      elm_check_state_set(eo, value->BooleanValue());
 }
 
-Handle<Value> CElmCheck::state_get() const
+Handle<Value> CElmCheck::icon_get() const
 {
-   return Boolean::New(elm_check_state_get(eo));
+   return cached.icon;
 }
 
-CElmCheck::~CElmCheck()
+void CElmCheck::icon_set(Handle<Value> value)
 {
-   the_icon.Dispose();
-   on_changed_val.Dispose();
+   cached.icon.Dispose();
+
+   cached.icon = Persistent<Value>::New(Realise(value, jsObject));
+   elm_object_content_set(eo,
+                          GetEvasObjectFromJavascript<CElmIcon>(cached.icon));
 }
 
 void CElmCheck::onlabel_set(Handle<Value> val)
@@ -98,12 +120,4 @@ Handle<Value> CElmCheck::offlabel_get(void) const
    return offlabel ? String::New(offlabel) : Null();
 }
 
-PROPERTIES_OF(CElmCheck) = {
-    PROP_HANDLER(CElmCheck, state),
-    PROP_HANDLER(CElmCheck, icon),
-    PROP_HANDLER(CElmCheck, on_changed),
-    PROP_HANDLER(CElmCheck, offlabel),
-    PROP_HANDLER(CElmCheck, onlabel),
-    { NULL }
-};
-
+}
