@@ -707,7 +707,7 @@ void CElmObject::on_key_down_set(Handle<Value> val)
                                   &OnKeyDownWrapper, this);
 }
 
-Local<Value> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
+Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
    HandleScope scope;
    Local<Object> desc = descValue->ToObject();

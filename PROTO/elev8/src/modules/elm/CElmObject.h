@@ -161,7 +161,7 @@ public:
 
    static Handle<Value> Realise(const Arguments& args);
 
-   static Local<Value> Realise(Handle<Value> desc, Handle<Value> parent);
+   static Local<Object> Realise(Handle<Value> desc, Handle<Value> parent);
 };
 
 }
