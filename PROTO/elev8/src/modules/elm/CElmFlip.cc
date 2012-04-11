@@ -18,6 +18,12 @@ CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *parent)
 {
 }
 
+CElmFlip::~CElmFlip()
+{
+   cached.front.Dispose();
+   cached.back.Dispose();
+}
+
 void CElmFlip::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Flip"),

@@ -15,6 +15,7 @@ private:
 protected:
    CElmFlip(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
+   virtual ~CElmFlip();
 
    struct {
       Persistent<Value> front;
