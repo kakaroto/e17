@@ -15,7 +15,6 @@ private:
 protected:
    CElmBackground(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
-   static void Delete(Persistent<Value>, void *parameter);
 
 public:
    static void Initialize(Handle<Object> target);

@@ -27,11 +27,6 @@ void CElmBackground::Initialize(Handle<Object> target)
                GetTemplate()->GetFunction());
 }
 
-void CElmBackground::Delete(Persistent<Value>, void *parameter)
-{
-   delete static_cast<CElmBackground *>(parameter);
-}
-
 void CElmBackground::image_set(Handle<Value> val)
 {
    if (val->IsString())

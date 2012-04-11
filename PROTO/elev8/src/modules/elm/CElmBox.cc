@@ -49,9 +49,4 @@ void CElmBox::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Box"), GetTemplate()->GetFunction());
 }
 
-void CElmBox::Delete(Persistent<Value>, void *parameter)
-{
-   delete static_cast<CElmBox *>(parameter);
-}
-
 }

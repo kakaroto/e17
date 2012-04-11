@@ -15,7 +15,6 @@ private:
 protected:
    CElmWindow(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
-   static void Delete(Persistent<Value>, void *parameter);
    static void quit(void *, Evas_Object *, void *);
 
 public:

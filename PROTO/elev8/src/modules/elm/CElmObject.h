@@ -54,6 +54,8 @@ protected:
         return Undefined();
      }
 
+   static void Delete(Persistent<Value>, void *parameter);
+
 public:
    static void Initialize(Handle<Object> target);
 

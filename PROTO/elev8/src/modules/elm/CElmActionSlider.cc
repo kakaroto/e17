@@ -25,11 +25,6 @@ void CElmActionSlider::Initialize(Handle<Object> target)
                GetTemplate()->GetFunction());
 }
 
-void CElmActionSlider::Delete(Persistent<Value>, void *paramenter)
-{
-   delete static_cast<CElmActionSlider *>(paramenter);
-}
-
 /* there's 1 indicator label and 3 position labels */
 void CElmActionSlider::labels_set(Handle<Value> val)
 {

@@ -66,7 +66,10 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
    info.This()->SetHiddenValue(String::NewSymbol("elements"), elements);
 }
 
-
+void CElmObject::Delete(Persistent<Value>, void *parameter)
+{
+   delete static_cast<CElmObject *>(parameter);
+}
 
 CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
    : eo(_eo)

@@ -51,11 +51,6 @@ void CElmWindow::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Window"), GetTemplate()->GetFunction());
 }
 
-void CElmWindow::Delete(Persistent<Value>, void *paramenter)
-{
-   delete static_cast<CElmWindow *>(paramenter);
-}
-
 void CElmWindow::quit(void *, Evas_Object *, void *)
 {
    //TODO: check if his window has parent
