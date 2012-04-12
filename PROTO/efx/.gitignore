@@ -46,4 +46,7 @@ test_zoom
 test_zoomspin
 test_follow
 test_move
+test_bumpmap
+test_path
 compile
+
