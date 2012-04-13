@@ -17,6 +17,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, select_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, classes);
 GENERATE_METHOD_CALLBACKS(CElmGenList, append);
 GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
 
@@ -33,6 +34,7 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(mode),
                   PROPERTY(reorder_mode),
                   PROPERTY(multi_select),
+                  PROPERTY(classes),
                   METHOD(append),
                   METHOD(clear));
 
@@ -46,66 +48,6 @@ void CElmGenList::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Genlist"), GetTemplate()->GetFunction());
 }
 
-/* GenList functions that are going to do the heavy weight lifting */
-char *CElmGenList::text_get(void *data, Evas_Object *, const char *part)
-{
-   GenListItemClass *itc = (GenListItemClass *)data;
-   Handle<Function> fn(Function::Cast(*(itc->on_text)));
-   Local<Object> temp = Object::New();
-   temp->Set(String::New("part"), String::New(part));
-   temp->Set(String::New("data"), itc->data);
-   Handle<Value> args[1] = { temp };
-   Local<Value> text = fn->Call(temp, 1, args);
-
-   if (!text->IsString())
-     return NULL;
-
-   return strdup(*String::Utf8Value(text->ToString()));
-}
-
-Evas_Object *CElmGenList::content_get(void *data, Evas_Object *, const char *part)
-{
-   GenListItemClass *itc = (GenListItemClass *)data;
-   Handle<Function> fn(Function::Cast(*(itc->on_content)));
-   Local<Object> temp = Object::New();
-   temp->Set(String::New("part"), String::New(part));
-   temp->Set(String::New("data"), itc->data);
-   Handle<Value> args[1] = { temp };
-   Local<Value> retval = fn->Call(temp, 1, args);
-
-   if (!retval->IsObject())
-     return NULL;
-
-   /* FIXME: This leaks -- properly handle these resources. */
-   Handle<Value> content = Realise(retval->ToObject(), itc->genlist->GetJSObject());
-   if (content.IsEmpty())
-     return NULL;
-   return GetEvasObjectFromJavascript(content);
-}
-
-Eina_Bool CElmGenList::state_get(void *, Evas_Object *, const char *)
-{
-   return EINA_TRUE;
-}
-
-void CElmGenList::del(void *data, Evas_Object *)
-{
-   delete static_cast<GenListItemClass *>(data);
-}
-
-void CElmGenList::sel(void *data, Evas_Object *, void *)
-{
-   GenListItemClass *itc = (GenListItemClass *)data;
-
-   if (itc->on_select.IsEmpty())
-     return;
-
-   Handle<Function> fn(Function::Cast(*(itc->on_select)));
-   Local<Object> temp = Object::New();
-   temp->Set(String::New("data"), itc->data);
-   fn->Call(temp, 0, 0);
-}
-
 Handle<Value> CElmGenList::clear(const Arguments&)
 {
    /* FIXME: Properly dispose of resources */
@@ -115,30 +57,18 @@ Handle<Value> CElmGenList::clear(const Arguments&)
 
 Handle<Value> CElmGenList::append(const Arguments& args)
 {
-   if (!args[0]->IsObject())
+   if (!args[0]->IsString())
      return Undefined();
 
-   GenListItemClass *itc = new GenListItemClass();
+   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
+   if (klass.IsEmpty() || !klass->IsObject())
+     return Undefined();
 
-   Local<Object> obj = args[0]->ToObject();
-   itc->type = Persistent<Value>::New(obj->Get(String::New("type")));
-   itc->on_text = Persistent<Value>::New(obj->Get(String::New("text")));
-   itc->on_content = Persistent<Value>::New(obj->Get(String::New("content")));
-   itc->on_state = Persistent<Value>::New(obj->Get(String::New("state")));
-   itc->on_select = Persistent<Value>::New(obj->Get(String::New("select")));
-   itc->data = Persistent<Value>::New(obj->Get(String::New("data")));
-   //TODO : Check genlist class type and modify or add
+   ItemClass *item_class = static_cast<ItemClass *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
+   Item *item = new Item(item_class, args[1], args[2]);
 
-   itc->eitc.item_style = "default";
-   itc->eitc.func.text_get = text_get;
-   itc->eitc.func.content_get = content_get;
-   itc->eitc.func.state_get = state_get;
-   itc->eitc.func.del = del;
-   itc->genlist = this;
-   elm_genlist_item_append(eo, &itc->eitc, itc, NULL,
-                           ELM_GENLIST_ITEM_NONE,
-                           sel, itc);
-
+   elm_genlist_item_append(eo, item_class->GetElmClass(), item, NULL,
+                           ELM_GENLIST_ITEM_NONE, Item::OnSelect, item);
    return Undefined();
 }
 
@@ -293,6 +223,37 @@ void CElmGenList::homogeneous_set(Handle<Value> value)
 {
    if (value->IsNumber())
      elm_genlist_homogeneous_set(eo, value->IntegerValue());
+}
+
+void CElmGenList::classes_set(Handle<Value> value)
+{
+   Local<Object> classes = value->ToObject();
+   Local<Array> properties = classes->GetOwnPropertyNames();
+
+   if (!cached.classes.IsEmpty())
+     {
+        for (unsigned int i = 0; i < properties->Length(); ++i)
+          {
+             Local<String> class_name = properties->Get(i)->ToString();
+             Local<Object> class_desc = classes->Get(class_name)->ToObject();
+             delete static_cast<ItemClass *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
+          }
+     }
+   cached.classes.Dispose();
+
+   cached.classes = Persistent<Object>::New(classes);
+   for (unsigned int i = 0; i < properties->Length(); ++i)
+     {
+        Local<String> class_name = properties->Get(i)->ToString();
+        Local<Object> class_desc = classes->Get(class_name)->ToObject();
+        ItemClass *item_class = new ItemClass(this, class_name, class_desc);
+        class_desc->SetHiddenValue(String::NewSymbol("genlist::itemclass"), External::Wrap(item_class));
+     }
+}
+
+Handle<Value> CElmGenList::classes_get() const
+{
+   return cached.classes;
 }
 
 }

@@ -28,33 +28,12 @@ function button_prepend() {
     print("button_prepend");
 }
 function button_append() {
-    for (var i = 0; i<2000; i++)
-        win.elements.box.elements.list.append(new ItemType1(i));
+    for (var i = 0; i < 2000; i++)
+        win.elements.box.elements.list.append((i % 5 == 0) ? 'default' : 'other', i,
+                function(data) {
+                    print('Selected item with data: ' + data.toString());
+                });
 }
-
-var ItemType1 = function(data)
-{
-    this.data = data;
-    this.type = "default";
-};
-
-ItemType1.prototype = {
-        select: function() {
-            print("Selected item #", this.data);
-        },
-        text: function(arg) {
-            return "Item # " + this.data.toString();
-        },
-        content: function(arg) {
-            if (arguments[0].part == "elm.swallow.icon")
-                return logo;
-            if (arguments[0].part == "elm.swallow.end")
-                return bubble;
-        },
-        state: function(arg) {
-            print("Calling state get function.");
-        }
-};
 
 var win = elm.realise(elm.Window({
     title: "GenList Example",
@@ -73,7 +52,31 @@ var win = elm.realise(elm.Window({
             elements: {
                 list: elm.Genlist({
                     weight: EXPAND_BOTH,
-                    align: FILL_BOTH
+                    align: FILL_BOTH,
+                    classes: {
+                        'default': {
+                            text: function(arg) {
+                                return 'Item #' + arg.data.toString();
+                            },
+                            content: function(arg) {
+                                if (arg.part == 'elm.swallow.icon')
+                                    return logo;
+                                if (arg.part == 'elm.swallow.end')
+                                    return bubble;
+                            },
+                            state: function(arg) {
+                                return false;
+                            }
+                        },
+                        'other': {
+                            text: function(arg) {
+                                return 'Other #' + arg.data.toString();
+                            },
+                            state: function(arg) {
+                                return true;
+                            }
+                        }
+                    }
                 }),
                 but_box: elm.Box({
                     //weight: EXPAND_BOTH,
