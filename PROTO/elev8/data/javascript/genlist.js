@@ -69,6 +69,7 @@ var win = elm.realise(elm.Window({
                             }
                         },
                         'other': {
+                            style: 'double_label',
                             text: function(arg) {
                                 return 'Other #' + arg.data.toString();
                             },

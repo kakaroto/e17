@@ -93,7 +93,12 @@ protected:
          , name(Persistent<String>::New(n))
          , description(Persistent<Object>::New(d))
       {
-         klass.item_style = "default";
+         Handle<Value> item_style = d->Get(String::NewSymbol("style"));
+         if (!item_style->IsString())
+            klass.item_style = eina_stringshare_add("default");
+         else
+            klass.item_style = eina_stringshare_add(*String::Utf8Value(item_style->ToString()));
+
          klass.func.text_get = ItemClass::GetTextWrapper;
          klass.func.content_get = ItemClass::GetContentWrapper;
          klass.func.state_get = ItemClass::GetStateWrapper;
@@ -112,6 +117,7 @@ protected:
          js.content.Dispose();
          js.state.Dispose();
          js.del.Dispose();
+         eina_stringshare_del(klass.item_style);
       }
       Elm_Gen_Item_Class *GetElmClass()
       {
