@@ -7,4 +7,9 @@
         * add -cleanvt to enable clean "fade out" animation before giving
         up the VT.
         
+2012-04-13  Carsten Haitzler (The Rasterman)
+
+        * Patch from  Jérôme Pinot <ngc891@gmail.com> to fix linking
+        to ecore_fb (with fix of patch itself to use ecore_fb not ecore).
+        
         
