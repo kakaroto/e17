@@ -23,35 +23,29 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_PROG_CC_STDC
 AM_PROG_CC_C_O
 
-requirements="eina >= 1.0.0 eet >= 1.4.0 evas >= 1.0.0 ecore >= 1.0.0 ecore-evas >= 1.0.0 ecore-con >= 1.0.0 edje >= 1.0.0"
+requirements="\
+   eina >= 1.0.0 \
+   eet >= 1.4.0 \
+   evas >= 1.0.0 \
+   ecore >= 1.0.0 \
+   ecore-evas >= 1.0.0 \
+   ecore-con >= 1.0.0 \
+   edje >= 1.0.0"
+requirements_write="\
+   ecore >= 1.0.0 \
+   ecore-con >= 1.0.0"
 
-PKG_CHECK_MODULES([ECORE_FB],
-                  [ecore-fb >= 1.0.0],
-                  [
-                   have_ecore_fb="yes"
-                   AC_DEFINE(HAVE_ECORE_FB, 1, [Have Ecore-Fb support])
-                   requirements="${requirements} ecore-fb >= 1.0.0"
-                  ],
-                  [have_ecore_fb="no"])
-
-PKG_CHECK_MODULES([EXQUISITE],
+have_ecore_fb="yes"
+PKG_CHECK_EXISTS([ecore-fb >= 1.0.0],
    [
-    eina >= 1.0.0
-    eet >= 1.4.0
-    evas >= 1.0.0
-    ecore >= 1.0.0
-    ecore-evas >= 1.0.0
-    ecore-con >= 1.0.0
-    edje >= 1.0.0
-   ])
+    AC_DEFINE(HAVE_ECORE_FB, 1, [Have Ecore-Fb support])
+    requirements="${requirements} \
+                  ecore-fb >= 1.0.0"
+   ],
+   [have_ecore_fb="no"])
 
-PKG_CHECK_MODULES([EXQUISITE_WRITE],
-   [
-    ecore >= 1.0.0
-    ecore-evas >= 1.0.0
-    ecore-con >= 1.0.0
-   ])
-
+PKG_CHECK_MODULES([EXQUISITE], [${requirements}])
+PKG_CHECK_MODULES([EXQUISITE_WRITE], [${requirements_write}])
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
