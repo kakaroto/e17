@@ -737,6 +737,7 @@ main(int argc, char *argv[])
    elm_run();
 
    ecrire_cfg_shutdown();
+   elm_shutdown();
 
    return 0;
 }
