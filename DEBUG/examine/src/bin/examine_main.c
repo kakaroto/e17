@@ -32,6 +32,10 @@
 #include <windows.h>
 #undef WIN32_LEAN_AND_MEAN
 
+#ifdef _MSC_VER
+# include <direct.h>
+#endif
+
 
 /*============================================================================*
  *                                  Local                                     *
@@ -125,6 +129,9 @@ _exm_symbol_get(const char *module, const char *symbol)
 static Exm *
 exm_new(void)
 {
+#ifdef _MSC_VER
+    char buf[MAX_PATH];
+#endif
     Exm     *exm;
     HMODULE kernel32;
     size_t  l1;
@@ -160,12 +167,22 @@ exm_new(void)
     if (!exm->fl)
         goto free_exm;
 
+#ifdef _MSC_VER
+    _getcwd(buf, MAX_PATH);
+    l1 = strlen(buf);
+#else
     l1 = strlen(PACKAGE_BIN_DIR);
+#endif
     l2 = strlen("/examine_dll.dll");
     exm->dll_fullname = malloc(sizeof(char) * (l1 + l2 + 1));
     if (!exm->dll_fullname)
         goto free_exm;
+#ifdef _MSC_VER
+    _getcwd(buf, MAX_PATH);
+    memcpy(exm->dll_fullname, buf, l1);
+#else
     memcpy(exm->dll_fullname, PACKAGE_BIN_DIR, l1);
+#endif
     memcpy(exm->dll_fullname + l1, "/examine_dll.dll", l2);
     exm->dll_fullname[l1 + l2] = '\0';
 
