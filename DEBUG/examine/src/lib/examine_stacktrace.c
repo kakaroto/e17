@@ -74,17 +74,25 @@ sw_find_function_name_in_section(bfd      *abfd,
     data = (Exm_Sw_Find_Data *)obj;
     if (data->function && (*data->function != '\0'))
     {
+        /* fprintf(stderr, "function already found : %s\n", data->function); */
         /* function already found */
         return;
     }
 
     if (!(bfd_get_section_flags(abfd, sec) & SEC_ALLOC))
+    {
+        /* fprintf(stderr, "bad flags\n"); */
         return;
+    }
 
     vma = bfd_get_section_vma(abfd, sec);
-    if ((data->counter < vma) ||
-        ((vma + bfd_get_section_size(sec)) <= data->counter))
+    if (data->counter < vma)
         return;
+    if ((vma + bfd_get_section_size(sec)) <= data->counter)
+    {
+        /* fprintf(stderr, "wrong size\n"); */
+        return;
+    }
 
     if (bfd_find_nearest_line(abfd, sec,
                               data->symbol_table,
@@ -187,17 +195,35 @@ exm_sw_shutdown(Exm_Sw *sw)
 Exm_List *
 exm_sw_frames_get(Exm_Sw *sw)
 {
+#define MAX_ENTRIES 50
     Exm_Sw_Find_Data data;
-    void            *frames[50];
+    void            *frames[MAX_ENTRIES];
     unsigned short   frames_nbr;
     unsigned int     i;
 
-    frames_nbr = CaptureStackBackTrace(0, 50, frames, NULL);
+
+#if 1
+    frames_nbr = CaptureStackBackTrace(0, MAX_ENTRIES, frames, NULL);
     if (frames_nbr == 0)
     {
         fprintf(stderr, "error %ld\n", GetLastError());
     }
+#else
+    {
+        void **frame = NULL;
 
+        i = 0;
+        __asm__ __volatile__ ("movl %%ebp, %0" : : "m" (frame) : "memory");
+        while(frame && i < MAX_ENTRIES)
+        {
+            frames[i++] = frame[1];
+            frame = (void **)frame[0];
+        }
+        frames_nbr = i;
+    }
+#endif
+
+    printf(" $ frame nbr : %d\n", frames_nbr);
     data.list = NULL;
     for (i = 0; i < frames_nbr; i++)
     {
