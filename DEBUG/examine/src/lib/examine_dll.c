@@ -140,11 +140,32 @@ BOOL WINAPI EXM_HeapFree(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem)
 {
     exm_heap_free_t hf;
     BOOL res;
-
-    printf("HeapFree !!! %p\n", hHeap);
+    Exm_List *stack;
+    Exm_List *iter;
+    int i;
 
     hf = (exm_heap_free_t)exm_hook_instance.overloads[1].func_proc_old;
     res = hf(hHeap, dwFlags, lpMem);
+
+    printf("HeapFree !!! %p\n", hHeap);
+
+    stack = exm_sw_frames_get(exm_hook_instance.stacktrace);
+    i = 0;
+    iter = stack;
+    while (iter)
+    {
+        Exm_Sw_Data *frame;
+
+        frame = (Exm_Sw_Data *)iter->data;
+        printf("[%d] %s (%s) %d\n",
+               i,
+               exm_sw_data_filename_get(frame),
+               exm_sw_data_function_get(frame),
+               exm_sw_data_line_get(frame));
+        i++;
+        iter = iter->next;
+    }
+    exm_list_free(stack, exm_sw_data_free);
 
     return res;
 }
@@ -190,9 +211,10 @@ void EXM_free(void *memblock)
     Exm_List *iter;
     int i;
 
+    stack = exm_sw_frames_get(exm_hook_instance.stacktrace);
+
     printf("free !!! %p\n", memblock);
 
-    stack = exm_sw_frames_get(exm_hook_instance.stacktrace);
     i = 0;
     iter = stack;
     while (iter)
@@ -310,7 +332,7 @@ exm_modules_get(void)
           return 0;
 
         /* we skip the filename of the process */
-        if (stricmp(name, exm_hook_instance.filename) == 0)
+        if (_stricmp(name, exm_hook_instance.filename) == 0)
             continue;
 
         /* we exit the loop if we find the injected DLL */
