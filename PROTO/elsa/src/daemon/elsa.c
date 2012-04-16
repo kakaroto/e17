@@ -297,14 +297,9 @@ main (int argc, char ** argv)
              fprintf(stderr, PACKAGE": Good bye\n");
              exit(0);
           }
-        sleep(3);
-#ifdef HAVE_PAM
-        elsa_pam_init(PACKAGE, dname, NULL);
-#endif
+        exit(1);
      }
-   else
-     fprintf(stderr, "\n");
-   fprintf(stderr, PACKAGE": Welcome\n");
+   fprintf(stderr, "\n"PACKAGE": Welcome\n");
    ecore_init();
    /* Initialise event handler */
 

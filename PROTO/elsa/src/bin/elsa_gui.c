@@ -15,6 +15,7 @@ struct Elsa_Gui_
    Eina_List *actions;
    Elsa_Xsession *selected_session;
    const char *theme;
+   Ecore_Event_Handler *handler;
 };
 
 struct Elsa_Screen_
@@ -52,6 +53,8 @@ static void _elsa_gui_users_genlist_set(Evas_Object *obj, Eina_List *users);
 static void _elsa_gui_users_gengrid_set(Evas_Object *obj, Eina_List *users);
 static void _elsa_gui_user_sel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_user_sel(Elsa_User *ou);
+
+static Eina_Bool _elsa_gui_cb_window_show_request(void *data, int type, void *event_info);
 
 static void _elsa_gui_action_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static Elsa_Gui *_gui;
@@ -116,15 +119,18 @@ _elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj, void *e
 }
 
 static void
-_elsa_gui_login_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
-{
-   elm_exit();
-}
-
-static void
 _elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    elm_exit();
+   printf("shutdown cb\n");
+}
+
+static Eina_Bool
+_elsa_gui_cb_window_show_request(void *data __UNUSED__, int type __UNUSED__, void *event_info __UNUSED__)
+{
+   fprintf(stderr, PACKAGE": wm is present\n");
+   elm_exit();
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static void
@@ -245,8 +251,6 @@ _elsa_gui_callback_add(Elsa_Screen *screen)
                                    _elsa_gui_login_cancel_cb, NULL);
    edje_object_signal_callback_add(edj, "elsa.auth.request", "",
                                    _elsa_gui_login_request_cb, screen);
-   edje_object_signal_callback_add(edj, "elsa.auth.end", "",
-                                   _elsa_gui_login_cb, screen);
    elm_entry_single_line_set(host, EINA_TRUE);
    elm_entry_single_line_set(pwd, EINA_TRUE);
 }
@@ -382,7 +386,7 @@ elsa_gui_init(const char *theme)
         if (!screen->edj)
           {
              fprintf(stderr, PACKAGE": client Tut Tut Tut no theme\n");
-//             return 2;
+             return 2;
           }
         evas_object_size_hint_weight_set(screen->edj,
                                          EVAS_HINT_EXPAND,
@@ -404,6 +408,24 @@ elsa_gui_init(const char *theme)
         ecore_evas_focus_set
            (ecore_evas_ecore_evas_get(evas_object_evas_get(screen->win)), 1);
      }
+
+     {
+        int num;
+        Ecore_X_Window *roots;
+        roots = ecore_x_window_root_list(&num);
+        for (i = 0; i < num; ++i)
+          {
+             ecore_x_window_manage(roots[i]);
+          }
+        free(roots);
+     }
+
+   _gui->handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CREATE,
+                                           _elsa_gui_cb_window_show_request,
+                                           NULL);
+//   _gui->handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_SHOW_REQUEST,
+//                                           _elsa_gui_cb_window_show_request,
+//                                           NULL);
    return 0;
 
 }
@@ -427,6 +449,7 @@ elsa_gui_shutdown()
         eina_stringshare_del(xsession->command);
         if (xsession->icon) eina_stringshare_del(xsession->icon);
      }
+   if (_gui->handler) ecore_event_handler_del(_gui->handler);
    if (_gui) free(_gui);
 }
 

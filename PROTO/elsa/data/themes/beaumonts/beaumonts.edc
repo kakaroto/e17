@@ -813,7 +813,6 @@ collections {
             action: STATE_SET "default" 0.0;
             transition: LINEAR 0.7;
             target: "clip";
-            after: "close";
          }
          program { 
             name: "show_cancel";
@@ -870,10 +869,6 @@ collections {
             signal: "mouse,down,*";
             source: "valid";
             action: SIGNAL_EMIT "elsa.auth.request" "";
-         }
-         program { 
-            name: "close";
-            action: SIGNAL_EMIT "elsa.auth.end" "";
          }
 
          program { 

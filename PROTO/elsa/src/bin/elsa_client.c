@@ -66,7 +66,7 @@ main(int argc, char **argv)
      }
    eina_init();
    ecore_init();
-   ecore_x_init(display);
+   ecore_x_init(NULL);
    elm_init(argc, argv);
    elsa_client_main(theme);
    elm_shutdown();
