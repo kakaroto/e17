@@ -1,0 +1,9 @@
+Expedite 1.2.0
+
+Changes since Expedite 1.1.0:
+-----------------------------
+
+Removals:
+
+   * Evas SDL 16bpp engine suport
+   * Software_SDL engine (nos just use buffer engine)
