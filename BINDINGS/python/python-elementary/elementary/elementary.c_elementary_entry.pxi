@@ -39,6 +39,16 @@ class EntryAnchorInfo:
         self.w = 0
         self.h = 0
 
+class EntryAnchorHoverInfo:
+    def __init__(self):
+        self.anchor_info = None
+        self.hover = None
+        self.hover_parent = (0, 0, 0, 0)
+        self.hover_left = False
+        self.hover_right = False
+        self.hover_top = False
+        self.hover_bottom = False
+
 def _entryanchor_conv(long addr):
     cdef Elm_Entry_Anchor_Info *ei = <Elm_Entry_Anchor_Info *>addr
     eai = EntryAnchorInfo()
@@ -49,6 +59,18 @@ def _entryanchor_conv(long addr):
     eai.w = ei.w
     eai.h = ei.h
     return eai
+    
+def _entryanchorhover_conv(long addr):
+    cdef Elm_Entry_Anchor_Hover_Info *ehi = <Elm_Entry_Anchor_Hover_Info *>addr
+    eahi = EntryAnchorHoverInfo()
+    eahi.hover = Hover(None, <object>ehi.hover)
+    eahi.hover_parent = (ehi.hover_parent.x, ehi.hover_parent.y,
+                       ehi.hover_parent.w, ehi.hover_parent.h)
+    eahi.hover_left = ehi.hover_left
+    eahi.hover_right = ehi.hover_right
+    eahi.hover_top = ehi.hover_top
+    eahi.hover_bottom = ehi.hover_bottom
+    return eahi
 
 cdef class Entry(Object):
     def __init__(self, c_evas.Object parent):
@@ -111,11 +133,19 @@ cdef class Entry(Object):
 
     def callback_anchor_clicked_add(self, func, *args, **kwargs):
         self._callback_add_full("anchor,clicked", _entryanchor_conv,
-                                       func, *args, **kwargs)
+                                func, *args, **kwargs)
 
     def callback_anchor_clicked_del(self, func):
         self._callback_del_full("anchor,clicked", _entryanchor_conv,
-                                       func)
+                                func)
+
+    def callback_anchor_hover_opened_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,hover,opened", _entryanchorhover_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_hover_opened_del(self, func):
+        self._callback_del_full("anchor,hover,opened", _entryanchorhover_conv,
+                                func)
 
     def callback_activated_add(self, func, *args, **kwargs):
         self._callback_add("activated", func, *args, **kwargs)
@@ -287,6 +317,37 @@ cdef class Entry(Object):
 
     def input_panel_enabled_get(self):
         return bool(elm_entry_input_panel_enabled_get(self.obj))
+
+    def anchor_hover_parent_set(self, c_evas.Object anchor_hover_parent):
+        elm_entry_anchor_hover_parent_set(self.obj, anchor_hover_parent.obj)
+
+    def anchor_hover_parent_get(self):
+        cdef c_evas.Evas_Object *anchor_hover_parent
+        anchor_hover_parent = elm_entry_anchor_hover_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> anchor_hover_parent)
+
+    property anchor_hover_parent:
+        def __get__(self):
+            return self.anchor_hover_parent_get()
+
+        def __set__(self, value):
+            self.anchor_hover_parent_set(value)
+
+    def anchor_hover_style_set(self, style):
+        elm_entry_anchor_hover_style_set(self.obj, style)
+
+    def anchor_hover_style_get(self):
+        return elm_entry_anchor_hover_style_get(self.obj)
+
+    property anchor_hover_style:
+        def __get__(self):
+            return self.anchor_hover_style_get()
+
+        def __set__(self, value):
+            self.anchor_hover_style_set(value)
+
+    def anchor_hover_end(self):
+        elm_entry_anchor_hover_end(self.obj)
 
     markup_to_utf8 = staticmethod(Entry_markup_to_utf8)
 

@@ -195,6 +195,14 @@ cdef extern from "Elementary.h":
         evas.c_evas.Evas_Coord w
         evas.c_evas.Evas_Coord h
 
+    ctypedef struct Elm_Entry_Anchor_Hover_Info:
+        evas.c_evas.Evas_Object *hover
+        evas.c_evas.Eina_Rectangle hover_parent
+        evas.c_evas.Eina_Bool hover_left
+        evas.c_evas.Eina_Bool hover_right
+        evas.c_evas.Eina_Bool hover_top
+        evas.c_evas.Eina_Bool hover_bottom
+
     ctypedef char *(*GenlistItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
     ctypedef evas.c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
     ctypedef evas.c_evas.Eina_Bool (*GenlistItemStateGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
@@ -583,6 +591,11 @@ cdef extern from "Elementary.h":
     void elm_entry_context_menu_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
     void elm_entry_input_panel_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
     evas.c_evas.Eina_Bool elm_entry_input_panel_enabled_get(evas.c_evas.Evas_Object *obj)
+    void elm_entry_anchor_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *anchor_hover_parent)
+    evas.c_evas.Evas_Object *elm_entry_anchor_hover_parent_get(evas.c_evas.Evas_Object *obj)
+    void elm_entry_anchor_hover_style_set(evas.c_evas.Evas_Object *obj, char *anchor_hover_style)
+    char *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
+    void elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
 
     # Scrolled Entry Object
     evas.c_evas.Evas_Object *elm_scrolled_entry_add(evas.c_evas.Evas_Object *parent)
