@@ -174,6 +174,7 @@ elsa_pam_authenticate()
          return 1;
       case PAM_MAXTRIES:
          fprintf(stderr, PACKAGE": PAM max tries error !\n");
+         elsa_server_client_wait();
          return 1;
       case PAM_CRED_INSUFFICIENT:
          fprintf(stderr, PACKAGE": PAM %s don't have sufficient credential to authenticate !\n", PACKAGE);

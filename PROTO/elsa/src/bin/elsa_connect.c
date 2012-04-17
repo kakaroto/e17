@@ -48,6 +48,8 @@ _elsa_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
              else
                elsa_gui_auth_error();
           }
+        else if (eev->type == ELSA_EVENT_MAXTRIES)
+          elsa_gui_auth_wait();
         else if (eev->type == ELSA_EVENT_XSESSIONS)
           elsa_gui_xsession_set(eev->event.xsessions.xsessions);
         else if (eev->type == ELSA_EVENT_USERS)

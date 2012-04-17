@@ -21,7 +21,6 @@ _my_hack2(void *data)
    eev.event.actions.actions = elsa_action_get();
    enc = elsa_event_encode(&eev, &size);
    ecore_con_client_send(data, enc, size);
-//   ecore_con_client_flush(ev->client);
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -40,7 +39,6 @@ _my_hack(void *data)
         ecore_con_client_send(data, enc, size);
      }
    ecore_timer_add(0.5, _my_hack2, data);
-//   ecore_con_client_flush(ev->client);
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -155,5 +153,20 @@ elsa_server_shutdown()
    EINA_LIST_FREE(_handlers, h)
      ecore_event_handler_del(h);
    ecore_con_shutdown();
+}
+
+void
+elsa_server_client_wait()
+{
+   const Eina_List *l;
+   Elsa_Event eev;
+   Ecore_Con_Client *ecc;
+   void *enc;
+   int size;
+   eev.type = ELSA_EVENT_MAXTRIES;
+   eev.event.maxtries.maxtries = EINA_TRUE;
+   enc = elsa_event_encode(&eev, &size);
+   EINA_LIST_FOREACH(ecore_con_server_clients_get(_elsa_server), l, ecc)
+      ecore_con_client_send(ecc, enc, size);
 }
 

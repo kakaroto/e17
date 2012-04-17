@@ -9,7 +9,8 @@ typedef enum Elsa_Event_Type_
    ELSA_EVENT_XSESSIONS,
    ELSA_EVENT_USERS,
    ELSA_EVENT_ACTIONS,
-   ELSA_EVENT_ACTION
+   ELSA_EVENT_ACTION,
+   ELSA_EVENT_MAXTRIES
 } Elsa_Event_Type;
 
 typedef struct Elsa_Xsession_
@@ -24,12 +25,17 @@ typedef struct Elsa_Xsessions_Event_
    Eina_List *xsessions;
 } Elsa_Xsessions_Event;
 
-typedef struct Elsa_Auth_Event
+typedef struct Elsa_Auth_Event_
 {
    const char *login;
    const char *password;
    const char *session;
 } Elsa_Auth_Event;
+
+typedef struct Elsa_Maxtries_Event_
+{
+   Eina_Bool maxtries;
+} Elsa_Maxtries_Event;
 
 typedef struct Elsa_Status_Event_
 {
@@ -73,6 +79,7 @@ typedef struct Elsa_Event_
      {
         Elsa_Xsessions_Event xsessions;
         Elsa_Auth_Event auth;
+        Elsa_Maxtries_Event maxtries;
         Elsa_Status_Event status;
         Elsa_Users_Event users;
         Elsa_Actions_Event actions;

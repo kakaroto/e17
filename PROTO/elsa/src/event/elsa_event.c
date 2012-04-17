@@ -3,6 +3,7 @@
 #include "elsa_event.h"
 
 #define ELSA_EVENT_AUTH_NAME "ElsaEventAuth"
+#define ELSA_EVENT_MAXTRIES_NAME "ElsaEventMaxtries"
 #define ELSA_EVENT_XSESSIONS_NAME "ElsaEventSession"
 #define ELSA_EVENT_STATUS_NAME "ElsaEventStatus"
 #define ELSA_EVENT_USERS_NAME "ElsaEventUsers"
@@ -24,6 +25,8 @@ _elsa_event_type_set(const char *type, void *data, Eina_Bool unknow)
      return EINA_FALSE;
    if (!strcmp(type, ELSA_EVENT_AUTH_NAME))
      *ev = ELSA_EVENT_AUTH;
+   else if (!strcmp(type, ELSA_EVENT_MAXTRIES_NAME))
+     *ev = ELSA_EVENT_MAXTRIES;
    else if (!strcmp(type, ELSA_EVENT_STATUS_NAME))
      *ev = ELSA_EVENT_STATUS;
    else if (!strcmp(type, ELSA_EVENT_XSESSIONS_NAME))
@@ -49,6 +52,8 @@ _elsa_event_type_get(const void *data, Eina_Bool *unknow)
    const Elsa_Event_Type *ev = data;
    if (*ev == ELSA_EVENT_AUTH)
      return ELSA_EVENT_AUTH_NAME;
+   else if (*ev == ELSA_EVENT_MAXTRIES)
+     return ELSA_EVENT_MAXTRIES_NAME;
    else if (*ev == ELSA_EVENT_STATUS)
      return ELSA_EVENT_STATUS_NAME;
    else if (*ev == ELSA_EVENT_XSESSIONS)
@@ -104,6 +109,18 @@ _elsa_event_auth_dd()
 }
 
 static Eet_Data_Descriptor *
+_elsa_event_maxtries_dd()
+{
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Maxtries_Event);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Maxtries_Event, "maxtries",
+                                 maxtries, EET_T_UCHAR);
+   return edd;
+}
+
+static Eet_Data_Descriptor *
 _elsa_event_status_dd()
 {
    Eet_Data_Descriptor *edd;
@@ -114,7 +131,6 @@ _elsa_event_status_dd()
                                  login, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Status_Event, "granted",
                                  granted, EET_T_UCHAR);
-
    return edd;
 
 }
@@ -184,6 +200,7 @@ _elsa_event_new()
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_XSESSIONS_NAME, _elsa_event_xsessions_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_AUTH_NAME, _elsa_event_auth_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_MAXTRIES_NAME, _elsa_event_maxtries_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_STATUS_NAME, _elsa_event_status_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_USERS_NAME, _elsa_event_users_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_ACTIONS_NAME, _elsa_event_actions_dd());

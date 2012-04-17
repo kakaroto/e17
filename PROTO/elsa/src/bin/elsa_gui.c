@@ -53,6 +53,7 @@ static void _elsa_gui_users_genlist_set(Evas_Object *obj, Eina_List *users);
 static void _elsa_gui_users_gengrid_set(Evas_Object *obj, Eina_List *users);
 static void _elsa_gui_user_sel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_user_sel(Elsa_User *ou);
+static Eina_Bool _elsa_gui_auth_enable(void *data);
 
 static Eina_Bool _elsa_gui_cb_window_show_request(void *data, int type, void *event_info);
 
@@ -300,14 +301,6 @@ _elsa_gui_sessions_populate()
      _elsa_gui_session_update(_gui->xsessions->data);
 }
 
-void
-elsa_gui_xsession_set(Eina_List *xsessions)
-{
-   if (!xsessions) return;
-   _gui->xsessions = xsessions;
-   _elsa_gui_sessions_populate();
-}
-
 static void
 _elsa_gui_actions_populate()
 {
@@ -331,6 +324,31 @@ _elsa_gui_actions_populate()
      }
 }
 
+static Eina_Bool
+_elsa_gui_auth_enable(void *data)
+{
+   Evas_Object *o;
+   Eina_List *l;
+   Elsa_Screen *screen;
+
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        o = ELSA_GUI_GET(screen->edj, "hostname");
+        elm_object_disabled_set(o, EINA_FALSE);
+        o = ELSA_GUI_GET(screen->edj, "password");
+        elm_object_disabled_set(o, EINA_FALSE);
+     }
+   return ECORE_CALLBACK_CANCEL;
+}
+
+
+void
+elsa_gui_xsession_set(Eina_List *xsessions)
+{
+   if (!xsessions) return;
+   _gui->xsessions = xsessions;
+   _elsa_gui_sessions_populate();
+}
 
 void
 elsa_gui_actions_set(Eina_List *actions)
@@ -486,6 +504,28 @@ elsa_gui_auth_error()
                                 "elsa.auth.error", "");
      }
 }
+
+void
+elsa_gui_auth_wait()
+{
+   Evas_Object *o;
+   Eina_List *l;
+   Elsa_Screen *screen;
+
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        o = ELSA_GUI_GET(screen->edj, "hostname");
+        elm_entry_entry_set(o, "");
+        elm_object_disabled_set(o, EINA_TRUE);
+        o = ELSA_GUI_GET(screen->edj, "password");
+        elm_entry_entry_set(o, "");
+        elm_object_disabled_set(o, EINA_TRUE);
+     }
+   ecore_timer_add(5.0, _elsa_gui_auth_enable, NULL);
+}
+
+
+
 
 void
 elsa_gui_auth_valid()
