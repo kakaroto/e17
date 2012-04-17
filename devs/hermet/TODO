@@ -5,11 +5,8 @@ map - afterimage problem
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
 line - width_set API? 
-line - does not shown on glbackend. 
-image  - check the image smooth effect in gl backend
 text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
-rectangle - incorrect clipping on gl backend.
 
 <Elementary>
 transit - use clip for wipe effect
@@ -20,4 +17,8 @@ naviframe - visible problem (normal style naviframe -> naviframe in naviframe ->
 menu - check the elementary_test. Remove the ERR evas_object_smart_need_recalculate_set()
 hoversel - add horizontal mode style. 
 gengrid - segfault with elm_gengrid_item_sorted_insert func (#984)
-widget  - Raw evas objects are not proper as the child member of the widget cause of the color. 
+widget  - Raw evas objects are not proper as the child member of the widget cause of the color.
+notify - let check the smart member relationship 
+popup - let check the smart member relationship
+win - review the sub-obj fix (glima) - http://git.profusion.mobi/cgit.cgi/glima/elementary/commit/?id=0211957db417d5ddb2a66530fa6cc2bc60a8360e
+index - check the FIXEMEs
