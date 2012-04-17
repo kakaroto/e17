@@ -136,6 +136,12 @@ cdef extern from "Elementary.h":
         ELM_GENLIST_ITEM_GROUP
         ELM_GENLIST_ITEM_MAX
 
+    ctypedef enum Elm_Genlist_Item_Field_Type:
+        ELM_GENLIST_ITEM_FIELD_ALL
+        ELM_GENLIST_ITEM_FIELD_TEXT
+        ELM_GENLIST_ITEM_FIELD_CONTENT
+        ELM_GENLIST_ITEM_FIELD_STATE
+
     ctypedef enum Elm_Genlist_Item_Scrollto_Type:
         ELM_GENLIST_ITEM_SCROLLTO_NONE      # no scrollto 
         ELM_GENLIST_ITEM_SCROLLTO_IN        # to the nearest viewport 
@@ -738,6 +744,7 @@ cdef extern from "Elementary.h":
     void elm_genlist_item_show(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
     void elm_genlist_item_bring_in(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
     void elm_genlist_item_update(Elm_Object_Item *item)
+    void elm_genlist_item_fields_update(Elm_Object_Item *item, char *parts, Elm_Genlist_Item_Field_Type itf)
     void         elm_genlist_item_tooltip_text_set(Elm_Object_Item *item, char *text)
     void         elm_genlist_item_tooltip_content_cb_set(Elm_Object_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
     void         elm_genlist_item_tooltip_unset(Elm_Object_Item *item)

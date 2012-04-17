@@ -377,6 +377,9 @@ cdef class GenlistItem(WidgetItem):
     def update(self):
         elm_genlist_item_update(self.obj)
 
+    def fields_update(self, parts, itf):
+        elm_genlist_item_fields_update(self.obj, parts, itf)
+
     def subitems_clear(self):
         elm_genlist_item_subitems_clear(self.obj)
 
