@@ -54,6 +54,18 @@ cdef class Slider(Object):
     def callback_changed_del(self, func):
         self._callback_del("changed", func)
 
+    def callback_slider_drag_start_add(self, func, *args, **kwargs):
+        self._callback_add("slider,drag,start", func, *args, **kwargs)
+
+    def callback_slider_drag_start_del(self, func):
+        self._callback_del("slider,drag,start", func)
+
+    def callback_slider_drag_stop_add(self, func, *args, **kwargs):
+        self._callback_add("slider,drag,stop", func, *args, **kwargs)
+
+    def callback_slider_drag_stop_del(self, func):
+        self._callback_del("slider,drag,stop", func)
+
     def callback_delay_changed_add(self, func, *args, **kwargs):
         self._callback_add("delay,changed", func, *args, **kwargs)
 
