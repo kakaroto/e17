@@ -174,7 +174,7 @@ exm_sw_frames_get(Exm_Sw *sw)
             break;
         }
 
-        if (sf.AddrPC.Offset != 0)
+        if ((sf.AddrPC.Offset != 0) && (sf.AddrReturn.Offset != 0))
         {
             Exm_Sw_Data *sw_data;
 
