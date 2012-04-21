@@ -23,6 +23,7 @@ struct Elsa_Screen_
    Evas_Object *win;
    Evas_Object *bg;
    Evas_Object *edj;
+   Eina_Bool managed:1;
 };
 
 typedef char *(*ElsaItemLabelGetFunc) (void *data, Evas_Object *obj, const char *part);
@@ -55,7 +56,7 @@ static void _elsa_gui_user_sel_cb(void *data, Evas_Object *obj, void *event_info
 static void _elsa_gui_user_sel(Elsa_User *ou);
 static Eina_Bool _elsa_gui_auth_enable(void *data);
 
-static Eina_Bool _elsa_gui_cb_window_show_request(void *data, int type, void *event_info);
+static Eina_Bool _elsa_gui_cb_window_property(void *data, int type, void *event_info);
 
 static void _elsa_gui_action_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static Elsa_Gui *_gui;
@@ -127,9 +128,18 @@ _elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 }
 
 static Eina_Bool
-_elsa_gui_cb_window_show_request(void *data __UNUSED__, int type __UNUSED__, void *event_info __UNUSED__)
+_elsa_gui_cb_window_property(void *data, int type __UNUSED__, void *event_info)
 {
-   fprintf(stderr, PACKAGE": wm is present\n");
+   Elsa_Screen *screen;
+   Ecore_X_Event_Window_Property *ev;
+   Eina_List *l;
+   ev = event_info;
+   screen = data;
+   if (ev->atom == ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK)
+     screen->managed = EINA_TRUE;
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+      if (!screen->managed)
+        return ECORE_CALLBACK_PASS_ON;
    elm_exit();
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -325,7 +335,7 @@ _elsa_gui_actions_populate()
 }
 
 static Eina_Bool
-_elsa_gui_auth_enable(void *data)
+_elsa_gui_auth_enable(void *data __UNUSED__)
 {
    Evas_Object *o;
    Eina_List *l;
@@ -417,6 +427,9 @@ elsa_gui_init(const char *theme)
         evas_object_resize(screen->win, w, h);
         ecore_x_window_move(xw, x, y);
         evas_object_show(screen->win);
+        _gui->handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY,
+                                                _elsa_gui_cb_window_property,
+                                                screen);
      }
    if (_gui->screens)
      {
@@ -426,28 +439,8 @@ elsa_gui_init(const char *theme)
         ecore_evas_focus_set
            (ecore_evas_ecore_evas_get(evas_object_evas_get(screen->win)), 1);
      }
-
-     {
-        int num;
-        Ecore_X_Window *roots;
-        roots = ecore_x_window_root_list(&num);
-        for (i = 0; i < num; ++i)
-          {
-             ecore_x_window_manage(roots[i]);
-          }
-        free(roots);
-     }
-
-   _gui->handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CREATE,
-                                           _elsa_gui_cb_window_show_request,
-                                           NULL);
-//   _gui->handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_SHOW_REQUEST,
-//                                           _elsa_gui_cb_window_show_request,
-//                                           NULL);
    return 0;
-
 }
-
 
 void
 elsa_gui_shutdown()
