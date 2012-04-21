@@ -13,9 +13,9 @@ struct Elsa_Gui_
    Eina_List *xsessions;
    Eina_List *users;
    Eina_List *actions;
+   Eina_List *handlers;
    Elsa_Xsession *selected_session;
    const char *theme;
-   Ecore_Event_Handler *handler;
 };
 
 struct Elsa_Screen_
@@ -427,9 +427,12 @@ elsa_gui_init(const char *theme)
         evas_object_resize(screen->win, w, h);
         ecore_x_window_move(xw, x, y);
         evas_object_show(screen->win);
-        _gui->handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY,
-                                                _elsa_gui_cb_window_property,
-                                                screen);
+        _gui->handlers =
+           eina_list_append(_gui->handlers,
+                            ecore_event_handler_add(
+                               ECORE_X_EVENT_WINDOW_PROPERTY,
+                               _elsa_gui_cb_window_property,
+                               screen));
      }
    if (_gui->screens)
      {
@@ -447,6 +450,7 @@ elsa_gui_shutdown()
 {
    Elsa_Xsession *xsession;
    Elsa_Screen *screen;
+   Ecore_Event_Handler *h;
    fprintf(stderr, PACKAGE": Gui shutdown\n");
    EINA_LIST_FREE(_gui->screens, screen)
      {
@@ -460,7 +464,8 @@ elsa_gui_shutdown()
         eina_stringshare_del(xsession->command);
         if (xsession->icon) eina_stringshare_del(xsession->icon);
      }
-   if (_gui->handler) ecore_event_handler_del(_gui->handler);
+   EINA_LIST_FREE(_gui->handlers, h)
+      ecore_event_handler_del(h);
    if (_gui) free(_gui);
 }
 
