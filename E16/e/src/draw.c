@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2007-2011 Kim Woelders
+ * Copyright (C) 2007-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -487,6 +487,16 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	if (firstlast == 2)
 	   CoordsHide();
      }
+}
+
+int
+DrawEwinShapeNeedsGrab(int mode)
+{
+   if (mode == MR_OPAQUE)
+      return 0;
+   if ((mode <= MR_BOX) || (mode == MR_TECH_OPAQUE))
+      return !Conf.movres.avoid_server_grab;
+   return 1;
 }
 
 static int

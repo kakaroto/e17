@@ -51,16 +51,6 @@ static struct {
 
 static void         _MoveResizeInit(void);
 
-static int
-_NeedServerGrab(int mode)
-{
-   if (mode == MR_OPAQUE)
-      return 0;
-   if ((mode <= MR_BOX) || (mode == MR_TECH_OPAQUE))
-      return !Conf.movres.avoid_server_grab;
-   return 1;
-}
-
 void
 EwinShapeSet(EWin * ewin)
 {
@@ -121,7 +111,7 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
    if (num > 1 && Conf.movres.mode_move == MR_TRANSLUCENT)
       Mode_mr.mode = MR_OPAQUE;
 #endif
-   Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
+   Mode_mr.grab_server = DrawEwinShapeNeedsGrab(Mode_mr.mode);
 
    for (i = 0; i < num; i++)
      {
@@ -320,7 +310,7 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
       MoveResizeModeValidateResize(Conf.movres.mode_resize);
    Mode_mr.mode = Conf.movres.mode_resize;
    Mode_mr.using_kbd = kbd;
-   Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
+   Mode_mr.grab_server = DrawEwinShapeNeedsGrab(Mode_mr.mode);
    if (Mode_mr.grab_server)
      {
 	EGrabServer();
@@ -959,71 +949,4 @@ _MoveResizeInit(void)
    Mode_mr.events = ECreateEventWindow(VROOT, 0, 0, 1, 1);
    EMapWindow(Mode_mr.events);
    EventCallbackRegister(Mode_mr.events, _MoveResizeEventHandler, NULL);
-}
-
-void
-SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed, int mode)
-{
-   SlideEwinsTo(&ewin, &fx, &fy, &tx, &ty, 1, speed, mode);
-}
-
-void
-SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
-	     int speed, int mode)
-{
-   int                 k, x, y, w, h, i;
-   char                firstlast;
-
-   if (num_wins <= 0)
-      return;
-
-   firstlast = 0;
-   FocusEnable(0);
-   SoundPlay(SOUND_WINDOW_SLIDE);
-
-   Mode_mr.grab_server = _NeedServerGrab(mode);
-   if (Mode_mr.grab_server)
-      EGrabServer();
-
-   ETimedLoopInit(0, 1024, speed);
-   for (k = 0; k <= 1024;)
-     {
-	for (i = 0; i < num_wins; i++)
-	  {
-	     if (!ewin[i])
-		continue;
-
-	     x = ((fx[i] * (1024 - k)) + (tx[i] * k)) >> 10;
-	     y = ((fy[i] * (1024 - k)) + (ty[i] * k)) >> 10;
-	     w = ewin[i]->client.w;
-	     h = ewin[i]->client.h;
-	     if (mode == 0)
-		EoMove(ewin[i], x, y);
-	     else
-		DrawEwinShape(ewin[i], mode, x, y, w, h, firstlast, i);
-	     firstlast = 1;
-	  }
-	/* We may loop faster here than originally intended */
-	k = ETimedLoopNext();
-     }
-
-   for (i = 0; i < num_wins; i++)
-     {
-	if (!ewin[i])
-	   continue;
-
-	ewin[i]->state.animated = 0;
-
-	if (mode > 0)
-	   DrawEwinShape(ewin[i], mode, tx[i], ty[i], ewin[i]->client.w,
-			 ewin[i]->client.h, 2, i);
-	EwinMove(ewin[i], tx[i], ty[i], MRF_NOCHECK_ONSCREEN);
-     }
-
-   FocusEnable(1);
-
-   if (Mode_mr.grab_server)
-      EUngrabServer();
-
-   SoundPlay(SOUND_WINDOW_SLIDE_END);
 }

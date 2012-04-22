@@ -326,6 +326,7 @@ void                DockIt(EWin * ewin);
 /* draw.c */
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, int firstlast, int seqno);
+int                 DrawEwinShapeNeedsGrab(int mode);
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
@@ -394,16 +395,10 @@ void                EwinsMoveStickyToDesk(Desk * d);
 #define MRF_NOCHECK_ONSCREEN	(1<<16)
 #define MRF_KEEP_MAXIMIZED	(1<<17)
 
-void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
-				int speed, int mode);
-void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
-				 int *ty, int num_wins, int speed, int mode);
 void                EwinMove(EWin * ewin, int x, int y, int flags);
 void                EwinResize(EWin * ewin, int w, int h, int flags);
 void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h,
 				   int flags);
-void                EwinSlideSizeTo(EWin * ewin, int tx, int ty,
-				    int tw, int th);
 void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
 					      int h, int grav);
 void                EwinMoveToDesktop(EWin * ewin, Desk * d);
@@ -468,6 +463,14 @@ void                MoveResizeEnd(EWin * ewin);
 /* size.c */
 void                MaxSizeHV(EWin * ewin, const char *resize_type,
 			      int hor, int ver);
+
+/* slide.c */
+void                EwinSlideSizeTo(EWin * ewin, int tx, int ty,
+				    int tw, int th);
+void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
+				int speed, int mode);
+void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
+				 int *ty, int num_wins, int speed, int mode);
 
 /* stacking.c */
 EWin               *const *EwinListStackGet(int *num);

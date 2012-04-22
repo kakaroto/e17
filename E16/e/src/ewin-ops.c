@@ -448,44 +448,6 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 }
 
 void
-EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th)
-{
-   int                 k, x, y, w, h;
-   int                 fx, fy, fw, fh, warp;
-   int                 speed = Conf.movres.maximize_speed;
-
-   fx = EoGetX(ewin);
-   fy = EoGetY(ewin);
-   fw = ewin->client.w;
-   fh = ewin->client.h;
-
-   warp = (ewin == GetEwinPointerInClient());
-
-   if (Conf.movres.maximize_animate)
-     {
-	ETimedLoopInit(0, 1024, speed);
-	for (k = 0; k <= 1024;)
-	  {
-	     x = ((fx * (1024 - k)) + (tx * k)) >> 10;
-	     y = ((fy * (1024 - k)) + (ty * k)) >> 10;
-	     w = ((fw * (1024 - k)) + (tw * k)) >> 10;
-	     h = ((fh * (1024 - k)) + (th * k)) >> 10;
-	     EwinMoveResize(ewin, x, y, w, h, MRF_KEEP_MAXIMIZED);
-
-	     k = ETimedLoopNext();
-	  }
-     }
-
-   EwinMoveResize(ewin, tx, ty, tw, th, MRF_KEEP_MAXIMIZED);
-
-   if (warp && ewin != GetEwinPointerInClient())
-     {
-	EwinWarpTo(ewin, 1);
-	FocusToEWin(ewin, FOCUS_SET);
-     }
-}
-
-void
 EwinMove(EWin * ewin, int x, int y, int flags)
 {
    doEwinMoveResize(ewin, NULL, x, y, 0, 0,
