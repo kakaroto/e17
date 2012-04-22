@@ -10,7 +10,7 @@ libhack_la_SOURCES  = e16_hack.c
 libhack_la_CPPFLAGS = -I$(top_srcdir)/src $(X_CFLAGS) $(CWARNFLAGS)
 
 libhack_la_LIBADD   = $(DLOPEN_LIBS)
-libhack_la_LDFLAGS  = -avoid-version
+libhack_la_LDFLAGS  = -module -avoid-version
 
 endif
 
@@ -22,9 +22,12 @@ libtrip_la_SOURCES  = e16_trip.c
 libtrip_la_CPPFLAGS = -I$(top_srcdir)/src $(X_CFLAGS) $(CWARNFLAGS)
 
 libtrip_la_LIBADD   = $(DLOPEN_LIBS)
-libtrip_la_LDFLAGS  = -avoid-version
+libtrip_la_LDFLAGS  = -module -avoid-version
 
 endif
 
 install-data-hook:
 	rm -f $(DESTDIR)$(libe16dir)/*.la
+
+uninstall-local:
+	rm -f $(DESTDIR)$(libe16dir)/*.so

@@ -212,3 +212,6 @@ endif
 
 install-data-hook:
 	rm -f $(DESTDIR)$(libe16dir)/*.la
+
+uninstall-local:
+	rm -f $(DESTDIR)$(libe16dir)/*.so
