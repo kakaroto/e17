@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1070,16 +1070,23 @@ const DialogDef     DlgRemember = {
 #endif /* ENABLE_DIALOGS */
 
 /* ... combine writes, only save after a timeout */
+static int
+_SnapshotsSaveReal(void *data __UNUSED__)
+{
+   SnapshotsSaveReal();
+   return 0;
+}
+
 void
 SnapshotsSave(void)
 {
    TIMER_DEL(ss_timer);
-   TIMER_ADD(ss_timer, 5000, SnapshotsSaveReal, NULL);
+   TIMER_ADD(ss_timer, 5000, _SnapshotsSaveReal, NULL);
 }
 
 /* save out all snapped info to disk */
-int
-SnapshotsSaveReal(void *data __UNUSED__)
+void
+SnapshotsSaveReal(void)
 {
    Snapshot           *sn;
    int                 j;
@@ -1163,7 +1170,6 @@ SnapshotsSaveReal(void *data __UNUSED__)
 
  done:
    TIMER_DEL(ss_timer);
-   return 0;
 }
 
 void

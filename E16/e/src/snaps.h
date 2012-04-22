@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2008 Kim Woelders
+ * Copyright (C) 2005-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -51,7 +51,7 @@
 
 #define SNAP_USE_ALL            (~1)
 
-int                 SnapshotsSaveReal(void *data);
+void                SnapshotsSaveReal(void);
 void                SnapshotsLoad(void);
 void                SnapshotsSave(void);
 void                SnapshotsSpawn(void);

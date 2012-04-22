@@ -462,7 +462,7 @@ SessionSave(int shutdown)
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionSave(%d)\n", shutdown);
 
-   SnapshotsSaveReal(NULL);
+   SnapshotsSaveReal();
 
 #if USE_SM
    if (shutdown && sm_conn)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2011 Kim Woelders
+ * Copyright (C) 2003-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -236,7 +236,7 @@ autosave(void)
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("autosave\n");
 
-   SnapshotsSaveReal(NULL);
+   SnapshotsSaveReal();
 
    /* Save the configuration parameters */
    ConfigurationSave();
