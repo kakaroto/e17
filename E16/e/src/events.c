@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -82,6 +82,7 @@ static EServerExtData ExtData[11];
 #define event_base_randr ExtData[XEXT_RANDR].event_base
 #define event_base_damage ExtData[XEXT_DAMAGE].event_base
 #define event_base_saver  ExtData[XEXT_SCRSAVER].event_base
+#define event_base_glx    ExtData[XEXT_GLX].event_base
 #define major_op_xi       ExtData[XEXT_XI].major_op
 
 static void
@@ -860,6 +861,10 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
 #if USE_XSCREENSAVER
 	     else if (ev->type == event_base_saver + ScreenSaverNotify)
 		ev->type = EX_EVENT_SAVER_NOTIFY;
+#endif
+#if USE_GLX
+	     else if (ev->type == event_base_glx + GLX_BufferSwapComplete)
+		ev->type = EX_EVENT_GLX_FLIP;
 #endif
 	  }
      }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2010 Kim Woelders
+ * Copyright (C) 2006-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -36,6 +36,7 @@
 #define EX_EVENT_SAVER_NOTIFY            72
 #define EX_EVENT_SCREEN_CHANGE_NOTIFY    73
 #define EX_EVENT_DAMAGE_NOTIFY           74
+#define EX_EVENT_GLX_FLIP                75
 
 void                EventsInit(void);
 void                EventsMain(void);
