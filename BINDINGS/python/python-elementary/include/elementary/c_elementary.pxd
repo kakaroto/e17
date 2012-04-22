@@ -107,7 +107,7 @@ cdef extern from "Elementary.h":
     ctypedef enum Elm_Object_Select_Mode:
         ELM_OBJECT_SELECT_MODE_DEFAULT        # default select mode
         ELM_OBJECT_SELECT_MODE_ALWAYS         # always select mode
-        ELM_OBJECT_SELECT_MODE_NONE           # no select mode 
+        ELM_OBJECT_SELECT_MODE_NONE           # no select mode
         ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY   # no select mode with no finger size rule
         ELM_OBJECT_SELECT_MODE_MAX
 
@@ -120,7 +120,7 @@ cdef extern from "Elementary.h":
     ctypedef enum Elm_Web_Zoom_Mode:
         ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
         ELM_WEB_ZOOM_MODE_AUTO_FIT 	#Zoom until content fits in web object
-        ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object. 
+        ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object.
 
     ctypedef enum Elm_Flip_Mode:
         ELM_FLIP_ROTATE_Y_CENTER_AXIS
@@ -143,8 +143,8 @@ cdef extern from "Elementary.h":
         ELM_GENLIST_ITEM_FIELD_STATE
 
     ctypedef enum Elm_Genlist_Item_Scrollto_Type:
-        ELM_GENLIST_ITEM_SCROLLTO_NONE      # no scrollto 
-        ELM_GENLIST_ITEM_SCROLLTO_IN        # to the nearest viewport 
+        ELM_GENLIST_ITEM_SCROLLTO_NONE      # no scrollto
+        ELM_GENLIST_ITEM_SCROLLTO_IN        # to the nearest viewport
         ELM_GENLIST_ITEM_SCROLLTO_TOP       # to the top of viewport
         ELM_GENLIST_ITEM_SCROLLTO_MIDDLE    # to the middle of viewport
 
@@ -866,6 +866,8 @@ cdef extern from "Elementary.h":
     void         elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)
     evas.c_evas.Eina_Bool elm_fileselector_is_save_get(evas.c_evas.Evas_Object *obj)
     char        *elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
+    void         elm_fileselector_folder_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool elm_fileselector_folder_only_get(evas.c_evas.Evas_Object *obj)
     void         elm_fileselector_path_set(evas.c_evas.Evas_Object *obj, char *path)
     char        *elm_fileselector_path_get(evas.c_evas.Evas_Object *obj)
     void         elm_fileselector_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool expand)

@@ -38,6 +38,16 @@ cdef class Fileselector(Object):
             return None
         return p
 
+    def folder_only_set(self, folder_only):
+        elm_fileselector_folder_only_set(self.obj, folder_only)
+
+    def folder_only_get(self):
+        cdef unsigned char r
+        r = elm_fileselector_folder_only_get(self.obj)
+        if r == 0:
+            return False
+        return True
+
     def path_set(self, path):
         elm_fileselector_path_set(self.obj, path)
 
