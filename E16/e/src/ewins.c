@@ -653,10 +653,8 @@ EwinKeepOnScreen(const EWin * ewin, int wn, int hn, int *px, int *py)
 void
 EwinUpdateShapeInfo(EWin * ewin)
 {
-   EGrabServer();
    ewin->state.shaped =
       EShapeSetShape(ewin->win_container, 0, 0, EwinGetClientWin(ewin));
-   EUngrabServer();
 
    if (EDebug(EX_EVENT_SHAPE_NOTIFY))
       Eprintf("EwinUpdateShapeInfo %#lx cont=%#lx shaped=%d\n",
