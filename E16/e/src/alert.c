@@ -33,6 +33,9 @@
 #include "session.h"
 #include "sounds.h"
 #include "util.h"
+#if USE_COMPOSITE
+#include <X11/extensions/Xcomposite.h>
+#endif
 
 #define ExTextExtents XmbTextExtents
 #define ExDrawString XmbDrawString
@@ -158,7 +161,7 @@ ShowAlert(const char *title,
 	  const char *fmt, va_list args)
 {
    char                text[4096], buf1[64], buf2[64], buf3[64];
-   Window              win, b1 = 0, b2 = 0, b3 = 0;
+   Window              win, b1 = 0, b2 = 0, b3 = 0, root;
    Display            *dd;
    int                 wid, hih, w, h, i, k, mask;
    XGCValues           gcv;
@@ -250,7 +253,22 @@ ShowAlert(const char *title,
    att.override_redirect = True;
    mask = CWBackPixel | CWBorderPixel | CWOverrideRedirect | CWSaveUnder |
       CWBackingStore;
-   win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
+
+#if USE_COMPOSITE
+   /*
+    * Intended workings:
+    * Composite extension not enabled (or COW not available?)
+    * - fall back to root
+    * Composite extension enabled
+    * - use COW whether or not compositing is enabled, window mode too
+    */
+   root = XCompositeGetOverlayWindow(dd, DefaultRootWindow(dd));
+   if (root == None)
+#endif
+     {
+	root = DefaultRootWindow(dd);
+     }
+   win = XCreateWindow(dd, root, -100, -100, 1, 1, 0,
 		       CopyFromParent, InputOutput, CopyFromParent, mask, &att);
 
    gc = XCreateGC(dd, win, 0, &gcv);
