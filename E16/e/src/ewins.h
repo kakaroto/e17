@@ -467,9 +467,9 @@ void                MaxSizeHV(EWin * ewin, const char *resize_type,
 /* slide.c */
 void                EwinSlideSizeTo(EWin * ewin, int tx, int ty,
 				    int tw, int th);
-void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
+void                EwinSlideTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed, int mode);
-void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
+void                EwinsSlideTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed, int mode);
 
 /* stacking.c */

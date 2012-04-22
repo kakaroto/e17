@@ -948,7 +948,7 @@ ArrangeEwins(const char *params)
 	   continue;
 
 	if (Conf.place.cleanupslide)
-	   SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin),
+	   EwinSlideTo(ewin, EoGetX(ewin), EoGetY(ewin),
 		       ret[i].x, ret[i].y, Conf.place.slidespeedcleanup,
 		       Conf.place.slidemode);
 	else

@@ -2000,7 +2000,7 @@ EwinSlideIn(void *data)
    if (!EwinFindByPtr(ewin))
       goto done;
 
-   SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
+   EwinSlideTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
 	       Conf.place.slidespeedmap, Conf.place.slidemode);
 
  done:

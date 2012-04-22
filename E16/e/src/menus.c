@@ -1504,7 +1504,7 @@ MenusHandleMotion(void)
 					}
 				   }
 			      }
-			    SlideEwinsTo(menus, fx, fy, tx, ty,
+			    EwinsSlideTo(menus, fx, fy, tx, ty,
 					 Mode_menus.current_depth,
 					 Conf.shadespeed, 0);
 			    if (((xdist != 0) || (ydist != 0))
@@ -1625,7 +1625,7 @@ _SubmenuCheckSlide(Menu * m, MenuItem * mi, EWin * ewin, EWin * ewin2,
      }
 
    MenusSetEvents(0);		/* Disable menu item events while sliding */
-   SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
+   EwinsSlideTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
    MenusSetEvents(1);
 
    if (Conf.menus.warp)

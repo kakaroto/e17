@@ -65,13 +65,13 @@ EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th)
 }
 
 void
-SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed, int mode)
+EwinSlideTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed, int mode)
 {
-   SlideEwinsTo(&ewin, &fx, &fy, &tx, &ty, 1, speed, mode);
+   EwinsSlideTo(&ewin, &fx, &fy, &tx, &ty, 1, speed, mode);
 }
 
 void
-SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
+EwinsSlideTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	     int speed, int mode)
 {
    int                 k, x, y, w, h, i;
