@@ -122,6 +122,8 @@ cdef extern from "Ecore.h":
 
     Ecore_Timer *ecore_timer_add(double t, Eina_Bool (*func) (void *data), void *data)
     void *ecore_timer_del(Ecore_Timer *timer)
+    void ecore_timer_freeze(Ecore_Timer *timer)
+    void ecore_timer_thaw(Ecore_Timer *timer)
     void ecore_timer_interval_set(Ecore_Timer *timer, double t)
 
     Ecore_Animator *ecore_animator_add(Eina_Bool (*func) (void *data), void *data)

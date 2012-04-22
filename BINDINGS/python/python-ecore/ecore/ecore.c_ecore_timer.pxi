@@ -107,6 +107,14 @@ cdef class Timer:
         "Alias for L{delete()}."
         self.delete()
 
+    def freeze(self):
+        "Pauses a running timer."
+        ecore_timer_freeze(self.obj)
+
+    def thaw(self):
+        "Resumes a frozen (paused) timer."
+        ecore_timer_thaw(self.obj)
+
     def interval_set(self, double t):
         "Change interval to call function."
         self._interval = t
