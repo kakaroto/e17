@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-03-11 18:16+0100\n"
+"POT-Creation-Date: 2012-04-22 19:25+0200\n"
 "PO-Revision-Date: 2010-01-16 04:42+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -151,31 +151,31 @@ msgstr ""
 "Dogodila se greška u izvršavanju programa:\n"
 "%s"
 
-#: src/alert.c:211
+#: src/alert.c:208
 msgid "Enlightenment Error"
 msgstr "Enlightenment Greška"
 
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment Dijalog Poruka"
 
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Ignore this"
 msgstr "Ignoriraj ovo"
 
-#: src/alert.c:555
+#: src/alert.c:560
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
-#: src/alert.c:555 src/setup.c:170
+#: src/alert.c:560 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Napusti Enlightenment"
 
-#: src/alert.c:565
+#: src/alert.c:570
 msgid "Attention !!!"
 msgstr "Pažnja !!!"
 
-#: src/alert.c:565 src/dialog.c:692 src/dialog.c:1889 src/events.c:93
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "U redu"
@@ -413,7 +413,7 @@ msgstr "Zatvori"
 msgid "Create New Iconbox"
 msgstr ""
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2122
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Veličina ikone: %2d"
@@ -494,7 +494,7 @@ msgstr "Prikaži nazive ikona"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2607
+#: src/container.c:1679 src/desktops.c:2606
 msgid "Off"
 msgstr "Isključen"
 
@@ -581,55 +581,55 @@ msgstr ""
 "Kliknite ovdje da spustite radnu površinu\n"
 "na dno."
 
-#: src/desktops.c:2365
+#: src/desktops.c:2364
 msgid "Number of virtual desktops:"
 msgstr "Broj virtualnih radnih površina:"
 
-#: src/desktops.c:2391
+#: src/desktops.c:2390
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2397
+#: src/desktops.c:2396
 msgid "Desktop Slide speed:"
 msgstr "Brzina Klizanja Radne Površine:"
 
-#: src/desktops.c:2411
+#: src/desktops.c:2410
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2419
+#: src/desktops.c:2418
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/desktops.c:2425
+#: src/desktops.c:2424
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/desktops.c:2429
+#: src/desktops.c:2428
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2435
+#: src/desktops.c:2434
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2441 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2447 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2455 src/menus-misc.c:586
+#: src/desktops.c:2454 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Radni stolovi"
 
-#: src/desktops.c:2456
+#: src/desktops.c:2455
 msgid "Multiple Desktop Settings"
 msgstr "Postavke Brojnih Radnih Površina"
 
-#: src/desktops.c:2459
+#: src/desktops.c:2458
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -637,39 +637,39 @@ msgstr ""
 "Enlightenment Višestruka Radna Površina\n"
 "Dijalog Postavki"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Virtual Desktop size:"
 msgstr "Veličina Virtualne Radne Površine:"
 
-#: src/desktops.c:2597
+#: src/desktops.c:2596
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2604
+#: src/desktops.c:2603
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2612
+#: src/desktops.c:2611
 msgid "On"
 msgstr "Uključen"
 
-#: src/desktops.c:2617
+#: src/desktops.c:2616
 msgid "Only when moving window"
 msgstr "Samo kod pomjeranja prozora"
 
-#: src/desktops.c:2623
+#: src/desktops.c:2622
 msgid "Resistance at edge of screen:"
 msgstr "Otpor pri rubu zaslona:"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2634
 msgid "Areas"
 msgstr "Prostori"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2635
 msgid "Virtual Desktop Settings"
 msgstr "Postavke Virtualnih Radnih Površina"
 
-#: src/desktops.c:2639
+#: src/desktops.c:2638
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -689,11 +689,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:93
+#: src/events.c:94
 msgid "X server setup error"
 msgstr "Greška postavke X poslužitelja"
 
-#: src/events.c:94
+#: src/events.c:95
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -854,11 +854,11 @@ msgstr ""
 "Enlightenment Specijalni Efekti\n"
 "Dijalog Postavki"
 
-#: src/groups.c:702
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Odabir Grupe Prozora"
 
-#: src/groups.c:705
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -866,33 +866,33 @@ msgstr ""
 "Enlightenment Grupa Prozora\n"
 "Dijalog Odabira"
 
-#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
 msgid "Window Group Error"
 msgstr "Greška Grupe Prozora"
 
-#: src/groups.c:730
+#: src/groups.c:729
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
 "through a window that actually belongs to at least one group."
 msgstr ""
 
-#: src/groups.c:738
+#: src/groups.c:737
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
 "You have to start other groups first."
 msgstr ""
 
-#: src/groups.c:747
+#: src/groups.c:746
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "Trenutno, nema grupa. Prvo morate pokrenuti grupu."
 
-#: src/groups.c:831
+#: src/groups.c:830
 msgid "Pick the group to configure:"
 msgstr "Odaberite grupu za konfiguriranje:"
 
-#: src/groups.c:862
+#: src/groups.c:861
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -900,39 +900,39 @@ msgstr ""
 "Slijedeće akcije su\n"
 "primijenjene na sve članove grupe:"
 
-#: src/groups.c:867 src/groups.c:963
+#: src/groups.c:866 src/groups.c:962
 msgid "Changing Border Style"
 msgstr "Promjena Rubnog Stila"
 
-#: src/groups.c:872 src/groups.c:968
+#: src/groups.c:871 src/groups.c:967
 msgid "Iconifying"
 msgstr "Ikoniziranje"
 
-#: src/groups.c:877 src/groups.c:973
+#: src/groups.c:876 src/groups.c:972
 msgid "Killing"
 msgstr ""
 
-#: src/groups.c:882 src/groups.c:978
+#: src/groups.c:881 src/groups.c:977
 msgid "Moving"
 msgstr "Premještanje"
 
-#: src/groups.c:887 src/groups.c:983
+#: src/groups.c:886 src/groups.c:982
 msgid "Raising/Lowering"
 msgstr "Dizanje/Spuštanje"
 
-#: src/groups.c:892 src/groups.c:988
+#: src/groups.c:891 src/groups.c:987
 msgid "Sticking"
 msgstr ""
 
-#: src/groups.c:897 src/groups.c:993
+#: src/groups.c:896 src/groups.c:992
 msgid "Shading"
 msgstr "Sjenčenje"
 
-#: src/groups.c:904
+#: src/groups.c:903
 msgid "Window Group Settings"
 msgstr "Postavke Grupe Prozora"
 
-#: src/groups.c:907
+#: src/groups.c:906
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -940,31 +940,31 @@ msgstr ""
 "Enlightenment Grupa Prozora\n"
 "Dijalog Postavki"
 
-#: src/groups.c:921
+#: src/groups.c:920
 msgid "This window currently does not belong to any groups."
 msgstr "Ovaj prozor ne pripada nijednoj grupi."
 
-#: src/groups.c:956
+#: src/groups.c:955
 msgid "Per-group settings:"
 msgstr "Grupne postavke:"
 
-#: src/groups.c:1002
+#: src/groups.c:1001
 msgid "Global settings:"
 msgstr "Globalne postavke:"
 
-#: src/groups.c:1006
+#: src/groups.c:1005
 msgid "Swap Window Locations"
 msgstr "Zamijeni Lokacije Prozora"
 
-#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1011 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Grupe"
 
-#: src/groups.c:1013
+#: src/groups.c:1012
 msgid "Default Group Control Settings"
 msgstr "Kontrolne Postavke Zadane Grupe"
 
-#: src/groups.c:1016
+#: src/groups.c:1015
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -972,15 +972,15 @@ msgstr ""
 "Enlightenment Standard\n"
 "Dijalog Postavki Kontrole Grupe"
 
-#: src/groups.c:1043
+#: src/groups.c:1042
 msgid "Pick the group the window will belong to:"
 msgstr "Odaberi grupu kojoj će prozor pripadati:"
 
-#: src/groups.c:1049
+#: src/groups.c:1048
 msgid "Select the group to remove the window from:"
 msgstr "Odaberi grupu iz koje ukloniti prozor:"
 
-#: src/groups.c:1054
+#: src/groups.c:1053
 msgid "Select the group to break:"
 msgstr "Odaberi grupu za razbiti:"
 
@@ -1098,14 +1098,14 @@ msgstr "Upotrijebi \"pomoć <naredba>\" za individualni opis\n"
 msgid "         <command>     : <description>\n"
 msgstr "         <naredba>     : <opis>\n"
 
-#: src/main.c:531
+#: src/main.c:530
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:630
+#: src/main.c:629
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1122,7 +1122,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:644
+#: src/main.c:643
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1177,27 +1177,27 @@ msgstr ""
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2145
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "Animirani prikaz izbornika"
 
-#: src/menus.c:2150
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop-up izbornike na zaslonu"
 
-#: src/menus.c:2155
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2172
+#: src/menus.c:2168
 msgid "Menus"
 msgstr "Izbornici"
 
-#: src/menus.c:2173
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr "Postavke Izbornika"
 
-#: src/menus.c:2176
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1899,7 +1899,7 @@ msgstr ""
 "Enlightenment Upamćen\n"
 "Dijalog Postavki Prozora"
 
-#: src/snaps.c:1160
+#: src/snaps.c:1167
 msgid "Error saving snaps file"
 msgstr "Greška kod spremanja snaps datoteke"
 

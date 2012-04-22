@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-03-11 18:16+0100\n"
+"POT-Creation-Date: 2012-04-22 19:25+0200\n"
 "PO-Revision-Date: 2011-10-11 18:12+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -153,31 +153,31 @@ msgstr ""
 "以下のプログラムの実行中にエラーが生じました。\n"
 "%s"
 
-#: src/alert.c:211
+#: src/alert.c:208
 msgid "Enlightenment Error"
 msgstr "Enlightenment エラー"
 
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment メッセージダイアログ"
 
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Ignore this"
 msgstr "無視する"
 
-#: src/alert.c:555
+#: src/alert.c:560
 msgid "Restart Enlightenment"
 msgstr "Enlightenment 再起動"
 
-#: src/alert.c:555 src/setup.c:170
+#: src/alert.c:560 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Enlightenment 終了"
 
-#: src/alert.c:565
+#: src/alert.c:570
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/alert.c:565 src/dialog.c:692 src/dialog.c:1889 src/events.c:93
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "了解"
@@ -431,7 +431,7 @@ msgstr "閉じる"
 msgid "Create New Iconbox"
 msgstr "新しいアイコンボックスを作る"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2122
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr "アイコンサイズ: %2d"
@@ -512,7 +512,7 @@ msgstr "アイコンの名前を表示する"
 msgid "Animation mode:"
 msgstr "アニメーションモード"
 
-#: src/container.c:1679 src/desktops.c:2607
+#: src/container.c:1679 src/desktops.c:2606
 msgid "Off"
 msgstr "無効"
 
@@ -611,58 +611,58 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。"
 
-#: src/desktops.c:2365
+#: src/desktops.c:2364
 msgid "Number of virtual desktops:"
 msgstr "仮想デスクトップの枚数:"
 
-#: src/desktops.c:2391
+#: src/desktops.c:2390
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2397
+#: src/desktops.c:2396
 msgid "Desktop Slide speed:"
 msgstr "デスクトップのスライド速度"
 
 #
-#: src/desktops.c:2411
+#: src/desktops.c:2410
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2419
+#: src/desktops.c:2418
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2425
+#: src/desktops.c:2424
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2428
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2435
+#: src/desktops.c:2434
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2441 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2447 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2455 src/menus-misc.c:586
+#: src/desktops.c:2454 src/menus-misc.c:586
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2456
+#: src/desktops.c:2455
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2459
+#: src/desktops.c:2458
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -670,39 +670,39 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Virtual Desktop size:"
 msgstr "仮想デスクトップの大きさ"
 
-#: src/desktops.c:2597
+#: src/desktops.c:2596
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2604
+#: src/desktops.c:2603
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2611
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2617
+#: src/desktops.c:2616
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2623
+#: src/desktops.c:2622
 msgid "Resistance at edge of screen:"
 msgstr "画面の端に達した時の移動抵抗値"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2634
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2635
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2639
+#: src/desktops.c:2638
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -725,11 +725,11 @@ msgstr ""
 "Composite, Damage, Fixes, Render の各拡張機能が\n"
 "ロードされていることを xdpyinfo を使って確認してください."
 
-#: src/events.c:93
+#: src/events.c:94
 msgid "X server setup error"
 msgstr "X サーバーの設定エラー"
 
-#: src/events.c:94
+#: src/events.c:95
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -904,11 +904,11 @@ msgstr ""
 "Enlightenment 特殊効果\n"
 "設定ダイアログ"
 
-#: src/groups.c:702
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "ウィンドウグループを選ぶ"
 
-#: src/groups.c:705
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -916,11 +916,11 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "選択ダイアログ"
 
-#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
 msgid "Window Group Error"
 msgstr "ウィンドウグループエラー"
 
-#: src/groups.c:730
+#: src/groups.c:729
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -930,7 +930,7 @@ msgstr ""
 "今できるのはグループを破棄するか、実際に少なくとも一つのグループに属し\n"
 "ているウィンドウを使って、グループからウィンドウを削除することだけです。"
 
-#: src/groups.c:738
+#: src/groups.c:737
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -940,15 +940,15 @@ msgstr ""
 "すでに既存のすべてのグループに属しています。\n"
 "まず他のグループを作成してください。"
 
-#: src/groups.c:747
+#: src/groups.c:746
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "現在、グループはありません。まずグループを作成してください。"
 
-#: src/groups.c:831
+#: src/groups.c:830
 msgid "Pick the group to configure:"
 msgstr "設定するグループを選択してください:"
 
-#: src/groups.c:862
+#: src/groups.c:861
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -956,39 +956,39 @@ msgstr ""
 "グループ内の全ウィンドウに\n"
 "反映される操作:"
 
-#: src/groups.c:867 src/groups.c:963
+#: src/groups.c:866 src/groups.c:962
 msgid "Changing Border Style"
 msgstr "ボーダースタイルの変更"
 
-#: src/groups.c:872 src/groups.c:968
+#: src/groups.c:871 src/groups.c:967
 msgid "Iconifying"
 msgstr "アイコン化"
 
-#: src/groups.c:877 src/groups.c:973
+#: src/groups.c:876 src/groups.c:972
 msgid "Killing"
 msgstr "強制終了"
 
-#: src/groups.c:882 src/groups.c:978
+#: src/groups.c:881 src/groups.c:977
 msgid "Moving"
 msgstr "移動"
 
-#: src/groups.c:887 src/groups.c:983
+#: src/groups.c:886 src/groups.c:982
 msgid "Raising/Lowering"
 msgstr "上に出す/下に移す"
 
-#: src/groups.c:892 src/groups.c:988
+#: src/groups.c:891 src/groups.c:987
 msgid "Sticking"
 msgstr "常時表示"
 
-#: src/groups.c:897 src/groups.c:993
+#: src/groups.c:896 src/groups.c:992
 msgid "Shading"
 msgstr "シェード"
 
-#: src/groups.c:904
+#: src/groups.c:903
 msgid "Window Group Settings"
 msgstr "ウィンドウグループの設定"
 
-#: src/groups.c:907
+#: src/groups.c:906
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -996,32 +996,32 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "設定ダイアログ"
 
-#: src/groups.c:921
+#: src/groups.c:920
 msgid "This window currently does not belong to any groups."
 msgstr "このウィンドウは現在どのグループにも属していません。"
 
-#: src/groups.c:956
+#: src/groups.c:955
 msgid "Per-group settings:"
 msgstr "グループごとの設定:"
 
-#: src/groups.c:1002
+#: src/groups.c:1001
 msgid "Global settings:"
 msgstr "全般の設定:"
 
-#: src/groups.c:1006
+#: src/groups.c:1005
 msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1011 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "グループ"
 
-#: src/groups.c:1013
+#: src/groups.c:1012
 msgid "Default Group Control Settings"
 msgstr "グループ管理のデフォルト設定"
 
-#: src/groups.c:1016
+#: src/groups.c:1015
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -1029,15 +1029,15 @@ msgstr ""
 "Enlightenment グループ管理の\n"
 "デフォルト設定ダイアログ"
 
-#: src/groups.c:1043
+#: src/groups.c:1042
 msgid "Pick the group the window will belong to:"
 msgstr "このウィンドウが参加するグループを選択してください:"
 
-#: src/groups.c:1049
+#: src/groups.c:1048
 msgid "Select the group to remove the window from:"
 msgstr "削除するウィンドウが属しているグループを選択してください。"
 
-#: src/groups.c:1054
+#: src/groups.c:1053
 msgid "Select the group to break:"
 msgstr "破棄するグループを選択してください。 "
 
@@ -1194,14 +1194,14 @@ msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
-#: src/main.c:531
+#: src/main.c:530
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr "%s は読み書きと実行の権限があるディレクトリにしてください.\n"
 
-#: src/main.c:630
+#: src/main.c:629
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1230,7 +1230,7 @@ msgstr ""
 "削除したか、あるいは Enlightenment のインストールに誤りがあったことが\n"
 "考えられます。\n"
 
-#: src/main.c:644
+#: src/main.c:643
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1298,30 +1298,30 @@ msgstr "このグループをアイコン化する"
 msgid "Group %i"
 msgstr "グループ %i"
 
-#: src/menus.c:2145
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "メニューをアニメーション表示する"
 
-#: src/menus.c:2150
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "メニューが画面からはみ出る場合は必ず収まるようにメニューを動かす"
 
-#: src/menus.c:2155
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr "マウスポインタはメニューの移動に追随する"
 
 #
-#: src/menus.c:2172
+#: src/menus.c:2168
 msgid "Menus"
 msgstr "メニュー"
 
 #
-#: src/menus.c:2173
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr "メニューの設定"
 
 #
-#: src/menus.c:2176
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -2083,7 +2083,7 @@ msgstr ""
 "Enlightenment ウィンドウの\n"
 "記憶内容設定ダイアログ"
 
-#: src/snaps.c:1160
+#: src/snaps.c:1167
 msgid "Error saving snaps file"
 msgstr "スナップファイルの保存時にエラーが起きました。"
 

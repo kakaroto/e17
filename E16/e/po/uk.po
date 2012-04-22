@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-03-11 18:16+0100\n"
+"POT-Creation-Date: 2012-04-22 19:25+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -152,31 +152,31 @@ msgstr ""
 "Виникла помилка під час виконання програми:\n"
 "%s"
 
-#: src/alert.c:211
+#: src/alert.c:208
 msgid "Enlightenment Error"
 msgstr "Помилка Enlightenment"
 
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Enlightenment Message Dialog"
 msgstr "Діалог сповіщення Enlightenment"
 
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Ignore this"
 msgstr "Ігнорувати"
 
-#: src/alert.c:555
+#: src/alert.c:560
 msgid "Restart Enlightenment"
 msgstr "Перезапустити Enlightenment"
 
-#: src/alert.c:555 src/setup.c:170
+#: src/alert.c:560 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Вийти з Enlightenment"
 
-#: src/alert.c:565
+#: src/alert.c:570
 msgid "Attention !!!"
 msgstr "Увага !!!"
 
-#: src/alert.c:565 src/dialog.c:692 src/dialog.c:1889 src/events.c:93
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "Гаразд"
@@ -430,7 +430,7 @@ msgstr "Закрити"
 msgid "Create New Iconbox"
 msgstr "Створити новий Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2122
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Розмір піктограми: %2d"
@@ -511,7 +511,7 @@ msgstr "Показувати назви піктограм"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2607
+#: src/container.c:1679 src/desktops.c:2606
 msgid "Off"
 msgstr "Вимкнено"
 
@@ -608,55 +608,55 @@ msgstr ""
 "Натисніть тут, щоб опустити цю\n"
 "стільницю вниз."
 
-#: src/desktops.c:2365
+#: src/desktops.c:2364
 msgid "Number of virtual desktops:"
 msgstr "Кількість віртуальних стільниць:"
 
-#: src/desktops.c:2391
+#: src/desktops.c:2390
 msgid "Slide desktops around when changing"
 msgstr "Ковзання під час зміни стільниць"
 
-#: src/desktops.c:2397
+#: src/desktops.c:2396
 msgid "Desktop Slide speed:"
 msgstr "Швидкість ковзання стільниці:"
 
-#: src/desktops.c:2411
+#: src/desktops.c:2410
 msgid "Wrap desktops around"
 msgstr "Переміщення стільниць по колу"
 
-#: src/desktops.c:2419
+#: src/desktops.c:2418
 msgid "Display desktop dragbar"
 msgstr "Показати панель перетягування"
 
-#: src/desktops.c:2425
+#: src/desktops.c:2424
 msgid "Drag bar position:"
 msgstr "Розташування панелі перетягування:"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2428
 msgid "Top"
 msgstr "Вверху"
 
-#: src/desktops.c:2435
+#: src/desktops.c:2434
 msgid "Bottom"
 msgstr "Внизу"
 
-#: src/desktops.c:2441 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Ліворуч"
 
-#: src/desktops.c:2447 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Праворуч"
 
-#: src/desktops.c:2455 src/menus-misc.c:586
+#: src/desktops.c:2454 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Столи"
 
-#: src/desktops.c:2456
+#: src/desktops.c:2455
 msgid "Multiple Desktop Settings"
 msgstr "Параметри складених стільниць"
 
-#: src/desktops.c:2459
+#: src/desktops.c:2458
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -664,39 +664,39 @@ msgstr ""
 "Діалог параметрів складених\n"
 "стільниць Enlightenment"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Virtual Desktop size:"
 msgstr "Розмір віртуальної стільниці:"
 
-#: src/desktops.c:2597
+#: src/desktops.c:2596
 msgid "Wrap virtual desktops around"
 msgstr "Переміщення віртуальних стільниць по колу"
 
-#: src/desktops.c:2604
+#: src/desktops.c:2603
 msgid "Edge Flip Mode:"
 msgstr "Режим перегортання з вказівником біля краю:"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2611
 msgid "On"
 msgstr "Увімкнено"
 
-#: src/desktops.c:2617
+#: src/desktops.c:2616
 msgid "Only when moving window"
 msgstr "Лише під час переміщення вікна"
 
-#: src/desktops.c:2623
+#: src/desktops.c:2622
 msgid "Resistance at edge of screen:"
 msgstr "Протидія біля краю екрана:"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2634
 msgid "Areas"
 msgstr "Області"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2635
 msgid "Virtual Desktop Settings"
 msgstr "Параметри віртуальних стільниць"
 
-#: src/desktops.c:2639
+#: src/desktops.c:2638
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -720,11 +720,11 @@ msgstr ""
 "завантаження розширень Composite, Damage,\n"
 "Fixes та Render."
 
-#: src/events.c:93
+#: src/events.c:94
 msgid "X server setup error"
 msgstr "Помилка установки X-сервера"
 
-#: src/events.c:94
+#: src/events.c:95
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -895,11 +895,11 @@ msgstr ""
 "Діалог налаштування\n"
 "спецефектів Enlightenment"
 
-#: src/groups.c:702
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Вибір групи вікон"
 
-#: src/groups.c:705
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -907,11 +907,11 @@ msgstr ""
 "Діалог вибору груп\n"
 "вікон Enlightenment"
 
-#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
 msgid "Window Group Error"
 msgstr "Помилка групи вікон"
 
-#: src/groups.c:730
+#: src/groups.c:729
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -921,7 +921,7 @@ msgstr ""
 "Ви можете розривати групи або вилучати вікна з груп\n"
 "лише через вікно, яке належить щонайменше до однієї групи."
 
-#: src/groups.c:738
+#: src/groups.c:737
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -931,15 +931,15 @@ msgstr ""
 "вже належить до всіх існуючих груп.\n"
 "Спочатку потрібно почати з інших груп."
 
-#: src/groups.c:747
+#: src/groups.c:746
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "На цей час, не існує жодної групи. Спочатку почніть групу."
 
-#: src/groups.c:831
+#: src/groups.c:830
 msgid "Pick the group to configure:"
 msgstr "Виберіть групу для налаштування:"
 
-#: src/groups.c:862
+#: src/groups.c:861
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -947,39 +947,39 @@ msgstr ""
 "Наступні дії застосовуються\n"
 "до всіх членів групи:"
 
-#: src/groups.c:867 src/groups.c:963
+#: src/groups.c:866 src/groups.c:962
 msgid "Changing Border Style"
 msgstr "Змінити стиль рамки вікна"
 
-#: src/groups.c:872 src/groups.c:968
+#: src/groups.c:871 src/groups.c:967
 msgid "Iconifying"
 msgstr "Згорнути"
 
-#: src/groups.c:877 src/groups.c:973
+#: src/groups.c:876 src/groups.c:972
 msgid "Killing"
 msgstr "Знищити"
 
-#: src/groups.c:882 src/groups.c:978
+#: src/groups.c:881 src/groups.c:977
 msgid "Moving"
 msgstr "Перемістити"
 
-#: src/groups.c:887 src/groups.c:983
+#: src/groups.c:886 src/groups.c:982
 msgid "Raising/Lowering"
 msgstr "Підняти/опустити"
 
-#: src/groups.c:892 src/groups.c:988
+#: src/groups.c:891 src/groups.c:987
 msgid "Sticking"
 msgstr "Прикріпити"
 
-#: src/groups.c:897 src/groups.c:993
+#: src/groups.c:896 src/groups.c:992
 msgid "Shading"
 msgstr "Затінити"
 
-#: src/groups.c:904
+#: src/groups.c:903
 msgid "Window Group Settings"
 msgstr "Налаштування груп вікон"
 
-#: src/groups.c:907
+#: src/groups.c:906
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -987,31 +987,31 @@ msgstr ""
 "Діалог налаштування груп\n"
 "вікон Enlightenment"
 
-#: src/groups.c:921
+#: src/groups.c:920
 msgid "This window currently does not belong to any groups."
 msgstr "Це вікно не належить до жодної групи, на цей час."
 
-#: src/groups.c:956
+#: src/groups.c:955
 msgid "Per-group settings:"
 msgstr "Налаштування груп вікон:"
 
-#: src/groups.c:1002
+#: src/groups.c:1001
 msgid "Global settings:"
 msgstr "Загальні налаштування:"
 
-#: src/groups.c:1006
+#: src/groups.c:1005
 msgid "Swap Window Locations"
 msgstr "Обміняти розташування вікна"
 
-#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1011 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Групи"
 
-#: src/groups.c:1013
+#: src/groups.c:1012
 msgid "Default Group Control Settings"
 msgstr "Типові налаштування керування групами"
 
-#: src/groups.c:1016
+#: src/groups.c:1015
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -1019,15 +1019,15 @@ msgstr ""
 "Діалог типового налаштування\n"
 "керування групами Enlightenment"
 
-#: src/groups.c:1043
+#: src/groups.c:1042
 msgid "Pick the group the window will belong to:"
 msgstr "Виберіть групу, до якої буде належати вікно:"
 
-#: src/groups.c:1049
+#: src/groups.c:1048
 msgid "Select the group to remove the window from:"
 msgstr "Виберіть групу, з якої буде вилучене вікно:"
 
-#: src/groups.c:1054
+#: src/groups.c:1053
 msgid "Select the group to break:"
 msgstr "Виберіть групу для розривання:"
 
@@ -1178,7 +1178,7 @@ msgstr "Команда \"help <command>\" надає опис окремої к�
 msgid "         <command>     : <description>\n"
 msgstr "         <command>     : <description>\n"
 
-#: src/main.c:531
+#: src/main.c:530
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1187,7 +1187,7 @@ msgstr ""
 "%s має бути каталогом, в якому вам дозволено \n"
 "читати, писати та виконувати програми.\n"
 
-#: src/main.c:630
+#: src/main.c:629
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1216,7 +1216,7 @@ msgstr ""
 "або хтось вручну вилучив цю програму, або можлива\n"
 "помилка під час установки Enlightenment.\n"
 
-#: src/main.c:644
+#: src/main.c:643
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1279,27 +1279,27 @@ msgstr "Згорнути цю групу"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2145
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "Анімоване відображення меню"
 
-#: src/menus.c:2150
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "Зринаючі меню завжди на екрані"
 
-#: src/menus.c:2155
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr "Рух вказівника після переміщення меню"
 
-#: src/menus.c:2172
+#: src/menus.c:2168
 msgid "Menus"
 msgstr "Меню"
 
-#: src/menus.c:2173
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr "Налаштування меню"
 
-#: src/menus.c:2176
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -2038,7 +2038,7 @@ msgstr ""
 "Діалог налаштування запам'ятовування\n"
 "вікон Enlightenment"
 
-#: src/snaps.c:1160
+#: src/snaps.c:1167
 msgid "Error saving snaps file"
 msgstr "Помилка збереження snaps файла"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-03-11 18:16+0100\n"
+"POT-Creation-Date: 2012-04-22 19:25+0200\n"
 "PO-Revision-Date: 2010-05-09 01:21+0000\n"
 "Last-Translator: Peter Wehrfritz <Unknown>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -167,36 +167,36 @@ msgstr ""
 "%s"
 
 # src/alert.c:178
-#: src/alert.c:211
+#: src/alert.c:208
 msgid "Enlightenment Error"
 msgstr "Enlightenment-Fehler"
 
 # src/main.c:89
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment-Meldungsfenster"
 
 # src/main.c:90 src/memory.c:196 src/memory.c:277 src/memory.c:297
 # src/memory.c:378
-#: src/alert.c:554
+#: src/alert.c:559
 msgid "Ignore this"
 msgstr "Dies ignorieren"
 
 # src/main.c:91 src/memory.c:197 src/memory.c:277 src/memory.c:298
 # src/memory.c:378 src/memory.c:396
-#: src/alert.c:555
+#: src/alert.c:560
 msgid "Restart Enlightenment"
 msgstr "Enlightenment neu starten"
 
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:555 src/setup.c:170
+#: src/alert.c:560 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
 # src/dialog.c:304
-#: src/alert.c:565
+#: src/alert.c:570
 msgid "Attention !!!"
 msgstr "Achtung!"
 
@@ -206,7 +206,7 @@ msgstr "Achtung!"
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/alert.c:565 src/dialog.c:692 src/dialog.c:1889 src/events.c:93
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
@@ -515,7 +515,7 @@ msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
 # src/settings.c:3643
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2122
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Icongröße: %2d"
@@ -614,7 +614,7 @@ msgstr "Iconnamen anzeigen"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2607
+#: src/container.c:1679 src/desktops.c:2606
 msgid "Off"
 msgstr "An"
 
@@ -720,69 +720,69 @@ msgstr ""
 "ganz nach unten zu heben."
 
 # src/settings.c:882
-#: src/desktops.c:2365
+#: src/desktops.c:2364
 msgid "Number of virtual desktops:"
 msgstr "Anzahl virtueller Desktops:"
 
 # src/settings.c:1750
-#: src/desktops.c:2391
+#: src/desktops.c:2390
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2397
+#: src/desktops.c:2396
 msgid "Desktop Slide speed:"
 msgstr "Desktop-Gleitgeschwindigkeit:"
 
 # src/settings.c:1120
-#: src/desktops.c:2411
+#: src/desktops.c:2410
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2419
+#: src/desktops.c:2418
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2425
+#: src/desktops.c:2424
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2429
+#: src/desktops.c:2428
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2435
+#: src/desktops.c:2434
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2441 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2447 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2455 src/menus-misc.c:586
+#: src/desktops.c:2454 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Desktops"
 
 # src/settings.c:856
-#: src/desktops.c:2456
+#: src/desktops.c:2455
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2459
+#: src/desktops.c:2458
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -791,43 +791,43 @@ msgstr ""
 "Einstellungsdialog"
 
 # src/settings.c:1066
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Virtual Desktop size:"
 msgstr "Virtuelle Desktopgröße:"
 
 # src/settings.c:1120
-#: src/desktops.c:2597
+#: src/desktops.c:2596
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
-#: src/desktops.c:2604
+#: src/desktops.c:2603
 msgid "Edge Flip Mode:"
 msgstr "Magische Kanten Modus"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2611
 msgid "On"
 msgstr "Aus"
 
-#: src/desktops.c:2617
+#: src/desktops.c:2616
 msgid "Only when moving window"
 msgstr "Nur beim Verschieben von Fenstern"
 
 # src/settings.c:1134
-#: src/desktops.c:2623
+#: src/desktops.c:2622
 msgid "Resistance at edge of screen:"
 msgstr "Widerstand der Bildschirmkante:"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2634
 msgid "Areas"
 msgstr "Bereiche"
 
 # src/settings.c:1040
-#: src/desktops.c:2636
+#: src/desktops.c:2635
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2639
+#: src/desktops.c:2638
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -857,12 +857,12 @@ msgstr ""
 "Render-Erweiterungen geladen sind."
 
 # src/setup.c:294 src/setup.c:340
-#: src/events.c:93
+#: src/events.c:94
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
 # src/setup.c:296
-#: src/events.c:94
+#: src/events.c:95
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1059,12 +1059,12 @@ msgstr ""
 "Einstellungsdialog"
 
 # src/groups.c:637
-#: src/groups.c:702
+#: src/groups.c:701
 msgid "Window Group Selection"
 msgstr "Fenstergruppen-Auswahl"
 
 # src/main.c:89
-#: src/groups.c:705
+#: src/groups.c:704
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -1073,12 +1073,12 @@ msgstr ""
 "Auswahldialog"
 
 # src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3872
-#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
+#: src/groups.c:727 src/groups.c:736 src/groups.c:744 src/groups.c:919
 msgid "Window Group Error"
 msgstr "Fenstergruppen-Fehler"
 
 # src/groups.c:605
-#: src/groups.c:730
+#: src/groups.c:729
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -1090,7 +1090,7 @@ msgstr ""
 "gehört."
 
 # src/groups.c:613
-#: src/groups.c:738
+#: src/groups.c:737
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -1102,17 +1102,17 @@ msgstr ""
 "Gruppen erzeugen."
 
 # src/groups.c:622
-#: src/groups.c:747
+#: src/groups.c:746
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "Momentan existieren keine Gruppen. Sie müssen zunächst eine erzeugen."
 
 # src/settings.c:3923
-#: src/groups.c:831
+#: src/groups.c:830
 msgid "Pick the group to configure:"
 msgstr "Zu konfigurierende Gruppe:"
 
 # src/settings.c:3959
-#: src/groups.c:862
+#: src/groups.c:861
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -1121,47 +1121,47 @@ msgstr ""
 "alle Gruppenmitglieder:"
 
 # src/settings.c:3968 src/settings.c:4120
-#: src/groups.c:867 src/groups.c:963
+#: src/groups.c:866 src/groups.c:962
 msgid "Changing Border Style"
 msgstr "Änderung des Rahmenstils"
 
 # src/settings.c:3978 src/settings.c:4128
-#: src/groups.c:872 src/groups.c:968
+#: src/groups.c:871 src/groups.c:967
 msgid "Iconifying"
 msgstr "Minimierung"
 
 # src/settings.c:3988 src/settings.c:4136
-#: src/groups.c:877 src/groups.c:973
+#: src/groups.c:876 src/groups.c:972
 msgid "Killing"
 msgstr "Zerstören"
 
 # src/settings.c:3998 src/settings.c:4144
-#: src/groups.c:882 src/groups.c:978
+#: src/groups.c:881 src/groups.c:977
 msgid "Moving"
 msgstr "Verschieben"
 
 # src/settings.c:4008 src/settings.c:4152
-#: src/groups.c:887 src/groups.c:983
+#: src/groups.c:886 src/groups.c:982
 msgid "Raising/Lowering"
 msgstr "Anheben/Absenken"
 
 # src/settings.c:4018 src/settings.c:4160
-#: src/groups.c:892 src/groups.c:988
+#: src/groups.c:891 src/groups.c:987
 msgid "Sticking"
 msgstr "Ankleben"
 
 # src/settings.c:4028 src/settings.c:4168
-#: src/groups.c:897 src/groups.c:993
+#: src/groups.c:896 src/groups.c:992
 msgid "Shading"
 msgstr "Aufrollen"
 
 # src/settings.c:3897
-#: src/groups.c:904
+#: src/groups.c:903
 msgid "Window Group Settings"
 msgstr "Einstellungen zur Fenstergruppe"
 
 # src/main.c:89
-#: src/groups.c:907
+#: src/groups.c:906
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -1170,36 +1170,36 @@ msgstr ""
 "Einstellungsdialog"
 
 # src/settings.c:3874
-#: src/groups.c:921
+#: src/groups.c:920
 msgid "This window currently does not belong to any groups."
 msgstr "Dieses Fenster gehört momentan zu keiner Gruppe."
 
 # src/settings.c:126
-#: src/groups.c:956
+#: src/groups.c:955
 msgid "Per-group settings:"
 msgstr "Gruppenspezifische Einstellungen:"
 
-#: src/groups.c:1002
+#: src/groups.c:1001
 msgid "Global settings:"
 msgstr "Globale Einstellungen:"
 
 # src/pager.c:1268
-#: src/groups.c:1006
+#: src/groups.c:1005
 msgid "Swap Window Locations"
 msgstr "Fensterpositionen vertauschen"
 
 # src/menus.c:2044
-#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1011 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Gruppen"
 
 # src/settings.c:4094
-#: src/groups.c:1013
+#: src/groups.c:1012
 msgid "Default Group Control Settings"
 msgstr "Voreinstellungen zur Gruppenkontrolle"
 
 # src/settings.c:4094
-#: src/groups.c:1016
+#: src/groups.c:1015
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -1208,17 +1208,17 @@ msgstr ""
 "Gruppeneinstellungs-Dialog"
 
 # src/actions.c:3474
-#: src/groups.c:1043
+#: src/groups.c:1042
 msgid "Pick the group the window will belong to:"
 msgstr "Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:"
 
 # src/actions.c:3858
-#: src/groups.c:1049
+#: src/groups.c:1048
 msgid "Select the group to remove the window from:"
 msgstr "Wählen Sie die Gruppe, aus der Sie das Fenster entfernen wollen:"
 
 # src/actions.c:3883
-#: src/groups.c:1054
+#: src/groups.c:1053
 msgid "Select the group to break:"
 msgstr "Wählen Sie die aufzulösende Gruppe:"
 
@@ -1387,7 +1387,7 @@ msgstr "Verwende \"help <befehl>\" für eine detailliertere Beschreibung\n"
 msgid "         <command>     : <description>\n"
 msgstr "         <Befehl>      : <Beschreibung>\n"
 
-#: src/main.c:531
+#: src/main.c:530
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1397,7 +1397,7 @@ msgstr ""
 "Lese-, Schreib-, und Ausführberechtigung haben.\n"
 
 # src/misc.c:61
-#: src/main.c:630
+#: src/main.c:629
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1427,7 +1427,7 @@ msgstr ""
 "beim Installieren von Enlightenment.\n"
 
 # src/misc.c:77
-#: src/main.c:644
+#: src/main.c:643
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1500,32 +1500,32 @@ msgid "Group %i"
 msgstr "Gruppe %i"
 
 # src/settings.c:1795
-#: src/menus.c:2145
+#: src/menus.c:2141
 msgid "Animated display of menus"
 msgstr "Animierte Menüdarstellung"
 
 # src/settings.c:1810
-#: src/menus.c:2150
+#: src/menus.c:2146
 msgid "Always pop up menus on screen"
 msgstr "Menüs immer auf dem Bildschirm erscheinen lassen"
 
 # src/settings.c:1826
-#: src/menus.c:2155
+#: src/menus.c:2151
 msgid "Warp pointer after moving menus"
 msgstr "Zeiger verschieben, wenn Menüs bewegt werden"
 
 # src/snaps.c:437
-#: src/menus.c:2172
+#: src/menus.c:2168
 msgid "Menus"
 msgstr "Menüs"
 
 # src/settings.c:393
-#: src/menus.c:2173
+#: src/menus.c:2169
 msgid "Menu Settings"
 msgstr "Menü-Einstellungen"
 
 # src/main.c:89
-#: src/menus.c:2176
+#: src/menus.c:2172
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -2368,7 +2368,7 @@ msgstr ""
 "für gespeicherte Fenster"
 
 # src/snaps.c:914
-#: src/snaps.c:1160
+#: src/snaps.c:1167
 msgid "Error saving snaps file"
 msgstr "Fehler beim Speichern der snaps-Datei"
 
