@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -412,7 +412,7 @@ DialogArrange(Dialog * d, int resize)
 
    if (resize)
      {
-	EwinResize(d->ewin, d->w, d->h);
+	EwinResize(d->ewin, d->w, d->h, 0);
 	d->resize = 1;
 	DialogRedraw(d);
 	DialogUpdate(d);
@@ -448,11 +448,11 @@ DialogShowArranged(Dialog * d, int center)
 
    if (ewin->state.placed)
      {
-	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), d->w, d->h);
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), d->w, d->h, 0);
      }
    else
      {
-	EwinResize(ewin, d->w, d->h);
+	EwinResize(ewin, d->w, d->h, 0);
 	if (center || FindADialog() == 1)
 	   ArrangeEwinCentered(ewin);
 	else

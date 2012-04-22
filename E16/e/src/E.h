@@ -380,7 +380,6 @@ typedef struct {
       unsigned int        mod_combos[8];
    } masks;
    struct {
-      char                check;	/* Avoid losing windows offscreen */
       char                swap;
    } move;
    struct {

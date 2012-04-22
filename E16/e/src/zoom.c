@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -381,7 +381,7 @@ _ZoomEwinRestore(EWin * ewin)
    EwinBorderSetTo(ewin, ewin->normal_border);
    ewin->state.zoomed = 0;
    EwinMoveResize(ewin, ewin->save_fs.x, ewin->save_fs.y,
-		  ewin->client.w, ewin->client.h);
+		  ewin->client.w, ewin->client.h, 0);
 }
 
 /* outstanding BUG: zooming on shaped windows leaves stuff exposed beneath them..... */
@@ -461,7 +461,7 @@ Zoom(EWin * ewin, int on)
 	EwinRaise(ewin);
 	EwinBorderSetTo(ewin, BorderCreateFiller(ewin->client.w,
 						 ewin->client.h, zw, zh));
-	EwinMoveResize(ewin, 0, 0, ewin->client.w, ewin->client.h);
+	EwinMoveResize(ewin, 0, 0, ewin->client.w, ewin->client.h, 0);
 	ewin->state.zoomed = 1;
 	FocusToEWin(ewin, FOCUS_SET);
 	zoom_last_ewin = ewin;

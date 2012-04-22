@@ -106,7 +106,6 @@ main(int argc, char **argv)
    Mode.wm.startup = 1;
 
    Mode.mode = MODE_NONE;
-   Mode.move.check = 1;
 
    EXInit();
    Dpy.screen = -1;

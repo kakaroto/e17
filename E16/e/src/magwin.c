@@ -504,7 +504,7 @@ MagwinCreate(const char *title, int width, int height)
    mw->ewin->o.ghost = 1;
    EoSetLayer(mw->ewin, 10);
    EwinMoveResize(mw->ewin, EoGetX(mw->ewin), EoGetY(mw->ewin),
-		  mw->ewin->client.w, mw->ewin->client.h);
+		  mw->ewin->client.w, mw->ewin->client.h, 0);
 
    mw->ewin->client.event_mask |=
       KeyPressMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask |

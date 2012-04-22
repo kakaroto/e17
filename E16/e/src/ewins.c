@@ -882,7 +882,7 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
      }
    else
      {
-	EwinResize(ewin, ewin->client.w, ewin->client.h);
+	EwinResize(ewin, ewin->client.w, ewin->client.h, 0);
      }
 
    /* if the window asked to be iconified at the start */
@@ -1324,9 +1324,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	     EwinKeepOnScreen(ewin, w, h, &x, &y);
 	  }
 
-	Mode.move.check = 0;	/* Don't restrict client requests */
-	EwinMoveResize(ewin, x, y, w, h);
-	Mode.move.check = 1;
+	EwinMoveResize(ewin, x, y, w, h, MRF_NOCHECK_ONSCREEN);
 	ReZoom(ewin);
      }
    else
@@ -1348,7 +1346,8 @@ EwinEventResizeRequest(EWin * ewin, XEvent * ev)
 {
    if (ewin)
      {
-	EwinResize(ewin, ev->xresizerequest.width, ev->xresizerequest.height);
+	EwinResize(ewin, ev->xresizerequest.width, ev->xresizerequest.height,
+		   0);
 	ReZoom(ewin);
      }
    else
@@ -1875,7 +1874,7 @@ EwinReposition(EWin * ewin)
    xn += ax * wdn;
    yn += ay * hdn;
 
-   EwinMove(ewin, xn, yn);
+   EwinMove(ewin, xn, yn, 0);
 }
 
 void
@@ -2186,11 +2185,7 @@ EwinsTouch(Desk * dsk)
      {
 	ewin = lst[i];
 	if (EoIsMapped(ewin) && EwinIsOnScreen(ewin))
-#if 1				/* FIXME - Which one? */
-	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
-#else
-	   EwinResize(ewin, ewin->client.w, ewin->client.h);
-#endif
+	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin), 0);
      }
 }
 

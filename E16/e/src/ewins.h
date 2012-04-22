@@ -104,7 +104,6 @@ struct _ewin {
       unsigned            moving:1;
       unsigned            resizing:1;
       unsigned            show_coords:1;
-      unsigned            maximizing:1;
       unsigned            shading:1;
       unsigned            in_action:1;
 
@@ -391,13 +390,18 @@ void                EwinsShowDesktop(int on);
 void                EwinsMoveStickyToDesk(Desk * d);
 
 /* ewin-ops.c */
+/* Move/resize flags */
+#define MRF_NOCHECK_ONSCREEN	(1<<16)
+#define MRF_KEEP_MAXIMIZED	(1<<17)
+
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed, int mode);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed, int mode);
-void                EwinMove(EWin * ewin, int x, int y);
-void                EwinResize(EWin * ewin, int w, int h);
-void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h);
+void                EwinMove(EWin * ewin, int x, int y, int flags);
+void                EwinResize(EWin * ewin, int w, int h, int flags);
+void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h,
+				   int flags);
 void                EwinSlideSizeTo(EWin * ewin, int tx, int ty,
 				    int tw, int th);
 void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,

@@ -841,7 +841,6 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	ver = (ver) ? !old_ver : old_ver;
      }
 
-   ewin->state.maximizing = 1;
    ewin->state.maximized_horz = hor;
    ewin->state.maximized_vert = ver;
 
@@ -991,6 +990,5 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 
    EwinSlideSizeTo(ewin, x, y, w, h);
  done:
-   ewin->state.maximizing = 0;
    HintsSetWindowState(ewin);
 }

@@ -345,7 +345,7 @@ MenuShow(Menu * m, char noshow)
 
 	ewin->head = head_num;
 
-	EwinResize(ewin, ewin->client.w, ewin->client.h);
+	EwinResize(ewin, ewin->client.w, ewin->client.h, 0);
 
 	if (Conf.menus.animate)
 	   EwinInstantShade(ewin, 0);
@@ -680,7 +680,7 @@ MenuRepack(Menu * m)
 
    ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
 			    0.0, 65535.0);
-   EwinResize(ewin, m->w, m->h);
+   EwinResize(ewin, m->w, m->h, 0);
    EwinRaise(ewin);
 }
 #endif
@@ -1625,9 +1625,7 @@ _SubmenuCheckSlide(Menu * m, MenuItem * mi, EWin * ewin, EWin * ewin2,
      }
 
    MenusSetEvents(0);		/* Disable menu item events while sliding */
-   Mode.move.check = 0;		/* Bypass on-screen checks */
    SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
-   Mode.move.check = 1;
    MenusSetEvents(1);
 
    if (Conf.menus.warp)
@@ -1695,9 +1693,7 @@ SubmenuShowTimeout(void *dat)
 
    _SubmenuCheckSlide(m, mi, ewin, ewin2, xo, yo, ww, hh);
 
-   Mode.move.check = 0;		/* Bypass on-screen checks */
-   EwinMove(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo);
-   Mode.move.check = 1;
+   EwinMove(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo, MRF_NOCHECK_ONSCREEN);
    EwinOpFloatAt(ewin2, OPSRC_NA, EoGetX(ewin2), EoGetY(ewin2));
    EwinRaise(ewin2);
    EwinShow(ewin2);

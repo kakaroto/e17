@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -700,7 +700,7 @@ ArrangeEwin(EWin * ewin)
    int                 x, y;
 
    ArrangeEwinXY(ewin, &x, &y);
-   EwinMove(ewin, x, y);
+   EwinMove(ewin, x, y, 0);
 }
 
 void
@@ -709,7 +709,7 @@ ArrangeEwinCentered(EWin * ewin)
    int                 x, y;
 
    ArrangeEwinCenteredXY(ewin, &x, &y);
-   EwinMove(ewin, x, y);
+   EwinMove(ewin, x, y, 0);
 }
 
 static void
@@ -952,7 +952,7 @@ ArrangeEwins(const char *params)
 		       ret[i].x, ret[i].y, Conf.place.slidespeedcleanup,
 		       Conf.place.slidemode);
 	else
-	   EwinMove(ewin, ret[i].x, ret[i].y);
+	   EwinMove(ewin, ret[i].x, ret[i].y, 0);
      }
 
    Efree(fixed);

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -554,7 +554,7 @@ PagerReconfigure(Pager * p, int apply)
      {
 	w = (int)((double)ax * (double)WinGetW(VROOT) / (double)p->scale + .5);
 	h = (int)((double)ay * (double)WinGetH(VROOT) / (double)p->scale + .5);
-	EwinResize(p->ewin, w + (dx * ax) / 2, h + (dy * ay) / 2);
+	EwinResize(p->ewin, w + (dx * ax) / 2, h + (dy * ay) / 2, 0);
 	EwinReposition(p->ewin);
      }
 }
@@ -743,7 +743,7 @@ PagerShow(Pager * p)
    if (ewin->state.placed)
      {
 	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
-		       ewin->client.w, ewin->client.h);
+		       ewin->client.w, ewin->client.h, 0);
      }
    else
      {
@@ -753,10 +753,10 @@ PagerShow(Pager * p)
 	DesksGetAreaSize(&ax, &ay);
 	w = ((48 * WinGetW(VROOT)) / WinGetH(VROOT)) * ax;
 	h = 48 * ay;
-	EwinResize(ewin, w, h);	/* Does layout */
+	EwinResize(ewin, w, h, 0);	/* Does layout */
 	x = 0;
 	y = WinGetH(VROOT) - (DesksGetNumber() - p->dsk->num) * EoGetH(ewin);
-	EwinMove(ewin, x, y);
+	EwinMove(ewin, x, y, 0);
      }
 
    EwinShow(ewin);
@@ -1508,7 +1508,7 @@ PagerHandleMouseUp(Pager * p, int px, int py, int button)
 	  {
 	     if (gwins[i]->type != EWIN_TYPE_PAGER)
 	       {
-		  EwinMove(gwins[i], gwin_px[i], gwin_py[i]);
+		  EwinMove(gwins[i], gwin_px[i], gwin_py[i], 0);
 		  EwinIconify(gwins[i]);
 	       }
 	  }

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -637,7 +637,7 @@ EwinBorderChange(EWin * ewin, const Border * b, int normal)
 
    EwinBorderSetTo(ewin, b);
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
-		  ewin->client.w, ewin->client.h);
+		  ewin->client.w, ewin->client.h, 0);
 
    if (normal)
       ewin->normal_border = b;

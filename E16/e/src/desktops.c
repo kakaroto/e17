@@ -1712,7 +1712,6 @@ DeskCurrentGotoArea(int ax, int ay)
      }
 
    /* move all windows to their final positions */
-   Mode.move.check = 0;
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
@@ -1724,11 +1723,11 @@ DeskCurrentGotoArea(int ax, int ay)
 	if (EoIsSticky(ewin) ||
 	    (EoIsFloating(ewin) && Conf.movres.mode_move == MR_OPAQUE) ||
 	    (!ewin->state.iconified && Conf.desks.slidein))
-	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
+	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin), MRF_NOCHECK_ONSCREEN);
 	else
-	   EwinMove(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
+	   EwinMove(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy,
+		    MRF_NOCHECK_ONSCREEN);
      }
-   Mode.move.check = 1;
 
    if (!Conf.desks.slidein)
       EobjsRepaint();

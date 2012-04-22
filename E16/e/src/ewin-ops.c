@@ -221,7 +221,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	flags |= MRF_DESK;
      }
 
-   if (Mode.mode == MODE_NONE && Mode.move.check)
+   if (Mode.mode == MODE_NONE && !(flags & MRF_NOCHECK_ONSCREEN))
      {
 	/* Don't throw windows offscreen */
 	sw = WinGetW(VROOT);
@@ -379,7 +379,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    EwinPropagateShapes(ewin);
 
    /* Clear maximized state on move or resize */
-   if ((move || resize) && !ewin->state.maximizing && !ewin->state.shading)
+   if ((move || resize) && !(flags & MRF_KEEP_MAXIMIZED))
      {
 	if (ewin->state.maximized_horz || ewin->state.maximized_vert)
 	  {
@@ -413,7 +413,9 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	   doEwinMoveResize(lst[i], dsk, EoGetX(lst[i]) + dx,
 			    EoGetY(lst[i]) + dy, 0, 0,
 			    flags & (MRF_DESK | MRF_MOVE |
-				     MRF_FLOAT | MRF_UNFLOAT));
+				     MRF_FLOAT | MRF_UNFLOAT |
+				     MRF_NOCHECK_ONSCREEN |
+				     MRF_KEEP_MAXIMIZED));
 	Efree(lst);
      }
 
@@ -468,13 +470,13 @@ EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th)
 	     y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	     w = ((fw * (1024 - k)) + (tw * k)) >> 10;
 	     h = ((fh * (1024 - k)) + (th * k)) >> 10;
-	     EwinMoveResize(ewin, x, y, w, h);
+	     EwinMoveResize(ewin, x, y, w, h, MRF_KEEP_MAXIMIZED);
 
 	     k = ETimedLoopNext();
 	  }
      }
 
-   EwinMoveResize(ewin, tx, ty, tw, th);
+   EwinMoveResize(ewin, tx, ty, tw, th, MRF_KEEP_MAXIMIZED);
 
    if (warp && ewin != GetEwinPointerInClient())
      {
@@ -484,21 +486,25 @@ EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th)
 }
 
 void
-EwinMove(EWin * ewin, int x, int y)
+EwinMove(EWin * ewin, int x, int y, int flags)
 {
-   doEwinMoveResize(ewin, NULL, x, y, 0, 0, MRF_MOVE);
+   doEwinMoveResize(ewin, NULL, x, y, 0, 0,
+		    MRF_MOVE | (flags & MRF_NOCHECK_ONSCREEN));
 }
 
 void
-EwinResize(EWin * ewin, int w, int h)
+EwinResize(EWin * ewin, int w, int h, int flags)
 {
-   doEwinMoveResize(ewin, NULL, 0, 0, w, h, MRF_RESIZE);
+   doEwinMoveResize(ewin, NULL, 0, 0, w, h,
+		    MRF_RESIZE | (flags & MRF_KEEP_MAXIMIZED));
 }
 
 void
-EwinMoveResize(EWin * ewin, int x, int y, int w, int h)
+EwinMoveResize(EWin * ewin, int x, int y, int w, int h, int flags)
 {
-   doEwinMoveResize(ewin, NULL, x, y, w, h, MRF_MOVE | MRF_RESIZE);
+   doEwinMoveResize(ewin, NULL, x, y, w, h,
+		    MRF_MOVE | MRF_RESIZE |
+		    (flags & (MRF_NOCHECK_ONSCREEN | MRF_KEEP_MAXIMIZED)));
 }
 
 void
@@ -524,7 +530,7 @@ void
 EwinOpMove(EWin * ewin, int source, int x, int y)
 {
    Mode.op_source = source;
-   EwinMove(ewin, x, y);
+   EwinMove(ewin, x, y, 0);
    Mode.op_source = OPSRC_NA;
 }
 
@@ -532,7 +538,7 @@ void
 EwinOpResize(EWin * ewin, int source, int w, int h)
 {
    Mode.op_source = source;
-   EwinResize(ewin, w, h);
+   EwinResize(ewin, w, h, 0);
    Mode.op_source = OPSRC_NA;
 }
 
@@ -540,7 +546,7 @@ void
 EwinOpMoveResize(EWin * ewin, int source, int x, int y, int w, int h)
 {
    Mode.op_source = source;
-   EwinMoveResize(ewin, x, y, w, h);
+   EwinMoveResize(ewin, x, y, w, h, 0);
    Mode.op_source = OPSRC_NA;
 }
 
@@ -834,7 +840,8 @@ EwinInstantShade(EWin * ewin, int force)
    ewin->state.shaded = 2;
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
-   EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
+   EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h,
+		  MRF_KEEP_MAXIMIZED);
 }
 
 void
@@ -875,7 +882,8 @@ EwinInstantUnShade(EWin * ewin)
 		      ewin->client.w, ewin->client.h, 0);
 
    ewin->state.shaded = 0;
-   EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
+   EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h,
+		  MRF_KEEP_MAXIMIZED);
 }
 
 #define _EWIN_ADJUST_SHAPE(ewin, xo, yo) \
@@ -967,8 +975,8 @@ _EwinShadeEnd(_ewin_shade_data * esd)
    if (ewin->state.shaped)
       _EWIN_ADJUST_SHAPE(ewin, 0, 0);
 
-   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		  ewin->client.h);
+   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+		  ewin->client.w, ewin->client.h, MRF_KEEP_MAXIMIZED);
 
 #if 0
    EUngrabServer();
@@ -1198,8 +1206,8 @@ _EwinUnshadeEnd(_ewin_shade_data * esd)
    if (ewin->state.shaped)
       _EWIN_ADJUST_SHAPE(ewin, 0, 0);
 
-   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		  ewin->client.h);
+   EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
+		  ewin->client.w, ewin->client.h, MRF_KEEP_MAXIMIZED);
 
 #if 0
    EUngrabServer();
@@ -1384,9 +1392,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	  }
 
 	EwinRaise(ewin);
-	ewin->state.maximizing = 1;
-	EwinMoveResize(ewin, x, y, w, h);
-	ewin->state.maximizing = 0;
+	EwinMoveResize(ewin, x, y, w, h, MRF_KEEP_MAXIMIZED);
 	EwinStateUpdate(ewin);
      }
    else
@@ -1411,9 +1417,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	ewin->state.fullscreen = 0;
 	EwinStateUpdate(ewin);
 	EwinRaise(ewin);
-	ewin->state.maximizing = 1;
-	EwinMoveResize(ewin, x, y, w, h);
-	ewin->state.maximizing = 0;
+	EwinMoveResize(ewin, x, y, w, h, MRF_KEEP_MAXIMIZED);
      }
 
    HintsSetWindowState(ewin);
@@ -1462,7 +1466,7 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 {
    DesksFixArea(&ax, &ay);
    EwinMove(ewin, EoGetX(ewin) + (WinGetW(VROOT) * (ax - ewin->area_x)),
-	    EoGetY(ewin) + (WinGetH(VROOT) * (ay - ewin->area_y)));
+	    EoGetY(ewin) + (WinGetH(VROOT) * (ay - ewin->area_y)), 0);
 }
 
 void

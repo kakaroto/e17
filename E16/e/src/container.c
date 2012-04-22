@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -292,14 +292,14 @@ ContainerShow(Container * ct)
    if (ewin->state.placed)
      {
 	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
-		       ewin->client.w, ewin->client.h);
+		       ewin->client.w, ewin->client.h, 0);
      }
    else
      {
 	/* The first one */
-	EwinResize(ewin, 128, 32);
+	EwinResize(ewin, 128, 32, 0);
 	EwinMove(ewin, WinGetW(VROOT) - EoGetW(ewin),
-		 WinGetH(VROOT) - EoGetH(ewin));
+		 WinGetH(VROOT) - EoGetH(ewin), 0);
      }
 
    EwinShow(ewin);
@@ -1152,7 +1152,7 @@ ContainerRedraw(Container * ct)
    EWin               *ewin = ct->ewin;
 
    ct->do_update = 1;
-   EwinResize(ct->ewin, ewin->client.w, ewin->client.h);
+   EwinResize(ct->ewin, ewin->client.w, ewin->client.h, 0);
 }
 
 static int
