@@ -623,6 +623,9 @@ ThemeConfigLoad(void)
 	if (p)
 	   ProgressbarSet(p, (i * 100) /
 			  (int)(sizeof(config_files) / sizeof(char *)));
+
+	/* Hack - We are not running in the event loop here */
+	EobjsRepaint();
      }
 
    if (p)

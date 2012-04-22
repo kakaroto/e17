@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2006-2009 Kim Woelders
+ * Copyright (C) 2006-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -159,10 +159,9 @@ ProgressbarSet(Progressbar * p, int progress)
 	    pad->left, pad->top, p->h * 5 - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));
+
    /* Hack - We may not be running in the event loop here */
    EobjDamage(p->n_win);
-
-   EobjsRepaint();
 }
 
 void
@@ -184,6 +183,4 @@ ProgressbarShow(Progressbar * p)
 	    p->w - (p->h * 5) - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));
-
-   EobjsRepaint();
 }
