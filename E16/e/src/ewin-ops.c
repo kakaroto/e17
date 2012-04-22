@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -525,7 +525,7 @@ EwinOpMove(EWin * ewin, int source, int x, int y)
 {
    Mode.op_source = source;
    EwinMove(ewin, x, y);
-   Mode.op_source = 0;
+   Mode.op_source = OPSRC_NA;
 }
 
 void
@@ -533,7 +533,7 @@ EwinOpResize(EWin * ewin, int source, int w, int h)
 {
    Mode.op_source = source;
    EwinResize(ewin, w, h);
-   Mode.op_source = 0;
+   Mode.op_source = OPSRC_NA;
 }
 
 void
@@ -541,7 +541,7 @@ EwinOpMoveResize(EWin * ewin, int source, int x, int y, int w, int h)
 {
    Mode.op_source = source;
    EwinMoveResize(ewin, x, y, w, h);
-   Mode.op_source = 0;
+   Mode.op_source = OPSRC_NA;
 }
 
 void
@@ -549,7 +549,7 @@ EwinOpMoveToDesktopAt(EWin * ewin, int source, Desk * dsk, int x, int y)
 {
    Mode.op_source = source;
    EwinMoveToDesktopAt(ewin, dsk, x, y);
-   Mode.op_source = 0;
+   Mode.op_source = OPSRC_NA;
 }
 
 void
@@ -557,7 +557,7 @@ EwinOpFloatAt(EWin * ewin, int source, int x, int y)
 {
    Mode.op_source = source;
    doEwinMoveResize(ewin, EoGetDesk(ewin), x, y, 0, 0, MRF_MOVE | MRF_FLOAT);
-   Mode.op_source = 0;
+   Mode.op_source = OPSRC_NA;
 }
 
 void
@@ -565,7 +565,7 @@ EwinOpUnfloatAt(EWin * ewin, int source, Desk * dsk, int x, int y)
 {
    Mode.op_source = source;
    doEwinMoveResize(ewin, dsk, x, y, 0, 0, MRF_MOVE | MRF_UNFLOAT);
-   Mode.op_source = 0;
+   Mode.op_source = OPSRC_NA;
 }
 
 void
