@@ -83,39 +83,6 @@ group
 
                 public led_status; //edje list to keep track of each led status
                 
-                /*
-                 * Fast Arctan2 function.
-                 * Took from http://lists.apple.com/archives/perfoptimization-dev/2005/Jan/msg00051.html
-                 */               
-                #define PI_BY_2  1.57079632679489661923132169163975
-                public Float:fast_atan2(Float:y, Float:x)
-                {
-                        if (x == 0.0)
-                        {
-                                if (y > 0.0) return PI_BY_2;
-                                if (y == 0.0) return 0.0;
-                                return -PI_BY_2;
-                        }
-                        new Float:atan;
-                        new Float:z = y / x;
-
-                        if (abs(z) < 1.0)
-                        {
-                                atan = z / (1.0 + 0.28 * z * z);
-                                if (x < 0.0)
-                                {
-                                        if (y < 0.0) return atan - PI;
-                                        return atan + PI;
-                                }
-                        }
-                        else
-                        {
-                                atan = PI_BY_2 - z / (z * z + 0.28);
-                                if (y < 0.0) return atan - PI;
-                        }
-                        return atan;
-                }
-
                 public Float:calc_angle(mx, my)
                 {
                         new px, py, pw, ph;
@@ -130,7 +97,7 @@ group
                         dy = center_y - my;
 
                         new Float:angle;
-                        angle = fast_atan2(-dx, dy) * 180.0 / PI + 180.0;
+                        angle = atan2(-dx, dy) * 180.0 / PI + 180.0;
 
                         return angle;
                 }
