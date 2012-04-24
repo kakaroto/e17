@@ -1,0 +1,11 @@
+Login:        hyoyoung 
+IRC Nick:     hyoyoung
+Cloak:        developer/hyoyoung
+Name:         Hyoyoung Chang
+Location:     Suwon, Korea 
+E-Mail:       hyoyoung@gmail.com, hyoyoung.chang@samsung.com
+WWW:          None
+Contributing: elementary 
+Group:        e, ecore, evas, and other EFL libs
+Platform:     GNU Linux
+GeoData:      37.257779, 127.053344
