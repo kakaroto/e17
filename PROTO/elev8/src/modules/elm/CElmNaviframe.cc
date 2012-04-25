@@ -7,10 +7,12 @@ using namespace v8;
 
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
+GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
 
 GENERATE_TEMPLATE(CElmNaviframe,
                   METHOD(pop),
-                  METHOD(push));
+                  METHOD(push),
+                  METHOD(promote));
 
 CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_naviframe_add(parent->GetEvasObject()))
@@ -84,6 +86,12 @@ Handle<Value> CElmNaviframe::push(const Arguments& args)
                            GetEvasObjectFromJavascript(content),
                            0);
    return stacked;
+}
+
+Handle<Value> CElmNaviframe::promote(const Arguments& args)
+{
+   elm_naviframe_item_simple_promote(eo, GetEvasObjectFromJavascript(args[0]));
+   return Undefined();
 }
 
 }

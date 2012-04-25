@@ -22,6 +22,7 @@ public:
 
    Handle<Value> pop(const Arguments& args);
    Handle<Value> push(const Arguments& args);
+   Handle<Value> promote(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmNaviframe>(const Arguments &args);
 };
