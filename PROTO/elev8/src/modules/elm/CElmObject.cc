@@ -729,6 +729,10 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
    HandleScope scope;
    Local<Object> desc = descValue->ToObject();
+
+   if (!desc->GetHiddenValue(String::NewSymbol("elm::realised")).IsEmpty())
+      return scope.Close(desc);
+
    Local<Array> props = desc->GetOwnPropertyNames();
    Local<Value> func = desc->GetHiddenValue(String::NewSymbol("type"));
 
@@ -746,6 +750,7 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
    if (visible->IsUndefined())
      obj->Set(String::New("visible"), Boolean::New(true));
 
+   obj->SetHiddenValue(String::NewSymbol("elm::realised"), Boolean::New(true));
    return scope.Close(obj);
 }
 
