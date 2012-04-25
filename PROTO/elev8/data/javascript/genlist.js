@@ -59,6 +59,7 @@ var win = elm.realise(elm.Window({
                                 return 'Item #' + arg.data.toString();
                             },
                             content: function(arg) {
+                                return null;
                                 if (arg.part == 'elm.swallow.icon')
                                     return logo;
                                 if (arg.part == 'elm.swallow.end')

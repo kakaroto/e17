@@ -22,6 +22,7 @@ using namespace v8;
 #include "CElmFileSelectorButton.h"
 #include "CElmFileSelectorEntry.h"
 #include "CElmFlip.h"
+#include "CElmGenGrid.h"
 #include "CElmGenList.h"
 #include "CElmGrid.h"
 #include "CElmHover.h"
@@ -167,6 +168,7 @@ void RegisterModule(Handle<Object> target)
    CElmFileSelectorButton::Initialize(target);
    CElmFileSelectorEntry::Initialize(target);
    CElmFlip::Initialize(target);
+   CElmGenGrid::Initialize(target);
    CElmGenList::Initialize(target);
    CElmGrid::Initialize(target);
    CElmHover::Initialize(target);
