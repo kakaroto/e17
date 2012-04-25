@@ -5,5 +5,5 @@ Location:     Campinas, Brazil
 E-Mail:       glima@profusion.mobi
 Contributing: Evas, Edje, Elementary, Editje
 Group:        Core, Libraries, Applications
-Platform:     Ubuntu (Linux)
-GeoData:      -22.83083 -47.076893
+Platform:     Fedora (Linux)
+GeoData:      -22.89792,-47.063338
