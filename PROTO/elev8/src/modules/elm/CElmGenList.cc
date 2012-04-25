@@ -4,6 +4,7 @@
 namespace elm {
 
 using namespace v8;
+using namespace gen;
 
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, homogeneous);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, decorate_mode);
@@ -64,11 +65,11 @@ Handle<Value> CElmGenList::append(const Arguments& args)
    if (klass.IsEmpty() || !klass->IsObject())
      return Undefined();
 
-   ItemClass *item_class = static_cast<ItemClass *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
-   Item *item = new Item(item_class, args[1], args[2]);
+   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
+   Item<CElmGenList> *item = new Item<CElmGenList>(item_class, args[1], args[2]);
 
    elm_genlist_item_append(eo, item_class->GetElmClass(), item, NULL,
-                           ELM_GENLIST_ITEM_NONE, Item::OnSelect, item);
+                           ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
    return Undefined();
 }
 
@@ -236,7 +237,7 @@ void CElmGenList::classes_set(Handle<Value> value)
           {
              Local<String> class_name = properties->Get(i)->ToString();
              Local<Object> class_desc = classes->Get(class_name)->ToObject();
-             delete static_cast<ItemClass *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
+             delete static_cast<ItemClass<CElmGenList> *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
           }
      }
    cached.classes.Dispose();
@@ -246,7 +247,7 @@ void CElmGenList::classes_set(Handle<Value> value)
      {
         Local<String> class_name = properties->Get(i)->ToString();
         Local<Object> class_desc = classes->Get(class_name)->ToObject();
-        ItemClass *item_class = new ItemClass(this, class_name, class_desc);
+        ItemClass<CElmGenList> *item_class = new ItemClass<CElmGenList>(this, class_name, class_desc);
         class_desc->SetHiddenValue(String::NewSymbol("genlist::itemclass"), External::Wrap(item_class));
      }
 }

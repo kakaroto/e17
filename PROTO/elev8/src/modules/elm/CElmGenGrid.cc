@@ -4,6 +4,7 @@
 namespace elm {
 
 using namespace v8;
+using namespace elm::gen;
 
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, item_size_horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, item_size_vertical);
@@ -57,10 +58,10 @@ Handle<Value> CElmGenGrid::append(const Arguments& args)
    if (klass.IsEmpty() || !klass->IsObject())
      return Undefined();
 
-   ItemClass *item_class = static_cast<ItemClass *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
-   Item *item = new Item(item_class, args[1], args[2]);
+   ItemClass<CElmGenGrid> *item_class = static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
+   Item<CElmGenGrid> *item = new Item<CElmGenGrid>(item_class, args[1], args[2]);
 
-   elm_gengrid_item_append(eo, item_class->GetElmClass(), item, Item::OnSelect, item);
+   elm_gengrid_item_append(eo, item_class->GetElmClass(), item, Item<CElmGenGrid>::OnSelect, item);
    return Undefined();
 }
 
@@ -181,7 +182,7 @@ void CElmGenGrid::classes_set(Handle<Value> value)
           {
              Local<String> class_name = properties->Get(i)->ToString();
              Local<Object> class_desc = classes->Get(class_name)->ToObject();
-             delete static_cast<ItemClass *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
+             delete static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
           }
      }
    cached.classes.Dispose();
@@ -191,7 +192,7 @@ void CElmGenGrid::classes_set(Handle<Value> value)
      {
         Local<String> class_name = properties->Get(i)->ToString();
         Local<Object> class_desc = classes->Get(class_name)->ToObject();
-        ItemClass *item_class = new ItemClass(this, class_name, class_desc);
+        ItemClass<CElmGenGrid> *item_class = new ItemClass<CElmGenGrid>(this, class_name, class_desc);
         class_desc->SetHiddenValue(String::NewSymbol("gengrid::itemclass"), External::Wrap(item_class));
      }
 }
