@@ -16,7 +16,8 @@ GENERATE_TEMPLATE(CElmWindow,
 
 Handle<Value> CElmWindow::title_get() const
 {
-   return String::New(elm_win_title_get(eo));
+   const char *s = elm_win_title_get(eo);
+   return s ? String::New(s) : Undefined();
 }
 
 void CElmWindow::title_set(Handle<Value> val)
