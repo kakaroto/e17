@@ -5,17 +5,20 @@ namespace elm {
 
 using namespace v8;
 
+GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, title_visible);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
 
 GENERATE_TEMPLATE(CElmNaviframe,
+                  PROPERTY(title_visible),
                   METHOD(pop),
                   METHOD(push),
                   METHOD(promote));
 
 CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_naviframe_add(parent->GetEvasObject()))
+   , title_visible(true)
    , stack(Persistent<Array>::New(Array::New()))
 {
 }
@@ -38,6 +41,7 @@ Handle<Value> CElmNaviframe::pop(const Arguments&)
 
    stack->Delete(stack->Length());
    elm_naviframe_item_pop(eo);
+   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
 
    return Undefined();
 }
@@ -85,13 +89,26 @@ Handle<Value> CElmNaviframe::push(const Arguments& args)
                            next_btn.IsEmpty() ? NULL : GetEvasObjectFromJavascript(next_btn),
                            GetEvasObjectFromJavascript(content),
                            0);
+   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
    return stacked;
 }
 
 Handle<Value> CElmNaviframe::promote(const Arguments& args)
 {
    elm_naviframe_item_simple_promote(eo, GetEvasObjectFromJavascript(args[0]));
+   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
    return Undefined();
+}
+
+void CElmNaviframe::title_visible_set(Handle<Value> val)
+{
+   title_visible = val->BooleanValue();
+   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
+}
+
+Handle<Value> CElmNaviframe::title_visible_get() const
+{
+   return Boolean::New(title_visible);
 }
 
 }

@@ -108,6 +108,14 @@ win = elm.realise(elm.Window({
                             label: "Green",
                             weight: EXPAND_BOTH,
                             on_click: button_push,
+                        }),
+                        check: elm.Check({
+                            label: "Show title",
+                            weight: EXPAND_BOTH,
+                            state: true,
+                            on_change: function() {
+                                win.elements.box.elements.naviframe.title_visible = this.state;
+                            }
                         })
                     }
                 })
