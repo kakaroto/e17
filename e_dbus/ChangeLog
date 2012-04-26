@@ -40,7 +40,7 @@
 2011-11-27  Mike Blumenkrantz
 
         * Fix case where fd handler could be added twice for dbus fd
-        
+
 2011-12-02  Carsten Haitzler (The Rasterman)
 
         * 1.1.0 release
@@ -56,4 +56,8 @@
 2012-01-17 Dave Andreoli
 
         * Fixed use of the 'object path' type in ukit
+
+2012-04-26 Carsten Haitzler (The Rasterman)
+
+        1.2.0 release
 
