@@ -313,7 +313,10 @@ void e_xkb_update_icon(void)
         e_xkb_cfg->used_layouts
     ))->name;
 
-    snprintf(
+   if ((name) && (strchr(name, '/')))
+     name = strchr(name, '/') + 1;
+   
+   snprintf(
         buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
         e_xkb_cfg->module->dir
     );
@@ -412,6 +415,7 @@ void e_xkb_update_layout(void)
     EINA_LIST_FOREACH(e_xkb_cfg->used_layouts, l, cl)
     {
         strcat(buf, cl->name);
+        break;
         if (l->next) strcat(buf, ",");
     }
 
@@ -420,6 +424,7 @@ void e_xkb_update_layout(void)
     {
         strcat(buf, cl->variant);
         strcat(buf, ",");
+        break;
     }
 
     strcat(buf, " -model ");
@@ -429,11 +434,14 @@ void e_xkb_update_layout(void)
         strcat(buf, cl->model);
     else if (strcmp(e_xkb_cfg->default_model, "default"))
         strcat(buf, e_xkb_cfg->default_model);
+    else
+        strcat(buf, "default");
 
     EINA_LIST_FOREACH(e_xkb_cfg->used_options, l, op)
     {
         strcat(buf, " -option ");
         strcat(buf, op->name);
+        break;
     }
 
    printf("RUN: '%s'\n", buf);
@@ -493,6 +501,8 @@ static E_Gadcon_Client *_gc_init(
     else
         name = NULL;
 
+   if ((name) && (strchr(name, '/')))
+     name = strchr(name, '/') + 1;
     snprintf(
         buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
         e_xkb_cfg->module->dir
@@ -518,7 +528,7 @@ static E_Gadcon_Client *_gc_init(
     /* The flag icon */
     if (!e_xkb_cfg->only_label)
     {
-        inst->o_xkbflag = e_icon_add(gc->evas);
+       inst->o_xkbflag = e_icon_add(gc->evas);
         snprintf(
             buf, sizeof(buf), "%s/flags/%s_flag.png",
             e_module_dir_get(e_xkb_cfg->module), name ? name : "unknown"
