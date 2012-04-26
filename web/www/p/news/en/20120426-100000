@@ -6,7 +6,8 @@ raster@rasterman.com
 We'd like to announce a new release of several Enlightenment components.
 This round we have added Eio, Ethumb, Emotion and Elementary. Please
 read the NEWS and README files in each release tarball for information
-on what has changed, fixed or added.
+on what has changed, fixed or added. This release also corresponds with
+SVN revision number 70490.
 </p>
 <p>
 Emotion is a library to handle video playback using Gstreamer, Xine or
