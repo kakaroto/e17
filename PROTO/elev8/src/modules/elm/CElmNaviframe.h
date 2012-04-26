@@ -18,6 +18,7 @@ protected:
 
    static Handle<FunctionTemplate> GetTemplate();
 
+   void title_visible_eval();
 public:
    static void Initialize(Handle<Object> target);
 

@@ -41,7 +41,7 @@ Handle<Value> CElmNaviframe::pop(const Arguments&)
 
    stack->Delete(stack->Length());
    elm_naviframe_item_pop(eo);
-   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
+   title_visible_eval();
 
    return Undefined();
 }
@@ -89,21 +89,27 @@ Handle<Value> CElmNaviframe::push(const Arguments& args)
                            next_btn.IsEmpty() ? NULL : GetEvasObjectFromJavascript(next_btn),
                            GetEvasObjectFromJavascript(content),
                            0);
-   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
+   title_visible_eval();
    return stacked;
 }
 
 Handle<Value> CElmNaviframe::promote(const Arguments& args)
 {
    elm_naviframe_item_simple_promote(eo, GetEvasObjectFromJavascript(args[0]));
-   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
+   title_visible_eval();
    return Undefined();
+}
+
+void CElmNaviframe::title_visible_eval()
+{
+   if (Elm_Object_Item *top_item = elm_naviframe_top_item_get(eo))
+      elm_naviframe_item_title_visible_set(top_item, title_visible);
 }
 
 void CElmNaviframe::title_visible_set(Handle<Value> val)
 {
    title_visible = val->BooleanValue();
-   elm_naviframe_item_title_visible_set(elm_naviframe_top_item_get(eo), title_visible);
+   title_visible_eval();
 }
 
 Handle<Value> CElmNaviframe::title_visible_get() const
