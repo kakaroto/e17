@@ -274,10 +274,10 @@ int main(int argc, char **argv)
      goto out;
 
 
-   pname = elm_profile_current_get();
+   pname = elm_config_profile_get();
    printf("Current profile : %s\n", pname);
    enna->profile = eina_stringshare_add(pname);
-   p = elm_profile_list_get();
+   p = elm_config_profile_list_get();
    printf("Profiles : \n");
    EINA_LIST_FOREACH(p, l, pname)
      {
