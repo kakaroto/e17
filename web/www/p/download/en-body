@@ -226,7 +226,7 @@
      1.0.0 </em></p><p>
      Emotion, video and audio codec API... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EMOTION",
-     "http://download.enlightenment.org/releses/emotion-1.0.0.tar.gz"
+     "http://download.enlightenment.org/releases/emotion-1.0.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
 
