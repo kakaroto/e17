@@ -13,7 +13,7 @@
          BUTTON_GLOW_PART("button", 220)
          FOCUS_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
          DRAG_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
-         part { name: "elm.swallow.content";
+         part { name: "elm.swallow.icon";
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 0;
@@ -50,7 +50,7 @@
             scale: 1;
             description { state: "default" 0.0;
                visible: 0;
-               rel1.to_x: "elm.swallow.content";
+               rel1.to_x: "elm.swallow.icon";
                rel1.relative: 1.0 0.0;
                rel1.offset: 0 4;
                rel2.to_x: "button";
@@ -164,9 +164,9 @@
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
+               get_state(PART:"elm.swallow.icon", st, 30, vl);
                if (!strcmp(st, "icononly"))
-                 set_state(PART:"elm.swallow.content", "visible", 0.0);
+                 set_state(PART:"elm.swallow.icon", "visible", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "disabled") || (!strcmp(st, "disabled_visible")))
                  set_state(PART:"elm.text", "disabled_visible", 0.0);
@@ -180,9 +180,9 @@
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"elm.swallow.content", st, 30, vl);
+               get_state(PART:"elm.swallow.icon", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.swallow.content", "icononly", 0.0);
+                 set_state(PART:"elm.swallow.icon", "icononly", 0.0);
                get_state(PART:"elm.text", st, 30, vl);
                if ((!strcmp(st, "default")) || (!strcmp(st, "visible")))
                  set_state(PART:"elm.text", "default", 0.0);
@@ -198,16 +198,16 @@
                new Float:vl;
                get_state(PART:"elm.text", st, 30, vl);
                if (!strcmp(st, "visible"))
-                 set_state(PART:"elm.swallow.content", "visible", 0.0);
+                 set_state(PART:"elm.swallow.icon", "visible", 0.0);
                else
-                 set_state(PART:"elm.swallow.content", "icononly", 0.0);
+                 set_state(PART:"elm.swallow.icon", "icononly", 0.0);
             }
          }
          program { name: "icon_hide";
             signal: "elm,state,icon,hidden";
             source: "elm";
             action:  STATE_SET "default" 0.0;
-            target: "elm.swallow.content";
+            target: "elm.swallow.icon";
          }
          program {
             DISABLE_PROGRAM_PART
@@ -436,7 +436,7 @@
                  text.min: 1 1;
               }
            }
-           part { name: "elm.swallow.content";
+           part { name: "elm.swallow.icon";
                type: SWALLOW;
                clip_to: "elm.icon.clipper";
                description { state: "default" 0.0;
@@ -454,7 +454,7 @@
                    color: 0 0 0 0;
                }
            }
-           part { name: "elm.swallow.content_new";
+           part { name: "elm.swallow.icon_new";
               type: SWALLOW;
               clip_to: "elm.icon_new.clipper";
               description { state: "default" 0.0;
@@ -796,7 +796,7 @@
    group { name: "elm/button/base/toolbar/item_horizontal";
       inherit: "elm/button/base/toolbar/default";
       parts {
-         part { name: "elm.swallow.content";
+         part { name: "elm.swallow.icon";
             description { state: "default" 0.0;
                fixed: 1 1;
                aspect: 1 1;
@@ -809,7 +809,7 @@
                color: 0 0 0 0;
             }
          }
-         part { name: "elm.swallow.content_new";
+         part { name: "elm.swallow.icon_new";
             description { state: "default" 0.0;
                fixed: 1 1;
             }
@@ -820,7 +820,7 @@
                min: 0 1;
                rel1.offset: 1 0;
                rel1.relative: 1.0 0.0;
-               rel1.to_x: "elm.swallow.content";
+               rel1.to_x: "elm.swallow.icon";
                rel2.relative: 1.0 1.0;
                text.align: 0 0.5;
             }
@@ -852,7 +852,7 @@
                min: 0 1;
                rel1.offset: 1 0;
                rel1.relative: 1.0 0.0;
-               rel1.to_x: "elm.swallow.content";
+               rel1.to_x: "elm.swallow.icon";
                rel2.relative: 1.0 1.0;
                text.align: 0 0.5;
             }

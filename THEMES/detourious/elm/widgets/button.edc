@@ -196,7 +196,7 @@ group { name: "elm/button/base/default";
 		 * 		}
 		 * 	}
 		 * } */
-		part { name: "elm.swallow.content";
+		part { name: "elm.swallow.icon";
 			type: SWALLOW;
 			description { state: "default" 0.0;
 				fixed: 1 0;
@@ -237,7 +237,7 @@ group { name: "elm/button/base/default";
 			scale: 1;
 			description { state: "default" 0.0;
 				visible: 0;
-				rel1.to_x: "elm.swallow.content";
+				rel1.to_x: "elm.swallow.icon";
 				rel1.to_y: "base";
 				rel1.relative: 1.0 0.0;
 				rel1.offset: 4 6;
@@ -392,9 +392,9 @@ group { name: "elm/button/base/default";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "icononly"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				set_state(PART:"elm.text", "visible", 0.0);
 			}
 		}
@@ -404,9 +404,9 @@ group { name: "elm/button/base/default";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 				set_state(PART:"elm.text", "default", 0.0);
 			}
 		}
@@ -418,16 +418,16 @@ group { name: "elm/button/base/default";
 				new Float:vl;
 				get_state(PART:"elm.text", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				else
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 			}
 		}
 		program { name: "icon_hide";
 			signal: "elm,state,icon,hidden";
 			source: "elm";
 			action:  STATE_SET "default" 0.0;
-			target: "elm.swallow.content";
+			target: "elm.swallow.icon";
 		}
 		program { name: "disable";
 			signal: "elm,state,disabled";
@@ -523,7 +523,7 @@ group { name: "elm/button/base/hoversel_vertical/default";
 				align: 0.0 0.5;
 			}
 		}
-		part { name: "elm.swallow.content";
+		part { name: "elm.swallow.icon";
 			type: SWALLOW;
 			description { state: "default" 0.0;
 				fixed: 1 0;
@@ -570,7 +570,7 @@ group { name: "elm/button/base/hoversel_vertical/default";
 			scale: 1;
 			description { state: "default" 0.0;
 				visible: 0;
-				rel1.to_x: "elm.swallow.content";
+				rel1.to_x: "elm.swallow.icon";
 				rel1.relative: 1.0 0.0;
 				rel1.offset: 0 4;
 				rel2.offset: -5 -5;
@@ -698,9 +698,9 @@ group { name: "elm/button/base/hoversel_vertical/default";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "icononly"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				set_state(PART:"elm.text", "visible", 0.0);
 			}
 		}
@@ -710,9 +710,9 @@ group { name: "elm/button/base/hoversel_vertical/default";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 				set_state(PART:"elm.text", "default", 0.0);
 			}
 		}
@@ -724,16 +724,16 @@ group { name: "elm/button/base/hoversel_vertical/default";
 				new Float:vl;
 				get_state(PART:"elm.text", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				else
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 			}
 		}
 		program { name: "icon_hide";
 			signal: "elm,state,icon,hidden";
 			source: "elm";
 			action:  STATE_SET "default" 0.0;
-			target: "elm.swallow.content";
+			target: "elm.swallow.icon";
 		}
 		program { name: "disable";
 			signal: "elm,state,disabled";
@@ -801,7 +801,7 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
 				color: 255 255 255 255;
 			}
 		}
-		part { name: "elm.swallow.content";
+		part { name: "elm.swallow.icon";
 			type: SWALLOW;
 			description { state: "default" 0.0;
 				visible: 0;
@@ -845,7 +845,7 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
 			scale: 1;
 			clip_to:       "textvis";
 			description { state: "default" 0.0;
-				rel1.to_x: "elm.swallow.content";
+				rel1.to_x: "elm.swallow.icon";
 				rel1.relative: 1.0 0.0;
 				rel1.offset: 0 4;
 				rel2.offset: -5 -5;
@@ -900,9 +900,9 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "icononly"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				set_state(PART:"textvis", "visible", 0.0);
 				set_state(PART:"elm.text", "visible", 0.0);
 			}
@@ -913,9 +913,9 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 				set_state(PART:"textvis", "default", 0.0);
 				set_state(PART:"elm.text", "default", 0.0);
 			}
@@ -928,16 +928,16 @@ group { name: "elm/button/base/hoversel_vertical_entry/default";
 				new Float:vl;
 				get_state(PART:"textvis", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				else
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 			}
 		}
 		program { name: "icon_hide";
 			signal: "elm,state,icon,hidden";
 			source: "elm";
 			action:  STATE_SET "default" 0.0;
-			target: "elm.swallow.content";
+			target: "elm.swallow.icon";
 		}
 	}
 }
@@ -983,7 +983,7 @@ group { name: "elm/button/base/anchor";
 				}
 			}
 		}
-		part { name: "elm.swallow.content";
+		part { name: "elm.swallow.icon";
 			type: SWALLOW;
 			description { state: "default" 0.0;
 				fixed: 1 0;
@@ -1020,7 +1020,7 @@ group { name: "elm/button/base/anchor";
 			scale: 1;
 			description { state: "default" 0.0;
 				visible: 0;
-				rel1.to_x: "elm.swallow.content";
+				rel1.to_x: "elm.swallow.icon";
 				rel1.relative: 1.0 0.0;
 				rel1.offset: 0 4;
 				rel2.offset: -5 -5;
@@ -1165,9 +1165,9 @@ group { name: "elm/button/base/anchor";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "icononly"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				set_state(PART:"elm.text", "visible", 0.0);
 			}
 		}
@@ -1177,9 +1177,9 @@ group { name: "elm/button/base/anchor";
 			script {
 				new st[31];
 				new Float:vl;
-				get_state(PART:"elm.swallow.content", st, 30, vl);
+				get_state(PART:"elm.swallow.icon", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 				set_state(PART:"elm.text", "default", 0.0);
 			}
 		}
@@ -1191,16 +1191,16 @@ group { name: "elm/button/base/anchor";
 				new Float:vl;
 				get_state(PART:"elm.text", st, 30, vl);
 				if (!strcmp(st, "visible"))
-					set_state(PART:"elm.swallow.content", "visible", 0.0);
+					set_state(PART:"elm.swallow.icon", "visible", 0.0);
 				else
-					set_state(PART:"elm.swallow.content", "icononly", 0.0);
+					set_state(PART:"elm.swallow.icon", "icononly", 0.0);
 			}
 		}
 		program { name: "icon_hide";
 			signal: "elm,state,icon,hidden";
 			source: "elm";
 			action:  STATE_SET "default" 0.0;
-			target: "elm.swallow.content";
+			target: "elm.swallow.icon";
 		}
 		program { name: "disable";
 			signal: "elm,state,disabled";
