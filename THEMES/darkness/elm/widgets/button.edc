@@ -454,9 +454,9 @@
                    color: 0 0 0 0;
                }
            }
-           part { name: "elm.swallow.icon_new";
+           part { name: "elm.swallow.content_new";
               type: SWALLOW;
-              clip_to: "elm.icon_new.clipper";
+              clip_to: "elm.content_new.clipper";
               description { state: "default" 0.0;
                  align: 0.5 0.5;
                  fixed: 0 0;
@@ -598,7 +598,7 @@
                    color: 255 255 255 0;
                }
            }
-           part { name: "elm.icon_new.clipper";
+           part { name: "elm.content_new.clipper";
               type: RECT;
               description { state: "default" 0.0;
                  color: 255 255 255 0;
@@ -776,7 +776,7 @@
               source: "elm";
               action: STATE_SET "animation" 0.0;
               target: "elm.icon.clipper";
-              target: "elm.icon_new.clipper";
+              target: "elm.content_new.clipper";
               transition: LINEAR 0.2;
               after: "icon_set,animation,done";
            }
@@ -788,7 +788,7 @@
               source: "elm";
               action: STATE_SET "default" 0.0;
               target: "elm.icon.clipper";
-              target: "elm.icon_new.clipper";
+              target: "elm.content_new.clipper";
            }
        }
    }
@@ -809,7 +809,7 @@
                color: 0 0 0 0;
             }
          }
-         part { name: "elm.swallow.icon_new";
+         part { name: "elm.swallow.content_new";
             description { state: "default" 0.0;
                fixed: 1 1;
             }
