@@ -259,7 +259,7 @@ get_transition_count(void)
 static void
 _theme_edje_object_set_aux(Evas_Object *obj, const char *group)
 {
-    if (!e_theme_edje_object_set(obj, "base/theme/modules/e-tiling",
+    if (!e_theme_edje_object_set(obj, "base/theme/modules/tiling",
                                  group)) {
         edje_object_file_set(obj, _G.edj_path, group);
     }
@@ -1775,7 +1775,7 @@ _check_moving_anims(const E_Border *bd, const Border_Extra *extra, int stack)
             e_popup_layer_set(overlay->popup, TILING_POPUP_LAYER);
             overlay->obj = edje_object_add(overlay->popup->evas);
             _theme_edje_object_set(overlay->obj,
-                                   "modules/e-tiling/move/left");
+                                   "modules/tiling/move/left");
             edje_object_size_min_calc(overlay->obj, &ew, &eh);
             e_popup_edje_bg_object_set(overlay->popup,
                                        overlay->obj);
@@ -1827,7 +1827,7 @@ _check_moving_anims(const E_Border *bd, const Border_Extra *extra, int stack)
             e_popup_layer_set(overlay->popup, TILING_POPUP_LAYER);
             overlay->obj = edje_object_add(overlay->popup->evas);
             _theme_edje_object_set(overlay->obj,
-                                   "modules/e-tiling/move/right");
+                                   "modules/tiling/move/right");
             edje_object_size_min_calc(overlay->obj, &ew, &eh);
             e_popup_edje_bg_object_set(overlay->popup,
                                        overlay->obj);
@@ -1875,7 +1875,7 @@ _check_moving_anims(const E_Border *bd, const Border_Extra *extra, int stack)
 
             e_popup_layer_set(overlay->popup, TILING_POPUP_LAYER);
             overlay->obj = edje_object_add(overlay->popup->evas);
-            _theme_edje_object_set(overlay->obj, "modules/e-tiling/move/up");
+            _theme_edje_object_set(overlay->obj, "modules/tiling/move/up");
             edje_object_size_min_calc(overlay->obj, &ew, &eh);
             e_popup_edje_bg_object_set(overlay->popup,
                                        overlay->obj);
@@ -1927,7 +1927,7 @@ _check_moving_anims(const E_Border *bd, const Border_Extra *extra, int stack)
             e_popup_layer_set(overlay->popup, TILING_POPUP_LAYER);
             overlay->obj = edje_object_add(overlay->popup->evas);
             _theme_edje_object_set(overlay->obj,
-                                   "modules/e-tiling/move/down");
+                                   "modules/tiling/move/down");
             edje_object_size_min_calc(overlay->obj, &ew, &eh);
             e_popup_edje_bg_object_set(overlay->popup,
                                        overlay->obj);
@@ -2891,10 +2891,10 @@ _transition_overlay_key_down(void *data,
             if ((bd && !_G.tinfo->conf->use_rows)
             ||  (!bd && _G.tinfo->conf->use_rows)) {
                 _theme_edje_object_set(trov->overlay.obj,
-                                       "modules/e-tiling/transition/horizontal");
+                                       "modules/tiling/transition/horizontal");
             } else {
                 _theme_edje_object_set(trov->overlay.obj,
-                                       "modules/e-tiling/transition/vertical");
+                                       "modules/tiling/transition/vertical");
             }
 
             edje_object_size_min_calc(trov->overlay.obj, &ew, &eh);
@@ -3243,8 +3243,6 @@ static void
 _pre_border_assign_hook(void *data,
                         E_Border *bd)
 {
-    Border_Extra *extra;
-
     if (tiling_g.config->show_titles)
         return;
 
@@ -3268,8 +3266,6 @@ _pre_border_assign_hook(void *data,
     if (bd->fullscreen) {
          return;
     }
-
-    extra = _get_or_create_border_extra(bd);
 
     if ((bd->bordername && strcmp(bd->bordername, "pixel"))
     ||  !bd->bordername)
@@ -3703,7 +3699,7 @@ _clear_border_extras(void *data)
 EAPI E_Module_Api e_modapi =
 {
     E_MODULE_API_VERSION,
-    "E-Tiling"
+    "Tiling"
 };
 
 EAPI void *
@@ -3715,15 +3711,11 @@ e_modapi_init(E_Module *m)
     tiling_g.module = m;
 
     if (tiling_g.log_domain < 0) {
-        tiling_g.log_domain = eina_log_domain_register("e-tiling", NULL);
+        tiling_g.log_domain = eina_log_domain_register("tiling", NULL);
         if (tiling_g.log_domain < 0) {
-            EINA_LOG_CRIT("could not register log domain 'e-tiling'");
+            EINA_LOG_CRIT("could not register log domain 'tiling'");
         }
     }
-
-    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
-    bindtextdomain(PACKAGE, buf);
-    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
     _G.info_hash = eina_hash_pointer_new(_clear_info_hash);
     _G.border_extras = eina_hash_pointer_new(_clear_border_extras);
@@ -3759,7 +3751,7 @@ e_modapi_init(E_Module *m)
         const char *_name = _value;                                          \
         if ((_action = e_action_add(_name))) {                               \
             _action->func.go = _cb;                                          \
-            e_action_predef_name_set(D_("E-Tiling"), D_(_title), _name,      \
+            e_action_predef_name_set(_("Tiling"), _(_title), _name,      \
                                      NULL, NULL, 0);                         \
         }                                                                    \
     }
@@ -3784,11 +3776,11 @@ e_modapi_init(E_Module *m)
 #undef ACTION_ADD
 
     /* Configuration entries */
-    snprintf(_G.edj_path, sizeof(_G.edj_path), "%s/e-module-e-tiling.edj",
+    snprintf(_G.edj_path, sizeof(_G.edj_path),"%s/e-module-tiling.edj",
              e_module_dir_get(m));
-    e_configure_registry_category_add("windows", 50, D_("Windows"), NULL,
+    e_configure_registry_category_add("windows", 50, _("Windows"), NULL,
                                       "preferences-system-windows");
-    e_configure_registry_item_add("windows/e-tiling", 150, D_("E-Tiling"),
+    e_configure_registry_item_add("windows/tiling", 150, _("Tiling"),
                                   NULL, _G.edj_path,
                                   e_int_config_tiling_module);
 
@@ -3807,7 +3799,7 @@ e_modapi_init(E_Module *m)
     E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, nb_stacks, INT);
     E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, use_rows, INT);
 
-    tiling_g.config = e_config_domain_load("module.e-tiling", _G.config_edd);
+    tiling_g.config = e_config_domain_load("module.tiling", _G.config_edd);
     if (!tiling_g.config) {
         tiling_g.config = E_NEW(Config, 1);
         tiling_g.config->tile_dialogs = 1;
@@ -3877,7 +3869,7 @@ e_modapi_shutdown(E_Module *m)
 
 #define ACTION_DEL(act, title, value)                        \
     if (act) {                                               \
-        e_action_predef_name_del(D_("E-Tiling"), D_(title)); \
+        e_action_predef_name_del(_("Tiling"), _(title)); \
         e_action_del(value);                                 \
         act = NULL;                                          \
     }
@@ -3892,7 +3884,7 @@ e_modapi_shutdown(E_Module *m)
     ACTION_DEL(_G.act_go, "Focus a particular window", "go");
 #undef ACTION_DEL
 
-    e_configure_registry_item_del("windows/e-tiling");
+    e_configure_registry_item_del("windows/tiling");
     e_configure_registry_category_del("windows");
 
     end_special_input();
@@ -3918,7 +3910,7 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-    e_config_domain_save("module.e-tiling", _G.config_edd, tiling_g.config);
+    e_config_domain_save("module.tiling", _G.config_edd, tiling_g.config);
 
     return EINA_TRUE;
 }

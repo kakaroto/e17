@@ -14,7 +14,7 @@ struct _E_Widget_Smart_Data
 /* Some defines to make coding with the e_widget_* easier for
  * configuration panel */
 #define RADIO(title, value, radiogroup) \
-  e_widget_radio_add(evas, D_(title), value, radiogroup)
+  e_widget_radio_add(evas, _(title), value, radiogroup)
 #define LIST_ADD(list, object) \
   e_widget_list_object_append(list, object, 1, 1, 0.5)
 
@@ -121,15 +121,15 @@ _fill_zone_config(E_Zone               *zone,
         list = e_widget_list_add(evas, false, true);
 
         LIST_ADD(list, e_widget_label_add(evas, desk->name));
-        slider = e_widget_slider_add(evas, 1, 0, D_("%1.0f"),
+        slider = e_widget_slider_add(evas, 1, 0, _("%1.0f"),
                                      0.0, 8.0, 1.0, 0, NULL,
                                      &vd->nb_stacks, 150);
         LIST_ADD(list, slider);
 
         rg = e_widget_radio_group_new(&vd->use_rows);
-        radio = e_widget_radio_add(evas, D_("columns"), 0, rg);
+        radio = e_widget_radio_add(evas, _("columns"), 0, rg);
         LIST_ADD(list, radio);
-        radio = e_widget_radio_add(evas, D_("rows"), 1, rg);
+        radio = e_widget_radio_add(evas, _("rows"), 1, rg);
         LIST_ADD(list, radio);
 
         LIST_ADD(cfdata->o_desklist, list);
@@ -169,16 +169,16 @@ _basic_create_widgets(E_Config_Dialog      *cfd,
     o = e_widget_list_add(evas, 0, 0);
 
     /* General settings */
-    of = e_widget_framelist_add(evas, D_("General"), 0);
+    of = e_widget_framelist_add(evas, _("General"), 0);
     e_widget_framelist_object_append(of,
-      e_widget_check_add(evas, D_("Tile dialog windows aswell"),
+      e_widget_check_add(evas, _("Tile dialog windows as well"),
                          &cfdata->config.tile_dialogs));
     e_widget_framelist_object_append(of,
-      e_widget_check_add(evas, D_("Show window titles"),
+      e_widget_check_add(evas, _("Show window titles"),
                          &cfdata->config.show_titles));
     oc = e_widget_list_add(evas, false, true);
     e_widget_list_object_append(oc,
-      e_widget_label_add(evas, D_("Key hints")), 1, 0, 0.5);
+      e_widget_label_add(evas, _("Key hints")), 1, 0, 0.5);
     e_widget_list_object_append(oc,
       e_widget_entry_add(evas, &cfdata->config.keyhints, NULL, NULL, NULL),
       1, 1, 0.5);
@@ -187,9 +187,9 @@ _basic_create_widgets(E_Config_Dialog      *cfd,
     LIST_ADD(o, of);
 
     /* Virtual desktop settings */
-    of = e_widget_framelist_add(evas, D_("Virtual Desktops"), 0);
+    of = e_widget_framelist_add(evas, _("Virtual Desktops"), 0);
     e_widget_label_add(evas,
-                       D_("Number of columns used to tile per desk"
+                       _("Number of columns used to tile per desk"
                           " (0 → tiling disabled):"));
     cfdata->osf = e_widget_list_add(evas, 0, 1);
 
@@ -313,7 +313,7 @@ e_int_config_tiling_module(E_Container *con,
     E_Config_Dialog_View *v;
     char buf[PATH_MAX];
 
-    if (e_config_dialog_find("E", "windows/e-tiling"))
+    if (e_config_dialog_find("E", "windows/tiling"))
         return NULL;
 
     v = E_NEW(E_Config_Dialog_View, 1);
@@ -323,11 +323,11 @@ e_int_config_tiling_module(E_Container *con,
     v->basic.apply_cfdata = _basic_apply_data;
     v->basic.create_widgets = _basic_create_widgets;
 
-    snprintf(buf, sizeof(buf), "%s/e-module-e-tiling.edj",
+    snprintf(buf, sizeof(buf), "%s/e-module-tiling.edj",
              e_module_dir_get(tiling_g.module));
     cfd = e_config_dialog_new(con,
-                              D_("Tiling Configuration"),
-                              "E", "windows/e-tiling",
+                              _("Tiling Configuration"),
+                              "E", "windows/tiling",
                               buf, 0, v, NULL);
     return cfd;
 }
