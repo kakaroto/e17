@@ -84,9 +84,9 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int i;
-   Evas_Map *m;
+   static Evas_Map *m = NULL;
    Evas_Coord x, y, w, h;
-   m = evas_map_new(4);
+   if (!m) m = evas_map_new(4);
    for (i = 0; i < 1; i++)
      {
         w = 640;
@@ -101,7 +101,6 @@ static void _loop(double t, int f)
         evas_object_map_enable_set(o_images[i], 1);
         evas_object_map_set(o_images[i], m);
      }
-   evas_map_free(m);
    FPS_STD(NAME);
 }
 

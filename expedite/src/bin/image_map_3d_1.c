@@ -101,11 +101,11 @@ _cube_pos(Cube *c,
           Evas_Coord x, Evas_Coord y, Evas_Coord z,
           double dx, double dy, double dz)
 {
-   Evas_Map *m;
+   static Evas_Map *m = NULL;
    int i, j, order[6], sorted;
    Evas_Coord mz[6];
    
-   m = evas_map_new(4);
+   if (!m) m = evas_map_new(4);
    evas_map_smooth_set(m, 0);
 
    for (i = 0; i < 6; i++)
@@ -162,7 +162,6 @@ _cube_pos(Cube *c,
    evas_object_raise(c->side[order[0]].o);
    for (i = 1; i < 6; i++)
      evas_object_stack_below(c->side[order[i]].o, c->side[order[i - 1]].o);
-   evas_map_free(m);
 }
 
 static void

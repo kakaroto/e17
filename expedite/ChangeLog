@@ -1,7 +1,11 @@
-2011-12-02 Carsten Haitzler (The Rasterman)
+2011-12-02  Carsten Haitzler (The Rasterman)
 
         1.1.0 release
 
-2012-04-26 Carsten Haitzler (The Rasterman)
+2012-04-26  Carsten Haitzler (The Rasterman)
 
         1.2.0 release
+
+2012-05-02  Cedric Bail
+
+	* Do not allocate more than once Evas_Map.

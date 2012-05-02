@@ -56,22 +56,21 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int i;
-   Evas_Map *m;
+   static Evas_Map *m = NULL;
    Evas_Coord x, y, w, h;
+   if (!m) m = evas_map_new(4);
    for (i = 0; i < 1; i++)
      {
 	w = win_w * 4;
 	h = win_h * 4;
 	x = (win_w / 2) - (w / 2);
 	y = (win_h / 2) - (h / 2);
-        m = evas_map_new(4);
         evas_map_util_points_populate_from_geometry(m, 
                                                     -win_w, -win_h,
                                                     win_w * 4, win_h * 4, 0);
         evas_map_util_rotate(m, f, win_w / 2, win_h / 2);
         evas_object_map_enable_set(o_images[i], 1);
         evas_object_map_set(o_images[i], m);
-        evas_map_free(m);
      }
    FPS_STD(NAME);
 }

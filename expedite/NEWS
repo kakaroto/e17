@@ -1,3 +1,12 @@
+Expedite 1.3.0
+
+Changes since Expedite 1.2.0:
+-----------------------------
+
+Improvements:
+
+   * Don't over allocate Evas_Map.
+
 Expedite 1.2.0
 
 Changes since Expedite 1.1.0:

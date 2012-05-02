@@ -56,7 +56,7 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int i;
-   Evas_Map *m;
+   static Evas_Map *m = NULL;
    Evas_Coord x, y, w, h;
    for (i = 0; i < OBNUM; i++)
      {
@@ -68,7 +68,7 @@ static void _loop(double t, int f)
 	y += cos((double)(f + (i * 28)) / (43.8 * SLOW)) * (h / 2);
 	evas_object_move(o_images[i], x, y);
      }
-   m = evas_map_new(4);
+   if (!m) m = evas_map_new(4);
    evas_map_util_points_populate_from_geometry(m,
                                                (win_w - 720) / 2,
                                                (win_h - 420) / 2,
@@ -76,7 +76,6 @@ static void _loop(double t, int f)
    evas_map_util_rotate(m, f, win_w / 2, win_h / 2);
    evas_object_map_enable_set(o_mask, 1);
    evas_object_map_set(o_mask, m);
-   evas_map_free(m);
    FPS_STD(NAME);
 }
 
