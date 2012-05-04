@@ -21,13 +21,13 @@ _obj_del(Efx_Zoom_Data *ezd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, vo
 }
 
 static void
-_zoom_center_calc(Efx_Zoom_Data *ezd, Evas_Object *obj, Evas_Coord *x, Evas_Coord *y)
+_zoom_center_calc(EFX *e, Evas_Object *obj, Evas_Coord *x, Evas_Coord *y)
 {
    Evas_Coord w, h;
-   if (ezd->e->map_data.zoom_center)
+   if (e->map_data.zoom_center)
      {
-        *x = ezd->e->map_data.zoom_center->x;
-        *y = ezd->e->map_data.zoom_center->y;
+        *x = e->map_data.zoom_center->x;
+        *y = e->map_data.zoom_center->y;
      }
    else
      {
@@ -38,11 +38,13 @@ _zoom_center_calc(Efx_Zoom_Data *ezd, Evas_Object *obj, Evas_Coord *x, Evas_Coor
 }
 
 static void
-_zoom(EFX *e, Evas_Object *obj, double zoom, Evas_Coord x, Evas_Coord y)
+_zoom(EFX *e, Evas_Object *obj, double zoom)
 {
    Evas_Map *map;
+   Evas_Coord x, y;
 
    map = efx_map_new(obj);
+   _zoom_center_calc(e, e->obj, &x, &y);
    //DBG("ZOOM %p: %g: %d,%d", obj, zoom, x, y);
    evas_map_util_zoom(map, zoom, zoom, x, y);
    efx_maps_apply(e, obj, map, EFX_MAPS_APPLY_ROTATE_SPIN);
@@ -52,18 +54,16 @@ _zoom(EFX *e, Evas_Object *obj, double zoom, Evas_Coord x, Evas_Coord y)
 static Eina_Bool
 _zoom_cb(Efx_Zoom_Data *ezd, double pos)
 {
-   Evas_Coord x, y;
    double zoom;
    Eina_List *l;
    EFX *e;
 
    zoom = ecore_animator_pos_map(pos, ezd->speed, 0, 0);
-   _zoom_center_calc(ezd, ezd->e->obj, &x, &y);
    ezd->e->map_data.zoom = (zoom * (ezd->ending_zoom - ezd->starting_zoom)) + ezd->starting_zoom;
    //DBG("total: %g || zoom (pos %g): %g || endzoom: %g || startzoom: %g", ezd->e->map_data.zoom, zoom, pos, ezd->ending_zoom, ezd->starting_zoom);
-   _zoom(ezd->e, ezd->e->obj, ezd->e->map_data.zoom, x, y);
+   efx_maps_apply(ezd->e, ezd->e->obj, NULL, EFX_MAPS_APPLY_ALL);
    EINA_LIST_FOREACH(ezd->e->followers, l, e)
-     _zoom(ezd->e, e->obj, ezd->e->map_data.zoom, x, y);
+     efx_maps_apply(e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
 
    if (pos != 1.0) return EINA_TRUE;
 
@@ -83,11 +83,7 @@ _zoom_stop(Evas_Object *obj, Eina_Bool reset)
    ezd = e->zoom_data;
    if (reset)
      {
-        Evas_Coord x, y, w, h;
-        evas_object_geometry_get(ezd->e->obj, &x, &y, &w, &h);
-        x += (w / 2);
-        y += (h / 2);
-        _zoom(e, obj, 1.0, x, y);
+        _zoom(e, obj, 1.0);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, ezd);
         _obj_del(ezd, NULL, NULL, NULL);
         INF("reset zooming object %p", obj);
@@ -107,9 +103,9 @@ _efx_zoom_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
    Efx_Zoom_Data *ezd2 = owner;
    Evas_Coord x, y;
    double zoom;
-   if ((ezd2 && (ezd2->e->map_data.zoom <= 0)) || (ezd->e->map_data.zoom <= 0)) return;
-   _zoom_center_calc(ezd2 ? ezd2 : ezd, obj, &x, &y);
-   zoom = ezd->e->map_data.zoom;
+   if ((ezd2 && (ezd2->e->map_data.zoom <= 0)) || (ezd && (ezd->e->map_data.zoom <= 0))) return;
+   _zoom_center_calc(ezd2 ? ezd2->e : ezd->e, obj, &x, &y);
+   zoom = ezd ? ezd->e->map_data.zoom : 0;
    if (ezd2) zoom += ezd2->e->map_data.zoom;
    evas_map_util_zoom(map, zoom, zoom, x, y);
 }
@@ -138,19 +134,6 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    INF("zoom: %p - %g%%->%g%% over %gs: %s", obj, (starting_zoom ?: e->map_data.zoom) * 100.0, ending_zoom * 100.0, total_time, efx_speed_str[speed]);
    if (!total_time)
      {
-        Evas_Coord x, y, w, h;
-
-        if (!zoom_point)
-          {
-             evas_object_geometry_get(obj, &x, &y, &w, &h);
-             x += (w / 2);
-             y += (h / 2);
-          }
-        else
-          {
-             x = zoom_point->x;
-             y = zoom_point->y;
-          }
         if (e->zoom_data) efx_zoom_stop(obj);
         else
           {
@@ -158,7 +141,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
              evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e->zoom_data);
           }
         EINA_SAFETY_ON_NULL_RETURN_VAL(e->zoom_data, EINA_FALSE);
-        _zoom(e, obj, ending_zoom, x, y);
+        _zoom(e, obj, ending_zoom);
         ezd = e->zoom_data;
         e->map_data.zoom = ending_zoom;
         return EINA_TRUE;
