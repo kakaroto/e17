@@ -1,5 +1,18 @@
 #include "efx_private.h"
 
+static void
+_obj_del(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   EFX *e;
+
+   e = evas_object_data_get(obj, "efx-data");
+   if (!e) return;
+   if (e->owner)
+     e->owner->followers = eina_list_remove(e->owner->followers, e);
+   e->owner = NULL;
+   efx_free(e);
+}
+
 EAPI void
 efx_realize(Evas_Object *obj)
 {
@@ -60,6 +73,8 @@ efx_follow(Evas_Object *obj, Evas_Object *follower)
    else
      ef = efx_new(follower);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ef, EINA_FALSE);
+   if ((!ef->zoom_data) && (!ef->rotate_data) && (!ef->spin_data) && (!ef->move_data) && (!ef->bumpmap_data))
+     evas_object_event_callback_priority_add(ef->obj, EVAS_CALLBACK_FREE, EVAS_CALLBACK_PRIORITY_BEFORE, (Evas_Object_Event_Cb)_obj_del, ef);
 
    ef->owner = e;
    e->followers = eina_list_append(e->followers, ef);
@@ -78,6 +93,7 @@ efx_unfollow(Evas_Object *obj)
    if (!e->owner) return;
    INF("unfollow: (owner %p) || (follower %p)", e->owner->obj, obj);
    e->owner->followers = eina_list_remove(e->owner->followers, e);
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e);
    efx_free(e->owner);
    e->owner = NULL;
    efx_free(e);
