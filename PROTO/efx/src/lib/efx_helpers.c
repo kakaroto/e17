@@ -89,15 +89,15 @@ void
 efx_maps_apply(EFX *e, Evas_Object *obj, Evas_Map *map, Eina_Bool rotate, Eina_Bool spin, Eina_Bool zoom)
 {
    Eina_Bool new = EINA_FALSE;
-   if ((!e->rotate_data) && (!e->spin_data) && (!e->zoom_data)) return;
+   if ((!e->owner) && (!e->rotate_data) && (!e->spin_data) && (!e->zoom_data)) return;
    if (!map)
      {
-        map = efx_map_new(e->obj);
+        map = efx_map_new(obj);
         new = EINA_TRUE;
      }
-   if (rotate && e->rotate_data) _efx_rotate_calc(e->rotate_data, obj, map);
-   if (spin && e->spin_data) _efx_spin_calc(e->spin_data, obj, map);
-   if (zoom && e->zoom_data) _efx_zoom_calc(e->zoom_data, obj, map);
+   if (rotate && e->rotate_data) _efx_rotate_calc(e->rotate_data, e->owner ? e->owner->rotate_data : NULL, obj, map);
+   if (spin && e->spin_data) _efx_spin_calc(e->spin_data, e->owner ? e->owner->spin_data : NULL, obj, map);
+   if (zoom && e->zoom_data) _efx_zoom_calc(e->zoom_data, e->owner ? e->owner->zoom_data : NULL, obj, map);
    if (new) efx_map_set(obj, map);
    //DBG("%p: %s %s %s", obj, rotate ? "rotate" : "", spin ? "spin" : "", zoom ? "zoom" : "");
 }

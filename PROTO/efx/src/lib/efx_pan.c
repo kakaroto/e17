@@ -86,7 +86,7 @@ _smart_reconfigure(Smart_Data *sd)
      {
         evas_object_geometry_get(e->obj, &x, &y, NULL, NULL);
         evas_object_move(e->obj, x - sd->dx, y - sd->dy);
-        efx_maps_apply(sd->e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
+        efx_maps_apply(e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
 //        _size_debug(e->obj);
      }
 }

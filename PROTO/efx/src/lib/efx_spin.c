@@ -47,7 +47,7 @@ _spin_cb(Efx_Spin_Data *esd)
      {
         map = efx_map_new(e->obj);
         efx_rotate_helper(esd->e, e->obj, map, esd->e->map_data.rotation);
-        efx_maps_apply(esd->e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
+        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
         efx_map_set(e->obj, map);
      }
 /*
@@ -89,10 +89,11 @@ _spin_stop(Evas_Object *obj, Eina_Bool reset)
 }
 
 void
-_efx_spin_calc(void *data, Evas_Object *obj, Evas_Map *map)
+_efx_spin_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Spin_Data *esd = data;
-   efx_rotate_helper(esd->e, obj, map, esd->e->map_data.rotation);
+   Efx_Spin_Data *esd2 = owner;
+   efx_rotate_helper(esd2 ? esd2->e : esd->e, obj, map, esd->e->map_data.rotation + (esd2 ? esd2->e->map_data.rotation : 0));
 }
 
 EAPI Eina_Bool

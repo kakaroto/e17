@@ -58,7 +58,7 @@ _move_circle_cb(Efx_Move_Data *emd, double pos)
    EINA_LIST_FOREACH(emd->e->followers, l, e)
      {
         _move(e->obj, xx - ox, yy - oy);
-        efx_maps_apply(emd->e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
+        efx_maps_apply(e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
      }
 
    if (pos != 1.0) return EINA_TRUE;
@@ -83,7 +83,7 @@ _move_cb(Efx_Move_Data *emd, double pos)
    EINA_LIST_FOREACH(emd->e->followers, l, e)
      {
         _move(e->obj, x, y);
-        efx_maps_apply(emd->e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
+        efx_maps_apply(e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
      }
 
    emd->current.x += x;

@@ -101,13 +101,17 @@ _zoom_stop(Evas_Object *obj, Eina_Bool reset)
 }
 
 void
-_efx_zoom_calc(void *data, Evas_Object *obj, Evas_Map *map)
+_efx_zoom_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Zoom_Data *ezd = data;
+   Efx_Zoom_Data *ezd2 = owner;
    Evas_Coord x, y;
-   if (ezd->e->map_data.zoom <= 0) return;
-   _zoom_center_calc(ezd, obj, &x, &y);
-   evas_map_util_zoom(map, ezd->e->map_data.zoom, ezd->e->map_data.zoom, x, y);
+   double zoom;
+   if ((ezd2 && (ezd2->e->map_data.zoom <= 0)) || (ezd->e->map_data.zoom <= 0)) return;
+   _zoom_center_calc(ezd2 ? ezd2 : ezd, obj, &x, &y);
+   zoom = ezd->e->map_data.zoom;
+   if (ezd2) zoom += ezd2->e->map_data.zoom;
+   evas_map_util_zoom(map, zoom, zoom, x, y);
 }
 
 EAPI Eina_Bool

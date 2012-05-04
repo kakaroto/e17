@@ -39,9 +39,9 @@ struct EFX
    Eina_List *followers;
 };
 
-void _efx_zoom_calc(void *, Evas_Object *obj, Evas_Map *map);
-void _efx_rotate_calc(void *, Evas_Object *obj, Evas_Map *map);
-void _efx_spin_calc(void *, Evas_Object *obj, Evas_Map *map);
+void _efx_zoom_calc(void *, void *, Evas_Object *obj, Evas_Map *map);
+void _efx_rotate_calc(void *, void *, Evas_Object *obj, Evas_Map *map);
+void _efx_spin_calc(void *, void *, Evas_Object *obj, Evas_Map *map);
 
 #define EFX_MAPS_APPLY_ALL EINA_TRUE, EINA_TRUE, EINA_TRUE
 #define EFX_MAPS_APPLY_ROTATE EINA_TRUE, EINA_FALSE, EINA_FALSE
