@@ -39,7 +39,6 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
    int ambient;
 
    double z_2, lightx, lighty;
-   int z2;
    int mx;
    int my;
    unsigned int *d1;
@@ -59,7 +58,7 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
    ambient = ebd->ambient / 0x100;
    depth = ebd->depth / 0x100;
    depth /= (255 * (255 + 255 + 255));
-   z2 = z * z;
+   z_2 = z * z;
 
    o = ebd->e->obj;
    evas_object_image_size_get(o, &w, &h);
