@@ -82,7 +82,7 @@ efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
         evas_object_geometry_get(obj, &x, &y, &w, &h);
         evas_map_util_rotate(map, degrees, x + (w / 2), y + (h / 2));
      }
-   //_size_debug(e->obj);
+//   _size_debug(e->obj);
 }
 
 void
@@ -95,9 +95,9 @@ efx_maps_apply(EFX *e, Evas_Object *obj, Evas_Map *map, Eina_Bool rotate, Eina_B
         map = efx_map_new(obj);
         new = EINA_TRUE;
      }
-   if (rotate && e->rotate_data) _efx_rotate_calc(e->rotate_data, e->owner ? e->owner->rotate_data : NULL, obj, map);
-   if (spin && e->spin_data) _efx_spin_calc(e->spin_data, e->owner ? e->owner->spin_data : NULL, obj, map);
-   if (zoom && e->zoom_data) _efx_zoom_calc(e->zoom_data, e->owner ? e->owner->zoom_data : NULL, obj, map);
+   if (rotate && (e->rotate_data || (e->owner && e->owner->rotate_data))) _efx_rotate_calc(e->rotate_data, e->owner ? e->owner->rotate_data : NULL, obj, map);
+   if (spin && (e->spin_data || (e->owner && e->owner->spin_data))) _efx_spin_calc(e->spin_data, e->owner ? e->owner->spin_data : NULL, obj, map);
+   if (zoom && (e->zoom_data || (e->owner && e->owner->zoom_data))) _efx_zoom_calc(e->zoom_data, e->owner ? e->owner->zoom_data : NULL, obj, map);
    if (new) efx_map_set(obj, map);
-   //DBG("%p: %s %s %s", obj, rotate ? "rotate" : "", spin ? "spin" : "", zoom ? "zoom" : "");
+//   DBG("%p: %s %s %s", obj, rotate ? "rotate" : "", spin ? "spin" : "", zoom ? "zoom" : "");
 }

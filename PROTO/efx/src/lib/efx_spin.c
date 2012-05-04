@@ -91,7 +91,7 @@ _efx_spin_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Spin_Data *esd = data;
    Efx_Spin_Data *esd2 = owner;
-   efx_rotate_helper(esd2 ? esd2->e : esd->e, obj, map, esd->e->map_data.rotation + (esd2 ? esd2->e->map_data.rotation : 0));
+   efx_rotate_helper(esd2 ? esd2->e : (esd ? esd->e : NULL), obj, map, (esd ? esd->e->map_data.rotation : 0) + (esd2 ? esd2->e->map_data.rotation : 0));
 }
 
 EAPI Eina_Bool
