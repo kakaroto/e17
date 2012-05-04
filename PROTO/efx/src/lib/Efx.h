@@ -96,7 +96,7 @@ EAPI void efx_shutdown(void);
  * Using this function, @p follower will copy every effect set on @p obj
  * until @ref efx_unfollow() is called on @p follower. Note that passing
  * a "follower" object as @p obj will cause the object passed as @p follower
- * to be chained to the "owner" object.
+ * to be chained to the follower's top-most "owner" object.
  * @param obj The object to follow the actions of
  * @param follower The object to do the following
  * @return EINA_TRUE on success, else EINA_FALSE
@@ -110,6 +110,16 @@ EAPI Eina_Bool efx_follow(Evas_Object *obj, Evas_Object *follower);
  * @param obj The follower object
  */
 EAPI void efx_unfollow(Evas_Object *obj);
+
+/**
+ * Retrieve the list of following objects
+ *
+ * This function returns a copy of the list of objects following @p obj.
+ * The returned list must be manually freed with eina_list_free.
+ * @param obj The owner object
+ * @return A list of follower Evas_Objects, or @c NULL
+ */
+EAPI Eina_List *efx_followers_get(Evas_Object *obj);
 
 /**
  * Rotate an object
