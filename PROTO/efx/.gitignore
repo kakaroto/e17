@@ -48,5 +48,6 @@ test_follow
 test_move
 test_bumpmap
 test_path
+test_move_circle
 compile
 
