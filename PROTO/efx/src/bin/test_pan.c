@@ -45,6 +45,7 @@ static Eina_Bool
 _spin(void *o)
 {
    efx_spin_start(o, 120, NULL);
+   //efx_rotate(o, EFX_EFFECT_SPEED_LINEAR, 1080, NULL, 9.0, NULL, NULL);
    return EINA_FALSE;
 }
 
