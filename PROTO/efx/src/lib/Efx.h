@@ -97,6 +97,10 @@ EAPI void efx_shutdown(void);
  * until @ref efx_unfollow() is called on @p follower. Note that passing
  * a "follower" object as @p obj will cause the object passed as @p follower
  * to be chained to the follower's top-most "owner" object.
+ * @note Effects from an "owner" object will supercede any similar effects
+ * explicitly set on a "follower" object, and they will also probably
+ * break each other. Don't chain owners to other owners unless you know
+ * what you are doing.
  * @param obj The object to follow the actions of
  * @param follower The object to do the following
  * @return EINA_TRUE on success, else EINA_FALSE
