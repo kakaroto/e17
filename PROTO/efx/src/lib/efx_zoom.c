@@ -67,6 +67,7 @@ _zoom_cb(Efx_Zoom_Data *ezd, double pos)
 
    if (pos != 1.0) return EINA_TRUE;
 
+   ezd->anim = NULL;
    if (ezd->cb) ezd->cb(ezd->data, &ezd->e->map_data, ezd->e->obj);
    return EINA_TRUE;
 }

@@ -80,11 +80,13 @@ _smart_reconfigure(Smart_Data *sd)
    Evas_Coord x, y;
 
    evas_object_move(sd->child_obj, sd->x - sd->px, sd->y - sd->py);
+   efx_maps_apply(sd->e, sd->child_obj, NULL, EFX_MAPS_APPLY_ALL);
    //DBG("DELTA: (%d,%d)", sd->dx, sd->dy);
    EINA_LIST_FOREACH(sd->e->followers, l, e)
      {
         evas_object_geometry_get(e->obj, &x, &y, NULL, NULL);
         evas_object_move(e->obj, x - sd->dx, y - sd->dy);
+        efx_maps_apply(sd->e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
 //        _size_debug(e->obj);
      }
 }
@@ -302,8 +304,6 @@ _pan_cb(Efx_Pan_Data *epd, double pos)
 {
    int x, y, px, py;
    double pct;
-   Eina_List *l;
-   EFX *e;
 
    pct = ecore_animator_pos_map(pos, epd->speed, 0, 0);
    x = lround(pct * (double)epd->change.x) - epd->current.x;
@@ -311,14 +311,12 @@ _pan_cb(Efx_Pan_Data *epd, double pos)
    _smart_pan_get(epd->pan, &px, &py);
    //DBG("PAN: (%d,%d) += (%d,%d)", px, py, x, y);
    _smart_pan_set(epd->pan, px + x, py + y);
-   efx_maps_apply(epd->e, epd->e->obj, NULL, EFX_MAPS_APPLY_ALL);
-   EINA_LIST_FOREACH(epd->e->followers, l, e)
-     efx_maps_apply(epd->e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
 
    epd->current.x += x;
    epd->current.y += y;
    if (pos != 1.0) return EINA_TRUE;
 
+   epd->anim = NULL;
    if (epd->cb) epd->cb(epd->data, &epd->e->map_data, epd->e->obj);
    return EINA_TRUE;
 }
@@ -386,6 +384,6 @@ efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double t
    epd->cb = cb;
    epd->data = (void*)data;
    if (epd->anim) ecore_animator_del(epd->anim);
-   ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_pan_cb, epd);
+   epd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_pan_cb, epd);
    return EINA_TRUE;
 }

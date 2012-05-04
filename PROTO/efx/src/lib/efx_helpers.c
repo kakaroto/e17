@@ -82,7 +82,6 @@ efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
         evas_object_geometry_get(obj, &x, &y, &w, &h);
         evas_map_util_rotate(map, degrees, x + (w / 2), y + (h / 2));
      }
-
    //_size_debug(e->obj);
 }
 
@@ -100,4 +99,5 @@ efx_maps_apply(EFX *e, Evas_Object *obj, Evas_Map *map, Eina_Bool rotate, Eina_B
    if (spin && e->spin_data) _efx_spin_calc(e->spin_data, obj, map);
    if (zoom && e->zoom_data) _efx_zoom_calc(e->zoom_data, obj, map);
    if (new) efx_map_set(obj, map);
+   //DBG("%p: %s %s %s", obj, rotate ? "rotate" : "", spin ? "spin" : "", zoom ? "zoom" : "");
 }

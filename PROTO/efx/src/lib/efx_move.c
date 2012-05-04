@@ -90,6 +90,7 @@ _move_cb(Efx_Move_Data *emd, double pos)
    emd->current.y += y;
    if (pos != 1.0) return EINA_TRUE;
 
+   emd->anim = NULL;
    if (emd->cb) emd->cb(emd->data, &emd->e->map_data, emd->e->obj);
    return EINA_TRUE;
 }

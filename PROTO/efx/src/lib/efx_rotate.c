@@ -45,8 +45,8 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
 
    if (pos != 1.0) return EINA_TRUE;
 
-   if (erd->cb) erd->cb(erd->data, &erd->e->map_data, erd->e->obj);
    erd->anim = NULL;
+   if (erd->cb) erd->cb(erd->data, &erd->e->map_data, erd->e->obj);
    return EINA_TRUE;
 }
 
