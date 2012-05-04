@@ -104,9 +104,10 @@ _efx_zoom_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
    Evas_Coord x, y;
    double zoom;
    if ((ezd2 && (ezd2->e->map_data.zoom <= 0)) || (ezd && (ezd->e->map_data.zoom <= 0))) return;
-   _zoom_center_calc(ezd2 ? ezd2->e : ezd->e, obj, &x, &y);
+   _zoom_center_calc(ezd2 ? ezd2->e : ezd->e, ezd2 ? ezd2->e->obj : obj, &x, &y);
    zoom = ezd ? ezd->e->map_data.zoom : 0;
    if (ezd2) zoom += ezd2->e->map_data.zoom;
+   //DBG("zoom: %g @ (%d,%d)", zoom, x, y);
    evas_map_util_zoom(map, zoom, zoom, x, y);
 }
 
