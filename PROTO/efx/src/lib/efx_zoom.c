@@ -63,10 +63,7 @@ _zoom_cb(Efx_Zoom_Data *ezd, double pos)
    //DBG("total: %g || zoom (pos %g): %g || endzoom: %g || startzoom: %g", ezd->e->map_data.zoom, zoom, pos, ezd->ending_zoom, ezd->starting_zoom);
    _zoom(ezd->e, ezd->e->obj, ezd->e->map_data.zoom, x, y);
    EINA_LIST_FOREACH(ezd->e->followers, l, e)
-     {
-        _zoom_center_calc(ezd, e->obj, &x, &y);
-        _zoom(ezd->e, e->obj, ezd->e->map_data.zoom, x, y);
-     }
+     _zoom(ezd->e, e->obj, ezd->e->map_data.zoom, x, y);
 
    if (pos != 1.0) return EINA_TRUE;
 
