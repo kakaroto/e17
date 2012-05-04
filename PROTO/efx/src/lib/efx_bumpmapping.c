@@ -89,11 +89,11 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
        i = w - 1;
        do
          {
-            double x1, y1, v;
+            double x1, y_1, v;
             int r, g, b, gr;
 
             gr = A_VAL(mp) * (R_VAL(mp) + G_VAL(mp) + B_VAL(mp));
-            y1 = depth * (double)(A_VAL(mpy) * (R_VAL(mpy) +
+            y_1 = depth * (double)(A_VAL(mpy) * (R_VAL(mpy) +
                                                 G_VAL(mpy) +
                                                 B_VAL(mpy)) -
                                   gr);
@@ -107,8 +107,8 @@ _bumpmap(Efx_Bumpmap_Data *ebd)
               }
             x1 = depth * (double)(A_VAL(mp) * (R_VAL(mp) +
                                            G_VAL(mp) + B_VAL(mp)) - gr);
-            v = x1 * lightx + y1 * lighty + z;
-            v /= sqrt((x1 * x1) + (y1 * y1) + 1.0);
+            v = x1 * lightx + y_1 * lighty + z;
+            v /= sqrt((x1 * x1) + (y_1 * y_1) + 1.0);
             v /= sqrt((lightx * lightx) + (lighty * lighty) + z_2);
             v += ambient;
             r = v * R_VAL(src) * red;
