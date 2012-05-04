@@ -52,7 +52,10 @@ efx_follow(Evas_Object *obj, Evas_Object *follower)
    if (ef)
      {
         if (ef->owner)
-          ef->owner->followers = eina_list_remove(ef->owner->followers, ef);
+          {
+             if (ef->owner == e) return EINA_TRUE;
+             ef->owner->followers = eina_list_remove(ef->owner->followers, ef);
+          }
      }
    else
      ef = efx_new(follower);
@@ -60,7 +63,7 @@ efx_follow(Evas_Object *obj, Evas_Object *follower)
 
    ef->owner = e;
    e->followers = eina_list_append(e->followers, ef);
-   INF("follow: (owner %p) || (follower %p)", obj, follower);
+   INF("follow: (owner %p: %u) || (follower %p)", obj, eina_list_count(e->followers), follower);
    return EINA_TRUE;
 }
 
