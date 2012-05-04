@@ -6,6 +6,8 @@
 #include <Ecore_Evas.h>
 
 static Evas_Coord w, h;
+static Eina_Bool _pan(void *o);
+static void _pan2(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *o);
 
 static Evas_Object *
 rect_create(Evas *e)
@@ -18,18 +20,31 @@ rect_create(Evas *e)
    return r;
 }
 
+static void
+_pan3(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *o)
+{
+   efx_pan(o, EFX_EFFECT_SPEED_ACCELERATE, &(Evas_Point){200, 200}, 3.0, NULL, NULL);
+   efx_zoom(o, EFX_EFFECT_SPEED_ACCELERATE, e ? e->zoom : 1.0, 1.5, NULL, 3.0, _pan2, NULL);
+}
+
+static void
+_pan2(void *data __UNUSED__, Efx_Map_Data *e, Evas_Object *o)
+{
+   efx_pan(o, EFX_EFFECT_SPEED_DECELERATE, &(Evas_Point){-200, -200}, 3.0, NULL, NULL);
+   efx_zoom(o, EFX_EFFECT_SPEED_DECELERATE, e->zoom, 1.0, NULL, 3.0, _pan3 , NULL);
+}
+
 static Eina_Bool
 _pan(void *o)
 {
-   efx_pan(o, EFX_EFFECT_SPEED_LINEAR, &(Evas_Point){200, 200}, 3.0, NULL, NULL);
-   efx_zoom(o, EFX_EFFECT_SPEED_LINEAR, 1.0, 0.5, NULL, 3.0, NULL, NULL);
+   _pan3(NULL, NULL, o);
    return EINA_FALSE;
 }
 
 static Eina_Bool
-_zoom(void *o)
+_spin(void *o)
 {
-   //efx_rotate(o, EFX_EFFECT_SPEED_LINEAR, 360, NULL, 3.0, NULL, NULL);
+   efx_spin_start(o, 120, NULL);
    return EINA_FALSE;
 }
 
@@ -86,7 +101,7 @@ main(void)
    efx_follow(o, r);
  
    ecore_timer_add(1.0, _pan, o);
-   ecore_timer_add(1.0, _zoom, r);
+   ecore_timer_add(1.0, _spin, r);
 
    ecore_main_loop_begin();
 
