@@ -87,7 +87,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-requirements="ethumb_client >= 0.1.0 ecore-file >= 1.0.0 ecore >= 1.0.0 evas >= 1.0.0 eet >= 1.2.2 eina >= 1.0.0 libexif >= 0.6.16 libiptcdata >= 1.0.2 libxml-2.0 >= 0.1.1 efreet >= 1.0.0 eio"
+requirements="ethumb_client >= 0.1.0 ecore-file >= 1.0.0 ecore >= 1.0.0 ecore-evas >= 1.0.0 evas >= 1.0.0 eet >= 1.2.2 eina >= 1.0.0 libexif >= 0.6.16 libiptcdata >= 1.0.2 libxml-2.0 >= 0.1.1 efreet >= 1.0.0 eio"
 
 PKG_CHECK_EXISTS([azy >= 0.0.1],
    [
