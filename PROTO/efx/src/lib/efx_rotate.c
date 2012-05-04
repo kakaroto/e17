@@ -32,14 +32,12 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    erd->e->map_data.rotation = degrees * erd->degrees + erd->start_degrees;
    //DBG("erd->e->map_data.rotation=%g,erd->degrees=%g,erd->start_degrees=%g", erd->e->map_data.rotation, erd->degrees, erd->start_degrees);
    map = efx_map_new(erd->e->obj);
-   efx_rotate_helper(erd->e, erd->e->obj, map, erd->e->map_data.rotation);
-   efx_maps_apply(erd->e, erd->e->obj, map, EFX_MAPS_APPLY_ZOOM);
+   efx_maps_apply(erd->e, erd->e->obj, map, EFX_MAPS_APPLY_ALL);
    efx_map_set(erd->e->obj, map);
    EINA_LIST_FOREACH(erd->e->followers, l, e)
      {
         map = efx_map_new(e->obj);
-        efx_rotate_helper(erd->e, e->obj, map, erd->e->map_data.rotation);
-        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
+        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ALL);
         efx_map_set(e->obj, map);
      }
 
@@ -80,7 +78,7 @@ _efx_rotate_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
 {
    Efx_Rotate_Data *erd = data;
    Efx_Rotate_Data *erd2 = owner;
-   efx_rotate_helper(erd2 ? erd2->e : erd->e, obj, map, erd->e->map_data.rotation + (erd2 ? erd2->e->map_data.rotation : 0));
+   efx_rotate_helper(erd2 ? erd2->e : (erd ? erd->e : NULL), obj, map, (erd ? erd->e->map_data.rotation : 0) + (erd2 ? erd2->e->map_data.rotation : 0));
 }
 
 EAPI Eina_Bool
