@@ -245,7 +245,31 @@ EAPI void efx_realize(Evas_Object *obj);
 
 EAPI Eina_Bool efx_bumpmap(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 
+/**
+ * Initialize an object for panning
+ *
+ * Use this function immediately after creating an object if you plan
+ * to place other layers on top of it. This prevents the newly-created pan
+ * object from obscuring other objects. No visible changes will occur from
+ * calling this function.
+ * @param obj The object to set up for panning
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
 EAPI Eina_Bool efx_pan_init(Evas_Object *obj);
+/**
+ * Commence a pan effect
+ *
+ * A "pan" is a motion which shifts the view of an object from one point to another.
+ * This function sets up (calling efx_pan_init() if necessary) and runs a pan effect
+ * which will shift the view of the canvas in the directions specified by @p distance.
+ * @param obj The object to use for panning
+ * @param speed The speed to pan at
+ * @param distance The relative X and Y distance to move during the pan
+ * @param total_time The time that the effect should occur over
+ * @param cb The optional callback to call when the effect completes
+ * @param data Optional data to pass to @p cb
+ * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
+ */
 EAPI Eina_Bool efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
