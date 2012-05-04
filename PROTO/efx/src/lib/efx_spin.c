@@ -40,14 +40,12 @@ _spin_cb(Efx_Spin_Data *esd)
 
    esd->e->map_data.rotation = (double)esd->frame * ((double)esd->dps / fps) + esd->start;
    map = efx_map_new(esd->e->obj);
-   efx_rotate_helper(esd->e, esd->e->obj, map, esd->e->map_data.rotation);
-   efx_maps_apply(esd->e, esd->e->obj, map, EFX_MAPS_APPLY_ZOOM);
+   efx_maps_apply(esd->e, esd->e->obj, map, EFX_MAPS_APPLY_ALL);
    efx_map_set(esd->e->obj, map);
    EINA_LIST_FOREACH(esd->e->followers, l, e)
      {
         map = efx_map_new(e->obj);
-        efx_rotate_helper(esd->e, e->obj, map, esd->e->map_data.rotation);
-        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ZOOM);
+        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ALL);
         efx_map_set(e->obj, map);
      }
 /*
