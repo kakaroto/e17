@@ -64,7 +64,8 @@ efx_follow(Evas_Object *obj, Evas_Object *follower)
    EINA_SAFETY_ON_NULL_RETURN_VAL(follower, EINA_FALSE);
 
    e = evas_object_data_get(obj, "efx-data");
-   if (!e) return EINA_FALSE;
+   if (!e) e = efx_new(obj);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    while (e->owner) e = e->owner;
 
    ef = evas_object_data_get(follower, "efx-data");

@@ -54,7 +54,8 @@ struct Efx_Map_Data
    Evas_Point *rotate_center; /**< The current rotation center for the object */
    double zoom; /**< The current zoom amount of an object */
    Evas_Point *zoom_center; /**< The current zoom center for the object */
-   Evas_Point *move_center; /**< The current move center for the object */
+   Evas_Point *move_center; /**< The current move vertex for the object */
+   Evas_Point *pan_center; /**< The current pan vertex for the object */
 };
 
 /**
@@ -234,6 +235,8 @@ EAPI void efx_realize(Evas_Object *obj);
 
 EAPI Eina_Bool efx_bumpmap(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 
+EAPI Eina_Bool efx_pan_init(Evas_Object *obj);
+EAPI Eina_Bool efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
 #endif

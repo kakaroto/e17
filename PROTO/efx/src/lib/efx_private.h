@@ -34,6 +34,7 @@ struct EFX
    void *zoom_data;
    void *move_data;
    void *bumpmap_data;
+   void *pan_data; 
    Efx_Map_Data map_data;
    Eina_List *followers;
 };
@@ -63,7 +64,9 @@ _size_debug(Evas_Object *obj)
 {
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   DBG("%p: x=%d,y=%d,w=%d,h=%d", obj, x, y, w, h);
+   DBG("%s %p: x=%d,y=%d,w=%d,h=%d", evas_object_visible_get(obj) ? "vis" : "hid", obj, x, y, w, h);
 }
+
+#define HIT DBG("HIT")
 
 #endif

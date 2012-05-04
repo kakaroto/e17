@@ -1,20 +1,5 @@
 #include "efx_private.h"
 
-/* glibc acos+asin are broken on some platforms,
- * found these on the wine mailing list
- */
-static double
-_acos(double x)
-{
-   return atan2f(sqrtf((1 - x) * (1 + x)), x);
-}
-
-static double
-_asin(double x)
-{
-   return atan2f(x, sqrtf((1 - x) * (1 + x)));
-}
-
 EAPI void
 efx_realize(Evas_Object *obj)
 {
