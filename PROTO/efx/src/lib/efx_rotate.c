@@ -16,7 +16,7 @@ _obj_del(Efx_Rotate_Data *erd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, 
 {
    if (erd->anim) ecore_animator_del(erd->anim);
    erd->e->rotate_data = NULL;
-   efx_free(erd->e);
+   if ((!erd->e->owner) && (!erd->e->followers)) efx_free(erd->e);
    free(erd);
 }
 

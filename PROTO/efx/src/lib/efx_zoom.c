@@ -16,7 +16,7 @@ _obj_del(Efx_Zoom_Data *ezd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, vo
 {
    if (ezd->anim) ecore_animator_del(ezd->anim);
    ezd->e->zoom_data = NULL;
-   efx_free(ezd->e);
+   if ((!ezd->e->owner) && (!ezd->e->followers)) efx_free(ezd->e);
    free(ezd);
 }
 

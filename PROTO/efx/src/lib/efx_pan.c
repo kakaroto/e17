@@ -295,7 +295,7 @@ _obj_del(Efx_Pan_Data *epd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, voi
         epd->pan = NULL;
      }
    epd->e->pan_data = NULL;
-   efx_free(epd->e);
+   if ((!epd->e->owner) && (!epd->e->followers)) efx_free(epd->e);
    free(epd);
 }
 

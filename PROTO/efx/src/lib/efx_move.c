@@ -17,7 +17,7 @@ _obj_del(Efx_Move_Data *emd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, vo
 {
    if (emd->anim) ecore_animator_del(emd->anim);
    emd->e->move_data = NULL;
-   efx_free(emd->e);
+   if ((!emd->e->owner) && (!emd->e->followers)) efx_free(emd->e);
    free(emd);
 }
 
@@ -28,6 +28,7 @@ _move(Evas_Object *obj, int x, int y)
 
    evas_object_geometry_get(obj, &ox, &oy, NULL, NULL);
    evas_object_move(obj, ox + x, oy + y);
+   //DBG("%p to (%d,%d)", obj, ox + x, oy + y);
 }
 
 static Eina_Bool
@@ -52,7 +53,7 @@ _move_circle_cb(Efx_Move_Data *emd, double pos)
    y -= (double)h / 2.;
    xx = lround(x);
    yy = lround(y);
-   DBG("move: %g || %g,%g", degrees, x, y);
+   //DBG("move: %g || %g,%g", degrees, x, y);
    evas_object_move(emd->e->obj, xx, yy);
    efx_maps_apply(emd->e, emd->e->obj, NULL, EFX_MAPS_APPLY_ALL);
    EINA_LIST_FOREACH(emd->e->followers, l, e)
