@@ -259,7 +259,19 @@ EAPI Eina_Bool efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Po
  */
 EAPI void efx_realize(Evas_Object *obj);
 
-
+/**
+ * Add bumpmapping on an object at a point
+ *
+ * This function will generate a bumpmap effect on @p obj at the coordinates
+ * given.
+ * @note The map is generated and displayed immediately upon calling this function
+ * @warning The calculations for this function are slow, and should not be used
+ * for realtime bumpmap generation; see the bumpmap test for details.
+ * @param obj The object to generate the map for
+ * @param x The X coordinate to center the map on
+ * @param y The Y coordinate to center the map on
+ * @return EINA_TRUE on successful map generation, else EINA_FALSE
+ */
 EAPI Eina_Bool efx_bumpmap(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 
 /**
