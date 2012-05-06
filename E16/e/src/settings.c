@@ -448,8 +448,9 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, MR_SEMI_SOLID);
-   DialogItemRadioButtonGroupSetValPtr(radio, &dd->slide_mode);
 #endif /* ENABLE_OLDMOVRES */
+
+   DialogItemRadioButtonGroupSetValPtr(radio, &dd->slide_mode);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
