@@ -64,7 +64,7 @@ _move_circle_cb(Efx_Move_Data *emd, double pos)
 
    if (pos != 1.0) return EINA_TRUE;
 
-   if (emd->cb) emd->cb(emd->data, &emd->e->map_data, emd->e->obj);
+   EFX_QUEUE_CHECK(emd);
    return EINA_TRUE;
 }
 
@@ -92,7 +92,7 @@ _move_cb(Efx_Move_Data *emd, double pos)
    if (pos != 1.0) return EINA_TRUE;
 
    emd->anim = NULL;
-   if (emd->cb) emd->cb(emd->data, &emd->e->map_data, emd->e->obj);
+   EFX_QUEUE_CHECK(emd);
    return EINA_TRUE;
 }
 

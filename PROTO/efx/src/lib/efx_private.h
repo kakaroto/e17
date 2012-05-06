@@ -43,6 +43,7 @@ struct EFX
    void *fade_data;
    Efx_Map_Data map_data;
    Eina_List *followers;
+   Eina_List *queue;
 };
 
 void _efx_zoom_calc(void *, void *, Evas_Object *obj, Evas_Map *map);
@@ -65,6 +66,17 @@ Eina_Bool efx_zoom_center_init(EFX *e, const Evas_Point *center);
 Eina_Bool efx_move_center_init(EFX *e, const Evas_Point *center);
 void efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees);
 void efx_clip_setup(Evas_Object *obj, Evas_Object *clip);
+
+#define EFX_QUEUE_CHECK(X) do \
+   { \
+      Eina_Bool run; \
+      EFX *ee = (X)->e; \
+      run = efx_queue_complete((X)->e, (X)); \
+      if ((X)->cb) (X)->cb((X)->data, &(X)->e->map_data, (X)->e->obj); \
+      if (run) efx_queue_process(ee); \
+   } while (0)
+Eina_Bool efx_queue_complete(EFX *e, void *effect_data);
+void efx_queue_process(EFX *e);
 
 static inline void
 _size_debug(Evas_Object *obj)

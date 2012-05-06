@@ -68,7 +68,7 @@ _zoom_cb(Efx_Zoom_Data *ezd, double pos)
    if (pos != 1.0) return EINA_TRUE;
 
    ezd->anim = NULL;
-   if (ezd->cb) ezd->cb(ezd->data, &ezd->e->map_data, ezd->e->obj);
+   EFX_QUEUE_CHECK(ezd);
    return EINA_TRUE;
 }
 
@@ -85,6 +85,8 @@ _zoom_stop(Evas_Object *obj, Eina_Bool reset)
      {
         _zoom(e, obj, 1.0);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, ezd);
+        if (efx_queue_complete(ezd->e, ezd))
+          efx_queue_process(ezd->e);
         _obj_del(ezd, NULL, NULL, NULL);
         INF("reset zooming object %p", obj);
      }
@@ -93,6 +95,8 @@ _zoom_stop(Evas_Object *obj, Eina_Bool reset)
         ecore_animator_del(ezd->anim);
         ezd->anim = NULL;
         INF("stopped zooming object %p", obj);
+        if (efx_queue_complete(ezd->e, ezd))
+          efx_queue_process(ezd->e);
      }
 }
 

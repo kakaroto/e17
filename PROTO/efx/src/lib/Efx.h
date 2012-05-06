@@ -32,6 +32,7 @@
 
 typedef struct Efx_Map_Data Efx_Map_Data;
 typedef struct Efx_Color Efx_Color;
+typedef struct Efx_Queued_Effect Efx_Queued_Effect;
 /**
  * @typedef Efx_End_Cb
  * This is the callback type used to notify a user about the end of an effect.
@@ -43,6 +44,15 @@ typedef struct Efx_Color Efx_Color;
  */
 typedef void (*Efx_End_Cb)(void *data, Efx_Map_Data *e, Evas_Object *obj);
 
+typedef enum Efx_Effect_Type
+{
+   EFX_EFFECT_TYPE_ROTATE,
+   EFX_EFFECT_TYPE_ZOOM,
+   EFX_EFFECT_TYPE_MOVE,
+   EFX_EFFECT_TYPE_PAN,
+   EFX_EFFECT_TYPE_FADE
+} Efx_Effect_Type;
+
 /**
  * @struct Efx_Color
  *
@@ -53,6 +63,34 @@ struct Efx_Color
    unsigned char r; /**< Red */
    unsigned char g; /**< Green */
    unsigned char b; /**< Blue */
+};
+
+struct Efx_Queued_Effect
+{
+   Efx_Effect_Type type;
+   union
+     {
+        struct
+        {
+           double degrees;
+           Evas_Point *center;
+        } rotation;
+        struct
+        {
+           double start;
+           double end;
+           Evas_Point *center;
+        } zoom;
+        struct
+        {
+           Evas_Point point;
+        } movement;
+        struct
+        {
+           Efx_Color color;
+           unsigned char alpha;
+        } fade;
+     } effect;
 };
 
 /**
@@ -339,6 +377,10 @@ EAPI void efx_fade_reset(Evas_Object *obj);
  * @param obj An object
  */
 EAPI void efx_fade_stop(Evas_Object *obj);
+
+
+EAPI void efx_queue_run(Evas_Object *obj);
+EAPI Eina_Bool efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
 #endif

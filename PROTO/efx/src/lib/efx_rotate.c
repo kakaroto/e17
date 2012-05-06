@@ -44,7 +44,7 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    if (pos != 1.0) return EINA_TRUE;
 
    erd->anim = NULL;
-   if (erd->cb) erd->cb(erd->data, &erd->e->map_data, erd->e->obj);
+   EFX_QUEUE_CHECK(erd);
    return EINA_TRUE;
 }
 
@@ -62,6 +62,8 @@ _rotate_stop(Evas_Object *obj, Eina_Bool reset)
         _rotate_cb(erd, 0);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, erd);
         erd->e->map_data.rotation = 0;
+        if (efx_queue_complete(erd->e, erd))
+          efx_queue_process(erd->e);
         _obj_del(erd, NULL, NULL, NULL);
         INF("reset rotating object %p", obj);
      }
@@ -70,6 +72,8 @@ _rotate_stop(Evas_Object *obj, Eina_Bool reset)
         if (erd->anim) ecore_animator_del(erd->anim);
         erd->anim = NULL;
         INF("stopped rotating object %p", obj);
+        if (efx_queue_complete(erd->e, erd))
+          efx_queue_process(erd->e);
      }
 }
 

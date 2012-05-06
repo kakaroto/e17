@@ -82,7 +82,7 @@ _fade_cb(Efx_Fade_Data *efd, double pos)
      evas_object_color_set(efd->clip, MIN(efd->color.r, efd->alpha[1]), MIN(efd->color.g, efd->alpha[1]), MIN(efd->color.b, efd->alpha[1]), efd->alpha[1]);
 
    efd->anim = NULL;
-   if (efd->cb) efd->cb(efd->data, &efd->e->map_data, efd->e->obj);
+   EFX_QUEUE_CHECK(efd);
    return EINA_TRUE;
 }
 
@@ -100,6 +100,8 @@ _fade_stop(Evas_Object *obj, Eina_Bool reset)
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, efd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_RESIZE, (Evas_Object_Event_Cb)_clip_setup, efd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_MOVE, (Evas_Object_Event_Cb)_clip_setup, efd);
+        if (efx_queue_complete(efd->e, efd))
+          efx_queue_process(efd->e);
         _obj_del(efd, NULL, NULL, NULL);
         INF("reset faded object %p", obj);
      }
@@ -107,6 +109,8 @@ _fade_stop(Evas_Object *obj, Eina_Bool reset)
      {
         INF("stopped faded object %p", obj);
         if (efd->anim) ecore_animator_del(efd->anim);
+        if (efx_queue_complete(efd->e, efd))
+          efx_queue_process(efd->e);
      }
 }
 

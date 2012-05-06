@@ -317,7 +317,7 @@ _pan_cb(Efx_Pan_Data *epd, double pos)
    if (pos != 1.0) return EINA_TRUE;
 
    epd->anim = NULL;
-   if (epd->cb) epd->cb(epd->data, &epd->e->map_data, epd->e->obj);
+   EFX_QUEUE_CHECK(epd);
    return EINA_TRUE;
 }
 
