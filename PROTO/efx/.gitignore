@@ -51,3 +51,4 @@ test_path
 test_move_circle
 test_pan
 compile
+test_fade
