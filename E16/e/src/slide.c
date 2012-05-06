@@ -27,21 +27,21 @@
 #include "xwin.h"
 
 void
-EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th)
+EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th,
+		int speed, int mode __UNUSED__, int flags __UNUSED__)
 {
    int                 k, x, y, w, h;
    int                 fx, fy, fw, fh, warp;
-   int                 speed = Conf.movres.maximize_speed;
-
-   fx = EoGetX(ewin);
-   fy = EoGetY(ewin);
-   fw = ewin->client.w;
-   fh = ewin->client.h;
 
    warp = (ewin == GetEwinPointerInClient());
 
    if (Conf.movres.maximize_animate)
      {
+	fx = EoGetX(ewin);
+	fy = EoGetY(ewin);
+	fw = ewin->client.w;
+	fh = ewin->client.h;
+
 	ETimedLoopInit(0, 1024, speed);
 	for (k = 0; k <= 1024;)
 	  {
@@ -65,14 +65,15 @@ EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th)
 }
 
 void
-EwinSlideTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed, int mode)
+EwinSlideTo(EWin * ewin, int fx, int fy, int tx, int ty,
+	    int speed, int mode, int flags)
 {
-   EwinsSlideTo(&ewin, &fx, &fy, &tx, &ty, 1, speed, mode);
+   EwinsSlideTo(&ewin, &fx, &fy, &tx, &ty, 1, speed, mode, flags);
 }
 
 void
 EwinsSlideTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
-	     int speed, int mode)
+	     int speed, int mode, int flags __UNUSED__)
 {
    int                 k, x, y, w, h, i;
    char                firstlast, grab_server;

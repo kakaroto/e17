@@ -1999,7 +1999,7 @@ EwinSlideIn(void *data)
       goto done;
 
    EwinSlideTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
-	       Conf.place.slidespeedmap, Conf.place.slidemode);
+	       Conf.place.slidespeedmap, Conf.place.slidemode, 0);
 
  done:
    Mode.place.doing_slide = 0;

@@ -189,7 +189,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
 	ESync(ESYNC_SLIDEOUT);
 	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx + sw, yy, xx, yy, 1, sh, sw, sh,
-			Conf.place.slidespeedmap);
+			Conf.shading.speed);
 	break;
      case 1:
 	att.win_gravity = NorthWestGravity;
@@ -201,7 +201,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
 	ESync(ESYNC_SLIDEOUT);
 	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx, yy, xx, yy, 1, sh, sw, sh,
-			Conf.place.slidespeedmap);
+			Conf.shading.speed);
 	break;
      case 2:
 	att.win_gravity = SouthEastGravity;
@@ -213,7 +213,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
 	ESync(ESYNC_SLIDEOUT);
 	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx, yy + sh, xx, yy, sw, 1, sw, sh,
-			Conf.place.slidespeedmap);
+			Conf.shading.speed);
 	break;
      case 3:
 	att.win_gravity = NorthWestGravity;
@@ -225,7 +225,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
 	ESync(ESYNC_SLIDEOUT);
 	EoMap(s, 2);
 	EobjSlideSizeTo(EoObj(s), xx, yy, xx, yy, sw, 1, sw, sh,
-			Conf.place.slidespeedmap);
+			Conf.shading.speed);
 	break;
      default:
 	break;

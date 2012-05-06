@@ -849,21 +849,24 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
      {
 	/* Restore regular state */
 	EwinSlideSizeTo(ewin, ewin->save_max.x, ewin->save_max.y,
-			ewin->save_max.w, ewin->save_max.h);
+			ewin->save_max.w, ewin->save_max.h,
+			Conf.movres.maximize_speed, 0, 0);
 	goto done;
      }
    if (old_ver == ver && old_hor && !hor)
      {
 	/* Turn off horizontal maxsize */
 	EwinSlideSizeTo(ewin, ewin->save_max.x, EoGetY(ewin),
-			ewin->save_max.w, ewin->client.h);
+			ewin->save_max.w, ewin->client.h,
+			Conf.movres.maximize_speed, 0, 0);
 	goto done;
      }
    if (old_hor == hor && old_ver && !ver)
      {
 	/* Turn off vertical maxsize */
 	EwinSlideSizeTo(ewin, EoGetX(ewin), ewin->save_max.y,
-			ewin->client.w, ewin->save_max.h);
+			ewin->client.w, ewin->save_max.h,
+			Conf.movres.maximize_speed, 0, 0);
 	goto done;
      }
 
@@ -988,7 +991,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    if (h < 10)
       h = 10;
 
-   EwinSlideSizeTo(ewin, x, y, w, h);
+   EwinSlideSizeTo(ewin, x, y, w, h, Conf.movres.maximize_speed, 0, 0);
  done:
    HintsSetWindowState(ewin);
 }

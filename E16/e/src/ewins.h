@@ -465,12 +465,18 @@ void                MaxSizeHV(EWin * ewin, const char *resize_type,
 			      int hor, int ver);
 
 /* slide.c */
+#define SLIDE_SOUND     (1 << 0)
+#define SLIDE_FOCUS     (1 << 1)
+#define SLIDE_WARP      (1 << 2)
+
 void                EwinSlideSizeTo(EWin * ewin, int tx, int ty,
-				    int tw, int th);
+				    int tw, int th,
+				    int speed, int mode, int flags);
 void                EwinSlideTo(EWin * ewin, int fx, int fy, int tx, int ty,
-				int speed, int mode);
-void                EwinsSlideTo(EWin ** ewin, int *fx, int *fy, int *tx,
-				 int *ty, int num_wins, int speed, int mode);
+				int speed, int mode, int flags);
+void                EwinsSlideTo(EWin ** ewin, int *fx, int *fy,
+				 int *tx, int *ty, int num_wins,
+				 int speed, int mode, int flags);
 
 /* stacking.c */
 EWin               *const *EwinListStackGet(int *num);
