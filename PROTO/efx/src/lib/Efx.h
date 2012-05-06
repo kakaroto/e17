@@ -154,7 +154,7 @@ EAPI Evas_Object *efx_leader_get(Evas_Object *obj);
  * @note The actual location of the object will not change; this is a map effect
  * @param obj The object to rotate
  * @param speed The speed to rotate at
- * @param degress The amount to rotate
+ * @param degrees The amount to rotate
  * @param center The optional point to rotate around
  * @param total_time The time that the effect should occur over
  * @param cb The optional callback to call when the effect completes
