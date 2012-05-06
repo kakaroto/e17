@@ -814,7 +814,7 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
    if (Mode.place.enable_features > 0)
      {
 	/* if set for borderless then dont slide it in */
-	if (Conf.place.slidein && !Mode.place.doing_slide &&
+	if (Conf.place.slidein &&
 	    !ewin->state.no_border && dsk == DesksGetCurrent())
 	   doslide = 1;
 
@@ -988,7 +988,6 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	     fx = WinGetW(VROOT);
 	     fy = (rand() % (WinGetH(VROOT))) - EoGetH(ewin);
 	  }
-	Mode.place.doing_slide = 1;
 	ewin->state.animated = 1;
 	FocusEnable(0);
 
@@ -2002,7 +2001,6 @@ EwinSlideIn(void *data)
 	       Conf.place.slidespeedmap, Conf.place.slidemode, 0);
 
  done:
-   Mode.place.doing_slide = 0;
    FocusEnable(1);
 
    return 0;
