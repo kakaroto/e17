@@ -49,7 +49,7 @@ _obj_del(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj, void *e
           }
         free(efd);
      }
-   if ((!efd->e->owner) && (!efd->e->followers)) efx_free(e);
+   if ((!e->owner) && (!e->followers)) efx_free(e);
 }
 
 static Eina_Bool
