@@ -21,11 +21,10 @@ rect_create(Evas *e)
    return r;
 }
 
-static Eina_Bool
-_vanish(void *t)
+static void
+_vanish(void *d __UNUSED__, Efx_Map_Data *e __UNUSED__, Evas_Object *obj)
 {
-   evas_object_del(t);
-   return EINA_FALSE;
+   evas_object_del(obj);
 }
 
 static Eina_Bool
@@ -46,7 +45,7 @@ _notice(void *r3)
    {
       Evas_Textblock_Style *ts;
       ts = evas_textblock_style_new();
-      evas_textblock_style_set(ts, "DEFAULT='font=Sans:style=Bold font_size=14 color=#000'"
+      evas_textblock_style_set(ts, "DEFAULT='font=Sans:style=Bold font_size=14 color=#FFF'"
               "br='\n'"
               "ps='ps'"
               "tab='\t'");
@@ -58,8 +57,12 @@ _notice(void *r3)
    evas_object_show(t);
    efx_unfollow(r);
    efx_follow(r, t);
+   /* we want the text to follow the movement of r, so we must do the effect before
+    * setting r to follow r3
+    */
+   efx_fade(t, EFX_EFFECT_SPEED_LINEAR, &(Efx_Color){255, 0, 0}, 255, 0, NULL, NULL);
+   efx_fade(t, EFX_EFFECT_SPEED_DECELERATE, &(Efx_Color){0, 0, 0}, 0, 3.0, _vanish, NULL);
    efx_follow(r3, r);
-   ecore_timer_add(3.0, _vanish, t);
    return EINA_FALSE;
 }
 
