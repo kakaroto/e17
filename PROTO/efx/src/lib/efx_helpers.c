@@ -109,6 +109,6 @@ efx_clip_setup(Evas_Object *obj, Evas_Object *clip)
    Evas_Coord x, y, w, h;
    if ((!obj) || (!clip)) return;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   evas_object_move(clip, x, y);
-   evas_object_resize(clip, w, h);
+   evas_object_move(clip, x - 5, y - 5);
+   evas_object_resize(clip, w + 10, h + 10);
 }
