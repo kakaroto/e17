@@ -194,7 +194,7 @@ _obj_information_get(Tree_Item *treeit)
    oinfo->evas_props.is_clipper = !!evas_object_clipees_get(obj);
    oinfo->evas_props.bt = eina_stringshare_ref(evas_object_data_get(obj, ".clouseau.bt"));
 
-   if (!strcmp("elm_widget", evas_object_type_get(obj)))
+   if (elm_widget_is(obj))
      {
         oinfo->obj_type = CLOUSEAU_OBJ_TYPE_ELM;
 

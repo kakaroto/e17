@@ -203,15 +203,8 @@ libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
    treeit = calloc(1, sizeof(*treeit));
    treeit->ptr = o;
    treeit->is_obj = EINA_TRUE;
-   if (elm_widget_is(o))
-     {
-        snprintf(buf, sizeof(buf), "%s: %s", evas_object_type_get(o),
-              elm_widget_type_get(o));
-     }
-   else
-     {
-        snprintf(buf, sizeof(buf), "%s", evas_object_type_get(o));
-     }
+   snprintf(buf, sizeof(buf), "%s", evas_object_type_get(o));
+
    treeit->name = eina_stringshare_add(buf);
    treeit->is_clipper = !!evas_object_clipees_get(o);
    treeit->is_visible = evas_object_visible_get(o);
