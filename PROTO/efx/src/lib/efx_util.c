@@ -73,7 +73,7 @@ efx_follow(Evas_Object *obj, Evas_Object *follower)
    else
      ef = efx_new(follower);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ef, EINA_FALSE);
-   if ((!ef->zoom_data) && (!ef->rotate_data) && (!ef->spin_data) && (!ef->move_data) && (!ef->bumpmap_data))
+   if ((!ef->zoom_data) && (!ef->rotate_data) && (!ef->spin_data) && (!ef->move_data) && (!ef->bumpmap_data) && (!ef->pan_data) && (!ef->fade_data))
      evas_object_event_callback_priority_add(ef->obj, EVAS_CALLBACK_FREE, EVAS_CALLBACK_PRIORITY_BEFORE, (Evas_Object_Event_Cb)_obj_del, ef);
 
    ef->owner = e;
