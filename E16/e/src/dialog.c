@@ -1678,13 +1678,32 @@ DialogItemImageSetFile(DItem * di, const char *image)
    di->fill_v = 0;
 }
 
+static int
+_DialogItemSliderClampVal(const DItem * di, int val)
+{
+   if (di->item.slider.lower < di->item.slider.upper)
+     {
+	if (val < di->item.slider.lower)
+	   val = di->item.slider.lower;
+	else if (val > di->item.slider.upper)
+	   val = di->item.slider.upper;
+     }
+   else
+     {
+	if (val > di->item.slider.lower)
+	   val = di->item.slider.lower;
+	else if (val < di->item.slider.upper)
+	   val = di->item.slider.upper;
+     }
+
+   return val;
+}
+
 void
 DialogItemSliderSetVal(DItem * di, int val)
 {
-   if (val < di->item.slider.lower)
-      val = di->item.slider.lower;
-   else if (val > di->item.slider.upper)
-      val = di->item.slider.upper;
+   val = _DialogItemSliderClampVal(di, val);
+
    if (di->item.slider.val_ptr)
       *di->item.slider.val_ptr = val;
 
@@ -1702,18 +1721,10 @@ DialogItemSliderSetValPtr(DItem * di, int *val_ptr)
 void
 DialogItemSliderSetBounds(DItem * di, int lower, int upper)
 {
-   if (lower < upper)
-     {
-	di->item.slider.lower = lower;
-	di->item.slider.upper = upper;
-     }
-   else
-     {
-	di->item.slider.lower = upper;
-	di->item.slider.upper = lower;
-     }
-   if (di->item.slider.upper <= di->item.slider.lower)
-      di->item.slider.upper = di->item.slider.lower + 1;
+   if (upper == lower)
+      upper = lower + 1;
+   di->item.slider.lower = lower;
+   di->item.slider.upper = upper;
 
    if (di->realized)
       DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
@@ -1902,19 +1913,18 @@ DialogOKstr(const char *title, const char *txt)
 static int
 _DlgPixToVal(const DItem * di, int dx, int sr)
 {
-   int                 vr, value;
+   int                 vr, val;
 
    vr = di->item.slider.upper - di->item.slider.lower;
-   dx = (int)(((float)dx / (sr * di->item.slider.unit)) * vr + .5);
+   dx = (int)(((float)dx / (sr * di->item.slider.unit)) * abs(vr) + .5);
    dx *= di->item.slider.unit;
-   value = di->item.slider.lower + dx;
+   if (vr < 0)
+      dx = -dx;
+   val = di->item.slider.lower + dx;
 
-   if (value < di->item.slider.lower)
-      value = di->item.slider.lower;
-   if (value > di->item.slider.upper)
-      value = di->item.slider.upper;
+   val = _DialogItemSliderClampVal(di, val);
 
-   return value;
+   return val;
 }
 
 static void
@@ -1999,7 +2009,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 static void
 DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 {
-   int                 x, y, wheel_jump, val;
+   int                 x, y, jump, val;
 
    switch (di->type)
      {
@@ -2020,6 +2030,7 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 
 	val = (di->item.slider.val_ptr) ?
 	   *(di->item.slider.val_ptr) : di->item.slider.lower;
+	jump = 0;
 
 	/* Coords -> item.slider.base_win */
 	ETranslateCoordinates(win, di->item.slider.base_win,
@@ -2033,17 +2044,17 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	       {
 		  if (ev->xbutton.x >
 		      (di->item.slider.knob_x + (di->item.slider.knob_w / 2)))
-		     val += di->item.slider.jump;
+		     jump = di->item.slider.jump;
 		  else
-		     val -= di->item.slider.jump;
+		     jump = -di->item.slider.jump;
 	       }
 	     else
 	       {
 		  if (ev->xbutton.y >
 		      (di->item.slider.knob_y + (di->item.slider.knob_h / 2)))
-		     val += di->item.slider.jump;
+		     jump = di->item.slider.jump;
 		  else
-		     val -= di->item.slider.jump;
+		     jump = -di->item.slider.jump;
 	       }
 	     break;
 
@@ -2068,20 +2079,17 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 
 	  case 4:
 	  case 5:
-	     wheel_jump = di->item.slider.jump / 2;
-	     if (!wheel_jump)
-		wheel_jump++;
+	     jump = di->item.slider.jump / 2;
+	     if (!jump)
+		jump++;
 
 	     if (ev->xbutton.button == 5)
-		val -= wheel_jump;
-	     else if (ev->xbutton.button == 4)
-		val += wheel_jump;
+		jump = -jump;
 	     break;
 	  }
-	if (val < di->item.slider.lower)
-	   val = di->item.slider.lower;
-	if (val > di->item.slider.upper)
-	   val = di->item.slider.upper;
+	if (di->item.slider.lower > di->item.slider.upper)
+	   jump = -jump;
+	val = _DialogItemSliderClampVal(di, val + jump);
 	if (di->item.slider.val_ptr)
 	   *di->item.slider.val_ptr = val;
 #if 0				/* Remove? */
