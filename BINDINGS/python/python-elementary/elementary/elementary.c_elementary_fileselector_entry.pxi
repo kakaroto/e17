@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def _fs_callback_conv(long addr):
+def _fs_entry_callback_conv(long addr):
     cdef const_char_ptr s = <const_char_ptr>addr
     if s == NULL:
         return None
@@ -121,18 +121,18 @@ cdef class FileselectorEntry(Object):
         elm_fileselector_entry_is_save_set(self.obj, is_save)
 
     def callback_selected_add(self, func, *args, **kwargs):
-        self._callback_add_full("selected", _fs_callback_conv,
+        self._callback_add_full("selected", _fs_entry_callback_conv,
                                 func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected", _fs_callback_conv, func)
+        self._callback_del_full("selected", _fs_entry_callback_conv, func)
 
     def callback_done_add(self, func, *args, **kwargs):
-        self._callback_add_full("done", _fs_callback_conv,
+        self._callback_add_full("done", _fs_entry_callback_conv,
                                 func, *args, **kwargs)
 
     def callback_done_del(self, func):
-        self._callback_del_full("done", _fs_callback_conv, func)
+        self._callback_del_full("done", _fs_entry_callback_conv, func)
 
 
 _elm_widget_type_register("fileselector_entry", FileselectorEntry)
