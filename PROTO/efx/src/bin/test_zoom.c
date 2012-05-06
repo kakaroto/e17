@@ -62,6 +62,7 @@ main(void)
    eina_log_domain_level_set("efx", EINA_LOG_LEVEL_DBG);
    ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 450, 450);
    ecore_evas_callback_delete_request_set(ee, _end);
+   ecore_evas_title_set(ee, "zoom");
    ecore_evas_show(ee);
    e = ecore_evas_get(ee);
    r = evas_object_rectangle_add(e);
