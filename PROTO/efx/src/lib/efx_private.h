@@ -74,6 +74,14 @@ _size_debug(Evas_Object *obj)
    DBG("%s %p: x=%d,y=%d,w=%d,h=%d", evas_object_visible_get(obj) ? "vis" : "hid", obj, x, y, w, h);
 }
 
+static inline void
+_color_debug(Evas_Object *obj)
+{
+   Evas_Coord r, g, b, a;
+   evas_object_color_get(obj, &r, &g, &b, &a);
+   DBG("%d/%d/%d/%d", MIN(r, a), MIN(g, a), MIN(b, a), a);
+}
+
 #define HIT DBG("HIT")
 
 #endif
