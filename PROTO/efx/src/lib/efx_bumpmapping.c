@@ -193,4 +193,5 @@ efx_bumpmap(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
    _bumpmap(ebd);
 
    return EINA_TRUE;
+   (void)efx_speed_str;
 }

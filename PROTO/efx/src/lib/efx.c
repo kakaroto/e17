@@ -45,6 +45,7 @@ ecerr:
    eina_shutdown();
 err:
    return --_efx_init_count;
+   (void)efx_speed_str;
 }
 
 EAPI void

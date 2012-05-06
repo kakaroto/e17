@@ -80,6 +80,7 @@ efx_follow(Evas_Object *obj, Evas_Object *follower)
    e->followers = eina_list_append(e->followers, ef);
    INF("follow: (owner %p: %u) || (follower %p)", obj, eina_list_count(e->followers), follower);
    return EINA_TRUE;
+   (void)efx_speed_str;
 }
 
 EAPI void
