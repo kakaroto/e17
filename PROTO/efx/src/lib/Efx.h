@@ -137,7 +137,14 @@ EAPI void efx_unfollow(Evas_Object *obj);
  * @return A list of follower Evas_Objects, or @c NULL
  */
 EAPI Eina_List *efx_followers_get(Evas_Object *obj);
-
+/**
+ * Retrieve an object's leader object
+ *
+ * Use this function to return the object which @p obj is currently following.
+ * @param obj The object
+ * @return The leader object or NULL on failure
+ */
+EAPI Evas_Object *efx_leader_get(Evas_Object *obj);
 /**
  * Rotate an object
  *

@@ -113,3 +113,14 @@ efx_followers_get(Evas_Object *obj)
      ret = eina_list_append(ret, f->obj);
    return ret;
 }
+
+EAPI Evas_Object *
+efx_leader_get(Evas_Object *obj)
+{
+   EFX *e;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
+   e = evas_object_data_get(obj, "efx-data");
+   if (!e) return NULL;
+   return e->owner ? e->owner->obj : NULL;
+}
