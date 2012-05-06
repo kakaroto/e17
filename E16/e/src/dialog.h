@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -138,12 +138,12 @@ void                DialogItemSliderSetJump(DItem * di, int jump);
 void                DialogItemSliderSetMinLength(DItem * di, int min);
 void                DialogItemSliderSetValPtr(DItem * di, int *val_ptr);
 void                DialogItemSliderSetOrientation(DItem * di, char horizontal);
-void                DialogItemSliderGetBounds(DItem * di, int *lower,
+void                DialogItemSliderGetBounds(const DItem * di, int *lower,
 					      int *upper);
 
 void                DialogItemAreaSetSize(DItem * di, int w, int h);
-void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
-Win                 DialogItemAreaGetWindow(DItem * di);
+void                DialogItemAreaGetSize(const DItem * di, int *w, int *h);
+Win                 DialogItemAreaGetWindow(const DItem * di);
 void                DialogItemAreaSetInitFunc(DItem * di,
 					      DialogItemCallbackFunc * func);
 void                DialogItemAreaSetEventFunc(DItem * di,

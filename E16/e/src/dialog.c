@@ -1744,7 +1744,7 @@ DialogItemSliderSetOrientation(DItem * di, char horizontal)
 }
 
 void
-DialogItemSliderGetBounds(DItem * di, int *lower, int *upper)
+DialogItemSliderGetBounds(const DItem * di, int *lower, int *upper)
 {
    if (lower)
       *lower = di->item.slider.lower;
@@ -1760,13 +1760,13 @@ DialogItemAreaSetSize(DItem * di, int w, int h)
 }
 
 Win
-DialogItemAreaGetWindow(DItem * di)
+DialogItemAreaGetWindow(const DItem * di)
 {
    return di->item.area.area_win;
 }
 
 void
-DialogItemAreaGetSize(DItem * di, int *w, int *h)
+DialogItemAreaGetSize(const DItem * di, int *w, int *h)
 {
    *w = di->item.area.w;
    *h = di->item.area.h;
