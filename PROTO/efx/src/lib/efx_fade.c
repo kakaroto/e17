@@ -85,45 +85,31 @@ _fade_cb(Efx_Fade_Data *efd, double pos)
    if (efd->cb) efd->cb(efd->data, &efd->e->map_data, efd->e->obj);
    return EINA_TRUE;
 }
-#if 0
+
 static void
-_spin_stop(Evas_Object *obj, Eina_Bool reset)
+_fade_stop(Evas_Object *obj, Eina_Bool reset)
 {
    EFX *e;
    Efx_Fade_Data *efd;
 
    e = evas_object_data_get(obj, "efx-data");
-   if ((!e) || (!e->spin_data)) return;
-   efd = e->spin_data;
-   efd->frame = 0;
+   if ((!e) || (!e->fade_data)) return;
+   efd = e->fade_data;
    if (reset)
      {
-        efd->e->map_data.rotation = 0;
-        efx_rotate_center_init(efd->e, NULL);
-        _spin_cb(efd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, efd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_RESIZE, (Evas_Object_Event_Cb)_clip_setup, efd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_MOVE, (Evas_Object_Event_Cb)_clip_setup, efd);
         _obj_del(efd, NULL, NULL, NULL);
-        INF("reset spinning object %p", obj);
+        INF("reset faded object %p", obj);
      }
    else
      {
-        INF("stopped spinning object %p", obj);
+        INF("stopped faded object %p", obj);
         if (efd->anim) ecore_animator_del(efd->anim);
-        free(efd);
-        e->spin_data = NULL;
      }
 }
 
-void
-_efx_spin_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
-{
-   Efx_Fade_Data *efd = data;
-   Efx_Fade_Data *esd2 = owner;
-   efx_rotate_helper(esd2 ? esd2->e : (efd ? efd->e : NULL), obj, map, (efd ? efd->e->map_data.rotation : 0) + (esd2 ? esd2->e->map_data.rotation : 0));
-}
-#endif
 EAPI Eina_Bool
 efx_fade(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Color *ec, unsigned char alpha, double total_time, Efx_End_Cb cb, const void *data)
 {
@@ -169,4 +155,16 @@ efx_fade(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Color *ec, unsigned char 
      _fade_cb(efd, 1.0);
 
    return EINA_TRUE;
+}
+
+EAPI void
+efx_fade_reset(Evas_Object *obj)
+{
+   _fade_stop(obj, EINA_TRUE);
+}
+
+EAPI void
+efx_fade_stop(Evas_Object *obj)
+{
+   _fade_stop(obj, EINA_FALSE);
 }

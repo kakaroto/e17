@@ -289,7 +289,37 @@ EAPI Eina_Bool efx_pan_init(Evas_Object *obj);
  */
 EAPI Eina_Bool efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data);
 
+/**
+ * Commence a fade effect
+ *
+ * Fade is an effect which allows the changing of color tint and alpha through the
+ * use of a clip set on an object. With this effect it is possible to have an object
+ * fade in/out or become tinted with another color.
+ * @note Black objects will only have their alpha values affected.
+ * @param obj The object to use for fading
+ * @param speed The speed to fade at
+ * @param ec The color to fade to
+ * @param alpha The alpha to fade to
+ * @param total_time The time the effect should occur over
+ * @param cb The optional callback to call when the effect completes
+ * @param data Optional data to pass to @p cb
+ * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
+ */
 EAPI Eina_Bool efx_fade(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Color *ec, unsigned char alpha, double total_time, Efx_End_Cb cb, const void *data);
+/**
+ * Stop fading of an object and remove the clip
+ *
+ * Use this function to immediately stop the fade of an object and restore its original color/alpha
+ * @param obj An object
+ */
+EAPI void efx_fade_reset(Evas_Object *obj);
+/**
+ * Stop fading of an object
+ *
+ * Use this function to immediately stop the fade of an object without restoring its original color/alpha
+ * @param obj An object
+ */
+EAPI void efx_fade_stop(Evas_Object *obj);
 #ifdef __cplusplus
 }
 #endif
