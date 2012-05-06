@@ -73,8 +73,8 @@ _fade_cb(Efx_Fade_Data *efd, double pos)
           b -= lround(factor * ((int)efd->start.b - (int)efd->color.b));
         if (efd->alpha[0] != efd->alpha[1])
           a -= lround(factor * ((int)efd->alpha[0] - (int)efd->alpha[1]));
-        //DBG("%d/%d/%d/%d", MIN(r, a), MIN(g, a), MIN(b, a), a);
         evas_object_color_set(efd->clip, MIN(r, a), MIN(g, a), MIN(b, a), a);
+//        _color_debug(efd->clip);
         return EINA_TRUE;
      }
    else
@@ -163,6 +163,10 @@ efx_fade(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Color *ec, unsigned char 
      }
    else efd->color = (Efx_Color){255, 255, 255};
    INF("fade: %p || %d/%d/%d/%d => %d/%d/%d/%d %s over %gs", obj, efd->start.r, efd->start.g, efd->start.b, efd->alpha[0], efd->color.r, efd->color.g, efd->color.b, efd->alpha[1], efx_speed_str[speed], total_time);
-   efd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_fade_cb, efd);
+   if (total_time)
+     efd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_fade_cb, efd);
+   else
+     _fade_cb(efd, 1.0);
+
    return EINA_TRUE;
 }
