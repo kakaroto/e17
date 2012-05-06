@@ -60,6 +60,7 @@ efx_map_new(Evas_Object *obj)
    evas_map_smooth_set(map, EINA_FALSE);
    evas_map_util_points_populate_from_object(map, obj);
    return map;
+   (void)efx_speed_str;
 }
 
 void
@@ -100,4 +101,14 @@ efx_maps_apply(EFX *e, Evas_Object *obj, Evas_Map *map, Eina_Bool rotate, Eina_B
    if (zoom && (e->zoom_data || (e->owner && e->owner->zoom_data))) _efx_zoom_calc(e->zoom_data, e->owner ? e->owner->zoom_data : NULL, obj, map);
    if (new) efx_map_set(obj, map);
 //   DBG("%p: %s %s %s", obj, rotate ? "rotate" : "", spin ? "spin" : "", zoom ? "zoom" : "");
+}
+
+void
+efx_clip_setup(Evas_Object *obj, Evas_Object *clip)
+{
+   Evas_Coord x, y, w, h;
+   if ((!obj) || (!clip)) return;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   evas_object_move(clip, x, y);
+   evas_object_resize(clip, w, h);
 }

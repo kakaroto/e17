@@ -9,6 +9,7 @@ lib_LTLIBRARIES = libefx.la
 libefx_la_SOURCES = \
 efx.c \
 efx_bumpmapping.c \
+efx_fade.c \
 efx_helpers.c \
 efx_move.c \
 efx_pan.c \

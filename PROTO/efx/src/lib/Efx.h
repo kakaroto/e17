@@ -31,6 +31,7 @@
 #endif /* ! _WIN32 */
 
 typedef struct Efx_Map_Data Efx_Map_Data;
+typedef struct Efx_Color Efx_Color;
 /**
  * @typedef Efx_End_Cb
  * This is the callback type used to notify a user about the end of an effect.
@@ -41,6 +42,18 @@ typedef struct Efx_Map_Data Efx_Map_Data;
  * @param obj The object
  */
 typedef void (*Efx_End_Cb)(void *data, Efx_Map_Data *e, Evas_Object *obj);
+
+/**
+ * @struct Efx_Color
+ *
+ * This struct contains RGB data for setting colors in effects.
+ */
+struct Efx_Color
+{
+   unsigned char r; /**< Red */
+   unsigned char g; /**< Green */
+   unsigned char b; /**< Blue */
+};
 
 /**
  * @struct Efx_Map_Data
@@ -275,6 +288,8 @@ EAPI Eina_Bool efx_pan_init(Evas_Object *obj);
  * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
  */
 EAPI Eina_Bool efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data);
+
+EAPI Eina_Bool efx_fade(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Color *ec, unsigned char alpha, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
 #endif

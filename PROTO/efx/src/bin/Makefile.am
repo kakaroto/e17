@@ -22,6 +22,7 @@ test_move \
 test_move_circle \
 test_pan \
 test_path \
+test_fade \
 test_bumpmap
 
 if BUILD_TEST_ELM
@@ -44,5 +45,6 @@ test_move_circle_SOURCES = test_move_circle.c
 test_path_SOURCES = test_path.c
 test_pan_SOURCES = test_pan.c
 test_bumpmap_SOURCES = test_bumpmap.c
+test_fade_SOURCES = test_fade.c
 
 endif

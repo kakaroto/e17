@@ -18,7 +18,7 @@ void
 efx_free(EFX *e)
 {
    EFX *ef;
-   if (e->zoom_data || e->rotate_data || e->spin_data || e->move_data || e->bumpmap_data || e->pan_data) return;
+   if (e->zoom_data || e->rotate_data || e->spin_data || e->move_data || e->bumpmap_data || e->pan_data || e->fade_data) return;
    DBG("freeing efx for %p", e->obj);
    EINA_LIST_FREE(e->followers, ef)
      efx_free(ef);

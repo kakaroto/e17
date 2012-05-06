@@ -16,6 +16,11 @@
 #define ERR(...)            EINA_LOG_DOM_ERR(_efx_log_dom, __VA_ARGS__)
 #define CRI(...)            EINA_LOG_DOM_CRIT(_efx_log_dom, __VA_ARGS__)
 
+
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
 static const char *efx_speed_str[] =
 {
    "LINEAR", "ACCELERATE", "DECELERATE", "SINUSOIDAL"
@@ -34,7 +39,8 @@ struct EFX
    void *zoom_data;
    void *move_data;
    void *bumpmap_data;
-   void *pan_data; 
+   void *pan_data;
+   void *fade_data;
    Efx_Map_Data map_data;
    Eina_List *followers;
 };
@@ -58,6 +64,7 @@ Eina_Bool efx_rotate_center_init(EFX *e, const Evas_Point *center);
 Eina_Bool efx_zoom_center_init(EFX *e, const Evas_Point *center);
 Eina_Bool efx_move_center_init(EFX *e, const Evas_Point *center);
 void efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees);
+void efx_clip_setup(Evas_Object *obj, Evas_Object *clip);
 
 static inline void
 _size_debug(Evas_Object *obj)
