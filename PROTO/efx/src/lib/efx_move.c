@@ -134,7 +134,7 @@ efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double
    emd->cb = cb;
    emd->data = (void*)data;
    if (emd->anim) ecore_animator_del(emd->anim);
-   ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_move_cb, emd);
+   emd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_move_cb, emd);
    return EINA_TRUE;
 }
 
@@ -178,6 +178,6 @@ efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *center, in
    emd->cb = cb;
    emd->data = (void*)data;
    if (emd->anim) ecore_animator_del(emd->anim);
-   ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_move_circle_cb, emd);
+   emd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_move_circle_cb, emd);
    return EINA_TRUE;
 }

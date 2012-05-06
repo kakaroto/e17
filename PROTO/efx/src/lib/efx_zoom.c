@@ -161,7 +161,7 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    ezd->cb = cb;
    ezd->data = (void*)data;
    if (ezd->anim) ecore_animator_del(ezd->anim);
-   ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_zoom_cb, ezd);
+   ezd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_zoom_cb, ezd);
    return EINA_TRUE;
 }
 
