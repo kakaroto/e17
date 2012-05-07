@@ -424,13 +424,80 @@ EAPI void efx_fade_reset(Evas_Object *obj);
  */
 EAPI void efx_fade_stop(Evas_Object *obj);
 
-
+/**
+ * Begin processing the queue
+ *
+ * Call this function after queuing some effects to start the animation sequence
+ * @param obj The object to process the queue for
+ */
 EAPI void efx_queue_run(Evas_Object *obj);
+/**
+ * Append an effect to the end of the queue
+ *
+ * Use this function to add a new effect to the end of the queue.
+ * The queue can be empty when using this function.
+ * @param obj The object to queue an effect for
+ * @param speed The effect speed
+ * @param effect The parameters of the desired effect
+ * @param total_time The time the effect should occur over
+ * @param cb The optional callback to call after this particular effect has completed
+ * @param data The data to pass to the callback
+ * @return The queued effect, or @c NULL on failure
+ */
 EAPI Efx_Queue_Data *efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+/**
+ * Add an effect to the start of the queue
+ *
+ * Use this function to add a new effect to the start of the queue.
+ * The queue can be empty when using this function.
+ * @note If a queued effect is currently executing, the new effect will be added after it
+ * @param obj The object to queue an effect for
+ * @param speed The effect speed
+ * @param effect The parameters of the desired effect
+ * @param total_time The time the effect should occur over
+ * @param cb The optional callback to call after this particular effect has completed
+ * @param data The data to pass to the callback
+ * @return The queued effect, or @c NULL on failure
+ */
 EAPI Efx_Queue_Data *efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+/**
+ * Promote an inactive effect to the start of the queue
+ *
+ * Use this function on an effect that is not currently executing to
+ * move it to the head of the queue.
+ * @note If another effect is currently executing, @p eqd will be moved directly
+ * after it.
+ * @param obj The object owning the effect
+ * @param eqd The effect
+ */
 EAPI void efx_queue_promote(Evas_Object *obj, Efx_Queue_Data *eqd);
+/**
+ * Demote an inactive effect to the end of the queue
+ *
+ * Use this function on an effect that is not currently executing to
+ * move it to the tail of the queue.
+ * @param obj The object owning the effect
+ * @param eqd The effect
+ */
 EAPI void efx_queue_demote(Evas_Object *obj, Efx_Queue_Data *eqd);
+/**
+ * Delete an effect from the queue
+ *
+ * This function will delete and unqueue a previously queued effect.
+ * @note Currently executing effects cannot be deleted; they must be manually
+ * stopped using the proper stop/reset function.
+ * @param obj The object owning the effect
+ * @param eqd The effect
+ */
 EAPI void efx_queue_delete(Evas_Object *obj, Efx_Queue_Data *eqd);
+/**
+ * Delete all queued effects which are not currently executing
+ *
+ * This function will delete and unqueue all previously queued effects.
+ * @note Currently executing effects cannot be deleted; they must be manually
+ * stopped using the proper stop/reset function.
+ * @param obj The object owning the effects
+ */
 EAPI void efx_queue_clear(Evas_Object *obj);
 #ifdef __cplusplus
 }
