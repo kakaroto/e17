@@ -116,7 +116,8 @@ main(int argc, char *argv[])
    elm_init(argc, argv);
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
-   win = elm_win_add(NULL, "test-elm", ELM_WIN_BASIC);
+   win = elm_win_add(NULL, "elm", ELM_WIN_BASIC);
+   elm_win_title_set(win, "elm");
    elm_win_autodel_set(win, EINA_TRUE);
    evas_object_resize(win, 500, 500);
    evas_object_show(win);
