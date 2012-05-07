@@ -31,7 +31,6 @@ _obj_del(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj, void *e
 static Eina_Bool
 _spin_cb(Efx_Spin_Data *esd)
 {
-   Evas_Map *map;
    double fps;
    Eina_List *l;
    EFX *e;
@@ -39,14 +38,10 @@ _spin_cb(Efx_Spin_Data *esd)
    fps = 1.0 / ecore_animator_frametime_get();
 
    esd->e->map_data.rotation = (double)esd->frame * ((double)esd->dps / fps) + esd->start;
-   map = efx_map_new(esd->e->obj);
-   efx_maps_apply(esd->e, esd->e->obj, map, EFX_MAPS_APPLY_ALL);
-   efx_map_set(esd->e->obj, map);
+   efx_maps_apply(esd->e, esd->e->obj, NULL, EFX_MAPS_APPLY_ALL);
    EINA_LIST_FOREACH(esd->e->followers, l, e)
      {
-        map = efx_map_new(e->obj);
-        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ALL);
-        efx_map_set(e->obj, map);
+        efx_maps_apply(e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
      }
 /*
    if (esd->frame % (int)fps == 0)

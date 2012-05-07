@@ -26,20 +26,13 @@ _rotate_cb(Efx_Rotate_Data *erd, double pos)
    double degrees;
    Eina_List *l;
    EFX *e;
-   Evas_Map *map;
 
    degrees = ecore_animator_pos_map(pos, erd->speed, 0, 0);
    erd->e->map_data.rotation = degrees * erd->degrees + erd->start_degrees;
    //DBG("erd->e->map_data.rotation=%g,erd->degrees=%g,erd->start_degrees=%g", erd->e->map_data.rotation, erd->degrees, erd->start_degrees);
-   map = efx_map_new(erd->e->obj);
-   efx_maps_apply(erd->e, erd->e->obj, map, EFX_MAPS_APPLY_ALL);
-   efx_map_set(erd->e->obj, map);
+   efx_maps_apply(erd->e, erd->e->obj, NULL, EFX_MAPS_APPLY_ALL);
    EINA_LIST_FOREACH(erd->e->followers, l, e)
-     {
-        map = efx_map_new(e->obj);
-        efx_maps_apply(e, e->obj, map, EFX_MAPS_APPLY_ALL);
-        efx_map_set(e->obj, map);
-     }
+     efx_maps_apply(e, e->obj, NULL, EFX_MAPS_APPLY_ALL);
 
    if (pos != 1.0) return EINA_TRUE;
 
