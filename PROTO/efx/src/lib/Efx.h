@@ -382,6 +382,11 @@ EAPI void efx_fade_stop(Evas_Object *obj);
 
 EAPI void efx_queue_run(Evas_Object *obj);
 EAPI Efx_Queue_Data *efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Efx_Queue_Data *efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI void efx_queue_promote(Evas_Object *obj, Efx_Queue_Data *eqd);
+EAPI void efx_queue_demote(Evas_Object *obj, Efx_Queue_Data *eqd);
+EAPI void efx_queue_delete(Evas_Object *obj, Efx_Queue_Data *eqd);
+EAPI void efx_queue_clear(Evas_Object *obj);
 #ifdef __cplusplus
 }
 #endif
