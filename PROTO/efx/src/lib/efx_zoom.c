@@ -137,20 +137,6 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    if (!efx_zoom_center_init(e, zoom_point)) return EINA_FALSE;
    INF("zoom: %p - %g%%->%g%% over %gs: %s", obj, (starting_zoom ?: e->map_data.zoom) * 100.0, ending_zoom * 100.0, total_time, efx_speed_str[speed]);
-   if (!total_time)
-     {
-        if (e->zoom_data) efx_zoom_stop(obj);
-        else
-          {
-             e->zoom_data = calloc(1, sizeof(Efx_Zoom_Data));
-             evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e->zoom_data);
-          }
-        EINA_SAFETY_ON_NULL_RETURN_VAL(e->zoom_data, EINA_FALSE);
-        _zoom(e, obj, ending_zoom);
-        ezd = e->zoom_data;
-        e->map_data.zoom = ending_zoom;
-        return EINA_TRUE;
-     }
    if (!e->zoom_data)
      {
         e->zoom_data = calloc(1, sizeof(Efx_Zoom_Data));
@@ -164,6 +150,11 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    ezd->starting_zoom = starting_zoom ?: ezd->e->map_data.zoom;
    ezd->cb = cb;
    ezd->data = (void*)data;
+   if (!total_time)
+     {
+        _zoom_cb(ezd, 1.0);
+        return EINA_TRUE;
+     }
    if (ezd->anim) ecore_animator_del(ezd->anim);
    ezd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_zoom_cb, ezd);
    return EINA_TRUE;
