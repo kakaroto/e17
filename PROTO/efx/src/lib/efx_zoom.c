@@ -126,11 +126,6 @@ efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double 
    if (starting_zoom < 0.0) return EINA_FALSE;
    if (total_time < 0.0) return EINA_FALSE;
    if (speed > EFX_EFFECT_SPEED_SINUSOIDAL) return EINA_FALSE;
-   if (zoom_point)
-     {
-        if (zoom_point->x < 0) return EINA_FALSE;
-        if (zoom_point->y < 0) return EINA_FALSE;
-     }
 
    e = evas_object_data_get(obj, "efx-data");
    if (!e) e = efx_new(obj);
