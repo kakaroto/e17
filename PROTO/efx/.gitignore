@@ -55,3 +55,4 @@ test_fade
 test_fade2
 test_queue
 test_queue_complex
+test_resize

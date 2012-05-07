@@ -40,9 +40,13 @@ _queue_advance(Efx_Queue_Data *eqd)
         eqd->effect_data = eqd->e->pan_data;
         break;
       case EFX_EFFECT_TYPE_FADE:
-      default:
         efx_fade(eqd->e->obj, eqd->speed, &eqd->effect.effect.fade.color, eqd->effect.effect.fade.alpha, eqd->time, eqd->cb, eqd->data);
         eqd->effect_data = eqd->e->fade_data;
+        break;
+      case EFX_EFFECT_TYPE_RESIZE:
+      default:
+        efx_resize(eqd->e->obj, eqd->speed, eqd->effect.effect.resize.point, eqd->effect.effect.resize.w, eqd->effect.effect.resize.h, eqd->time, eqd->cb, eqd->data);
+        eqd->effect_data = eqd->e->resize_data;
      }
    eqd->active = EINA_TRUE;
    EINA_LIST_FOREACH(eqd->subeffects, l, run)
@@ -70,6 +74,8 @@ eqd_free(Efx_Queue_Data *eqd)
      free(eqd->effect.effect.rotation.center);
    else if (eqd->effect.type == EFX_EFFECT_TYPE_ZOOM)
      free(eqd->effect.effect.zoom.center);
+   else if (eqd->effect.type == EFX_EFFECT_TYPE_RESIZE)
+     free(eqd->effect.effect.resize.point);
    EINA_LIST_FREE(eqd->subeffects, sub)
      eqd_free(sub);
    free(eqd);
@@ -94,7 +100,7 @@ efx_queue_complete(EFX *e, void *effect_data)
 }
 
 Efx_Queue_Data *
-eqd_new(EFX *e, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
+eqd_new(EFX *e, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
 {
    Efx_Queue_Data *eqd;
 
@@ -129,6 +135,20 @@ eqd_new(EFX *e, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_
              memcpy(eqd->effect.effect.zoom.center, effect->effect.zoom.center, sizeof(Evas_Point));
           }
      }
+   else if (effect->type == EFX_EFFECT_TYPE_RESIZE)
+     {
+        if (effect->effect.resize.point)
+          {
+             eqd->effect.effect.resize.point = malloc(sizeof(Evas_Point));
+             if (!eqd->effect.effect.resize.point)
+               {
+                  free(eqd);
+                  efx_free(e);
+                  return NULL;
+               }
+             memcpy(eqd->effect.effect.resize.point, effect->effect.resize.point, sizeof(Evas_Point));
+          }
+     }
    eqd->speed = speed;
    eqd->time = total_time;
    eqd->cb = cb;
@@ -148,7 +168,7 @@ efx_queue_run(Evas_Object *obj)
 }
 
 EAPI Efx_Queue_Data *
-efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
+efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Queue_Data *eqd;
@@ -156,7 +176,7 @@ efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *ef
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(effect, NULL);
    EINA_SAFETY_ON_FALSE_RETURN_VAL(total_time >= 0.0, NULL);
-   if (effect->type > EFX_EFFECT_TYPE_FADE) return NULL;
+   if (effect->type > EFX_EFFECT_TYPE_RESIZE) return NULL;
    e = evas_object_data_get(obj, "efx-data");
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
@@ -170,7 +190,7 @@ efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *ef
 }
 
 EAPI Efx_Queue_Data *
-efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
+efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Queue_Data *eqd, *eqd2;
@@ -178,7 +198,7 @@ efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *e
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(effect, NULL);
    EINA_SAFETY_ON_FALSE_RETURN_VAL(total_time >= 0.0, NULL);
-   if (effect->type > EFX_EFFECT_TYPE_FADE) return NULL;
+   if (effect->type > EFX_EFFECT_TYPE_RESIZE) return NULL;
    e = evas_object_data_get(obj, "efx-data");
    if (!e) e = efx_new(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
@@ -273,7 +293,7 @@ efx_queue_clear(Evas_Object *obj)
 }
 
 EAPI Eina_Bool
-efx_queue_effect_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
+efx_queue_effect_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Queue_Data *sub;
@@ -281,7 +301,7 @@ efx_queue_effect_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, Efx_Queued_
    EINA_SAFETY_ON_NULL_RETURN_VAL(eqd, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(effect, EINA_FALSE);
    EINA_SAFETY_ON_FALSE_RETURN_VAL(total_time >= 0.0, EINA_FALSE);
-   if (effect->type > EFX_EFFECT_TYPE_FADE) return EINA_FALSE;
+   if (effect->type > EFX_EFFECT_TYPE_RESIZE) return EINA_FALSE;
    e = eqd->e;
 
    sub = eqd_new(e, speed, effect, total_time, cb, data);

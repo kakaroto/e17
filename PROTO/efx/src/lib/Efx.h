@@ -51,7 +51,8 @@ typedef enum Efx_Effect_Type
    EFX_EFFECT_TYPE_ZOOM,
    EFX_EFFECT_TYPE_MOVE,
    EFX_EFFECT_TYPE_PAN,
-   EFX_EFFECT_TYPE_FADE
+   EFX_EFFECT_TYPE_FADE,
+   EFX_EFFECT_TYPE_RESIZE
 } Efx_Effect_Type;
 
 /**
@@ -105,9 +106,21 @@ struct Efx_Queued_Effect
            Efx_Color color;
            unsigned char alpha;
         } fade;
+        struct
+        {
+           Evas_Point *point;
+           int w, h;
+        } resize;
      } effect;
 };
 
+/**
+ * Helper macro for simplifying specifying coordinate points as parameters
+ * @param X The x coordinate
+ * @param Y The y coordinate
+ */
+#define EFX_POINT(X, Y) \
+  &(Evas_Point){(X), (Y)}
 /**
  * Helper macro to simplify specifying a rotation effect for queue
  * @param DEGREES Number of degrees to rotate
@@ -146,6 +159,14 @@ struct Efx_Queued_Effect
  */
 #define EFX_EFFECT_FADE(R, G, B, A) \
   .type = EFX_EFFECT_TYPE_FADE, .effect.fade = { .color = { .r = (R), .g = (G), .b = (B) }, .alpha = (A) }
+/**
+ * Helper macro to simplify specifying a resize effect for queue
+ * @param POSITION The position for the resized top-left corner to end in
+ * @param W The final width of the object
+ * @param H The final height of the object
+ */
+#define EFX_EFFECT_RESIZE(POSITION, W, H) \
+  .type = EFX_EFFECT_TYPE_RESIZE, .effect.resize = { .point = (POSITION), .w = (W), .h = (H) }
 
 /**
  * @struct Efx_Map_Data
@@ -313,7 +334,7 @@ EAPI void efx_spin_stop(Evas_Object *obj);
  * @param data Optional data to pass to @p cb
  * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
  */
-EAPI Eina_Bool efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double ending_zoom, Evas_Point *zoom_point, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double ending_zoom, const Evas_Point *zoom_point, double total_time, Efx_End_Cb cb, const void *data);
 /**
  * Stop zooming of an object and remove the map
  *
@@ -344,8 +365,8 @@ EAPI void efx_zoom_stop(Evas_Object *obj);
  * @param data Optional data to pass to @p cb
  * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
  */
-EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data);
-EAPI Eina_Bool efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *center, int degrees, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_move(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *center, int degrees, double total_time, Efx_End_Cb cb, const void *data);
 
 /**
  * Attempt to automatically move+resize an object according to its map
@@ -398,7 +419,7 @@ EAPI Eina_Bool efx_pan_init(Evas_Object *obj);
  * @param data Optional data to pass to @p cb
  * @return EINA_TRUE on successful queue of the animation, else EINA_FALSE
  */
-EAPI Eina_Bool efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data);
 
 /**
  * Commence a fade effect
@@ -452,7 +473,7 @@ EAPI void efx_queue_run(Evas_Object *obj);
  * @param data The data to pass to the callback
  * @return The queued effect, or @c NULL on failure
  */
-EAPI Efx_Queue_Data *efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Efx_Queue_Data *efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
 /**
  * Add an effect to the start of the queue
  *
@@ -467,7 +488,7 @@ EAPI Efx_Queue_Data *efx_queue_append(Evas_Object *obj, Efx_Effect_Speed speed, 
  * @param data The data to pass to the callback
  * @return The queued effect, or @c NULL on failure
  */
-EAPI Efx_Queue_Data *efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Efx_Queue_Data *efx_queue_prepend(Evas_Object *obj, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
 /**
  * Promote an inactive effect to the start of the queue
  *
@@ -508,7 +529,10 @@ EAPI void efx_queue_delete(Evas_Object *obj, Efx_Queue_Data *eqd);
  */
 EAPI void efx_queue_clear(Evas_Object *obj);
 
-EAPI Eina_Bool efx_queue_effect_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_queue_effect_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_resize(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *position, int w, int h, double total_time, Efx_End_Cb cb, const void *data);
+EAPI void efx_resize_reset(Evas_Object *obj);
+EAPI void efx_resize_stop(Evas_Object *obj);
 #ifdef __cplusplus
 }
 #endif

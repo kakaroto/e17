@@ -355,7 +355,7 @@ efx_pan_init(Evas_Object *obj)
 }
 
 EAPI Eina_Bool
-efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data)
+efx_pan(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *distance, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Pan_Data *epd;

@@ -116,7 +116,7 @@ _efx_zoom_calc(void *data, void *owner, Evas_Object *obj, Evas_Map *map)
 }
 
 EAPI Eina_Bool
-efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double ending_zoom, Evas_Point *zoom_point, double total_time, Efx_End_Cb cb, const void *data)
+efx_zoom(Evas_Object *obj, Efx_Effect_Speed speed, double starting_zoom, double ending_zoom, const Evas_Point *zoom_point, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Zoom_Data *ezd;

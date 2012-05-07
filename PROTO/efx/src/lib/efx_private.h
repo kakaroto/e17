@@ -41,6 +41,7 @@ struct EFX
    void *bumpmap_data;
    void *pan_data;
    void *fade_data;
+   void *resize_data;
    Efx_Map_Data map_data;
    Eina_List *followers;
    Eina_List *queue;

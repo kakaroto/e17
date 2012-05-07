@@ -97,7 +97,7 @@ _move_cb(Efx_Move_Data *emd, double pos)
 }
 
 EAPI Eina_Bool
-efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data)
+efx_move(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *end_point, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Move_Data *emd;
@@ -140,7 +140,7 @@ efx_move(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *end_point, double
 
 
 EAPI Eina_Bool
-efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, Evas_Point *center, int degrees, double total_time, Efx_End_Cb cb, const void *data)
+efx_move_circle(Evas_Object *obj, Efx_Effect_Speed speed, const Evas_Point *center, int degrees, double total_time, Efx_End_Cb cb, const void *data)
 {
    EFX *e;
    Efx_Move_Data *emd;

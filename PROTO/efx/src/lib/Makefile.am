@@ -14,6 +14,7 @@ efx_helpers.c \
 efx_move.c \
 efx_pan.c \
 efx_queue.c \
+efx_resize.c \
 efx_rotate.c \
 efx_spin.c \
 efx_util.c \
