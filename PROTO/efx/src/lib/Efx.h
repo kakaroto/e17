@@ -508,7 +508,7 @@ EAPI void efx_queue_delete(Evas_Object *obj, Efx_Queue_Data *eqd);
  */
 EAPI void efx_queue_clear(Evas_Object *obj);
 
-EAPI Eina_Bool efx_queue_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
+EAPI Eina_Bool efx_queue_effect_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
 #endif

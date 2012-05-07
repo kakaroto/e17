@@ -38,23 +38,23 @@ _start(void *d __UNUSED__)
    efx_fade(r, EFX_EFFECT_SPEED_ACCELERATE, &(Efx_Color){255, 0, 0}, 255, 0.0, NULL, NULL);
    eqd = efx_queue_append(r, EFX_EFFECT_SPEED_ACCELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_MOVE(25, 25)), 1.0, NULL, NULL);
-   efx_queue_attach(eqd, EFX_EFFECT_SPEED_ACCELERATE,
+   efx_queue_effect_attach(eqd, EFX_EFFECT_SPEED_ACCELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_ROTATE(180, NULL)), 1.0, NULL, NULL);
    eqd = efx_queue_append(r, EFX_EFFECT_SPEED_DECELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_MOVE(350, 25)), 1.0, NULL, NULL);
-   efx_queue_attach(eqd, EFX_EFFECT_SPEED_DECELERATE,
+   efx_queue_effect_attach(eqd, EFX_EFFECT_SPEED_DECELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_ROTATE(180, NULL)), 1.0, NULL, NULL);
-   efx_queue_attach(eqd, EFX_EFFECT_SPEED_DECELERATE,
+   efx_queue_effect_attach(eqd, EFX_EFFECT_SPEED_DECELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_FADE(0, 0, 0, 0)), 1.0, NULL, NULL);
    eqd = efx_queue_append(r, EFX_EFFECT_SPEED_ACCELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_MOVE(350, 350)), 1.0, NULL, NULL);
-   efx_queue_attach(eqd, EFX_EFFECT_SPEED_ACCELERATE,
+   efx_queue_effect_attach(eqd, EFX_EFFECT_SPEED_ACCELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_ROTATE(180, NULL)), 1.0, NULL, NULL);
-   efx_queue_attach(eqd, EFX_EFFECT_SPEED_ACCELERATE,
+   efx_queue_effect_attach(eqd, EFX_EFFECT_SPEED_ACCELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_FADE(0, 255, 255, 255)), 1.0, NULL, NULL);
    eqd = efx_queue_append(r, EFX_EFFECT_SPEED_DECELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_MOVE(25, 350)), 1.0, _del, NULL);
-   efx_queue_attach(eqd, EFX_EFFECT_SPEED_DECELERATE,
+   efx_queue_effect_attach(eqd, EFX_EFFECT_SPEED_DECELERATE,
      EFX_QUEUED_EFFECT(EFX_EFFECT_ROTATE(180, NULL)), 1.0, NULL, NULL);
    efx_queue_run(r);
    return EINA_FALSE;
