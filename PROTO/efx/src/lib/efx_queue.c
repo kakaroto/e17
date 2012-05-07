@@ -112,12 +112,7 @@ eqd_new(EFX *e, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double 
         if (effect->effect.rotation.center)
           {
              eqd->effect.effect.rotation.center = malloc(sizeof(Evas_Point));
-             if (!eqd->effect.effect.rotation.center)
-               {
-                  free(eqd);
-                  efx_free(e);
-                  return NULL;
-               }
+             if (!eqd->effect.effect.rotation.center) goto error;
              memcpy(eqd->effect.effect.rotation.center, effect->effect.rotation.center, sizeof(Evas_Point));
           }
      }
@@ -126,12 +121,7 @@ eqd_new(EFX *e, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double 
         if (effect->effect.zoom.center)
           {
              eqd->effect.effect.zoom.center = malloc(sizeof(Evas_Point));
-             if (!eqd->effect.effect.zoom.center)
-               {
-                  free(eqd);
-                  efx_free(e);
-                  return NULL;
-               }
+             if (!eqd->effect.effect.zoom.center) goto error;
              memcpy(eqd->effect.effect.zoom.center, effect->effect.zoom.center, sizeof(Evas_Point));
           }
      }
@@ -140,12 +130,7 @@ eqd_new(EFX *e, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double 
         if (effect->effect.resize.point)
           {
              eqd->effect.effect.resize.point = malloc(sizeof(Evas_Point));
-             if (!eqd->effect.effect.resize.point)
-               {
-                  free(eqd);
-                  efx_free(e);
-                  return NULL;
-               }
+             if (!eqd->effect.effect.resize.point) goto error;
              memcpy(eqd->effect.effect.resize.point, effect->effect.resize.point, sizeof(Evas_Point));
           }
      }
@@ -154,6 +139,10 @@ eqd_new(EFX *e, Efx_Effect_Speed speed, const Efx_Queued_Effect *effect, double 
    eqd->cb = cb;
    eqd->data = (void*)data;
    return eqd;
+error:
+   free(eqd);
+   efx_free(e);
+   return NULL;
 }
 
 
