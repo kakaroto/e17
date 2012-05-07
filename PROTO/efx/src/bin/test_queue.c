@@ -76,26 +76,25 @@ _create(void *data __UNUSED__, Efx_Map_Data *emd __UNUSED__, Evas_Object *r)
 {
    r = rect_create();
    efx_queue_append(r, EFX_EFFECT_SPEED_ACCELERATE,
-     &(Efx_Queued_Effect){EFX_EFFECT_TYPE_MOVE, .effect.movement.point = {350, 25}},
+     &(Efx_Queued_Effect){EFX_QUEUE_MOVE(350, 25)},
      1.0, callbacks[eina_list_count(objs) - 1][0], NULL);
    if (eina_list_count(objs) < 4)
      efx_queue_append(r, EFX_EFFECT_SPEED_DECELERATE,
-       &(Efx_Queued_Effect){EFX_EFFECT_TYPE_MOVE, .effect.movement.point = {350, 350}},
+       &(Efx_Queued_Effect){EFX_QUEUE_MOVE(350, 350)},
        1.0, callbacks[eina_list_count(objs) - 1][1], NULL);
    if (eina_list_count(objs) < 3)
      efx_queue_append(r, EFX_EFFECT_SPEED_ACCELERATE,
-       &(Efx_Queued_Effect){EFX_EFFECT_TYPE_MOVE, .effect.movement.point = {25, 350}},
+       &(Efx_Queued_Effect){EFX_QUEUE_MOVE(25, 350)},
        1.0, callbacks[eina_list_count(objs) - 1][2], NULL);
    if (eina_list_count(objs) < 2)
      efx_queue_append(r, EFX_EFFECT_SPEED_DECELERATE,
-       &(Efx_Queued_Effect){EFX_EFFECT_TYPE_MOVE, .effect.movement.point = {25, 25}},
+       &(Efx_Queued_Effect){EFX_QUEUE_MOVE(25, 25)},
        1.0, callbacks[eina_list_count(objs) - 1][3], NULL);
    efx_queue_append(r, EFX_EFFECT_SPEED_DECELERATE,
-     &(Efx_Queued_Effect){EFX_EFFECT_TYPE_MOVE, .effect.movement.point = {203, 203}},
+     &(Efx_Queued_Effect){EFX_QUEUE_MOVE(203, 203)},
      1.5, callbacks[eina_list_count(objs) - 1][4], NULL);
    efx_queue_append(r, EFX_EFFECT_SPEED_ACCELERATE,
-     &(Efx_Queued_Effect){EFX_EFFECT_TYPE_MOVE, .effect.movement.point =
-       {.x = points[eina_list_count(objs) - 1].x, .y = points[eina_list_count(objs) - 1].y}},
+     &(Efx_Queued_Effect){EFX_QUEUE_MOVE(points[eina_list_count(objs) - 1].x, points[eina_list_count(objs) - 1].y)},
      1.0, callbacks[eina_list_count(objs) - 1][5], NULL);
    efx_queue_run(r);
 }

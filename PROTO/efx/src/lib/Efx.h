@@ -66,6 +66,12 @@ struct Efx_Color
    unsigned char b; /**< Blue */
 };
 
+/**
+ * @struct Efx_Queued_Effect
+ *
+ * This struct contains all the data necessary to create and queue
+ * an effect.
+ */
 struct Efx_Queued_Effect
 {
    Efx_Effect_Type type;
@@ -93,6 +99,45 @@ struct Efx_Queued_Effect
         } fade;
      } effect;
 };
+
+/**
+ * Helper macro to simplify specifying a rotation effect for queue
+ * @param DEGREES Number of degrees to rotate
+ * @param CENTER An Evas_Point* to rotate around, or @c NULL
+ */
+#define EFX_QUEUE_ROTATE(DEGREES, CENTER) \
+  .type = EFX_EFFECT_TYPE_ROTATE, .effect.rotation = { .degrees = (DEGREES), .center = (CENTER) }
+/**
+ * Helper macro to simplify specifying a zoom effect for queue
+ * @param START Starting zoom factor
+ * @param END Ending zoom factor
+ * @param CENTER An Evas_Point* to zoom at, or @c NULL
+ */
+#define EFX_QUEUE_ZOOM(START, END, CENTER) \
+  .type = EFX_EFFECT_TYPE_ZOOM, .effect.zoom = { .start = (START), .end = (END), .center = (CENTER) }
+/**
+ * Helper macro to simplify specifying a movement effect for queue
+ * @param X x coordinate to move to
+ * @param Y y coordinate to move to
+ */
+#define EFX_QUEUE_MOVE(X, Y) \
+  .type = EFX_EFFECT_TYPE_MOVE, .effect.movement.point = { .x = (X), .y = (Y) }
+/**
+ * Helper macro to simplify specifying a pan effect for queue
+ * @param X horizontal distance to pan
+ * @param Y vertical distance to pan
+ */
+#define EFX_QUEUE_PAN(X, Y) \
+  .type = EFX_EFFECT_TYPE_PAN, .effect.movement.point = { .x = (X), .y = (Y) }
+/**
+ * Helper macro to simplify specifying a fade effect for queue
+ * @param R Red
+ * @param G Green
+ * @param B Blue
+ * @param A Alpha
+ */
+#define EFX_QUEUE_FADE(R, G, B, A) \
+  .type = EFX_EFFECT_TYPE_FADE, .effect.fade = { color = { .r = (R), .g = (G), .b = (B) }, .alpha = (A) }
 
 /**
  * @struct Efx_Map_Data
