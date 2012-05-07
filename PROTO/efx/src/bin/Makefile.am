@@ -27,6 +27,7 @@ test_fade2 \
 test_queue \
 test_queue_complex \
 test_resize \
+test_presentation \
 test_bumpmap
 
 if BUILD_TEST_ELM
@@ -54,5 +55,6 @@ test_fade2_SOURCES = test_fade2.c
 test_queue_SOURCES = test_queue.c
 test_queue_complex_SOURCES = test_queue_complex.c
 test_resize_SOURCES = test_resize.c
+test_presentation_SOURCES = test_presentation.c
 
 endif
