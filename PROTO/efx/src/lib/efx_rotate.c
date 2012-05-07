@@ -107,19 +107,6 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
 
    if (!efx_rotate_center_init(e, center)) return EINA_FALSE;
    INF("rotate: %p - %g degrees over %gs: %s", obj, degrees, total_time, efx_speed_str[speed]);
-   if (!total_time)
-     {
-        if (!e->rotate_data)
-          {
-             e->rotate_data = calloc(1, sizeof(Efx_Rotate_Data));
-             evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, e->rotate_data);
-          }
-        EINA_SAFETY_ON_NULL_RETURN_VAL(e->rotate_data, EINA_FALSE);
-        erd = e->rotate_data;
-        e->map_data.rotation += degrees;
-        _rotate_cb(erd, 1.0);
-        return EINA_TRUE;
-     }
    if (!e->rotate_data)
      {
         e->rotate_data = calloc(1, sizeof(Efx_Rotate_Data));
@@ -133,6 +120,12 @@ efx_rotate(Evas_Object *obj, Efx_Effect_Speed speed, double degrees, const Evas_
    erd->start_degrees = e->map_data.rotation;
    erd->cb = cb;
    erd->data = (void*)data;
+   if (!total_time)
+     {
+        e->map_data.rotation += degrees;
+        _rotate_cb(erd, 1.0);
+        return EINA_TRUE;
+     }
    if (erd->anim) ecore_animator_del(erd->anim);
    erd->anim = ecore_animator_timeline_add(total_time, (Ecore_Timeline_Cb)_rotate_cb, erd);
    return EINA_TRUE;
