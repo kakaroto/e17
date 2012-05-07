@@ -83,6 +83,7 @@ efx_rotate_helper(EFX *e, Evas_Object *obj, Evas_Map *map, double degrees)
         evas_object_geometry_get(obj, &x, &y, &w, &h);
         evas_map_util_rotate(map, degrees, x + (w / 2), y + (h / 2));
      }
+   //DBG("rotation: %g", degrees);
 //   _size_debug(e->obj);
 }
 

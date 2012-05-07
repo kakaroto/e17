@@ -67,6 +67,14 @@ struct Efx_Color
 };
 
 /**
+ * Helper macro to perform a C99 cast which simplifies the queue
+ * effect parameter in queue-related functions.
+ * @param EFFECT The effect
+ */
+#define EFX_QUEUED_EFFECT(EFFECT) \
+  &(Efx_Queued_Effect){EFFECT}
+
+/**
  * @struct Efx_Queued_Effect
  *
  * This struct contains all the data necessary to create and queue
@@ -105,7 +113,7 @@ struct Efx_Queued_Effect
  * @param DEGREES Number of degrees to rotate
  * @param CENTER An Evas_Point* to rotate around, or @c NULL
  */
-#define EFX_QUEUE_ROTATE(DEGREES, CENTER) \
+#define EFX_EFFECT_ROTATE(DEGREES, CENTER) \
   .type = EFX_EFFECT_TYPE_ROTATE, .effect.rotation = { .degrees = (DEGREES), .center = (CENTER) }
 /**
  * Helper macro to simplify specifying a zoom effect for queue
@@ -113,21 +121,21 @@ struct Efx_Queued_Effect
  * @param END Ending zoom factor
  * @param CENTER An Evas_Point* to zoom at, or @c NULL
  */
-#define EFX_QUEUE_ZOOM(START, END, CENTER) \
+#define EFX_EFFECT_ZOOM(START, END, CENTER) \
   .type = EFX_EFFECT_TYPE_ZOOM, .effect.zoom = { .start = (START), .end = (END), .center = (CENTER) }
 /**
  * Helper macro to simplify specifying a movement effect for queue
  * @param X x coordinate to move to
  * @param Y y coordinate to move to
  */
-#define EFX_QUEUE_MOVE(X, Y) \
+#define EFX_EFFECT_MOVE(X, Y) \
   .type = EFX_EFFECT_TYPE_MOVE, .effect.movement.point = { .x = (X), .y = (Y) }
 /**
  * Helper macro to simplify specifying a pan effect for queue
  * @param X horizontal distance to pan
  * @param Y vertical distance to pan
  */
-#define EFX_QUEUE_PAN(X, Y) \
+#define EFX_EFFECT_PAN(X, Y) \
   .type = EFX_EFFECT_TYPE_PAN, .effect.movement.point = { .x = (X), .y = (Y) }
 /**
  * Helper macro to simplify specifying a fade effect for queue
@@ -136,8 +144,8 @@ struct Efx_Queued_Effect
  * @param B Blue
  * @param A Alpha
  */
-#define EFX_QUEUE_FADE(R, G, B, A) \
-  .type = EFX_EFFECT_TYPE_FADE, .effect.fade = { color = { .r = (R), .g = (G), .b = (B) }, .alpha = (A) }
+#define EFX_EFFECT_FADE(R, G, B, A) \
+  .type = EFX_EFFECT_TYPE_FADE, .effect.fade = { .color = { .r = (R), .g = (G), .b = (B) }, .alpha = (A) }
 
 /**
  * @struct Efx_Map_Data
@@ -499,6 +507,8 @@ EAPI void efx_queue_delete(Evas_Object *obj, Efx_Queue_Data *eqd);
  * @param obj The object owning the effects
  */
 EAPI void efx_queue_clear(Evas_Object *obj);
+
+EAPI Eina_Bool efx_queue_attach(Efx_Queue_Data *eqd, Efx_Effect_Speed speed, Efx_Queued_Effect *effect, double total_time, Efx_End_Cb cb, const void *data);
 #ifdef __cplusplus
 }
 #endif
