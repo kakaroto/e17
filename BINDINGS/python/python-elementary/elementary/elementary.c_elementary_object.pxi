@@ -522,3 +522,8 @@ def __elm_widget_cls_resolver(long ptr):
 
 evas.c_evas._extended_object_mapping_register("elm_widget",
                                               __elm_widget_cls_resolver)
+
+# NOTE: this is just transitional, need to be removed after all the widgets
+#       in elm will be ported to the new hierarchical pattern.
+evas.c_evas._extended_object_mapping_register("elm_widget_compat",
+                                              __elm_widget_cls_resolver)
