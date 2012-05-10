@@ -99,6 +99,37 @@ def entry_clicked(obj, item=None):
     win.show()
 # }}}
 
+#----- Scrolled Entry -{{{-
+def entry_scrolled_clicked(obj, item=None):
+    win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
+    win.title_set("Scrolled Entry")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    en = elementary.Entry(win)
+    win.resize_object_add(en)
+    en.scrollable_set(True)
+    en.line_wrap_set(False)
+    en.entry_set("This is an entry widget in this window that<br>"
+                 "uses markup <b>like this</> for styling and<br>"
+                 "formatting <em>like this</>, as well as<br>"
+                 "<a href=X><link>links in the text</></a>, so enter text<br>"
+                 "in here to edit it. By the way, links are<br>"
+                 "called <a href=anc-02>Anchors</a> so you will need<br>"
+                 "to refer to them this way.<br><br>" * 10)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    en.size_hint_min_set(200, 200)
+    en.show()
+
+    en.focus_set(True)
+    win.show()
+# }}}
+
 #----- Main -{{{-
 if __name__ == "__main__":
     def destroy(obj):
@@ -132,8 +163,8 @@ if __name__ == "__main__":
     lb.show()
 
     items = [("Entry", entry_clicked),
-             #("Entry Scrolled", entry_scrolled_clicked)
-	    ]
+             ("Entry Scrolled", entry_scrolled_clicked)
+            ]
 
     li = elementary.List(win)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)

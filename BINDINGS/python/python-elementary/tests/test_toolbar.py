@@ -22,8 +22,8 @@ def tb_5(obj, it, ph):
     ph.file_set(None)
 
 def toolbar_clicked(obj):
-    win = elementary.Window("entry-scrolled", elementary.ELM_WIN_BASIC)
-    win.title_set("Entry Scrolled")
+    win = elementary.Window("toolbar", elementary.ELM_WIN_BASIC)
+    win.title_set("Toolbar")
     win.autodel_set(True)
 
     bg = elementary.Background(win)

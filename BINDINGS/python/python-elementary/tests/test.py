@@ -12,7 +12,7 @@ from test_button import buttons_clicked
 from test_table import table_clicked
 from test_clock import clock_clicked
 from test_hover import hover_clicked, hover2_clicked
-from test_entry import entry_clicked
+from test_entry import entry_clicked, entry_scrolled_clicked
 from test_toolbar import toolbar_clicked
 from test_hoversel import hoversel_clicked
 from test_list import list_clicked, list2_clicked, list3_clicked
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             ]),
              ("Entries", [
                 ("Entry", entry_clicked),
-#                ("Entry Scrolled", entry_scrolled_clicked),
+                ("Entry Scrolled", entry_scrolled_clicked),
             ]),
              ("Lists", [
                 ("List", list_clicked),
