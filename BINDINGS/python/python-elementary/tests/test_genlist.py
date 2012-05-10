@@ -305,14 +305,14 @@ def genlist2_clicked(obj, item=None):
     def my_gl_insert_after(bt, gl, itc1):
         gli = gl.selected_item_get()
         if gli:
-            gl.item_insert_after(itc1, my_gl_insert_after_i, gli, func=gl_sel)
+            gl.item_insert_after(itc1, MyGlInsertAfter.i, gli, func=gl_sel)
             MyGlInsertAfter.i = MyGlInsertAfter.i + 1
         else:
             print "no item selected"
 
     bt = elementary.Button(win)
     bt.text_set("+ after")
-    bt.callback_clicked_add(my_gl_insert_after, gl)
+    bt.callback_clicked_add(my_gl_insert_after, gl, itc1)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.pack_end(bt)
