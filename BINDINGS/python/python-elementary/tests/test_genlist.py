@@ -369,7 +369,7 @@ def genlist3_clicked(obj, item=None):
         if i % 10 == 0:
             git = gl.item_append(itc_g, i/10,
                                  flags=elementary.ELM_GENLIST_ITEM_GROUP)
-            git.display_only = True
+            git.select_mode_set(elementary.ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY)
         gl.item_append(itc_i, i, git)
 
     win.resize(320, 320)

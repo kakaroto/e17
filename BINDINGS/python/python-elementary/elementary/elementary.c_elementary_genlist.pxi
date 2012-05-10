@@ -468,7 +468,6 @@ cdef class GenlistItem(WidgetItem):
                                                 cbdata,
                                                 _tooltip_item_data_del_cb)
 
-
     def item_tooltip_unset(self):
         """ Unset tooltip from object
 
