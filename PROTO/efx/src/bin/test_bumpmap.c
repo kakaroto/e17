@@ -58,6 +58,8 @@ main(void)
    if (evas_object_image_load_error_get(o))
      evas_object_image_file_set(o, PACKAGE_DATADIR "/mur.jpg", NULL);
    if (evas_object_image_load_error_get(o))
+     evas_object_image_file_set(o, "data/mur.jpg", NULL);
+   if (evas_object_image_load_error_get(o))
      {
         fprintf(stderr, "Could not locate image!\n");
         return -1;
