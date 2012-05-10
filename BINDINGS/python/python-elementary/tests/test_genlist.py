@@ -101,7 +101,7 @@ def genlist_clicked(obj, item=None):
             bt_50._callback_add("clicked", _bt50_cb, gli)
         elif i == 1500:
             def _bt1500_cb(button, gli):
-                gli.middle_bring_in()
+                gli.bring_in()
             bt_1500._callback_add("clicked", _bt1500_cb, gli)
 
     win.resize(480, 800)
