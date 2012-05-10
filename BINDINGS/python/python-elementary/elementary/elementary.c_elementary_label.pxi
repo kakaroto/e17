@@ -21,19 +21,34 @@ cdef class Label(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_label_add(parent.obj))
 
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
+    def line_wrap_set(self, Elm_Wrap_Type wrap):
+        elm_label_line_wrap_set(self.obj, wrap)
 
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
+    def line_wrap_get(self):
+        return elm_label_line_wrap_get(self.obj)
 
-    property label:
-        def __get__(self):
-            return self.label_get()
+    def wrap_width_set(self, int w):
+        elm_label_wrap_width_set(self.obj, w)
 
-        def __set__(self, label):
-            self.label_set(label)
+    def wrap_width_get(self):
+        return elm_label_wrap_width_get(self.obj)
+
+    def ellipsis_set(self, bool ellipsis):
+        elm_label_ellipsis_set(self.obj, ellipsis)
+
+    def ellipsis_get(self):
+        return elm_label_ellipsis_get(self.obj)
+
+    def slide_set(self, bool slide):
+        elm_label_slide_set(self.obj, slide)
+
+    def slide_get(self):
+        elm_label_slide_get(self.obj)
+
+    def slide_duration_set(self, double duration):
+        elm_label_slide_duration_set(self.obj, duration)
+
+    def slide_duration_get(self):
+        elm_label_slide_duration_get(self.obj)
 
 _elm_widget_type_register("label", Label)

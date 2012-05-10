@@ -179,7 +179,6 @@ cdef extern from "Elementary.h":
         ELM_WRAP_CHAR
         ELM_WRAP_WORD
         ELM_WRAP_MIXED
-        ELM_WRAP_LAST
 
     ctypedef enum Elm_Bubble_Pos:
         ELM_BUBBLE_POS_TOP_LEFT
@@ -498,6 +497,16 @@ cdef extern from "Elementary.h":
 
     # Label object
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
+    void elm_label_line_wrap_set(evas.c_evas.Evas_Object *obj, Elm_Wrap_Type wrap)
+    Elm_Wrap_Type elm_label_line_wrap_get(evas.c_evas.Evas_Object *obj)
+    void elm_label_wrap_width_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w)
+    evas.c_evas.Evas_Coord elm_label_wrap_width_get(evas.c_evas.Evas_Object *obj)
+    void elm_label_ellipsis_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool ellipsis)
+    evas.c_evas.Eina_Bool elm_label_ellipsis_get(evas.c_evas.Evas_Object *obj)
+    void elm_label_slide_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool slide)
+    evas.c_evas.Eina_Bool elm_label_slide_get(evas.c_evas.Evas_Object *obj)
+    void elm_label_slide_duration_set(evas.c_evas.Evas_Object *obj, double duration)
+    double elm_label_slide_duration_get(evas.c_evas.Evas_Object *obj)
 
     # Frame object
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
