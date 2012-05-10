@@ -20,7 +20,7 @@ def my_entry_bt_3(bt, en):
 def my_entry_bt_4(bt, en):
     en.entry_insert("Insert some <b>BOLD</> text")
 
-def my_entry_anchor_test(obj, en, *args, **kwargs):
+def my_entry_anchor_test(obj, anchor, en, *args, **kwargs):
     en.entry_insert("ANCHOR CLICKED")
 # -}}}-
 
