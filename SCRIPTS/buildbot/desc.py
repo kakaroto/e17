@@ -134,6 +134,14 @@ Package(
     )
 
 Package(
+    name="eio",
+    dependencies={
+        "common": ["eina", "eet", "ecore"],
+        "win": ["evil"],
+        },
+    )
+
+Package(
     name="embryo",
     dependencies={
         "common": ["eina"],
@@ -146,7 +154,7 @@ Package(
     test_target="check",
     doc_target="doc",
     dependencies={
-        "common": ["eina", "eet", "evas", "ecore", "embryo"],
+        "common": ["eina", "eet", "evas", "ecore", "embryo", "eio"],
         "win": ["evil"],
         },
     configure_flags={
@@ -281,6 +289,14 @@ Package(
             "--enable-tasks",
             "--enable-conf-randr",
             ],
+        },
+    )
+
+Package(
+    name="elementary",
+    dependencies={
+        "common": ["eina", "ecore", "evas", "edje", "eet"],
+        "win": ["evil"],
         },
     )
 
