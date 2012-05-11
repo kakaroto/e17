@@ -29,6 +29,7 @@ def bg_image_clicked(obj, item=None):
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.file_set("images/plant_01.jpg")
+    bg.option_set(elementary.ELM_BG_OPTION_SCALE)
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
@@ -36,6 +37,10 @@ def bg_image_clicked(obj, item=None):
     win.size_hint_max_set(320, 320)
     win.resize(320, 320)
     win.show()
+
+    (filename, group) = bg.file_get()
+    print("Background image: '%s'  group: '%s'" % (filename, group))
+    print("Option: %d" % (bg.option_get()))
 # }}}
 
 #----- Main -{{{-

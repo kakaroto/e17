@@ -45,5 +45,91 @@ cdef class Background(Object):
         """
         elm_bg_file_set(self.obj, filename, group)
 
+    def file_get(self):
+        """
+        Get the file (image or edje) used for the background
+
+        @return: The tuple (filename, group)
+        """
+        cdef const_char_ptr filename, group
+
+        elm_bg_file_get(self.obj, &filename, &group)
+        if filename == NULL:
+            filename = ""
+        if group == NULL:
+            group = ""
+        return (filename, group)
+
+    property file:
+        def __get__(self):
+            return self.file_get()
+
+        def __set__(self, value):
+            self.file_set(value)
+
+    def option_set(self, option):
+        """
+        Set the mode of display of the background
+        
+        @param: B{option} choose from Elm_Bg_Option
+        """
+        elm_bg_option_set(self.obj, option)
+
+    def option_get(self):
+        """
+        Get the mode of display of the background
+
+        @return: the current mode
+        """
+        return elm_bg_option_get(self.obj)
+
+    property option:
+        def __get__(self):
+            return self.option_get()
+
+        def __set__(self, value):
+            self.option_set(value)
+
+    def color_set(self, r, g, b):
+        """
+        Set the color of the bg
+    
+        @param B{r} the red component (range: 0 to 255)
+        @param B{g} the green component (range: 0 to 255)
+        @param B{b} the blue component (range: 0 to 255)
+        """
+        elm_bg_color_set(self.obj, r, g, b)
+
+    def color_get(self):
+        """
+        Get the color of the bg
+        
+        @return: the tuple (r, g, b)
+        """
+        cdef int r, g, b
+
+        elm_bg_color_get(self.obj, &r, &g, &b)
+        return (r, g, b)
+
+    property color:
+        def __get__(self):
+            return self.color_get()
+
+        def __set__(self, value):
+            self.color_set(*value)
+
+    def load_size_set(self, w, h):
+        """
+        Set the load size of the background image
+    
+        @param B{w} width
+        @param B{h} height
+        """
+        elm_bg_load_size_set(self.obj, w, h)
+
+    property load_size:
+        def __set__(self, value):
+            self.load_size_set(*value)
+
 
 _elm_widget_type_register("bg", Background)

@@ -186,6 +186,13 @@ cdef extern from "Elementary.h":
         ELM_BUBBLE_POS_BOTTOM_LEFT
         ELM_BUBBLE_POS_BOTTOM_RIGHT
 
+    ctypedef enum Elm_Bg_Option:
+        ELM_BG_OPTION_CENTER
+        ELM_BG_OPTION_SCALE
+        ELM_BG_OPTION_STRETCH
+        ELM_BG_OPTION_TILE
+        ELM_BG_OPTION_LAST
+
     ctypedef struct Elm_Entry_Anchor_Info:
         char *name
         int   button
@@ -201,6 +208,7 @@ cdef extern from "Elementary.h":
         evas.c_evas.Eina_Bool hover_right
         evas.c_evas.Eina_Bool hover_top
         evas.c_evas.Eina_Bool hover_bottom
+
 
     ctypedef char *(*GenlistItemLabelGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
     ctypedef evas.c_evas.Evas_Object *(*GenlistItemIconGetFunc)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr part)
@@ -414,9 +422,15 @@ cdef extern from "Elementary.h":
     void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
-    # Background object
+    # Background object (DONE)
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
-    void elm_bg_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    void                     elm_bg_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    void                     elm_bg_file_get(evas.c_evas.Evas_Object *obj, char **file, char **group)
+    void                     elm_bg_option_set(evas.c_evas.Evas_Object *obj, Elm_Bg_Option option)
+    Elm_Bg_Option            elm_bg_option_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_bg_color_set(evas.c_evas.Evas_Object *obj, int r, int g, int b)
+    void                     elm_bg_color_get(evas.c_evas.Evas_Object *obj, int *r, int *g, int *b)
+    void                     elm_bg_load_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w, evas.c_evas.Evas_Coord h)
 
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)

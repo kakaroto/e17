@@ -33,6 +33,12 @@ from c_elementary import Object, Window, Background, Icon, \
     focus_highlight_animate_set, preferred_engine_get, preferred_engine_set, \
     engine_get, engine_set
 
+ELM_BG_OPTION_CENTER = 0
+ELM_BG_OPTION_SCALE = 1
+ELM_BG_OPTION_STRETCH = 2
+ELM_BG_OPTION_TILE = 3
+ELM_BG_OPTION_LAST = 4
+
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG_BASIC = 1
 
