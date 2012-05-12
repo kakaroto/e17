@@ -461,7 +461,12 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
     Elm_Bubble_Pos           elm_bubble_pos_get(evas.c_evas.Evas_Object *obj)
-    
+
+    # Check widget (DONE)
+    evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
+    evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
+
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -818,13 +823,6 @@ cdef extern from "Elementary.h":
     char* elm_gengrid_item_cursor_style_get(Elm_Object_Item *item)
     void  elm_gengrid_item_cursor_engine_only_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool engine_only)
     evas.c_evas.Eina_Bool elm_gengrid_item_cursor_engine_only_get(Elm_Object_Item *item)
-
-
-    # Check widget
-    evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
-    void         elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
-    evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
-    void         elm_check_state_pointer_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *statep)
 
     # Radio widget
     evas.c_evas.Evas_Object *elm_radio_add(evas.c_evas.Evas_Object *parent)
