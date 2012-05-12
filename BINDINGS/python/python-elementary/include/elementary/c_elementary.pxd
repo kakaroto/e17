@@ -432,6 +432,26 @@ cdef extern from "Elementary.h":
     void                     elm_bg_color_get(evas.c_evas.Evas_Object *obj, int *r, int *g, int *b)
     void                     elm_bg_load_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w, evas.c_evas.Evas_Coord h)
 
+    # Box object (DONE with TODO) XXX
+    evas.c_evas.Evas_Object *elm_box_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_box_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
+    evas.c_evas.Eina_Bool    elm_box_horizontal_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_box_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
+    evas.c_evas.Eina_Bool    elm_box_homogeneous_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_box_pack_start(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
+    void                     elm_box_pack_end(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
+    void                     elm_box_pack_before(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, evas.c_evas.Evas_Object *before)
+    void                     elm_box_pack_after(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, evas.c_evas.Evas_Object *after)
+    void                     elm_box_clear(evas.c_evas.Evas_Object *obj)
+    void                     elm_box_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
+    void                     elm_box_unpack_all(evas.c_evas.Evas_Object *obj)
+    void                     elm_box_recalculate(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List   *elm_box_children_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_box_padding_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord horizontal, evas.c_evas.Evas_Coord vertical)
+    void                     elm_box_padding_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *horizontal, evas.c_evas.Evas_Coord *vertical)
+    void                     elm_box_align_set(evas.c_evas.Evas_Object *obj, double horizontal, double vertical)
+    void                     elm_box_align_get(evas.c_evas.Evas_Object *obj, double *horizontal, double *vertical)
+    
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -454,19 +474,6 @@ cdef extern from "Elementary.h":
     void                     elm_image_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
     void                     elm_image_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
     void                     elm_image_object_size_get(evas.c_evas.Evas_Object *obj, int *w, int *h)
-
-    # Box object
-    evas.c_evas.Evas_Object *elm_box_add(evas.c_evas.Evas_Object *parent)
-    void elm_box_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
-    void elm_box_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
-    void elm_box_pack_start(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
-    void elm_box_pack_end(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
-    void elm_box_pack_before(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, evas.c_evas.Evas_Object *before)
-    void elm_box_pack_after(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, evas.c_evas.Evas_Object *after)
-    void elm_box_clear(evas.c_evas.Evas_Object *obj)
-    void elm_box_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
-    void elm_box_unpack_all(evas.c_evas.Evas_Object *obj)
-    void elm_box_recalculate(evas.c_evas.Evas_Object *obj)
 
     # Button object
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
