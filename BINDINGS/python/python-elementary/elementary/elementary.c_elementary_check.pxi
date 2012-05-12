@@ -21,36 +21,6 @@ cdef class Check(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_check_add(parent.obj))
 
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
-
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
-
-    property label:
-        def __get__(self):
-            return self.label_get()
-
-        def __set__(self, value):
-            self.label_set(value)
-
-    def icon_set(self, c_evas.Object icon):
-        elm_object_part_content_set(self.obj, "icon", icon.obj)
-
-    def icon_get(self):
-        cdef c_evas.Evas_Object *icon
-        icon = elm_object_part_content_get(self.obj, "icon")
-        return evas.c_evas._Object_from_instance(<long> icon)
-
-    property icon:
-        def __get__(self):
-            return self.icon_get()
-
-        def __set__(self, value):
-            self.icon_set(value)
-
     def state_set(self, value):
         if value:
             elm_check_state_set(self.obj, 1)
