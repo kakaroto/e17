@@ -51,13 +51,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog docs/e16.html
 %{_bindir}/*
-%{_libdir}/e16/*.so
-%{_datadir}/%{name}/*
-%{_datadir}/locale/*
+%{_libdir}/%{name}
+%{_datadir}/%{name}
+%{_datadir}/locale/*/*
 %{_datadir}/applications/*
 %{_datadir}/xsessions/*
 %{_datadir}/gnome-session/sessions/*
 %{_sysconfdir}/X11/xinit/Xclients.d/*
-%{_mandir}/*
+%{_mandir}/*/*
 
 %changelog
