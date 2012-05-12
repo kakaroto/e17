@@ -428,13 +428,7 @@ cdef class Entry(Object):
     def icon_visible_set(self, visible):
         elm_entry_icon_visible_set(self.obj, visible)
 
-    def icon_visible_get(self):
-        return elm_entry_icon_visible_get(self.obj)
-
     property icon_visible:
-        def __get__(self):
-            return self.icon_visible_get()
-    
         def __set__(self, value):
             self.icon_visible_set(value)
 

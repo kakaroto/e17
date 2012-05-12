@@ -576,7 +576,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_entry_scrollable_get(evas.c_evas.Evas_Object *obj)
     void                     elm_entry_scrollbar_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy h, Elm_Scroller_Policy v)
     void                     elm_entry_icon_visible_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool setting)
-    evas.c_evas.Eina_Bool    elm_entry_icon_visible_get(evas.c_evas.Evas_Object *obj)
     void                     elm_entry_context_menu_clear(evas.c_evas.Evas_Object *obj)
     void                     elm_entry_context_menu_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
     evas.c_evas.Eina_Bool    elm_entry_context_menu_disabled_get(evas.c_evas.Evas_Object *obj)
