@@ -66,14 +66,20 @@ cdef extern from "Elementary.h":
         ELM_BUBBLE_POS_BOTTOM_RIGHT
 
     ctypedef enum Elm_Clock_Edit_Mode:
-       ELM_CLOCK_EDIT_DEFAULT = 0
-       ELM_CLOCK_EDIT_HOUR_DECIMAL = 1 << 0
-       ELM_CLOCK_EDIT_HOUR_UNIT = 1 << 1
-       ELM_CLOCK_EDIT_MIN_DECIMAL = 1 << 2
-       ELM_CLOCK_EDIT_MIN_UNIT = 1 << 3
-       ELM_CLOCK_EDIT_SEC_DECIMAL = 1 << 4
-       ELM_CLOCK_EDIT_SEC_UNIT = 1 << 5
-       ELM_CLOCK_EDIT_ALL = (1 << 6) - 1
+        ELM_CLOCK_EDIT_DEFAULT = 0
+        ELM_CLOCK_EDIT_HOUR_DECIMAL = 1 << 0
+        ELM_CLOCK_EDIT_HOUR_UNIT = 1 << 1
+        ELM_CLOCK_EDIT_MIN_DECIMAL = 1 << 2
+        ELM_CLOCK_EDIT_MIN_UNIT = 1 << 3
+        ELM_CLOCK_EDIT_SEC_DECIMAL = 1 << 4
+        ELM_CLOCK_EDIT_SEC_UNIT = 1 << 5
+        ELM_CLOCK_EDIT_ALL = (1 << 6) - 1
+
+    ctypedef enum Elm_Cnp_Mode:
+        ELM_CNP_MODE_MARKUP     # copy & paste text with markup tag
+        ELM_CNP_MODE_NO_IMAGE   # copy & paste text without item(image) tag
+        ELM_CNP_MODE_PLAINTEXT  # copy & paste text without markup tag
+    
 
     ctypedef enum Elm_Win_Type:
         ELM_WIN_BASIC
@@ -174,6 +180,34 @@ cdef extern from "Elementary.h":
         ELM_IMAGE_FLIP_VERTICAL
         ELM_IMAGE_FLIP_TRANSPOSE
         ELM_IMAGE_FLIP_TRANSVERSE
+
+    ctypedef enum Elm_Input_Panel_Lang:
+        ELM_INPUT_PANEL_LANG_AUTOMATIC
+        ELM_INPUT_PANEL_LANG_ALPHABET
+
+    ctypedef enum Elm_Input_Panel_Layout:
+        ELM_INPUT_PANEL_LAYOUT_NORMAL
+        ELM_INPUT_PANEL_LAYOUT_NUMBER
+        ELM_INPUT_PANEL_LAYOUT_EMAIL
+        ELM_INPUT_PANEL_LAYOUT_URL
+        ELM_INPUT_PANEL_LAYOUT_PHONENUMBER
+        ELM_INPUT_PANEL_LAYOUT_IP
+        ELM_INPUT_PANEL_LAYOUT_MONTH
+        ELM_INPUT_PANEL_LAYOUT_NUMBERONLY
+        ELM_INPUT_PANEL_LAYOUT_INVALID
+        ELM_INPUT_PANEL_LAYOUT_HEX
+        ELM_INPUT_PANEL_LAYOUT_TERMINAL
+        ELM_INPUT_PANEL_LAYOUT_PASSWORD
+
+    ctypedef enum Elm_Input_Panel_Return_Key_Type:
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_DEFAULT
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_DONE
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_GO
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_JOIN
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_LOGIN
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_NEXT
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH
+       ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND
 
     ctypedef enum Elm_Scroller_Policy:
         ELM_SCROLLER_POLICY_AUTO
@@ -492,6 +526,86 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(evas.c_evas.Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(evas.c_evas.Evas_Object *obj)
 
+    # Entry Object (DONE with TODO) XXX
+    evas.c_evas.Evas_Object *elm_entry_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_entry_single_line_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool single_line)
+    evas.c_evas.Eina_Bool    elm_entry_single_line_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_password_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool password)
+    evas.c_evas.Eina_Bool    elm_entry_password_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_entry_set(evas.c_evas.Evas_Object *obj, char *entry)
+    char                    *elm_entry_entry_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_entry_append(evas.c_evas.Evas_Object *obj, char *text)
+    evas.c_evas.Eina_Bool    elm_entry_is_empty(evas.c_evas.Evas_Object *obj)
+    char                    *elm_entry_selection_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_entry_textblock_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_calc_force(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_entry_insert(evas.c_evas.Evas_Object *obj, char *entry)
+    void                     elm_entry_line_wrap_set(evas.c_evas.Evas_Object *obj, Elm_Wrap_Type wrap)
+    Elm_Wrap_Type            elm_entry_line_wrap_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
+    evas.c_evas.Eina_Bool    elm_entry_editable_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_select_none(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_select_all(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_next(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_prev(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_up(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_down(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cursor_begin_set(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cursor_end_set(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cursor_line_begin_set(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cursor_line_end_set(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cursor_selection_begin(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cursor_selection_end(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_is_format_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_is_visible_format_get(evas.c_evas.Evas_Object *obj)
+    char                    *elm_entry_cursor_content_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_entry_cursor_geometry_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *x, evas.c_evas.Evas_Coord *y, evas.c_evas.Evas_Coord *w, evas.c_evas.Evas_Coord *h)
+    void                     elm_entry_cursor_pos_set(evas.c_evas.Evas_Object *obj, int pos)
+    int                      elm_entry_cursor_pos_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_selection_cut(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_selection_copy(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_selection_paste(evas.c_evas.Evas_Object *obj)
+    char                    *elm_entry_markup_to_utf8(char *s)
+    char                    *elm_entry_utf8_to_markup(char *s)
+    evas.c_evas.Eina_Bool    elm_entry_file_set(evas.c_evas.Evas_Object *obj, char *file, Elm_Text_Format format)
+    void                     elm_entry_file_get(evas.c_evas.Evas_Object *obj, char **file, Elm_Text_Format *format)
+    void                     elm_entry_file_save(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_autosave_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool autosave)
+    evas.c_evas.Eina_Bool    elm_entry_autosave_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
+    evas.c_evas.Eina_Bool    elm_entry_scrollable_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_scrollbar_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy h, Elm_Scroller_Policy v)
+    void                     elm_entry_icon_visible_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool setting)
+    evas.c_evas.Eina_Bool    elm_entry_icon_visible_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_context_menu_clear(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_context_menu_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
+    evas.c_evas.Eina_Bool    elm_entry_context_menu_disabled_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
+    void                     elm_entry_bounce_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *h_bounce, evas.c_evas.Eina_Bool *v_bounce)
+    void                     elm_entry_input_panel_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
+    evas.c_evas.Eina_Bool    elm_entry_input_panel_enabled_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_layout_set(evas.c_evas.Evas_Object *obj, Elm_Input_Panel_Layout layout)
+    Elm_Input_Panel_Layout   elm_entry_input_panel_layout_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_show(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_hide(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_language_set(evas.c_evas.Evas_Object *obj, Elm_Input_Panel_Lang lang)
+    Elm_Input_Panel_Lang     elm_entry_input_panel_language_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_return_key_type_set(evas.c_evas.Evas_Object *obj, Elm_Input_Panel_Return_Key_Type return_key_type)
+    Elm_Input_Panel_Return_Key_Type elm_entry_input_panel_return_key_type_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_return_key_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
+    evas.c_evas.Eina_Bool    elm_entry_input_panel_return_key_disabled_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_input_panel_return_key_autoenabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
+    void                     elm_entry_imf_context_reset(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_prediction_allow_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool allow)
+    evas.c_evas.Eina_Bool    elm_entry_prediction_allow_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_cnp_mode_set(evas.c_evas.Evas_Object *obj, Elm_Cnp_Mode cnp_mode)
+    Elm_Cnp_Mode             elm_entry_cnp_mode_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_anchor_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *anchor_hover_parent)
+    evas.c_evas.Evas_Object *elm_entry_anchor_hover_parent_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_anchor_hover_style_set(evas.c_evas.Evas_Object *obj, char *anchor_hover_style)
+    char                    *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
+
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -614,50 +728,6 @@ cdef extern from "Elementary.h":
     void elm_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
-
-    # Entry Object
-    evas.c_evas.Evas_Object *elm_entry_add(evas.c_evas.Evas_Object *parent)
-    void elm_entry_single_line_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool single_line)
-    evas.c_evas.Eina_Bool elm_entry_single_line_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_password_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool password)
-    evas.c_evas.Eina_Bool elm_entry_password_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_entry_set(evas.c_evas.Evas_Object *obj, char *entry)
-    char *elm_entry_entry_get(evas.c_evas.Evas_Object *obj)
-    char *elm_entry_selection_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_entry_insert(evas.c_evas.Evas_Object *obj, char *entry)
-    void elm_entry_line_wrap_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool wrap)
-    void elm_entry_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
-    evas.c_evas.Eina_Bool elm_entry_editable_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_scrollable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool scrollable)
-    evas.c_evas.Eina_Bool elm_entry_scrollable_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_select_none(evas.c_evas.Evas_Object *obj)
-    void elm_entry_select_all(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_entry_cursor_next(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_entry_cursor_prev(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_entry_cursor_up(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_entry_cursor_down(evas.c_evas.Evas_Object *obj)
-    void elm_entry_cursor_begin_set(evas.c_evas.Evas_Object *obj)
-    void elm_entry_cursor_end_set(evas.c_evas.Evas_Object *obj)
-    void elm_entry_cursor_line_begin_set(evas.c_evas.Evas_Object *obj)
-    void elm_entry_cursor_line_end_set(evas.c_evas.Evas_Object *obj)
-    void elm_entry_cursor_selection_begin(evas.c_evas.Evas_Object *obj)
-    void elm_entry_cursor_selection_end(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_entry_cursor_is_format_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool elm_entry_cursor_is_visible_format_get(evas.c_evas.Evas_Object *obj)
-    char *elm_entry_cursor_content_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_selection_cut(evas.c_evas.Evas_Object *obj)
-    void elm_entry_selection_copy(evas.c_evas.Evas_Object *obj)
-    void elm_entry_selection_paste(evas.c_evas.Evas_Object *obj)
-    char        *elm_entry_markup_to_utf8(char *s)
-    char        *elm_entry_utf8_to_markup(char *s)
-    void elm_entry_context_menu_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
-    void elm_entry_input_panel_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
-    evas.c_evas.Eina_Bool elm_entry_input_panel_enabled_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_anchor_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *anchor_hover_parent)
-    evas.c_evas.Evas_Object *elm_entry_anchor_hover_parent_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_anchor_hover_style_set(evas.c_evas.Evas_Object *obj, char *anchor_hover_style)
-    char *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
-    void elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
 
     # Photo object
     evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
