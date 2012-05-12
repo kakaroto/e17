@@ -351,6 +351,12 @@ cdef class Object(evas.c_evas.Object):
             return None
         return l
 
+    def content_set(self, Object obj):
+        elm_object_part_content_set(self.obj, NULL, obj.obj)
+
+    def part_content_set(self, char *part, Object obj):
+        elm_object_part_content_set(self.obj, part, obj.obj)
+
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 

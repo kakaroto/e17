@@ -58,6 +58,13 @@ ctypedef struct Elm_Win:
 """
 
 cdef extern from "Elementary.h":
+
+    ctypedef enum Elm_Bubble_Pos:
+        ELM_BUBBLE_POS_TOP_LEFT
+        ELM_BUBBLE_POS_TOP_RIGHT
+        ELM_BUBBLE_POS_BOTTOM_LEFT
+        ELM_BUBBLE_POS_BOTTOM_RIGHT
+
     ctypedef enum Elm_Win_Type:
         ELM_WIN_BASIC
         ELM_WIN_DIALOG_BASIC
@@ -180,12 +187,6 @@ cdef extern from "Elementary.h":
         ELM_WRAP_WORD
         ELM_WRAP_MIXED
 
-    ctypedef enum Elm_Bubble_Pos:
-        ELM_BUBBLE_POS_TOP_LEFT
-        ELM_BUBBLE_POS_TOP_RIGHT
-        ELM_BUBBLE_POS_BOTTOM_LEFT
-        ELM_BUBBLE_POS_BOTTOM_RIGHT
-
     ctypedef enum Elm_Bg_Option:
         ELM_BG_OPTION_CENTER
         ELM_BG_OPTION_SCALE
@@ -279,7 +280,11 @@ cdef extern from "Elementary.h":
     # Object handling
     char        *elm_object_widget_type_get(evas.c_evas.Evas_Object *obj)
 
-    void         elm_object_part_content_set(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *icon)
+    void                     elm_object_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
+    evas.c_evas.Evas_Object *elm_object_content_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_object_content_unset(evas.c_evas.Evas_Object *obj)
+
+    void                     elm_object_part_content_set(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *icon)
     evas.c_evas.Evas_Object *elm_object_part_content_get(evas.c_evas.Evas_Object *obj, char *part)
     evas.c_evas.Evas_Object *elm_object_part_content_unset(evas.c_evas.Evas_Object *obj, char *part)
 
@@ -451,6 +456,11 @@ cdef extern from "Elementary.h":
     void                     elm_box_padding_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *horizontal, evas.c_evas.Evas_Coord *vertical)
     void                     elm_box_align_set(evas.c_evas.Evas_Object *obj, double horizontal, double vertical)
     void                     elm_box_align_get(evas.c_evas.Evas_Object *obj, double *horizontal, double *vertical)
+
+    # Bubble object (DONE)
+    evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
+    Elm_Bubble_Pos           elm_bubble_pos_get(evas.c_evas.Evas_Object *obj)
     
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
@@ -626,10 +636,6 @@ cdef extern from "Elementary.h":
     void elm_entry_anchor_hover_style_set(evas.c_evas.Evas_Object *obj, char *anchor_hover_style)
     char *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
     void elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
-
-    # Bubble object
-    evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
-    void elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
 
     # Photo object
     evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)

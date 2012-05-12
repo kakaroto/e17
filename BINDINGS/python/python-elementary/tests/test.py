@@ -6,6 +6,7 @@ import ecore
 import evas
 
 from test_bg import bg_plain_clicked, bg_image_clicked
+from test_bubble import bubble_clicked
 from test_icon import icon_transparent_clicked
 from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
 from test_button import buttons_clicked
@@ -88,6 +89,7 @@ if __name__ == "__main__":
                 #("Toggles", toggles_clicked),TODO make a toggle with check
             ]),
              ("Boundaries", [
+                ("Bubble", bubble_clicked),
                 ("Separator", separator_clicked),
             ]),
              ("Buttons", [
