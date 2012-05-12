@@ -216,7 +216,7 @@ engine_software_gdi_args(const char *engine __UNUSED__, int width, int height)
                            rect.right - rect.left, rect.bottom - rect.top,
                            NULL, NULL, instance, NULL);
    if (!window)
-     goto unregister_class;
+     goto destroy_window;
 
    /* make the window non resizable */
    style = GetWindowLong(window, GWL_STYLE);

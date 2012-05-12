@@ -223,7 +223,7 @@ engine_software_ddraw_args(const char *engine, int width, int height)
    style = GetWindowLong(window, GWL_STYLE);
    style &= ~WS_THICKFRAME;
    if (!SetWindowLong(window, GWL_STYLE, style))
-     goto unregister_class;
+     goto destroy_window;
 
    dc = GetDC(NULL);
    if (!dc)
