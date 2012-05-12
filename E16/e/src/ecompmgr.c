@@ -903,7 +903,7 @@ ECompMgrWinInvalidate(EObj * eo, int what)
       cw->have_extents = 0;
 }
 
-static void
+void
 ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 {
    ECmWinInfo         *cw = eo->cmhook;

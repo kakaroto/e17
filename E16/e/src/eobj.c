@@ -570,6 +570,17 @@ EobjGetPixmap(const EObj * eo __UNUSED__)
 #endif
 
 #if USE_COMPOSITE
+/* Update now */
+void
+EobjChangeOpacityNow(EObj * eo, unsigned int opacity)
+{
+   if (eo->opacity == opacity)
+      return;
+   eo->opacity = opacity;
+   ECompMgrWinSetOpacity(eo, opacity);
+}
+
+/* Change through fade, if enabled */
 void
 EobjChangeOpacity(EObj * eo, unsigned int opacity)
 {
@@ -578,18 +589,26 @@ EobjChangeOpacity(EObj * eo, unsigned int opacity)
    eo->opacity = opacity;
    ECompMgrWinChangeOpacity(eo, opacity);
 }
-#else
-void
-EobjChangeOpacity(EObj * eo __UNUSED__, unsigned int opacity __UNUSED__)
-{
-}
-#endif
 
-#if USE_COMPOSITE
 void
 EobjChangeShadow(EObj * eo, int shadow)
 {
    ECompMgrWinChangeShadow(eo, shadow);
+}
+#else
+void
+EobjChangeOpacityNow(EObj * eo __UNUSED__, unsigned int opacity __UNUSED__)
+{
+}
+
+void
+EobjChangeOpacity(EObj * eo __UNUSED__, unsigned int opacity __UNUSED__)
+{
+}
+
+void
+EobjChangeShadow(EObj * eo __UNUSED__, int shadow __UNUSED__)
+{
 }
 #endif
 

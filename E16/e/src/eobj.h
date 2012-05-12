@@ -176,6 +176,7 @@ void                EobjTextureDestroy(EObj * eo);
 void                EobjTextureInvalidate(EObj * eo);
 struct _glhook     *EobjGetTexture(EObj * eo);
 #endif
+void                EobjChangeOpacityNow(EObj * eo, unsigned int opacity);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 void                EobjChangeShadow(EObj * eo, int shadow);
 void                EobjSetLayer(EObj * eo, int layer);
