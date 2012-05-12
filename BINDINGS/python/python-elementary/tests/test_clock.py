@@ -51,6 +51,15 @@ def clock_clicked(obj):
     bx.pack_end(ck)
     ck.show()
 
+    ck = elementary.Clock(win)
+    ck.edit_set(True)
+    ck.show_seconds_set(True)
+    ck.edit_mode = elementary.ELM_CLOCK_EDIT_HOUR_DECIMAL | \
+                   elementary.ELM_CLOCK_EDIT_MIN_DECIMAL | \
+                   elementary.ELM_CLOCK_EDIT_SEC_DECIMAL
+    bx.pack_end(ck)
+    ck.show()
+
     win.show()
 # }}}
 

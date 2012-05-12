@@ -65,6 +65,16 @@ cdef extern from "Elementary.h":
         ELM_BUBBLE_POS_BOTTOM_LEFT
         ELM_BUBBLE_POS_BOTTOM_RIGHT
 
+    ctypedef enum Elm_Clock_Edit_Mode:
+       ELM_CLOCK_EDIT_DEFAULT = 0
+       ELM_CLOCK_EDIT_HOUR_DECIMAL = 1 << 0
+       ELM_CLOCK_EDIT_HOUR_UNIT = 1 << 1
+       ELM_CLOCK_EDIT_MIN_DECIMAL = 1 << 2
+       ELM_CLOCK_EDIT_MIN_UNIT = 1 << 3
+       ELM_CLOCK_EDIT_SEC_DECIMAL = 1 << 4
+       ELM_CLOCK_EDIT_SEC_UNIT = 1 << 5
+       ELM_CLOCK_EDIT_ALL = (1 << 6) - 1
+
     ctypedef enum Elm_Win_Type:
         ELM_WIN_BASIC
         ELM_WIN_DIALOG_BASIC
@@ -467,6 +477,21 @@ cdef extern from "Elementary.h":
     void                     elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
     evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
 
+    # Clock object (DONE)
+    evas.c_evas.Evas_Object *elm_clock_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_clock_time_set(evas.c_evas.Evas_Object *obj, int hrs, int min, int sec)
+    void                     elm_clock_time_get(evas.c_evas.Evas_Object *obj, int *hrs, int *min, int *sec)
+    void                     elm_clock_edit_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool edit)
+    evas.c_evas.Eina_Bool    elm_clock_edit_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_clock_edit_mode_set(evas.c_evas.Evas_Object *obj, Elm_Clock_Edit_Mode mode)
+    Elm_Clock_Edit_Mode      elm_clock_edit_mode_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_clock_show_am_pm_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool am_pm)
+    evas.c_evas.Eina_Bool    elm_clock_show_am_pm_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_clock_show_seconds_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool seconds)
+    evas.c_evas.Eina_Bool    elm_clock_show_seconds_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_clock_first_interval_set(evas.c_evas.Evas_Object *obj, double interval)
+    double                   elm_clock_first_interval_get(evas.c_evas.Evas_Object *obj)
+
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -561,14 +586,6 @@ cdef extern from "Elementary.h":
     void elm_table_pack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
     void elm_table_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
     void elm_table_clear(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool clear)
-
-    # Clock object
-    evas.c_evas.Evas_Object *elm_clock_add(evas.c_evas.Evas_Object *parent)
-    void elm_clock_time_set(evas.c_evas.Evas_Object *obj, int hrs, int min, int sec)
-    void elm_clock_time_get(evas.c_evas.Evas_Object *obj, int *hrs, int *min, int *sec)
-    void elm_clock_edit_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool edit)
-    void elm_clock_show_am_pm_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool am_pm)
-    void elm_clock_show_seconds_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool seconds)
 
     # Layout object
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
