@@ -1,0 +1,128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Enlightenment development team
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ecrire \n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-05-13 14:24+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/ui/alerts.c:56
+msgid ""
+"<align=center>Would you like to save changes to document?<br>Any unsaved "
+"changes will be lost."
+msgstr ""
+
+#: src/bin/ui/alerts.c:71 src/bin/main.c:687
+msgid "Save"
+msgstr ""
+
+#: src/bin/ui/alerts.c:82
+msgid "Discard"
+msgstr ""
+
+#: src/bin/ui/alerts.c:88
+msgid "Cancel"
+msgstr ""
+
+#: src/bin/ui/search_dialog.c:144 src/bin/main.c:705
+msgid "Find & Replace"
+msgstr ""
+
+#: src/bin/ui/search_dialog.c:166
+msgid "Search for:"
+msgstr ""
+
+#: src/bin/ui/search_dialog.c:190
+msgid "Replace with:"
+msgstr ""
+
+#: src/bin/ui/search_dialog.c:214
+msgid "Find"
+msgstr ""
+
+#: src/bin/ui/search_dialog.c:222
+msgid "Replace"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:89
+msgid "Select Font"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:114
+msgid "Font size:"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:119
+#, c-format
+msgid "%.0f pts"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:157
+msgid "Use Default Font:"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:168
+msgid "Set"
+msgstr ""
+
+#: src/bin/main.c:96
+#, c-format
+msgid "%s%s - %s"
+msgstr ""
+
+#: src/bin/main.c:99
+#, c-format
+msgid "%sUntitled %d - %s"
+msgstr ""
+
+#: src/bin/main.c:123
+#, c-format
+msgid "Ln %d, Col %d"
+msgstr ""
+
+#: src/bin/main.c:684
+msgid "New"
+msgstr ""
+
+#: src/bin/main.c:685
+msgid "Open"
+msgstr ""
+
+#: src/bin/main.c:688
+msgid "Save As"
+msgstr ""
+
+#: src/bin/main.c:693
+msgid "Undo"
+msgstr ""
+
+#: src/bin/main.c:695
+msgid "Redo"
+msgstr ""
+
+#: src/bin/main.c:698
+msgid "Cut"
+msgstr ""
+
+#: src/bin/main.c:700
+msgid "Copy"
+msgstr ""
+
+#: src/bin/main.c:702
+msgid "Paste"
+msgstr ""
+
+#: src/bin/main.c:709
+msgid "Settings"
+msgstr ""

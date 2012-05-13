@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entitled 0.1.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-02-19 19:54+0900\n"
+"POT-Creation-Date: 2012-05-13 14:24+0300\n"
 "PO-Revision-Date: 2011-08-09 11:45+0.00\n"
 "Last-Translator: Tom Hacohen <tom@stosb.com>\n"
 "Language-Team: General\n"
@@ -63,16 +63,16 @@ msgstr "בחר גופן"
 
 #: src/bin/ui/font_dialog.c:114
 msgid "Font size:"
-msgstr ""
+msgstr "גודל הגופן:"
 
 #: src/bin/ui/font_dialog.c:119
 #, c-format
 msgid "%.0f pts"
-msgstr ""
+msgstr "%.0f נק'"
 
 #: src/bin/ui/font_dialog.c:157
 msgid "Use Default Font:"
-msgstr ""
+msgstr "השתמש בגופן ברירת מחדל:"
 
 #: src/bin/ui/font_dialog.c:168
 msgid "Set"
@@ -102,9 +102,8 @@ msgid "Open"
 msgstr "פתח"
 
 #: src/bin/main.c:688
-#, fuzzy
 msgid "Save As"
-msgstr "שמור"
+msgstr "שמור בשם"
 
 #: src/bin/main.c:693
 msgid "Undo"
