@@ -59,6 +59,14 @@ ctypedef struct Elm_Win:
 
 cdef extern from "Elementary.h":
 
+    # enums
+    ctypedef enum Elm_Bg_Option:
+        ELM_BG_OPTION_CENTER
+        ELM_BG_OPTION_SCALE
+        ELM_BG_OPTION_STRETCH
+        ELM_BG_OPTION_TILE
+        ELM_BG_OPTION_LAST
+
     ctypedef enum Elm_Bubble_Pos:
         ELM_BUBBLE_POS_TOP_LEFT
         ELM_BUBBLE_POS_TOP_RIGHT
@@ -110,70 +118,6 @@ cdef extern from "Elementary.h":
         ELM_FLIP_PAGE_UP
         ELM_FLIP_PAGE_DOWN
 
-    ctypedef enum Elm_Win_Type:
-        ELM_WIN_BASIC
-        ELM_WIN_DIALOG_BASIC
-        ELM_WIN_DESKTOP
-        ELM_WIN_DOCK
-        ELM_WIN_TOOLBAR
-        ELM_WIN_MENU
-        ELM_WIN_UTILITY
-        ELM_WIN_SPLASH
-
-    ctypedef enum Elm_Win_Keyboard_Mode:
-        ELM_WIN_KEYBOARD_UNKNOWN      # Unknown keyboard state
-        ELM_WIN_KEYBOARD_OFF          # Request to deactivate the keyboard
-        ELM_WIN_KEYBOARD_ON           # Enable keyboard with default layout
-        ELM_WIN_KEYBOARD_ALPHA        # Alpha (a-z) keyboard layout
-        ELM_WIN_KEYBOARD_NUMERIC      # Numeric keyboard layout
-        ELM_WIN_KEYBOARD_PIN          # PIN keyboard layout
-        ELM_WIN_KEYBOARD_PHONE_NUMBER # Phone keyboard layout
-        ELM_WIN_KEYBOARD_HEX          # Hexadecimal numeric keyboard layout
-        ELM_WIN_KEYBOARD_TERMINAL     # Full (QWERTY) keyboard layout
-        ELM_WIN_KEYBOARD_PASSWORD     # Password keyboard layout
-        ELM_WIN_KEYBOARD_IP           # IP keyboard layout
-        ELM_WIN_KEYBOARD_HOST         # Host keyboard layout
-        ELM_WIN_KEYBOARD_FILE         # File keyboard layout
-        ELM_WIN_KEYBOARD_URL          # URL keyboard layout
-        ELM_WIN_KEYBOARD_KEYPAD       # Keypad layout
-        ELM_WIN_KEYBOARD_J2ME         # J2ME keyboard layout
-
-    ctypedef enum Elm_Policy:
-        ELM_POLICY_QUIT
-        ELM_POLICY_LAST
-
-    ctypedef enum Elm_Policy_Quit:
-        ELM_POLICY_QUIT_NONE
-        ELM_POLICY_QUIT_LAST_WINDOW_CLOSED
-
-    ctypedef enum Elm_Hover_Axis:
-        ELM_HOVER_AXIS_NONE
-        ELM_HOVER_AXIS_HORIZONTAL
-        ELM_HOVER_AXIS_VERTICAL
-        ELM_HOVER_AXIS_BOTH
-
-    ctypedef enum Elm_Text_Format:
-        ELM_TEXT_FORMAT_PLAIN_UTF8
-        ELM_TEXT_FORMAT_MARKUP_UTF8
-
-    ctypedef enum Elm_Object_Select_Mode:
-        ELM_OBJECT_SELECT_MODE_DEFAULT        # default select mode
-        ELM_OBJECT_SELECT_MODE_ALWAYS         # always select mode
-        ELM_OBJECT_SELECT_MODE_NONE           # no select mode
-        ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY   # no select mode with no finger size rule
-        ELM_OBJECT_SELECT_MODE_MAX
-
-    ctypedef enum Elm_List_Mode:
-        ELM_LIST_COMPRESS
-        ELM_LIST_SCROLL
-        ELM_LIST_LIMIT
-        ELM_LIST_EXPAND
-
-    ctypedef enum Elm_Web_Zoom_Mode:
-        ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
-        ELM_WEB_ZOOM_MODE_AUTO_FIT 	#Zoom until content fits in web object
-        ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object.
-
     ctypedef enum Elm_Genlist_Item_Type:
         ELM_GENLIST_ITEM_NONE
         ELM_GENLIST_ITEM_TREE
@@ -191,6 +135,17 @@ cdef extern from "Elementary.h":
         ELM_GENLIST_ITEM_SCROLLTO_IN        # to the nearest viewport
         ELM_GENLIST_ITEM_SCROLLTO_TOP       # to the top of viewport
         ELM_GENLIST_ITEM_SCROLLTO_MIDDLE    # to the middle of viewport
+
+    ctypedef enum Elm_Hover_Axis:
+        ELM_HOVER_AXIS_NONE
+        ELM_HOVER_AXIS_HORIZONTAL
+        ELM_HOVER_AXIS_VERTICAL
+        ELM_HOVER_AXIS_BOTH
+
+    ctypedef enum Elm_Icon_Type:
+        ELM_ICON_NONE
+        ELM_ICON_FILE
+        ELM_ICON_STANDARD
 
     ctypedef enum Elm_Image_Orient:
         ELM_IMAGE_ORIENT_NONE
@@ -230,10 +185,18 @@ cdef extern from "Elementary.h":
        ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH
        ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND
 
-    ctypedef enum Elm_Scroller_Policy:
-        ELM_SCROLLER_POLICY_AUTO
-        ELM_SCROLLER_POLICY_ON
-        ELM_SCROLLER_POLICY_OFF
+    ctypedef enum Elm_List_Mode:
+        ELM_LIST_COMPRESS
+        ELM_LIST_SCROLL
+        ELM_LIST_LIMIT
+        ELM_LIST_EXPAND
+
+    ctypedef enum Elm_Object_Select_Mode:
+        ELM_OBJECT_SELECT_MODE_DEFAULT        # default select mode
+        ELM_OBJECT_SELECT_MODE_ALWAYS         # always select mode
+        ELM_OBJECT_SELECT_MODE_NONE           # no select mode
+        ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY   # no select mode with no finger size rule
+        ELM_OBJECT_SELECT_MODE_MAX
 
     ctypedef enum Elm_Panel_Orient:
         ELM_PANEL_ORIENT_TOP,
@@ -241,10 +204,55 @@ cdef extern from "Elementary.h":
         ELM_PANEL_ORIENT_LEFT,
         ELM_PANEL_ORIENT_RIGHT,
 
-    ctypedef enum Elm_Icon_Type:
-        ELM_ICON_NONE
-        ELM_ICON_FILE
-        ELM_ICON_STANDARD
+    ctypedef enum Elm_Policy:
+        ELM_POLICY_QUIT
+        ELM_POLICY_LAST
+
+    ctypedef enum Elm_Policy_Quit:
+        ELM_POLICY_QUIT_NONE
+        ELM_POLICY_QUIT_LAST_WINDOW_CLOSED
+
+    ctypedef enum Elm_Scroller_Policy:
+        ELM_SCROLLER_POLICY_AUTO
+        ELM_SCROLLER_POLICY_ON
+        ELM_SCROLLER_POLICY_OFF
+
+    ctypedef enum Elm_Text_Format:
+        ELM_TEXT_FORMAT_PLAIN_UTF8
+        ELM_TEXT_FORMAT_MARKUP_UTF8
+
+    ctypedef enum Elm_Web_Zoom_Mode:
+        ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
+        ELM_WEB_ZOOM_MODE_AUTO_FIT 	#Zoom until content fits in web object
+        ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object.
+
+    ctypedef enum Elm_Win_Type:
+        ELM_WIN_BASIC
+        ELM_WIN_DIALOG_BASIC
+        ELM_WIN_DESKTOP
+        ELM_WIN_DOCK
+        ELM_WIN_TOOLBAR
+        ELM_WIN_MENU
+        ELM_WIN_UTILITY
+        ELM_WIN_SPLASH
+
+    ctypedef enum Elm_Win_Keyboard_Mode:
+        ELM_WIN_KEYBOARD_UNKNOWN      # Unknown keyboard state
+        ELM_WIN_KEYBOARD_OFF          # Request to deactivate the keyboard
+        ELM_WIN_KEYBOARD_ON           # Enable keyboard with default layout
+        ELM_WIN_KEYBOARD_ALPHA        # Alpha (a-z) keyboard layout
+        ELM_WIN_KEYBOARD_NUMERIC      # Numeric keyboard layout
+        ELM_WIN_KEYBOARD_PIN          # PIN keyboard layout
+        ELM_WIN_KEYBOARD_PHONE_NUMBER # Phone keyboard layout
+        ELM_WIN_KEYBOARD_HEX          # Hexadecimal numeric keyboard layout
+        ELM_WIN_KEYBOARD_TERMINAL     # Full (QWERTY) keyboard layout
+        ELM_WIN_KEYBOARD_PASSWORD     # Password keyboard layout
+        ELM_WIN_KEYBOARD_IP           # IP keyboard layout
+        ELM_WIN_KEYBOARD_HOST         # Host keyboard layout
+        ELM_WIN_KEYBOARD_FILE         # File keyboard layout
+        ELM_WIN_KEYBOARD_URL          # URL keyboard layout
+        ELM_WIN_KEYBOARD_KEYPAD       # Keypad layout
+        ELM_WIN_KEYBOARD_J2ME         # J2ME keyboard layout
 
     ctypedef enum Elm_Wrap_Type:
         ELM_WRAP_NONE
@@ -252,13 +260,8 @@ cdef extern from "Elementary.h":
         ELM_WRAP_WORD
         ELM_WRAP_MIXED
 
-    ctypedef enum Elm_Bg_Option:
-        ELM_BG_OPTION_CENTER
-        ELM_BG_OPTION_SCALE
-        ELM_BG_OPTION_STRETCH
-        ELM_BG_OPTION_TILE
-        ELM_BG_OPTION_LAST
 
+    # structs
     ctypedef struct Elm_Entry_Anchor_Info:
         char *name
         int   button
