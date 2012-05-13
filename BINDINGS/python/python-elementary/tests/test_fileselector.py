@@ -58,9 +58,9 @@ def fileselector_clicked(obj):
     vbox.show()
 
     fs = elementary.Fileselector(win)
-    fs.is_save_set(False)
+    fs.is_save_set(True)
     fs.expandable_set(False)
-    fs.folder_only_set(True)
+    fs.folder_only_set(False)
     fs.path_set(os.getenv("HOME"))
     fs.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     fs.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
