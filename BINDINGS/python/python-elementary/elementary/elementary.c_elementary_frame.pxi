@@ -21,19 +21,41 @@ cdef class Frame(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_frame_add(parent.obj))
 
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
+    def autocollapse_set(self, autocollapse):
+        elm_frame_autocollapse_set(self.obj, autocollapse)
 
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
+    def autocollapse_get(self):
+        return elm_frame_autocollapse_get(self.obj)
 
-    def content_set(self, c_evas.Object content):
-        elm_object_part_content_set(self.obj, NULL, content.obj)
+    property autocollapse:
+        def __get__(self):
+            return self.autocollapse_get()
+    
+        def __set__(self, value):
+            self.autocollapse_set(value)
 
-    def best_content_location_get(self, axis):
-        elm_hover_best_content_location_get(self.obj, axis)
+    def collapse_set(self, autocollapse):
+        elm_frame_collapse_set(self.obj, autocollapse)
+
+    def collapse_get(self):
+        return elm_frame_collapse_get(self.obj)
+
+    property collapse:
+        def __get__(self):
+            return self.collapse_get()
+    
+        def __set__(self, value):
+            self.collapse_set(value)
+
+    def collapse_go(self, collapse):
+        elm_frame_collapse_go(self.obj, collapse)
+
+
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
 
 
 _elm_widget_type_register("frame", Frame)

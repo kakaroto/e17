@@ -691,6 +691,13 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_entry_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
     evas.c_evas.Eina_Bool    elm_fileselector_entry_expandable_get(evas.c_evas.Evas_Object *obj)
 
+    # Frame object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    evas.c_evas.Evas_Object *elm_frame_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_frame_autocollapse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool autocollapse)
+    evas.c_evas.Eina_Bool    elm_frame_autocollapse_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_frame_collapse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool collapse)
+    evas.c_evas.Eina_Bool    elm_frame_collapse_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_frame_collapse_go(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool collapse)
 
 
     # Icon object
@@ -769,9 +776,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_label_slide_get(evas.c_evas.Evas_Object *obj)
     void elm_label_slide_duration_set(evas.c_evas.Evas_Object *obj, double duration)
     double elm_label_slide_duration_get(evas.c_evas.Evas_Object *obj)
-
-    # Frame object
-    evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
 
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
