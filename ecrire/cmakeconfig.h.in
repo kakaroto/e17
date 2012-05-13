@@ -18,3 +18,5 @@
 #endif
 
 #cmakedefine HAVE_ECORE_X
+
+#cmakedefine ENABLE_NLS

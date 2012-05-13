@@ -19,7 +19,6 @@ find_package(Ecore COMPONENTS Ecore-x)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
-find_package(Gettext)
 
 if(DEFINED ECORE_X_FOUND)
    set(HAVE_ECORE_X 1)
@@ -52,15 +51,18 @@ ADD_DEFINITIONS(
 
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
+find_package(Gettext)
+if (GETTEXT_FOUND)
+   set(GettextTranslate_ALL true)
+   set(GettextTranslate_GMO_BINARY true)
+   include(GettextTranslate)
+   set(ENABLE_NLS 1)
+endif (GETTEXT_FOUND)
+
 configure_file (
    "${PROJECT_SOURCE_DIR}/cmakeconfig.h.in"
    "${PROJECT_BINARY_DIR}/config.h"
    )
-
-
-set(GettextTranslate_ALL true)
-set(GettextTranslate_GMO_BINARY true)
-include(GettextTranslate)
 
 add_subdirectory(src/bin)
 add_subdirectory(data)
