@@ -655,6 +655,27 @@ cdef extern from "Elementary.h":
     void                     elm_flip_interaction_direction_hitsize_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, double hitsize)
     double                   elm_flip_interaction_direction_hitsize_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
 
+    # Fileselector Entry widget (api:DONE  cb:TODO  test:TODO  doc:TODO)
+    evas.c_evas.Evas_Object *elm_fileselector_entry_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_fileselector_entry_window_title_set(evas.c_evas.Evas_Object *obj, char *title)
+    char                    *elm_fileselector_entry_window_title_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_entry_window_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord width, evas.c_evas.Evas_Coord height)
+    void                     elm_fileselector_entry_window_size_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *width, evas.c_evas.Evas_Coord *height)
+    void                     elm_fileselector_entry_folder_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_entry_folder_only_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_entry_inwin_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_entry_inwin_mode_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_entry_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_entry_is_save_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_entry_selected_set(evas.c_evas.Evas_Object *obj, char *path)
+    char                    *elm_fileselector_entry_selected_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_entry_path_set(evas.c_evas.Evas_Object *obj, char *path)
+    char                    *elm_fileselector_entry_path_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_entry_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_entry_expandable_get(evas.c_evas.Evas_Object *obj)
+
+
+
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -983,24 +1004,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_naviframe_event_enabled_get(evas.c_evas.Evas_Object *obj)
     Elm_Object_Item *elm_naviframe_item_simple_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void         elm_naviframe_item_simple_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-
-    # Fileselector Entry widget
-    evas.c_evas.Evas_Object *elm_fileselector_entry_add(evas.c_evas.Evas_Object *parent)
-    void         elm_fileselector_entry_window_title_set(evas.c_evas.Evas_Object *obj, char *title)
-    char        *elm_fileselector_entry_window_title_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_entry_window_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord width, evas.c_evas.Evas_Coord height)
-    void         elm_fileselector_entry_window_size_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *width, evas.c_evas.Evas_Coord *height)
-    void         elm_fileselector_entry_folder_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
-    evas.c_evas.Eina_Bool elm_fileselector_entry_folder_only_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_entry_inwin_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
-    evas.c_evas.Eina_Bool elm_fileselector_entry_inwin_mode_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_entry_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
-    evas.c_evas.Eina_Bool elm_fileselector_entry_is_save_get(evas.c_evas.Evas_Object *obj)
-    char        *elm_fileselector_entry_selected_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_entry_path_set(evas.c_evas.Evas_Object *obj, char *path)
-    char        *elm_fileselector_entry_path_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_entry_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
-    evas.c_evas.Eina_Bool elm_fileselector_entry_expandable_get(evas.c_evas.Evas_Object *obj)
 
     # Progressbar widget
     evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)

@@ -38,6 +38,16 @@ cdef class FileselectorEntry(Object):
             return None
         return p
 
+    def selected_set(self, path):
+        elm_fileselector_entry_selected_set(self.obj, path)
+
+    property selected:
+        def __get__(self):
+            return self.selected_get()
+    
+        def __set__(self, value):
+            self.selected_set(value)
+
     def button_icon_set(self, c_evas.Object icon):
         elm_object_part_content_set(self.obj, NULL, icon.obj)
 
@@ -61,6 +71,13 @@ cdef class FileselectorEntry(Object):
             return None
         return p
 
+    property window_title:
+        def __get__(self):
+            return self.window_title_get()
+    
+        def __set__(self, value):
+            self.window_title_set(value)
+    
     def window_size_set(self, width, height):
         elm_fileselector_entry_window_size_set(self.obj, width, height)
 
@@ -69,6 +86,13 @@ cdef class FileselectorEntry(Object):
         cdef c_evas.Evas_Coord h
         elm_fileselector_entry_window_size_get(self.obj, &w, &h)
         return (w, h)
+
+    property window_size:
+        def __get__(self):
+            return self.window_size_get()
+    
+        def __set__(self, value):
+            self.window_size_set(*value)
 
     def folder_only_set(self, folder_only):
         elm_fileselector_entry_folder_only_set(self.obj, folder_only)
@@ -80,6 +104,13 @@ cdef class FileselectorEntry(Object):
             return False
         return True
 
+    property folder_only:
+        def __get__(self):
+            return self.folder_only_get()
+    
+        def __set__(self, value):
+            self.folder_only_set(value)
+
     def inwin_mode_set(self, inwin_mode):
         elm_fileselector_entry_inwin_mode_set(self.obj, inwin_mode)
 
@@ -89,6 +120,13 @@ cdef class FileselectorEntry(Object):
         if r == 0:
             return False
         return True
+
+    property inwin_mode:
+        def __get__(self):
+            return self.inwin_mode_get()
+    
+        def __set__(self, value):
+            self.inwin_mode_set(value)
 
     def path_set(self, path):
         elm_fileselector_entry_path_set(self.obj, path)
@@ -100,6 +138,13 @@ cdef class FileselectorEntry(Object):
             return None
         return p
 
+    property path:
+        def __get__(self):
+            return self.path_get()
+    
+        def __set__(self, value):
+            self.path_set(value)
+
     def expandable_set(self, expand):
         elm_fileselector_entry_expandable_set(self.obj, expand)
 
@@ -110,6 +155,13 @@ cdef class FileselectorEntry(Object):
             return False
         return True
 
+    property expandable:
+        def __get__(self):
+            return self.expandable_get()
+    
+        def __set__(self, value):
+            self.expandable_set(value)
+
     def is_save_get(self):
         cdef unsigned char r
         r = elm_fileselector_entry_is_save_get(self.obj)
@@ -119,6 +171,13 @@ cdef class FileselectorEntry(Object):
 
     def is_save_set(self, is_save):
         elm_fileselector_entry_is_save_set(self.obj, is_save)
+
+    property is_save:
+        def __get__(self):
+            return self.is_save_get()
+    
+        def __set__(self, value):
+            self.is_save_set(value)
 
     def callback_selected_add(self, func, *args, **kwargs):
         self._callback_add_full("selected", _fs_entry_callback_conv,
