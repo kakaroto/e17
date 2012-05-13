@@ -31,7 +31,7 @@ from test_layout import layout_clicked
 from test_spinner import spinner_clicked
 from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
 from test_gengrid import gengrid_clicked
-from test_flip import flip_clicked
+from test_flip import flip_clicked, flip_interactive_clicked
 from test_tooltip import tooltip_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
 from test_web import web_clicked
@@ -112,6 +112,7 @@ if __name__ == "__main__":
             ]),
              ("Effects", [
                 ("Flip", flip_clicked),
+                ("Flip Interactive", flip_interactive_clicked),
             ]),
              ("Entries", [
                 ("Entry", entry_clicked),

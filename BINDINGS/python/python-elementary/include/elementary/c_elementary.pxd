@@ -84,6 +84,32 @@ cdef extern from "Elementary.h":
         ELM_FILESELECTOR_LIST
         ELM_FILESELECTOR_GRID
 
+    ctypedef enum Elm_Flip_Direction:
+        ELM_FLIP_DIRECTION_UP
+        ELM_FLIP_DIRECTION_DOWN
+        ELM_FLIP_DIRECTION_LEFT
+        ELM_FLIP_DIRECTION_RIGHT
+
+    ctypedef enum Elm_Flip_Interaction:
+        ELM_FLIP_INTERACTION_NONE
+        ELM_FLIP_INTERACTION_ROTATE
+        ELM_FLIP_INTERACTION_CUBE
+        ELM_FLIP_INTERACTION_PAGE
+
+    ctypedef enum Elm_Flip_Mode:
+        ELM_FLIP_ROTATE_Y_CENTER_AXIS
+        ELM_FLIP_ROTATE_X_CENTER_AXIS
+        ELM_FLIP_ROTATE_XZ_CENTER_AXIS
+        ELM_FLIP_ROTATE_YZ_CENTER_AXIS
+        ELM_FLIP_CUBE_LEFT
+        ELM_FLIP_CUBE_RIGHT
+        ELM_FLIP_CUBE_UP
+        ELM_FLIP_CUBE_DOWN
+        ELM_FLIP_PAGE_LEFT
+        ELM_FLIP_PAGE_RIGHT
+        ELM_FLIP_PAGE_UP
+        ELM_FLIP_PAGE_DOWN
+
     ctypedef enum Elm_Win_Type:
         ELM_WIN_BASIC
         ELM_WIN_DIALOG_BASIC
@@ -147,14 +173,6 @@ cdef extern from "Elementary.h":
         ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
         ELM_WEB_ZOOM_MODE_AUTO_FIT 	#Zoom until content fits in web object
         ELM_WEB_ZOOM_MODE_AUTO_FILL	#Zoom until content fills web object.
-
-    ctypedef enum Elm_Flip_Mode:
-        ELM_FLIP_ROTATE_Y_CENTER_AXIS
-        ELM_FLIP_ROTATE_X_CENTER_AXIS
-        ELM_FLIP_ROTATE_XZ_CENTER_AXIS
-        ELM_FLIP_ROTATE_YZ_CENTER_AXIS
-        ELM_FLIP_CUBE_LEFT
-        ELM_FLIP_CUBE_RIGHT
 
     ctypedef enum Elm_Genlist_Item_Type:
         ELM_GENLIST_ITEM_NONE
@@ -474,7 +492,7 @@ cdef extern from "Elementary.h":
     void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
     void elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
-    # Background object (DONE)
+    # Background object (api:DONE  cb:TODO  test:DONE  doc:TODO))
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bg_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void                     elm_bg_file_get(evas.c_evas.Evas_Object *obj, char **file, char **group)
@@ -504,17 +522,17 @@ cdef extern from "Elementary.h":
     void                     elm_box_align_set(evas.c_evas.Evas_Object *obj, double horizontal, double vertical)
     void                     elm_box_align_get(evas.c_evas.Evas_Object *obj, double *horizontal, double *vertical)
 
-    # Bubble object (DONE)
+    # Bubble object (api:DONE  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
     Elm_Bubble_Pos           elm_bubble_pos_get(evas.c_evas.Evas_Object *obj)
 
-    # Check widget (DONE)
+    # Check widget (api:DONE  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
     void                     elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
     evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
 
-    # Clock object (DONE)
+    # Clock object (api:DONE  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_clock_add(evas.c_evas.Evas_Object *parent)
     void                     elm_clock_time_set(evas.c_evas.Evas_Object *obj, int hrs, int min, int sec)
     void                     elm_clock_time_get(evas.c_evas.Evas_Object *obj, int *hrs, int *min, int *sec)
@@ -529,7 +547,7 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(evas.c_evas.Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(evas.c_evas.Evas_Object *obj)
 
-    # Entry Object (DONE with TODO) XXX
+    # Entry Object (api:DONEwithTODO  cb:TODO  test:TODO  doc:TODO) XXX
     evas.c_evas.Evas_Object *elm_entry_add(evas.c_evas.Evas_Object *parent)
     void                     elm_entry_single_line_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool single_line)
     evas.c_evas.Eina_Bool    elm_entry_single_line_get(evas.c_evas.Evas_Object *obj)
@@ -608,7 +626,7 @@ cdef extern from "Elementary.h":
     char                    *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
     void                     elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
 
-    # Fileselector widget (api:DONE  cb:TODO  test:TODO  doc:TODO) XXX
+    # Fileselector widget (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
     void                     elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)
     evas.c_evas.Eina_Bool    elm_fileselector_is_save_get(evas.c_evas.Evas_Object *obj)
@@ -624,6 +642,18 @@ cdef extern from "Elementary.h":
     char                    *elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
     void                     elm_fileselector_mode_set(evas.c_evas.Evas_Object *obj, Elm_Fileselector_Mode mode)
     Elm_Fileselector_Mode    elm_fileselector_mode_get(evas.c_evas.Evas_Object *obj)
+
+    # Flip object (api:DONE  cb:DONE  test:DONE doc:TODO)
+    evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Eina_Bool    elm_flip_front_visible_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_flip_perspective_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord foc, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
+    void                     elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
+    void                     elm_flip_interaction_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Interaction mode)
+    Elm_Flip_Interaction     elm_flip_interaction_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_flip_interaction_direction_enabled_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, evas.c_evas.Eina_Bool enabled)
+    evas.c_evas.Eina_Bool    elm_flip_interaction_direction_enabled_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
+    void                     elm_flip_interaction_direction_hitsize_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, double hitsize)
+    double                   elm_flip_interaction_direction_hitsize_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
 
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
@@ -704,13 +734,6 @@ cdef extern from "Elementary.h":
 
     # Frame object
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
-
-    # Flip object
-    evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
-    void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
-    void elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
-    evas.c_evas.Eina_Bool elm_flip_front_visible_get(evas.c_evas.Evas_Object *obj)
-    void elm_flip_perspective_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord foc, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
 
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
