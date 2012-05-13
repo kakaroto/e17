@@ -21,7 +21,7 @@ from test_inwin import inner_window_clicked
 from test_check import check_clicked
 from test_radio import radio_clicked
 from test_progressbar import progressbar_clicked
-from test_fileselector import fileselector_clicked
+from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
 from test_separator import separator_clicked
 from test_scroller import scroller_clicked
 from test_notify import notify_clicked
@@ -141,7 +141,9 @@ if __name__ == "__main__":
                 ("Scroller", scroller_clicked),
             ]),
              ("Selectors", [
-                ("File selector", fileselector_clicked),
+                ("File Selector", fileselector_clicked),
+                ("FS button", fileselector_button_clicked),
+                ("FS entry", fileselector_entry_clicked),
                 ("Hoversel", hoversel_clicked),
                 ("Menu", menu_clicked),
                 ("Radios", radio_clicked),
