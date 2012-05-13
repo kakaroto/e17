@@ -22,11 +22,13 @@ namespace ehninjas
 {
    class singleton;
    class MemoryMgr;
+   class PlayerChar;
 
    class App : public Singleton<App>
      {
       private:
          MemoryMgr *memmgr;
+         PlayerChar *pc;
 
          Evas *e;
          Evas_Object *win;
@@ -35,12 +37,15 @@ namespace ehninjas
 
          Eina_Bool CreateWin(const char *, unsigned int, unsigned int);
          Eina_Bool CreateBg(int, int, int);
+         Eina_Bool InitializeObjs();
 
       public:
-         App(): memmgr(NULL), e(NULL), win(NULL), bg(NULL) {}
-         ~App() {}
+         App();
+         ~App();
          Eina_Bool Initialize(int, char **);
          Eina_Bool Run();
          Eina_Bool Terminate();
+         void DispatchKeyDown(const char * const);
+         void DispatchKeyUp(const char *const);
      };
 }

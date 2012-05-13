@@ -24,18 +24,67 @@
 #include "defines.h"
 #include "singleton.h"
 #include "memmgr.h"
+#include "player_char.h"
 #include "ehninjas.h"
 
+
+
 using namespace ehninjas;
+
+static void _key_up_cb(void *data,
+                       Evas *e,
+                       Evas_Object *obj,
+                       void *event_info)
+{
+   App *app = static_cast<App *>(data);
+   assert(app);
+
+   Evas_Event_Key_Up *ev = static_cast<Evas_Event_Key_Up *>(event_info);
+   assert(ev);
+
+   app->DispatchKeyUp(ev->keyname);
+}
+
+
 
 static void _key_down_cb(void *data,
                          Evas *e,
                          Evas_Object *obj,
                          void *event_info)
 {
-   printf("KEY DOWN!\n");
-   elm_exit();
+   App *app = static_cast<App *>(data);
+   assert(app);
+
+   Evas_Event_Key_Down *ev = static_cast<Evas_Event_Key_Down *>(event_info);
+   assert(ev);
+
+   app->DispatchKeyDown(ev->keyname);
 }
+
+
+
+void App ::DispatchKeyDown(const char * const keyname)
+{
+   assert(keyname);
+   PRINT_DBG(keyname);
+
+   //Exit Game
+   if (!strcmp("Escape", keyname))
+     elm_exit();
+
+
+}
+
+
+
+void App ::DispatchKeyUp(const char * const keyname)
+{
+   assert(keyname);
+   PRINT_DBG(keyname);
+
+}
+
+
 
 Eina_Bool App ::CreateWin(const char *title,
                           unsigned int width,
@@ -48,10 +97,12 @@ Eina_Bool App ::CreateWin(const char *title,
    evas_object_resize(win, width, height);
    evas_object_show(win);
 
+   this->e = evas_object_evas_get(win);
    this->win = win;
 
    return EINA_TRUE;
 }
+
 
 
 Eina_Bool App ::CreateBg(int r, int g, int b)
@@ -73,6 +124,27 @@ Eina_Bool App ::CreateBg(int r, int g, int b)
 
    return EINA_TRUE;
 }
+
+
+
+Eina_Bool App ::InitializeObjs()
+{
+   assert(this->e);
+
+   PlayerChar *pc = new PlayerChar();
+   assert(pc);
+
+   //Player Character for test
+   Evas_Object *obj = evas_object_rectangle_add(this->e);
+   if (!obj) return EINA_FALSE;
+   evas_object_color_set(obj, 125, 0, 0, 125);
+   evas_object_resize(obj, 30, 30);
+   evas_object_show(obj);
+
+   return EINA_TRUE;
+}
+
+
 
 Eina_Bool App ::Initialize(int argc, char **argv)
 {
@@ -106,22 +178,25 @@ Eina_Bool App ::Initialize(int argc, char **argv)
         PRINT_DBG("Failed to create elm_bg!");
      }
 
-   /*
-      Block block = new Block();
-      if (!block) return EINA_FALSE;
-    */
-
    //Set key events callbacks to window
    evas_object_event_callback_add(win,
                                   EVAS_CALLBACK_KEY_DOWN,
                                   _key_down_cb,
                                   this);
+   evas_object_event_callback_add(win,
+                                  EVAS_CALLBACK_KEY_UP,
+                                  _key_up_cb,
+                                  this);
+
+   InitializeObjs();
 
    this->memmgr = memmgr;
    this->initialized = EINA_TRUE;
 
    return EINA_TRUE;
 }
+
+
 
 Eina_Bool App:: Run()
 {
@@ -130,6 +205,8 @@ Eina_Bool App:: Run()
 
    return EINA_TRUE;
 }
+
+
 
 Eina_Bool App:: Terminate()
 {
@@ -141,6 +218,20 @@ Eina_Bool App:: Terminate()
 
    return EINA_TRUE;
 }
+
+
+
+App ::App() :memmgr(NULL), pc(NULL), e(NULL), win(NULL), bg(NULL)
+{
+}
+
+
+
+App ::~App()
+{
+}
+
+
 
 int main(int argc, char **argv)
 {

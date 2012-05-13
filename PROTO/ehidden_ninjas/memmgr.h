@@ -41,5 +41,35 @@ namespace ehninjas
          void Free(void *);
          unsigned int GetPoolSize();
      };
+
+
+//Memory Manager Adaptors
+#ifdef EINA_MEMPOOL
+   template<typename T>
+   T *mem_alloc()
+   {
+      return static_cast<T *>(MEMMGR->Alloc(sizeof(T)));
+   }
+
+   template<typename T>
+   void mem_free(T *p)
+   {
+      MEMMGR->Free(p);
+   }
+
+#else
+   template<typename T>
+   T *mem_alloc()
+   {
+      return static_cast<T *>(malloc(sizeof(T)));
+   }
+
+   template<typename T>
+   void mem_free(T *p)
+   {
+      free(p);
+   }
+#endif
+
 }
 

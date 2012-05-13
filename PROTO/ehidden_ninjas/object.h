@@ -19,27 +19,30 @@
  */
 
 #include <string>
+#include <Evas.h>
 
 #include "defines.h"
 
-namespace eHiddenNinja
+namespace ehninjas
 {
    class Object
      {
       private:
         std:: string name;
         unsigned int id;
+        Evas_Coord_Point size;
         VECTOR2 pos;
 
       public:
-        Object(std:: string& name, std:: unsigned int& id) : name(name),
-                                                              id(id),
-                                                              pos(VECTOR2()) {}
-         virtual ~Object() = 0;
+        Object(std:: string name, unsigned int id) : name(name),
+                                                     id(id),
+                                                     pos(VECTOR2()) {}
+         virtual ~Object() {}
 
-         std:: string& GetString() { return &this->name; }
+         std:: string& GetString() { return this->name; }
          unsigned int GetId() { return this->id; }
-         VECTOR2& Position() { return &this->pos; }
+         VECTOR2 &Position() { return this->pos; }
+         Evas_Coord_Point &Size() { return this->size; }
          virtual Eina_Bool Initialize() { return EINA_TRUE; }
          virtual Eina_Bool Release() { return EINA_TRUE; }
 
@@ -50,24 +53,21 @@ namespace eHiddenNinja
    class Block: public Object
      {
       public:
-         Block() ::Object(string(""), ID_BLOCK) {}
+         Block() :Object(std ::string(""), ID_BLOCK) {}
          ~Block() {}
 
          Eina_Bool SetImgObj(Evas_Object*) { return EINA_TRUE; }
          const Evas_Object *GetImgObj() { return NULL; }
      };
 
-   class Character : public Object {};
-
-   class PlayerChar : public Character
+   class Character : public Object
      {
+        enum eMoveDirection { Left, Right, Up, Down };
+
       public:
-         PlayerChar();
-         ~PlayerChar();
-         Eina_Bool Initialize() { return EINA_TRUE; }
-         Eina_Bool Release() { return EINA_TRUE; }
-         Eina_Bool SetImgObj(Evas_Object*);
-         const Evas_Object *GetImgObj();
+         Character(const std ::string name, unsigned int id) : Object(name, id)
+         {}
+         virtual Eina_Bool Move(unsigned int) { return EINA_TRUE; }
      };
 
    class NonPlayerChar : public Character

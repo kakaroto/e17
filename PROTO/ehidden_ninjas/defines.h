@@ -29,6 +29,9 @@
      } \
    while(0)
 
+//Singleton Instances
+#define MEMMGR MemoryMgr ::GetInstance()
+
 //ID VALUES
 #define ID_BLOCK         1
 #define ID_BOMB          2
