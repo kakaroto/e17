@@ -79,7 +79,10 @@ cdef extern from "Elementary.h":
         ELM_CNP_MODE_MARKUP     # copy & paste text with markup tag
         ELM_CNP_MODE_NO_IMAGE   # copy & paste text without item(image) tag
         ELM_CNP_MODE_PLAINTEXT  # copy & paste text without markup tag
-    
+
+    ctypedef enum Elm_Fileselector_Mode:
+        ELM_FILESELECTOR_LIST
+        ELM_FILESELECTOR_GRID
 
     ctypedef enum Elm_Win_Type:
         ELM_WIN_BASIC
@@ -605,6 +608,23 @@ cdef extern from "Elementary.h":
     char                    *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
     void                     elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
 
+    # Fileselector widget (api:DONE  cb:TODO  test:TODO  doc:TODO) XXX
+    evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)
+    evas.c_evas.Eina_Bool    elm_fileselector_is_save_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_folder_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_folder_only_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_buttons_ok_cancel_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_buttons_ok_cancel_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
+    evas.c_evas.Eina_Bool    elm_fileselector_expandable_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_path_set(evas.c_evas.Evas_Object *obj, char *path)
+    char                    *elm_fileselector_path_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_fileselector_selected_set(evas.c_evas.Evas_Object *obj, char *path)
+    char                    *elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_fileselector_mode_set(evas.c_evas.Evas_Object *obj, Elm_Fileselector_Mode mode)
+    Elm_Fileselector_Mode    elm_fileselector_mode_get(evas.c_evas.Evas_Object *obj)
+
     # Icon object
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     void elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -940,17 +960,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_naviframe_event_enabled_get(evas.c_evas.Evas_Object *obj)
     Elm_Object_Item *elm_naviframe_item_simple_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void         elm_naviframe_item_simple_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-
-    # Fileselector widget
-    evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
-    void         elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)
-    evas.c_evas.Eina_Bool elm_fileselector_is_save_get(evas.c_evas.Evas_Object *obj)
-    char        *elm_fileselector_selected_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_folder_only_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
-    evas.c_evas.Eina_Bool elm_fileselector_folder_only_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_path_set(evas.c_evas.Evas_Object *obj, char *path)
-    char        *elm_fileselector_path_get(evas.c_evas.Evas_Object *obj)
-    void         elm_fileselector_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool expand)
 
     # Fileselector Entry widget
     evas.c_evas.Evas_Object *elm_fileselector_entry_add(evas.c_evas.Evas_Object *parent)
