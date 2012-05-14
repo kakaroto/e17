@@ -5,12 +5,12 @@ bin_PROGRAMS = clouseaud client
 clouseaud_SOURCES = \
 		    clouseaud.c \
 		    ../lib/helper.c \
-		    ../lib/ui/obj_information.c
+		    ../lib/obj_information.c
 
 client_SOURCES = \
 		 client.c \
 		 ../lib/helper.c \
-		 ../lib/ui/obj_information.c
+		 ../lib/obj_information.c
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \

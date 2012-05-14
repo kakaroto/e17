@@ -1,4 +1,4 @@
-#include "../libclouseau.h"
+#include "libclouseau.h"
 typedef struct _Inf_Tree_Item Inf_Tree_Item;
 struct _Inf_Tree_Item
 {

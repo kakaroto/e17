@@ -17,7 +17,7 @@ pkg_LTLIBRARIES = libclouseau.la
 
 libclouseau_la_SOURCES = \
 			 libclouseau.c \
-			 ui/obj_information.c \
+			 obj_information.c \
 			 helper.c
 
 libclouseau_la_LDFLAGS = -module -avoid-version -rdynamic
