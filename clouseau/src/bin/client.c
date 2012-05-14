@@ -102,7 +102,7 @@ _load_gui_with_list(Evas_Object *gl, Eina_List *trees)
 
 static void
 _set_selected_app(void *data, Evas_Object *pobj,
-      void *event_info)
+      void *event_info EINA_UNUSED)
 {  /* Set hovel label */
    app_data_st *st = data;
    app_info_st *app = st->app->data;
@@ -142,31 +142,31 @@ _add_app_to_dd_list(Evas_Object *dd_list, app_data_st *st)
 }
 
 static void
-_add_app(gui_elements *gui, Variant_st *v)
+_add_app(gui_elements *g, Variant_st *v)
 {
    app_data_st *st = malloc(sizeof(app_data_st));
    st->app = v;
    st->td = NULL; /* Will get this on TREE_DATA message */
    apps = eina_list_append(apps, st);
 
-   _add_app_to_dd_list(gui->dd_list, st);
+   _add_app_to_dd_list(g->dd_list, st);
 }
 
 static void
-_remove_app(gui_elements *gui, Variant_st *v)
+_remove_app(gui_elements *g, Variant_st *v)
 {
    app_closed_st *app = v->data;
-   app_info_st *sel_app = gui->sel_app->app->data;
+   app_info_st *sel_app = g->sel_app->app->data;
    app_data_st *st = (app_data_st *)
       eina_list_search_unsorted(apps, _app_ptr_cmp,
             (void *) (uintptr_t) app->ptr);
 
    if (app->ptr == sel_app->ptr)
      {
-        elm_object_text_set(gui->dd_list, "SELECT APP");
-        elm_genlist_clear(gui->gl);
-        elm_genlist_clear(gui->prop_list);
-        gui->sel_app = NULL;
+        elm_object_text_set(g->dd_list, "SELECT APP");
+        elm_genlist_clear(g->gl);
+        elm_genlist_clear(g->prop_list);
+        g->sel_app = NULL;
      }
 
    if (st)
@@ -179,12 +179,12 @@ _remove_app(gui_elements *gui, Variant_st *v)
 
         free(st);
 
-        if (!elm_hoversel_expanded_get(gui->dd_list))
+        if (!elm_hoversel_expanded_get(g->dd_list))
           {
              Eina_List *l;
-             elm_hoversel_clear(gui->dd_list);
+             elm_hoversel_clear(g->dd_list);
              EINA_LIST_FOREACH(apps, l , st)
-                _add_app_to_dd_list(gui->dd_list, st);
+                _add_app_to_dd_list(g->dd_list, st);
           }
      }
 
@@ -192,7 +192,7 @@ _remove_app(gui_elements *gui, Variant_st *v)
 }
 
 static void
-_update_tree(gui_elements *gui, Variant_st *v)
+_update_tree(gui_elements *g, Variant_st *v)
 {  /* Update Tree for app, then update GUI if its displayed */
    tree_data_st *td = v->data;
    app_data_st *st = (app_data_st *)
@@ -206,15 +206,14 @@ _update_tree(gui_elements *gui, Variant_st *v)
 
         st->td = v;
 
-        elm_genlist_clear(gui->gl);
-        _load_gui_with_list(gui->gl, td->tree);
+        elm_genlist_clear(g->gl);
+        _load_gui_with_list(g->gl, td->tree);
      }
 }
 
 Eina_Bool
 _data(void *data, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
-   static Eina_Bool got_tree = EINA_FALSE;
    Variant_st *v = packet_info_get(ev->data, ev->size);
 
    if (v)
@@ -232,6 +231,9 @@ _data(void *data, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
            case TREE_DATA:           /* Update genlist with APP TREE info */
               _update_tree(data, v); /* data is the gui pointer */
               break;                 /* v->data is (tree_data_st *) */
+
+           default:
+              break;
           }
 
        /* free(v) - freed when removed from app list */
@@ -369,13 +371,14 @@ item_text_get(void *data, Evas_Object *obj EINA_UNUSED,
 }
 
 static void
-client_win_del(void *data, Evas_Object *obj, void *event_info)
+client_win_del(void *data EINA_UNUSED,
+      Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {  /* called when client window is deleted */
    elm_exit(); /* exit the program's main loop that runs in elm_run() */
 }
 
 static Ecore_Ipc_Server *
-_connect_to_daemon(gui_elements *gui)
+_connect_to_daemon(gui_elements *g)
 {
    static Ecore_Ipc_Server *svr = NULL;
    if (svr && ecore_ipc_server_connected_get(svr))
@@ -385,10 +388,10 @@ _connect_to_daemon(gui_elements *gui)
    char *address = LOCALHOST;
    char *p_colon = NULL;
 
-   if (gui->address && strlen(gui->address))
+   if (g->address && strlen(g->address))
      {
-        address = gui->address;
-        p_colon = strchr(gui->address, ':');
+        address = g->address;
+        p_colon = strchr(g->address, ':');
      }
 
    if (p_colon)
@@ -406,7 +409,7 @@ _connect_to_daemon(gui_elements *gui)
 
    if ((!svr) || (!ecore_ipc_server_connected_get(svr)))
      {
-        printf("could not connect to the server: %s\n", gui->address);
+        printf("could not connect to the server: %s\n", g->address);
         return NULL;
      }
 
@@ -414,11 +417,11 @@ _connect_to_daemon(gui_elements *gui)
    ecore_ipc_server_data_size_max_set(svr, -1);
 
    /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, gui);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, g);
    /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, gui);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, g);
    /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, gui);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, g);
 
    return svr;
 }
@@ -456,19 +459,19 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
 }
 
 static int
-_load_list(gui_elements *gui)
+_load_list(gui_elements *g)
 {
-   if (gui->sel_app)
+   if (g->sel_app)
      {
-        elm_genlist_clear(gui->gl);
-        elm_genlist_clear(gui->prop_list);
-        app_info_st *st = gui->sel_app->app->data;
+        elm_genlist_clear(g->gl);
+        elm_genlist_clear(g->prop_list);
+        app_info_st *st = g->sel_app->app->data;
 
         if (eina_list_search_unsorted(apps, _app_ptr_cmp,
                  (void *) (uintptr_t) st->ptr))
           {  /* do it only if app selected AND found in apps list */
              int size;
-             Ecore_Ipc_Server *svr = _connect_to_daemon(gui);
+             Ecore_Ipc_Server *svr = _connect_to_daemon(g);
              data_req_st t = { (unsigned long long) (uintptr_t) NULL,
                   (unsigned long long) (uintptr_t) st->ptr };
 
@@ -539,7 +542,7 @@ _ok_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event
 
 #ifndef ELM_LIB_QUICKLAUNCH
 EAPI int
-elm_main(int argc, char **argv)
+elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 {  /* Create Client Window */
    Evas_Object *win, *bg, *panes, *bx, *bt,
                *show_hidden_check, *show_clippers_check;

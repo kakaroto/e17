@@ -35,12 +35,6 @@ log_message(char *filename, char *mode, char *message)
    fclose(logfile);
 }
 
-static int
-_appcmp(const void *d1, const void *d2)
-{
-   return ((((tree_info_st *) d1)->app) - d2);
-}
-
 static void
 _daemon_cleanup(void)
 {  /*  Free strings */
@@ -161,9 +155,6 @@ _remove_client(Eina_List *clients, void *client)
 Eina_Bool
 _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Add *ev)
 {
-   void *p;
-   int size = 0;
-
    ecore_ipc_client_data_size_max_set(ev->client, -1);
    sprintf(msg_buf, "<%s> msg from <%p>", __func__, ev->client);
    log_message(LOG_FILE, "a", msg_buf);
@@ -350,14 +341,14 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    else
                      {  /* Sending tree data to all GUI clients */
                         Eina_List *l;
-                        app_info_st *p;
-                        EINA_LIST_FOREACH(gui, l, p)
+                        app_info_st *info;
+                        EINA_LIST_FOREACH(gui, l, info)
                           {
                              ecore_ipc_client_send(
-                                   (void *) (uintptr_t) p->ptr, 0,0,0,0,
+                                   (void *) (uintptr_t) info->ptr, 0,0,0,0,
                                    EINA_FALSE, ev->data, ev->size);
                              ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) p->ptr);
+                                   (void *) (uintptr_t) info->ptr);
                           }
                      }
                 }
@@ -376,6 +367,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                      }
                 }
               break;
+
+           default:
+              break;
           }
 
         free(v);  /* NOT variant_free(v), then comes from eet..decode */
@@ -391,9 +385,6 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
 
 int main(void)
 {
-   Ecore_Ipc_Client *cl;
-   const Eina_List *clients, *l;
-
    daemonize();
    eina_init();
    ecore_init();
