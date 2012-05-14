@@ -7,7 +7,6 @@
 #include <Elementary.h>
 
 #include "libclouseau.h"
-#include "ui/obj_information.h"
 #include "helper.h"           /*  Our own helper functions  */
 #include "eet_dump.h"
 

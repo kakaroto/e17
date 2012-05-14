@@ -10,8 +10,7 @@ AM_CPPFLAGS = \
 
 EXTRA_DIST = \
 	     libclouseau.h \
-	     helper.h \
-	     ui/obj_information.h
+	     helper.h
 
 pkgdir = $(libdir)/clouseau
 pkg_LTLIBRARIES = libclouseau.la

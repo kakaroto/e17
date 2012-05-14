@@ -18,7 +18,6 @@
 #include "helper.h"
 #include "libclouseau.h"
 #include "eet_dump.h"
-#include "ui/obj_information.h"
 
 static Eina_List *tree = NULL;
 static Eina_Bool _lib_init = EINA_FALSE;

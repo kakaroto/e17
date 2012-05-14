@@ -1,4 +1,3 @@
-#include "ui/obj_information.h"
 #include "helper.h"
 static data_desc *desc = NULL;
 
