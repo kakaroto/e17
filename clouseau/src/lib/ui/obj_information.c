@@ -87,9 +87,6 @@ elm_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "has_focus",
          has_focus, EET_T_UCHAR);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "has_focus",
-         has_focus, EET_T_UCHAR);
-
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "is_disabled",
          is_disabled, EET_T_UCHAR);
 
@@ -288,19 +285,19 @@ Obj_Information_desc_make(void)
 
    /* START handle UNION desc */
    EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
-         "CLOUSEAU_OBJ_TYPE_ELM_STR", props_descs->elm);
+         CLOUSEAU_OBJ_TYPE_ELM_STR, props_descs->elm);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
-         "CLOUSEAU_OBJ_TYPE_TEXT_STR", props_descs->text);
+         CLOUSEAU_OBJ_TYPE_TEXT_STR, props_descs->text);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
-         "CLOUSEAU_OBJ_TYPE_IMAGE_STR", props_descs->image);
+         CLOUSEAU_OBJ_TYPE_IMAGE_STR, props_descs->image);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
-         "CLOUSEAU_OBJ_TYPE_EDJE_STR", props_descs->edje);
+         CLOUSEAU_OBJ_TYPE_EDJE_STR, props_descs->edje);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
-         "CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR", props_descs->textblock);
+         CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR, props_descs->textblock);
 
    EET_DATA_DESCRIPTOR_ADD_UNION(d, Obj_Information, "u", extra_props.u,
          extra_props.type, props_descs->_union_unified_descriptor);
