@@ -170,7 +170,7 @@ _free_app_tree_data(Variant_st *td)
      {
         tree_data_st *ftd = td->data;
         item_tree_free(ftd->tree);
-        free(td);
+        variant_free(td);
      }
 }
 
@@ -241,7 +241,6 @@ _update_tree(gui_elements *g, Variant_st *v)
    else
      {  /* Happens when TREE_DATA of app that already closed has arrived */
         _free_app_tree_data(v);                   /* Dispose unused info */
-        return;
      }
 }
 
