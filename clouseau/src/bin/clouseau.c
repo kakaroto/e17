@@ -742,12 +742,11 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    lb = elm_label_add(gui->inwin);
    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(lb, EVAS_HINT_FILL, 0.0);
-   elm_object_text_set(lb, "Enter host IP:PORT");
+   elm_object_text_set(lb, "Enter remote address[:port]");
    elm_box_pack_end(bxx, lb);
    evas_object_show(lb);
 
    /* Single line selected entry */
-   char buf[32];
    gui->en = elm_entry_add(gui->inwin);
    elm_entry_scrollable_set(gui->en, EINA_TRUE);
    evas_object_size_hint_weight_set(gui->en,
@@ -756,8 +755,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_object_style_set(gui->inwin, "minimal_vertical");
    elm_entry_scrollbar_policy_set(gui->en, ELM_SCROLLER_POLICY_OFF,
          ELM_SCROLLER_POLICY_OFF);
-   sprintf(buf, "%s:%d", LOCALHOST, PORT);
-   elm_object_text_set(gui->en, buf);
+   elm_object_text_set(gui->en, LOCALHOST);
    elm_entry_single_line_set(gui->en, EINA_TRUE);
    elm_entry_select_all(gui->en);
    elm_box_pack_end(bxx, gui->en);
