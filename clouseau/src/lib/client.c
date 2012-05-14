@@ -29,6 +29,9 @@ struct _gui_elements
    Evas_Object *dd_list;
    Evas_Object *gl;
    Evas_Object *prop_list;
+   Evas_Object *inwin;
+   Evas_Object *en;
+   char *address;
    app_data_st *sel_app; /* Currently selected app data */
 };
 typedef struct _gui_elements gui_elements;
@@ -370,8 +373,7 @@ item_text_get(void *data, Evas_Object *obj __UNUSED__,
 
 static void
 client_win_del(void *data, Evas_Object *obj, void *event_info)
-{  /* called when client window is deleted, do cleanup here */
-   /* TODO: client cleanup */
+{  /* called when client window is deleted */
    elm_exit(); /* exit the program's main loop that runs in elm_run() */
 }
 
@@ -379,17 +381,39 @@ static Ecore_Ipc_Server *
 _connect_to_daemon(gui_elements *gui)
 {
    static Ecore_Ipc_Server *svr = NULL;
-   const char *address = LOCALHOST;
-
    if (svr && ecore_ipc_server_connected_get(svr))
      return svr;  /* Already connected */
 
-   if (!(svr = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
+   int port = PORT;
+   char *address = LOCALHOST;
+   char *p_colon = NULL;
+
+   if (gui->address && strlen(gui->address))
      {
-        printf("could not connect to the server: %s, port %d.\n",
-              address, PORT);
+        address = gui->address;
+        p_colon = strchr(gui->address, ':');
+     }
+
+   if (p_colon)
+     {
+        *p_colon = '\0';
+        if (isdigit(*(p_colon+1)))
+          port = atoi(p_colon+1);
+     }
+
+   svr = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM,
+         address, port, NULL);
+
+   if (p_colon)
+     *p_colon = ':';
+
+   if (!svr)
+     {
+        printf("could not connect to the server: %s\n", gui->address);
+
         return NULL;
      }
+
 
    ecore_ipc_server_data_size_max_set(svr, -1);
 
@@ -489,15 +513,45 @@ _bt_clicked(void *data, Evas_Object *obj, void *event_info __UNUSED__)
    _load_list(data);
 }
 
+static void
+_dismiss_inwin(gui_elements *g)
+{
+   g->address = strdup(elm_entry_entry_get(g->en));
+   evas_object_del(g->inwin);
+   g->en = NULL;
+   g->inwin = NULL;
+}
+
+static void
+_cancel_bt_clicked(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   _dismiss_inwin(data);
+   elm_exit(); /* exit the program's main loop that runs in elm_run() */
+}
+
+static void
+_ok_bt_clicked(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{  /* Set the IP, PORT, then connect to server */
+   _dismiss_inwin(data);
+
+   if(!_connect_to_daemon(gui))
+     {
+        printf("Failed to connect to server.\n");
+        elm_exit(); /* exit the program's main loop that runs in elm_run() */
+     }
+}
+
 #ifndef ELM_LIB_QUICKLAUNCH
 EAPI int
 elm_main(int argc, char **argv)
 {  /* Create Client Window */
-   Evas_Object *win, *bg, *panes, *bx, *bt, *show_hidden_check,
-               *show_clippers_check;
+   Evas_Object *win, *bg, *panes, *bx, *bt,
+               *show_hidden_check, *show_clippers_check;
 
-   gui = malloc(sizeof(gui_elements));
-   gui->sel_app = NULL;
+   /* For inwin popup */
+   Evas_Object *lb, *bxx, *bt_bx, *bt_ok, *bt_cancel;
+
+   gui = calloc(1, sizeof(gui_elements));
 
    win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
@@ -615,16 +669,74 @@ elm_main(int argc, char **argv)
    ecore_init();
    ecore_ipc_init();
 
-   if(!_connect_to_daemon(gui))
-     {
-        printf("Failed to connect to server.\n");
-        return 1;
-     }
+   /* START - Popup to get IP, PORT from user */
+   gui->inwin = elm_win_inwin_add(win);
+   evas_object_show(gui->inwin);
+
+   bxx = elm_box_add(gui->inwin);
+   evas_object_size_hint_weight_set(bxx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bxx);
+
+   lb = elm_label_add(gui->inwin);
+   evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(lb, EVAS_HINT_FILL, 0.0);
+   elm_object_text_set(lb, "Enter host IP:PORT");
+   elm_box_pack_end(bxx, lb);
+   evas_object_show(lb);
+
+   /* Single line selected entry */
+   char buf[32];
+   gui->en = elm_entry_add(gui->inwin);
+   elm_entry_scrollable_set(gui->en, EINA_TRUE);
+   evas_object_size_hint_weight_set(gui->en,
+         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gui->en, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_style_set(gui->inwin, "minimal_vertical");
+   elm_entry_scrollbar_policy_set(gui->en, ELM_SCROLLER_POLICY_OFF,
+         ELM_SCROLLER_POLICY_OFF);
+   sprintf(buf, "%s:%d", LOCALHOST, PORT);
+   elm_object_text_set(gui->en, buf);
+   elm_entry_single_line_set(gui->en, EINA_TRUE);
+   elm_entry_select_all(gui->en);
+   elm_box_pack_end(bxx, gui->en);
+   evas_object_show(gui->en);
+
+   bt_bx = elm_box_add(gui->inwin);
+   elm_box_horizontal_set(bt_bx, EINA_TRUE);
+   elm_box_homogeneous_set(bt_bx, EINA_TRUE);
+   evas_object_size_hint_align_set(bt_bx, 0.5, 0.5);
+   evas_object_size_hint_weight_set(bt_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bt_bx);
+   elm_box_pack_end(bxx, bt_bx);
+
+   /* Add the cancel button */
+   bt_cancel = elm_button_add(gui->inwin);
+   elm_object_text_set(bt_cancel, "Cancel");
+   evas_object_smart_callback_add(bt_cancel, "clicked",
+         _cancel_bt_clicked, (void *) gui);
+
+   elm_box_pack_end(bt_bx, bt_cancel);
+   evas_object_show(bt_cancel);
+
+   /* Add the OK button */
+   bt_ok = elm_button_add(gui->inwin);
+   elm_object_text_set(bt_ok, "OK");
+   evas_object_smart_callback_add(bt_ok, "clicked",
+         _ok_bt_clicked, (void *) gui);
+
+   elm_box_pack_end(bt_bx, bt_ok);
+   evas_object_show(bt_ok);
+
+   elm_win_inwin_content_set(gui->inwin, bxx);
+   /* END   - Popup to get IP, PORT from user */
 
    elm_run();
    elm_shutdown();
 
    data_descriptors_shutdown();
+   if (gui->address)
+     free(gui->address);
+
    free(gui);
    return 0;
 }
