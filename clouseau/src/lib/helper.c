@@ -217,6 +217,8 @@ data_descriptors_init(void)
 void
 data_descriptors_shutdown(void)
 {
+   Obj_Information_desc_shutdown();
+
    if (desc)
      {
         eet_data_descriptor_free(desc->ack);

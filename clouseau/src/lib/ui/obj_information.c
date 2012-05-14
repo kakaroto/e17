@@ -301,15 +301,18 @@ Obj_Information_desc_make(void)
 void
 Obj_Information_desc_shutdown(void)
 {
-   eet_data_descriptor_free(props_descs->elm);
-   eet_data_descriptor_free(props_descs->text);
-   eet_data_descriptor_free(props_descs->image);
-   eet_data_descriptor_free(props_descs->edje);
-   eet_data_descriptor_free(props_descs->textblock);
-   eet_data_descriptor_free(props_descs->_union_unified_descriptor);
+   if (props_descs)
+     {
+        eet_data_descriptor_free(props_descs->elm);
+        eet_data_descriptor_free(props_descs->text);
+        eet_data_descriptor_free(props_descs->image);
+        eet_data_descriptor_free(props_descs->edje);
+        eet_data_descriptor_free(props_descs->textblock);
+        eet_data_descriptor_free(props_descs->_union_unified_descriptor);
 
-   free(props_descs);
-   props_descs = NULL;
+        free(props_descs);
+        props_descs = NULL;
+     }
 }
 /* END   EET stuff */
 
