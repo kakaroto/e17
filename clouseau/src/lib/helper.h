@@ -56,35 +56,35 @@ struct _app_info_st
 {  /* This will be used to register new APP in GUI client */
    unsigned int pid;
    char *name;
-   void *ptr; /* client ptr of this app as saved by daemon */
+   unsigned long long ptr; /* (void *) client ptr of app as saved by daemon */
 };
 typedef struct _app_info_st app_info_st;
 
 struct _data_req_st
 {  /* This will be used to ask for tree data by DAEMON or GUI */
-   void *gui; /* client ptr of GUI, NULL if send by GUI client */
-   void *app; /* client ptr APP, NULL if asking for all APP data */
+   unsigned long long gui; /* (void *) client ptr of GUI */
+   unsigned long long app; /* (void *) client ptr APP    */
 };
 typedef struct _data_req_st data_req_st;
 
 struct _tree_data_st
 {  /* This will be used to send tree data to/from APP/DAEMON */
-   void *gui; /* client ptr of GUI, NULL if need to FWD to all */
-   void *app; /* client ptr APP, NULL if asking for all APP data */
+   unsigned long long gui; /* (void *) client ptr of GUI */
+   unsigned long long app; /* (void *) client ptr APP    */
    Eina_List *tree; /* The actual (Tree_Item *) list */
 };
 typedef struct _tree_data_st tree_data_st;
 
 struct _app_closed_st
-{  /* This will be used to notify GUI of app closed */
-   void *ptr; /* client ptr of APP */
+{  /* This will be used to notify GUI of app closed   */
+   unsigned long long ptr; /* (void *) client ptr APP */
 };
 typedef struct _app_closed_st app_closed_st;
 
 struct _highlight_st
 {  /* This will be used to highlight object in APP */
-   void *app; /* client ptr of APP */
-   void *object; /* object ptr of object to highlight */
+   unsigned long long app; /* (void *) client ptr of APP */
+   unsigned long long object; /* (void *) object ptr of object to highlight */
 };
 typedef struct _highlight_st highlight_st;
 

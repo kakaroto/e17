@@ -155,7 +155,7 @@ app_add_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "pid", pid, EET_T_UINT);
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "name", name, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "ptr", ptr, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "ptr", ptr, EET_T_ULONG_LONG);
 
    return d;
 }
@@ -169,8 +169,8 @@ data_req_desc_make(void)
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, data_req_st);
    d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "gui", gui, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "app", app, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "gui", gui, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "app", app, EET_T_ULONG_LONG);
 
    return d;
 }
@@ -184,8 +184,8 @@ tree_data_desc_make(void)
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, tree_data_st);
    d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "gui", gui, EET_T_UINT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "app", app, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "gui", gui, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "app", app, EET_T_ULONG_LONG);
    EET_DATA_DESCRIPTOR_ADD_LIST  (d, tree_data_st,
          "tree", tree, desc->tree);  /* Carefull - init this first */
 
@@ -201,7 +201,8 @@ app_closed_desc_make(void)
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, app_closed_st);
    d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_closed_st, "ptr", ptr, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_closed_st, "ptr",
+         ptr, EET_T_ULONG_LONG);
 
    return d;
 }
@@ -215,9 +216,10 @@ highlight_desc_make(void)
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, highlight_st);
    d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, highlight_st, "app", app, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, highlight_st, "app",
+         app, EET_T_ULONG_LONG);
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, highlight_st,
-         "object", object, EET_T_UINT);
+         "object", object, EET_T_ULONG_LONG);
 
    return d;
 }

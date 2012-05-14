@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
+#include <stdint.h>
 
 #include "helper.h"
 #include "eet_dump.h"
@@ -137,7 +138,7 @@ void daemonize(void)
 static int
 _client_ptr_cmp(const void *d1, const void *d2)
 {
-   return (((app_info_st *) d1)->ptr - d2);
+   return (((app_info_st *) d1)->ptr - ((unsigned long long) (uintptr_t) d2));
 }
 
 static Eina_List *
@@ -148,7 +149,7 @@ _add_client(Eina_List *clients, connect_st *t, void *client)
         app_info_st *st = malloc(sizeof(app_info_st));
         st->name = strdup(t->name);
         st->pid = t->pid;
-        st->ptr = client;
+        st->ptr = (unsigned long long) (uintptr_t) client;
 
         return eina_list_append(clients, st);
      }
@@ -202,7 +203,7 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
    i = eina_list_search_unsorted(app, _client_ptr_cmp, ev->client);
    if (i)
      {  /* Notify all GUI clients to remove this APP */
-        app_closed_st t = { ev->client };
+        app_closed_st t = { (unsigned long long) (uintptr_t) ev->client };
         Eina_List *l;
         int size;
         void *p = packet_compose(APP_CLOSED, &t, sizeof(t), &size);
@@ -210,9 +211,9 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
           {
              EINA_LIST_FOREACH(gui, l, i)
                {
-                  ecore_ipc_client_send(i->ptr,
+                  ecore_ipc_client_send((void *) (uintptr_t) i->ptr,
                         0,0,0,0,EINA_FALSE, p, size);
-                  ecore_ipc_client_flush(i->ptr);
+                  ecore_ipc_client_flush((void *) (uintptr_t) i->ptr);
                }
 
              free(p);
@@ -245,16 +246,20 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    app_info_st *st;
                    Eina_List *l;
                    connect_st *t = v->data;
-                   app_info_st m = { t->pid, (char *) t->name, ev->client};
+                   app_info_st m = { t->pid, (char *) t->name,
+                        (unsigned long long) (uintptr_t) ev->client};
+
                    app = _add_client(app, t, ev->client);
                    p = packet_compose(APP_ADD, &m, sizeof(m), &size);
                    if (p)
                      {
                         EINA_LIST_FOREACH(gui, l, st)
                           {  /* Notify all GUI clients to add APP */
-                             ecore_ipc_client_send(st->ptr,
+                             ecore_ipc_client_send(
+                                   (void *) (uintptr_t) st->ptr,
                                    0,0,0,0,EINA_FALSE, p, size);
-                             ecore_ipc_client_flush(st->ptr);
+                             ecore_ipc_client_flush(
+                                   (void *) (uintptr_t) st->ptr);
                           }
 
                         free(p);
@@ -289,16 +294,22 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    if (req->app)
                      {  /* Requesting specific app data */
                         if(eina_list_search_unsorted(app,
-                                 _client_ptr_cmp, req->app))
+                                 _client_ptr_cmp,
+                                 (void *) (uintptr_t) req->app))
                           {  /* Do the req only of APP connected to daemon */
-                             data_req_st t = { ev->client, req->app };
+                             data_req_st t = {
+                                  (unsigned long long) (uintptr_t) ev->client,
+                                  (unsigned long long) (uintptr_t) req->app };
+
                              p = packet_compose(DATA_REQ,
                                    &t, sizeof(t), &size);
                              if (p)
                                {
-                                  ecore_ipc_client_send(req->app, 0,0,0,0,
-                                        EINA_FALSE, p, size);
-                                  ecore_ipc_client_flush(req->app);
+                                  ecore_ipc_client_send(
+                                        (void *) (uintptr_t) req->app,
+                                        0,0,0,0, EINA_FALSE, p, size);
+                                  ecore_ipc_client_flush(
+                                        (void *) (uintptr_t) req->app);
                                   free(p);
                                }
                           }
@@ -307,17 +318,22 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                      {  /* requesting ALL apps data */
                         Eina_List *l;
                         app_info_st *st;
-                        data_req_st t = { ev->client, NULL };
+                        data_req_st t = {
+                             (unsigned long long) (uintptr_t) ev->client,
+                             (unsigned long long) (uintptr_t) NULL };
+
                         EINA_LIST_FOREACH(app, l, st)
                           {
-                             t.app = st->ptr;
+                             t.app = (unsigned long long) (uintptr_t) st->ptr;
                              p = packet_compose(DATA_REQ,
                                    &t, sizeof(t), &size);
                              if (p)
                                {
-                                  ecore_ipc_client_send(st->ptr, 0,0,0,0,
-                                        EINA_FALSE, p, size);
-                                  ecore_ipc_client_flush(st->ptr);
+                                  ecore_ipc_client_send(
+                                        (void *) (uintptr_t) st->ptr,
+                                        0,0,0,0, EINA_FALSE, p, size);
+                                  ecore_ipc_client_flush(
+                                        (void *) (uintptr_t) st->ptr);
                                   free(p);
                                }
                           }
@@ -331,11 +347,14 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    if (td->gui)
                      {  /* Sending tree data to specific GUI client */
                         if(eina_list_search_unsorted(gui,
-                                 _client_ptr_cmp, td->gui))
+                                 _client_ptr_cmp,
+                                 (void *) (uintptr_t) td->gui))
                           {  /* Do the req only of GUI connected to daemon */
-                             ecore_ipc_client_send(td->gui, 0,0,0,0,
+                             ecore_ipc_client_send(
+                                   (void *) (uintptr_t) td->gui, 0,0,0,0,
                                    EINA_FALSE, ev->data, ev->size);
-                             ecore_ipc_client_flush(td->gui);
+                             ecore_ipc_client_flush(
+                                   (void *) (uintptr_t) td->gui);
                           }
                      }
                    else
@@ -344,9 +363,11 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                         app_info_st *p;
                         EINA_LIST_FOREACH(gui, l, p)
                           {
-                             ecore_ipc_client_send(p->ptr, 0,0,0,0,
+                             ecore_ipc_client_send(
+                                   (void *) (uintptr_t) p->ptr, 0,0,0,0,
                                    EINA_FALSE, ev->data, ev->size);
-                             ecore_ipc_client_flush(p->ptr);
+                             ecore_ipc_client_flush(
+                                   (void *) (uintptr_t) p->ptr);
                           }
                      }
                 }
@@ -356,11 +377,12 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                 {  /* FWD this message to app */
                    highlight_st *ht = v->data;
                    if(eina_list_search_unsorted(app,
-                            _client_ptr_cmp, ht->app))
+                            _client_ptr_cmp, (void *) (uintptr_t) ht->app))
                      {  /* Do the req only of APP connected to daemon */
-                        ecore_ipc_client_send(ht->app, 0,0,0,0,
+                        ecore_ipc_client_send((void *)
+                              (uintptr_t) ht->app, 0,0,0,0,
                               EINA_FALSE, ev->data, ev->size);
-                        ecore_ipc_client_flush(ht->app);
+                        ecore_ipc_client_flush((void *) (uintptr_t) ht->app);
                      }
                 }
               break;

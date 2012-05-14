@@ -5,6 +5,7 @@
 #include <Edje.h>
 #include <Evas.h>
 #include <Elementary.h>
+#include <stdint.h>
 
 #include "libclouseau.h"
 #include "helper.h"           /*  Our own helper functions  */
@@ -124,7 +125,7 @@ _app_ptr_cmp(const void *d1, const void *d2)
    const app_data_st *info = d1;
    app_info_st *app = info->app->data;
 
-   return ((app->ptr) - d2);
+   return ((app->ptr) - (unsigned long long) (uintptr_t) d2);
 }
 
 static void
@@ -157,7 +158,8 @@ _remove_app(gui_elements *gui, Variant_st *v)
    app_closed_st *app = v->data;
    app_info_st *sel_app = gui->sel_app->app->data;
    app_data_st *st = (app_data_st *)
-      eina_list_search_unsorted(apps, _app_ptr_cmp, app->ptr);
+      eina_list_search_unsorted(apps, _app_ptr_cmp,
+            (void *) (uintptr_t) app->ptr);
 
    if (app->ptr == sel_app->ptr)
      {
@@ -194,7 +196,8 @@ _update_tree(gui_elements *gui, Variant_st *v)
 {  /* Update Tree for app, then update GUI if its displayed */
    tree_data_st *td = v->data;
    app_data_st *st = (app_data_st *)
-      eina_list_search_unsorted(apps, _app_ptr_cmp, td->app);
+      eina_list_search_unsorted(apps, _app_ptr_cmp,
+            (void *) (uintptr_t) td->app);
 
    if (st)
      {
@@ -421,7 +424,9 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
    int size;
    gui_elements *g = data;
    app_info_st *app = g->sel_app->app->data;
-   highlight_st st = { app->ptr, treeit->ptr };
+   highlight_st st = { (unsigned long long) (uintptr_t) app->ptr,
+        (unsigned long long) (uintptr_t)  treeit->ptr };
+
    Ecore_Ipc_Server *svr = _connect_to_daemon(g);
    void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size);
    if (p)
@@ -460,11 +465,14 @@ _load_list(gui_elements *gui)
         elm_genlist_clear(gui->prop_list);
         app_info_st *st = gui->sel_app->app->data;
 
-        if (eina_list_search_unsorted(apps, _app_ptr_cmp, st->ptr))
+        if (eina_list_search_unsorted(apps, _app_ptr_cmp,
+                 (void *) (uintptr_t) st->ptr))
           {  /* do it only if app selected AND found in apps list */
              int size;
              Ecore_Ipc_Server *svr = _connect_to_daemon(gui);
-             data_req_st t = { NULL, st->ptr };
+             data_req_st t = { (unsigned long long) (uintptr_t) NULL,
+                  (unsigned long long) (uintptr_t) st->ptr };
+
              void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size);
              if (p)
                {

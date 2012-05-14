@@ -166,7 +166,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
       case HIGHLIGHT:
            {
               highlight_st *ht = v->data;
-              libclouseau_highlight(ht->object);
+              libclouseau_highlight((Evas_Object *) (uintptr_t) ht->object);
            }
          break;
 
