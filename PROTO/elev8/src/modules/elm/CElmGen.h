@@ -131,7 +131,8 @@ public:
       temp->Set(String::NewSymbol("part"), String::New(part));
       Handle<Value> args[1] = { temp };
       Local<Value> text = callback->Call(temp, 1, args);
-      return text.IsEmpty() ? NULL : strdup(*String::Utf8Value(text->ToString()));
+      return (text.IsEmpty() || text->IsUndefined() || text->IsNull())
+            ? NULL : strdup(*String::Utf8Value(text->ToString()));
 
    }
 
