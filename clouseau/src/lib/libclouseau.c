@@ -90,7 +90,7 @@ _load_list(void)
 }
 
 Eina_Bool
-_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
+_add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
    int size = 0;
@@ -110,7 +110,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 }
 
 Eina_Bool
-_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
+_del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *ev)
 {
    if (!ev->server)
      {
@@ -128,10 +128,8 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
 }
 
 Eina_Bool
-_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
+_data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
-   char fmt[128];
-
    printf("Received %i bytes from server:\n"
          ">>>>>\n"
          "%%.%is\n"
@@ -170,6 +168,9 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
               highlight_st *ht = v->data;
               libclouseau_highlight(ht->object);
            }
+         break;
+
+      default:
          break;
      }
 

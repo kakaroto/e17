@@ -23,6 +23,16 @@ typedef struct _extra_props_descs extra_props_descs;
 
 static extra_props_descs *props_descs = NULL; /* to be used later for union */
 
+static eet_extra_props_mapping eet_props_mapping[] =
+{    /* As eet_mapping */
+     { CLOUSEAU_OBJ_TYPE_OTHER, CLOUSEAU_OBJ_TYPE_OTHER_STR },
+     { CLOUSEAU_OBJ_TYPE_ELM, CLOUSEAU_OBJ_TYPE_ELM_STR },
+     { CLOUSEAU_OBJ_TYPE_TEXT, CLOUSEAU_OBJ_TYPE_TEXT_STR },
+     { CLOUSEAU_OBJ_TYPE_IMAGE, CLOUSEAU_OBJ_TYPE_IMAGE_STR },
+     { CLOUSEAU_OBJ_TYPE_EDJE, CLOUSEAU_OBJ_TYPE_EDJE_STR },
+     { CLOUSEAU_OBJ_TYPE_TEXTBLOCK, CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR }
+};
+
 static const char *
 _props_union_type_get(const void *data, Eina_Bool  *unknow)
 {  /* _union_type_get */
@@ -325,15 +335,15 @@ static Evas_Object *prop_list = NULL;
 static Elm_Genlist_Item_Class itc;
 
 static void
-_gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
-      void *event_info __UNUSED__)
+_gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
+      void *event_info EINA_UNUSED)
 {
    /* Currently do nothing */
    return;
 }
 
 static void
-gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_exp(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    Inf_Tree_Item *parent = elm_object_item_data_get(glit);
@@ -350,36 +360,36 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 }
 
 static void
-gl_con(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_subitems_clear(glit);
 }
 
 static void
-gl_exp_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 
 static void
-gl_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_con_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 
 static Evas_Object *
-item_icon_get(void *data __UNUSED__, Evas_Object *parent __UNUSED__,
-      const char *part __UNUSED__)
+item_icon_get(void *data EINA_UNUSED, Evas_Object *parent EINA_UNUSED,
+      const char *part EINA_UNUSED)
 {
    return NULL;
 }
 
 static char *
-item_text_get(void *data, Evas_Object *obj __UNUSED__,
-      const char *part __UNUSED__)
+item_text_get(void *data, Evas_Object *obj EINA_UNUSED,
+      const char *part EINA_UNUSED)
 {
    Inf_Tree_Item *tit = data;
    return strdup(tit->string);

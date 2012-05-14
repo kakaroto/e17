@@ -8,15 +8,6 @@
 #define ELM_INTERNAL_API_ARGESFSDFEFC
 #include <elm_widget.h>
 
-//#include "config.h"
-
-#ifdef HAVE___ATTRIBUTE__
-# define __UNUSED__ __attribute__((unused))
-#else
-# define __UNUSED__
-#endif
-
-
 
 #define CLOUSEAU_OBJ_TYPE_OTHER_STR     "CLOUSEAU_OBJ_TYPE_OTHER"
 #define CLOUSEAU_OBJ_TYPE_ELM_STR       "CLOUSEAU_OBJ_TYPE_ELM"
@@ -42,16 +33,6 @@ struct _eet_extra_props_mapping
    const char *name;
 };
 typedef struct _eet_extra_props_mapping eet_extra_props_mapping;
-
-static eet_extra_props_mapping eet_props_mapping[] =
-{    /* As eet_mapping */
-     { CLOUSEAU_OBJ_TYPE_OTHER, CLOUSEAU_OBJ_TYPE_OTHER_STR },
-     { CLOUSEAU_OBJ_TYPE_ELM, CLOUSEAU_OBJ_TYPE_ELM_STR },
-     { CLOUSEAU_OBJ_TYPE_TEXT, CLOUSEAU_OBJ_TYPE_TEXT_STR },
-     { CLOUSEAU_OBJ_TYPE_IMAGE, CLOUSEAU_OBJ_TYPE_IMAGE_STR },
-     { CLOUSEAU_OBJ_TYPE_EDJE, CLOUSEAU_OBJ_TYPE_EDJE_STR },
-     { CLOUSEAU_OBJ_TYPE_TEXTBLOCK, CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR }
-};
 
 struct _st_evas_props
 {

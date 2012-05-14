@@ -10,11 +10,6 @@
 #define RUNNING_DIR  "/tmp"
 #define LOCK_FILE "clouseaud.lock"
 #define LOG_FILE  "clouseaud.log"
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#else
-#define __UNUSED__
-#endif
 
 static Eina_List *gui = NULL; /* List of app_info_st for gui clients */
 static Eina_List *app = NULL; /* List of app_info_st for app clients */
@@ -176,7 +171,7 @@ _remove_client(Eina_List *clients, void *client)
 }
 
 Eina_Bool
-_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
+_add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Add *ev)
 {
    void *p;
    int size = 0;
@@ -189,7 +184,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
 }
 
 Eina_Bool
-_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Del *ev)
+_del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *ev)
 {
    struct _Client *client;
 
@@ -232,7 +227,7 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Del *ev)
 }
 
 Eina_Bool
-_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *ev)
+_data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data *ev)
 {
    void *p;
    int size = 0;
@@ -250,7 +245,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
                    app_info_st *st;
                    Eina_List *l;
                    connect_st *t = v->data;
-                   app_info_st m = { t->pid, t->name, ev->client};
+                   app_info_st m = { t->pid, (char *) t->name, ev->client};
                    app = _add_client(app, t, ev->client);
                    p = packet_compose(APP_ADD, &m, sizeof(m), &size);
                    if (p)

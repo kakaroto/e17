@@ -48,7 +48,7 @@ typedef struct _Variant_st Variant_st;
 struct _connect_st
 {  /* This will be used for APP, GUI client connect */
    unsigned int pid;
-   char *name;
+   const char *name;
 };
 typedef struct _connect_st connect_st;
 
