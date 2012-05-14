@@ -140,23 +140,11 @@ _notify(char *msg)
     int       conn_s;                /*  connection socket         */
     short int port;                  /*  port number               */
     struct    sockaddr_in servaddr;  /*  socket address structure  */
-    char      buffer[1024];      /*  character buffer          */
+    char      buffer[MAX_LINE];      /*  character buffer          */
     char     *szAddress = "127.0.0.1"; /*  Holds remote IP address   */
-    char     *szPort = "5555";         /*  Holds remote port         */
-    char     *endptr;                /*  for strtol()              */
-
-
-    /*  Get command line arguments
-    ParseCmdLine(argc, argv, &szAddress, &szPort); */
-
 
     /*  Set the remote port  */
-    port = strtol(szPort, &endptr, 0);
-    if ( *endptr ) {
-	printf("ECHOCLNT: Invalid port supplied.\n");
-	exit(EXIT_FAILURE);
-    }
-
+    port = ECHO_PORT;
 
     /*  Create the listening socket  */
     if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
