@@ -1,3 +1,0 @@
-colormake -j 8 && sudo make install && echo OK
-gcc -g3 -O0 lib/clouseaud.c lib/eet_dump.c lib/helper.c lib/ui/obj_information.c -o clouseaud `pkg-config elementary --cflags --libs`
-gcc -g3 -O0 lib/client.c lib/helper.c lib/ui/obj_information.c lib/eet_dump.c -o client `pkg-config elementary --cflags --libs`
