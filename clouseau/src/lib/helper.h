@@ -16,6 +16,7 @@
 #define GUI_TREE_DATA_STR      "gui_tree_data"
 #define APP_ACK_STR            "app_ack"
 #define APP_TREE_DATA_STR      "app_tree_data"
+#define TREE_OBJ_INFO_STR      "tree_data_obj_info"
 
 enum _message_type
 {  /*  Add any supported types of packets here */
@@ -25,7 +26,8 @@ enum _message_type
    GUI_ACK,           /* GUI Client sends ack        */
    GUI_TREE_DATA,     /* GUI Client sends tree-data  */
    APP_ACK,           /* App sends ack               */
-   APP_TREE_DATA      /* App tree-data               */
+   APP_TREE_DATA,     /* App tree-data               */
+   TREE_OBJ_INFO      /* Just abusing this to construct tree-data-desc */
 };
 typedef enum _message_type message_type;
 

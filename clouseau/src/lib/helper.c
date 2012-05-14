@@ -1,3 +1,4 @@
+#include "ui/obj_information.h"
 #include "helper.h"
 static data_desc *desc = NULL;
 
@@ -35,7 +36,8 @@ static eet_message_type_mapping eet_mapping[] = {
        { GUI_ACK, GUI_ACK_STR },
        { GUI_TREE_DATA, GUI_TREE_DATA_STR },
        { APP_ACK, APP_ACK_STR },
-       { APP_TREE_DATA, APP_TREE_DATA_STR }
+       { APP_TREE_DATA, APP_TREE_DATA_STR },
+       { APP_TREE_DATA, TREE_OBJ_INFO_STR }
 };
 
 message_type
@@ -145,6 +147,8 @@ tree_item_desc_make(void)
          name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "ptr",
          ptr, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_SUB(d, Tree_Item, "info",
+         info, Obj_Information_desc_make());
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_obj",
          is_obj, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_clipper",

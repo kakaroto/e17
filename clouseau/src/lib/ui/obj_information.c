@@ -1,4 +1,4 @@
-#include "obj_information.h"
+#include "../libclouseau.h"
 typedef struct _Inf_Tree_Item Inf_Tree_Item;
 struct _Inf_Tree_Item
 {
@@ -6,6 +6,315 @@ struct _Inf_Tree_Item
    Evas_Object *icon;
    const char *string;
 };
+
+/* START EET stuff */
+struct _extra_props_descs
+{
+   Eet_Data_Descriptor *elm;
+   Eet_Data_Descriptor *text;
+   Eet_Data_Descriptor *image;
+   Eet_Data_Descriptor *edje;
+   Eet_Data_Descriptor *textblock;
+
+   Eet_Data_Descriptor *_union_unified_descriptor;
+   Eet_Data_Descriptor_Class eddc;
+};
+typedef struct _extra_props_descs extra_props_descs;
+
+static extra_props_descs *props_descs = NULL; /* to be used later for union */
+
+static const char *
+_props_union_type_get(const void *data, Eina_Bool  *unknow)
+{  /* _union_type_get */
+   const en_obj_type *u = data;
+   int i;
+
+   if (unknow)
+     *unknow = EINA_FALSE;
+
+   for (i = 0; eet_props_mapping[i].name != NULL; ++i)
+     if (*u == eet_props_mapping[i].u)
+       return eet_props_mapping[i].name;
+
+   if (unknow)
+     *unknow = EINA_TRUE;
+
+   return NULL;
+}
+
+static Eina_Bool
+_props_union_type_set(const char *type, void *data, Eina_Bool unknow)
+{  /* same as _union_type_set */
+   en_obj_type *u = data;
+   int i;
+
+   if (unknow)
+     return EINA_FALSE;
+
+   for (i = 0; eet_props_mapping[i].name != NULL; ++i)
+     if (strcmp(eet_props_mapping[i].name, type) == 0)
+       {
+          *u = eet_props_mapping[i].u;
+          return EINA_TRUE;
+       }
+
+   return EINA_FALSE;
+}
+
+Eet_Data_Descriptor *
+elm_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_elm);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "type", type, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "style", style, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "scale", scale, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "has_focus",
+         has_focus, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "has_focus",
+         has_focus, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "is_disabled",
+         is_disabled, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "is_mirrored",
+         is_mirrored, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_elm, "is_mirrored_automatic",
+         is_mirrored_automatic, EET_T_UCHAR);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+text_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_text);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_text, "font", font, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_text, "size", size, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_text, "source", source, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_text, "text", text, EET_T_STRING);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+image_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_image);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_image, "file", file, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_image, "key", key, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_image, "source", source, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_image, "load_err",
+         load_err, EET_T_STRING);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+edje_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_edje);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_edje, "file", file, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_edje, "group", group, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_edje, "load_err",
+         load_err, EET_T_STRING);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+textblock_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_textblock);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_textblock, "style",
+         style, EET_T_STRING);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+Obj_Information_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Obj_Information);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   /* START - evas_props Struct desc */
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.name",
+         evas_props.name, EET_T_STRING);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.bt",
+         evas_props.bt, EET_T_STRING);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.layer",
+         evas_props.layer, EET_T_SHORT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.x",
+         evas_props.x, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.y",
+         evas_props.y, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.w",
+         evas_props.w, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.h",
+         evas_props.h, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.scale",
+         evas_props.scale, EET_T_DOUBLE);
+
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.min_w",
+         evas_props.min_w, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.min_h",
+         evas_props.min_h, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.max_w",
+         evas_props.max_w, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.max_h",
+         evas_props.max_h, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.req_w",
+         evas_props.req_w, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.req_h",
+         evas_props.req_h, EET_T_INT);
+
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.align_x", evas_props.align_x, EET_T_DOUBLE);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.align_y", evas_props.align_y, EET_T_DOUBLE);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.weight_x", evas_props.weight_x, EET_T_DOUBLE);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.weight_y", evas_props.weight_y, EET_T_DOUBLE);
+
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.r",
+         evas_props.r, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.g",
+         evas_props.g, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.b",
+         evas_props.b, EET_T_INT);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information, "evas_props.a",
+         evas_props.a, EET_T_INT);
+
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.pass_events", evas_props.pass_events, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.has_focus", evas_props.has_focus, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.is_clipper", evas_props.is_clipper, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.is_visible", evas_props.is_visible, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Obj_Information,
+         "evas_props.mode", evas_props.mode, EET_T_INT);
+   /* END - evas_props Struct desc */
+
+
+   if (!props_descs)  /* Free later in desc shutdown */
+     {
+        props_descs = calloc(1, sizeof(extra_props_descs));
+        props_descs->elm = elm_desc_make();
+        props_descs->text = text_desc_make();
+        props_descs->image = image_desc_make();
+        props_descs->edje = edje_desc_make();
+        props_descs->textblock = textblock_desc_make();
+     }
+
+   /* for union */
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&(props_descs->eddc),
+         st_extra_props);
+
+   props_descs->eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
+   props_descs->eddc.func.type_get = _props_union_type_get;
+   props_descs->eddc.func.type_set = _props_union_type_set;
+   props_descs->_union_unified_descriptor =
+      eet_data_descriptor_file_new(&(props_descs->eddc));
+
+   /* START handle UNION desc */
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
+         "CLOUSEAU_OBJ_TYPE_ELM_STR", props_descs->elm);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
+         "CLOUSEAU_OBJ_TYPE_TEXT_STR", props_descs->text);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
+         "CLOUSEAU_OBJ_TYPE_IMAGE_STR", props_descs->image);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
+         "CLOUSEAU_OBJ_TYPE_EDJE_STR", props_descs->edje);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
+         "CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR", props_descs->textblock);
+
+   EET_DATA_DESCRIPTOR_ADD_UNION(d, st_extra_props, "u", u, type,
+         props_descs->_union_unified_descriptor);
+   /* END   handle UNION desc */
+
+   return d;
+}
+
+void
+Obj_Information_desc_shutdown(void)
+{
+   eet_data_descriptor_free(props_descs->elm);
+   eet_data_descriptor_free(props_descs->text);
+   eet_data_descriptor_free(props_descs->image);
+   eet_data_descriptor_free(props_descs->edje);
+   eet_data_descriptor_free(props_descs->textblock);
+   eet_data_descriptor_free(props_descs->_union_unified_descriptor);
+
+   free(props_descs);
+   props_descs = NULL;
+}
+/* END   EET stuff */
+
+
+
 
 
 static Eina_List *information_tree = NULL;
@@ -157,9 +466,12 @@ _obj_information_free(Obj_Information *oinfo)
    free(oinfo);
 }
 
-static Obj_Information *
+Obj_Information *
 _obj_information_get(Tree_Item *treeit)
 {
+   if (!treeit->is_obj)
+      return NULL;
+
    Obj_Information *oinfo;
    Evas_Object *obj = treeit->ptr;
    oinfo = calloc(1, sizeof(*oinfo));
@@ -291,7 +603,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
       return;
 
    Inf_Tree_Item *main_tit;
-   Obj_Information *oinfo = _obj_information_get(treeit);
+   Obj_Information *oinfo = treeit->info;//_obj_information_get(treeit);
 
    /* Populate evas properties list */
    main_tit = calloc(1, sizeof(*main_tit));
