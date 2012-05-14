@@ -177,8 +177,6 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Add *e
 Eina_Bool
 _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *ev)
 {
-   struct _Client *client;
-
    if (!ev->client)
      return ECORE_CALLBACK_RENEW;
 
