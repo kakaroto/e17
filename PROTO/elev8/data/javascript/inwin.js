@@ -3,14 +3,10 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var entry_text = "This is an entry widget in this window that<br>" ;
 var the_entry = elm.Entry ({
-    text : entry_text,
+    text : "This is an entry widget in this window that",
     weight : EXPAND_BOTH,
     align : FILL_BOTH,
-    line_wrap : 3,
-    single_line : 1,
-    editable : true,
 });
 
 var desc = elm.Window({
@@ -32,13 +28,19 @@ var desc = elm.Window({
             elements : {
                 inwin : elm.Inwin ({
                     content : the_entry,
+                    visible: false,
                 }),
-                icon_no_scale : elm.Button ({
-                    label : "Icon no scale",
+                button : elm.Button ({
+                    label : "Activate InWin",
                     weight : { x : -1.0, y : -1.0 },
                     on_click : function(arg) {
-                        print("Activate InWin");
-                        win.elements.the_box.elements.inwin.activate();
+                        if (!win.elements.the_box.elements.inwin.visible) {
+                          win.elements.the_box.elements.inwin.activate();
+                          this.label = "Hide InWin";
+                        } else {
+                          win.elements.the_box.elements.inwin.visible = false;
+                          this.label = "Activate InWin";
+                        }
                     },
                 }),
             },
