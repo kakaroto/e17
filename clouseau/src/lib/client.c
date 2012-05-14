@@ -27,7 +27,8 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 {
    void *p;
-   size_t size = compose_packet(&p, GUI, TREE_DATA, "hello! - sent from the GUI");
+   char *msg="hello! - sent from the GUI";
+   size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
    Server *server = malloc(sizeof(*server));
    server->sdata = 0;
 
@@ -85,20 +86,21 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
          ">>>>>\n",
          ev->size, ev->size);
 
-   printf(fmt, get_packet_str(ev->data));
+   printf(fmt, (char *) get_packet_data(ev->data));
 
    packet *pkt = ev->data;
    if (pkt->type == TREE_DATA)
      {
         printf("TREE DATA: %s %d\n", __func__, __LINE__);
-        puts(get_packet_str(ev->data));
+        puts((char *) get_packet_data(ev->data));
      }
 
    if (!got_tree)
      {
         got_tree = EINA_TRUE;
         void *p;
-        size_t size = compose_packet(&p, GUI, TREE_DATA, "hello! - sent from the GUI");
+        char *msg="hello! - sent from the GUI";
+        size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
         ecore_con_server_send(ev->server, p, size);
         ecore_con_server_flush(ev->server);
         free(p);
@@ -408,7 +410,8 @@ _load_list(Evas_Object *gl)
    if (svr)
      {
         void *p;
-        size_t size = compose_packet(&p, GUI, TREE_DATA, "Asking refresg from GUI");
+        char *msg="Asking refresg from GUI";
+        size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
         ecore_con_server_send(svr, p, size);
         ecore_con_server_flush(svr);
         free(p);

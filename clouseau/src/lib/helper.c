@@ -20,27 +20,26 @@
 
 
 size_t
-compose_packet(void **ptr, client_type c, message_type m, char *str)
+compose_packet(void **ptr, client_type c, message_type m, void *data, size_t s)
 {
-   int len = ((str) ? (strlen(str) + 1) : 0);
-   packet pkt = { c, m, len };
-   size_t size = sizeof(packet) + len;
+   packet pkt = { c, m, s };
+   size_t size = sizeof(packet) + s;
 
    void *p = malloc(size);
    memcpy(p, &pkt, sizeof(packet));
-   if (str)
-     strcpy(p + sizeof(packet), str);
+   if (data)
+     memcpy(p + sizeof(packet), data, s);
 
    *ptr = p;
    return size;
 }
 
-char *
-get_packet_str(void *ptr)
+void *
+get_packet_data(void *ptr)
 {
    packet *pkt = ptr;
    if (pkt->size)
-     return (char *) (ptr + sizeof(packet));
+     return (ptr + sizeof(packet));
 
    return NULL;
 }

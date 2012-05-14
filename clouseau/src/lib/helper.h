@@ -59,8 +59,8 @@ typedef struct _Server Server;
 
 
 /*  Function declarations  */
-size_t compose_packet(void **ptr, client_type c, message_type m, char *str);
-char *get_packet_str(void *ptr);
+size_t compose_packet(void **ptr, client_type c, message_type m, void *data, size_t s);
+void *get_packet_data(void *ptr);
 ssize_t Readline(int fd, void *vptr, size_t maxlen);
 ssize_t Writeline(int fc, const void *vptr, size_t maxlen);
 #endif  /*  PG_SOCK_HELP  */

@@ -127,7 +127,8 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
 {
    void *p;
-   size_t size = compose_packet(&p, DAEMON, ACK, "hello! - sent from the server");
+   char *msg="hello! - sent from the server";
+   size_t size = compose_packet(&p, DAEMON, ACK, msg, strlen(msg)+1);
    Ecore_Con_Server *srv;
    Ecore_Con_Client *cl;
    const Eina_List *clients, *l;
@@ -205,7 +206,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
          ev->size, ecore_con_client_ip_get(ev->client),
          ecore_con_client_port_get(ev->client), ev->size);
 
-   log_message(LOG_FILE, "a", get_packet_str(ev->data));
+   log_message(LOG_FILE, "a", (char *) get_packet_data(ev->data));
 
    switch(pkt->client)
      {
@@ -213,10 +214,10 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
          if (pkt->type == TREE_DATA)
            {
               char txt[1024];
-              trees = eina_list_append(trees, strdup(get_packet_str(pkt)));
+              trees = eina_list_append(trees, strdup(get_packet_data(pkt)));
               sprintf(txt, "Adding Tree (%d)", eina_list_count(trees));
               log_message(LOG_FILE, "a", txt);
-              log_message(LOG_FILE, "a", get_packet_str(pkt));
+              log_message(LOG_FILE, "a", get_packet_data(pkt));
            }
          break;
 
@@ -232,7 +233,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
                    log_message(LOG_FILE, "a", "------------");
                    log_message(LOG_FILE, "a", str);
                    log_message(LOG_FILE, "a", "------------");
-                   size_t size = compose_packet(&p, DAEMON, TREE_DATA, str);
+                   size_t size = compose_packet(&p, DAEMON, TREE_DATA, str, strlen(str)+1);
                    ecore_con_client_send(ev->client, p, size);
                    ecore_con_client_flush(ev->client);
                    free(p);
