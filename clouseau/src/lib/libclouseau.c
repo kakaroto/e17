@@ -16,6 +16,7 @@
 
 #include "helper.h"
 #include "libclouseau.h"
+#include "eet_dump.h"
 #include "ui/obj_information.h"
 
 static Eina_List *tree = NULL;
@@ -68,6 +69,11 @@ _item_tree_string()
    Eina_List *strings = NULL;
    char *str = NULL;
    size_t size = 0;
+
+   if (eet_dump_tree_save(eina_list_nth(tree, 0), "/tmp/eet_dump"))
+     printf("Saved eet file.\n");
+   else
+     printf("Saving eet file failed.\n");
 
    EINA_LIST_FOREACH(tree, l, treeit)
      {

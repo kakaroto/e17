@@ -9,6 +9,7 @@
 #include "libclouseau.h"
 #include "ui/obj_information.h"
 #include "helper.h"           /*  Our own helper functions  */
+#include "eet_dump.h"
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -385,6 +386,21 @@ _connect_to_daemon(void)
    return svr;
 }
 
+void
+_item_tree_print_string(Tree_Item *parent)
+{
+   Tree_Item *treeit;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(parent->children, l, treeit)
+     {
+         _item_tree_print_string(treeit);
+     }
+
+   if (parent->name)
+     printf("From EET: <%s>\n", parent->name);
+}
+
 static int
 _load_list(Evas_Object *gl)
 {
@@ -397,6 +413,17 @@ _load_list(Evas_Object *gl)
         ecore_con_server_flush(svr);
         free(p);
      }
+
+     printf("Before Loading tree.\n");
+   Tree_Item *t = eet_dump_tree_load("/tmp/eet_dump");
+   if(t)
+     printf("Loaded tree\n");
+   else
+     printf("Failed to load tree\n");
+
+   _item_tree_print_string(t);
+   printf("After Loading tree.\n");
+
 
    return 0;
 
