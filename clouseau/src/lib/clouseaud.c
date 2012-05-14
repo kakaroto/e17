@@ -27,6 +27,7 @@ struct _Client {
 
 struct _tree_info_st
 {
+   void *app; /* app ptr to identify where the data came from */
    void *data;
    size_t size;
 };
@@ -131,6 +132,8 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
    void *p;
    char *msg="hello! - sent from the server";
    int size = 0;
+
+   ecore_ipc_client_data_size_max_set(ev->client, -1);
 
    data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
@@ -239,72 +242,17 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
               break;
 
            case APP_TREE_DATA:
-              log_message(LOG_FILE, "a", "Got tree-data from APP");
+                {
+                   char m[1024];
+                   sprintf(m, "Got tree-data from APP <%p>", ev->client);
+                   log_message(LOG_FILE, "a", m);
+                }
               break;
           }
      }
    else
      log_message(LOG_FILE, "a", "Failed to decode data.");
 
-
-/*
-   test_st *t = test_st_new(GUI, TSUITE_EVENT_ACK, msg);
-   p = eet_data_descriptor_encode(td, t, &size);
-
-   ecore_ipc_client_send(ev->client, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_client_flush(ev->client);
-   free(p);
-   free(t);
-*/
-
-#if 0
-   char fmt[128];
-   struct _Client *client = ecore_ipc_client_data_get(ev->client);
-   Variant_st *pkt = get_packet_data(ev->data, ev->size);
-
-   snprintf(fmt, sizeof(fmt), "%s %d pkt->client=<%d> pkt->type=<%d>", __func__, __LINE__, pkt->client, pkt->type);
-   log_message(LOG_FILE, "a", fmt);
-   snprintf(fmt, sizeof(fmt),
-         "Received %i bytes from client\n",ev->size);
-   log_message(LOG_FILE, "a", fmt);
-
-   switch(pkt->client)
-     {
-      case APP:  /* Get info from app */
-         log_message(LOG_FILE, "a", "Message from APP.");
-         if (pkt->type == TSUITE_EVENT_TREE_ITEM)
-           {
-              log_message(LOG_FILE, "a", "Tree info message from APP.");
-              char txt[1024];
-              tree_info_st *tree = malloc(sizeof(*tree));
-              tree->data = ev->data;
-              tree->size = ev->size;
-              trees = eina_list_append(trees, tree);
-              sprintf(txt, "Adding Tree (%d)", eina_list_count(trees));
-              log_message(LOG_FILE, "a", txt);
-           }
-         break;
-
-      case GUI:  /* Sent trees to GUI */
-         log_message(LOG_FILE, "a", "Message from GUI.");
-         if (pkt->type == TSUITE_EVENT_TREE_ITEM)
-           {
-              log_message(LOG_FILE, "a", "Tree info message from GUI.");
-              Eina_List *l;
-              tree_info_st *tree;
-              EINA_LIST_FOREACH(trees, l, tree)
-                {  /* Send each tree in a packet */
-                   log_message(LOG_FILE, "a", "Sending Tree");
-                   ecore_ipc_client_send(ev->client,0,0,0,0,EINA_FALSE,tree->data, tree->size);
-                   ecore_ipc_client_flush(ev->client);
-                }
-
-           }
-         break;
-     }
-
-   client->sdata += ev->size;
-#endif
    return ECORE_CALLBACK_RENEW;
 }
 /* END   - Ecore communication callbacks */
@@ -323,6 +271,8 @@ int main(void)
 
    if (!(svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
      exit(1);
+
+   ecore_ipc_server_data_size_max_set(svr, -1);
 
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_del, NULL);

@@ -30,6 +30,8 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
    char *msg="Hello send from GUI client";
    int size = 0;
 
+   ecore_ipc_server_data_size_max_set(ev->server, -1);
+
    data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
    Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
@@ -390,6 +392,8 @@ _connect_to_daemon(void)
         return NULL;
      }
 
+   ecore_ipc_server_data_size_max_set(svr, -1);
+
    /* set event handler for server connect */
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
    /* set event handler for server disconnect */
@@ -729,9 +733,6 @@ elm_main(int argc, char **argv)
    elm_shutdown();
 
    printf("Client cleanup.\n");
-   ecore_ipc_shutdown();
-   ecore_shutdown();
-   eina_shutdown();
    return 0;
 }
 ELM_MAIN()

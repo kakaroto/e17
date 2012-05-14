@@ -183,6 +183,8 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
    char *msg="hello! - sent from the APP";
    int size = 0;
 
+   ecore_ipc_server_data_size_max_set(ev->server, -1);
+
    data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
    Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
@@ -296,6 +298,8 @@ _connect_to_daemon(void)
               address, PORT);
         return EINA_FALSE;
      }
+
+   ecore_ipc_server_data_size_max_set(svr, -1);
 
    /* set event handler for server connect */
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
