@@ -1,0 +1,3 @@
+colormake -j 8 && sudo make install && echo OK
+gcc clouseaud.c helper.c -o clouseaud `pkg-config elementary --cflags --libs`
+gcc client.c helper.c -o client `pkg-config elementary --cflags --libs`

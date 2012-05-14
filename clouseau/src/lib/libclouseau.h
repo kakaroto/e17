@@ -8,7 +8,7 @@
 #define ELM_INTERNAL_API_ARGESFSDFEFC
 #include <elm_widget.h>
 
-#include "config.h"
+//#include "config.h"
 
 #ifdef HAVE___ATTRIBUTE__
 # define __UNUSED__ __attribute__((unused))

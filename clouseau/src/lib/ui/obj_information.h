@@ -1,7 +1,7 @@
 #ifndef _OBJ_INFORMATION_H
 #define _OBJ_INFORMATION_H
 
-#include "libclouseau.h"
+#include "../libclouseau.h"
 
 typedef struct _Obj_Information Obj_Information;
 struct _Obj_Information
