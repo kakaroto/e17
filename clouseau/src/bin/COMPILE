@@ -1,1 +1,0 @@
-gcc clouseaud.c -o clouseaud `pkg-config elementary --cflags --libs`

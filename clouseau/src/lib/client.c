@@ -407,13 +407,19 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
 //   clouseau_obj_information_list_populate(treeit);
 }
 
+static void
+_set_selected_app(void *data, Evas_Object *pobj,
+      void *event_info)
+{  /* Set hovel label */
+   elm_object_text_set(pobj, data);
+}
 
 #ifndef ELM_LIB_QUICKLAUNCH
 EAPI int
 elm_main(int argc, char **argv)
 {  /* Create Client Window */
    Evas_Object *win, *bg, *panes, *bx, *bt, *show_hidden_check,
-               *show_clippers_check;
+               *show_clippers_check, *dd_list;
 
 
    win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
@@ -443,10 +449,24 @@ elm_main(int argc, char **argv)
         evas_object_show(hbx);
 
         bt = elm_button_add(hbx);
-        evas_object_size_hint_align_set(bt, 0.0, 0.5);
+        evas_object_size_hint_align_set(bt, 0.0, 0.3);
         elm_object_text_set(bt, "Load");
         elm_box_pack_end(hbx, bt);
         evas_object_show(bt);
+
+        dd_list = elm_hoversel_add(win);
+        elm_hoversel_hover_parent_set(dd_list, win);
+        elm_object_text_set(dd_list, "SELECT APP");
+        elm_hoversel_item_add(dd_list, "app1", NULL, ELM_ICON_NONE,
+              _set_selected_app, "app1");
+        elm_hoversel_item_add(dd_list, "app2", NULL, ELM_ICON_NONE,
+              _set_selected_app, "app2");
+        elm_hoversel_item_add(dd_list, "app3", NULL, ELM_ICON_NONE,
+              _set_selected_app, "app3");
+
+        evas_object_size_hint_align_set(dd_list, 0.0, 0.3);
+        elm_box_pack_end(hbx, dd_list);
+        evas_object_show(dd_list);
 
         show_hidden_check = elm_check_add(hbx);
         elm_object_text_set(show_hidden_check, "Show Hidden");
