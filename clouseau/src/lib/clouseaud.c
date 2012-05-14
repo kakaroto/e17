@@ -356,6 +356,19 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
                      }
                 }
               break;
+
+           case HIGHLIGHT:
+                {  /* FWD this message to app */
+                   highlight_st *ht = v->data;
+                   if(eina_list_search_unsorted(app,
+                            _client_ptr_cmp, ht->app))
+                     {  /* Do the req only of APP connected to daemon */
+                        ecore_ipc_client_send(ht->app, 0,0,0,0,
+                              EINA_FALSE, ev->data, ev->size);
+                        ecore_ipc_client_flush(ht->app);
+                     }
+                }
+              break;
           }
 
         free(v);  /* NOT variant_free(v), then comes from eet..decode */
@@ -375,7 +388,7 @@ int main(void)
    Ecore_Ipc_Client *cl;
    const Eina_List *clients, *l;
 
-//   daemonize();
+   daemonize();
    eina_init();
    ecore_init();
    ecore_ipc_init();

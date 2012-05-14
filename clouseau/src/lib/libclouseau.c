@@ -19,7 +19,10 @@
 #include "libclouseau.h"
 #include "eet_dump.h"
 
-static Eina_Bool _lib_init = EINA_FALSE;
+static Eina_Bool _elm_is_init = EINA_FALSE;
+static const char *_my_app_name = NULL;
+
+static void libclouseau_highlight(Evas_Object *obj);
 
 static void
 libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
@@ -94,7 +97,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   connect_st t = { getpid(), __FILE__ };
+   connect_st t = { getpid(), _my_app_name };
    p = packet_compose(APP_CLIENT_CONNECT, &t, sizeof(t), &size);
    if (p)
      {
@@ -161,23 +164,15 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
                 }
            }
          break;
-     }
-#if 0
-   st_tree_list tl;
-   tl.list = _load_list();
-   if (tl.list )
-     {
-        void *p = packet_compose(APP_TREE_DATA, &tl, sizeof(tl), &size);
-        if (p)
-          {
-             ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-             ecore_ipc_server_flush(ev->server);
-             free(p);
-          }
 
-        item_tree_free(tl.list);
+      case HIGHLIGHT:
+           {
+              highlight_st *ht = v->data;
+              libclouseau_highlight(ht->object);
+           }
+         break;
      }
-#endif
+
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -213,17 +208,33 @@ _connect_to_daemon(void)
    return EINA_TRUE;
 }
 
+/* Hook on the elm_init
+ * We only do something here if we didn't already go into elm_init,
+ * which probably means we are not using elm. */
+int
+elm_init(int argc, char **argv)
+{
+   int (*_elm_init)(int, char **) = dlsym(RTLD_NEXT, "elm_init");
+
+   if (!_elm_is_init)
+     {
+        _my_app_name = argv[0];
+        _elm_is_init = EINA_TRUE;
+     }
+
+   return _elm_init(argc, argv);
+}
+
 /* Hook on the main loop
  * We only do something here if we didn't already go into elm_init,
  * which probably means we are not using elm. */
 void
 ecore_main_loop_begin(void)
 {
-   Eina_Bool _is_init = _lib_init;
    void (*_ecore_main_loop_begin)(void) =
       dlsym(RTLD_NEXT, "ecore_main_loop_begin");
 
-   if (!_is_init)
+   if (!_elm_is_init)
      {
         char *margv[] = { "clouseau" };
         /* Make sure we init elementary, wouldn't be needed once we
@@ -231,7 +242,6 @@ ecore_main_loop_begin(void)
         elm_init(1, margv);
      }
 
-   _lib_init = EINA_TRUE;
    if(!_connect_to_daemon())
      {
         printf("Failed to connect to server.\n");
@@ -287,4 +297,65 @@ evas_object_free(Evas_Object *obj, int clean_layer)
    eina_stringshare_del(tmp);
 
    _evas_object_free(obj, clean_layer);
+}
+
+/* HIGHLIGHT code. */
+/* The color of the highlight */
+enum {
+	HIGHLIGHT_R = 255,
+	HIGHLIGHT_G = 128,
+	HIGHLIGHT_B = 128,
+	HIGHLIGHT_A = 255,
+
+	/* How much padding around the highlight box.
+         * Currently we don't want any. */
+	PADDING = 0,
+};
+
+static Eina_Bool
+libclouseau_highlight_fade(void *_rect)
+{
+   Evas_Object *rect = _rect;
+   int r, g, b, a;
+   double na;
+
+   evas_object_color_get(rect, &r, &g, &b, &a);
+   if (a < 20)
+     {
+        evas_object_del(rect);
+        return EINA_FALSE;
+     }
+
+   na = a - 20;
+   r = na / a * r;
+   g = na / a * g;
+   b = na / a * b;
+   evas_object_color_set(rect, r, g, b, na);
+
+   return EINA_TRUE;
+}
+
+static void
+libclouseau_highlight(Evas_Object *obj)
+{
+   Evas *e;
+   Evas_Object *r;
+   int x, y, w, h;
+   const char *tmp;
+
+   e = evas_object_evas_get(obj);
+   if (!e) return;
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+
+   r = evas_object_rectangle_add(e);
+   evas_object_move(r, x - PADDING, y - PADDING);
+   evas_object_resize(r, w + (2 * PADDING), h + (2 * PADDING));
+   evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_show(r);
+   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
+
+   tmp = evas_object_data_get(obj, ".clouseau.bt");
+   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp);
 }

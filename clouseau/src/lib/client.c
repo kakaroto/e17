@@ -235,16 +235,6 @@ _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
            case TREE_DATA:           /* Update genlist with APP TREE info */
               _update_tree(data, v); /* data is the gui pointer */
               break;                 /* v->data is (tree_data_st *) */
-#if 0
-           case DAEMON_TREE_DATA:
-                {
-                   printf("Got tree data from daemon, size=<%d>\n", ev->size);
-                   elm_genlist_clear(data);
-                   st_tree_list *tl = v->data;
-                   _load_gui_with_list(data, tl->list);  /* data == gl */
-                   break;
-                }
-#endif
           }
 
        /* free(v) - freed when removed from app list */
@@ -381,89 +371,11 @@ item_text_get(void *data, Evas_Object *obj __UNUSED__,
    return strdup(buf);
 }
 
-/* HIGHLIGHT code. */
-/* The color of the highlight */
-enum {
-	HIGHLIGHT_R = 255,
-	HIGHLIGHT_G = 128,
-	HIGHLIGHT_B = 128,
-	HIGHLIGHT_A = 255,
-
-	/* How much padding around the highlight box.
-         * Currently we don't want any. */
-	PADDING = 0,
-};
-
-static Eina_Bool
-libclouseau_highlight_fade(void *_rect)
-{
-   Evas_Object *rect = _rect;
-   int r, g, b, a;
-   double na;
-
-   evas_object_color_get(rect, &r, &g, &b, &a);
-   if (a < 20)
-     {
-        evas_object_del(rect);
-        return EINA_FALSE;
-     }
-
-   na = a - 20;
-   r = na / a * r;
-   g = na / a * g;
-   b = na / a * b;
-   evas_object_color_set(rect, r, g, b, na);
-
-   return EINA_TRUE;
-}
-
-static void
-libclouseau_highlight(Evas_Object *obj)
-{
-   Evas *e;
-   Evas_Object *r;
-   int x, y, w, h;
-   const char *tmp;
-
-   e = evas_object_evas_get(obj);
-   if (!e) return;
-
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-
-   r = evas_object_rectangle_add(e);
-   evas_object_move(r, x - PADDING, y - PADDING);
-   evas_object_resize(r, w + (2 * PADDING), h + (2 * PADDING));
-   evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_show(r);
-   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
-
-   tmp = evas_object_data_get(obj, ".clouseau.bt");
-   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp);
-}
-
 static void
 client_win_del(void *data, Evas_Object *obj, void *event_info)
 {  /* called when client window is deleted, do cleanup here */
    /* TODO: client cleanup */
    elm_exit(); /* exit the program's main loop that runs in elm_run() */
-}
-
-static void
-_gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
-      void *event_info)
-{
-//   clouseau_obj_information_list_clear();
-   /* If not an object, return. */
-   if (!elm_genlist_item_parent_get(event_info))
-      return;
-
-   Tree_Item *treeit = elm_object_item_data_get(event_info);
-
-   Evas_Object *obj = treeit->ptr;
-//   libclouseau_highlight(obj);
-
-   clouseau_obj_information_list_populate(treeit);
 }
 
 static Ecore_Ipc_Server *
@@ -492,6 +404,36 @@ _connect_to_daemon(gui_elements *gui)
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, gui);
 
    return svr;
+}
+
+static void
+_gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
+      void *event_info)
+{
+//   clouseau_obj_information_list_clear();
+   /* If not an object, return. */
+   if (!elm_genlist_item_parent_get(event_info))
+      return;
+
+   Tree_Item *treeit = elm_object_item_data_get(event_info);
+
+   /* START - replacing libclouseau_highlight(obj); */
+   int size;
+   gui_elements *g = data;
+   app_info_st *app = g->sel_app->app->data;
+   highlight_st st = { app->ptr, treeit->ptr };
+   Ecore_Ipc_Server *svr = _connect_to_daemon(g);
+   void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size);
+   if (p)
+     {
+        ecore_ipc_server_send(svr,
+              0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_server_flush(svr);
+        free(p);
+     }
+   /* END   - replacing libclouseau_highlight(obj); */
+
+   clouseau_obj_information_list_populate(treeit);
 }
 
 void
@@ -660,7 +602,7 @@ elm_main(int argc, char **argv)
         evas_object_smart_callback_add(gui->gl,
               "contracted", gl_con, gui->gl);
         evas_object_smart_callback_add(gui->gl,
-              "selected", _gl_selected, NULL);
+              "selected", _gl_selected, gui);
      }
 
    /* Properties list */
