@@ -22,13 +22,25 @@
 /*  Read a line from a socket  */
 
 ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
+     char *ptr = vptr;
+     ssize_t rc = read(sockd, vptr, maxlen);
+     if (rc >= 0)
+       ptr[rc] = 0; /* We know there is space */
+     else
+       {
+          *ptr = 0; /* ERROR */
+          return 0;
+       }
+
+     return rc;
+
+#if 0
     ssize_t n, rc;
     char    c, *buffer;
 
     buffer = vptr;
 
     for ( n = 1; n < maxlen; n++ ) {
-	
 	if ( (rc = read(sockd, &c, 1)) == 1 ) {
 	    *buffer++ = c;
 	    if ( c == '\n' )
@@ -49,6 +61,7 @@ ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
 
     *buffer = 0;
     return n;
+#endif
 }
 
 

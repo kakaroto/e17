@@ -152,24 +152,32 @@ elm_main(int argc, char **argv)
 
         /*  Retrieve an input line from the connected socket
             then simply write it back to the same socket.     */
-        Readline(conn_s, buffer, MAX_LINE-1);
-        if (!strncmp(buffer, "server", strlen("server")))
+        while(Readline(conn_s, buffer, MAX_LINE-1))
           {
-             info = eina_list_append(info, strdup(buffer));
-             log_message(LOG_FILE, "a", buffer);
-             Writeline(conn_s, "OK", strlen("OK"));
-          }
-        else if (!strncmp(buffer, "client", strlen("client")))
-          {
-             Eina_List *l;
-             char *line;
-             EINA_LIST_FOREACH(info, l, line)
+             if (!strncmp(buffer, END_OF_MESSAGE, strlen(END_OF_MESSAGE)))
+               break;
+
+             if (!strncmp(buffer, "server", strlen("server")))
                {
-                  Writeline(conn_s, line, strlen(line));
+                  info = eina_list_append(info, strdup(buffer));
+                  log_message(LOG_FILE, "a", buffer);
+                  Writeline(conn_s, "Got info\n", strlen("Got info\n"));
+               }
+             else if (!strncmp(buffer, "client", strlen("client")))
+               {
+                  Eina_List *l;
+                  char *line;
+                  EINA_LIST_FOREACH(info, l, line)
+                    {
+                       Writeline(conn_s, line, strlen(line));
+                    }
+
+                  break;
                }
           }
 
         Writeline(conn_s, "OK\n", strlen("OK\n"));
+        log_message(LOG_FILE, "a", "DONE!!!!");
         if ( close(conn_s) < 0 )
           { /*  Close the connected socket  */
              log_message(LOG_FILE, "a",  "ECHOSERV: Error calling close()\n");

@@ -24,7 +24,7 @@
 #define ECHO_PORT      (5555)
 #define MAX_LINE       (1024)
 #define LISTENQ        (1024)   /*  Backlog for listen()   */
-
+#define END_OF_MESSAGE "END_OF_MESSAGE"
 
 /*  Function declarations  */
 

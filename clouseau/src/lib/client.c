@@ -241,10 +241,6 @@ _load_list(Evas_Object *gl)
     while (Readline(conn_s, buffer, MAX_LINE-1))
       fprintf(stdout, "Got: %s", buffer);
 
-
-    /*  Output echoed string  */
-    printf("Echo response: %s\n", buffer);
-
     return EXIT_SUCCESS;
 
 #if 0

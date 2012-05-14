@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <dlfcn.h>
 #include <execinfo.h>
+#include <sys/socket.h>
 
 #include <Eina.h>
 #include <Ecore.h>
@@ -45,6 +46,37 @@ _item_tree_free(void)
      }
 }
 
+static void
+_item_tree_item_string(Tree_Item *parent, int conn_s, char *buffer)
+{
+   Tree_Item *treeit;
+   Eina_List *l;
+   char *name;
+
+   EINA_LIST_FOREACH(parent->children, l, treeit)
+     {
+        _item_tree_item_string(treeit, conn_s, buffer);
+     }
+
+   sprintf(buffer, "server %s\n", parent->name);
+   printf("server %s", buffer);
+   Writeline(conn_s, buffer, strlen(buffer));
+   Readline(conn_s, buffer, MAX_LINE-1);
+   printf("%s", buffer);
+}
+
+static void
+_item_tree_string(int conn_s, char *buffer)
+{
+   Tree_Item *treeit;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(tree, l, treeit)
+     {
+        _item_tree_item_string(treeit, conn_s, buffer);
+     }
+}
+
 static char *
 item_text_get(void *data, Evas_Object *obj __UNUSED__,
       const char *part __UNUSED__)
@@ -56,7 +88,7 @@ item_text_get(void *data, Evas_Object *obj __UNUSED__,
 }
 
 static void
-libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
+libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
 {
    Eina_List *children, *tmp;
    Evas_Object *child;
@@ -76,24 +108,18 @@ libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
 
    children = evas_object_smart_members_get(o);
    EINA_LIST_FOREACH(children, tmp, child){
-        libclouseau_item_add(child, gl, treeit);
+        libclouseau_item_add(child, treeit);
    }
 }
 
 static void
-_load_list(Evas_Object *gl)
+_load_list(void)
 {
    Eina_List *ees, *eeitr;
-   Ecore_Evas *ee, *this_ee;
+   Ecore_Evas *ee;
 
-   clouseau_obj_information_list_clear();
-   elm_genlist_clear(gl);
-   _item_tree_free();
 
    ees = ecore_evas_ecore_evas_list_get();
-
-   this_ee = ecore_evas_ecore_evas_get(
-         evas_object_evas_get(elm_object_top_widget_get(gl)));
 
    EINA_LIST_FOREACH(ees, eeitr, ee)
      {
@@ -103,9 +129,6 @@ _load_list(Evas_Object *gl)
 
         Evas *e;
         int w, h;
-
-        if (this_ee == ee)
-           continue;
 
         e = ecore_evas_get(ee);
         evas_output_size_get(e, &w, &h);
@@ -120,17 +143,9 @@ _load_list(Evas_Object *gl)
               USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
         EINA_LIST_FOREACH(objs, objitr, obj)
           {
-             libclouseau_item_add(obj, gl, treeit);
+             libclouseau_item_add(obj, treeit);
           }
-
-        /* Insert the base ee items
-          {
-             Elm_Genlist_Item_Type glflag = (treeit->children) ?
-                ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
-             elm_genlist_item_append(gl, &itc, treeit, NULL,
-                   glflag, NULL, NULL);
-          } */
-     }
+    }
 }
 
 static int
@@ -177,10 +192,14 @@ _notify(char *msg)
     printf("Enter the string to echo: ");
     fgets(buffer, MAX_LINE, stdin); */
 
+    _load_list();  /* compose tree list */
     /*  Send string to echo server, and retrieve response  */
-    sprintf(buffer, "server %s\n", msg);
+    sprintf(buffer, "server %s", msg);
     Writeline(conn_s, buffer, strlen(buffer));
-    Readline(conn_s, buffer, 1023);
+    _item_tree_string(conn_s, buffer);
+    strcpy(buffer, END_OF_MESSAGE);
+    Writeline(conn_s, buffer, strlen(buffer));
+    Readline(conn_s, buffer, MAX_LINE-1);
 
 
     /*  Output echoed string  */
