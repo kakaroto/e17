@@ -1,114 +1,187 @@
-/*
-
-  HELPER.C
-  ========
-  (c) Paul Griffiths, 1999
-  Email: mail@paulgriffiths.net
-
-  Implementation of sockets helper functions.
-
-  Many of these functions are adapted from, inspired by, or 
-  otherwise shamelessly plagiarised from "Unix Network 
-  Programming", W Richard Stevens (Prentice Hall).
-
-*/
-
 #include "helper.h"
-#include <sys/socket.h>
-#include <unistd.h>
-#include <errno.h>
 
+static data_desc *desc = NULL;
 
-size_t
-compose_packet(void **ptr, client_type c, message_type m, void *data, size_t s)
+static eet_message_type_mapping eet_mapping[] = {
+       { DAEMON_ACK, DAEMON_ACK_STR },
+       { DAEMON_TREE_DATA, DAEMON_TREE_DATA_STR },
+       { GUI_ACK, GUI_ACK_STR },
+       { GUI_TREE_DATA, GUI_TREE_DATA_STR },
+       { APP_ACK, APP_ACK_STR },
+       { APP_TREE_DATA, APP_TREE_DATA_STR }
+};
+
+message_type
+packet_mapping_type_get(const char *name)
 {
-   packet pkt = { c, m, s };
-   size_t size = sizeof(packet) + s;
+   int i;
+   for (i = 0; eet_mapping[i].name != NULL; ++i)
+     if (strcmp(name, eet_mapping[i].name) == 0)
+       return eet_mapping[i].t;
 
-   void *p = malloc(size);
-   memcpy(p, &pkt, sizeof(packet));
-   if (data)
-     memcpy(p + sizeof(packet), data, s);
-
-   *ptr = p;
-   return size;
+   return UNKNOWN;
 }
 
-void *
-get_packet_data(void *ptr)
+const char *
+packet_mapping_type_str_get(message_type t)
 {
-   packet *pkt = ptr;
-   if (pkt->size)
-     return (ptr + sizeof(packet));
+   int i;
+   for (i = 0; eet_mapping[i].name != NULL; ++i)
+     if (t == eet_mapping[i].t)
+       return eet_mapping[i].name;
 
    return NULL;
 }
-/*  Read a line from a socket  */
 
-ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
-     char *ptr = vptr;
-     ssize_t rc = read(sockd, vptr, maxlen);
-     if (rc >= 0)
-       ptr[rc] = 0; /* We know there is space */
-     else
-       {
-          *ptr = 0; /* ERROR */
-          return 0;
-       }
+const char *
+_variant_type_get(const void *data, Eina_Bool  *unknow)
+{
+   const Variant_Type_st *type = data;
+   int i;
 
-     return rc;
+   if (unknow)
+     *unknow = type->unknow;
 
-#if 0
-    ssize_t n, rc;
-    char    c, *buffer;
+   for (i = 0; eet_mapping[i].name != NULL; ++i)
+     if (strcmp(type->type, eet_mapping[i].name) == 0)
+       return eet_mapping[i].name;
 
-    buffer = vptr;
+   if (unknow)
+     *unknow = EINA_FALSE;
 
-    for ( n = 1; n < maxlen; n++ ) {
-	if ( (rc = read(sockd, &c, 1)) == 1 ) {
-	    *buffer++ = c;
-	    if ( c == '\n' )
-		break;
-	}
-	else if ( rc == 0 ) {
-	    if ( n == 1 )
-		return 0;
-	    else
-		break;
-	}
-	else {
-	    if ( errno == EINTR )
-		continue;
-	    return -1;
-	}
-    }
+   return type->type;
+} /* _variant_type_get */
 
-    *buffer = 0;
-    return n;
-#endif
+Eina_Bool
+_variant_type_set(const char *type,
+      void       *data,
+      Eina_Bool   unknow)
+{
+   Variant_Type_st *vt = data;
+
+   vt->type = type;
+   vt->unknow = unknow;
+   return EINA_TRUE;
+} /* _variant_type_set */
+
+void
+variant_free(Variant_st *v)
+{
+   if (v->data)
+     free(v->data);
+
+   free(v);
 }
 
+Variant_st *
+variant_alloc(message_type t, size_t size, void *info)
+{
+   if (t != UNKNOWN)
+     { /* This will allocate variant and message struct */
+        Variant_st *v =  malloc(sizeof(Variant_st));
+        v->data = malloc(size);
+        _variant_type_set(packet_mapping_type_str_get(t), &v->t, EINA_FALSE);
+        memcpy(v->data, info, size);
 
-/*  Write a line to a socket  */
+        return v;
+     }
 
-ssize_t Writeline(int sockd, const void *vptr, size_t n) {
-    size_t      nleft;
-    ssize_t     nwritten;
-    const char *buffer;
+   return NULL;
+}
 
-    buffer = vptr;
-    nleft  = n;
+Eet_Data_Descriptor *
+ack_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
 
-    while ( nleft > 0 ) {
-	if ( (nwritten = write(sockd, buffer, nleft)) <= 0 ) {
-	    if ( errno == EINTR )
-		nwritten = 0;
-	    else
-		return -1;
-	}
-	nleft  -= nwritten;
-	buffer += nwritten;
-    }
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, ack_st);
+   d = eet_data_descriptor_stream_new(&eddc);
 
-    return n;
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, ack_st, "text", text, EET_T_STRING);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+tree_item_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Tree_Item);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST(d, Tree_Item, "children",
+         children, d);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "name",
+         name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "ptr",
+         ptr, EET_T_NULL);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_obj",
+         is_obj, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_clipper",
+         is_clipper, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_visible",
+         is_visible, EET_T_UCHAR);
+
+   return d;
+}
+
+data_desc *_data_descriptors_init(void)
+{
+   if (desc)  /* Was allocated */
+     return desc;
+
+   desc = calloc(1, sizeof(data_desc));
+
+   Eet_Data_Descriptor_Class eddc;
+   desc->ack = ack_desc_make();
+   desc->tree = tree_item_desc_make();
+
+   /* for variant */
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Variant_st);
+   desc->_variant_descriptor = eet_data_descriptor_file_new(&eddc);
+
+   eddc.version = EET_DATA_DESCRIPTOR_CLASS_VERSION;
+   eddc.func.type_get = _variant_type_get;
+   eddc.func.type_set = _variant_type_set;
+   desc->_variant_unified_descriptor = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        DAEMON_ACK_STR, desc->ack);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        DAEMON_TREE_DATA_STR , desc->tree);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        GUI_ACK_STR, desc->ack);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        GUI_TREE_DATA_STR, desc->tree);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        APP_ACK_STR, desc->ack);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        APP_TREE_DATA_STR, desc->tree);
+
+   EET_DATA_DESCRIPTOR_ADD_VARIANT(desc->_variant_descriptor,
+         Variant_st, "data", data, t, desc->_variant_unified_descriptor);
+
+   return desc;
+}
+
+void _data_descriptors_shutdown(void)
+{
+   if (desc)
+     {
+        eet_data_descriptor_free(desc->ack);
+        eet_data_descriptor_free(desc->tree);
+        eet_data_descriptor_free(desc->_variant_descriptor );
+        eet_data_descriptor_free(desc->_variant_unified_descriptor);
+
+        free(desc);
+        desc = NULL;
+     }
 }

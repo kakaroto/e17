@@ -27,8 +27,22 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
+   char *msg="Hello send from GUI client";
+   int size = 0;
+
+   data_desc *td = _data_descriptors_init();
+   ack_st t = { msg };
+   Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
+   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
+   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+   ecore_ipc_server_flush(ev->server);
+   free(p);
+   variant_free(v);
+
+#if 0
+   void *p;
    char *msg="hello! - sent from the GUI";
-   size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
+   size_t size = compose_packet(&p, GUI, TSUITE_EVENT_TREE_ITEM, msg, strlen(msg)+1);
 
    printf("Server with ip %s, connected = %d!\n",
          ecore_ipc_server_ip_get(ev->server),
@@ -36,7 +50,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
    ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE,p, size);
    ecore_ipc_server_flush(ev->server);
    free(p);
-
+#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -63,22 +77,43 @@ Eina_Bool
 _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 {
    static Eina_Bool got_tree = EINA_FALSE;
-   char fmt[128];
 
-   snprintf(fmt, sizeof(fmt),
-         "Received %i bytes from server:\n"
+   printf("Received %i bytes from server:\n"
          ">>>>>\n"
          "%%.%is\n"
          ">>>>>\n",
          ev->size, ev->size);
 
-   printf(fmt, (char *) get_packet_data(ev->data));
+   data_desc *td = _data_descriptors_init();
+   Variant_st *v = eet_data_descriptor_decode(td->_variant_descriptor,
+         ev->data, ev->size);
+   if (v)
+     {
+        ack_st *ack = v->data;
+        printf("APP <%s> got <%s> from daemon.\n", __func__, ack->text);
+     }
+   else
+     printf("APP <%s> failed to decode packet from daemon.\n", __func__);
 
-   packet *pkt = ev->data;
-   if (pkt->type == TREE_DATA)
+   void *p;
+   char *msg="Got data in client GUI";
+   int size = 0;
+
+   free(v);
+
+   ack_st t = { msg };
+   v = variant_alloc(APP_ACK, sizeof(t), &t);
+   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
+   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+   ecore_ipc_server_flush(ev->server);
+   free(p);
+   variant_free(v);
+
+#if 0
+   Variant_st *pkt = ev->data;
+   if (pkt->type == TSUITE_EVENT_TREE_ITEM)
      {
         printf("TREE DATA: %s %d\n", __func__, __LINE__);
-        puts((char *) get_packet_data(ev->data));
      }
 
    if (!got_tree)
@@ -86,12 +121,12 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
         got_tree = EINA_TRUE;
         void *p;
         char *msg="hello! - sent from the GUI";
-        size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
+        size_t size = compose_packet(&p, GUI, TSUITE_EVENT_TREE_ITEM, msg, strlen(msg)+1);
         ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE,p, size);
         ecore_ipc_server_flush(ev->server);
         free(p);
      }
-
+#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -395,12 +430,28 @@ _load_list(Evas_Object *gl)
      {
         void *p;
         char *msg="Asking refresg from GUI";
-        size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
+        int size = 0;
+
+        ack_st t = { msg };
+        data_desc *td = _data_descriptors_init();
+        Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
+        p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
         ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
         ecore_ipc_server_flush(svr);
         free(p);
-     }
+        variant_free(v);
 
+
+        /*
+        void *p;
+        char *msg="Asking refresg from GUI";
+        size_t size = compose_packet(&p, GUI, TSUITE_EVENT_TREE_ITEM, msg, strlen(msg)+1);
+        ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_server_flush(svr);
+        free(p);
+        */
+     }
+#if 0
      printf("Before Loading tree.\n");
    Tree_Item *t = eet_dump_tree_load("/tmp/eet_dump");
    if(t)
@@ -410,7 +461,7 @@ _load_list(Evas_Object *gl)
 
    _item_tree_print_string(t);
    printf("After Loading tree.\n");
-
+#endif
 
    return 0;
 

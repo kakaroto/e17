@@ -181,15 +181,22 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
    char *msg="hello! - sent from the APP";
-   size_t size = compose_packet(&p, APP, ACK, msg, strlen(msg)+1);
+   int size = 0;
 
-   printf("Server with ip %s, connected = %d!\n",
-         ecore_ipc_server_ip_get(ev->server),
-         ecore_ipc_server_connected_get(ev->server));
+   data_desc *td = _data_descriptors_init();
+   ack_st t = { msg };
+   Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
+   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
    ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
    ecore_ipc_server_flush(ev->server);
    free(p);
-
+   variant_free(v);
+#if 0
+   size_t size = compose_packet(&p, APP, TSUITE_EVENT_ACK, msg, strlen(msg)+1);
+   printf("Server with ip %s, connected = %d!\n",
+         ecore_ipc_server_ip_get(ev->server),
+         ecore_ipc_server_connected_get(ev->server));
+#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -216,27 +223,60 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
 {
    char fmt[128];
 
-   snprintf(fmt, sizeof(fmt),
-         "Received %i bytes from server:\n"
+   printf("Received %i bytes from server:\n"
          ">>>>>\n"
          "%%.%is\n"
          ">>>>>\n",
          ev->size, ev->size);
 
-   printf(fmt, (char *) get_packet_data(ev->data));
+   data_desc *td = _data_descriptors_init();
+   Variant_st *v = eet_data_descriptor_decode(td->_variant_descriptor,
+         ev->data, ev->size);
+   if (v)
+     {
+        ack_st *ack = v->data;
+        printf("APP <%s> got <%s> from daemon.\n", __func__, ack->text);
+     }
+   else
+     printf("APP <%s> failed to decode packet from daemon.\n", __func__);
 
+   char *msg="Reply to DATA in APP";
+   int size = 0;
+   free(v);
+
+
+   Tree_Item *t = eina_list_nth(tree, 0);
+   if (t)
+     {
+        printf("Trying to send tree\n");
+        v = variant_alloc(APP_TREE_DATA, sizeof(*t), t);
+        void *p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
+        printf("APP sending tree, size <%d>\n", size);
+        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_server_flush(ev->server);
+        free(p);
+        variant_free(v);
+     }
+/* START Works with variant
+   ack_st t = { msg };
+   v = variant_alloc(APP_ACK, sizeof(t), &t);
+   void *p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
+   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+   ecore_ipc_server_flush(ev->server);
+   free(p);
+   variant_free(v);
+   END  Works with variant */
+
+#if 0
    /* Send reply to server */
    _load_list();  /* compose tree list */
    void *p;
-   char *str = _item_tree_string();
-   size_t size = compose_packet(&p, APP, TREE_DATA, str, strlen(str)+1);
+   size_t size = compose_packet(&p, APP, TSUITE_EVENT_TREE_ITEM, eina_list_nth(tree, 0), sizeof(Tree_Item));
    ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
    ecore_ipc_server_flush(ev->server);
-   if (str)
-     free(str);
 
    free(p);
-
+#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -283,6 +323,7 @@ _notify(char *msg)
         return EINA_FALSE;
      }
 
+   _load_list();
    return EINA_TRUE;
 
 

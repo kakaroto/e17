@@ -1,59 +1,77 @@
-/*
-
-  HELPER.H
-  ========
-  (c) Paul Griffiths, 1999
-  Email: paulgriffiths@cwcom.net
-
-  Interface to socket helper functions. 
-
-  Many of these functions are adapted from, inspired by, or 
-  otherwise shamelessly plagiarised from "Unix Network 
-  Programming", W Richard Stevens (Prentice Hall).
-
-*/
-
-
-#ifndef PG_SOCK_HELP
-#define PG_SOCK_HELP
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <unistd.h>             /*  for ssize_t data type  */
-
+#ifndef HELPER_H
+#define HELPER_H
+#include "libclouseau.h"
 /*  Global constants  */
 #define PORT           (8080)
 #define MAX_LINE       (1023)
 #define LOCALHOST      "127.0.0.1"
 
-enum _client_type
-{
-   DAEMON,
-   APP,  /* Application runs PRELOAD with clouseau */
-   GUI   /* The GUI client showing info */
-};
-typedef enum _client_type client_type;
+#define DESC_ADD_BASIC(desc, type, member, eet_type) \
+   EET_DATA_DESCRIPTOR_ADD_BASIC             \
+   (desc, type, #member, member, eet_type)
+
+#define DAEMON_ACK_STR         "daemon_ack"
+#define DAEMON_TREE_DATA_STR   "daemon_tree_data"
+#define GUI_ACK_STR            "gui_ack"
+#define GUI_TREE_DATA_STR      "gui_tree_data"
+#define APP_ACK_STR            "app_ack"
+#define APP_TREE_DATA_STR      "app_tree_data"
 
 enum _message_type
-{
-   ACK,          /* Acknoledge */
-   TREE_DATA,    /* Tree daya req/fwd */
+{  /*  Add any supported types of packets here */
+   UNKNOWN = 0,
+   DAEMON_ACK,        /* Daemon sends ack            */
+   DAEMON_TREE_DATA,  /* Daemon sends tree-data      */
+   GUI_ACK,           /* GUI Client sends ack        */
+   GUI_TREE_DATA,     /* GUI Client sends tree-data  */
+   APP_ACK,           /* App sends ack               */
+   APP_TREE_DATA      /* App tree-data               */
 };
 typedef enum _message_type message_type;
 
-struct _packet
-{  /* Packet is BLOB contains: client, type, size of str that follows */
-   client_type client;
-   message_type type;
-   size_t size;
+struct _eet_message_type_mapping
+{
+   message_type t;
+   const char *name;
 };
-typedef struct _packet packet;
+typedef struct _eet_message_type_mapping eet_message_type_mapping;
 
-/*  Function declarations  */
-size_t compose_packet(void **ptr, client_type c, message_type m, void *data, size_t s);
-void *get_packet_data(void *ptr);
-ssize_t Readline(int fd, void *vptr, size_t maxlen);
-ssize_t Writeline(int fc, const void *vptr, size_t maxlen);
-#endif  /*  PG_SOCK_HELP  */
+struct _Variant_Type_st
+{
+   const char *type;
+   Eina_Bool   unknow : 1;
+};
+typedef struct _Variant_Type_st Variant_Type_st;
+
+struct _Variant_st
+{
+   Variant_Type_st t;
+   void *data;
+};
+typedef struct _Variant_st Variant_st;
+
+struct _ack_st
+{
+   char *text;  /* send text for debug */
+};
+typedef struct _ack_st ack_st;
+
+struct _data_desc
+{
+   Eet_Data_Descriptor *ack;
+   Eet_Data_Descriptor *tree;
+   Eet_Data_Descriptor *_variant_descriptor;
+   Eet_Data_Descriptor *_variant_unified_descriptor;
+};
+typedef struct _data_desc data_desc;
+
+/* Function Declarations */
+Eet_Data_Descriptor *ack_desc_make(void);
+Eet_Data_Descriptor *tree_item_desc_make(void);
+data_desc *_data_descriptors_init(void);
+void _data_descriptors_shutdown(void);
+void variant_free(Variant_st *v);
+Variant_st *variant_alloc(message_type t, size_t size, void *info);
+message_type packet_mapping_type_get(const char *name);
+const char * packet_mapping_type_str_get(message_type t);
+#endif  /*  HELPER_H  */
