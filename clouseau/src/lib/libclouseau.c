@@ -86,8 +86,11 @@ _load_list(void)
           {
              libclouseau_item_add(obj, treeit);
           }
+
+        eina_list_free(objs);
     }
 
+   eina_list_free(ees);
    return tree;  /* User has to call item_tree_free() */
 }
 
