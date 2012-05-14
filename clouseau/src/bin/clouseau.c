@@ -153,16 +153,21 @@ _add_app(gui_elements *g, Variant_st *v)
 }
 
 static void
+_free_app_tree_data(Variant_st *td)
+{
+   if (td)
+     {
+        tree_data_st *ftd = td->data;
+        item_tree_free(ftd->tree);
+        free(td);
+     }
+}
+
+static void
 _free_app(app_data_st *st)
 {
    variant_free(st->app);
-   if (st->td)
-     {
-        tree_data_st *ftd = st->td->data;
-        item_tree_free(ftd->tree);
-        free(st->td);
-     }
-
+   _free_app_tree_data(st->td);
    free(st);
 }
 
@@ -204,19 +209,22 @@ static void
 _update_tree(gui_elements *g, Variant_st *v)
 {  /* Update Tree for app, then update GUI if its displayed */
    tree_data_st *td = v->data;
+   app_info_st *selected = g->sel_app->app->data;
+
+   if (selected->ptr != td->app)
+     {   /* Happens when user selected other app BEFORE data was recieved */
+        _free_app_tree_data(v);  /* Dispose unused info */
+        return;
+     }
+
+   /* Update only if tree is the selected app tree */
    app_data_st *st = (app_data_st *)
       eina_list_search_unsorted(apps, _app_ptr_cmp,
             (void *) (uintptr_t) td->app);
 
    if (st)
      {  /* Free app tree data then set ptr to new data */
-        if (st->td)
-          {
-             tree_data_st *ftd = st->td->data;
-             item_tree_free(ftd->tree);
-             free(st->td);
-          }
-
+        _free_app_tree_data(st->td);
         st->td = v;
 
         elm_genlist_clear(g->gl);
