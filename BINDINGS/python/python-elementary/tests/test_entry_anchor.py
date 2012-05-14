@@ -7,7 +7,7 @@ class Test(Window):
         Window.__init__(self, "entry-test", ELM_WIN_BASIC)
         
         self.title_set("Entry test")
-        self.callback_destroy_add(self.quit)
+        self.callback_delete_request_add(self.quit)
         
         bg = Background(self)
         bg.size_hint_weight_set(1.0, 1.0)

@@ -167,7 +167,7 @@ def progressbar_clicked(obj):
     bt_bx.pack_end(bt)
     bt.show()
 
-    win.callback_destroy_add(my_progressbar_destroy, *pbt)
+    win.callback_delete_request_add(my_progressbar_destroy, *pbt)
     win.show()
 # }}}
 

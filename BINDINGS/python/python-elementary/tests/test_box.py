@@ -158,7 +158,7 @@ if __name__ == "__main__":
     elementary.init()
     win = elementary.Window("test", elementary.ELM_WIN_BASIC)
     win.title_set("python-elementary test application")
-    win.callback_destroy_add(destroy)
+    win.callback_delete_request_add(destroy)
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
