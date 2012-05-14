@@ -44,9 +44,12 @@ libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
    parent->children = eina_list_append(parent->children, treeit);
 
    children = evas_object_smart_members_get(o);
-   EINA_LIST_FOREACH(children, tmp, child){
+   EINA_LIST_FOREACH(children, tmp, child)
+     {
         libclouseau_item_add(child, treeit);
-   }
+     }
+
+   eina_list_free(children);
 }
 
 static Eina_List *
