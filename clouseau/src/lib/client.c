@@ -16,23 +16,40 @@
 #define __UNUSED__
 #endif
 
+struct _app_data_st
+{
+   Variant_st *app;  /* app->data is (app_info_st *)   */
+   Variant_st *td;   /* tree->data is (tree_data_st *) */
+};
+typedef struct _app_data_st app_data_st;
+
+struct _gui_elements
+{
+   Evas_Object *dd_list;
+   Evas_Object *gl;
+   Evas_Object *prop_list;
+   app_data_st *sel_app; /* Currently selected app data */
+};
+typedef struct _gui_elements gui_elements;
+
+static int _load_list(gui_elements *gui);
 
 /* Globals */
+static gui_elements *gui = NULL;
+static Eina_List *apps= NULL;  /* List of (app_data_st *) */
 static Elm_Genlist_Item_Class itc;
-static Eina_List *tree = NULL;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 
 Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
-   char *msg="Hello send from GUI client";
    int size = 0;
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   ack_st t = { msg };
-   p = packet_compose(GUI_ACK, &t, sizeof(t), &size);
+   connect_st t = { getpid(), __FILE__ };
+   p = packet_compose(GUI_CLIENT_CONNECT, &t, sizeof(t), &size);
    if (p)
      {
         ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -82,6 +99,115 @@ _load_gui_with_list(Evas_Object *gl, Eina_List *trees)
    return EINA_TRUE;
 }
 
+static void
+_set_selected_app(void *data, Evas_Object *pobj,
+      void *event_info)
+{  /* Set hovel label */
+   app_data_st *st = data;
+   app_info_st *app = st->app->data;
+   if (gui->sel_app != st)
+     {  /* Reload only of selected some other app */
+        gui->sel_app = st;
+
+        char *str = malloc(strlen(app->name)+32);
+        sprintf(str, "%s [%d]", app->name, app->pid);
+        elm_object_text_set(pobj, str);
+        free(str);
+
+        _load_list(gui);
+     }
+}
+
+static int
+_app_ptr_cmp(const void *d1, const void *d2)
+{
+   const app_data_st *info = d1;
+   app_info_st *app = info->app->data;
+
+   return ((app->ptr) - d2);
+}
+
+static void
+_add_app_to_dd_list(Evas_Object *dd_list, app_data_st *st)
+{  /* Add app to Drop Down List */
+   app_info_st *app = st->app->data;
+
+   char *str = malloc(strlen(app->name)+32);
+   sprintf(str, "%s [%d]", app->name, app->pid);
+   elm_hoversel_item_add(dd_list, str, NULL, ELM_ICON_NONE,
+         _set_selected_app, st);
+
+   free(str);
+}
+
+static void
+_add_app(gui_elements *gui, Variant_st *v)
+{
+   app_data_st *st = malloc(sizeof(app_data_st));
+   st->app = v;
+   st->td = NULL; /* Will get this on TREE_DATA message */
+   apps = eina_list_append(apps, st);
+
+   _add_app_to_dd_list(gui->dd_list, st);
+}
+
+static void
+_remove_app(gui_elements *gui, Variant_st *v)
+{
+   app_closed_st *app = v->data;
+   app_info_st *sel_app = gui->sel_app->app->data;
+   app_data_st *st = (app_data_st *)
+      eina_list_search_unsorted(apps, _app_ptr_cmp, app->ptr);
+
+   if (app->ptr == sel_app->ptr)
+     {
+        elm_object_text_set(gui->dd_list, "SELECT APP");
+        elm_genlist_clear(gui->gl);
+        elm_genlist_clear(gui->prop_list);
+        gui->sel_app = NULL;
+     }
+
+   if (st)
+     {  /* Remove from list and free all variants */
+        /* TODO: Remove app from Drop Down List */
+        apps = eina_list_remove(apps, st);
+        free(st->app);
+        if (st->td)
+          free(st->td);
+
+        free(st);
+
+        if (!elm_hoversel_expanded_get(gui->dd_list))
+          {
+             Eina_List *l;
+             elm_hoversel_clear(gui->dd_list);
+             EINA_LIST_FOREACH(apps, l , st)
+                _add_app_to_dd_list(gui->dd_list, st);
+          }
+     }
+
+   free(v);
+}
+
+static void
+_update_tree(gui_elements *gui, Variant_st *v)
+{  /* Update Tree for app, then update GUI if its displayed */
+   tree_data_st *td = v->data;
+   app_data_st *st = (app_data_st *)
+      eina_list_search_unsorted(apps, _app_ptr_cmp, td->app);
+
+   if (st)
+     {
+        if (st->td)
+          free(st->td);
+
+        st->td = v;
+
+        elm_genlist_clear(gui->gl);
+        _load_gui_with_list(gui->gl, td->tree);
+     }
+}
+
 Eina_Bool
 _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 {
@@ -98,6 +224,18 @@ _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
      {
         switch(packet_mapping_type_get(v->t.type))
           {
+           case APP_ADD:            /* Add info to list of APPs  */
+              _add_app(data, v);    /* v->data is (app_info_st *) */
+              break;
+
+           case APP_CLOSED:         /* Remove and free APP info */
+              _remove_app(data, v); /* v->data is (app_closed_st *) */
+              break;
+
+           case TREE_DATA:           /* Update genlist with APP TREE info */
+              _update_tree(data, v); /* data is the gui pointer */
+              break;                 /* v->data is (tree_data_st *) */
+#if 0
            case DAEMON_TREE_DATA:
                 {
                    printf("Got tree data from daemon, size=<%d>\n", ev->size);
@@ -106,9 +244,10 @@ _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
                    _load_gui_with_list(data, tl->list);  /* data == gl */
                    break;
                 }
+#endif
           }
 
-       /* variant_free(v); Will be saved as APP data, don't forget cleanup */
+       /* free(v) - freed when removed from app list */
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -327,15 +466,8 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
    clouseau_obj_information_list_populate(treeit);
 }
 
-static void
-_set_selected_app(void *data, Evas_Object *pobj,
-      void *event_info)
-{  /* Set hovel label */
-   elm_object_text_set(pobj, data);
-}
-
 static Ecore_Ipc_Server *
-_connect_to_daemon(Evas_Object *gl)
+_connect_to_daemon(gui_elements *gui)
 {
    static Ecore_Ipc_Server *svr = NULL;
    const char *address = LOCALHOST;
@@ -353,11 +485,11 @@ _connect_to_daemon(Evas_Object *gl)
    ecore_ipc_server_data_size_max_set(svr, -1);
 
    /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, gl);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, gui);
    /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, gl);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, gui);
    /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, gl);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, gui);
 
    return svr;
 }
@@ -378,22 +510,27 @@ _item_tree_print_string(Tree_Item *parent)
 }
 
 static int
-_load_list(Evas_Object *gl)
+_load_list(gui_elements *gui)
 {
-   Ecore_Ipc_Server *svr = _connect_to_daemon(gl);
-   if (svr)
+   if (gui->sel_app)
      {
-        void *p;
-        char *msg="Asking refresg from GUI";
-        int size = 0;
+        elm_genlist_clear(gui->gl);
+        elm_genlist_clear(gui->prop_list);
+        app_info_st *st = gui->sel_app->app->data;
 
-        ack_st t = { msg };
-        p = packet_compose(GUI_ACK, &t, sizeof(t), &size);
-        if (p)
-          {
-             ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
-             ecore_ipc_server_flush(svr);
-             free(p);
+        if (eina_list_search_unsorted(apps, _app_ptr_cmp, st->ptr))
+          {  /* do it only if app selected AND found in apps list */
+             int size;
+             Ecore_Ipc_Server *svr = _connect_to_daemon(gui);
+             data_req_st t = { NULL, st->ptr };
+             void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size);
+             if (p)
+               {
+                  ecore_ipc_server_send(svr,
+                        0,0,0,0,EINA_FALSE, p, size);
+                  ecore_ipc_server_flush(svr);
+                  free(p);
+               }
           }
      }
 
@@ -428,7 +565,10 @@ EAPI int
 elm_main(int argc, char **argv)
 {  /* Create Client Window */
    Evas_Object *win, *bg, *panes, *bx, *bt, *show_hidden_check,
-               *show_clippers_check, *dd_list, *gl;
+               *show_clippers_check;
+
+   gui = malloc(sizeof(gui_elements));
+   gui->sel_app = NULL;
 
    win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
@@ -462,19 +602,13 @@ elm_main(int argc, char **argv)
         elm_box_pack_end(hbx, bt);
         evas_object_show(bt);
 
-        dd_list = elm_hoversel_add(win);
-        elm_hoversel_hover_parent_set(dd_list, win);
-        elm_object_text_set(dd_list, "SELECT APP");
-        elm_hoversel_item_add(dd_list, "app1", NULL, ELM_ICON_NONE,
-              _set_selected_app, "app1");
-        elm_hoversel_item_add(dd_list, "app2", NULL, ELM_ICON_NONE,
-              _set_selected_app, "app2");
-        elm_hoversel_item_add(dd_list, "app3", NULL, ELM_ICON_NONE,
-              _set_selected_app, "app3");
+        gui->dd_list = elm_hoversel_add(win);
+        elm_hoversel_hover_parent_set(gui->dd_list, win);
+        elm_object_text_set(gui->dd_list, "SELECT APP");
 
-        evas_object_size_hint_align_set(dd_list, 0.0, 0.3);
-        elm_box_pack_end(hbx, dd_list);
-        evas_object_show(dd_list);
+        evas_object_size_hint_align_set(gui->dd_list, 0.0, 0.3);
+        elm_box_pack_end(hbx, gui->dd_list);
+        evas_object_show(gui->dd_list);
 
         show_hidden_check = elm_check_add(hbx);
         elm_object_text_set(show_hidden_check, "Show Hidden");
@@ -497,17 +631,19 @@ elm_main(int argc, char **argv)
 
    /* The main list */
      {
-        gl = elm_genlist_add(panes);
-        evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        elm_object_part_content_set(panes, "left", gl);
-        evas_object_show(gl);
+        gui->gl = elm_genlist_add(panes);
+        evas_object_size_hint_align_set(gui->gl,
+              EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_weight_set(gui->gl,
+              EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        elm_object_part_content_set(panes, "left", gui->gl);
+        evas_object_show(gui->gl);
 
-        evas_object_smart_callback_add(bt, "clicked", _bt_clicked, gl);
+        evas_object_smart_callback_add(bt, "clicked", _bt_clicked, gui);
         evas_object_smart_callback_add(show_hidden_check, "changed",
-              _show_hidden_check_changed, gl);
+              _show_hidden_check_changed, gui);
         evas_object_smart_callback_add(show_clippers_check, "changed",
-              _show_clippers_check_changed, gl);
+              _show_clippers_check_changed, gui);
 
         itc.item_style = "default";
         itc.func.text_get = item_text_get;
@@ -515,19 +651,27 @@ elm_main(int argc, char **argv)
         itc.func.state_get = NULL;
         itc.func.del = NULL;
 
-        evas_object_smart_callback_add(gl, "expand,request", gl_exp_req, gl);
-        evas_object_smart_callback_add(gl, "contract,request", gl_con_req, gl);
-        evas_object_smart_callback_add(gl, "expanded", gl_exp, gl);
-        evas_object_smart_callback_add(gl, "contracted", gl_con, gl);
-        evas_object_smart_callback_add(gl, "selected", _gl_selected, NULL);
+        evas_object_smart_callback_add(gui->gl,
+              "expand,request", gl_exp_req, gui->gl);
+        evas_object_smart_callback_add(gui->gl,
+              "contract,request", gl_con_req, gui->gl);
+        evas_object_smart_callback_add(gui->gl,
+              "expanded", gl_exp, gui->gl);
+        evas_object_smart_callback_add(gui->gl,
+              "contracted", gl_con, gui->gl);
+        evas_object_smart_callback_add(gui->gl,
+              "selected", _gl_selected, NULL);
      }
 
    /* Properties list */
      {
         Evas_Object *prop_list = NULL;
         prop_list = clouseau_obj_information_list_add(panes);
-        evas_object_size_hint_align_set(prop_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_size_hint_weight_set(prop_list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        gui->prop_list = prop_list;
+        evas_object_size_hint_align_set(prop_list,
+              EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_weight_set(prop_list,
+              EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
         elm_object_part_content_set(panes, "right", prop_list);
         evas_object_show(prop_list);
@@ -542,16 +686,17 @@ elm_main(int argc, char **argv)
    ecore_init();
    ecore_ipc_init();
 
-   if(!_connect_to_daemon(gl))
+   if(!_connect_to_daemon(gui))
      {
         printf("Failed to connect to server.\n");
-        return 0;
+        return 1;
      }
 
    elm_run();
    elm_shutdown();
 
    data_descriptors_shutdown();
+   free(gui);
    printf("Client cleanup.\n");
    return 0;
 }

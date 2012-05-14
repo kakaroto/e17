@@ -42,12 +42,13 @@ _item_tree_item_string(Tree_Item *parent)
 }
 
 static eet_message_type_mapping eet_mapping[] = {
-       { DAEMON_ACK, DAEMON_ACK_STR },
-       { DAEMON_TREE_DATA, DAEMON_TREE_DATA_STR },
-       { GUI_ACK, GUI_ACK_STR },
-       { GUI_TREE_DATA, GUI_TREE_DATA_STR },
-       { APP_ACK, APP_ACK_STR },
-       { APP_TREE_DATA, APP_TREE_DATA_STR }
+       { GUI_CLIENT_CONNECT, GUI_CONNECT_STR },
+       { APP_CLIENT_CONNECT, APP_CONNECT_STR },
+       { APP_ADD, APP_ADD_STR },
+       { DATA_REQ, DATA_REQ_STR },
+       { TREE_DATA, TREE_DATA_STR },
+       { APP_CLOSED, APP_CLOSED_STR },
+       { HIGHLIGHT, HIGHLIGHT_STR }
 };
 
 message_type
@@ -129,15 +130,94 @@ variant_alloc(message_type t, size_t size, void *info)
 }
 
 Eet_Data_Descriptor *
-ack_desc_make(void)
+connect_desc_make(void)
 {
    Eet_Data_Descriptor *d;
 
    Eet_Data_Descriptor_Class eddc;
-   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, ack_st);
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, connect_st);
    d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, ack_st, "text", text, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, connect_st, "pid", pid, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, connect_st, "name", name, EET_T_STRING);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+app_add_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, app_info_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "pid", pid, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "name", name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_info_st, "ptr", ptr, EET_T_UINT);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+data_req_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, data_req_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "gui", gui, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "app", app, EET_T_UINT);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+tree_data_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, tree_data_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "gui", gui, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "app", app, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_LIST  (d, tree_data_st,
+         "tree", tree, desc->tree);  /* Carefull - init this first */
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+app_closed_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, app_closed_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, app_closed_st, "ptr", ptr, EET_T_UINT);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+highlight_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, highlight_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, highlight_st, "app", app, EET_T_UINT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, highlight_st,
+         "object", object, EET_T_UINT);
 
    return d;
 }
@@ -178,15 +258,22 @@ data_descriptors_init(void)
    desc = calloc(1, sizeof(data_desc));
 
    Eet_Data_Descriptor_Class eddc;
-   desc->ack = ack_desc_make();
-   desc->tree = tree_item_desc_make();
 
+   desc->tree       = tree_item_desc_make();
+   desc->connect    = connect_desc_make();
+   desc->app_add    = app_add_desc_make();
+   desc->data_req   = data_req_desc_make();
+   desc->tree_data  = tree_data_desc_make();
+   desc->app_closed = app_closed_desc_make();
+   desc->highlight  = highlight_desc_make();
+
+/* Moved to tree_data_desc_make
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_tree_list);
    desc->list = eet_data_descriptor_file_new(&eddc);
 
    EET_DATA_DESCRIPTOR_ADD_LIST(desc->list,
          st_tree_list, "list", list, desc->tree);
-
+*/
    /* for variant */
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Variant_st);
    desc->_variant_descriptor = eet_data_descriptor_file_new(&eddc);
@@ -197,22 +284,30 @@ data_descriptors_init(void)
    desc->_variant_unified_descriptor = eet_data_descriptor_stream_new(&eddc);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
-        DAEMON_ACK_STR, desc->ack);
+        GUI_CONNECT_STR, desc->connect);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
-        DAEMON_TREE_DATA_STR , desc->list);
+        APP_CONNECT_STR, desc->connect);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
-        GUI_ACK_STR, desc->ack);
+        APP_ADD_STR , desc->app_add);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
-        GUI_TREE_DATA_STR, desc->list);
+        DATA_REQ_STR, desc->data_req);
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
-        APP_ACK_STR, desc->ack);
+        TREE_DATA_STR, desc->tree_data);
 
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        APP_CLOSED_STR, desc->app_closed);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        HIGHLIGHT_STR, desc->highlight);
+
+/*
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
         APP_TREE_DATA_STR, desc->list);
+*/
 
    EET_DATA_DESCRIPTOR_ADD_VARIANT(desc->_variant_descriptor,
          Variant_st, "data", data, t, desc->_variant_unified_descriptor);
@@ -227,9 +322,13 @@ data_descriptors_shutdown(void)
 
    if (desc)
      {
-        eet_data_descriptor_free(desc->ack);
+        eet_data_descriptor_free(desc->connect);
+        eet_data_descriptor_free(desc->app_add);
+        eet_data_descriptor_free(desc->data_req);
+        eet_data_descriptor_free(desc->tree_data);
+        eet_data_descriptor_free(desc->app_closed);
+        eet_data_descriptor_free(desc->highlight);
         eet_data_descriptor_free(desc->tree);
-        eet_data_descriptor_free(desc->list);
         eet_data_descriptor_free(desc->_variant_descriptor );
         eet_data_descriptor_free(desc->_variant_unified_descriptor);
 

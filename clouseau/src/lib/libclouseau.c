@@ -90,13 +90,12 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
-   char *msg="hello! - sent from the APP";
    int size = 0;
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   ack_st t = { msg };
-   p = packet_compose(APP_ACK, &t, sizeof(t), &size);
+   connect_st t = { getpid(), __FILE__ };
+   p = packet_compose(APP_CLIENT_CONNECT, &t, sizeof(t), &size);
    if (p)
      {
         ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -137,18 +136,33 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
          ev->size, ev->size);
 
    Variant_st *v = packet_info_get(ev->data, ev->size);
-   if (v)
+   switch(packet_mapping_type_get(v->t.type))
      {
-        ack_st *ack = v->data;
-        printf("APP <%s> got <%s> from daemon.\n", __func__, ack->text);
-        variant_free(v);
+      case DATA_REQ:
+           {
+              int size = 0;
+              data_req_st *req = v->data;
+              tree_data_st t;
+              t.gui = req->gui;
+              t.app = req->app;
+              t.tree = _load_list();
+              if (t.tree)
+                {  /* Reply with tree data to data request */
+                   void *p = packet_compose(TREE_DATA, &t, sizeof(t), &size);
+                   if (p)
+                     {
+                        ecore_ipc_server_send(ev->server, 0,0,0,0,
+                              EINA_FALSE, p, size);
+                        ecore_ipc_server_flush(ev->server);
+                        free(p);
+                     }
+
+                   item_tree_free(t.tree);
+                }
+           }
+         break;
      }
-   else
-     printf("APP <%s> failed to decode packet from daemon.\n", __func__);
-
-   char *msg="Reply to DATA in APP";
-   int size = 0;
-
+#if 0
    st_tree_list tl;
    tl.list = _load_list();
    if (tl.list )
@@ -163,7 +177,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
 
         item_tree_free(tl.list);
      }
-
+#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -274,4 +288,3 @@ evas_object_free(Evas_Object *obj, int clean_layer)
 
    _evas_object_free(obj, clean_layer);
 }
-
