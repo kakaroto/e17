@@ -121,7 +121,7 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
 {
    void *p;
-   size_t size = compose_packet(&p, APP, ACK, "hello! - sent from the server");
+   size_t size = compose_packet(&p, DAEMON, ACK, "hello! - sent from the server");
    Ecore_Con_Server *srv;
    Ecore_Con_Client *cl;
    const Eina_List *clients, *l;

@@ -26,7 +26,7 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 {
    void *p;
-   size_t size = compose_packet(&p, APP, ACK, "hello! - sent from the client");
+   size_t size = compose_packet(&p, GUI, ACK, "hello! - sent from the client");
    Server *server = malloc(sizeof(*server));
    server->sdata = 0;
 
