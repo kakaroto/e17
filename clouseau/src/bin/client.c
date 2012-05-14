@@ -155,9 +155,13 @@ _add_app(gui_elements *g, Variant_st *v)
 static void
 _free_app(app_data_st *st)
 {
-   free(st->app);
+   variant_free(st->app);
    if (st->td)
-     free(st->td);
+     {
+        tree_data_st *ftd = st->td->data;
+        item_tree_free(ftd->tree);
+        free(st->td);
+     }
 
    free(st);
 }
@@ -193,7 +197,7 @@ _remove_app(gui_elements *g, Variant_st *v)
           }
      }
 
-   free(v);
+   variant_free(v);
 }
 
 static void
@@ -207,7 +211,11 @@ _update_tree(gui_elements *g, Variant_st *v)
    if (st)
      {
         if (st->td)
-          free(st->td);
+          {
+             tree_data_st *ftd = st->td->data;
+             item_tree_free(ftd->tree);
+             free(st->td);
+          }
 
         st->td = v;
 
