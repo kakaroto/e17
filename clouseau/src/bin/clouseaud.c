@@ -2,7 +2,7 @@
  * UNIX Daemon Server Programming Sample Program
  * Levent Karakas <levent at mektup dot at> May 2001
  *
- * To compile: cc -o clouseaud clouseaud.c
+ * compile: gcc clouseaud.c -o clouseaud `pkg-config elementary --cflags --libs`
  * To run:     ./clouseaud
  * To test daemon:   ps -ef|grep clouseaud (or ps -aux on BSD systems)
  * To test log:   tail -f /tmp/clouseaud.log
@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <unistd.h>
+#include <Elementary.h>
 
 #define RUNNING_DIR  "/tmp"
 #define LOCK_FILE "clouseaud.lock"
@@ -71,8 +72,15 @@ void daemonize(void)
    signal(SIGTERM,signal_handler); /* catch kill signal */
 }
 
-int main(int argc, char **argv)
+#ifndef ELM_LIB_QUICKLAUNCH
+EAPI int
+elm_main(int argc, char **argv)
 {
+   eina_init();
+   eet_init();
+
    daemonize();
    while(1) sleep(1); /* run */
 }
+#endif
+ELM_MAIN()
