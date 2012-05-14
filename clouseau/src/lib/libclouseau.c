@@ -46,35 +46,56 @@ _item_tree_free(void)
      }
 }
 
-static void
-_item_tree_item_string(Tree_Item *parent, int conn_s, char *buffer)
+static Eina_List *
+_item_tree_item_string(Tree_Item *parent, Eina_List *strings)
 {
    Tree_Item *treeit;
    Eina_List *l;
-   char *name;
 
    EINA_LIST_FOREACH(parent->children, l, treeit)
      {
-        _item_tree_item_string(treeit, conn_s, buffer);
+        strings = _item_tree_item_string(treeit, strings);
      }
 
-   sprintf(buffer, "server %s\n", parent->name);
-   printf("server %s", buffer);
-   Writeline(conn_s, buffer, strlen(buffer));
-   Readline(conn_s, buffer, MAX_LINE);
-   printf("%s", buffer);
+   return eina_list_append(strings, parent->name);
 }
 
-static void
-_item_tree_string(int conn_s, char *buffer)
+static char *
+_item_tree_string()
 {
    Tree_Item *treeit;
    Eina_List *l;
+   Eina_List *strings = NULL;
+   char *str = NULL;
+   size_t size = 0;
 
    EINA_LIST_FOREACH(tree, l, treeit)
      {
-        _item_tree_item_string(treeit, conn_s, buffer);
+        strings = _item_tree_item_string(treeit, strings);
      }
+
+   /* Allocate for each string + '\n' */
+   EINA_LIST_FOREACH(strings, l, str)
+      size += (str) ? (strlen(str) + 1) : 0;
+
+   if (size)
+     {
+        char *p, *p2;
+        str = malloc(size + 1);
+        p = str;
+
+        EINA_LIST_FOREACH(strings, l, p2)
+           if (p2)
+             {
+                sprintf(p, "%s\n", p2);
+                p += strlen(p);
+             }
+
+        puts(str);
+        return str;
+     }
+
+   return NULL;
 }
 
 static char *
@@ -211,6 +232,19 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
    printf(fmt, get_packet_str(ev->data));
 
    server->sdata += ev->size;
+
+   /* Send reply to server */
+   _load_list();  /* compose tree list */
+   void *p;
+   char *str = _item_tree_string();
+   size_t size = compose_packet(&p, APP, ACK, str);
+   ecore_con_server_send(ev->server, p, size);
+   ecore_con_server_flush(ev->server);
+   if (str)
+     free(str);
+
+   free(p);
+
    return ECORE_CALLBACK_RENEW;
 }
 

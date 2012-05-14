@@ -198,8 +198,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
          ev->size, ecore_con_client_ip_get(ev->client),
          ecore_con_client_port_get(ev->client), ev->size);
 
-   sprintf(msg_buf, fmt, get_packet_str(ev->data));
-   log_message(LOG_FILE, "a", msg_buf);
+   log_message(LOG_FILE, "a", get_packet_str(ev->data));
 
    client->sdata += ev->size;
 
