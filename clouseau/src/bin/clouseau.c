@@ -218,24 +218,26 @@ _update_tree(gui_elements *g, Variant_st *v)
    tree_data_st *td = v->data;
    app_info_st *selected = g->sel_app->app->data;
 
-   if (selected->ptr != td->app)
-     {   /* Happens when user selected other app BEFORE data was recieved */
-        _free_app_tree_data(v);  /* Dispose unused info */
-        return;
-     }
-
-   /* Update only if tree is the selected app tree */
+   /* Update only if tree is from APP on our list */
    app_data_st *st = (app_data_st *)
       eina_list_search_unsorted(apps, _app_ptr_cmp,
             (void *) (uintptr_t) td->app);
 
    if (st)
-     {  /* Free app tree data then set ptr to new data */
+     {  /* Free app TREE_DATA then set ptr to new data */
         _free_app_tree_data(st->td);
         st->td = v;
 
-        elm_genlist_clear(g->gl);
-        _load_gui_with_list(g, td->tree);
+        if (selected->ptr == td->app)
+          {  /* Update GUI only if TREE_DATA is from SELECTED app */
+             elm_genlist_clear(g->gl);
+             _load_gui_with_list(g, td->tree);
+          }
+     }
+   else
+     {  /* Happens when TREE_DATA of app that already closed has arrived */
+        _free_app_tree_data(v);                   /* Dispose unused info */
+        return;
      }
 }
 
