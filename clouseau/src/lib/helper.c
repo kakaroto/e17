@@ -35,8 +35,7 @@ static eet_message_type_mapping eet_mapping[] = {
        { GUI_ACK, GUI_ACK_STR },
        { GUI_TREE_DATA, GUI_TREE_DATA_STR },
        { APP_ACK, APP_ACK_STR },
-       { APP_TREE_DATA, APP_TREE_DATA_STR },
-       { APP_TREE_DATA, TREE_OBJ_INFO_STR }
+       { APP_TREE_DATA, APP_TREE_DATA_STR }
 };
 
 message_type

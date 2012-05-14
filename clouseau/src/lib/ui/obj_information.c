@@ -944,7 +944,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
           }
      }
 
-   _obj_information_free(oinfo);
+//   _obj_information_free(oinfo);  Aharon, cleanup later
 }
 
 void

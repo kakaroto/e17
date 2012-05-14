@@ -142,8 +142,8 @@ struct _Tree_Item
 {
    Eina_List *children;
    const char *name;
-   void *ptr;  /* Just a ptr, we keep the value but not accessing mem */
-   Obj_Information *info; /* Obj_Information pointer */
+   void *ptr;      /* Just a ptr, we keep the value but not accessing mem */
+   Obj_Information *info;
    Eina_Bool is_obj;
    Eina_Bool is_clipper;
    Eina_Bool is_visible;

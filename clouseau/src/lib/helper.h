@@ -26,8 +26,7 @@ enum _message_type
    GUI_ACK,           /* GUI Client sends ack        */
    GUI_TREE_DATA,     /* GUI Client sends tree-data  */
    APP_ACK,           /* App sends ack               */
-   APP_TREE_DATA,     /* App tree-data               */
-   TREE_OBJ_INFO      /* Just abusing this to construct tree-data-desc */
+   APP_TREE_DATA      /* App tree-data               */
 };
 typedef enum _message_type message_type;
 
