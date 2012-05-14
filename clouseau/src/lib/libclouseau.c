@@ -185,7 +185,10 @@ _connect_to_daemon(void)
    ecore_init();
    ecore_ipc_init();
 
-   if (!(svr = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
+   svr = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM,
+         LOCALHOST, PORT, NULL);
+
+   if ((!svr) || (!ecore_ipc_server_connected_get(svr)))
      {
         printf("could not connect to the server: %s, port %d.\n",
               address, PORT);
