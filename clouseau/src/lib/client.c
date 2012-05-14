@@ -76,12 +76,7 @@ _load_gui_with_list(Evas_Object *gl, Tree_Item *head)
       ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
    elm_genlist_item_append(gl, &itc, head, NULL,
          glflag, NULL, NULL);
-/*
-   EINA_LIST_FOREACH(head->children, l, treeit)
-     {
-        _load_gui_with_list(gl, treeit);
-     }
-*/
+
    return EINA_TRUE;
 }
 

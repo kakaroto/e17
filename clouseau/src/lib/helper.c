@@ -2,17 +2,29 @@
 static data_desc *desc = NULL;
 
 void
-_item_tree_item_free(Tree_Item *parent)
+item_tree_item_free(Tree_Item *parent)
 {
    Tree_Item *treeit;
 
    EINA_LIST_FREE(parent->children, treeit)
      {
-        _item_tree_item_free(treeit);
+        item_tree_item_free(treeit);
      }
 
+   obj_information_free(parent->info);
    eina_stringshare_del(parent->name);
    free(parent);
+}
+
+void
+item_tree_free(Eina_List *tree)
+{
+   Tree_Item *treeit;
+
+   EINA_LIST_FREE(tree, treeit)
+     {
+        item_tree_item_free(treeit);
+     }
 }
 
 void

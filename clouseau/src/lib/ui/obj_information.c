@@ -428,9 +428,12 @@ _item_tree_free(void)
      }
 }
 
-static void
-_obj_information_free(Obj_Information *oinfo)
+void
+obj_information_free(Obj_Information *oinfo)
 {
+   if (!oinfo)
+     return;
+
    eina_stringshare_del(oinfo->evas_props.name);
    eina_stringshare_del(oinfo->evas_props.bt);
 
@@ -467,7 +470,7 @@ _obj_information_free(Obj_Information *oinfo)
 }
 
 Obj_Information *
-_obj_information_get(Tree_Item *treeit)
+obj_information_get(Tree_Item *treeit)
 {
    if (!treeit->is_obj)
       return NULL;
@@ -603,7 +606,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
       return;
 
    Inf_Tree_Item *main_tit;
-   Obj_Information *oinfo = treeit->info;//_obj_information_get(treeit);
+   Obj_Information *oinfo = treeit->info;
 
    /* Populate evas properties list */
    main_tit = calloc(1, sizeof(*main_tit));

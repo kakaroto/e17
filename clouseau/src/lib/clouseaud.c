@@ -57,7 +57,7 @@ tree_data_cleanup()
    log_message(LOG_FILE, "a","cleanup - clearing trees");
    EINA_LIST_FREE(trees, tree)
      {
-        _item_tree_item_free(tree->data);
+        item_tree_item_free(tree->data);
         free(tree);
      }
 
@@ -75,7 +75,7 @@ tree_data_add(void *a, void *d)
    if (st)
      {
         sprintf(msg_buf, "Updating tree-data from APP <%p>", a);
-        _item_tree_item_free(st->data);
+        item_tree_item_free(st->data);
         st->data = d;
      }
    else

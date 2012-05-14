@@ -19,18 +19,7 @@
 #include "libclouseau.h"
 #include "eet_dump.h"
 
-static Eina_List *tree = NULL;
 static Eina_Bool _lib_init = EINA_FALSE;
-
-static char *
-item_text_get(void *data, Evas_Object *obj __UNUSED__,
-      const char *part __UNUSED__)
-{
-   Tree_Item *treeit = data;
-   char buf[256];
-   snprintf(buf, sizeof(buf), "%p %s", treeit->ptr, treeit->name);
-   return strdup(buf);
-}
 
 static void
 libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
@@ -48,7 +37,7 @@ libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
    treeit->name = eina_stringshare_add(buf);
    treeit->is_clipper = !!evas_object_clipees_get(o);
    treeit->is_visible = evas_object_visible_get(o);
-   treeit->info = _obj_information_get(treeit); /* Aharon */
+   treeit->info = obj_information_get(treeit);
 
    parent->children = eina_list_append(parent->children, treeit);
 
@@ -58,9 +47,10 @@ libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
    }
 }
 
-static void
+static Eina_List *
 _load_list(void)
 {
+   Eina_List *tree = NULL;
    Eina_List *ees, *eeitr;
    Ecore_Evas *ee;
 
@@ -92,6 +82,8 @@ _load_list(void)
              libclouseau_item_add(obj, treeit);
           }
     }
+
+   return tree;  /* User has to call item_tree_free() */
 }
 
 Eina_Bool
@@ -157,6 +149,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
    char *msg="Reply to DATA in APP";
    int size = 0;
 
+   Eina_List *tree = _load_list();
    Tree_Item *t = eina_list_nth(tree, 0);
    if (t)
      {
@@ -171,6 +164,8 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
           }
      }
 
+
+   item_tree_free(tree);
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -194,25 +189,15 @@ _connect_to_daemon(void)
    ecore_ipc_server_data_size_max_set(svr, -1);
 
    /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
+         (Ecore_Event_Handler_Cb)_add, NULL);
    /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
+         (Ecore_Event_Handler_Cb)_del, NULL);
    /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
+         (Ecore_Event_Handler_Cb)_data, NULL);
 
-   return EINA_TRUE;
-}
-
-static int
-_notify(char *msg)
-{
-   if(!_connect_to_daemon())
-     {
-        printf("Failed to connect to server.\n");
-        return EINA_FALSE;
-     }
-
-   _load_list();
    return EINA_TRUE;
 }
 
@@ -235,9 +220,12 @@ ecore_main_loop_begin(void)
      }
 
    _lib_init = EINA_TRUE;
-   time_t currentTime;
-   time (&currentTime);
-   _notify(ctime(&currentTime));
+   if(!_connect_to_daemon())
+     {
+        printf("Failed to connect to server.\n");
+        return;
+     }
+
    _ecore_main_loop_begin();
 
    return;
