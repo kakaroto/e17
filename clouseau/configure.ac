@@ -40,6 +40,7 @@ AC_OUTPUT([
            Makefile	
            src/Makefile
            src/lib/Makefile
+           src/bin/Makefile
            src/scripts/Makefile
            data/Makefile
            data/images/Makefile

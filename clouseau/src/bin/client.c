@@ -13,8 +13,6 @@
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
-#else
-#define __UNUSED__
 #endif
 
 struct _app_data_st
@@ -45,7 +43,7 @@ static Elm_Genlist_Item_Class itc;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 
 Eina_Bool
-_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
+_add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
    int size = 0;
@@ -66,7 +64,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 
 
 Eina_Bool
-_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
+_del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *ev)
 {
    if (!ev->server)
      {
@@ -215,7 +213,7 @@ _update_tree(gui_elements *gui, Variant_st *v)
 }
 
 Eina_Bool
-_data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
+_data(void *data, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
    static Eina_Bool got_tree = EINA_FALSE;
    Variant_st *v = packet_info_get(ev->data, ev->size);
@@ -244,7 +242,7 @@ _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 }
 
 static void
-gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_exp(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    Evas_Object *gl = elm_object_item_widget_get(glit);
@@ -266,21 +264,21 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 }
 
 static void
-gl_con(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_con(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_subitems_clear(glit);
 }
 
 static void
-gl_exp_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_exp_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 
 static void
-gl_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+gl_con_req(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Elm_Object_Item *glit = event_info;
    elm_genlist_item_expanded_set(glit, EINA_FALSE);
@@ -309,7 +307,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 
              ic = elm_icon_add(bx);
              snprintf(buf, sizeof(buf), "%s/images/clipper.png",
-                   elm_app_data_dir_get());
+                   PACKAGE_DATA_DIR);
              elm_icon_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
@@ -321,7 +319,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 
              ic = elm_icon_add(bx);
              snprintf(buf, sizeof(buf), "%s/images/hidden.png",
-                   elm_app_data_dir_get());
+                   PACKAGE_DATA_DIR);
              elm_icon_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
@@ -339,7 +337,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              Evas_Object *ic;
              ic = elm_icon_add(parent);
              snprintf(buf, sizeof(buf), "%s/images/clipper.png",
-                   elm_app_data_dir_get());
+                   PACKAGE_DATA_DIR);
              elm_icon_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
@@ -350,7 +348,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              Evas_Object *ic;
              ic = elm_icon_add(parent);
              snprintf(buf, sizeof(buf), "%s/images/hidden.png",
-                   elm_app_data_dir_get());
+                   PACKAGE_DATA_DIR);
              elm_icon_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
@@ -362,8 +360,8 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 }
 
 static char *
-item_text_get(void *data, Evas_Object *obj __UNUSED__,
-      const char *part __UNUSED__)
+item_text_get(void *data, Evas_Object *obj EINA_UNUSED,
+      const char *part EINA_UNUSED)
 {
    Tree_Item *treeit = data;
    char buf[256];
@@ -427,7 +425,7 @@ _connect_to_daemon(gui_elements *gui)
 }
 
 static void
-_gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
+_gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
       void *event_info)
 {
 //   clouseau_obj_information_list_clear();
@@ -491,7 +489,7 @@ _load_list(gui_elements *gui)
 
 static void
 _show_clippers_check_changed(void *data, Evas_Object *obj,
-      void *event_info __UNUSED__)
+      void *event_info EINA_UNUSED)
 {
    list_show_clippers = elm_check_state_get(obj);
    _load_list(data);
@@ -499,14 +497,14 @@ _show_clippers_check_changed(void *data, Evas_Object *obj,
 
 static void
 _show_hidden_check_changed(void *data, Evas_Object *obj,
-      void *event_info __UNUSED__)
+      void *event_info EINA_UNUSED)
 {
    list_show_hidden = elm_check_state_get(obj);
    _load_list(data);
 }
 
 static void
-_bt_clicked(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+_bt_clicked(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    elm_object_text_set(obj, "Reload");
    _load_list(data);
@@ -522,14 +520,14 @@ _dismiss_inwin(gui_elements *g)
 }
 
 static void
-_cancel_bt_clicked(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_cancel_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    _dismiss_inwin(data);
    elm_exit(); /* exit the program's main loop that runs in elm_run() */
 }
 
 static void
-_ok_bt_clicked(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_ok_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {  /* Set the IP, PORT, then connect to server */
    _dismiss_inwin(data);
 
