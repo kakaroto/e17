@@ -64,18 +64,20 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
 
 
 static Eina_Bool
-_load_gui_with_list(Evas_Object *gl, Tree_Item *head)
+_load_gui_with_list(Evas_Object *gl, Eina_List *trees)
 {
    Eina_List *l;
    Tree_Item *treeit;
-   if (!head)
+   if (!trees)
      return EINA_TRUE;
 
-   /* Insert the base ee items */
-   Elm_Genlist_Item_Type glflag = (head->children) ?
-      ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
-   elm_genlist_item_append(gl, &itc, head, NULL,
-         glflag, NULL, NULL);
+   EINA_LIST_FOREACH(trees, l, treeit)
+     {  /* Insert the base ee items */
+        Elm_Genlist_Item_Type glflag = (treeit->children) ?
+           ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
+        elm_genlist_item_append(gl, &itc, treeit, NULL,
+              glflag, NULL, NULL);
+     }
 
    return EINA_TRUE;
 }
@@ -100,8 +102,8 @@ _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
                 {
                    printf("Got tree data from daemon, size=<%d>\n", ev->size);
                    elm_genlist_clear(data);
-                   _load_gui_with_list(data, v->data);  /* data == gl */
-                   _item_tree_item_string(v->data);
+                   st_tree_list *tl = v->data;
+                   _load_gui_with_list(data, tl->list);  /* data == gl */
                    break;
                 }
           }

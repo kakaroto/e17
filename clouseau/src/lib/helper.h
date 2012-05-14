@@ -30,6 +30,12 @@ enum _message_type
 };
 typedef enum _message_type message_type;
 
+struct _st_tree_list
+{  /* List of (Tree_Data *), each rep tree-root */
+   Eina_List *list;
+};
+typedef struct _st_tree_list st_tree_list;
+
 struct _eet_message_type_mapping
 {
    message_type t;
@@ -61,6 +67,7 @@ struct _data_desc
 {
    Eet_Data_Descriptor *ack;
    Eet_Data_Descriptor *tree;
+   Eet_Data_Descriptor *list;
    Eet_Data_Descriptor *_variant_descriptor;
    Eet_Data_Descriptor *_variant_unified_descriptor;
 };

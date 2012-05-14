@@ -149,23 +149,21 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
    char *msg="Reply to DATA in APP";
    int size = 0;
 
-   Eina_List *tree = _load_list();
-   Tree_Item *t = eina_list_nth(tree, 0);
-   if (t)
+   st_tree_list tl;
+   tl.list = _load_list();
+   if (tl.list )
      {
-        printf("Trying to send tree\n");
-        _item_tree_item_string(t);
-        void *p = packet_compose(APP_TREE_DATA, t, sizeof(*t), &size);
+        void *p = packet_compose(APP_TREE_DATA, &tl, sizeof(tl), &size);
         if (p)
           {
              ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
              ecore_ipc_server_flush(ev->server);
              free(p);
           }
+
+        item_tree_free(tl.list);
      }
 
-
-   item_tree_free(tree);
    return ECORE_CALLBACK_RENEW;
 }
 

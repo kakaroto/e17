@@ -75,7 +75,7 @@ tree_data_add(void *a, void *d)
    if (st)
      {
         sprintf(msg_buf, "Updating tree-data from APP <%p>", a);
-        item_tree_item_free(st->data);
+        item_tree_free(((st_tree_list *) st->data)->list);
         st->data = d;
      }
    else
@@ -252,14 +252,15 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
                    int size = 0;
                    Eina_List *l;
                    tree_info_st *st;
-                   Tree_Item *t;
+                   st_tree_list tl;
                    EINA_LIST_FOREACH(trees, l, st)
                      {  /* Sending all trees */
-                        t = st->data;
-                        sprintf(msg_buf,"t = <%p>", t);
+                        tl.list = ((st_tree_list *) st->data)->list;
+                        sprintf(msg_buf,"t = <%p>", tl.list);
                         log_message(LOG_FILE, "a", msg_buf);
-                        p = packet_compose(DAEMON_TREE_DATA, t,
-                              sizeof(*t), &size);
+                        p = packet_compose(DAEMON_TREE_DATA, &tl,
+                              sizeof(tl), &size);
+
                         if (p)
                           {
                              ecore_ipc_client_send(ev->client, 0,0,0,0,
