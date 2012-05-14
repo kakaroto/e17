@@ -1,5 +1,4 @@
 #include "helper.h"
-
 static data_desc *desc = NULL;
 
 void
@@ -212,4 +211,22 @@ void _data_descriptors_shutdown(void)
         free(desc);
         desc = NULL;
      }
+}
+
+void *
+packet_compose(message_type t, void *data, int data_size, int *size)
+{  /* Returns packet BLOB and size in size param, NULL on failure */
+   data_desc *d = _data_descriptors_init();
+   Variant_st *v = variant_alloc(t, data_size, data);
+   void *p = eet_data_descriptor_encode(d->_variant_descriptor , v, size);
+   variant_free(v);
+
+   return p;  /* User has to free(p) */
+}
+
+Variant_st *
+packet_info_get(void *data, int size)
+{  /* user has to use free(return value), not variant_free() */
+   data_desc *d = _data_descriptors_init();
+   return eet_data_descriptor_decode(d->_variant_descriptor, data, size);
 }

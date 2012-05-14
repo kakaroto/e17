@@ -67,16 +67,14 @@ tree_data_cleanup()
 static Eina_List *
 tree_data_add(void *a, void *d)
 {
-   char m[64];
-
-   sprintf(m, "trees list size <%d>", eina_list_count(trees));
-   log_message(LOG_FILE, "a", m);
+   sprintf(msg_buf, "trees list size <%d>", eina_list_count(trees));
+   log_message(LOG_FILE, "a", msg_buf);
    tree_info_st *st = (tree_info_st *)
       eina_list_search_unsorted(trees, _appcmp, a);
 
    if (st)
      {
-        sprintf(m, "Updating tree-data from APP <%p>", a);
+        sprintf(msg_buf, "Updating tree-data from APP <%p>", a);
         _item_tree_item_free(st->data);
         st->data = d;
      }
@@ -85,7 +83,7 @@ tree_data_add(void *a, void *d)
         tree_info_st *st = malloc(sizeof(*st));
         if (st)
           {
-             sprintf(m, "Got tree-data from APP <%p>", a);
+             sprintf(msg_buf, "Got tree-data from APP <%p>", a);
 
              st->app = a;
              st->data = d;
@@ -94,7 +92,7 @@ tree_data_add(void *a, void *d)
           }
      }
 
-   log_message(LOG_FILE, "a", m);
+   log_message(LOG_FILE, "a", msg_buf);
    return trees;
 }
 
@@ -178,22 +176,21 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
 {
    void *p;
    char *msg="hello! - sent from the server";
-   char m[128];
    int size = 0;
 
    ecore_ipc_client_data_size_max_set(ev->client, -1);
-   sprintf(m, "<%s> msg from <%p>", __func__, ev->client);
-   log_message(LOG_FILE, "a", m);
+   sprintf(msg_buf, "<%s> msg from <%p>", __func__, ev->client);
+   log_message(LOG_FILE, "a", msg_buf);
 
 
-   data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
-   Variant_st *v = variant_alloc(DAEMON_ACK, sizeof(t), &t);
-   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-   ecore_ipc_client_send(ev->client, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_client_flush(ev->client);
-   free(p);
-   variant_free(v);
+   p = packet_compose(DAEMON_ACK, &t, sizeof(t), &size);
+   if (p)
+     {
+        ecore_ipc_client_send(ev->client, 0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_client_flush(ev->client);
+        free(p);
+     }
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -205,17 +202,9 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Del *ev)
 
    if (!ev->client)
      return ECORE_CALLBACK_RENEW;
-/*
-   client = ecore_ipc_client_data_get(ev->client);
 
-   sprintf(msg_buf, "Total data received from this client: %d\n", client->sdata);
+   sprintf(msg_buf, "<%s> msg from <%p>", __func__, ev->client);
    log_message(LOG_FILE, "a", msg_buf);
-   if (client)
-     free(client);
-*/
-   char m[128];
-   sprintf(m, "<%s> msg from <%p>", __func__, ev->client);
-   log_message(LOG_FILE, "a", m);
    ecore_ipc_client_del(ev->client);
 
    return ECORE_CALLBACK_RENEW;
@@ -228,13 +217,10 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
    char *msg="hello! - sent from the server";
    int size = 0;
 
-   char m[128];
-   sprintf(m, "<%s> msg from <%p>", __func__, ev->client);
-   log_message(LOG_FILE, "a", m);
+   sprintf(msg_buf, "<%s> msg from <%p>", __func__, ev->client);
+   log_message(LOG_FILE, "a", msg_buf);
 
-   data_desc *td = _data_descriptors_init();
-   Variant_st *v = eet_data_descriptor_decode(td->_variant_descriptor,
-         ev->data, ev->size);
+   Variant_st *v = packet_info_get(ev->data, ev->size);
    if (v)
      {
         switch(packet_mapping_type_get(v->t.type))
@@ -246,65 +232,64 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
                    log_message(LOG_FILE, "a", "Got data from APP");
                    log_message(LOG_FILE, "a", t->text);
 
-                   data_desc *td = _data_descriptors_init();
                    ack_st dt = { msg2 };
-                   Variant_st *v = variant_alloc(DAEMON_ACK, sizeof(dt), &dt);
-                   void *p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-                   ecore_ipc_client_send(ev->client, 0,0,0,0,EINA_FALSE, p, size);
-                   ecore_ipc_client_flush(ev->client);
-                   free(p);
-                   variant_free(v);
+                   void *p = packet_compose(DAEMON_ACK, &dt, sizeof(dt), &size);
+                   if (p)
+                     {
+                        ecore_ipc_client_send(ev->client, 0,0,0,0,
+                              EINA_FALSE, p, size);
+                        ecore_ipc_client_flush(ev->client);
+                        free(p);
+                     }
+
                    log_message(LOG_FILE, "a", "Asking tree from APP");
                 }
               break;
 
            case GUI_ACK:
                 {
-                   log_message(LOG_FILE, "a", "--- 1 ---");
-                   char m[128];
                    int size = 0;
                    Eina_List *l;
                    tree_info_st *st;
                    Tree_Item *t;
-                   data_desc *td = _data_descriptors_init();
-                   log_message(LOG_FILE, "a", "--- 2 ---");
                    EINA_LIST_FOREACH(trees, l, st)
                      {  /* Sending all trees */
                         t = st->data;
-                        sprintf(m,"t = <%p>", t);
-                        log_message(LOG_FILE, "a", m);
-                        v = variant_alloc(DAEMON_TREE_DATA, sizeof(*t), t);
-                        void *p = eet_data_descriptor_encode(
-                              td->_variant_descriptor , v, &size);
+                        sprintf(msg_buf,"t = <%p>", t);
+                        log_message(LOG_FILE, "a", msg_buf);
+                        p = packet_compose(DAEMON_TREE_DATA, t,
+                              sizeof(*t), &size);
+                        if (p)
+                          {
+                             ecore_ipc_client_send(ev->client, 0,0,0,0,
+                                   EINA_FALSE, p, size);
+                             ecore_ipc_client_flush(ev->client);
+                             free(p);
+                          }
 
-                   log_message(LOG_FILE, "a", "--- 3 ---");
-                        sprintf(m, "DAEMON <%p> sending tree, size <%d>\n",
+                        sprintf(msg_buf, "DAEMON <%p> sending tree, size <%d>\n",
                               st->app, size);
 
-                        log_message(LOG_FILE, "a", m);
-                        ecore_ipc_client_send(ev->client, 0,0,0,0,
-                              EINA_FALSE, p, size);
-
-                        ecore_ipc_client_flush(ev->client);
-                        free(p);
-                        variant_free(v);
+                        log_message(LOG_FILE, "a", msg_buf);
                      }
                 }
               break;
 
            case APP_TREE_DATA:
                 {
-                   char m[1024];
-                   sprintf(m, "<%s> got APP TREE DATA from <%p>", __func__, ev->client);
-                   log_message(LOG_FILE, "a", m);
+                   sprintf(msg_buf, "<%s> got APP TREE DATA from <%p>", __func__, ev->client);
+                   log_message(LOG_FILE, "a", msg_buf);
                    trees = tree_data_add(ev->client, v->data);
                 }
               break;
           }
+
+        free(v);  /* NOT variant_free(v), then comes from eet..decode */
      }
    else
      log_message(LOG_FILE, "a", "Failed to decode data.");
 
+   log_message(LOG_FILE, "a", "_data() finished");
    return ECORE_CALLBACK_RENEW;
 }
 /* END   - Ecore communication callbacks */

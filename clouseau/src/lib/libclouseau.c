@@ -22,88 +22,6 @@
 
 static Eina_List *tree = NULL;
 static Eina_Bool _lib_init = EINA_FALSE;
-#if 0
-static void
-_item_tree_item_free(Tree_Item *parent)
-{
-   Tree_Item *treeit;
-
-   EINA_LIST_FREE(parent->children, treeit)
-     {
-        _item_tree_item_free(treeit);
-     }
-
-   eina_stringshare_del(parent->name);
-   free(parent);
-}
-
-static void
-_item_tree_free(void)
-{
-   Tree_Item *treeit;
-
-   EINA_LIST_FREE(tree, treeit)
-     {
-        _item_tree_item_free(treeit);
-     }
-}
-static Eina_List *
-_item_tree_item_string(Tree_Item *parent, Eina_List *strings)
-{
-   Tree_Item *treeit;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(parent->children, l, treeit)
-     {
-        strings = _item_tree_item_string(treeit, strings);
-     }
-
-   return eina_list_append(strings, parent->name);
-}
-
-static char *
-_item_tree_string()
-{
-   Tree_Item *treeit;
-   Eina_List *l;
-   Eina_List *strings = NULL;
-   char *str = NULL;
-   size_t size = 0;
-
-   if (eet_dump_tree_save(eina_list_nth(tree, 0), "/tmp/eet_dump"))
-     printf("Saved eet file.\n");
-   else
-     printf("Saving eet file failed.\n");
-
-   EINA_LIST_FOREACH(tree, l, treeit)
-     {
-        strings = _item_tree_item_string(treeit, strings);
-     }
-
-   /* Allocate for each string + '\n' */
-   EINA_LIST_FOREACH(strings, l, str)
-      size += (str) ? (strlen(str) + 1) : 0;
-
-   if (size)
-     {
-        char *p, *p2;
-        str = malloc(size + 1);
-        p = str;
-
-        EINA_LIST_FOREACH(strings, l, p2)
-           if (p2)
-             {
-                sprintf(p, "%s\n", p2);
-                p += strlen(p);
-             }
-
-        puts(str);
-        return str;
-     }
-
-   return NULL;
-}
-#endif
 
 static char *
 item_text_get(void *data, Evas_Object *obj __UNUSED__,
@@ -185,20 +103,15 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
-   Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
-   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_server_flush(ev->server);
-   free(p);
-   variant_free(v);
-#if 0
-   size_t size = compose_packet(&p, APP, TSUITE_EVENT_ACK, msg, strlen(msg)+1);
-   printf("Server with ip %s, connected = %d!\n",
-         ecore_ipc_server_ip_get(ev->server),
-         ecore_ipc_server_connected_get(ev->server));
-#endif
+   p = packet_compose(APP_ACK, &t, sizeof(t), &size);
+   if (p)
+     {
+        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_server_flush(ev->server);
+        free(p);
+     }
+
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -231,55 +144,33 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
          ">>>>>\n",
          ev->size, ev->size);
 
-   data_desc *td = _data_descriptors_init();
-   Variant_st *v = eet_data_descriptor_decode(td->_variant_descriptor,
-         ev->data, ev->size);
+   Variant_st *v = packet_info_get(ev->data, ev->size);
    if (v)
      {
         ack_st *ack = v->data;
         printf("APP <%s> got <%s> from daemon.\n", __func__, ack->text);
+        variant_free(v);
      }
    else
      printf("APP <%s> failed to decode packet from daemon.\n", __func__);
 
    char *msg="Reply to DATA in APP";
    int size = 0;
-   free(v);
-
 
    Tree_Item *t = eina_list_nth(tree, 0);
    if (t)
      {
         printf("Trying to send tree\n");
         _item_tree_item_string(t);
-        v = variant_alloc(APP_TREE_DATA, sizeof(*t), t);
-        void *p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-        printf("APP sending tree, size <%d>\n", size);
-        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-        ecore_ipc_server_flush(ev->server);
-        free(p);
-        variant_free(v);
+        void *p = packet_compose(APP_TREE_DATA, t, sizeof(*t), &size);
+        if (p)
+          {
+             ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+             ecore_ipc_server_flush(ev->server);
+             free(p);
+          }
      }
-/* START Works with variant
-   ack_st t = { msg };
-   v = variant_alloc(APP_ACK, sizeof(t), &t);
-   void *p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_server_flush(ev->server);
-   free(p);
-   variant_free(v);
-   END  Works with variant */
 
-#if 0
-   /* Send reply to server */
-   _load_list();  /* compose tree list */
-   void *p;
-   size_t size = compose_packet(&p, APP, TSUITE_EVENT_TREE_ITEM, eina_list_nth(tree, 0), sizeof(Tree_Item));
-   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_server_flush(ev->server);
-
-   free(p);
-#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -309,13 +200,6 @@ _connect_to_daemon(void)
    /* set event handler for receiving server data */
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
-   /* start client
-   ecore_main_loop_begin();
-
-   ecore_ipc_init();
-   ecore_init();
-   eina_init(); */
-
    return EINA_TRUE;
 }
 
@@ -330,113 +214,6 @@ _notify(char *msg)
 
    _load_list();
    return EINA_TRUE;
-
-
-    int       conn_s;                /*  connection socket         */
-    short int port;                  /*  port number               */
-    struct    sockaddr_in servaddr;  /*  socket address structure  */
-    char      buffer[MAX_LINE+1];    /*  character buffer          */
-    char     *szAddress = "127.0.0.1"; /*  Holds remote IP address   */
-
-    /*  Set the remote port  */
-    port = PORT;
-
-    /*  Create the listening socket  */
-    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
-	fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
-	exit(EXIT_FAILURE);
-    }
-
-
-    /*  Set all bytes in socket address structure to
-        zero, and fill in the relevant data members   */
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family      = AF_INET;
-    servaddr.sin_port        = htons(port);
-
-
-    /*  Set the remote IP address  */
-    if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
-	printf("ECHOCLNT: Invalid remote IP address.\n");
-	exit(EXIT_FAILURE);
-    }
-
-    /*  connect() to the remote echo server  */
-    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
-	printf("ECHOCLNT: Error calling connect()\n");
-	exit(EXIT_FAILURE);
-    }
-
-
-    /*  Get string to echo from user
-    printf("Enter the string to echo: ");
-    fgets(buffer, MAX_LINE, stdin); */
-
-    _load_list();  /* compose tree list */
-    /*  Send string to echo server, and retrieve response  */
-    sprintf(buffer, "server %s", msg);
-    Writeline(conn_s, buffer, strlen(buffer));
-//    _item_tree_string(conn_s, buffer);
-    strcpy(buffer, "END_OF_MESSAGE");
-    Writeline(conn_s, buffer, strlen(buffer));
-    Readline(conn_s, buffer, MAX_LINE);
-
-
-    /*  Output echoed string  */
-    printf("Echo response: %s\n", buffer);
-
-    return EXIT_SUCCESS;
-
-#if 0
-   Eina_List *ees, *eeitr;
-   Ecore_Evas *ee, *this_ee;
-
-   clouseau_obj_information_list_clear();
-   elm_genlist_clear(gl);
-   _item_tree_free();
-
-   ees = ecore_evas_ecore_evas_list_get();
-
-   this_ee = ecore_evas_ecore_evas_get(
-         evas_object_evas_get(elm_object_top_widget_get(gl)));
-
-   EINA_LIST_FOREACH(ees, eeitr, ee)
-     {
-        Eina_List *objs, *objitr;
-        Evas_Object *obj;
-        Tree_Item *treeit;
-
-        Evas *e;
-        int w, h;
-
-        if (this_ee == ee)
-           continue;
-
-        e = ecore_evas_get(ee);
-        evas_output_size_get(e, &w, &h);
-
-        treeit = calloc(1, sizeof(*treeit));
-        treeit->name = eina_stringshare_add(ecore_evas_title_get(ee));
-        treeit->ptr = ee;
-
-        tree = eina_list_append(tree, treeit);
-
-        objs = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
-              USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
-        EINA_LIST_FOREACH(objs, objitr, obj)
-          {
-             libclouseau_item_add(obj, gl, treeit);
-          }
-
-        /* Insert the base ee items */
-          {
-             Elm_Genlist_Item_Type glflag = (treeit->children) ?
-                ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
-             elm_genlist_item_append(gl, &itc, treeit, NULL,
-                   glflag, NULL, NULL);
-          }
-     }
-#endif
 }
 
 /* Hook on the main loop

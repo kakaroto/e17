@@ -75,5 +75,7 @@ void _data_descriptors_shutdown(void);
 void variant_free(Variant_st *v);
 Variant_st *variant_alloc(message_type t, size_t size, void *info);
 message_type packet_mapping_type_get(const char *name);
-const char * packet_mapping_type_str_get(message_type t);
+const char *packet_mapping_type_str_get(message_type t);
+void *packet_compose(message_type t, void *data, int data_size, int *size);
+Variant_st *packet_info_get(void *data, int size);
 #endif  /*  HELPER_H  */

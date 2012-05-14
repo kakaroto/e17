@@ -32,27 +32,15 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
-   Variant_st *v = variant_alloc(GUI_ACK, sizeof(t), &t);
-   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_server_flush(ev->server);
-   free(p);
-   variant_free(v);
+   p = packet_compose(GUI_ACK, &t, sizeof(t), &size);
+   if (p)
+     {
+        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_server_flush(ev->server);
+        free(p);
+     }
 
-#if 0
-   void *p;
-   char *msg="hello! - sent from the GUI";
-   size_t size = compose_packet(&p, GUI, TSUITE_EVENT_TREE_ITEM, msg, strlen(msg)+1);
-
-   printf("Server with ip %s, connected = %d!\n",
-         ecore_ipc_server_ip_get(ev->server),
-         ecore_ipc_server_connected_get(ev->server));
-   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE,p, size);
-   ecore_ipc_server_flush(ev->server);
-   free(p);
-#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -86,9 +74,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
          ">>>>>\n",
          ev->size, ev->size);
 
-   data_desc *td = _data_descriptors_init();
-   Variant_st *v = eet_data_descriptor_decode(td->_variant_descriptor,
-         ev->data, ev->size);
+   Variant_st *v = packet_info_get(ev->data, ev->size);
    if (v)
      {
         switch(packet_mapping_type_get(v->t.type))
@@ -100,32 +86,9 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
                    break;
                 }
           }
+
+        variant_free(v);
      }
-
-return;
-
-
-   if (v)
-     {
-        ack_st *ack = v->data;
-        printf("APP <%s> got <%s> from daemon.\n", __func__, ack->text);
-     }
-   else
-     printf("APP <%s> failed to decode packet from daemon.\n", __func__);
-
-   void *p;
-   char *msg="Got data in client GUI";
-   int size = 0;
-
-   free(v);
-
-   ack_st t = { msg };
-   v = variant_alloc(GUI_ACK, sizeof(t), &t);
-   p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-   ecore_ipc_server_flush(ev->server);
-   free(p);
-   variant_free(v);
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -258,30 +221,6 @@ item_text_get(void *data, Evas_Object *obj __UNUSED__,
    return strdup(buf);
 }
 
-#if 0
-int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
-
-    int n = 1;
-
-    while ( n < argc ) {
-	if ( !strncmp(argv[n], "-a", 2) || !strncmp(argv[n], "-A", 2) ) {
-	    *szAddress = argv[++n];
-	}
-	else if ( !strncmp(argv[n], "-p", 2) || !strncmp(argv[n], "-P", 2) ) {
-	    *szPort = argv[++n];
-	}
-	else if ( !strncmp(argv[n], "-h", 2) || !strncmp(argv[n], "-H", 2) ) {
-	    printf("Usage:\n\n");
-	    printf("    timeclnt -a (remote IP) -p (remote port)\n\n");
-	    exit(EXIT_SUCCESS);
-	}
-	++n;
-    }
-
-    return 0;
-}
-#endif
-
 /* HIGHLIGHT code. */
 /* The color of the highlight */
 enum {
@@ -399,13 +338,6 @@ _connect_to_daemon(void)
    /* set event handler for receiving server data */
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
-   /* start client
-   ecore_main_loop_begin();
-
-   ecore_ipc_init();
-   ecore_init();
-   eina_init(); */
-
    return svr;
 }
 
@@ -435,145 +367,16 @@ _load_list(Evas_Object *gl)
         int size = 0;
 
         ack_st t = { msg };
-        data_desc *td = _data_descriptors_init();
-        Variant_st *v = variant_alloc(GUI_ACK, sizeof(t), &t);
-        p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
-        ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
-        ecore_ipc_server_flush(svr);
-        free(p);
-        variant_free(v);
-
-
-        /*
-        void *p;
-        char *msg="Asking refresg from GUI";
-        size_t size = compose_packet(&p, GUI, TSUITE_EVENT_TREE_ITEM, msg, strlen(msg)+1);
-        ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
-        ecore_ipc_server_flush(svr);
-        free(p);
-        */
+        p = packet_compose(GUI_ACK, &t, sizeof(t), &size);
+        if (p)
+          {
+             ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
+             ecore_ipc_server_flush(svr);
+             free(p);
+          }
      }
-#if 0
-     printf("Before Loading tree.\n");
-   Tree_Item *t = eet_dump_tree_load("/tmp/eet_dump");
-   if(t)
-     printf("Loaded tree\n");
-   else
-     printf("Failed to load tree\n");
-
-   _item_tree_print_string(t);
-   printf("After Loading tree.\n");
-#endif
 
    return 0;
-
-
-
-
-
-
-    int       conn_s;                /*  connection socket         */
-    short int port;                  /*  port number               */
-    struct    sockaddr_in servaddr;  /*  socket address structure  */
-    char      buffer[MAX_LINE+1];    /*  character buffer          */
-    char     *szAddress = "127.0.0.1"; /*  Holds remote IP address   */
-
-    /*  Get command line arguments
-    ParseCmdLine(argc, argv, &szAddress, &szPort); */
-
-
-    /*  Set the remote port  */
-    port = PORT;
-
-    /*  Create the listening socket  */
-    if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
-	fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
-	exit(EXIT_FAILURE);
-    }
-
-    /*  Set all bytes in socket address structure to
-        zero, and fill in the relevant data members   */
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family      = AF_INET;
-    servaddr.sin_port        = htons(port);
-
-
-    /*  Set the remote IP address  */
-    if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
-	printf("ECHOCLNT: Invalid remote IP address.\n");
-	exit(EXIT_FAILURE);
-    }
-
-    /*  connect() to the remote echo server  */
-    if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
-	printf("ECHOCLNT: Error calling connect()\n");
-	exit(EXIT_FAILURE);
-    }
-
-
-    /*  Get string to echo from user
-    printf("Enter the string to echo: ");
-    fgets(buffer, MAX_LINE, stdin); */
-
-    strcpy(buffer, "client\n");
-
-    /*  Send string to echo server, and retrieve response  */
-    Writeline(conn_s, buffer, strlen(buffer));
-    while (Readline(conn_s, buffer, MAX_LINE))
-      fprintf(stdout, "Got: %s", buffer);
-
-    return EXIT_SUCCESS;
-
-#if 0
-   Eina_List *ees, *eeitr;
-   Ecore_Evas *ee, *this_ee;
-
-   clouseau_obj_information_list_clear();
-   elm_genlist_clear(gl);
-   _item_tree_free();
-
-   ees = ecore_evas_ecore_evas_list_get();
-
-   this_ee = ecore_evas_ecore_evas_get(
-         evas_object_evas_get(elm_object_top_widget_get(gl)));
-
-   EINA_LIST_FOREACH(ees, eeitr, ee)
-     {
-        Eina_List *objs, *objitr;
-        Evas_Object *obj;
-        Tree_Item *treeit;
-
-        Evas *e;
-        int w, h;
-
-        if (this_ee == ee)
-           continue;
-
-        e = ecore_evas_get(ee);
-        evas_output_size_get(e, &w, &h);
-
-        treeit = calloc(1, sizeof(*treeit));
-        treeit->name = eina_stringshare_add(ecore_evas_title_get(ee));
-        treeit->ptr = ee;
-
-        tree = eina_list_append(tree, treeit);
-
-        objs = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
-              USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
-        EINA_LIST_FOREACH(objs, objitr, obj)
-          {
-             libclouseau_item_add(obj, gl, treeit);
-          }
-
-        /* Insert the base ee items */
-          {
-             Elm_Genlist_Item_Type glflag = (treeit->children) ?
-                ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
-             elm_genlist_item_append(gl, &itc, treeit, NULL,
-                   glflag, NULL, NULL);
-          }
-     }
-#endif
 }
 
 static void
