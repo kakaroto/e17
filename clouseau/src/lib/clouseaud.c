@@ -1,32 +1,38 @@
-/*
- * UNIX Daemon Server Programming Sample Program
- * Levent Karakas <levent at mektup dot at> May 2001
- *
- * compile: gcc clouseaud.c -o clouseaud `pkg-config elementary --cflags --libs`
- * To run:     ./clouseaud
- * To test daemon:   ps -ef|grep clouseaud (or ps -aux on BSD systems)
- * To test log:   tail -f /tmp/clouseaud.log
- * To test signal:   kill -HUP `cat /tmp/clouseaud.lock`
- * To terminate:  kill `cat /tmp/clouseaud.lock`
- * */
-#include <sys/socket.h>       /*  socket definitions        */
-#include <sys/types.h>        /*  socket types              */
-#include <arpa/inet.h>        /*  inet (3) funtions         */
+#include <stdio.h>
 #include <unistd.h>           /*  misc. UNIX functions      */
 #include <fcntl.h>
+#include <Ecore.h>
+#include <Ecore_Con.h>
 
-#include "helper.h"           /*  our own helper functions  */
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <Elementary.h>
+#include "helper.h"
 
 #define RUNNING_DIR  "/tmp"
 #define LOCK_FILE "clouseaud.lock"
 #define LOG_FILE  "clouseaud.log"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#else
+#define __UNUSED__
+#endif
 
 static Eina_List *info = NULL; /* Holds app info to be send to GUI client */
+
+/* For Debug */
+char msg_buf[MAX_LINE+1];
+
+struct _Client {
+     int sdata;
+};
+
+static void
+log_message(char *filename, char *mode, char *message)
+{
+   FILE *logfile;
+   logfile=fopen(filename, mode);
+   if(!logfile) return;
+   fprintf(logfile,"%s\n",message);
+   fclose(logfile);
+}
 
 static void
 _daemon_cleanup(void)
@@ -34,15 +40,30 @@ _daemon_cleanup(void)
    char *name;
    EINA_LIST_FREE(info, name)
       free(name);
-}
 
-void log_message(char *filename, char *mode, char *message)
-{
-   FILE *logfile;
-   logfile=fopen(filename, mode);
-   if(!logfile) return;
-   fprintf(logfile,"%s\n",message);
-   fclose(logfile);
+   Ecore_Con_Server *svr;
+   Ecore_Con_Client *cl;
+   const Eina_List *clients, *l;
+
+   clients = ecore_con_server_clients_get(svr);
+   sprintf(msg_buf,"Clients connected to this server when exiting: %d\n",
+         eina_list_count(clients));
+   log_message(LOG_FILE, "a", msg_buf);
+   EINA_LIST_FOREACH(clients, l, cl)
+     {
+        sprintf(msg_buf, "%s\n", ecore_con_client_ip_get(cl));
+        log_message(LOG_FILE, "a", msg_buf);
+        free(ecore_con_client_data_get(cl));
+     }
+
+   sprintf(msg_buf, "Server was up for %0.3f seconds\n",
+         ecore_con_server_uptime_get(svr));
+   log_message(LOG_FILE, "a", msg_buf);
+
+
+   ecore_con_shutdown();
+   ecore_shutdown();
+   eina_shutdown();
 }
 
 void signal_handler(int sig)
@@ -52,8 +73,8 @@ void signal_handler(int sig)
          log_message(LOG_FILE, "a", "hangup signal catched");
          break;
       case SIGTERM:
-         _daemon_cleanup();
          log_message(LOG_FILE, "a", "terminate signal catched");
+         _daemon_cleanup();
          exit(0);
          break;
    }
@@ -95,95 +116,119 @@ void daemonize(void)
    log_message(LOG_FILE, "a", ctime(&currentTime));
 }
 
-#ifndef ELM_LIB_QUICKLAUNCH
-EAPI int
-elm_main(int argc, char **argv)
+/* START - Ecore communication callbacks */
+Eina_Bool
+_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
 {
-   int       list_s;                /*  listening socket          */
-   int       conn_s;                /*  connection socket         */
-   short int port;                  /*  port number               */
-   struct    sockaddr_in servaddr;  /*  socket address structure  */
-   char      buffer[MAX_LINE];      /*  character buffer          */
-   char     *endptr;                /*  for strtol()              */
+   char welcome[] = "hello! - sent from the server";
+   Ecore_Con_Server *srv;
+   Ecore_Con_Client *cl;
+   const Eina_List *clients, *l;
+
+   struct _Client *client = malloc(sizeof(*client));
+   client->sdata = 0;
+
+   sprintf(msg_buf, "Client with ip %s, port %d, connected = %d!\n",
+         ecore_con_client_ip_get(ev->client),
+         ecore_con_client_port_get(ev->client),
+         ecore_con_client_connected_get(ev->client));
+   log_message(LOG_FILE, "a", msg_buf);
+
+   ecore_con_client_send(ev->client, welcome, sizeof(welcome));
+   ecore_con_client_flush(ev->client);
+
+   ecore_con_client_timeout_set(ev->client, 6);
+
+   ecore_con_client_data_set(ev->client, client);
+
+   srv = ecore_con_client_server_get(ev->client);
+   sprintf(msg_buf,"Clients connected to this server:\n");
+   log_message(LOG_FILE, "a", msg_buf);
+
+   clients = ecore_con_server_clients_get(srv);
+   EINA_LIST_FOREACH(clients, l, cl)
+     {
+        sprintf(msg_buf, "%s\n", ecore_con_client_ip_get(cl));
+        log_message(LOG_FILE, "a", msg_buf);
+     }
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+Eina_Bool
+_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Del *ev)
+{
+   struct _Client *client;
+
+   if (!ev->client)
+     return ECORE_CALLBACK_RENEW;
+
+   client = ecore_con_client_data_get(ev->client);
+
+   sprintf(msg_buf, "Lost client with ip %s!\n", ecore_con_client_ip_get(ev->client));
+   log_message(LOG_FILE, "a", msg_buf);
+
+   sprintf(msg_buf, "Total data received from this client: %d\n", client->sdata);
+   log_message(LOG_FILE, "a", msg_buf);
+   sprintf(msg_buf,"Client was connected for %0.3f seconds.\n",
+         ecore_con_client_uptime_get(ev->client));
+   log_message(LOG_FILE, "a", msg_buf);
+
+   if (client)
+     free(client);
+
+   ecore_con_client_del(ev->client);
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+Eina_Bool
+_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *ev)
+{
+   char fmt[128];
+   struct _Client *client = ecore_con_client_data_get(ev->client);
+
+   snprintf(fmt, sizeof(fmt),
+         "Received %i bytes from client %s port %d:\n"
+         ">>>>>\n"
+         "%%.%is\n"
+         ">>>>>\n",
+         ev->size, ecore_con_client_ip_get(ev->client),
+         ecore_con_client_port_get(ev->client), ev->size);
+
+   sprintf(msg_buf, fmt, ev->data);
+   log_message(LOG_FILE, "a", msg_buf);
+
+   client->sdata += ev->size;
+
+   return ECORE_CALLBACK_RENEW;
+}
+/* END   - Ecore communication callbacks */
+
+
+int main(void)
+{
+   Ecore_Con_Server *svr;
+   Ecore_Con_Client *cl;
+   const Eina_List *clients, *l;
 
    daemonize();
    eina_init();
-   eet_init();
+   ecore_init();
+   ecore_con_init();
 
-   /* Setting up communication */
-   port = ECHO_PORT;
-   /*  Create the listening socket  */
-   if ( (list_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
-     {
-        log_message(LOG_FILE, "a", "ECHOSERV: Error creating listening socket.\n");
-        exit(EXIT_FAILURE);
-     }
+   if (!(svr = ecore_con_server_add(ECORE_CON_REMOTE_TCP, LOCALHOST, PORT, NULL)))
+     exit(1);
 
-   /*  Set all bytes in socket address structure to
-       zero, and fill in the relevant data members   */
-   memset(&servaddr, 0, sizeof(servaddr));
-   servaddr.sin_family      = AF_INET;
-   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-   servaddr.sin_port        = htons(port);
+   ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
+   ecore_con_server_timeout_set(svr, 10);
+   ecore_con_server_client_limit_set(svr, 3, 0);
 
-   if ( bind(list_s, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0 )
-     { /* Bind socket addresss to the listening socket, and call listen()  */
-        log_message(LOG_FILE, "a",  "ECHOSERV: Error calling bind()\n");
-        exit(EXIT_FAILURE);
-     }
+   ecore_main_loop_begin();
+   _daemon_cleanup();
 
-   if ( listen(list_s, LISTENQ) < 0 )
-     {
-        log_message(LOG_FILE, "a",  "ECHOSERV: Error calling listen()\n");
-        exit(EXIT_FAILURE);
-     }
-
-   /*  Enter an infinite loop to respond
-       to client requests and echo input  */
-
-   while ( 1 ) {
-        if ( (conn_s = accept(list_s, NULL, NULL) ) < 0 )
-          { /*  Wait for a connection, then accept() it  */
-             log_message(LOG_FILE, "a",  "ECHOSERV: Error calling accept()\n");
-             exit(EXIT_FAILURE);
-          }
-
-
-        /*  Retrieve an input line from the connected socket
-            then simply write it back to the same socket.     */
-        while(Readline(conn_s, buffer, MAX_LINE-1))
-          {
-             if (!strncmp(buffer, END_OF_MESSAGE, strlen(END_OF_MESSAGE)))
-               break;
-
-             if (!strncmp(buffer, "server", strlen("server")))
-               {
-                  info = eina_list_append(info, strdup(buffer));
-                  log_message(LOG_FILE, "a", buffer);
-                  Writeline(conn_s, "Got info\n", strlen("Got info\n"));
-               }
-             else if (!strncmp(buffer, "client", strlen("client")))
-               {
-                  Eina_List *l;
-                  char *line;
-                  EINA_LIST_FOREACH(info, l, line)
-                    {
-                       Writeline(conn_s, line, strlen(line));
-                    }
-
-                  break;
-               }
-          }
-
-        Writeline(conn_s, "OK\n", strlen("OK\n"));
-        log_message(LOG_FILE, "a", "DONE!!!!");
-        if ( close(conn_s) < 0 )
-          { /*  Close the connected socket  */
-             log_message(LOG_FILE, "a",  "ECHOSERV: Error calling close()\n");
-             exit(EXIT_FAILURE);
-          }
-   }  /* End of while (1) */
+   return 0;
 }
-#endif
-ELM_MAIN()

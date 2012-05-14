@@ -1,33 +1,24 @@
-/*
-
-  ECHOCLNT.C
-  ==========
-  (c) Paul Griffiths, 1999
-  Email: mail@paulgriffiths.net
-  
-  Simple TCP/IP echo client.
-
-*/
-
-
-#include <sys/socket.h>       /*  socket definitions        */
-#include <sys/types.h>        /*  socket types              */
-#include <arpa/inet.h>        /*  inet (3) funtions         */
-#include <unistd.h>           /*  misc. UNIX functions      */
-
-#include "helper.h"           /*  Our own helper functions  */
-
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
-
-#include <Eina.h>
 #include <Ecore.h>
+#include <Ecore_Con.h>
+#include <Eina.h>
 #include <Edje.h>
 #include <Evas.h>
 #include <Elementary.h>
+
 #include "libclouseau.h"
 #include "ui/obj_information.h"
+#include "helper.h"           /*  Our own helper functions  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#else
+#define __UNUSED__
+#endif
+
+struct _Server {
+     int sdata;
+};
 
 
 /* Globals */
@@ -35,6 +26,70 @@ static Elm_Genlist_Item_Class itc;
 static Eina_List *tree = NULL;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 
+Eina_Bool
+_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
+{
+   char welcome[] = "hello! - sent from the client";
+   struct _Server *server = malloc(sizeof(*server));
+   server->sdata = 0;
+
+   ecore_con_server_data_set(ev->server, server);
+   printf("Server with ip %s, name %s, port %d, connected = %d!\n",
+         ecore_con_server_ip_get(ev->server),
+         ecore_con_server_name_get(ev->server),
+         ecore_con_server_port_get(ev->server),
+         ecore_con_server_connected_get(ev->server));
+   ecore_con_server_send(ev->server, welcome, sizeof(welcome));
+   ecore_con_server_flush(ev->server);
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+
+Eina_Bool
+_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
+{
+   if (!ev->server)
+     {
+        printf("Failed to establish connection to the server.\nExiting.\n");
+        ecore_main_loop_quit();
+        return ECORE_CALLBACK_RENEW;
+     }
+
+   struct _Server *server = ecore_con_server_data_get(ev->server);
+
+   printf("Lost server with ip %s!\n", ecore_con_server_ip_get(ev->server));
+
+   if (server)
+     {
+        printf("Total data received from this server: %d\n", server->sdata);
+        free(server);
+     }
+
+   ecore_con_server_del(ev->server);
+
+   ecore_main_loop_quit();
+   return ECORE_CALLBACK_RENEW;
+}
+
+Eina_Bool
+_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
+{
+   char fmt[128];
+   struct _Server *server = ecore_con_server_data_get(ev->server);
+
+   snprintf(fmt, sizeof(fmt),
+         "Received %i bytes from server:\n"
+         ">>>>>\n"
+         "%%.%is\n"
+         ">>>>>\n",
+         ev->size, ev->size);
+
+   printf(fmt, ev->data);
+
+   server->sdata += ev->size;
+   return ECORE_CALLBACK_RENEW;
+}
 
 static void
 gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
@@ -202,7 +257,7 @@ _load_list(Evas_Object *gl)
 
 
     /*  Set the remote port  */
-    port = ECHO_PORT;
+    port = PORT;
 
     /*  Create the listening socket  */
     if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
@@ -410,6 +465,41 @@ _set_selected_app(void *data, Evas_Object *pobj,
    elm_object_text_set(pobj, data);
 }
 
+static int
+_connect_to_daemon(void)
+{
+   Ecore_Con_Server *svr;
+   const char *address = LOCALHOST;
+   int port = PORT;
+
+   eina_init();
+   ecore_init();
+   ecore_con_init();
+
+   if (!(svr = ecore_con_server_connect(ECORE_CON_REMOTE_TCP, address, port, NULL)))
+     {
+        printf("could not connect to the server: %s, port %d.\n",
+              address, port);
+        return EINA_FALSE;
+     }
+
+   /* set event handler for server connect */
+   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   /* set event handler for server disconnect */
+   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   /* set event handler for receiving server data */
+   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
+
+   /* start client
+   ecore_main_loop_begin();
+
+   ecore_con_init();
+   ecore_init();
+   eina_init(); */
+
+   return EINA_TRUE;
+}
+
 #ifndef ELM_LIB_QUICKLAUNCH
 EAPI int
 elm_main(int argc, char **argv)
@@ -527,8 +617,20 @@ elm_main(int argc, char **argv)
    evas_object_show(win);
 
    evas_object_smart_callback_add(win, "delete,request", client_win_del, NULL);
+
+   if(!_connect_to_daemon())
+     {
+        printf("Failed to connect to server.\n");
+        return 0;
+     }
+
    elm_run();
    elm_shutdown();
+
+   printf("Client cleanup.\n");
+   ecore_con_shutdown();
+   ecore_shutdown();
+   eina_shutdown();
    return 0;
 }
 ELM_MAIN()

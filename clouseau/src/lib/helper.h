@@ -21,10 +21,9 @@
 #include <unistd.h>             /*  for ssize_t data type  */
 
 /*  Global constants  */
-#define ECHO_PORT      (5555)
-#define MAX_LINE       (1024)
-#define LISTENQ        (1024)   /*  Backlog for listen()   */
-#define END_OF_MESSAGE "END_OF_MESSAGE"
+#define PORT           (8080)
+#define MAX_LINE       (1023)
+#define LOCALHOST      "127.0.0.1"
 
 /*  Function declarations  */
 
