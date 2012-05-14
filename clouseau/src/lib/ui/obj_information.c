@@ -30,7 +30,8 @@ static eet_extra_props_mapping eet_props_mapping[] =
      { CLOUSEAU_OBJ_TYPE_TEXT, CLOUSEAU_OBJ_TYPE_TEXT_STR },
      { CLOUSEAU_OBJ_TYPE_IMAGE, CLOUSEAU_OBJ_TYPE_IMAGE_STR },
      { CLOUSEAU_OBJ_TYPE_EDJE, CLOUSEAU_OBJ_TYPE_EDJE_STR },
-     { CLOUSEAU_OBJ_TYPE_TEXTBLOCK, CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR }
+     { CLOUSEAU_OBJ_TYPE_TEXTBLOCK, CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR },
+     { CLOUSEAU_OBJ_TYPE_UNKNOWN, NULL }
 };
 
 static const char *
@@ -301,8 +302,8 @@ Obj_Information_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(props_descs->_union_unified_descriptor,
          "CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR", props_descs->textblock);
 
-   EET_DATA_DESCRIPTOR_ADD_UNION(d, st_extra_props, "u", u, type,
-         props_descs->_union_unified_descriptor);
+   EET_DATA_DESCRIPTOR_ADD_UNION(d, Obj_Information, "u", extra_props.u,
+         extra_props.type, props_descs->_union_unified_descriptor);
    /* END   handle UNION desc */
 
    return d;
@@ -486,7 +487,7 @@ Obj_Information *
 obj_information_get(Tree_Item *treeit)
 {
    if (!treeit->is_obj)
-      return NULL;
+     return NULL;
 
    Obj_Information *oinfo;
    Evas_Object *obj = treeit->ptr;
