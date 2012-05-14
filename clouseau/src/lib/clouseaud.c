@@ -401,7 +401,7 @@ int main(void)
    ecore_ipc_init();
 
    if (!(ipc_svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM,
-               LOCALHOST, PORT, NULL)))
+               LISTEN_IP, PORT, NULL)))
      exit(1);
 
    ecore_ipc_server_data_size_max_set(ipc_svr, -1);

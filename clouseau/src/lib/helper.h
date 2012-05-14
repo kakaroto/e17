@@ -5,6 +5,7 @@
 #define PORT           (8080)
 #define MAX_LINE       (1023)
 #define LOCALHOST      "127.0.0.1"
+#define LISTEN_IP      "0.0.0.0" /* Avail all, no mask */
 
 #define DESC_ADD_BASIC(desc, type, member, eet_type) \
    EET_DATA_DESCRIPTOR_ADD_BASIC             \
