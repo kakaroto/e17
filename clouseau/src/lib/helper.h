@@ -106,6 +106,7 @@ struct _data_desc
    Eet_Data_Descriptor *app_closed;
    Eet_Data_Descriptor *highlight;
    Eet_Data_Descriptor *tree;
+   Eet_Data_Descriptor *obj_info;
    Eet_Data_Descriptor *_variant_descriptor;
    Eet_Data_Descriptor *_variant_unified_descriptor;
 };

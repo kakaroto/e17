@@ -241,7 +241,7 @@ tree_item_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "ptr",
          ptr, EET_T_UINT);
    EET_DATA_DESCRIPTOR_ADD_SUB(d, Tree_Item, "info",
-         info, Obj_Information_desc_make());
+         info, desc->obj_info);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_obj",
          is_obj, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_clipper",
@@ -262,6 +262,7 @@ data_descriptors_init(void)
 
    Eet_Data_Descriptor_Class eddc;
 
+   desc->obj_info   = Obj_Information_desc_make();
    desc->tree       = tree_item_desc_make();
    desc->connect    = connect_desc_make();
    desc->app_add    = app_add_desc_make();
@@ -320,6 +321,7 @@ data_descriptors_shutdown(void)
         eet_data_descriptor_free(desc->app_closed);
         eet_data_descriptor_free(desc->highlight);
         eet_data_descriptor_free(desc->tree);
+        eet_data_descriptor_free(desc->obj_info);
         eet_data_descriptor_free(desc->_variant_descriptor );
         eet_data_descriptor_free(desc->_variant_unified_descriptor);
 

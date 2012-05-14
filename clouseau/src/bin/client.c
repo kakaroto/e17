@@ -153,6 +153,16 @@ _add_app(gui_elements *g, Variant_st *v)
 }
 
 static void
+_free_app(app_data_st *st)
+{
+   free(st->app);
+   if (st->td)
+     free(st->td);
+
+   free(st);
+}
+
+static void
 _remove_app(gui_elements *g, Variant_st *v)
 {
    app_closed_st *app = v->data;
@@ -171,13 +181,8 @@ _remove_app(gui_elements *g, Variant_st *v)
 
    if (st)
      {  /* Remove from list and free all variants */
-        /* TODO: Remove app from Drop Down List */
         apps = eina_list_remove(apps, st);
-        free(st->app);
-        if (st->td)
-          free(st->td);
-
-        free(st);
+        _free_app(st);
 
         if (!elm_hoversel_expanded_get(g->dd_list))
           {
@@ -529,11 +534,11 @@ _cancel_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *e
 }
 
 static void
-_ok_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+_ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {  /* Set the IP, PORT, then connect to server */
    _dismiss_inwin(data);
 
-   if(!_connect_to_daemon(gui))
+   if(!_connect_to_daemon(data))
      {
         printf("Failed to connect to server.\n");
         elm_exit(); /* exit the program's main loop that runs in elm_run() */
@@ -731,6 +736,11 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    elm_run();
    elm_shutdown();
+
+   /* cleanup - free apps data */
+   void *st;
+   EINA_LIST_FREE(apps, st)
+      _free_app(st);
 
    data_descriptors_shutdown();
    if (gui->address)
