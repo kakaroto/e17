@@ -1,11 +1,14 @@
 #!/bin/sh
-cat <<-ENDOFMESSAGE>clouseau
+cat <<-ENDOFMESSAGE>clouseau_start
 #!/bin/sh
 if [ \$# -lt 1 ]
 then
-   echo "Usage: clouseau <executable> [executable parameters]"
+   echo "Usage: clouseau_start <executable> [executable parameters]"
+else
+# Start clouseau daemon (will start single instance), then run app
+   clouseaud
+   LD_PRELOAD="$1/libclouseau.so" \$*
 fi
-LD_PRELOAD="$1/libclouseau.so" "\$@"
 ENDOFMESSAGE
 
-chmod +x clouseau
+chmod +x clouseau_start
