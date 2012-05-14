@@ -215,14 +215,8 @@ Eina_Bool
 _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 {
    static Eina_Bool got_tree = EINA_FALSE;
-
-   printf("Received %i bytes from server:\n"
-         ">>>>>\n"
-         "%%.%is\n"
-         ">>>>>\n",
-         ev->size, ev->size);
-
    Variant_st *v = packet_info_get(ev->data, ev->size);
+
    if (v)
      {
         switch(packet_mapping_type_get(v->t.type))
@@ -441,21 +435,6 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
    clouseau_obj_information_list_populate(treeit);
 }
 
-void
-_item_tree_print_string(Tree_Item *parent)
-{
-   Tree_Item *treeit;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(parent->children, l, treeit)
-     {
-         _item_tree_print_string(treeit);
-     }
-
-   if (parent->name)
-     printf("From EET: <%s>\n", parent->name);
-}
-
 static int
 _load_list(gui_elements *gui)
 {
@@ -647,7 +626,6 @@ elm_main(int argc, char **argv)
 
    data_descriptors_shutdown();
    free(gui);
-   printf("Client cleanup.\n");
    return 0;
 }
 ELM_MAIN()

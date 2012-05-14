@@ -29,16 +29,17 @@ item_tree_free(Eina_List *tree)
 
 void
 _item_tree_item_string(Tree_Item *parent)
-{
+{  /* Use this function if you want to print tree for debug */
    Tree_Item *treeit;
    Eina_List *l;
-
-   printf("<%s>\n", parent->name);
 
    EINA_LIST_FOREACH(parent->children, l, treeit)
      {
         _item_tree_item_string(treeit);
      }
+
+   if (parent->name)
+     printf("<%s>\n", parent->name);
 }
 
 static eet_message_type_mapping eet_mapping[] = {
@@ -269,13 +270,6 @@ data_descriptors_init(void)
    desc->app_closed = app_closed_desc_make();
    desc->highlight  = highlight_desc_make();
 
-/* Moved to tree_data_desc_make
-   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, st_tree_list);
-   desc->list = eet_data_descriptor_file_new(&eddc);
-
-   EET_DATA_DESCRIPTOR_ADD_LIST(desc->list,
-         st_tree_list, "list", list, desc->tree);
-*/
    /* for variant */
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Variant_st);
    desc->_variant_descriptor = eet_data_descriptor_file_new(&eddc);
@@ -305,11 +299,6 @@ data_descriptors_init(void)
 
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
         HIGHLIGHT_STR, desc->highlight);
-
-/*
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
-        APP_TREE_DATA_STR, desc->list);
-*/
 
    EET_DATA_DESCRIPTOR_ADD_VARIANT(desc->_variant_descriptor,
          Variant_st, "data", data, t, desc->_variant_unified_descriptor);
@@ -347,7 +336,7 @@ packet_compose(message_type t, void *data, int data_size, int *size)
    void *p = eet_data_descriptor_encode(d->_variant_descriptor , v, size);
    variant_free(v);
 
-   printf("%s size=<%d>\n", __func__, *size);
+/*   printf("%s size=<%d>\n", __func__, *size); */
    return p;  /* User has to free(p) */
 }
 

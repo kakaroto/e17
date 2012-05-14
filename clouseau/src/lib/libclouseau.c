@@ -130,13 +130,8 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *e
 Eina_Bool
 _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
-   printf("Received %i bytes from server:\n"
-         ">>>>>\n"
-         "%%.%is\n"
-         ">>>>>\n",
-         ev->size, ev->size);
-
    Variant_st *v = packet_info_get(ev->data, ev->size);
+
    switch(packet_mapping_type_get(v->t.type))
      {
       case DATA_REQ:

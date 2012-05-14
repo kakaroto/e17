@@ -119,7 +119,7 @@ Eet_Data_Descriptor *app_closed_desc_make(void);
 Eet_Data_Descriptor *highlight_desc_make(void);
 Eet_Data_Descriptor *tree_item_desc_make(void);
 
-Obj_Information * obj_information_get(Tree_Item *treeit);
+Obj_Information *obj_information_get(Tree_Item *treeit);
 void obj_information_free(Obj_Information *oinfo);
 void item_tree_item_free(Tree_Item *parent);
 void item_tree_free(Eina_List *tree);
