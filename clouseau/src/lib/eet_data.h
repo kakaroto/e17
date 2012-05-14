@@ -2,7 +2,7 @@
 #define EET_DATA_H
 #include "libclouseau.h"
 /*  Global constants  */
-#define PORT           (8080)
+#define PORT           (22522)
 #define MAX_LINE       (1023)
 #define LOCALHOST      "127.0.0.1"
 #define LISTEN_IP      "0.0.0.0" /* Avail all, no mask */
