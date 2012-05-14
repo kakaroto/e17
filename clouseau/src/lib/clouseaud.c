@@ -2,7 +2,7 @@
 #include <unistd.h>           /*  misc. UNIX functions      */
 #include <fcntl.h>
 #include <Ecore.h>
-#include <Ecore_Con.h>
+#include <Ecore_Ipc.h>
 
 #include "helper.h"
 #include "eet_dump.h"
@@ -47,27 +47,22 @@ _daemon_cleanup(void)
    EINA_LIST_FREE(trees, str)
       free(str);
 
-   Ecore_Con_Server *svr;
-   Ecore_Con_Client *cl;
+   Ecore_Ipc_Server *svr;
+   Ecore_Ipc_Client *cl;
    const Eina_List *clients, *l;
 
-   clients = ecore_con_server_clients_get(svr);
+   clients = ecore_ipc_server_clients_get(svr);
    sprintf(msg_buf,"Clients connected to this server when exiting: %d\n",
          eina_list_count(clients));
    log_message(LOG_FILE, "a", msg_buf);
    EINA_LIST_FOREACH(clients, l, cl)
      {
-        sprintf(msg_buf, "%s\n", ecore_con_client_ip_get(cl));
+        sprintf(msg_buf, "%s\n", ecore_ipc_client_ip_get(cl));
         log_message(LOG_FILE, "a", msg_buf);
-        free(ecore_con_client_data_get(cl));
+        free(ecore_ipc_client_data_get(cl));
      }
 
-   sprintf(msg_buf, "Server was up for %0.3f seconds\n",
-         ecore_con_server_uptime_get(svr));
-   log_message(LOG_FILE, "a", msg_buf);
-
-
-   ecore_con_shutdown();
+   ecore_ipc_shutdown();
    ecore_shutdown();
    eina_shutdown();
 }
@@ -124,40 +119,32 @@ void daemonize(void)
 
 /* START - Ecore communication callbacks */
 Eina_Bool
-_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
+_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
 {
    void *p;
    char *msg="hello! - sent from the server";
    size_t size = compose_packet(&p, DAEMON, ACK, msg, strlen(msg)+1);
-   Ecore_Con_Server *srv;
-   Ecore_Con_Client *cl;
+   Ecore_Ipc_Server *srv;
+   Ecore_Ipc_Client *cl;
    const Eina_List *clients, *l;
 
    struct _Client *client = malloc(sizeof(*client));
    client->sdata = 0;
 
-   sprintf(msg_buf, "Client with ip %s, port %d, connected = %d!\n",
-         ecore_con_client_ip_get(ev->client),
-         ecore_con_client_port_get(ev->client),
-         ecore_con_client_connected_get(ev->client));
-   log_message(LOG_FILE, "a", msg_buf);
-
-   ecore_con_client_send(ev->client, p, size);
-   ecore_con_client_flush(ev->client);
+   ecore_ipc_client_send(ev->client, 0,0,0,0,EINA_FALSE,p, size);
+   ecore_ipc_client_flush(ev->client);
    free(p);
 
-   ecore_con_client_timeout_set(ev->client, 6);
+   ecore_ipc_client_data_set(ev->client, client);
 
-   ecore_con_client_data_set(ev->client, client);
-
-   srv = ecore_con_client_server_get(ev->client);
+   srv = ecore_ipc_client_server_get(ev->client);
    sprintf(msg_buf,"Clients connected to this server:\n");
    log_message(LOG_FILE, "a", msg_buf);
 
-   clients = ecore_con_server_clients_get(srv);
+   clients = ecore_ipc_server_clients_get(srv);
    EINA_LIST_FOREACH(clients, l, cl)
      {
-        sprintf(msg_buf, "%s\n", ecore_con_client_ip_get(cl));
+        sprintf(msg_buf, "%s\n", ecore_ipc_client_ip_get(cl));
         log_message(LOG_FILE, "a", msg_buf);
      }
 
@@ -165,48 +152,35 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
 }
 
 Eina_Bool
-_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Del *ev)
+_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Del *ev)
 {
    struct _Client *client;
 
    if (!ev->client)
      return ECORE_CALLBACK_RENEW;
 
-   client = ecore_con_client_data_get(ev->client);
-
-   sprintf(msg_buf, "Lost client with ip %s!\n", ecore_con_client_ip_get(ev->client));
-   log_message(LOG_FILE, "a", msg_buf);
+   client = ecore_ipc_client_data_get(ev->client);
 
    sprintf(msg_buf, "Total data received from this client: %d\n", client->sdata);
-   log_message(LOG_FILE, "a", msg_buf);
-   sprintf(msg_buf,"Client was connected for %0.3f seconds.\n",
-         ecore_con_client_uptime_get(ev->client));
    log_message(LOG_FILE, "a", msg_buf);
 
    if (client)
      free(client);
 
-   ecore_con_client_del(ev->client);
+   ecore_ipc_client_del(ev->client);
 
    return ECORE_CALLBACK_RENEW;
 }
 
 Eina_Bool
-_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *ev)
+_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *ev)
 {
    char fmt[128];
-   struct _Client *client = ecore_con_client_data_get(ev->client);
+   struct _Client *client = ecore_ipc_client_data_get(ev->client);
    packet *pkt = ev->data;
 
    snprintf(fmt, sizeof(fmt),
-         "Received %i bytes from client %s port %d:\n"
-         ">>>>>\n"
-         "%%.%is\n"
-         ">>>>>\n",
-         ev->size, ecore_con_client_ip_get(ev->client),
-         ecore_con_client_port_get(ev->client), ev->size);
-
-   log_message(LOG_FILE, "a", (char *) get_packet_data(ev->data));
+         "Received %i bytes from client\n",ev->size);
 
    switch(pkt->client)
      {
@@ -234,8 +208,8 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
                    log_message(LOG_FILE, "a", str);
                    log_message(LOG_FILE, "a", "------------");
                    size_t size = compose_packet(&p, DAEMON, TREE_DATA, str, strlen(str)+1);
-                   ecore_con_client_send(ev->client, p, size);
-                   ecore_con_client_flush(ev->client);
+                   ecore_ipc_client_send(ev->client,0,0,0,0,EINA_FALSE,p, size);
+                   ecore_ipc_client_flush(ev->client);
                    free(p);
                 }
 
@@ -252,24 +226,21 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
 
 int main(void)
 {
-   Ecore_Con_Server *svr;
-   Ecore_Con_Client *cl;
+   Ecore_Ipc_Server *svr;
+   Ecore_Ipc_Client *cl;
    const Eina_List *clients, *l;
 
    daemonize();
    eina_init();
    ecore_init();
-   ecore_con_init();
+   ecore_ipc_init();
 
-   if (!(svr = ecore_con_server_add(ECORE_CON_REMOTE_TCP, LOCALHOST, PORT, NULL)))
+   if (!(svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
      exit(1);
 
-   ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
-   ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
-   ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
-
-   ecore_con_server_timeout_set(svr, 10);
-   ecore_con_server_client_limit_set(svr, 8, 0);
+   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
    ecore_main_loop_begin();
    _daemon_cleanup();

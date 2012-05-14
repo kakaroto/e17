@@ -10,6 +10,7 @@
 
 #include <Eina.h>
 #include <Ecore.h>
+#include <Ecore_Ipc.h>
 #include <Edje.h>
 #include <Evas.h>
 #include <Elementary.h>
@@ -176,29 +177,24 @@ _load_list(void)
 }
 
 Eina_Bool
-_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
+_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
    char *msg="hello! - sent from the APP";
    size_t size = compose_packet(&p, APP, ACK, msg, strlen(msg)+1);
-   Server *server = malloc(sizeof(*server));
-   server->sdata = 0;
 
-   ecore_con_server_data_set(ev->server, server);
-   printf("Server with ip %s, name %s, port %d, connected = %d!\n",
-         ecore_con_server_ip_get(ev->server),
-         ecore_con_server_name_get(ev->server),
-         ecore_con_server_port_get(ev->server),
-         ecore_con_server_connected_get(ev->server));
-   ecore_con_server_send(ev->server, p, size);
-   ecore_con_server_flush(ev->server);
+   printf("Server with ip %s, connected = %d!\n",
+         ecore_ipc_server_ip_get(ev->server),
+         ecore_ipc_server_connected_get(ev->server));
+   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+   ecore_ipc_server_flush(ev->server);
    free(p);
 
    return ECORE_CALLBACK_RENEW;
 }
 
 Eina_Bool
-_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
+_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
 {
    if (!ev->server)
      {
@@ -207,27 +203,18 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
         return ECORE_CALLBACK_RENEW;
      }
 
-   Server *server = ecore_con_server_data_get(ev->server);
+   printf("Lost server with ip %s!\n", ecore_ipc_server_ip_get(ev->server));
 
-   printf("Lost server with ip %s!\n", ecore_con_server_ip_get(ev->server));
-
-   if (server)
-     {
-        printf("Total data received from this server: %d\n", server->sdata);
-        free(server);
-     }
-
-   ecore_con_server_del(ev->server);
+   ecore_ipc_server_del(ev->server);
 
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
 
 Eina_Bool
-_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
+_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 {
    char fmt[128];
-   Server *server = ecore_con_server_data_get(ev->server);
 
    snprintf(fmt, sizeof(fmt),
          "Received %i bytes from server:\n"
@@ -238,15 +225,13 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
 
    printf(fmt, (char *) get_packet_data(ev->data));
 
-   server->sdata += ev->size;
-
    /* Send reply to server */
    _load_list();  /* compose tree list */
    void *p;
    char *str = _item_tree_string();
    size_t size = compose_packet(&p, APP, TREE_DATA, str, strlen(str)+1);
-   ecore_con_server_send(ev->server, p, size);
-   ecore_con_server_flush(ev->server);
+   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+   ecore_ipc_server_flush(ev->server);
    if (str)
      free(str);
 
@@ -258,32 +243,31 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
 static int
 _connect_to_daemon(void)
 {
-   Ecore_Con_Server *svr;
+   Ecore_Ipc_Server *svr;
    const char *address = LOCALHOST;
-   int port = PORT;
 
    eina_init();
    ecore_init();
-   ecore_con_init();
+   ecore_ipc_init();
 
-   if (!(svr = ecore_con_server_connect(ECORE_CON_REMOTE_TCP, address, port, NULL)))
+   if (!(svr = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
      {
         printf("could not connect to the server: %s, port %d.\n",
-              address, port);
+              address, PORT);
         return EINA_FALSE;
      }
 
    /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
    /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
    /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
    /* start client
    ecore_main_loop_begin();
 
-   ecore_con_init();
+   ecore_ipc_init();
    ecore_init();
    eina_init(); */
 

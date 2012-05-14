@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <Ecore.h>
-#include <Ecore_Con.h>
+#include <Ecore_Ipc.h>
 #include <Eina.h>
 #include <Edje.h>
 #include <Evas.h>
@@ -24,22 +24,17 @@ static Eina_List *tree = NULL;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 
 Eina_Bool
-_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
+_add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
    char *msg="hello! - sent from the GUI";
    size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
-   Server *server = malloc(sizeof(*server));
-   server->sdata = 0;
 
-   ecore_con_server_data_set(ev->server, server);
-   printf("Server with ip %s, name %s, port %d, connected = %d!\n",
-         ecore_con_server_ip_get(ev->server),
-         ecore_con_server_name_get(ev->server),
-         ecore_con_server_port_get(ev->server),
-         ecore_con_server_connected_get(ev->server));
-   ecore_con_server_send(ev->server, p, size);
-   ecore_con_server_flush(ev->server);
+   printf("Server with ip %s, connected = %d!\n",
+         ecore_ipc_server_ip_get(ev->server),
+         ecore_ipc_server_connected_get(ev->server));
+   ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE,p, size);
+   ecore_ipc_server_flush(ev->server);
    free(p);
 
    return ECORE_CALLBACK_RENEW;
@@ -47,7 +42,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 
 
 Eina_Bool
-_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
+_del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
 {
    if (!ev->server)
      {
@@ -56,28 +51,19 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
         return ECORE_CALLBACK_RENEW;
      }
 
-   Server *server = ecore_con_server_data_get(ev->server);
+   printf("Lost server with ip %s!\n", ecore_ipc_server_ip_get(ev->server));
 
-   printf("Lost server with ip %s!\n", ecore_con_server_ip_get(ev->server));
-
-   if (server)
-     {
-        printf("Total data received from this server: %d\n", server->sdata);
-        free(server);
-     }
-
-   ecore_con_server_del(ev->server);
+   ecore_ipc_server_del(ev->server);
 
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
 
 Eina_Bool
-_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
+_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 {
    static Eina_Bool got_tree = EINA_FALSE;
    char fmt[128];
-   Server *server = ecore_con_server_data_get(ev->server);
 
    snprintf(fmt, sizeof(fmt),
          "Received %i bytes from server:\n"
@@ -101,12 +87,11 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
         void *p;
         char *msg="hello! - sent from the GUI";
         size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
-        ecore_con_server_send(ev->server, p, size);
-        ecore_con_server_flush(ev->server);
+        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE,p, size);
+        ecore_ipc_server_flush(ev->server);
         free(p);
      }
 
-   server->sdata += ev->size;
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -354,34 +339,33 @@ _set_selected_app(void *data, Evas_Object *pobj,
    elm_object_text_set(pobj, data);
 }
 
-static Ecore_Con_Server *
+static Ecore_Ipc_Server *
 _connect_to_daemon(void)
 {
-   static Ecore_Con_Server *svr = NULL;
+   static Ecore_Ipc_Server *svr = NULL;
    const char *address = LOCALHOST;
-   int port = PORT;
 
-   if (svr && ecore_con_server_connected_get(svr))
+   if (svr && ecore_ipc_server_connected_get(svr))
      return svr;  /* Already connected */
 
-   if (!(svr = ecore_con_server_connect(ECORE_CON_REMOTE_TCP, address, port, NULL)))
+   if (!(svr = ecore_ipc_server_connect(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
      {
         printf("could not connect to the server: %s, port %d.\n",
-              address, port);
+              address, PORT);
         return NULL;
      }
 
    /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
    /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
    /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
    /* start client
    ecore_main_loop_begin();
 
-   ecore_con_init();
+   ecore_ipc_init();
    ecore_init();
    eina_init(); */
 
@@ -406,14 +390,14 @@ _item_tree_print_string(Tree_Item *parent)
 static int
 _load_list(Evas_Object *gl)
 {
-   Ecore_Con_Server *svr = _connect_to_daemon();
+   Ecore_Ipc_Server *svr = _connect_to_daemon();
    if (svr)
      {
         void *p;
         char *msg="Asking refresg from GUI";
         size_t size = compose_packet(&p, GUI, TREE_DATA, msg, strlen(msg)+1);
-        ecore_con_server_send(svr, p, size);
-        ecore_con_server_flush(svr);
+        ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
+        ecore_ipc_server_flush(svr);
         free(p);
      }
 
@@ -682,7 +666,7 @@ elm_main(int argc, char **argv)
 
    eina_init();
    ecore_init();
-   ecore_con_init();
+   ecore_ipc_init();
 
    if(!_connect_to_daemon())
      {
@@ -694,7 +678,7 @@ elm_main(int argc, char **argv)
    elm_shutdown();
 
    printf("Client cleanup.\n");
-   ecore_con_shutdown();
+   ecore_ipc_shutdown();
    ecore_shutdown();
    eina_shutdown();
    return 0;

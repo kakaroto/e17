@@ -51,13 +51,6 @@ struct _packet
 };
 typedef struct _packet packet;
 
-struct _Server
-{
-   int sdata;
-};
-typedef struct _Server Server;
-
-
 /*  Function declarations  */
 size_t compose_packet(void **ptr, client_type c, message_type m, void *data, size_t s);
 void *get_packet_data(void *ptr);
