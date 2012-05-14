@@ -26,7 +26,7 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 {
    void *p;
-   size_t size = compose_packet(&p, GUI, ACK, "hello! - sent from the client");
+   size_t size = compose_packet(&p, GUI, TREE_DATA, "hello! - sent from the GUI");
    Server *server = malloc(sizeof(*server));
    server->sdata = 0;
 
@@ -73,6 +73,7 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
 Eina_Bool
 _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
 {
+   static Eina_Bool got_tree = EINA_FALSE;
    char fmt[128];
    Server *server = ecore_con_server_data_get(ev->server);
 
@@ -84,6 +85,23 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
          ev->size, ev->size);
 
    printf(fmt, get_packet_str(ev->data));
+
+   packet *pkt = ev->data;
+   if (pkt->type == TREE_DATA)
+     {
+        printf("TREE DATA: %s %d\n", __func__, __LINE__);
+        puts(get_packet_str(ev->data));
+     }
+
+   if (!got_tree)
+     {
+        got_tree = EINA_TRUE;
+        void *p;
+        size_t size = compose_packet(&p, GUI, TREE_DATA, "hello! - sent from the GUI");
+        ecore_con_server_send(ev->server, p, size);
+        ecore_con_server_flush(ev->server);
+        free(p);
+     }
 
    server->sdata += ev->size;
    return ECORE_CALLBACK_RENEW;
@@ -240,9 +258,152 @@ int ParseCmdLine(int argc, char *argv[], char **szAddress, char **szPort) {
     return 0;
 }
 #endif
+
+/* HIGHLIGHT code. */
+/* The color of the highlight */
+enum {
+	HIGHLIGHT_R = 255,
+	HIGHLIGHT_G = 128,
+	HIGHLIGHT_B = 128,
+	HIGHLIGHT_A = 255,
+
+	/* How much padding around the highlight box.
+         * Currently we don't want any. */
+	PADDING = 0,
+};
+
+static Eina_Bool
+libclouseau_highlight_fade(void *_rect)
+{
+   Evas_Object *rect = _rect;
+   int r, g, b, a;
+   double na;
+
+   evas_object_color_get(rect, &r, &g, &b, &a);
+   if (a < 20)
+     {
+        evas_object_del(rect);
+        return EINA_FALSE;
+     }
+
+   na = a - 20;
+   r = na / a * r;
+   g = na / a * g;
+   b = na / a * b;
+   evas_object_color_set(rect, r, g, b, na);
+
+   return EINA_TRUE;
+}
+
+static void
+libclouseau_highlight(Evas_Object *obj)
+{
+   Evas *e;
+   Evas_Object *r;
+   int x, y, w, h;
+   const char *tmp;
+
+   e = evas_object_evas_get(obj);
+   if (!e) return;
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+
+   r = evas_object_rectangle_add(e);
+   evas_object_move(r, x - PADDING, y - PADDING);
+   evas_object_resize(r, w + (2 * PADDING), h + (2 * PADDING));
+   evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_show(r);
+   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
+
+   tmp = evas_object_data_get(obj, ".clouseau.bt");
+   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp);
+}
+
+static void
+client_win_del(void *data, Evas_Object *obj, void *event_info)
+{  /* called when client window is deleted, do cleanup here */
+   /* TODO: client cleanup */
+   elm_exit(); /* exit the program's main loop that runs in elm_run() */
+}
+
+static void
+_gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
+      void *event_info)
+{
+//   clouseau_obj_information_list_clear();
+   /* If not an object, return. */
+   if (!elm_genlist_item_parent_get(event_info))
+      return;
+
+   Tree_Item *treeit = elm_object_item_data_get(event_info);
+
+   Evas_Object *obj = treeit->ptr;
+   libclouseau_highlight(obj);
+
+//   clouseau_obj_information_list_populate(treeit);
+}
+
+static void
+_set_selected_app(void *data, Evas_Object *pobj,
+      void *event_info)
+{  /* Set hovel label */
+   elm_object_text_set(pobj, data);
+}
+
+static Ecore_Con_Server *
+_connect_to_daemon(void)
+{
+   static Ecore_Con_Server *svr = NULL;
+   const char *address = LOCALHOST;
+   int port = PORT;
+
+   if (svr && ecore_con_server_connected_get(svr))
+     return svr;  /* Already connected */
+
+   if (!(svr = ecore_con_server_connect(ECORE_CON_REMOTE_TCP, address, port, NULL)))
+     {
+        printf("could not connect to the server: %s, port %d.\n",
+              address, port);
+        return NULL;
+     }
+
+   /* set event handler for server connect */
+   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   /* set event handler for server disconnect */
+   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   /* set event handler for receiving server data */
+   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
+
+   /* start client
+   ecore_main_loop_begin();
+
+   ecore_con_init();
+   ecore_init();
+   eina_init(); */
+
+   return svr;
+}
+
 static int
 _load_list(Evas_Object *gl)
 {
+   Ecore_Con_Server *svr = _connect_to_daemon();
+   if (svr)
+     {
+        void *p;
+        size_t size = compose_packet(&p, GUI, TREE_DATA, "Asking refresg from GUI");
+        ecore_con_server_send(svr, p, size);
+        ecore_con_server_flush(svr);
+        free(p);
+     }
+
+   return 0;
+
+
+
+
+
 
     int       conn_s;                /*  connection socket         */
     short int port;                  /*  port number               */
@@ -364,138 +525,11 @@ _show_hidden_check_changed(void *data, Evas_Object *obj,
    _load_list(data);
 }
 
-/* HIGHLIGHT code. */
-/* The color of the highlight */
-enum {
-	HIGHLIGHT_R = 255,
-	HIGHLIGHT_G = 128,
-	HIGHLIGHT_B = 128,
-	HIGHLIGHT_A = 255,
-
-	/* How much padding around the highlight box.
-         * Currently we don't want any. */
-	PADDING = 0,
-};
-
-static Eina_Bool
-libclouseau_highlight_fade(void *_rect)
-{
-   Evas_Object *rect = _rect;
-   int r, g, b, a;
-   double na;
-
-   evas_object_color_get(rect, &r, &g, &b, &a);
-   if (a < 20)
-     {
-        evas_object_del(rect);
-        return EINA_FALSE;
-     }
-
-   na = a - 20;
-   r = na / a * r;
-   g = na / a * g;
-   b = na / a * b;
-   evas_object_color_set(rect, r, g, b, na);
-
-   return EINA_TRUE;
-}
-
-static void
-libclouseau_highlight(Evas_Object *obj)
-{
-   Evas *e;
-   Evas_Object *r;
-   int x, y, w, h;
-   const char *tmp;
-
-   e = evas_object_evas_get(obj);
-   if (!e) return;
-
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-
-   r = evas_object_rectangle_add(e);
-   evas_object_move(r, x - PADDING, y - PADDING);
-   evas_object_resize(r, w + (2 * PADDING), h + (2 * PADDING));
-   evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_show(r);
-   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
-
-   tmp = evas_object_data_get(obj, ".clouseau.bt");
-   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp);
-}
-
-static void
-client_win_del(void *data, Evas_Object *obj, void *event_info)
-{  /* called when client window is deleted, do cleanup here */
-   /* TODO: client cleanup */
-   elm_exit(); /* exit the program's main loop that runs in elm_run() */
-}
-
 static void
 _bt_clicked(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    elm_object_text_set(obj, "Reload");
    _load_list(data);
-}
-
-static void
-_gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
-      void *event_info)
-{
-//   clouseau_obj_information_list_clear();
-   /* If not an object, return. */
-   if (!elm_genlist_item_parent_get(event_info))
-      return;
-
-   Tree_Item *treeit = elm_object_item_data_get(event_info);
-
-   Evas_Object *obj = treeit->ptr;
-   libclouseau_highlight(obj);
-
-//   clouseau_obj_information_list_populate(treeit);
-}
-
-static void
-_set_selected_app(void *data, Evas_Object *pobj,
-      void *event_info)
-{  /* Set hovel label */
-   elm_object_text_set(pobj, data);
-}
-
-static int
-_connect_to_daemon(void)
-{
-   Ecore_Con_Server *svr;
-   const char *address = LOCALHOST;
-   int port = PORT;
-
-   eina_init();
-   ecore_init();
-   ecore_con_init();
-
-   if (!(svr = ecore_con_server_connect(ECORE_CON_REMOTE_TCP, address, port, NULL)))
-     {
-        printf("could not connect to the server: %s, port %d.\n",
-              address, port);
-        return EINA_FALSE;
-     }
-
-   /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
-   /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
-   /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
-
-   /* start client
-   ecore_main_loop_begin();
-
-   ecore_con_init();
-   ecore_init();
-   eina_init(); */
-
-   return EINA_TRUE;
 }
 
 #ifndef ELM_LIB_QUICKLAUNCH
@@ -615,6 +649,10 @@ elm_main(int argc, char **argv)
    evas_object_show(win);
 
    evas_object_smart_callback_add(win, "delete,request", client_win_del, NULL);
+
+   eina_init();
+   ecore_init();
+   ecore_con_init();
 
    if(!_connect_to_daemon())
      {

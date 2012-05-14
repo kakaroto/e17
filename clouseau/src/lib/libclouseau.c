@@ -173,7 +173,7 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 {
    void *p;
-   size_t size = compose_packet(&p, APP, ACK, "hello! - sent from the client");
+   size_t size = compose_packet(&p, APP, ACK, "hello! - sent from the APP");
    Server *server = malloc(sizeof(*server));
    server->sdata = 0;
 
@@ -237,7 +237,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
    _load_list();  /* compose tree list */
    void *p;
    char *str = _item_tree_string();
-   size_t size = compose_packet(&p, APP, ACK, str);
+   size_t size = compose_packet(&p, APP, TREE_DATA, str);
    ecore_con_server_send(ev->server, p, size);
    ecore_con_server_flush(ev->server);
    if (str)

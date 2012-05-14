@@ -24,6 +24,8 @@ struct _Client {
      int sdata;
 };
 
+Eina_List *trees = NULL;
+
 static void
 log_message(char *filename, char *mode, char *message)
 {
@@ -37,9 +39,12 @@ log_message(char *filename, char *mode, char *message)
 static void
 _daemon_cleanup(void)
 {  /*  Free strings */
-   char *name;
-   EINA_LIST_FREE(info, name)
-      free(name);
+   char *str;
+   EINA_LIST_FREE(info, str)
+      free(str);
+
+   EINA_LIST_FREE(trees, str)
+      free(str);
 
    Ecore_Con_Server *svr;
    Ecore_Con_Client *cl;
@@ -189,6 +194,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
 {
    char fmt[128];
    struct _Client *client = ecore_con_client_data_get(ev->client);
+   packet *pkt = ev->data;
 
    snprintf(fmt, sizeof(fmt),
          "Received %i bytes from client %s port %d:\n"
@@ -199,6 +205,41 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
          ecore_con_client_port_get(ev->client), ev->size);
 
    log_message(LOG_FILE, "a", get_packet_str(ev->data));
+
+   switch(pkt->client)
+     {
+      case APP:  /* Get info from app */
+         if (pkt->type == TREE_DATA)
+           {
+              char txt[1024];
+              trees = eina_list_append(trees, strdup(get_packet_str(pkt)));
+              sprintf(txt, "Adding Tree (%d)", eina_list_count(trees));
+              log_message(LOG_FILE, "a", txt);
+              log_message(LOG_FILE, "a", get_packet_str(pkt));
+           }
+         break;
+
+      case GUI:  /* Sent trees to GUI */
+         if (pkt->type == TREE_DATA)
+           {
+              Eina_List *l;
+              char *str;
+              EINA_LIST_FOREACH(trees, l, str)
+                {  /* Send each tree in a packet */
+                   void *p;
+                   log_message(LOG_FILE, "a", "Sending Tree");
+                   log_message(LOG_FILE, "a", "------------");
+                   log_message(LOG_FILE, "a", str);
+                   log_message(LOG_FILE, "a", "------------");
+                   size_t size = compose_packet(&p, DAEMON, TREE_DATA, str);
+                   ecore_con_client_send(ev->client, p, size);
+                   ecore_con_client_flush(ev->client);
+                   free(p);
+                }
+
+           }
+         break;
+     }
 
    client->sdata += ev->size;
 
