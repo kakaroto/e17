@@ -17,7 +17,6 @@
 
 #include "helper.h"
 #include "libclouseau.h"
-#include "eet_dump.h"
 
 static Eina_Bool _elm_is_init = EINA_FALSE;
 static const char *_my_app_name = NULL;

@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 #include "helper.h"
-#include "eet_dump.h"
 
 #define RUNNING_DIR  "/tmp"
 #define LOCK_FILE "clouseaud.lock"
