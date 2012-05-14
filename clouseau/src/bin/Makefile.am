@@ -4,12 +4,12 @@ bin_PROGRAMS = clouseaud client
 
 clouseaud_SOURCES = \
 		    clouseaud.c \
-		    ../lib/helper.c \
+		    ../lib/eet_data.c \
 		    ../lib/obj_information.c
 
 client_SOURCES = \
 		 client.c \
-		 ../lib/helper.c \
+		 ../lib/eet_data.c \
 		 ../lib/obj_information.c
 
 AM_CPPFLAGS = \

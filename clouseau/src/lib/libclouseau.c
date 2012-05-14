@@ -15,7 +15,7 @@
 #include <Evas.h>
 #include <Elementary.h>
 
-#include "helper.h"
+#include "eet_data.h"
 #include "libclouseau.h"
 
 static Eina_Bool _elm_is_init = EINA_FALSE;

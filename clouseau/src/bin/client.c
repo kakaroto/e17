@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 #include "libclouseau.h"
-#include "helper.h"           /*  Our own helper functions  */
+#include "eet_data.h"
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"

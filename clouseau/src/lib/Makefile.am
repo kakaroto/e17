@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
 
 EXTRA_DIST = \
 	     libclouseau.h \
-	     helper.h
+	     eet_data.h
 
 pkgdir = $(libdir)/clouseau
 pkg_LTLIBRARIES = libclouseau.la
@@ -18,7 +18,7 @@ pkg_LTLIBRARIES = libclouseau.la
 libclouseau_la_SOURCES = \
 			 libclouseau.c \
 			 obj_information.c \
-			 helper.c
+			 eet_data.c
 
 libclouseau_la_LDFLAGS = -module -avoid-version -rdynamic
 libclouseau_la_DEPENDENCIES = $(top_builddir)/config.h
