@@ -114,19 +114,29 @@ _set_selected_app(void *data, Evas_Object *pobj,
       void *event_info EINA_UNUSED)
 {  /* Set hovel label */
    app_data_st *st = data;
-   app_info_st *app = st->app->data;
-   if (gui->sel_app != st)
-     {  /* Reload only of selected some other app */
-        gui->sel_app = st;
+   if (st)
+     {
+        if (gui->sel_app != st)
+          {  /* Reload only of selected some other app */
+             app_info_st *app = st->app->data;
+             gui->sel_app = st;
 
-        char *str = malloc(strlen(app->name)+32);
-        sprintf(str, "%s [%d]", app->name, app->pid);
-        elm_object_text_set(pobj, str);
-        free(str);
+             char *str = malloc(strlen(app->name)+32);
+             sprintf(str, "%s [%d]", app->name, app->pid);
+             elm_object_text_set(pobj, str);
+             free(str);
 
-        elm_progressbar_pulse(gui->pb, EINA_FALSE);
-        evas_object_hide(gui->pb);
-        _load_list(gui);
+             elm_progressbar_pulse(gui->pb, EINA_FALSE);
+             evas_object_hide(gui->pb);
+             _load_list(gui);
+          }
+     }
+   else
+     {  /* If we got a NULL ptr, reset lists and dd_list text */
+        elm_object_text_set(gui->dd_list, "SELECT APP");
+        elm_genlist_clear(gui->gl);
+        elm_genlist_clear(gui->prop_list);
+        gui->sel_app = NULL;
      }
 }
 
@@ -192,12 +202,7 @@ _remove_app(gui_elements *g, Variant_st *v)
             (void *) (uintptr_t) app->ptr);
 
    if (app->ptr == sel_app->ptr)
-     {
-        elm_object_text_set(g->dd_list, "SELECT APP");
-        elm_genlist_clear(g->gl);
-        elm_genlist_clear(g->prop_list);
-        g->sel_app = NULL;
-     }
+     _set_selected_app(NULL, g->dd_list, NULL);
 
    if (st)
      {  /* Remove from list and free all variants */
