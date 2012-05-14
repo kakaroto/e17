@@ -14,6 +14,7 @@
 
 static Eina_List *gui = NULL; /* List of app_info_st for gui clients */
 static Eina_List *app = NULL; /* List of app_info_st for app clients */
+Ecore_Ipc_Server *ipc_svr = NULL;
 
 /* For Debug */
 char msg_buf[MAX_LINE+1];
@@ -45,13 +46,9 @@ static void
 _daemon_cleanup(void)
 {  /*  Free strings */
    app_info_st *p;
-   Ecore_Ipc_Server *svr;
-   Ecore_Ipc_Client *cl;
-   Eina_List *clients;
 
-   clients = ecore_ipc_server_clients_get(svr);
    sprintf(msg_buf,"Clients connected to this server when exiting: %d\n",
-         eina_list_count(clients));
+         eina_list_count(ecore_ipc_server_clients_get(ipc_svr)));
    log_message(LOG_FILE, "a", msg_buf);
 
    EINA_LIST_FREE(gui, p)
@@ -67,6 +64,7 @@ _daemon_cleanup(void)
      }
 
    gui = app = NULL;
+   ipc_svr = NULL;
 
    data_descriptors_shutdown();
    ecore_ipc_shutdown();
@@ -211,6 +209,11 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
      }
 
    ecore_ipc_client_del(ev->client);
+
+   if (!eina_list_count(ecore_ipc_server_clients_get(ipc_svr)))
+     {  /* Trigger cleanup and exit when all clients disconneced */
+        raise(SIGTERM);
+     }
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -389,7 +392,6 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
 
 int main(void)
 {
-   Ecore_Ipc_Server *svr;
    Ecore_Ipc_Client *cl;
    const Eina_List *clients, *l;
 
@@ -398,10 +400,11 @@ int main(void)
    ecore_init();
    ecore_ipc_init();
 
-   if (!(svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM, LOCALHOST, PORT, NULL)))
+   if (!(ipc_svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM,
+               LOCALHOST, PORT, NULL)))
      exit(1);
 
-   ecore_ipc_server_data_size_max_set(svr, -1);
+   ecore_ipc_server_data_size_max_set(ipc_svr, -1);
 
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
