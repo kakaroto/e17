@@ -25,6 +25,7 @@ struct _gui_elements
 {
    Evas_Object *dd_list;
    Evas_Object *gl;
+   Evas_Object *lb;  /* Label showing backtrace */
    Evas_Object *prop_list;
    Evas_Object *inwin;
    Evas_Object *en;
@@ -87,6 +88,9 @@ _load_gui_with_list(gui_elements *g, Eina_List *trees)
 {
    Eina_List *l;
    Tree_Item *treeit;
+
+   elm_object_text_set(g->lb, NULL); /* Clear backtrace label */
+
    if (!trees)
      return EINA_TRUE;
 
@@ -484,7 +488,7 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
      }
    /* END   - replacing libclouseau_highlight(obj); */
 
-   clouseau_obj_information_list_populate(treeit);
+   clouseau_obj_information_list_populate(treeit, gui->lb);
 }
 
 static int
@@ -585,7 +589,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
-   elm_win_title_set(win, "client");
+   elm_win_title_set(win, "Clouseau Client");
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
@@ -690,6 +694,24 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         evas_object_show(prop_list);
      }
 
+   /* START Add buttom panel */
+   Evas_Object *panel;
+   panel = elm_panel_add(win);
+   elm_panel_orient_set(panel, ELM_PANEL_ORIENT_BOTTOM);
+   evas_object_size_hint_weight_set(panel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panel_hidden_set(panel, EINA_TRUE);
+   elm_win_resize_object_add(win, panel);
+
+   gui->lb = elm_label_add(win);
+   evas_object_size_hint_weight_set(gui->lb, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(gui->lb, EVAS_HINT_FILL, 0);
+   evas_object_show(gui->lb);
+
+   elm_object_content_set(panel, gui->lb);
+   evas_object_show(panel);
+   /* END   Add buttom panel */
+
    /* Add progress wheel */
    gui->pb = elm_progressbar_add(win);
    elm_object_style_set(gui->pb, "wheel");
@@ -698,8 +720,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_size_hint_align_set(gui->pb, 0.5, 0.0);
    evas_object_size_hint_weight_set(gui->pb,
          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
-   elm_box_pack_end(bx, gui->pb);
+   elm_win_resize_object_add(win, gui->pb);
 
    /* Resize and show main window */
    evas_object_resize(win, 500, 500);

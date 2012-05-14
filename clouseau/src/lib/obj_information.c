@@ -604,7 +604,7 @@ static const struct {
 };
 
 void
-clouseau_obj_information_list_populate(Tree_Item *treeit)
+clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
 {
    unsigned int i;
 
@@ -934,6 +934,22 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
      }
+
+   /* Update backtrace text */
+   if (oinfo->evas_props.bt)
+     {  /* Build backtrace label */
+        char *k = malloc(strlen("Creation backtrace:\n\n") +
+              strlen(oinfo->evas_props.bt) + 1);
+
+        sprintf(k, "Creation backtrace:\n\n%s", oinfo->evas_props.bt);
+        char *p = elm_entry_utf8_to_markup(k);
+        elm_object_text_set(lb, p);
+        free(p);
+        free(k);
+     }
+   else
+     elm_object_text_set(lb, NULL);
+
 
    /* Actually populate the genlist */
      {
