@@ -147,6 +147,12 @@ cdef extern from "Elementary.h":
         ELM_ICON_FILE
         ELM_ICON_STANDARD
 
+    ctypedef enum Elm_Illume_Command:
+        ELM_ILLUME_COMMAND_FOCUS_BACK
+        ELM_ILLUME_COMMAND_FOCUS_FORWARD
+        ELM_ILLUME_COMMAND_FOCUS_HOME
+        ELM_ILLUME_COMMAND_CLOSE
+
     ctypedef enum Elm_Image_Orient:
         ELM_IMAGE_ORIENT_NONE
         ELM_IMAGE_ROTATE_90
@@ -235,6 +241,25 @@ cdef extern from "Elementary.h":
         ELM_WIN_MENU
         ELM_WIN_UTILITY
         ELM_WIN_SPLASH
+        ELM_WIN_DROPDOWN_MENU
+        ELM_WIN_POPUP_MENU
+        ELM_WIN_TOOLTIP
+        ELM_WIN_NOTIFICATION
+        ELM_WIN_COMBO
+        ELM_WIN_DND
+        ELM_WIN_INLINED_IMAGE
+        ELM_WIN_SOCKET_IMAGE
+
+    ctypedef enum Elm_Win_Indicator_Mode:
+        ELM_WIN_INDICATOR_UNKNOWN
+        ELM_WIN_INDICATOR_HIDE
+        ELM_WIN_INDICATOR_SHOW
+
+    ctypedef enum Elm_Win_Indicator_Opacity_Mode:
+        ELM_WIN_INDICATOR_OPACITY_UNKNOWN
+        ELM_WIN_INDICATOR_OPAQUE
+        ELM_WIN_INDICATOR_TRANSLUCENT
+        ELM_WIN_INDICATOR_TRANSPARENT
 
     ctypedef enum Elm_Win_Keyboard_Mode:
         ELM_WIN_KEYBOARD_UNKNOWN      # Unknown keyboard state
@@ -447,45 +472,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.const_Eina_List *elm_object_focus_custom_chain_get(evas.c_evas.const_Evas_Object *obj)
     void         elm_object_focus_custom_chain_append(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *relative_child)
     void         elm_object_focus_custom_chain_prepend(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *relative_child)
-
-    # Window handling
-    evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent,char* name,Elm_Win_Type type)
-    void elm_win_resize_object_add(evas.c_evas.Evas_Object* obj,evas.c_evas.Evas_Object* subobj)
-    void elm_win_resize_object_del(evas.c_evas.Evas_Object* obj,evas.c_evas.Evas_Object* subobj)
-    void elm_win_title_set(evas.c_evas.Evas_Object* obj,char *title)
-    void elm_win_autodel_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool autodel)
-    void elm_win_activate(evas.c_evas.Evas_Object *obj)
-    void elm_win_lower(evas.c_evas.Evas_Object *obj)
-    void elm_win_raise(evas.c_evas.Evas_Object *obj)
-    void elm_win_borderless_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool borderless)
-    evas.c_evas.Eina_Bool elm_win_borderless_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_shaped_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool shaped)
-    evas.c_evas.Eina_Bool elm_win_shaped_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_alpha_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool alpha)
-    evas.c_evas.Eina_Bool elm_win_alpha_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_override_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool override)
-    evas.c_evas.Eina_Bool elm_win_override_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_fullscreen_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fullscreen)
-    evas.c_evas.Eina_Bool elm_win_fullscreen_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_maximized_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool maximized)
-    evas.c_evas.Eina_Bool elm_win_maximized_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_iconified_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool iconified)
-    evas.c_evas.Eina_Bool elm_win_iconified_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_layer_set(evas.c_evas.Evas_Object *obj, int layer)
-    int elm_win_layer_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_rotation_set(evas.c_evas.Evas_Object *obj, int rotation)
-    int elm_win_rotation_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_sticky_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool sticky)
-    evas.c_evas.Eina_Bool elm_win_sticky_get(evas.c_evas.Evas_Object *obj)
-
-
-    void elm_win_keyboard_mode_set(evas.c_evas.Evas_Object *obj, Elm_Win_Keyboard_Mode mode)
-    Elm_Win_Keyboard_Mode elm_win_keyboard_mode_get(evas.c_evas.Evas_Object *obj)
-    void elm_win_keyboard_win_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_keyboard)
-    evas.c_evas.Eina_Bool elm_win_keyboard_win_get(evas.c_evas.Evas_Object *obj)
-
-    void elm_win_focus_highlight_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
-    evas.c_evas.Eina_Bool elm_win_focus_highlight_enabled_get(evas.c_evas.Evas_Object *obj)
 
     # X specific call - wont't work on non-x engines (return 0)
     Ecore_X_Window elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
@@ -1074,3 +1060,90 @@ cdef extern from "Elementary.h":
     void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
     evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void elm_panel_toggle(evas.c_evas.Evas_Object *obj)
+
+    # Window object (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent, char *name, Elm_Win_Type type)
+    void                     elm_win_resize_object_add(evas.c_evas.Evas_Object* obj, evas.c_evas.Evas_Object* subobj)
+    void                     elm_win_resize_object_del(evas.c_evas.Evas_Object* obj, evas.c_evas.Evas_Object* subobj)
+    void                     elm_win_title_set(evas.c_evas.Evas_Object* obj, char *title)
+    char                    *elm_win_title_get(evas.c_evas.Evas_Object* obj)
+    void                     elm_win_icon_name_set(evas.c_evas.Evas_Object *obj, char *icon_name)
+    char                    *elm_win_icon_name_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_role_set(evas.c_evas.Evas_Object *obj, char *role)
+    char                    *elm_win_role_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_icon_object_set(evas.c_evas.Evas_Object* obj, evas.c_evas.Evas_Object* icon)
+    evas.c_evas.Evas_Object *elm_win_icon_object_get(evas.c_evas.Evas_Object*)
+    void                     elm_win_autodel_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool autodel)
+    evas.c_evas.Eina_Bool    elm_win_autodel_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_activate(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_lower(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_raise(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_center(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h, evas.c_evas.Eina_Bool v)
+    void                     elm_win_borderless_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool borderless)
+    evas.c_evas.Eina_Bool    elm_win_borderless_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_shaped_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool shaped)
+    evas.c_evas.Eina_Bool    elm_win_shaped_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_alpha_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool alpha)
+    evas.c_evas.Eina_Bool    elm_win_alpha_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_override_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool override)
+    evas.c_evas.Eina_Bool    elm_win_override_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_fullscreen_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fullscreen)
+    evas.c_evas.Eina_Bool    elm_win_fullscreen_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_maximized_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool maximized)
+    evas.c_evas.Eina_Bool    elm_win_maximized_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_iconified_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool iconified)
+    evas.c_evas.Eina_Bool    elm_win_iconified_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_withdrawn_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool withdrawn)
+    evas.c_evas.Eina_Bool    elm_win_withdrawn_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_urgent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool urgent)
+    evas.c_evas.Eina_Bool    elm_win_urgent_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_demand_attention_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool demand_attention)
+    evas.c_evas.Eina_Bool    elm_win_demand_attention_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_modal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool modal)
+    evas.c_evas.Eina_Bool    elm_win_modal_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_aspect_set(evas.c_evas.Evas_Object *obj, double aspect)
+    double                   elm_win_aspect_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_layer_set(evas.c_evas.Evas_Object *obj, int layer)
+    int                      elm_win_layer_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_rotation_set(evas.c_evas.Evas_Object *obj, int rotation)
+    void                     elm_win_rotation_with_resize_set(evas.c_evas.Evas_Object *obj, int rotation)
+    int                      elm_win_rotation_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_sticky_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool sticky)
+    evas.c_evas.Eina_Bool    elm_win_sticky_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_conformant_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool conformant)
+    evas.c_evas.Eina_Bool    elm_win_conformant_get(evas.c_evas.Evas_Object *obj)
+
+    void                     elm_win_quickpanel_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool quickpanel)
+    evas.c_evas.Eina_Bool    elm_win_quickpanel_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_quickpanel_priority_major_set(evas.c_evas.Evas_Object *obj, int priority)
+    int                      elm_win_quickpanel_priority_major_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_quickpanel_priority_minor_set(evas.c_evas.Evas_Object *obj, int priority)
+    int                      elm_win_quickpanel_priority_minor_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_quickpanel_zone_set(evas.c_evas.Evas_Object *obj, int zone)
+    int                      elm_win_quickpanel_zone_get(evas.c_evas.Evas_Object *obj)
+
+    void                     elm_win_prop_focus_skip_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool skip)
+    void                     elm_win_illume_command_send(evas.c_evas.Evas_Object *obj, Elm_Illume_Command command, params)
+    evas.c_evas.Evas_Object *elm_win_inlined_image_object_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_win_focus_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_screen_constrain_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool constrain)
+    evas.c_evas.Eina_Bool    elm_win_screen_constrain_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_screen_size_get(evas.c_evas.Evas_Object *obj, int *x, int *y, int *w, int *h)
+
+    void                     elm_win_focus_highlight_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
+    evas.c_evas.Eina_Bool    elm_win_focus_highlight_enabled_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_focus_highlight_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    char                    *elm_win_focus_highlight_style_get(evas.c_evas.Evas_Object *obj)
+
+    void                     elm_win_keyboard_mode_set(evas.c_evas.Evas_Object *obj, Elm_Win_Keyboard_Mode mode)
+    Elm_Win_Keyboard_Mode    elm_win_keyboard_mode_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_keyboard_win_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_keyboard)
+    evas.c_evas.Eina_Bool    elm_win_keyboard_win_get(evas.c_evas.Evas_Object *obj)
+
+    void                     elm_win_indicator_mode_set(evas.c_evas.Evas_Object *obj, Elm_Win_Indicator_Mode mode)
+    Elm_Win_Indicator_Mode   elm_win_indicator_mode_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_indicator_opacity_set(evas.c_evas.Evas_Object *obj, Elm_Win_Indicator_Opacity_Mode mode)
+    Elm_Win_Indicator_Opacity_Mode elm_win_indicator_opacity_get(evas.c_evas.Evas_Object *obj)
+
+    void                     elm_win_screen_position_get(evas.c_evas.Evas_Object *obj, int *x, int *y)
+    evas.c_evas.Eina_Bool    elm_win_socket_listen(evas.c_evas.Evas_Object *obj, char *svcname, int svcnum, evas.c_evas.Eina_Bool svcsys)
