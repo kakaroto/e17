@@ -28,6 +28,7 @@ struct _gui_elements
    Evas_Object *prop_list;
    Evas_Object *inwin;
    Evas_Object *en;
+   Evas_Object *pb; /* Progress wheel shown when waiting for TREE_DATA */
    char *address;
    app_data_st *sel_app; /* Currently selected app data */
 };
@@ -82,18 +83,22 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *e
 
 
 static Eina_Bool
-_load_gui_with_list(Evas_Object *gl, Eina_List *trees)
+_load_gui_with_list(gui_elements *g, Eina_List *trees)
 {
    Eina_List *l;
    Tree_Item *treeit;
    if (!trees)
      return EINA_TRUE;
 
+   /* Stop progress wheel as we load tree data */
+   elm_progressbar_pulse(g->pb, EINA_FALSE);
+   evas_object_hide(g->pb);
+
    EINA_LIST_FOREACH(trees, l, treeit)
      {  /* Insert the base ee items */
         Elm_Genlist_Item_Type glflag = (treeit->children) ?
            ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
-        elm_genlist_item_append(gl, &itc, treeit, NULL,
+        elm_genlist_item_append(g->gl, &itc, treeit, NULL,
               glflag, NULL, NULL);
      }
 
@@ -115,6 +120,8 @@ _set_selected_app(void *data, Evas_Object *pobj,
         elm_object_text_set(pobj, str);
         free(str);
 
+        elm_progressbar_pulse(gui->pb, EINA_FALSE);
+        evas_object_hide(gui->pb);
         _load_list(gui);
      }
 }
@@ -228,7 +235,7 @@ _update_tree(gui_elements *g, Variant_st *v)
         st->td = v;
 
         elm_genlist_clear(g->gl);
-        _load_gui_with_list(g->gl, td->tree);
+        _load_gui_with_list(g, td->tree);
      }
 }
 
@@ -498,6 +505,8 @@ _load_list(gui_elements *g)
              void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size);
              if (p)
                {
+                  elm_progressbar_pulse(g->pb, EINA_TRUE);
+                  evas_object_show(g->pb);
                   ecore_ipc_server_send(svr,
                         0,0,0,0,EINA_FALSE, p, size);
                   ecore_ipc_server_flush(svr);
@@ -679,6 +688,18 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         evas_object_show(prop_list);
      }
 
+   /* Add progress wheel */
+   gui->pb = elm_progressbar_add(win);
+   elm_object_style_set(gui->pb, "wheel");
+   elm_object_text_set(gui->pb, "Style: wheel");
+   elm_progressbar_pulse(gui->pb, EINA_FALSE);
+   evas_object_size_hint_align_set(gui->pb, 0.5, 0.0);
+   evas_object_size_hint_weight_set(gui->pb,
+         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
+   elm_box_pack_end(bx, gui->pb);
+
+   /* Resize and show main window */
    evas_object_resize(win, 500, 500);
    evas_object_show(win);
 
