@@ -18,11 +18,6 @@
 #include "libclouseau.h"
 #include "ui/obj_information.h"
 
-struct _Server {
-     int sdata;
-};
-
-
 static Eina_List *tree = NULL;
 static Eina_Bool _lib_init = EINA_FALSE;
 
@@ -66,7 +61,7 @@ _item_tree_item_string(Tree_Item *parent, int conn_s, char *buffer)
    sprintf(buffer, "server %s\n", parent->name);
    printf("server %s", buffer);
    Writeline(conn_s, buffer, strlen(buffer));
-   Readline(conn_s, buffer, MAX_LINE-1);
+   Readline(conn_s, buffer, MAX_LINE);
    printf("%s", buffer);
 }
 
@@ -157,7 +152,7 @@ Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 {
    char welcome[] = "hello! - sent from the client";
-   struct _Server *server = malloc(sizeof(*server));
+   Server *server = malloc(sizeof(*server));
    server->sdata = 0;
 
    ecore_con_server_data_set(ev->server, server);
@@ -182,7 +177,7 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
         return ECORE_CALLBACK_RENEW;
      }
 
-   struct _Server *server = ecore_con_server_data_get(ev->server);
+   Server *server = ecore_con_server_data_get(ev->server);
 
    printf("Lost server with ip %s!\n", ecore_con_server_ip_get(ev->server));
 
@@ -202,7 +197,7 @@ Eina_Bool
 _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
 {
    char fmt[128];
-   struct _Server *server = ecore_con_server_data_get(ev->server);
+   Server *server = ecore_con_server_data_get(ev->server);
 
    snprintf(fmt, sizeof(fmt),
          "Received %i bytes from server:\n"
@@ -267,7 +262,7 @@ _notify(char *msg)
     int       conn_s;                /*  connection socket         */
     short int port;                  /*  port number               */
     struct    sockaddr_in servaddr;  /*  socket address structure  */
-    char      buffer[MAX_LINE];      /*  character buffer          */
+    char      buffer[MAX_LINE+1];    /*  character buffer          */
     char     *szAddress = "127.0.0.1"; /*  Holds remote IP address   */
 
     /*  Set the remote port  */
@@ -311,7 +306,7 @@ _notify(char *msg)
     _item_tree_string(conn_s, buffer);
     strcpy(buffer, "END_OF_MESSAGE");
     Writeline(conn_s, buffer, strlen(buffer));
-    Readline(conn_s, buffer, MAX_LINE-1);
+    Readline(conn_s, buffer, MAX_LINE);
 
 
     /*  Output echoed string  */

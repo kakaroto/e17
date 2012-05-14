@@ -25,6 +25,12 @@
 #define MAX_LINE       (1023)
 #define LOCALHOST      "127.0.0.1"
 
+struct _Server {
+     int sdata;
+};
+typedef struct _Server Server;
+
+
 /*  Function declarations  */
 
 ssize_t Readline(int fd, void *vptr, size_t maxlen);

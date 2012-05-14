@@ -225,7 +225,7 @@ int main(void)
    ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
 
    ecore_con_server_timeout_set(svr, 10);
-   ecore_con_server_client_limit_set(svr, 3, 0);
+   ecore_con_server_client_limit_set(svr, 8, 0);
 
    ecore_main_loop_begin();
    _daemon_cleanup();
