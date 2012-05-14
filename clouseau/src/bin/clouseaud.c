@@ -65,20 +65,6 @@ _daemon_cleanup(void)
    eina_shutdown();
 }
 
-void signal_handler(int sig)
-{
-   switch(sig) {
-      case SIGHUP:
-         log_message(LOG_FILE, "a", "hangup signal catched");
-         break;
-      case SIGTERM:
-         log_message(LOG_FILE, "a", "terminate signal catched");
-         _daemon_cleanup();
-         exit(0);
-         break;
-   }
-}
-
 void daemonize(void)
 {
    int i,lfp;
@@ -108,8 +94,6 @@ void daemonize(void)
    signal(SIGTSTP,SIG_IGN); /* ignore tty signals */
    signal(SIGTTOU,SIG_IGN);
    signal(SIGTTIN,SIG_IGN);
-   signal(SIGHUP,signal_handler); /* catch hangup signal */
-   signal(SIGTERM,signal_handler); /* catch kill signal */
 
    log_message(LOG_FILE, "w", "Daemon Started");
    log_message(LOG_FILE, "a", ctime(&currentTime));
@@ -202,7 +186,7 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
 
    if (!eina_list_count(ecore_ipc_server_clients_get(ipc_svr)))
      {  /* Trigger cleanup and exit when all clients disconneced */
-        raise(SIGTERM);
+        ecore_main_loop_quit();
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -351,6 +335,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                                    (void *) (uintptr_t) info->ptr);
                           }
                      }
+
+                   item_tree_free(td->tree);
                 }
               break;
 
@@ -372,7 +358,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
               break;
           }
 
-        free(v);  /* NOT variant_free(v), then comes from eet..decode */
+        variant_free(v);  /* NOT variant_free(v), then comes from eet..decode */
      }
    else
      log_message(LOG_FILE, "a", "Failed to decode data.");
