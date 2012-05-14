@@ -131,7 +131,8 @@ public:
       temp->Set(String::NewSymbol("part"), String::New(part));
       Handle<Value> args[1] = { temp };
       Local<Value> text = callback->Call(temp, 1, args);
-      return strdup(*String::Utf8Value(text->ToString()));
+      return text.IsEmpty() ? NULL : strdup(*String::Utf8Value(text->ToString()));
+
    }
 
    Evas_Object *GetContent(Handle<Value> data, const char *part)
@@ -143,7 +144,7 @@ public:
       temp->Set(String::NewSymbol("part"), String::New(part));
       Handle<Value> args[1] = { temp };
       Local<Value> retval = callback->Call(temp, 1, args);
-      if (!retval->IsObject())
+      if (retval.IsEmpty() || !retval->IsObject())
          return NULL;
 
       /* FIXME: This might leak. Investigate. */
