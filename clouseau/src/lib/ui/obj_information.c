@@ -126,33 +126,33 @@ _obj_information_free(Obj_Information *oinfo)
    eina_stringshare_del(oinfo->evas_props.name);
    eina_stringshare_del(oinfo->evas_props.bt);
 
-   if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_ELM)
+   if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_ELM)
      {
-        eina_stringshare_del(oinfo->extra_props.elm.type);
-        eina_stringshare_del(oinfo->extra_props.elm.style);
+        eina_stringshare_del(oinfo->extra_props.u.elm.type);
+        eina_stringshare_del(oinfo->extra_props.u.elm.style);
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_TEXT)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXT)
      {
-        eina_stringshare_del(oinfo->extra_props.text.font);
-        eina_stringshare_del(oinfo->extra_props.text.source);
-        eina_stringshare_del(oinfo->extra_props.text.text);
+        eina_stringshare_del(oinfo->extra_props.u.text.font);
+        eina_stringshare_del(oinfo->extra_props.u.text.source);
+        eina_stringshare_del(oinfo->extra_props.u.text.text);
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_IMAGE)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_IMAGE)
      {
-        eina_stringshare_del(oinfo->extra_props.image.file);
-        eina_stringshare_del(oinfo->extra_props.image.key);
-        eina_stringshare_del(oinfo->extra_props.image.load_err);
+        eina_stringshare_del(oinfo->extra_props.u.image.file);
+        eina_stringshare_del(oinfo->extra_props.u.image.key);
+        eina_stringshare_del(oinfo->extra_props.u.image.load_err);
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_EDJE)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_EDJE)
      {
-        eina_stringshare_del(oinfo->extra_props.edje.file);
-        eina_stringshare_del(oinfo->extra_props.edje.group);
+        eina_stringshare_del(oinfo->extra_props.u.edje.file);
+        eina_stringshare_del(oinfo->extra_props.u.edje.group);
 
-        eina_stringshare_del(oinfo->extra_props.edje.load_err);
+        eina_stringshare_del(oinfo->extra_props.u.edje.load_err);
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
      {
-        eina_stringshare_del(oinfo->extra_props.textblock.style);
+        eina_stringshare_del(oinfo->extra_props.u.textblock.style);
      }
 
    free(oinfo);
@@ -196,60 +196,60 @@ _obj_information_get(Tree_Item *treeit)
 
    if (elm_widget_is(obj))
      {
-        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_ELM;
+        oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_ELM;
 
-        oinfo->extra_props.elm.type =
+        oinfo->extra_props.u.elm.type =
            eina_stringshare_add(elm_widget_type_get(obj));
-        oinfo->extra_props.elm.style =
+        oinfo->extra_props.u.elm.style =
            eina_stringshare_add(elm_widget_style_get(obj));
-        oinfo->extra_props.elm.scale = elm_widget_scale_get(obj);
-        oinfo->extra_props.elm.has_focus = elm_object_focus_get(obj);
-        oinfo->extra_props.elm.is_disabled = elm_widget_disabled_get(obj);
-        oinfo->extra_props.elm.is_mirrored = elm_widget_mirrored_get(obj);
-        oinfo->extra_props.elm.is_mirrored_automatic =
+        oinfo->extra_props.u.elm.scale = elm_widget_scale_get(obj);
+        oinfo->extra_props.u.elm.has_focus = elm_object_focus_get(obj);
+        oinfo->extra_props.u.elm.is_disabled = elm_widget_disabled_get(obj);
+        oinfo->extra_props.u.elm.is_mirrored = elm_widget_mirrored_get(obj);
+        oinfo->extra_props.u.elm.is_mirrored_automatic =
               elm_widget_mirrored_automatic_get(obj);
      }
    else if (!strcmp("text", evas_object_type_get(obj)))
      {
         const char *font;
         int size;
-        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_TEXT;
+        oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_TEXT;
 
         evas_object_text_font_get(obj, &font, &size);
-        oinfo->extra_props.text.font = eina_stringshare_add(font);
-        oinfo->extra_props.text.size = size;
-        oinfo->extra_props.text.source =
+        oinfo->extra_props.u.text.font = eina_stringshare_add(font);
+        oinfo->extra_props.u.text.size = size;
+        oinfo->extra_props.u.text.source =
            eina_stringshare_add(evas_object_text_font_source_get(obj));
-	oinfo->extra_props.text.text = eina_stringshare_add(evas_object_text_text_get(obj));
+	oinfo->extra_props.u.text.text = eina_stringshare_add(evas_object_text_text_get(obj));
      }
    else if (!strcmp("image", evas_object_type_get(obj)))
      {
         const char *file, *key;
-        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_IMAGE;
+        oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_IMAGE;
 
         evas_object_image_file_get(obj, &file, &key);
-        oinfo->extra_props.image.file = eina_stringshare_add(file);
-        oinfo->extra_props.image.key = eina_stringshare_add(key);
-        oinfo->extra_props.image.source = evas_object_image_source_get(obj);
+        oinfo->extra_props.u.image.file = eina_stringshare_add(file);
+        oinfo->extra_props.u.image.key = eina_stringshare_add(key);
+        oinfo->extra_props.u.image.source = evas_object_image_source_get(obj);
 
         if (evas_object_image_load_error_get(obj) != EVAS_LOAD_ERROR_NONE)
           {
-             oinfo->extra_props.image.load_err = eina_stringshare_add(
+             oinfo->extra_props.u.image.load_err = eina_stringshare_add(
                    evas_load_error_str(evas_object_image_load_error_get(obj)));
           }
      }
    else if (!strcmp("edje", evas_object_type_get(obj)))
      {
         const char *file, *group;
-        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_EDJE;
+        oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_EDJE;
 
         edje_object_file_get(obj, &file, &group);
-        oinfo->extra_props.edje.file = eina_stringshare_add(file);
-        oinfo->extra_props.edje.group = eina_stringshare_add(group);
+        oinfo->extra_props.u.edje.file = eina_stringshare_add(file);
+        oinfo->extra_props.u.edje.group = eina_stringshare_add(group);
 
         if (edje_object_load_error_get(obj) != EDJE_LOAD_ERROR_NONE)
           {
-             oinfo->extra_props.edje.load_err = eina_stringshare_add(
+             oinfo->extra_props.u.edje.load_err = eina_stringshare_add(
                    edje_load_error_str(edje_object_load_error_get(obj)));
           }
      }
@@ -257,15 +257,15 @@ _obj_information_get(Tree_Item *treeit)
      {
         const char *style;
         const Evas_Textblock_Style *ts;
-        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_TEXTBLOCK;
+        oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_TEXTBLOCK;
 
         ts = evas_object_textblock_style_get(obj);
         style = evas_textblock_style_get(ts);
-        oinfo->extra_props.textblock.style = eina_stringshare_add(style);
+        oinfo->extra_props.u.textblock.style = eina_stringshare_add(style);
      }
    else
      {
-        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_OTHER;
+        oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_OTHER;
      }
    return oinfo;
 }
@@ -430,7 +430,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
           }
      }
 
-   if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_ELM)
+   if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_ELM)
      {
         Inf_Tree_Item *tit;
         char buf[1024];
@@ -439,7 +439,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         main_tit->string = eina_stringshare_add("Elementary");
         information_tree = eina_list_append(information_tree, main_tit);
 
-        snprintf(buf, sizeof(buf), "Wid-Type: %s", oinfo->extra_props.elm.type);
+        snprintf(buf, sizeof(buf), "Wid-Type: %s", oinfo->extra_props.u.elm.type);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
@@ -453,42 +453,42 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
 #endif
 
         snprintf(buf, sizeof(buf), "Style: %s",
-              oinfo->extra_props.elm.style);
+              oinfo->extra_props.u.elm.style);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Scale: %.6lg",
-              oinfo->extra_props.elm.scale);
+              oinfo->extra_props.u.elm.scale);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Disabled: %d",
-              oinfo->extra_props.elm.is_disabled);
+              oinfo->extra_props.u.elm.is_disabled);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Has focus: %d",
-              oinfo->extra_props.elm.has_focus);
+              oinfo->extra_props.u.elm.has_focus);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Mirrored: %d",
-              oinfo->extra_props.elm.is_mirrored);
+              oinfo->extra_props.u.elm.is_mirrored);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Automatic mirroring: %d",
-              oinfo->extra_props.elm.is_mirrored_automatic);
+              oinfo->extra_props.u.elm.is_mirrored_automatic);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_TEXT)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXT)
      {
         Inf_Tree_Item *tit;
         char buf[1024];
@@ -499,17 +499,17 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         main_tit->string = eina_stringshare_add("Text");
         information_tree = eina_list_append(information_tree, main_tit);
 
-        snprintf(buf, sizeof(buf), "Font: %s", oinfo->extra_props.text.font);
+        snprintf(buf, sizeof(buf), "Font: %s", oinfo->extra_props.u.text.font);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
-        snprintf(buf, sizeof(buf), "Size: %d", oinfo->extra_props.text.size);
+        snprintf(buf, sizeof(buf), "Size: %d", oinfo->extra_props.u.text.size);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
-        font = oinfo->extra_props.text.source;
+        font = oinfo->extra_props.u.text.source;
         if (font)
           {
              snprintf(buf, sizeof(buf), "Source: %s", font);
@@ -518,7 +518,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
 
-        text = oinfo->extra_props.text.text;
+        text = oinfo->extra_props.u.text.text;
         if (text)
           {
              snprintf(buf, sizeof(buf), "Text: %s", text);
@@ -527,7 +527,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_IMAGE)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_IMAGE)
      {
         Inf_Tree_Item *tit;
         char buf[1024];
@@ -537,39 +537,39 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "File name: %s",
-              oinfo->extra_props.image.file);
+              oinfo->extra_props.u.image.file);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
-        if (oinfo->extra_props.image.key)
+        if (oinfo->extra_props.u.image.key)
           {
              snprintf(buf, sizeof(buf), "File key: %s",
-                   oinfo->extra_props.image.key);
+                   oinfo->extra_props.u.image.key);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
 
-        if (oinfo->extra_props.image.source)
+        if (oinfo->extra_props.u.image.source)
           {
              snprintf(buf, sizeof(buf), "Source: %p",
-                   oinfo->extra_props.image.source);
+                   oinfo->extra_props.u.image.source);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
 
-        if (oinfo->extra_props.image.load_err)
+        if (oinfo->extra_props.u.image.load_err)
           {
              snprintf(buf, sizeof(buf), "Load error: %s",
-                   oinfo->extra_props.image.load_err);
+                   oinfo->extra_props.u.image.load_err);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_EDJE)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_EDJE)
      {
         Inf_Tree_Item *tit;
         char buf[1024];
@@ -578,26 +578,26 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         main_tit->string = eina_stringshare_add("Edje");
         information_tree = eina_list_append(information_tree, main_tit);
 
-        snprintf(buf, sizeof(buf), "File: %s", oinfo->extra_props.edje.file);
+        snprintf(buf, sizeof(buf), "File: %s", oinfo->extra_props.u.edje.file);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
-        snprintf(buf, sizeof(buf), "Group: %s", oinfo->extra_props.edje.group);
+        snprintf(buf, sizeof(buf), "Group: %s", oinfo->extra_props.u.edje.group);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
-        if (oinfo->extra_props.edje.load_err)
+        if (oinfo->extra_props.u.edje.load_err)
           {
              snprintf(buf, sizeof(buf), "Load error: %s",
-                   oinfo->extra_props.edje.load_err);
+                   oinfo->extra_props.u.edje.load_err);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
      }
-   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
+   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
      {
         Inf_Tree_Item *tit;
         char buf[1024];
@@ -607,7 +607,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "Style: %s",
-              oinfo->extra_props.textblock.style);
+              oinfo->extra_props.u.textblock.style);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);

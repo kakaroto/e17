@@ -84,14 +84,26 @@ union _un_extra_props
 };
 typedef union _un_extra_props un_extra_props;
 
+struct _st_extra_props
+{  /* as Example_Union */
+   en_obj_type type;
+   un_extra_props u;
+};
+typedef struct _st_extra_props st_extra_props;
+
 struct _Obj_Information
 {
    st_evas_props evas_props;
-   en_obj_type obj_type;
-   un_extra_props extra_props;
+   st_extra_props extra_props;
 };
 typedef struct _Obj_Information Obj_Information;
 
+struct _eet_object_type_mapping
+{
+   en_obj_type u;
+   const char *name;
+};
+typedef struct _eet_object_type_mapping eet_object_type_mapping;
 
 
 Evas_Object *clouseau_obj_information_list_add(Evas_Object *parent);
