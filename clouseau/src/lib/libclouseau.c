@@ -171,7 +171,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
          break;
      }
 
-   free(v);
+   variant_free(v);
    return ECORE_CALLBACK_RENEW;
 }
 
