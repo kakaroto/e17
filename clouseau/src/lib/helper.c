@@ -144,7 +144,7 @@ tree_item_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "name",
          name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "ptr",
-         ptr, EET_T_NULL);
+         ptr, EET_T_UINT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_obj",
          is_obj, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(d, Tree_Item, "is_clipper",

@@ -63,8 +63,31 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Del *ev)
    return ECORE_CALLBACK_RENEW;
 }
 
+
+static Eina_Bool
+_load_gui_with_list(Evas_Object *gl, Tree_Item *head)
+{
+   Eina_List *l;
+   Tree_Item *treeit;
+   if (!head)
+     return EINA_TRUE;
+
+   /* Insert the base ee items */
+   Elm_Genlist_Item_Type glflag = (head->children) ?
+      ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
+   elm_genlist_item_append(gl, &itc, head, NULL,
+         glflag, NULL, NULL);
+
+   EINA_LIST_FOREACH(head->children, l, treeit)
+     {
+        _load_gui_with_list(gl, treeit);
+     }
+
+   return EINA_TRUE;
+}
+
 Eina_Bool
-_data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
+_data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
 {
    static Eina_Bool got_tree = EINA_FALSE;
 
@@ -82,6 +105,8 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
            case DAEMON_TREE_DATA:
                 {
                    printf("Got tree data from daemon, size=<%d>\n", ev->size);
+                   elm_genlist_clear(data);
+                   _load_gui_with_list(data, v->data);  /* data == gl */
                    _item_tree_item_string(v->data);
                    break;
                 }
@@ -314,7 +339,7 @@ _set_selected_app(void *data, Evas_Object *pobj,
 }
 
 static Ecore_Ipc_Server *
-_connect_to_daemon(void)
+_connect_to_daemon(Evas_Object *gl)
 {
    static Ecore_Ipc_Server *svr = NULL;
    const char *address = LOCALHOST;
@@ -332,11 +357,11 @@ _connect_to_daemon(void)
    ecore_ipc_server_data_size_max_set(svr, -1);
 
    /* set event handler for server connect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_add, gl);
    /* set event handler for server disconnect */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_del, gl);
    /* set event handler for receiving server data */
-   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, NULL);
+   ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)_data, gl);
 
    return svr;
 }
@@ -359,7 +384,7 @@ _item_tree_print_string(Tree_Item *parent)
 static int
 _load_list(Evas_Object *gl)
 {
-   Ecore_Ipc_Server *svr = _connect_to_daemon();
+   Ecore_Ipc_Server *svr = _connect_to_daemon(gl);
    if (svr)
      {
         void *p;
@@ -407,8 +432,7 @@ EAPI int
 elm_main(int argc, char **argv)
 {  /* Create Client Window */
    Evas_Object *win, *bg, *panes, *bx, *bt, *show_hidden_check,
-               *show_clippers_check, *dd_list;
-
+               *show_clippers_check, *dd_list, *gl;
 
    win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
@@ -477,8 +501,6 @@ elm_main(int argc, char **argv)
 
    /* The main list */
      {
-        Evas_Object *gl;
-
         gl = elm_genlist_add(panes);
         evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -524,7 +546,7 @@ elm_main(int argc, char **argv)
    ecore_init();
    ecore_ipc_init();
 
-   if(!_connect_to_daemon())
+   if(!_connect_to_daemon(gl))
      {
         printf("Failed to connect to server.\n");
         return 0;
