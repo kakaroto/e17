@@ -96,6 +96,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
            case DAEMON_TREE_DATA:
                 {
                    printf("Got tree data from daemon, size=<%d>\n", ev->size);
+                   _item_tree_item_string(v->data);
                    break;
                 }
           }

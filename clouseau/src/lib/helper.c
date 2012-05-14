@@ -16,6 +16,19 @@ _item_tree_item_free(Tree_Item *parent)
    free(parent);
 }
 
+void
+_item_tree_item_string(Tree_Item *parent)
+{
+   Tree_Item *treeit;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(parent->children, l, treeit)
+     {
+        _item_tree_item_string(treeit);
+     }
+
+   printf("<%s>\n", parent->name);
+}
 
 static eet_message_type_mapping eet_mapping[] = {
        { DAEMON_ACK, DAEMON_ACK_STR },

@@ -47,7 +47,6 @@ _item_tree_free(void)
         _item_tree_item_free(treeit);
      }
 }
-#endif
 static Eina_List *
 _item_tree_item_string(Tree_Item *parent, Eina_List *strings)
 {
@@ -104,6 +103,7 @@ _item_tree_string()
 
    return NULL;
 }
+#endif
 
 static char *
 item_text_get(void *data, Evas_Object *obj __UNUSED__,
@@ -251,6 +251,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
    if (t)
      {
         printf("Trying to send tree\n");
+        _item_tree_item_string(t);
         v = variant_alloc(APP_TREE_DATA, sizeof(*t), t);
         void *p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
         printf("APP sending tree, size <%d>\n", size);
@@ -375,7 +376,7 @@ _notify(char *msg)
     /*  Send string to echo server, and retrieve response  */
     sprintf(buffer, "server %s", msg);
     Writeline(conn_s, buffer, strlen(buffer));
-    _item_tree_string(conn_s, buffer);
+//    _item_tree_string(conn_s, buffer);
     strcpy(buffer, "END_OF_MESSAGE");
     Writeline(conn_s, buffer, strlen(buffer));
     Readline(conn_s, buffer, MAX_LINE);
