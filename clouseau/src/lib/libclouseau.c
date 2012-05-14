@@ -137,12 +137,12 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
    switch(packet_mapping_type_get(v->t.type))
      {
       case DATA_REQ:
-           {
+           {  /* data req includes ptr to GUI, to tell which client asking */
               int size = 0;
               data_req_st *req = v->data;
               tree_data_st t;
-              t.gui = req->gui;
-              t.app = req->app;
+              t.gui = req->gui;  /* GUI client requesting data from daemon */
+              t.app = req->app;  /* APP client sending data to daemon */
               t.tree = _load_list();
               if (t.tree)
                 {  /* Reply with tree data to data request */
@@ -161,7 +161,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
          break;
 
       case HIGHLIGHT:
-           {
+           {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
               libclouseau_highlight((Evas_Object *) (uintptr_t) ht->object);
            }

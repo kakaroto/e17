@@ -202,6 +202,10 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
    log_message(LOG_FILE, "a", msg_buf);
 
    Variant_st *v = packet_info_get(ev->data, ev->size);
+   /* This is where daemon impl communication protocol.
+    * In order to simplify, all messages also contains recipient ptr
+    * as saved by daemon.
+    * Thus we only need to peek this info then FWD, reply to this recipient */
    if (v)
      {
         switch(packet_mapping_type_get(v->t.type))
@@ -254,7 +258,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
               break;
 
            case DATA_REQ:
-                {  /* msg coming from GUI, FWD this to app */
+                {  /* msg coming from GUI, FWD this to app specified in req */
                    data_req_st *req = v->data;
                    if (req->app)
                      {  /* Requesting specific app data */
@@ -307,7 +311,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
               break;
 
            case TREE_DATA:
-                {
+                {  /* Tree Data comes from APP, GUI client specified in msg */
                    tree_data_st *td = v->data;
                    if (td->gui)
                      {  /* Sending tree data to specific GUI client */
@@ -358,7 +362,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
               break;
           }
 
-        variant_free(v);  /* NOT variant_free(v), then comes from eet..decode */
+        variant_free(v);
      }
    else
      log_message(LOG_FILE, "a", "Failed to decode data.");

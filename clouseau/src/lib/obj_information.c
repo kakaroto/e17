@@ -263,8 +263,8 @@ Obj_Information_desc_make(void)
    /* END - evas_props Struct desc */
 
 
-   if (!props_descs)  /* Free later in desc shutdown */
-     {
+   if (!props_descs)
+     {  /* Free later in desc shutdown */
         props_descs = calloc(1, sizeof(extra_props_descs));
         props_descs->elm = elm_desc_make();
         props_descs->text = text_desc_make();
@@ -323,9 +323,6 @@ Obj_Information_desc_shutdown(void)
      }
 }
 /* END   EET stuff */
-
-
-
 
 
 static Eina_List *information_tree = NULL;
@@ -957,8 +954,6 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
                }
           }
      }
-
-//   _obj_information_free(oinfo);  Aharon, cleanup later
 }
 
 void

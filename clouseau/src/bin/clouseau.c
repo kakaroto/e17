@@ -209,7 +209,7 @@ _update_tree(gui_elements *g, Variant_st *v)
             (void *) (uintptr_t) td->app);
 
    if (st)
-     {
+     {  /* Free app tree data then set ptr to new data */
         if (st->td)
           {
              tree_data_st *ftd = st->td->data;
@@ -249,7 +249,7 @@ _data(void *data, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
               break;
           }
 
-       /* free(v) - freed when removed from app list */
+        /* variant_free(v) - freed when removed from app list */
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -443,7 +443,6 @@ static void
 _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
       void *event_info)
 {
-//   clouseau_obj_information_list_clear();
    /* If not an object, return. */
    if (!elm_genlist_item_parent_get(event_info))
       return;

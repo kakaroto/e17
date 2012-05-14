@@ -40,7 +40,7 @@ struct _Variant_Type_st
 typedef struct _Variant_Type_st Variant_Type_st;
 
 struct _Variant_st
-{
+{  /* This is used for composing message and encoding/decoding with EET */
    Variant_Type_st t;
    void *data;
 };

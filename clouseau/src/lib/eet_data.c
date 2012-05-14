@@ -333,6 +333,7 @@ data_descriptors_shutdown(void)
 void *
 packet_compose(message_type t, void *data, int data_size, int *size)
 {  /* Returns packet BLOB and size in size param, NULL on failure */
+   /* Packet is composed of message type + ptr to data            */
    data_desc *d = data_descriptors_init();
    Variant_st *v = variant_alloc(t, data_size, data);
    void *p = eet_data_descriptor_encode(d->_variant_descriptor , v, size);
@@ -344,7 +345,7 @@ packet_compose(message_type t, void *data, int data_size, int *size)
 
 Variant_st *
 packet_info_get(void *data, int size)
-{  /* user has to use free(return value), not variant_free() */
+{  /* user has to use variant_free() to free return struct */
    data_desc *d = data_descriptors_init();
    return eet_data_descriptor_decode(d->_variant_descriptor, data, size);
 }
