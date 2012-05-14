@@ -22,7 +22,7 @@
 
 static Eina_List *tree = NULL;
 static Eina_Bool _lib_init = EINA_FALSE;
-
+#if 0
 static void
 _item_tree_item_free(Tree_Item *parent)
 {
@@ -47,7 +47,7 @@ _item_tree_free(void)
         _item_tree_item_free(treeit);
      }
 }
-
+#endif
 static Eina_List *
 _item_tree_item_string(Tree_Item *parent, Eina_List *strings)
 {

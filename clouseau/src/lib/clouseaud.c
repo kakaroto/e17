@@ -27,13 +27,10 @@ struct _Client {
 
 struct _tree_info_st
 {
-   void *app; /* app ptr to identify where the data came from */
-   void *data;
-   size_t size;
+   void *app;    /* app ptr to identify where the data came from */
+   void *data;   /* Tree data */
 };
 typedef struct _tree_info_st tree_info_st;
-
-Eina_List *trees = NULL;
 
 static void
 log_message(char *filename, char *mode, char *message)
@@ -45,20 +42,70 @@ log_message(char *filename, char *mode, char *message)
    fclose(logfile);
 }
 
-static void
-_daemon_cleanup(void)
-{  /*  Free strings */
+static int
+_appcmp(const void *d1, const void *d2)
+{
+   return ((((tree_info_st *) d1)->app) - d2);
+}
+
+Eina_List *trees = NULL;
+
+static Eina_List *
+tree_data_cleanup()
+{
    tree_info_st *tree;
+   log_message(LOG_FILE, "a","cleanup - clearing trees");
    EINA_LIST_FREE(trees, tree)
      {
-        free(tree->data);
+        _item_tree_item_free(tree->data);
         free(tree);
      }
 
+   return NULL;
+}
+
+static Eina_List *
+tree_data_add(void *a, void *d)
+{
+   char m[64];
+
+   sprintf(m, "trees list size <%d>", eina_list_count(trees));
+   log_message(LOG_FILE, "a", m);
+   tree_info_st *st = (tree_info_st *)
+      eina_list_search_unsorted(trees, _appcmp, a);
+
+   if (st)
+     {
+        sprintf(m, "Updating tree-data from APP <%p>", a);
+        _item_tree_item_free(st->data);
+        st->data = d;
+     }
+   else
+     {
+        tree_info_st *st = malloc(sizeof(*st));
+        if (st)
+          {
+             sprintf(m, "Got tree-data from APP <%p>", a);
+
+             st->app = a;
+             st->data = d;
+
+             trees = eina_list_append(trees, st);
+          }
+     }
+
+   log_message(LOG_FILE, "a", m);
+   return trees;
+}
+
+static void
+_daemon_cleanup(void)
+{  /*  Free strings */
    Ecore_Ipc_Server *svr;
    Ecore_Ipc_Client *cl;
    const Eina_List *clients, *l;
 
+   trees = tree_data_cleanup();
    clients = ecore_ipc_server_clients_get(svr);
    sprintf(msg_buf,"Clients connected to this server when exiting: %d\n",
          eina_list_count(clients));
@@ -131,9 +178,13 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
 {
    void *p;
    char *msg="hello! - sent from the server";
+   char m[128];
    int size = 0;
 
    ecore_ipc_client_data_size_max_set(ev->client, -1);
+   sprintf(m, "<%s> msg from <%p>", __func__, ev->client);
+   log_message(LOG_FILE, "a", m);
+
 
    data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
@@ -144,38 +195,6 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Add *ev)
    free(p);
    variant_free(v);
 
-
-
-#if 0
-
-   log_message(LOG_FILE, "a", msg_buf);
-   void *p;
-   char *msg="hello! - sent from the server";
-   size_t size = compose_packet(&p, DAEMON, TSUITE_EVENT_ACK, msg, strlen(msg)+1);
-   Ecore_Ipc_Server *srv;
-   Ecore_Ipc_Client *cl;
-   const Eina_List *clients, *l;
-
-   struct _Client *client = malloc(sizeof(*client));
-   client->sdata = 0;
-
-   ecore_ipc_client_send(ev->client, 0,0,0,0,EINA_FALSE,p, size);
-   ecore_ipc_client_flush(ev->client);
-   free(p);
-
-   ecore_ipc_client_data_set(ev->client, client);
-
-   srv = ecore_ipc_client_server_get(ev->client);
-   sprintf(msg_buf,"Clients connected to this server:\n");
-   log_message(LOG_FILE, "a", msg_buf);
-
-   clients = ecore_ipc_server_clients_get(srv);
-   EINA_LIST_FOREACH(clients, l, cl)
-     {
-        sprintf(msg_buf, "%s\n", ecore_ipc_client_ip_get(cl));
-        log_message(LOG_FILE, "a", msg_buf);
-     }
-#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -194,6 +213,9 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Del *ev)
    if (client)
      free(client);
 */
+   char m[128];
+   sprintf(m, "<%s> msg from <%p>", __func__, ev->client);
+   log_message(LOG_FILE, "a", m);
    ecore_ipc_client_del(ev->client);
 
    return ECORE_CALLBACK_RENEW;
@@ -202,10 +224,13 @@ _del(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Del *ev)
 Eina_Bool
 _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *ev)
 {
-   log_message(LOG_FILE, "a", "Server Got data from Client");
    void *p;
    char *msg="hello! - sent from the server";
    int size = 0;
+
+   char m[128];
+   sprintf(m, "<%s> msg from <%p>", __func__, ev->client);
+   log_message(LOG_FILE, "a", m);
 
    data_desc *td = _data_descriptors_init();
    Variant_st *v = eet_data_descriptor_decode(td->_variant_descriptor,
@@ -235,17 +260,44 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Client_Data *e
 
            case GUI_ACK:
                 {
-                   ack_st *t = v->data;
-                   log_message(LOG_FILE, "a", "Got data from GUI");
-                   log_message(LOG_FILE, "a", t->text);
+                   log_message(LOG_FILE, "a", "--- 1 ---");
+                   char m[128];
+                   int size = 0;
+                   Eina_List *l;
+                   tree_info_st *st;
+                   Tree_Item *t;
+                   data_desc *td = _data_descriptors_init();
+                   log_message(LOG_FILE, "a", "--- 2 ---");
+                   EINA_LIST_FOREACH(trees, l, st)
+                     {  /* Sending all trees */
+                        t = st->data;
+                        sprintf(m,"t = <%p>", t);
+                        log_message(LOG_FILE, "a", m);
+                        v = variant_alloc(DAEMON_TREE_DATA, sizeof(*t), t);
+                        void *p = eet_data_descriptor_encode(
+                              td->_variant_descriptor , v, &size);
+
+                   log_message(LOG_FILE, "a", "--- 3 ---");
+                        sprintf(m, "DAEMON <%p> sending tree, size <%d>\n",
+                              st->app, size);
+
+                        log_message(LOG_FILE, "a", m);
+                        ecore_ipc_client_send(ev->client, 0,0,0,0,
+                              EINA_FALSE, p, size);
+
+                        ecore_ipc_client_flush(ev->client);
+                        free(p);
+                        variant_free(v);
+                     }
                 }
               break;
 
            case APP_TREE_DATA:
                 {
                    char m[1024];
-                   sprintf(m, "Got tree-data from APP <%p>", ev->client);
+                   sprintf(m, "<%s> got APP TREE DATA from <%p>", __func__, ev->client);
                    log_message(LOG_FILE, "a", m);
+                   trees = tree_data_add(ev->client, v->data);
                 }
               break;
           }

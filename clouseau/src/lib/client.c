@@ -34,7 +34,7 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Add *ev)
 
    data_desc *td = _data_descriptors_init();
    ack_st t = { msg };
-   Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
+   Variant_st *v = variant_alloc(GUI_ACK, sizeof(t), &t);
    p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
    ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
    ecore_ipc_server_flush(ev->server);
@@ -91,6 +91,21 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
          ev->data, ev->size);
    if (v)
      {
+        switch(packet_mapping_type_get(v->t.type))
+          {
+           case DAEMON_TREE_DATA:
+                {
+                   printf("Got tree data from daemon, size=<%d>\n", ev->size);
+                   break;
+                }
+          }
+     }
+
+return;
+
+
+   if (v)
+     {
         ack_st *ack = v->data;
         printf("APP <%s> got <%s> from daemon.\n", __func__, ack->text);
      }
@@ -104,31 +119,13 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *e
    free(v);
 
    ack_st t = { msg };
-   v = variant_alloc(APP_ACK, sizeof(t), &t);
+   v = variant_alloc(GUI_ACK, sizeof(t), &t);
    p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
    ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
    ecore_ipc_server_flush(ev->server);
    free(p);
    variant_free(v);
 
-#if 0
-   Variant_st *pkt = ev->data;
-   if (pkt->type == TSUITE_EVENT_TREE_ITEM)
-     {
-        printf("TREE DATA: %s %d\n", __func__, __LINE__);
-     }
-
-   if (!got_tree)
-     {
-        got_tree = EINA_TRUE;
-        void *p;
-        char *msg="hello! - sent from the GUI";
-        size_t size = compose_packet(&p, GUI, TSUITE_EVENT_TREE_ITEM, msg, strlen(msg)+1);
-        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE,p, size);
-        ecore_ipc_server_flush(ev->server);
-        free(p);
-     }
-#endif
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -438,7 +435,7 @@ _load_list(Evas_Object *gl)
 
         ack_st t = { msg };
         data_desc *td = _data_descriptors_init();
-        Variant_st *v = variant_alloc(APP_ACK, sizeof(t), &t);
+        Variant_st *v = variant_alloc(GUI_ACK, sizeof(t), &t);
         p = eet_data_descriptor_encode(td->_variant_descriptor , v, &size);
         ecore_ipc_server_send(svr, 0,0,0,0,EINA_FALSE, p, size);
         ecore_ipc_server_flush(svr);

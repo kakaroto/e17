@@ -66,6 +66,7 @@ struct _data_desc
 typedef struct _data_desc data_desc;
 
 /* Function Declarations */
+void _item_tree_item_free(Tree_Item *parent);
 Eet_Data_Descriptor *ack_desc_make(void);
 Eet_Data_Descriptor *tree_item_desc_make(void);
 data_desc *_data_descriptors_init(void);

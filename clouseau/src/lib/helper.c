@@ -2,6 +2,21 @@
 
 static data_desc *desc = NULL;
 
+void
+_item_tree_item_free(Tree_Item *parent)
+{
+   Tree_Item *treeit;
+
+   EINA_LIST_FREE(parent->children, treeit)
+     {
+        _item_tree_item_free(treeit);
+     }
+
+   eina_stringshare_del(parent->name);
+   free(parent);
+}
+
+
 static eet_message_type_mapping eet_mapping[] = {
        { DAEMON_ACK, DAEMON_ACK_STR },
        { DAEMON_TREE_DATA, DAEMON_TREE_DATA_STR },
