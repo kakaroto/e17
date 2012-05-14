@@ -346,7 +346,6 @@ libclouseau_highlight(Evas_Object *obj)
    Evas *e;
    Evas_Object *r;
    int x, y, w, h;
-   const char *tmp;
 
    e = evas_object_evas_get(obj);
    if (!e) return;
@@ -360,7 +359,7 @@ libclouseau_highlight(Evas_Object *obj)
          HIGHLIGHT_A);
    evas_object_show(r);
    ecore_timer_add(0.1, libclouseau_highlight_fade, r);
-
+/* Print backtrace info, saved for future ref
    tmp = evas_object_data_get(obj, ".clouseau.bt");
-   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp);
+   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp); */
 }
