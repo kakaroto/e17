@@ -25,7 +25,8 @@ static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
 {
-   char welcome[] = "hello! - sent from the client";
+   void *p;
+   size_t size = compose_packet(&p, APP, ACK, "hello! - sent from the client");
    Server *server = malloc(sizeof(*server));
    server->sdata = 0;
 
@@ -35,8 +36,9 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Add *ev)
          ecore_con_server_name_get(ev->server),
          ecore_con_server_port_get(ev->server),
          ecore_con_server_connected_get(ev->server));
-   ecore_con_server_send(ev->server, welcome, sizeof(welcome));
+   ecore_con_server_send(ev->server, p, size);
    ecore_con_server_flush(ev->server);
+   free(p);
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -81,7 +83,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Server_Data *e
          ">>>>>\n",
          ev->size, ev->size);
 
-   printf(fmt, ev->data);
+   printf(fmt, get_packet_str(ev->data));
 
    server->sdata += ev->size;
    return ECORE_CALLBACK_RENEW;

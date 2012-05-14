@@ -19,6 +19,31 @@
 #include <errno.h>
 
 
+size_t
+compose_packet(void **ptr, client_type c, message_type m, char *str)
+{
+   int len = ((str) ? (strlen(str) + 1) : 0);
+   packet pkt = { c, m, len };
+   size_t size = sizeof(packet) + len;
+
+   void *p = malloc(size);
+   memcpy(p, &pkt, sizeof(packet));
+   if (str)
+     strcpy(p + sizeof(packet), str);
+
+   *ptr = p;
+   return size;
+}
+
+char *
+get_packet_str(void *ptr)
+{
+   packet *pkt = ptr;
+   if (pkt->size)
+     return (char *) (ptr + sizeof(packet));
+
+   return NULL;
+}
 /*  Read a line from a socket  */
 
 ssize_t Readline(int sockd, void *vptr, size_t maxlen) {
@@ -88,7 +113,3 @@ ssize_t Writeline(int sockd, const void *vptr, size_t n) {
 
     return n;
 }
-
-
-
-

@@ -120,7 +120,8 @@ void daemonize(void)
 Eina_Bool
 _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
 {
-   char welcome[] = "hello! - sent from the server";
+   void *p;
+   size_t size = compose_packet(&p, APP, ACK, "hello! - sent from the server");
    Ecore_Con_Server *srv;
    Ecore_Con_Client *cl;
    const Eina_List *clients, *l;
@@ -134,8 +135,9 @@ _add(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Add *ev)
          ecore_con_client_connected_get(ev->client));
    log_message(LOG_FILE, "a", msg_buf);
 
-   ecore_con_client_send(ev->client, welcome, sizeof(welcome));
+   ecore_con_client_send(ev->client, p, size);
    ecore_con_client_flush(ev->client);
+   free(p);
 
    ecore_con_client_timeout_set(ev->client, 6);
 
@@ -196,7 +198,7 @@ _data(void *data __UNUSED__, int type __UNUSED__, Ecore_Con_Event_Client_Data *e
          ev->size, ecore_con_client_ip_get(ev->client),
          ecore_con_client_port_get(ev->client), ev->size);
 
-   sprintf(msg_buf, fmt, ev->data);
+   sprintf(msg_buf, fmt, get_packet_str(ev->data));
    log_message(LOG_FILE, "a", msg_buf);
 
    client->sdata += ev->size;
