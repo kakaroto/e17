@@ -18,10 +18,6 @@ static Eina_List *app = NULL; /* List of app_info_st for app clients */
 /* For Debug */
 char msg_buf[MAX_LINE+1];
 
-struct _Client {
-     int sdata;
-};
-
 struct _tree_info_st
 {
    void *app;    /* app ptr to identify where the data came from */
@@ -51,18 +47,12 @@ _daemon_cleanup(void)
    app_info_st *p;
    Ecore_Ipc_Server *svr;
    Ecore_Ipc_Client *cl;
-   const Eina_List *clients, *l;
+   Eina_List *clients;
 
    clients = ecore_ipc_server_clients_get(svr);
    sprintf(msg_buf,"Clients connected to this server when exiting: %d\n",
          eina_list_count(clients));
    log_message(LOG_FILE, "a", msg_buf);
-   EINA_LIST_FOREACH(clients, l, cl)
-     {
-        sprintf(msg_buf, "%s\n", ecore_ipc_client_ip_get(cl));
-        log_message(LOG_FILE, "a", msg_buf);
-        free(ecore_ipc_client_data_get(cl));
-     }
 
    EINA_LIST_FREE(gui, p)
      {
