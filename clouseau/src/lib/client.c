@@ -549,6 +549,7 @@ elm_main(int argc, char **argv)
    elm_run();
    elm_shutdown();
 
+   data_descriptors_shutdown();
    printf("Client cleanup.\n");
    return 0;
 }

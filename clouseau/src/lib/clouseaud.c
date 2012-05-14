@@ -115,6 +115,7 @@ _daemon_cleanup(void)
         free(ecore_ipc_client_data_get(cl));
      }
 
+   data_descriptors_shutdown();
    ecore_ipc_shutdown();
    ecore_shutdown();
    eina_shutdown();

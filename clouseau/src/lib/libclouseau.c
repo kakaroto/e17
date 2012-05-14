@@ -228,6 +228,7 @@ ecore_main_loop_begin(void)
 
    _ecore_main_loop_begin();
 
+   data_descriptors_shutdown();
    return;
 }
 

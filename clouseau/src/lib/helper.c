@@ -169,7 +169,8 @@ tree_item_desc_make(void)
    return d;
 }
 
-data_desc *_data_descriptors_init(void)
+data_desc *
+data_descriptors_init(void)
 {
    if (desc)  /* Was allocated */
      return desc;
@@ -213,7 +214,8 @@ data_desc *_data_descriptors_init(void)
    return desc;
 }
 
-void _data_descriptors_shutdown(void)
+void
+data_descriptors_shutdown(void)
 {
    if (desc)
      {
@@ -230,7 +232,7 @@ void _data_descriptors_shutdown(void)
 void *
 packet_compose(message_type t, void *data, int data_size, int *size)
 {  /* Returns packet BLOB and size in size param, NULL on failure */
-   data_desc *d = _data_descriptors_init();
+   data_desc *d = data_descriptors_init();
    Variant_st *v = variant_alloc(t, data_size, data);
    void *p = eet_data_descriptor_encode(d->_variant_descriptor , v, size);
    variant_free(v);
@@ -241,6 +243,6 @@ packet_compose(message_type t, void *data, int data_size, int *size)
 Variant_st *
 packet_info_get(void *data, int size)
 {  /* user has to use free(return value), not variant_free() */
-   data_desc *d = _data_descriptors_init();
+   data_desc *d = data_descriptors_init();
    return eet_data_descriptor_decode(d->_variant_descriptor, data, size);
 }
