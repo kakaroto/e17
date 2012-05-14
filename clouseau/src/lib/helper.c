@@ -21,12 +21,12 @@ _item_tree_item_string(Tree_Item *parent)
    Tree_Item *treeit;
    Eina_List *l;
 
+   printf("<%s>\n", parent->name);
+
    EINA_LIST_FOREACH(parent->children, l, treeit)
      {
         _item_tree_item_string(treeit);
      }
-
-   printf("<%s>\n", parent->name);
 }
 
 static eet_message_type_mapping eet_mapping[] = {

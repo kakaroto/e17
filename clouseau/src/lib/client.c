@@ -77,12 +77,12 @@ _load_gui_with_list(Evas_Object *gl, Tree_Item *head)
       ELM_GENLIST_ITEM_TREE : ELM_GENLIST_ITEM_NONE;
    elm_genlist_item_append(gl, &itc, head, NULL,
          glflag, NULL, NULL);
-
+/*
    EINA_LIST_FOREACH(head->children, l, treeit)
      {
         _load_gui_with_list(gl, treeit);
      }
-
+*/
    return EINA_TRUE;
 }
 
@@ -112,7 +112,7 @@ _data(void *data, int type __UNUSED__, Ecore_Ipc_Event_Server_Data *ev)
                 }
           }
 
-        variant_free(v);
+       /* variant_free(v); Will be saved as APP data, don't forget cleanup */
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -326,9 +326,9 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
    Tree_Item *treeit = elm_object_item_data_get(event_info);
 
    Evas_Object *obj = treeit->ptr;
-   libclouseau_highlight(obj);
+//   libclouseau_highlight(obj);
 
-//   clouseau_obj_information_list_populate(treeit);
+   clouseau_obj_information_list_populate(treeit);
 }
 
 static void
@@ -529,7 +529,7 @@ elm_main(int argc, char **argv)
    /* Properties list */
      {
         Evas_Object *prop_list = NULL;
-//        prop_list = clouseau_obj_information_list_add(panes);
+        prop_list = clouseau_obj_information_list_add(panes);
         evas_object_size_hint_align_set(prop_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(prop_list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
