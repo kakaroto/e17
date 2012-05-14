@@ -1,387 +1,296 @@
+#include <v8.h>
 #include <Ecore.h>
-#include <elev8_http.h>
+#include <Ecore_Con.h>
+#include <iostream>
+#include <fstream>
 
 using namespace v8;
 
-int elev8_http_log_domain = -1;
-extern "C" void RegisterModule(Handle<ObjectTemplate> target);
+namespace elm {
 
-#define HTTP_MODULE_NAME "http"
+extern "C" void RegisterModule(Handle<Object> target);
+int log_domain;
 
-int XMLHttpRequest::fd_counter = 0;
-Handle<ObjectTemplate> xmlHttpReqObj;
+#define HTTP_DBG(...) EINA_LOG_DOM_DBG(log_domain, __VA_ARGS__)
+#define HTTP_INF(...) EINA_LOG_DOM_INFO(log_domain, __VA_ARGS__)
+#define HTTP_WRN(...) EINA_LOG_DOM_WARN(log_domain, __VA_ARGS__)
+#define HTTP_ERR(...) EINA_LOG_DOM_ERR(log_domain, __VA_ARGS__)
+#define HTTP_CRT(...) EINA_LOG_DOM_CRITICAL(log_domain, __VA_ARGS__)
 
-Eina_Bool data_callback(void *data, int, void *event)
+template<class T> T *GetObjectFromInfo(const AccessorInfo &info)
 {
-   Ecore_Con_Event_Url_Data *url_data = (Ecore_Con_Event_Url_Data *)event;
-   void *ptr = ecore_con_url_data_get(url_data->url_con);
-
-   if (ptr != data)
-     {
-        HTTP_ERR( "Ignore the event - Not for this URL");
-	return ECORE_CALLBACK_PASS_ON;
-     }
-
-   XMLHttpRequest *reqObj = static_cast<XMLHttpRequest *>(data);
-   if ( url_data->size > 0)
-     {
-        eina_binbuf_append_length(reqObj->data, 
-			url_data->data, url_data->size);
-	    HTTP_INF(  "Appended %d data", url_data->size);
-     }
-   return EINA_FALSE;
+   return static_cast<T *>(info.Holder()->GetPointerFromInternalField(0));
 }
 
-Eina_Bool completion_callback(void *data, int, void *event)
+template<class T> inline T *GetObjectFromArguments(const Arguments &args)
 {
-   HandleScope handle_scope;
-   Ecore_Con_Event_Url_Complete *url_complete = (Ecore_Con_Event_Url_Complete *)event;
-   void *ptr;
+     return static_cast<T *>(args.This()->GetPointerFromInternalField(0));
+}
 
-   ptr = ecore_con_url_data_get(url_complete->url_con);
+class XMLHttpRequest
+{
+   Eina_Binbuf *data;
+   Ecore_Con_Url *url;
+   Ecore_Event_Handler *data_handler;
+   Ecore_Event_Handler *complete_handler;
+   Persistent<Value> onreadystatechange;
+   Persistent<Object> jsObject;
+   static Handle<FunctionTemplate> tmpl;
 
-   if (ptr != data)
+   XMLHttpRequest(Local<Object> _jsObject)
      {
-        HTTP_INF(  "Ignore the event - Not for this URL");
-	return ECORE_CALLBACK_PASS_ON;
+        url = NULL;
+        data_handler = NULL;
+        complete_handler = NULL;
+        data = eina_binbuf_new();
+
+        jsObject = Persistent<Object>::New(_jsObject);
+        jsObject->SetPointerInInternalField(0, this);
+        jsObject.MakeWeak(this, Delete);
      }
 
-   XMLHttpRequest *reqObj = static_cast<XMLHttpRequest *>(ptr);
-
-   const Eina_List *headers, *l;
-
-
-   Local<Integer> status = Integer::New((int32_t)url_complete->status);
-   reqObj->status = Persistent<Integer>(status);
-   HTTP_INF(  "Object Obtained =  %p", reqObj->data);
-
-   // set class status here
-   headers = ecore_con_url_response_headers_get(url_complete->url_con);
-
-   EINA_LIST_FOREACH(headers, l, ptr)
-   {
-      char *str = (char *)ptr;
-      //printf("header: %s", str);
-
-      /* 
-       * decide what to give to JS based on content type
-       */
-      if (strstr(str, "Content-Type:"))
-        {
-	   v8::Local<v8::String> addon;
-	   /* binary - give the location of file */
-	   if (strstr(str, "png") || (strstr(str, "jpeg")) || (strstr(str, "gif")))
-             {
-		HTTP_INF(  "str = %s", str);
-		char buf[100];
-		sprintf(buf, "%s/elev8-http-%d",PACKAGE_TMP_DIR,
-			             	XMLHttpRequest::addFdCount());
-
-
-	        // make v8 string here
-		std::ofstream out(buf, std::ios::out | std::ios::binary);
-		HTTP_INF(  "Image = %s", buf);
-		out.write((char *)eina_binbuf_string_get(reqObj->data), 
-				   eina_binbuf_length_get(reqObj->data));
-		out.close();
-		HTTP_INF(  "Size of response Data = %zu bytes",
-						eina_binbuf_length_get(reqObj->data));
-   		reqObj->responseText =  static_cast<Persistent<String> >(String::New(buf));
-	     }
-	   else
-	     {
-                reqObj->responseText =  static_cast<Persistent<String> >(
-					String::New(
-					(char *)eina_binbuf_string_get(reqObj->data)));
-	     }
-        }
-      reqObj->responseHeaders.push_back(std::string(str));
-   }
-
-   Local<Integer> readyState = Integer::New(4);
-   reqObj->readyState =  Persistent<Integer>(readyState);
-
-
-   //Local<String> funcName = String::New("onreadystatechange");
-   //if (reqObj->obj->Has(funcName))
-   if (reqObj->onreadystatechange->IsFunction())
+   void reset()
      {
-        /*Local<Value> tmp = reqObj->obj->Get(funcName);
-        if (tmp->IsNull())
+        if (complete_handler)
+          ecore_event_handler_del(complete_handler);
+
+        if (data_handler)
+          ecore_event_handler_del(data_handler);
+
+        complete_handler = NULL;
+        data_handler = NULL;
+
+        eina_binbuf_reset(data);
+     }
+
+   static Handle<Value> New(const Arguments& args)
+     {
+        HandleScope scope;
+        new XMLHttpRequest(args.This());
+        return Undefined();
+     }
+
+   static void Delete(Persistent<Value> object, void *parameter)
+     {
+        XMLHttpRequest *self = static_cast<XMLHttpRequest *>(parameter);
+        self->reset();
+        eina_binbuf_free(self->data);
+        ecore_con_url_free(self->url);
+        self->onreadystatechange.Dispose();
+        delete self;
+        object.Clear();
+     }
+
+   void setReadyState(int state)
+     {
+        jsObject->Set(String::NewSymbol("readyState"), Integer::New(state));
+
+        if (onreadystatechange.IsEmpty() || !onreadystatechange->IsFunction())
+          return;
+
+        Handle<Function> callback(Function::Cast(*onreadystatechange));
+        callback->Call(jsObject, 0, NULL);
+     }
+
+   static Eina_Bool ProgressCb(void *data, int, void *event)
+     {
+        HandleScope scope;
+        Ecore_Con_Event_Url_Data *url_data = (Ecore_Con_Event_Url_Data *)event;
+        XMLHttpRequest *self = static_cast<XMLHttpRequest *>
+           (ecore_con_url_data_get(url_data->url_con));
+
+        if (self != data)
+          return ECORE_CALLBACK_PASS_ON;
+
+        eina_binbuf_append_length(self->data, url_data->data, url_data->size);
+        return ECORE_CALLBACK_DONE;
+     }
+
+   static Eina_Bool CompletionCb(void *data, int, void *event)
+     {
+        HandleScope handle_scope;
+        Ecore_Con_Event_Url_Complete *url_complete = (Ecore_Con_Event_Url_Complete *)event;
+        XMLHttpRequest *self = static_cast<XMLHttpRequest *>
+           (ecore_con_url_data_get(url_complete->url_con));
+
+        if (self != data)
+          return ECORE_CALLBACK_PASS_ON;
+
+        const char *value = (const char *)eina_binbuf_string_get(self->data);
+        int length = eina_binbuf_length_get(self->data);
+
+        if (strstr(self->getResponseHeader("Content-Type"), "image/"))
           {
-             HTTP_INF( "onreadystatechange is null for this instance");
+             char buf[256];
+             snprintf(buf, sizeof(buf), "%s/elev8-http-%p",PACKAGE_TMP_DIR, self);
+             std::ofstream out(buf, std::ios::out | std::ios::binary);
+
+             out.write(value, length);
+             out.close();
+
+             self->jsObject->Set(String::NewSymbol("responseText"),
+                                 String::New(buf));
           }
-        else*/
+        else
           {
-             Local<Function> func = Function::Cast(*(reqObj->onreadystatechange));
-             if (!func.IsEmpty())
-               {
-                  Handle<String> path = reqObj->responseText;
-                  Handle<String> obj = String::New(ecore_con_url_url_get(reqObj->url_con));
-                  Handle<Value> args[2] = { obj, path };
-                  func->Call(reqObj->obj,2, args);
-               }
+             self->jsObject->Set(String::NewSymbol("responseText"),
+                                 String::New(value, length));
           }
+
+        self->jsObject->Set(String::NewSymbol("status"),
+                            Integer::New(url_complete->status));
+
+        self->setReadyState(4);
+        self->reset();
+
+        return ECORE_CALLBACK_DONE;
      }
-   ecore_event_handler_del(reqObj->url_data_handle);
-   ecore_event_handler_del(reqObj->url_complete_handle);
-   return true;
-}
 
-Handle<Value> 
-response_text_getter(Local<String>, const AccessorInfo& info)
-{
-   Local<Object> self = info.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-
-   return reqObj->responseText;
-}
-
-Handle<Value> 
-status_getter(Local<String>, const AccessorInfo& info)
-{
-   Local<Object> self = info.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-   return reqObj->status;
-}
-
-static Handle<Value> readystate_getter(Local<String>,
-                                       const AccessorInfo& info)
-{
-   Local<Object> self = info.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-   return reqObj->readyState;
-}
-
-static void onreadystatechange_setter(Local<String> property,
-                                      Local<Value> value,
-                                      const AccessorInfo& info)
-{
-   Local<Object> self = info.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-
-   String::Utf8Value prop_name(property);
-   //HTTP_INF(  "************************************");
-   //HTTP_INF(  "Setting callback to %p for %p", *value, ptr);
-   //HTTP_INF(  "************************************");
-
-   reqObj->onreadystatechange.Dispose();
-   reqObj->onreadystatechange = Persistent<Value>::New(value);
-
-}
-
-Handle<Value> get_response_header(const Arguments& args)
-{
-   Local<Object> self = args.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-   std::vector<std::string>::iterator it;
-
-   String::Utf8Value requested_header(args[0]->ToString());
-   //HTTP_INF( "Making request to %s", *requested_header);
-
-   for ( it=reqObj->responseHeaders.begin() ; it < reqObj->responseHeaders.end(); it++ )
-      {
-         if (std::string::npos != ((*it)).find(*requested_header))
-	   {
-//	      printf("Found header : %s ", (*it).c_str());
-              return Handle<Value>(String::New((*it).c_str()));
-	   }
-      }
-   return Null();
-}
-
-static Handle<Value> get_response_headers(const Arguments& args)
-{
-   Local<Object> self = args.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-   std::vector<std::string>::iterator it;
-   int length = reqObj->responseHeaders.size();
-   Handle<Array> response_headers = Array::New(length);
-
-   for ( it=reqObj->responseHeaders.begin() ; it < reqObj->responseHeaders.end(); it++ )
+   static void onreadystatechange_setter(Local<String>, Local<Value> value,
+                                         const AccessorInfo& info)
      {
-	Handle<String>  hdr = String::New((*it).c_str()); 
-	int index = it-reqObj->responseHeaders.begin();
-        //printf("Adding header : %d : %s ", index, (*it).c_str());
-	response_headers->Set(index, hdr);
+        XMLHttpRequest *self = GetObjectFromInfo<XMLHttpRequest>(info);
+        self->onreadystatechange.Dispose();
+        self->onreadystatechange = Persistent<Value>::New(value);
      }
-   return static_cast<Handle<Value> >(response_headers);
-}
 
-Handle<Value> set_request_header(const Arguments& args)
-{
-   Local<Object> self = args.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-
-   String::Utf8Value name(args[0]->ToString());
-   String::Utf8Value value(args[1]->ToString());
-
-   ecore_con_url_additional_header_add (reqObj->url_con, *name, *value);
-
-   return Undefined();
-}
-
-/* as of now we only support (method, url), user and password can be added later */
-/* args[2] is dummy for compliance with XMLHttpRequest */
-Handle<Value>
-ecore_con_open(const Arguments& args)
-{
-   HandleScope scope;
-   HTTP_INF( "Calling Open API");
-   Local<Object> self = args.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-
-   if (args[0]->IsString())
+   const char *getResponseHeader(const char *header)
      {
-	String::Utf8Value method(args[0]->ToString());
+        void *p;
+        const Eina_List *l;
 
-	if (strstr(*method, "GET"))
+        EINA_LIST_FOREACH(ecore_con_url_response_headers_get(url), l, p)
+           if (strstr((char *)p, header) == p)
+             return &(strchr((char*)p, ' '))[1];
+
+        return NULL;
+     }
+
+   static Handle<Value> getResponseHeader(const Arguments& args)
+     {
+        HandleScope scope;
+        String::Utf8Value header(args[0]);
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+        const char *value = self->getResponseHeader(*header);
+        return scope.Close(value ? String::New(value) : Undefined());
+     }
+
+   static Handle<Value> getAllResponseHeaders(const Arguments& args)
+     {
+        void *p;
+        const Eina_List *l;
+        HandleScope scope;
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+        Handle<String> headers = String::Empty();
+
+        EINA_LIST_FOREACH(ecore_con_url_response_headers_get(self->url), l, p)
+           headers = String::Concat(headers, String::New((char *)p));
+
+        return scope.Close(headers);
+     }
+
+   static Handle<Value> setRequestHeader(const Arguments& args)
+     {
+        HandleScope scope;
+
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+        ecore_con_url_additional_header_add(self->url, *String::Utf8Value(args[0]),
+                                            *String::Utf8Value(args[1]));
+        return Undefined();
+     }
+
+   /* as of now we only support (method, url), user and password can be added later */
+   /* args[2] is dummy for compliance with XMLHttpRequest */
+   static Handle<Value> open(const Arguments& args)
+     {
+        HandleScope scope;
+
+        if (!args[0]->IsString() || !args[1]->IsString())
+          return Undefined();
+
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+        /* TODO - Add POST Method treatment */
+        if (self->url)
+          ecore_con_url_free(self->url);
+        self->url = ecore_con_url_new(*String::Utf8Value(args[1]->ToString()));
+        ecore_con_url_data_set(self->url, reinterpret_cast<void *>(self));
+
+        return Undefined();
+     }
+
+   static Handle<Value> send(const Arguments& args)
+     {
+        HandleScope scope;
+
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+
+        /* TODO - Set readyState properly */
+        self->jsObject->Set(String::NewSymbol("readyState"), Integer::New(0));
+
+        self->reset();
+
+        self->data_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_DATA,
+                                                     XMLHttpRequest::ProgressCb,
+                                                     reinterpret_cast<void *>(self));
+
+        self->complete_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_COMPLETE,
+                                                         XMLHttpRequest::CompletionCb,
+                                                         reinterpret_cast<void *>(self));
+
+        if (!ecore_con_url_get(self->url))
           {
-             reqObj->http_method = HTTP_GET;
-	  }
-	else if(strstr(*method, "POST"))
-          {
-             reqObj->http_method = HTTP_POST;
+             HTTP_ERR( "Unable to send request");
+             self->reset();
           }
-	else
-          {
-             HTTP_ERR( "Only GET and POST supported");
-             return Undefined();
-	  }
 
-        String::Utf8Value url(args[1]->ToString());
-        HTTP_INF( "Making request to %s", *url);
-        Ecore_Con_Url *url_con = ecore_con_url_new(*url);
-        if (url_con==NULL)
-          {
-             HTTP_ERR( "Cannot open connection to %s", *url);
-             return Undefined();
-          }
-        reqObj->url_con = url_con;
-	ecore_con_url_data_set(reqObj->url_con, reinterpret_cast<void *>(reqObj));
+        return Undefined();
      }
-    return Undefined();
-}
 
-Handle<Value>
-ecore_con_send(const Arguments& args)
-{
-   HandleScope scope;
-   HTTP_INF( "Calling Send API");
-   Local<Object> self = args.Holder();
-   Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void* ptr = wrap->Value();
-   XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
-   Eina_Bool sentStatus = EINA_FALSE;
+ public:
 
-   if (args[0]->IsString() && (reqObj->http_method == HTTP_POST))
+   static Handle<FunctionTemplate> GetTemplate()
      {
-        String::Utf8Value body(args[0]->ToString());
-	sentStatus = ecore_con_url_post(reqObj->url_con, (void *)(*body), 
-			   body.length(), "text/plain;charset=UTF-8");
+        if (!tmpl.IsEmpty())
+          return tmpl;
 
+        tmpl = FunctionTemplate::New(New);
+
+        Handle<ObjectTemplate> it = tmpl->InstanceTemplate();
+
+        it->SetInternalFieldCount(1);
+        it->Set(String::NewSymbol("open"), FunctionTemplate::New(open));
+        it->Set(String::NewSymbol("send"), FunctionTemplate::New(send));
+        it->Set(String::NewSymbol("setRequestHeader"),
+                FunctionTemplate::New(setRequestHeader));
+        it->Set(String::NewSymbol("getResponseHeader"),
+                FunctionTemplate::New(getResponseHeader));
+        it->Set(String::NewSymbol("getAllResponseHeaders"),
+                FunctionTemplate::New(getAllResponseHeaders));
+        it->SetAccessor(String::New("onreadystatechange"), NULL,
+                        onreadystatechange_setter, Null());
+        return tmpl;
      }
-   else
-     {
-        sentStatus = ecore_con_url_get(reqObj->url_con);
-     }
+};
 
-   if (!sentStatus)
-     {
-        HTTP_ERR( "Unable to send request");
-     }
-
-   return Undefined();
-}
-
-static Handle<Value> createXMLHttpReqInstance(const Arguments&)
-{
-   HandleScope scope;
-
-   XMLHttpRequest *reqObj = new XMLHttpRequest();
-
-   Local<FunctionTemplate> tmpOpen = FunctionTemplate::New();
-   tmpOpen->SetCallHandler(ecore_con_open);
-   xmlHttpReqObj->Set(String::New("open"), tmpOpen);
-
-   Local<FunctionTemplate> tmpSend = FunctionTemplate::New();
-   tmpSend->SetCallHandler(ecore_con_send);
-   xmlHttpReqObj->Set(String::New("send"), tmpSend);
-
-   Local<FunctionTemplate> tmpRequest = FunctionTemplate::New();
-   tmpRequest->SetCallHandler(set_request_header);
-   xmlHttpReqObj->Set(String::New("setRequestHeader"),tmpRequest);
-
-   Local<FunctionTemplate> tmpResponse = FunctionTemplate::New();
-   tmpResponse->SetCallHandler(get_response_header);
-   xmlHttpReqObj->Set(String::New("getResponseHeader"),tmpResponse);
-
-   Local<FunctionTemplate> tmpResponses = FunctionTemplate::New();
-   tmpResponses->SetCallHandler(get_response_headers);
-   xmlHttpReqObj->Set(String::New("getResponseHeaders"),tmpResponses);
-
-   xmlHttpReqObj->SetAccessor(String::New("responseText"), 
-                                &response_text_getter, 
-                                 NULL , Null());
-   xmlHttpReqObj->SetAccessor(String::New("status"), 
-                                 &status_getter, 
-                                 NULL , Null()); 
-   xmlHttpReqObj->SetAccessor(String::New("readyState"), 
-                                 &readystate_getter, 
-                                 NULL , Null()); 
-
-   xmlHttpReqObj->SetAccessor(String::New("onreadystatechange"), 
-		   		NULL,
-				onreadystatechange_setter,
-				Null()
-		             );
-
-   reqObj->obj.Dispose();
-   reqObj->obj = Persistent<Object>::New(xmlHttpReqObj->NewInstance());
-   reqObj->obj->SetInternalField(0, External::New(reqObj));
-   reqObj->url_complete_handle = ecore_event_handler_add( ECORE_CON_EVENT_URL_COMPLETE,
-                            completion_callback,
-                            reinterpret_cast<void *>(reqObj));
-   reqObj->url_data_handle = ecore_event_handler_add( ECORE_CON_EVENT_URL_DATA,
-                            data_callback,
-                            reinterpret_cast<void *>(reqObj));
-
-   HTTP_INF(  "Http Request initialized %p", reqObj->data);
-   return reqObj->obj; 
-}
+Handle<FunctionTemplate> XMLHttpRequest::tmpl;
 
 extern "C"
-void RegisterModule(Handle<ObjectTemplate> target)
+void RegisterModule(Handle<Object> target)
 {
-   elev8_http_log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
-   if (!elev8_http_log_domain)
+   log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
+   if (!log_domain)
      {
         HTTP_ERR( "could not register elev8-http log domain.");
-        elev8_http_log_domain = EINA_LOG_DOMAIN_GLOBAL;
+        log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
-   HTTP_INF("elev8-http Logging initialized. %d", elev8_http_log_domain);
+   HTTP_INF("elev8-http Logging initialized. %d", log_domain);
 
-   if (ecore_con_url_init())
-     {
-        /* Add support for XML HTTP Request */
-        xmlHttpReqObj = ObjectTemplate::New();
-        xmlHttpReqObj->SetInternalFieldCount(1);
-        target->Set(String::NewSymbol("XMLHttpRequest"), FunctionTemplate::New(createXMLHttpReqInstance)->GetFunction());
-     }
+   ecore_init();
+   ecore_con_init();
+   ecore_con_url_init();
+
+   target->Set(String::NewSymbol("XMLHttpRequest"),
+               XMLHttpRequest::GetTemplate()->GetFunction());
+}
+
 }
