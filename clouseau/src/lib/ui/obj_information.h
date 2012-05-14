@@ -2,6 +2,13 @@
 #define _OBJ_INFORMATION_H
 
 #include "../libclouseau.h"
+#define CLOUSEAU_OBJ_TYPE_OTHER_STR     "CLOUSEAU_OBJ_TYPE_OTHER"
+#define CLOUSEAU_OBJ_TYPE_ELM_STR       "CLOUSEAU_OBJ_TYPE_ELM"
+#define CLOUSEAU_OBJ_TYPE_TEXT_STR      "CLOUSEAU_OBJ_TYPE_TEXT"
+#define CLOUSEAU_OBJ_TYPE_IMAGE_STR     "CLOUSEAU_OBJ_TYPE_IMAGE"
+#define CLOUSEAU_OBJ_TYPE_EDJE_STR      "CLOUSEAU_OBJ_TYPE_EDJE"
+#define CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR "CLOUSEAU_OBJ_TYPE_TEXTBLOCK"
+
 enum _en_obj_type
 {
    CLOUSEAU_OBJ_TYPE_OTHER,
@@ -12,6 +19,23 @@ enum _en_obj_type
    CLOUSEAU_OBJ_TYPE_TEXTBLOCK,
 };
 typedef enum _en_obj_type en_obj_type;
+
+struct _eet_extra_props_mapping
+{
+   en_obj_type u;
+   const char *name;
+};
+typedef struct _eet_extra_props_mapping eet_extra_props_mapping;
+
+static eet_extra_props_mapping eet_props_mapping[] =
+{    /* As eet_mapping */
+     { CLOUSEAU_OBJ_TYPE_OTHER, CLOUSEAU_OBJ_TYPE_OTHER_STR },
+     { CLOUSEAU_OBJ_TYPE_ELM, CLOUSEAU_OBJ_TYPE_ELM_STR },
+     { CLOUSEAU_OBJ_TYPE_TEXT, CLOUSEAU_OBJ_TYPE_TEXT_STR },
+     { CLOUSEAU_OBJ_TYPE_IMAGE, CLOUSEAU_OBJ_TYPE_IMAGE_STR },
+     { CLOUSEAU_OBJ_TYPE_EDJE, CLOUSEAU_OBJ_TYPE_EDJE_STR },
+     { CLOUSEAU_OBJ_TYPE_TEXTBLOCK, CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR }
+};
 
 struct _st_evas_props
 {
@@ -98,12 +122,6 @@ struct _Obj_Information
 };
 typedef struct _Obj_Information Obj_Information;
 
-struct _eet_object_type_mapping
-{
-   en_obj_type u;
-   const char *name;
-};
-typedef struct _eet_object_type_mapping eet_object_type_mapping;
 
 
 Evas_Object *clouseau_obj_information_list_add(Evas_Object *parent);
