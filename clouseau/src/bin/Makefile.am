@@ -1,13 +1,13 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-bin_PROGRAMS = clouseaud clouseau
+bin_PROGRAMS = clouseaud clouseau_client
 
 clouseaud_SOURCES = \
 		    clouseaud.c \
 		    ../lib/eet_data.c \
 		    ../lib/obj_information.c
 
-clouseau_SOURCES = \
+clouseau_client_SOURCES = \
 		 clouseau.c \
 		 ../lib/eet_data.c \
 		 ../lib/obj_information.c
@@ -22,5 +22,4 @@ AM_CPPFLAGS = \
 @EFL_CFLAGS@
 
 clouseaud_LDADD = @EFL_LIBS@
-clouseau_LDADD = @EFL_LIBS@
-
+clouseau_client_LDADD = @EFL_LIBS@

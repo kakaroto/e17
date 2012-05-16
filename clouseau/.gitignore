@@ -45,5 +45,5 @@ INSTALL
 src/bin/client
 src/bin/clouseaud
 src/scripts/clouseau
-src/bin/clouseau
+src/bin/clouseau_client
 src/scripts/clouseau_start
