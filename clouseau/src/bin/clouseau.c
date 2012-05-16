@@ -23,6 +23,12 @@ typedef struct _app_data_st app_data_st;
 
 struct _gui_elements
 {
+   Evas_Object *win;
+   Evas_Object *bx;     /* The main box */
+   Evas_Object *hbx;    /* The top menu box */
+   Evas_Object *panel;  /* Button panel */
+   Evas_Object *bt_load;
+   Evas_Object *bt_save;
    Evas_Object *dd_list;
    Evas_Object *gl;
    Evas_Object *lb;  /* Label showing backtrace */
@@ -30,7 +36,7 @@ struct _gui_elements
    Evas_Object *inwin;
    Evas_Object *en;
    Evas_Object *pb; /* Progress wheel shown when waiting for TREE_DATA */
-   Evas_Object *work_offline_check;
+   Eina_Bool work_offline;
    char *address;
    app_data_st *sel_app; /* Currently selected app data */
 };
@@ -139,6 +145,9 @@ _set_selected_app(void *data, Evas_Object *pobj,
         elm_genlist_clear(gui->prop_list);
         gui->sel_app = NULL;
      }
+
+   if (!gui->work_offline)
+     elm_object_disabled_set(gui->bt_save, (gui->sel_app == NULL));
 }
 
 static int
@@ -552,13 +561,26 @@ _bt_clicked(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    _load_list(data);
 }
 
+static void
+_bt_load_file(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   printf("<%s> Selected <%s> file.\n", __func__, event_info);
+   return;
+}
+
+static void
+_bt_save_file(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   printf("<%s> Selected <%s> file.\n", __func__, event_info);
+   return;
+}
 
 static void
 _chk_changed(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {  /* Disbale entry when working offline */
-   printf("<%s> <%d>\n", __func__, elm_check_state_get(obj));
    gui_elements *g = data;
-   elm_object_disabled_set(g->en, elm_check_state_get(obj));
+   g->work_offline = elm_check_state_get(obj);
+   elm_object_disabled_set(g->en, g->work_offline);
 }
 
 static void
@@ -580,7 +602,43 @@ _cancel_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *e
 static void
 _ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {  /* Set the IP, PORT, then connect to server */
-   _dismiss_inwin(data);
+   gui_elements *g = data;
+   _dismiss_inwin(g);
+
+   if (g->work_offline)
+     {  /* Replace bt_load with fileselector button */
+        elm_box_unpack(g->hbx, g->bt_load);
+        evas_object_del(g->bt_load);
+
+        g->bt_load = elm_fileselector_button_add(g->win);
+        elm_box_pack_start(g->hbx, g->bt_load);
+        elm_object_text_set(g->bt_load, "Load File");
+        elm_fileselector_button_path_set(g->bt_load, getenv("HOME"));
+        evas_object_smart_callback_add(g->bt_load, "file,chosen",
+              _bt_load_file, g);
+
+        evas_object_show(g->bt_load);
+     }
+   else
+     {
+        elm_object_text_set(g->bt_load, "Load Tree");
+        evas_object_smart_callback_add(g->bt_load, "clicked", _bt_clicked, g);
+
+
+        g->bt_save = elm_fileselector_button_add(g->win);
+        elm_box_pack_end(g->hbx, g->bt_save);
+        elm_object_text_set(g->bt_save, "Save File");
+        elm_fileselector_button_path_set(g->bt_save, getenv("HOME"));
+        evas_object_smart_callback_add(g->bt_save, "file,chosen",
+              _bt_save_file, g);
+
+        elm_object_disabled_set(g->bt_save, (g->sel_app == NULL));
+        evas_object_show(g->bt_save);
+
+     }
+
+   evas_object_show(g->bx);
+   evas_object_show(g->panel);
 
    if(!_connect_to_daemon(data))
      {
@@ -593,15 +651,14 @@ _ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_U
 EAPI int
 elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 {  /* Create Client Window */
-   Evas_Object *win, *bg, *panes, *bx, *bt,
-               *show_hidden_check, *show_clippers_check;
+   Evas_Object *win, *bg, *panes, *show_hidden_check, *show_clippers_check;
 
    /* For inwin popup */
    Evas_Object *lb, *bxx, *bt_bx, *bt_ok, *bt_cancel;
-
+   Evas_Object *ck_ofl; /* work_offline_check  */
    gui = calloc(1, sizeof(gui_elements));
 
-   win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
+   gui->win = win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
    elm_win_title_set(win, "Clouseau Client");
 
@@ -610,54 +667,51 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
 
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(win, bx);
-   evas_object_show(bx);
+   gui->bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(gui->bx,
+         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gui->bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(win, gui->bx);
 
    /* Control buttons */
      {
-        Evas_Object *hbx;
+        gui->hbx = elm_box_add(gui->bx);
+        evas_object_size_hint_align_set(gui->hbx, 0.0, 0.5);
+        elm_box_horizontal_set(gui->hbx, EINA_TRUE);
+        elm_box_pack_end(gui->bx, gui->hbx);
+        elm_box_padding_set(gui->hbx, 10, 0);
+        evas_object_show(gui->hbx);
 
-        hbx = elm_box_add(bx);
-        evas_object_size_hint_align_set(hbx, 0.0, 0.5);
-        elm_box_horizontal_set(hbx, EINA_TRUE);
-        elm_box_pack_end(bx, hbx);
-        elm_box_padding_set(hbx, 10, 0);
-        evas_object_show(hbx);
-
-        bt = elm_button_add(hbx);
-        evas_object_size_hint_align_set(bt, 0.0, 0.3);
-        elm_object_text_set(bt, "Load");
-        elm_box_pack_end(hbx, bt);
-        evas_object_show(bt);
+        gui->bt_load = elm_button_add(gui->hbx);
+        evas_object_size_hint_align_set(gui->bt_load, 0.0, 0.3);
+        elm_box_pack_end(gui->hbx, gui->bt_load);
+        evas_object_show(gui->bt_load);
 
         gui->dd_list = elm_hoversel_add(win);
         elm_hoversel_hover_parent_set(gui->dd_list, win);
         elm_object_text_set(gui->dd_list, "SELECT APP");
 
         evas_object_size_hint_align_set(gui->dd_list, 0.0, 0.3);
-        elm_box_pack_end(hbx, gui->dd_list);
+        elm_box_pack_end(gui->hbx, gui->dd_list);
         evas_object_show(gui->dd_list);
 
-        show_hidden_check = elm_check_add(hbx);
+        show_hidden_check = elm_check_add(gui->hbx);
         elm_object_text_set(show_hidden_check, "Show Hidden");
         elm_check_state_set(show_hidden_check, list_show_hidden);
-        elm_box_pack_end(hbx, show_hidden_check);
+        elm_box_pack_end(gui->hbx, show_hidden_check);
         evas_object_show(show_hidden_check);
 
-        show_clippers_check = elm_check_add(hbx);
+        show_clippers_check = elm_check_add(gui->hbx);
         elm_object_text_set(show_clippers_check, "Show Clippers");
         elm_check_state_set(show_clippers_check, list_show_clippers);
-        elm_box_pack_end(hbx, show_clippers_check);
+        elm_box_pack_end(gui->hbx, show_clippers_check);
         evas_object_show(show_clippers_check);
      }
 
    panes = elm_panes_add(win);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(bx, panes);
+   elm_box_pack_end(gui->bx, panes);
    evas_object_show(panes);
 
    /* The main list */
@@ -670,7 +724,6 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         elm_object_part_content_set(panes, "left", gui->gl);
         evas_object_show(gui->gl);
 
-        evas_object_smart_callback_add(bt, "clicked", _bt_clicked, gui);
         evas_object_smart_callback_add(show_hidden_check, "changed",
               _show_hidden_check_changed, gui);
         evas_object_smart_callback_add(show_clippers_check, "changed",
@@ -709,21 +762,20 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
      }
 
    /* START Add buttom panel */
-   Evas_Object *panel;
-   panel = elm_panel_add(win);
-   elm_panel_orient_set(panel, ELM_PANEL_ORIENT_BOTTOM);
-   evas_object_size_hint_weight_set(panel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panel_hidden_set(panel, EINA_TRUE);
-   elm_win_resize_object_add(win, panel);
+   gui->panel = elm_panel_add(win);
+   elm_panel_orient_set(gui->panel, ELM_PANEL_ORIENT_BOTTOM);
+   evas_object_size_hint_weight_set(gui->panel,
+         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gui->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panel_hidden_set(gui->panel, EINA_TRUE);
+   elm_win_resize_object_add(win, gui->panel);
 
    gui->lb = elm_label_add(win);
    evas_object_size_hint_weight_set(gui->lb, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(gui->lb, EVAS_HINT_FILL, 0);
    evas_object_show(gui->lb);
 
-   elm_object_content_set(panel, gui->lb);
-   evas_object_show(panel);
+   elm_object_content_set(gui->panel, gui->lb);
    /* END   Add buttom panel */
 
    /* Add progress wheel */
@@ -776,17 +828,17 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_box_pack_end(bxx, gui->en);
    evas_object_show(gui->en);
 
-   gui->work_offline_check = elm_check_add(bxx);
-   elm_object_text_set(gui->work_offline_check, "Work Offline");
-   evas_object_size_hint_weight_set(gui->work_offline_check,
+   ck_ofl = elm_check_add(bxx);
+   elm_object_text_set(ck_ofl, "Work Offline");
+   evas_object_size_hint_weight_set(ck_ofl,
          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(gui->work_offline_check,
+   evas_object_size_hint_align_set(ck_ofl,
          EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(gui->work_offline_check, "changed",
-         _chk_changed, gui);
-   elm_check_state_set(gui->work_offline_check, EINA_FALSE);
-   elm_box_pack_end(bxx, gui->work_offline_check);
-   evas_object_show(gui->work_offline_check);
+   evas_object_smart_callback_add(ck_ofl, "changed", _chk_changed, gui);
+   gui->work_offline = EINA_FALSE;
+   elm_check_state_set(ck_ofl, gui->work_offline);
+   elm_box_pack_end(bxx, ck_ofl);
+   evas_object_show(ck_ofl);
 
    bt_bx = elm_box_add(gui->inwin);
    elm_box_horizontal_set(bt_bx, EINA_TRUE);
