@@ -185,8 +185,10 @@ tree_data_desc_make(void)
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, tree_data_st);
    d = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "gui", gui, EET_T_ULONG_LONG);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st, "app", app, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st,
+         "gui", gui, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, tree_data_st,
+         "app", app, EET_T_ULONG_LONG);
    EET_DATA_DESCRIPTOR_ADD_LIST  (d, tree_data_st,
          "tree", tree, desc->tree);  /* Carefull - init this first */
 
@@ -348,4 +350,40 @@ packet_info_get(void *data, int size)
 {  /* user has to use variant_free() to free return struct */
    data_desc *d = data_descriptors_init();
    return eet_data_descriptor_decode(d->_variant_descriptor, data, size);
+}
+
+Eina_Bool eet_info_save(const char *filename,
+      app_info_st *app, tree_data_st *ftd)
+{
+   data_desc *d = data_descriptors_init();
+   Eet_File *fp = eet_open(filename, EET_FILE_MODE_WRITE);
+   if (fp)
+     {
+        eet_data_write(fp, d->app_add, APP_ADD_ENTRY, app, EINA_TRUE);
+        eet_data_write(fp, d->tree_data, TREE_DATA_ENTRY, ftd, EINA_TRUE);
+
+        eet_close(fp);
+
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+Eina_Bool eet_info_read(const char *filename,
+      app_info_st **app, tree_data_st **ftd)
+{
+   data_desc *d = data_descriptors_init();
+   Eet_File *fp = eet_open(filename, EET_FILE_MODE_READ);
+   if (fp)
+     {
+        *app = eet_data_read(fp, d->app_add, APP_ADD_ENTRY);
+        *ftd = eet_data_read(fp, d->tree_data, TREE_DATA_ENTRY);
+
+        eet_close(fp);
+
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
 }

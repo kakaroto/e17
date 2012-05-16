@@ -58,13 +58,16 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   connect_st t = { getpid(), __FILE__ };
-   p = packet_compose(GUI_CLIENT_CONNECT, &t, sizeof(t), &size);
-   if (p)
+   if (!gui->work_offline)
      {
-        ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
-        ecore_ipc_server_flush(ev->server);
-        free(p);
+        connect_st t = { getpid(), __FILE__ };
+        p = packet_compose(GUI_CLIENT_CONNECT, &t, sizeof(t), &size);
+        if (p)
+          {
+             ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
+             ecore_ipc_server_flush(ev->server);
+             free(p);
+          }
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -123,12 +126,25 @@ _set_selected_app(void *data, Evas_Object *pobj,
    app_data_st *st = data;
    if (st)
      {
+        if (gui->work_offline)
+          {  /* Got TREE_DATA from file, update this immidately */
+             gui->sel_app = st;
+             app_info_st *app = st->app->data;
+             char *str = malloc(strlen(app->name)+32);
+             sprintf(str, "%s [%d] OFFLINE", app->name, app->pid);
+             elm_object_text_set(pobj, str);
+             free(str);
+             _load_list(gui);
+             return;
+          }
+
         if (gui->sel_app != st)
           {  /* Reload only of selected some other app */
              app_info_st *app = st->app->data;
              gui->sel_app = st;
 
              char *str = malloc(strlen(app->name)+32);
+
              sprintf(str, "%s [%d]", app->name, app->pid);
              elm_object_text_set(pobj, str);
              free(str);
@@ -140,7 +156,7 @@ _set_selected_app(void *data, Evas_Object *pobj,
      }
    else
      {  /* If we got a NULL ptr, reset lists and dd_list text */
-        elm_object_text_set(gui->dd_list, "SELECT APP");
+        elm_object_text_set(pobj, "SELECT APP");
         elm_genlist_clear(gui->gl);
         elm_genlist_clear(gui->prop_list);
         gui->sel_app = NULL;
@@ -166,13 +182,16 @@ _add_app_to_dd_list(Evas_Object *dd_list, app_data_st *st)
 
    char *str = malloc(strlen(app->name)+32);
    sprintf(str, "%s [%d]", app->name, app->pid);
+   if (gui->work_offline)
+     strcat(str, " OFFLINE");
+
    elm_hoversel_item_add(dd_list, str, NULL, ELM_ICON_NONE,
          _set_selected_app, st);
 
    free(str);
 }
 
-static void
+static app_data_st *
 _add_app(gui_elements *g, Variant_st *v)
 {
    app_data_st *st = malloc(sizeof(app_data_st));
@@ -181,6 +200,8 @@ _add_app(gui_elements *g, Variant_st *v)
    apps = eina_list_append(apps, st);
 
    _add_app_to_dd_list(g->dd_list, st);
+
+   return st;
 }
 
 static void
@@ -229,6 +250,14 @@ _remove_app(gui_elements *g, Variant_st *v)
      }
 
    variant_free(v);
+}
+
+static void
+_update_tree_offline(gui_elements *g, Variant_st *v)
+{
+   tree_data_st *td = v->data;
+   elm_genlist_clear(g->gl);
+   _load_gui_with_list(g, td->tree);
 }
 
 static void
@@ -491,14 +520,17 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
    highlight_st st = { (unsigned long long) (uintptr_t) app->ptr,
         (unsigned long long) (uintptr_t)  treeit->ptr };
 
-   Ecore_Ipc_Server *svr = _connect_to_daemon(g);
-   void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size);
-   if (p)
+   if (!gui->work_offline)
      {
-        ecore_ipc_server_send(svr,
-              0,0,0,0,EINA_FALSE, p, size);
-        ecore_ipc_server_flush(svr);
-        free(p);
+        Ecore_Ipc_Server *svr = _connect_to_daemon(g);
+        void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size);
+        if (p)
+          {
+             ecore_ipc_server_send(svr,
+                   0,0,0,0,EINA_FALSE, p, size);
+             ecore_ipc_server_flush(svr);
+             free(p);
+          }
      }
    /* END   - replacing libclouseau_highlight(obj); */
 
@@ -513,6 +545,12 @@ _load_list(gui_elements *g)
         elm_genlist_clear(g->gl);
         elm_genlist_clear(g->prop_list);
         app_info_st *st = g->sel_app->app->data;
+
+        if (gui->work_offline)
+          {
+             _update_tree_offline(g, g->sel_app->td);
+             return 0;
+          }
 
         if (eina_list_search_unsorted(apps, _app_ptr_cmp,
                  (void *) (uintptr_t) st->ptr))
@@ -562,16 +600,37 @@ _bt_clicked(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 }
 
 static void
-_bt_load_file(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+_bt_load_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   printf("<%s> Selected <%s> file.\n", __func__, event_info);
+   gui_elements *g = data;
+   Variant_st *app = calloc(1, sizeof(Variant_st));
+   Variant_st *td =  calloc(1, sizeof(Variant_st));
+   /* app_info_st *app = NULL; */
+   Eina_Bool s = eet_info_read(event_info,
+         (app_info_st **) &app->data,
+         (tree_data_st **) &td->data);
+   printf("<%s> Selected <%s> file. read=<%d>\n", __func__, (char *) event_info, s);
+
+   if (s)
+     {  /* Add the app to list of apps, then set this as selected app */
+        app_data_st *st = _add_app(g, app);
+        st->td = td;  /* This is the same as we got TREE_DATA message */
+        _set_selected_app(st, g->dd_list, NULL);
+     }
+
    return;
 }
 
 static void
-_bt_save_file(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+_bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   printf("<%s> Selected <%s> file.\n", __func__, event_info);
+   gui_elements *g = data;
+   app_info_st *app = g->sel_app->app->data;
+   tree_data_st *ftd = g->sel_app->td->data;
+   Eina_Bool s;
+
+   s = eet_info_save(event_info, app, ftd);
+   printf("<%s> Selected <%s> file saved <%d>.\n", __func__, (char *) event_info, s);
    return;
 }
 

@@ -2,6 +2,9 @@
 #define EET_DATA_H
 #include "libclouseau.h"
 /*  Global constants  */
+#define APP_ADD_ENTRY   "add_add_entry"
+#define TREE_DATA_ENTRY "tree_data_entry"
+
 #define PORT           (22522)
 #define MAX_LINE       (1023)
 #define LOCALHOST      "localhost"
@@ -134,4 +137,6 @@ message_type packet_mapping_type_get(const char *name);
 const char *packet_mapping_type_str_get(message_type t);
 void *packet_compose(message_type t, void *data, int data_size, int *size);
 Variant_st *packet_info_get(void *data, int size);
+Eina_Bool eet_info_save(const char *filename, app_info_st *app, tree_data_st *ftd);
+Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
 #endif  /*  EET_DATA_H  */
