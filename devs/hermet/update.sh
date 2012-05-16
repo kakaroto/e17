@@ -6,13 +6,14 @@ svn update
 
 CFLAGS="-02 -g -W -Wall -Wextra -Wundef -Wshadow"
 
-for e in eina eet evas ecore eeze efreet embryo edje e_dbus e emotion PROTO/epdf ethumb eio elementary expedite
+for e in eina eet evas ecore eeze efreet embryo edje e_dbus e emotion PROTO/epdf ethumb eio elementary expedite clouseau
 do 
 	if [ -e $e ] && [ -d $e ]
 	then 
 		echo Start $e 
 		cd $e
 		sudo make clean
+		sudo make distclean
 		./autogen.sh
 		CFLAGS=${CFLAGS} sudo make install && sudo ldconfig
 		cd ..

@@ -4,21 +4,23 @@ d3d_gl - start hurry (vincent)
 map - afterimage problem 
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
+map - after alpha to 0, then the rendering is not be updated.
 line - width_set API? 
 text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
+antialiasing - support the edge for all every angle on s/w backend.
 
 <Elementary>
 transit - use clip for wipe effect
 naviframe - need to block the style set while transiton is going on
 naviframe - more transition effect styles.
 naviframe - focus problem (shotgun -> open a couple chat tabs -> switching between them, discomfitor)
-naviframe - visible problem (normal style naviframe -> naviframe in naviframe -> switching items outside naviframe -> the content inner naviframe do not properly hide all the time)
-menu - check the elementary_test. Remove the ERR evas_object_smart_need_recalculate_set()
-hoversel - add horizontal mode style. 
+naviframe - visible problem (normal style naviframe -> naviframe in naviframe -> switching items outside naviframe -> the content inner naviframe do not properly hide all the time
+hoversel - add horizontal mode style.
+genlist - need to check to prevent flickerling when theme_hook is called
 gengrid - segfault with elm_gengrid_item_sorted_insert func (#984)
 widget  - Raw evas objects are not proper as the child member of the widget cause of the color.
 notify - let check the smart member relationship 
 popup - let check the smart member relationship
-win - review the sub-obj fix (glima) - http://git.profusion.mobi/cgit.cgi/glima/elementary/commit/?id=0211957db417d5ddb2a66530fa6cc2bc60a8360e
 index - check the FIXEMEs
+conformant - how to skip the calc the size if the window is in background.
