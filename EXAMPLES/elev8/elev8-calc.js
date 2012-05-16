@@ -64,7 +64,6 @@ function Row(start, operation) {
 }
 
 var my_window = new elm.realise(elm.Window({
-    type: "main",
     label: "Elev8 demo",
     width: 400,
     height: 200,

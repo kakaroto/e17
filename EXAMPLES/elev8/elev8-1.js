@@ -42,7 +42,7 @@ var my_window = elm.realise(elm.Window({
 	    }
 	})
     },
-    on_keydown : function(obj, keyname) {
+    on_key_down : function(obj, keyname) {
 	switch (keyname)
 	{
 	case "Escape":
