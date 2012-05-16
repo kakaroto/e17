@@ -1,0 +1,9 @@
+Login:        stefan
+IRC Nick:     stefan_schmidt
+Name:         Stefan Schmidt
+Location:     Staines, United Kingdom
+E-Mail:       stefan@datenfreihafen.org
+WWW:          http://www.datenfreihafen.org
+Contributing: e_dbus, randr and some others
+Platform:     Ubuntu (Linux), Debian (Linux)
+GeoData:      51.432083, -0.510494
