@@ -103,9 +103,8 @@
   bindings for other languages off into the <b>BINDINGS</b> directory. 
   The <b>E-MODULES-EXTRA</b> contains a whole bunch of modules for
   enlightenment that may or may not work - try at your own risk.
-  <b>PROTO</b> contains prototype applications. <b>TMP</b> is scratch
-  space for projects yet to be categorized or found a home in the
-  tree. We could go on telling you about the tree, but it's best to
+  <b>PROTO</b> contains prototype applications. 
+  We could go on telling you about the tree, but it's best to
   just look around and see. Just keep in mind that this tree is our
   "workshop" and parts of it may be in better condition than others and
   may or may not be usable. If you look here it is assumed you have a
