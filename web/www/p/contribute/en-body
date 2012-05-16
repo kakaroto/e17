@@ -210,7 +210,7 @@
   so you can connect to wireless and wired networks. You will need to
   load the <b>Connection Manager</b> module. For Bluetooth support you
   may want <b>bluez</b> installed and load the <b>Bluetooth Manager</b>
-  module. You may want <b>ophono</b> installed, and load the
+  module. You may want <b>ofono</b> installed, and load the
   <b>Mobile Modems Manager</b> to get support for wireless modems like
   3G UMTS. You may want <b>hal</b> installed if you don't have modern udev
   support on your system. Enlightenment will discover these services via
