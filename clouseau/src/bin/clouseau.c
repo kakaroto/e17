@@ -30,6 +30,7 @@ struct _gui_elements
    Evas_Object *inwin;
    Evas_Object *en;
    Evas_Object *pb; /* Progress wheel shown when waiting for TREE_DATA */
+   Evas_Object *work_offline_check;
    char *address;
    app_data_st *sel_app; /* Currently selected app data */
 };
@@ -551,6 +552,15 @@ _bt_clicked(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    _load_list(data);
 }
 
+
+static void
+_chk_changed(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{  /* Disbale entry when working offline */
+   printf("<%s> <%d>\n", __func__, elm_check_state_get(obj));
+   gui_elements *g = data;
+   elm_object_disabled_set(g->en, elm_check_state_get(obj));
+}
+
 static void
 _dismiss_inwin(gui_elements *g)
 {
@@ -765,6 +775,18 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_entry_select_all(gui->en);
    elm_box_pack_end(bxx, gui->en);
    evas_object_show(gui->en);
+
+   gui->work_offline_check = elm_check_add(bxx);
+   elm_object_text_set(gui->work_offline_check, "Work Offline");
+   evas_object_size_hint_weight_set(gui->work_offline_check,
+         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gui->work_offline_check,
+         EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(gui->work_offline_check, "changed",
+         _chk_changed, gui);
+   elm_check_state_set(gui->work_offline_check, EINA_FALSE);
+   elm_box_pack_end(bxx, gui->work_offline_check);
+   evas_object_show(gui->work_offline_check);
 
    bt_bx = elm_box_add(gui->inwin);
    elm_box_horizontal_set(bt_bx, EINA_TRUE);
