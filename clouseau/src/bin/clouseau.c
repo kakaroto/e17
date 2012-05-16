@@ -695,16 +695,16 @@ _ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_U
         elm_object_disabled_set(g->bt_save, (g->sel_app == NULL));
         evas_object_show(g->bt_save);
 
+        if(!_connect_to_daemon(data))
+          {
+             printf("Failed to connect to server.\n");
+             elm_exit(); /* exit the program's main loop,runs in elm_run() */
+          }
      }
 
    evas_object_show(g->bx);
    evas_object_show(g->panel);
 
-   if(!_connect_to_daemon(data))
-     {
-        printf("Failed to connect to server.\n");
-        elm_exit(); /* exit the program's main loop that runs in elm_run() */
-     }
 }
 
 #ifndef ELM_LIB_QUICKLAUNCH
