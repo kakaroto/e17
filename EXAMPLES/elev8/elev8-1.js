@@ -1,21 +1,20 @@
 #!/usr/local/bin/elev8
 
+var elm = require('elm');
+
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 
-var my_window = new elm.window({
-    type: "main",
+var my_window = elm.realise(elm.Window({
     label: "Elev8 demo",
     width: 1024,
     height: 768,
     elements : {
-	background : {
-	    type: "background",
+	background : elm.Background({
 	    weight: EXPAND_BOTH,
 	    image: "fond.jpg",
 	    resize: true,
-	},
-	bubble : {
-	    type: "image",
+	}),
+	bubble : elm.Image({
 	    width: 64,
 	    height: 64,
 	    file: "bubble.png",
@@ -41,7 +40,7 @@ var my_window = new elm.window({
 		obj.x = x;
 		obj.y = y;
 	    }
-	}
+	})
     },
     on_keydown : function(obj, keyname) {
 	switch (keyname)
@@ -54,4 +53,4 @@ var my_window = new elm.window({
 	    break;
 	}
     }
-});
+}));

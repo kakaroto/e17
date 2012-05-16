@@ -3,13 +3,10 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var Item = function(calc)
+function on_click(arg)
 {
-    this.type = "default";
-    this.on_select = function () { print("Selected '" + calc +"'\n"); };
-    this.on_text = function (arg) { return "'" + calc + "' = '" + eval(calc) +"'"; };
-    this.on_content = function (arg) { return undefined; };
-};
+    print("Selected '" + arg + "'\n");
+}
 
 function Append(label)
 {
@@ -21,113 +18,108 @@ function Append(label)
 
 function Calc()
 {
-    my_window.elements.box.elements.left.elements.results.append(new Item(my_window.elements.box.elements.right.elements.entry.label));
+    my_window.elements.box.elements.left.elements.results.append('default', my_window.elements.box.elements.right.elements.entry.label, on_click);
     my_window.elements.box.elements.right.elements.entry.label = eval(my_window.elements.box.elements.right.elements.entry.label);
 }
 
-function Button() {
-    this.type = "button";
-    this.weight = { x : -1, y : -1 };
+function Button(Label, On_Click) {
+    return elm.Button({
+	weight : { x : -1, y : -1 },
+	label: Label,
+	on_click: On_Click
+    });
 }
 
 function ButtonLogic(num) {
-    this.label = num;
-    this.on_clicked = function(obj) { Append(obj.label); }
+    return Button(num, function(me) { Append(me.label); });  
 }
-
-ButtonLogic.prototype = new Button;
 
 function ButtonEqual() {
-    this.label = "=";
-    this.on_clicked = function () { Calc(); }
+    return Button("=", function () { Calc(); });
 }
-
-ButtonEqual.prototype = new Button;
 
 function ButtonClear() {
-    this.label = "Clear";
-    this.on_clicked = function () {
+    return Button("Clear", function () {
 	my_window.elements.box.elements.left.elements.results.clear();
 	my_window.elements.box.elements.right.elements.entry.label = "0";
-    }
+    });
 }
-
-ButtonClear.prototype = new Button;
 
 function GenerateLine(start, operation) {
     var tmp = new Object();
 
     for (i = 0; i < 3; i++)
-	tmp["b"+i] = new ButtonLogic(i + start);
-    tmp["bop"] = new ButtonLogic(operation);
+	tmp["b"+i] = ButtonLogic(i + start);
+    tmp["bop"] = ButtonLogic(operation);
 
     return tmp;
 }
 
 function Row(start, operation) {
-    this.type = "box";
-    this.horizontal = true;
-    this.homogeneous = true;
-    this.elements = GenerateLine(start, operation);
+    return box = elm.Box({
+	horizontal: true,
+	homogeneous: true,
+	elements: GenerateLine(start, operation)
+    });
 }
 
-var my_window = new elm.window({
+var my_window = new elm.realise(elm.Window({
     type: "main",
     label: "Elev8 demo",
     width: 400,
     height: 200,
     elements : {
-	background : {
-	    type: "background",
+	background : elm.Background({
 	    weight: EXPAND_BOTH,
             resize: true
-	},
-	box : {
-	    type : "box",
+	}),
+	box : elm.Box({
 	    weight : EXPAND_BOTH,
 	    horizontal : true,
 	    resize : true,
 	    elements : {
-		left : {
-		    type : "box",
+		left : elm.Box({
 		    weight : EXPAND_BOTH,
 		    align : FILL_BOTH,
 		    elements : {
-			clear : new ButtonClear(),
-			results : {
-			    type : "genlist",
+			clear : ButtonClear(),
+			results : elm.Genlist({
 			    weight : EXPAND_BOTH,
-			    align : FILL_BOTH
-			}
+			    align : FILL_BOTH,
+			    classes : {
+				'default': {
+				    text: function(arg) {
+					return "'" + arg.data + "' = '" + eval(arg.data) +"'";
+				    }
+				}
+			    }
+			})
 		    }
-		},
-		right : {
-		    type : "box",
+		}),
+		right : elm.Box({
 		    elements : {
-			entry : {
-			    type : "label",
+			entry : elm.Label({
 			    label : "0",
 			    align : { x : -1, y : 0 },
-			},
-			row1 : new Row(7, "/"),
-			row2 : new Row(4, "*"),
-			row3 : new Row(1, "-"),
-			row4 : {
-			    type : "box",
+			}),
+			row1 : Row(7, "/"),
+			row2 : Row(4, "*"),
+			row3 : Row(1, "-"),
+			row4 : elm.Box({
 			    horizontal : true,
 			    homogeneous : true,
 			    elements : {
-				b0 : new ButtonLogic(0),
-				bdot : new ButtonLogic("."),
-				equals : new ButtonEqual(),
-				badd : new ButtonLogic("+")
+				b0 : ButtonLogic(0),
+				bdot : ButtonLogic("."),
+				equals : ButtonEqual(),
+				badd : ButtonLogic("+")
 			    }
-			}
+			})
 		    }
-		}
+		})
 	    }
-	}
+	})
     }
-});
+}));
 
 
