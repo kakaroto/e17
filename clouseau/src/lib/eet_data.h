@@ -7,7 +7,7 @@
 
 #define PORT           (22522)
 #define MAX_LINE       (1023)
-#define LOCALHOST      "localhost"
+#define LOCALHOST      "127.0.0.1"
 #define LISTEN_IP      "0.0.0.0" /* Avail all, no mask */
 
 #define DESC_ADD_BASIC(desc, type, member, eet_type) \
