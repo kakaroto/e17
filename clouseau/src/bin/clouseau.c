@@ -87,8 +87,6 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *e
    printf("Lost server with ip %s!\n", ecore_ipc_server_ip_get(ev->server));
 
    ecore_ipc_server_del(ev->server);
-
-   ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
 
