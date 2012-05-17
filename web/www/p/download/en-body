@@ -11,11 +11,13 @@
       <li>Eet</li>
       <li>Evas</li>
       <li>Ecore</li>
+      <li>Eio</li>
       <li>Embryo</li>
       <li>Edje</li>
       <li>Efreet</li>
       <li>E_Dbus</li>
       <li>Eeze</li>
+      <li>Elementary</li>
      </ul>
     </p>
     <p>Recommended requirements for all releases to the right are:
@@ -25,6 +27,8 @@
       <li>zlib</li>
       <li>freetype</li>
       <li>fontconfig</li>
+      <li>fribidi (If you want BiDi support)</li>
+      <li>harfbuzz (If you want complex text shaping support)</li>
       <li>opengl2.0/opengles-2 (depending on target)</li>
       <li>libpng</li>
       <li>libjpeg</li>
