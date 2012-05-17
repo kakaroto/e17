@@ -1,10 +1,7 @@
-#ifndef  EWEATHER_PLUGINS_INC
-#define  EWEATHER_PLUGINS_INC
+#ifndef  EWEATHER_PLUGINS_H
+#define  EWEATHER_PLUGINS_H
 
-#include "EWeather.h"
-#include <Ecore_File.h>
-#include <string.h>
-#include <stdio.h>
+#include <EWeather.h>
 
 typedef struct EWeather_Plugin EWeather_Plugin;
 typedef void (*Plugin_Init) (EWeather *eweather);

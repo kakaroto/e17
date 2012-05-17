@@ -1,6 +1,10 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <Edje.h>
+
 #include "EWeather_Smart.h"
-#include <math.h>
-#include <string.h>
 
 typedef struct _Smart_Data Smart_Data;
 
@@ -97,7 +101,8 @@ static struct EWeather_Type_Signal _tab[] =
 
 const char *eweather_object_signal_type_get(EWeather_Type type)
 {
-   int i;
+   size_t i;
+
    for (i = 0; i < sizeof (_tab) / sizeof (struct EWeather_Type_Signal); ++i)
      if (_tab[i].type == type)
        {
@@ -126,9 +131,12 @@ EWeather *eweather_object_eweather_get(Evas_Object *obj)
 void eweather_theme_set(Evas_Object *obj, const char *theme)
 {
     Eina_List *l;
-    Evas_Object *o, *_obj;
-    Smart_Data *sd = evas_object_smart_data_get(obj);
-    if(!sd) return ;
+    Evas_Object *_obj;
+    Smart_Data *sd;
+    int mode;
+
+    sd = evas_object_smart_data_get(obj);
+    if (!sd) return ;
 
     eina_stringshare_replace(&sd->theme, theme);
 
@@ -137,7 +145,7 @@ void eweather_theme_set(Evas_Object *obj, const char *theme)
     EINA_LIST_FOREACH(sd->objs, l, _obj)
         edje_object_file_set(_obj, sd->theme, "weather");
 
-    int mode = sd->mode;
+    mode = sd->mode;
     sd->mode = -1; //No mode
     eweather_object_mode_set(obj, mode);
 
@@ -147,7 +155,7 @@ void eweather_theme_set(Evas_Object *obj, const char *theme)
 void eweather_object_temp_format_set(Evas_Object *obj, EWeather_Temp type, const char *format)
 {
    Smart_Data *sd = evas_object_smart_data_get(obj);
-   if(!sd) return;
+   if (!sd) return;
    if (type == EWEATHER_TEMP_FARENHEIT)
      eina_stringshare_replace(&sd->farenheit_format, format);
    else
@@ -159,13 +167,13 @@ void eweather_object_mode_set(Evas_Object *obj, EWeather_Object_Mode mode)
    Eina_List *l;
    Evas_Object *o;
    Smart_Data *sd = evas_object_smart_data_get(obj);
-   if(!sd) return ;
+   if (!sd) return ;
 
-   if(mode == sd->mode) return;
+   if (mode == sd->mode) return;
 
    sd->mode = mode;
 
-   if(sd->mode == EWEATHER_OBJECT_MODE_FULLSCREEN)
+   if (sd->mode == EWEATHER_OBJECT_MODE_FULLSCREEN)
      edje_object_signal_emit(sd->obj, "fullscreen", "");
    else
      {
@@ -205,9 +213,9 @@ _mouse_up_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    Smart_Data *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
 
-   if(ev->button != 1) return ;
+   if (ev->button != 1) return ;
    sd->thumbscroll.moved = EINA_TRUE;
-   if(sd->thumbscroll.is)
+   if (sd->thumbscroll.is)
      {
 	sd->thumbscroll.is = EINA_FALSE;
 	return ;
@@ -217,18 +225,18 @@ _mouse_up_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    i = 0;
    EINA_LIST_FOREACH(sd->objs, l, o)
      {
-	if(o == o_day)
+	if (o == o_day)
 	  break;
 	else
 	  i++;
      }
-   if(o && sd->mode == EWEATHER_OBJECT_MODE_EXPOSE)
+   if (o && sd->mode == EWEATHER_OBJECT_MODE_EXPOSE)
      {
 	sd->current_day = i;
 	update_main(obj);
      }
 
-   if(o && sd->mode == EWEATHER_OBJECT_MODE_EXPOSE)
+   if (o && sd->mode == EWEATHER_OBJECT_MODE_EXPOSE)
      {
 	eweather_object_mode_set(obj, EWEATHER_OBJECT_MODE_FULLSCREEN);
      }
@@ -246,7 +254,7 @@ _mouse_down_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    Smart_Data *sd = evas_object_smart_data_get(obj);
 
    if (!sd) return;
-   if(ev->button != 1) return ;
+   if (ev->button != 1) return ;
 
    sd->thumbscroll.moved = EINA_FALSE;
 
@@ -264,7 +272,7 @@ _mouse_move_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    Smart_Data *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
 
-   if(sd->thumbscroll.moved)
+   if (sd->thumbscroll.moved)
      return ;
 
    sd->thumbscroll.is = EINA_TRUE;
@@ -272,18 +280,18 @@ _mouse_move_cb(void *data, Evas *evas, Evas_Object *o_day, void *event)
    x = ev->cur.canvas.x;
    y = ev->cur.canvas.y;
 
-   if(x - sd->thumbscroll.x > 60)
+   if (x - sd->thumbscroll.x > 60)
      {
-	if(sd->current_day > 0)
+	if (sd->current_day > 0)
 	  {
 	     sd->current_day--;
 	     update_main(obj);
 	  }
 	sd->thumbscroll.moved = EINA_TRUE;
      }
-   else if(x - sd->thumbscroll.x < -60)
+   else if (x - sd->thumbscroll.x < -60)
      {
-	if(sd->current_day < eina_list_count(sd->objs)-1)
+       if (sd->current_day < (int)eina_list_count(sd->objs)-1)
 	  {
 	     sd->current_day++;
 	     update_main(obj);
@@ -308,19 +316,19 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 
    ff = sd->farenheit_format;
    cf = sd->celcius_format;
-   if(sd->current_day >= eweather_data_count(sd->eweather))
+   if (sd->current_day >= (int)eweather_data_count(sd->eweather))
      sd->current_day = -1;
 
    if (sd->eweather)
-   for(i=0; i<eweather_data_count(sd->eweather); i++)
+     for (i = 0; i < (int)eweather_data_count(sd->eweather); i++)
      {
 	EWeather_Data *e_data = eweather_data_get(sd->eweather, i);
 
-	if(sd->current_day<0)
+	if (sd->current_day<0)
 	  sd->current_day = i;
 
 	o_day = eina_list_nth(sd->objs, i);
-	if(!o_day)
+	if (!o_day)
 	  {
 	     o_day = edje_object_add(evas_object_evas_get(obj));
 	     edje_object_file_set(o_day, sd->theme, "weather");
@@ -331,7 +339,7 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 	     evas_object_event_callback_add(o_day, EVAS_CALLBACK_MOUSE_UP,
 		   _mouse_up_cb, obj);
 
-	     if(sd->mode == EWEATHER_OBJECT_MODE_FULLSCREEN)
+	     if (sd->mode == EWEATHER_OBJECT_MODE_FULLSCREEN)
 	       evas_object_hide(o_day);
 	  }
 
@@ -343,21 +351,21 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 
 	edje_object_signal_emit(o_day, signal, "");
 
-	if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
+	if (eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
 	  snprintf(buf, sizeof(buf), ff, eweather_data_temp_get(e_data));
 	else
 	  snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_get(e_data)));
 
 	edje_object_part_text_set(o_day, "text.temp", buf);
 
-	if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
+	if (eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
 	  snprintf(buf, sizeof(buf), ff, eweather_data_temp_min_get(e_data));
 	else
 	  snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_min_get(e_data)));
 
 	edje_object_part_text_set(o_day, "text.temp_min", buf);
 
-	if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
+	if (eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
 	  snprintf(buf, sizeof(buf), ff, eweather_data_temp_max_get(e_data));
 	else
 	  snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_max_get(e_data)));
@@ -368,7 +376,7 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 	edje_object_part_text_set(o_day, "text.date", eweather_data_date_get(e_data));
      }
 
-   while(eina_list_count(sd->objs) > eweather_data_count(sd->eweather))
+   while (eina_list_count(sd->objs) > eweather_data_count(sd->eweather))
      {
 	Evas_Object *o = eina_list_data_get(eina_list_last(sd->objs));
 	sd->objs = eina_list_remove(sd->objs, o);
@@ -393,7 +401,7 @@ static void update_main(Evas_Object *obj)
 
    ff = sd->farenheit_format;
    cf = sd->celcius_format;
-   if(sd->current_day < 0) return ;
+   if (sd->current_day < 0) return ;
 
    eweather = sd->eweather;
 
@@ -406,21 +414,21 @@ static void update_main(Evas_Object *obj)
 
    edje_object_signal_emit(sd->main, signal, "");
 
-   if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
+   if (eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
      snprintf(buf, sizeof(buf), ff, eweather_data_temp_get(e_data));
    else
      snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_get(e_data)));
 
    edje_object_part_text_set(sd->main, "text.temp", buf);
 
-   if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
+   if (eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
      snprintf(buf, sizeof(buf), ff, eweather_data_temp_min_get(e_data));
    else
      snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_min_get(e_data)));
 
    edje_object_part_text_set(sd->main, "text.temp_min", buf);
 
-   if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
+   if (eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
      snprintf(buf, sizeof(buf), ff, eweather_data_temp_max_get(e_data));
    else
      snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_max_get(e_data)));
@@ -443,52 +451,55 @@ static void _sizing_eval(Evas_Object *obj)
    const Evas_Object *content;
    Evas_Coord wmin, hmin;
    double ratiow, ratioh, ratio;
+   double rac;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
 
-   if(eina_list_count(sd->objs) <= 0) return ;
+   if (eina_list_count(sd->objs) <= 0) return ;
 
    content = edje_object_part_object_get(sd->obj, "object.content");
    evas_object_geometry_get(content, &x, &y, &w, &h);
 
    edje_object_size_min_get(eina_list_data_get(sd->objs), &wmin, &hmin);
 
-   double rac = sqrt(eina_list_count(sd->objs));
+   rac = sqrt(eina_list_count(sd->objs));
    col = rac;
-   if(rac > col) col++;
+   if (rac > col) col++;
 
    line = eina_list_count(sd->objs) / col;
-   if(eina_list_count(sd->objs) % col) line++;
+   if (eina_list_count(sd->objs) % col) line++;
 
 
    l = sd->objs;
 
-   if(col > 0)
+   if (col > 0)
      w_size = (w-(col-1)*5)/col;
-   if(line > 0)
+   if (line > 0)
      h_size = (h-(line-1)*5)/line;
 
    ratiow = w_size / (double)wmin;
    ratioh = h_size / (double)hmin;
    ratio = ratiow;
-   if(ratiow>ratioh) ratio = ratioh;
+   if (ratiow>ratioh) ratio = ratioh;
 
    w_size = wmin * ratio;
    h_size = hmin * ratio;
 
+   w_inter = 0;
+   h_inter = 0;
 
-   if(col > 0)
+   if (col > 0)
      w_inter = (w - w_size*col) / (col+1);
-   if(line > 0)
+   if (line > 0)
      h_inter = (h - h_size*line) / (line+1);
 
-   x+=w_inter;
-   y+=h_inter;
+   x += w_inter;
+   y += h_inter;
 
-   for(j=0; j<line; j++)
+   for (j = 0; j < line; j++)
      {
-	for(i=0; i<col && i*j<eina_list_count(sd->objs); i++)
+       for (i = 0; (i < col) && (i * j < (int)eina_list_count(sd->objs)); i++)
 	  {
 	     Evas_Object *o = eina_list_data_get(l);
 	     l = eina_list_next(l);
@@ -506,7 +517,7 @@ static void _sizing_eval(Evas_Object *obj)
    ratioh = h_size / (double)hmin;
 
    ratio = ratiow;
-   if(ratiow>ratioh) ratio = ratioh;
+   if (ratiow>ratioh) ratio = ratioh;
    edje_object_scale_set(sd->main, ratio);
 }
 
@@ -518,23 +529,17 @@ _smart_init(void)
 {
    if (smart) return;
      {
-	static const Evas_Smart_Class sc =
+	static Evas_Smart_Class sc = EVAS_SMART_CLASS_INIT_NAME_VERSION(E_OBJ_NAME);
+        if (!sc.add)
 	  {
-	     E_OBJ_NAME,
-	     EVAS_SMART_CLASS_VERSION,
-	     _smart_add,
-	     _smart_del,
-	     _smart_move,
-	     _smart_resize,
-	     _smart_show,
-	     _smart_hide,
-	     NULL,
-	     _smart_clip_set,
-	     _smart_clip_unset,
-	     NULL,
-	     NULL,
-	     NULL,
-	     NULL
+             sc.add = _smart_add;
+             sc.del = _smart_del;
+             sc.move = _smart_move;
+             sc.resize = _smart_resize;
+             sc.show = _smart_show;
+             sc.hide = _smart_hide;
+             sc.clip_set = _smart_clip_set;
+             sc.clip_unset = _smart_clip_unset;
 	  };
 	smart = evas_smart_class_new(&sc);
      }
@@ -544,10 +549,10 @@ _smart_init(void)
 _smart_add(Evas_Object * obj)
 {
    Smart_Data *sd;
-   Eina_Array_Iterator it;
+   Eina_Array_Iterator it = NULL;
    Eina_Array *array;
    Eina_Module *m;
-   int i;
+   unsigned int i;
 
    sd = calloc(1, sizeof(Smart_Data));
    if (!sd) return;

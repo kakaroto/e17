@@ -1,5 +1,5 @@
-#ifndef  EWEATHER_INC
-#define  EWEATHER_INC
+#ifndef  EWEATHER_H
+#define  EWEATHER_H
 
 #include <Eina.h>
 

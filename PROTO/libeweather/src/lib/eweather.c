@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "EWeather_Plugins.h"
 
 EWeather *eweather_new()
@@ -10,7 +14,7 @@ EWeather *eweather_new()
 void eweather_free(EWeather *eweather)
 {
    EWeather_Data *e_data;
-   if(eweather->plugin.array)
+   if (eweather->plugin.array)
      {
 	eina_module_list_unload(eweather->plugin.array);
 	eina_module_list_free(eweather->plugin.array);
@@ -24,13 +28,13 @@ void eweather_free(EWeather *eweather)
 
 void eweather_plugin_set(EWeather *eweather, Eina_Module *module)
 {
-    if(eweather->plugin.module)
+    if (eweather->plugin.module)
     {
       eweather_plugin_shutdown(eweather);
     }
 
     eweather->plugin.module = module;
-    if(module)
+    if (module)
       eweather_plugin_load(eweather);
 }
 
@@ -38,14 +42,14 @@ void eweather_plugin_byname_set(EWeather *eweather, const char *name)
 {
    Eina_Array *array;
    Eina_Module *m;
-   int i;
-   Eina_Array_Iterator it;
-   
+   unsigned int i = 0;
+   Eina_Array_Iterator it = NULL;
+
    array = eweather_plugins_list_get(eweather);
    EINA_ARRAY_ITER_NEXT(array, i, m, it)
      {
 	EWeather_Plugin *plugin = eina_module_symbol_get(m, "_plugin_class");
-	if(plugin && !strcmp(name, plugin->name))
+	if (plugin && !strcmp(name, plugin->name))
 	  {
 	     eweather_plugin_set(eweather, m);
 	     break ;
@@ -57,17 +61,17 @@ void eweather_poll_time_set(EWeather *eweather, int poll_time)
 {
    eweather->poll_time = poll_time;
 
-   if(eweather->plugin.plugin && eweather->plugin.plugin->poll_time_updated)
+   if (eweather->plugin.plugin && eweather->plugin.plugin->poll_time_updated)
 	eweather->plugin.plugin->poll_time_updated(eweather);
 }
 
 void eweather_code_set(EWeather *eweather, const char *code)
 {
-   if(eweather->code)
+   if (eweather->code)
      eina_stringshare_del(eweather->code);
    eweather->code = eina_stringshare_add(code);
 
-   if(eweather->plugin.plugin && eweather->plugin.plugin->code_updated)
+   if (eweather->plugin.plugin && eweather->plugin.plugin->code_updated)
 	eweather->plugin.plugin->code_updated(eweather);
 }
 
@@ -125,14 +129,14 @@ const char *eweather_data_date_get(EWeather_Data *eweather_data)
 
 EWeather_Data *eweather_data_current_get(EWeather *eweather)
 {
-   if(!eweather->data)
+   if (!eweather->data)
 	eweather->data = eina_list_append(eweather->data, calloc(1, sizeof(EWeather_Data)));
    return eina_list_data_get(eweather->data);
 }
 
 EWeather_Data *eweather_data_get(EWeather *eweather, int num)
 {
-   while(eina_list_count(eweather->data) <= num)
+  while (eina_list_count(eweather->data) <= (unsigned int)num)
      {
 	EWeather_Data *e_data =  calloc(1, sizeof(EWeather_Data));
 	eweather->data = eina_list_append(eweather->data, e_data);
@@ -155,4 +159,3 @@ double eweather_utils_celcius_get(double farenheit)
 {
    return (farenheit - 32.) * 5./9.;
 }
-

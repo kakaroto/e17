@@ -1,10 +1,8 @@
-#ifndef  EWEATHER_SMART_INC
-#define  EWEATHER_SMART_INC
+#ifndef  EWEATHER_SMART_H
+#define  EWEATHER_SMART_H
 
-#include "EWeather.h"
-#include "Evas.h"
-#include "Edje.h"
-#include <stdio.h>
+#include <Evas.h>
+#include <EWeather.h>
 
 typedef  enum EWeather_Object_Mode EWeather_Object_Mode;
 

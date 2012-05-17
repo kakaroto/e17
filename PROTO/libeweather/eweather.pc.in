@@ -6,6 +6,7 @@ includedir=@includedir@
 Name: eweather
 Description: :)
 Version: @VERSION@
+@pkgconfig_requires_private@: @eweather_requirements@
 Libs: -L${libdir} -leweather
+Libs.private: @EFL_DLOPEN_LIBS@
 Cflags: -I${includedir}
-Requires: @requirements@

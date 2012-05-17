@@ -1,16 +1,17 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/plugins/test -I$(top_srcdir)/src/lib \
-	 @E_CFLAGS@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/plugins/test \
+-I$(top_srcdir)/src/lib \
+@EWEATHER_CFLAGS@
 
-pkgdir = $(pluginsdir)
+pkgdir = $(pkglibdir)/plugins
 pkg_LTLIBRARIES = test.la
-test_la_SOURCES = test.c
-test_la_DEPENDENCIES = $(top_builddir)/config.h
-test_la_LIBADD = @E_LIBS@
-test_la_LDFLAGS = -module -avoid-version
 
+test_la_SOURCES = test.c
+test_la_LIBADD = @EWEATHER_LIBS@
+test_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -module -avoid-version
+test_la_LIBTOOLFLAGS = --tag=disable-static
 
 clean-local:
 	rm -rf *~
-
