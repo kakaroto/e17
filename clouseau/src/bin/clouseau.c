@@ -126,6 +126,15 @@ _load_gui_with_list(gui_elements *g, Eina_List *trees)
    return EINA_TRUE;
 }
 
+static char *
+_app_name_get(app_info_st *app)
+{
+   char *str = malloc(strlen(app->name)+32);
+   sprintf(str, "%s [%d]", app->name, app->pid);
+
+   return str;
+}
+
 static void
 _set_selected_app(void *data, Evas_Object *pobj,
       void *event_info EINA_UNUSED)
@@ -136,9 +145,7 @@ _set_selected_app(void *data, Evas_Object *pobj,
         if (!svr)
           {  /* Got TREE_DATA from file, update this immidately */
              gui->sel_app = st;
-             app_info_st *app = st->app->data;
-             char *str = malloc(strlen(app->name)+32);
-             sprintf(str, "%s [%d]", app->name, app->pid);
+             char *str = _app_name_get(st->app->data);
              elm_object_text_set(pobj, str);
              free(str);
              _load_list(gui);
@@ -147,12 +154,8 @@ _set_selected_app(void *data, Evas_Object *pobj,
 
         if (gui->sel_app != st)
           {  /* Reload only of selected some other app */
-             app_info_st *app = st->app->data;
              gui->sel_app = st;
-
-             char *str = malloc(strlen(app->name)+32);
-
-             sprintf(str, "%s [%d]", app->name, app->pid);
+             char *str = _app_name_get(st->app->data);
              elm_object_text_set(pobj, str);
              free(str);
 
@@ -188,11 +191,7 @@ _app_ptr_cmp(const void *d1, const void *d2)
 static void
 _add_app_to_dd_list(Evas_Object *dd_list, app_data_st *st)
 {  /* Add app to Drop Down List */
-   app_info_st *app = st->app->data;
-
-   char *str = malloc(strlen(app->name)+32);
-   sprintf(str, "%s [%d]", app->name, app->pid);
-
+   char *str = _app_name_get(st->app->data);
    elm_hoversel_item_add(dd_list, str, NULL, ELM_ICON_NONE,
          _set_selected_app, st);
 
