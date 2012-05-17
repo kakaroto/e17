@@ -606,19 +606,19 @@ _bt_load_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    Variant_st *app = calloc(1, sizeof(Variant_st));
    Variant_st *td =  calloc(1, sizeof(Variant_st));
    /* app_info_st *app = NULL; */
-   Eina_Bool s = eet_info_read(event_info,
-         (app_info_st **) &app->data,
-         (tree_data_st **) &td->data);
-   printf("<%s> Selected <%s> file. read=<%d>\n", __func__, (char *) event_info, s);
+   if (event_info)
+     {
+        Eina_Bool s = eet_info_read(event_info,
+              (app_info_st **) &app->data,
+              (tree_data_st **) &td->data);
 
-   if (s)
-     {  /* Add the app to list of apps, then set this as selected app */
-        app_data_st *st = _add_app(g, app);
-        st->td = td;  /* This is the same as we got TREE_DATA message */
-        _set_selected_app(st, g->dd_list, NULL);
+        if (s)
+          {  /* Add the app to list of apps, then set this as selected app */
+             app_data_st *st = _add_app(g, app);
+             st->td = td;  /* This is the same as we got TREE_DATA message */
+             _set_selected_app(st, g->dd_list, NULL);
+          }
      }
-
-   return;
 }
 
 static void
@@ -627,11 +627,11 @@ _bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    gui_elements *g = data;
    app_info_st *app = g->sel_app->app->data;
    tree_data_st *ftd = g->sel_app->td->data;
-   Eina_Bool s;
-
-   s = eet_info_save(event_info, app, ftd);
-   printf("<%s> Selected <%s> file saved <%d>.\n", __func__, (char *) event_info, s);
-   return;
+   if (event_info)
+     {
+        Eina_Bool s;
+        s = eet_info_save(event_info, app, ftd);
+     }
 }
 
 static void
