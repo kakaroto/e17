@@ -1,4 +1,4 @@
-MAINTAINERCLEANFILES = Makefile.in theme.edj
+MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = images
 
@@ -13,7 +13,9 @@ EDJ = theme.edj
 EXTRA_DIST = theme.edc
 
 theme.edj:  theme.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(top_srcdir)/data/default/theme.edc
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/default/theme.edc \
+	$(top_builddir)/data/default/theme.edj
 
 icondir = $(pkgdatadir)/default
 icon_DATA =  $(EDJ)

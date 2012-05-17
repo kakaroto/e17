@@ -1,4 +1,4 @@
-MAINTAINERCLEANFILES = Makefile.in theme.edj
+MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = images
 
@@ -13,13 +13,12 @@ EDJ = theme.edj
 EXTRA_DIST = theme.edc
 
 theme.edj:  theme.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $(top_srcdir)/data/simple/theme.edc
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/simple/theme.edc \
+	$(top_builddir)/data/simple/theme.edj
 
 icondir = $(pkgdatadir)/simple
 icon_DATA =  $(EDJ)
 
 clean-local:
 	rm -rf *.edj *~
-
-uninstall:
-	rm -rf $(DESTDIR)$(pkgdatadir)²
