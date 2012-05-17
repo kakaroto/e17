@@ -646,8 +646,8 @@ _bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    tree_data_st *ftd = g->sel_app->td->data;
    if (event_info)
      {
-        Eina_Bool s;
-        s = eet_info_save(event_info, app, ftd);
+        /* FIXME: Handle failure. */
+        eet_info_save(event_info, app, ftd);
      }
 }
 
