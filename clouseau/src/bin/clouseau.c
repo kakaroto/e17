@@ -129,8 +129,20 @@ _load_gui_with_list(gui_elements *g, Eina_List *trees)
 static char *
 _app_name_get(app_info_st *app)
 {
-   char *str = malloc(strlen(app->name)+32);
-   sprintf(str, "%s [%d]", app->name, app->pid);
+   char *str = NULL;
+   if (app->file)
+     {
+        char *tmp = strdup(app->file);
+        char *bname = basename(tmp);
+        str = malloc(strlen(bname) + strlen(app->name) + 32);
+        sprintf(str, "%s:%s [%d]", bname, app->name, app->pid);
+        free(tmp);
+     }
+   else
+     {
+        str = malloc(strlen(app->name)+32);
+        sprintf(str, "%s [%d]", app->name, app->pid);
+     }
 
    return str;
 }
@@ -618,6 +630,7 @@ _bt_load_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 
         if (s)
           {  /* Add the app to list of apps, then set this as selected app */
+              ((app_info_st *) app->data)->file = strdup(event_info);
              app_data_st *st = _add_app(g, app);
              st->td = td;  /* This is the same as we got TREE_DATA message */
              _set_selected_app(st, g->dd_list, NULL);

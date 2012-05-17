@@ -60,6 +60,7 @@ struct _app_info_st
 {  /* This will be used to register new APP in GUI client */
    unsigned int pid;
    char *name;
+   char *file;  /* Valid only if was read from file in offline mode */
    unsigned long long ptr; /* (void *) client ptr of app as saved by daemon */
 };
 typedef struct _app_info_st app_info_st;

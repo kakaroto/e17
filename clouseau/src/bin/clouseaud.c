@@ -46,12 +46,18 @@ _daemon_cleanup(void)
 
    EINA_LIST_FREE(gui, p)
      {
+        if(p->file)
+          free(p->file);
+
         free(p->name);
         free(p);
      }
 
    EINA_LIST_FREE(app, p)
      {
+        if(p->file)
+          free(p->file);
+
         free(p->name);
         free(p);
      }
@@ -113,7 +119,9 @@ _add_client(Eina_List *clients, connect_st *t, void *client)
      {
         app_info_st *st = malloc(sizeof(app_info_st));
         st->name = strdup(t->name);
+
         st->pid = t->pid;
+        st->file = NULL;
         st->ptr = (unsigned long long) (uintptr_t) client;
 
         return eina_list_append(clients, st);
@@ -215,7 +223,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    app_info_st *st;
                    Eina_List *l;
                    connect_st *t = v->data;
-                   app_info_st m = { t->pid, (char *) t->name,
+                   app_info_st m = { t->pid, (char *) t->name, NULL,
                         (unsigned long long) (uintptr_t) ev->client};
 
                    app = _add_client(app, t, ev->client);
