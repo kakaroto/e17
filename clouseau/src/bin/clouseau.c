@@ -14,6 +14,8 @@
 # include "config.h"
 #endif
 
+#define CLIENT_NAME         "Clouseau Client"
+#define CLIENT_NAME_OFFLINE "Clouseau Client - Offline"
 struct _app_data_st
 {
    Variant_st *app;  /* app->data is (app_info_st *)   */
@@ -36,19 +38,21 @@ struct _gui_elements
    Evas_Object *inwin;
    Evas_Object *en;
    Evas_Object *pb; /* Progress wheel shown when waiting for TREE_DATA */
-   Eina_Bool work_offline;
    char *address;
    app_data_st *sel_app; /* Currently selected app data */
 };
 typedef struct _gui_elements gui_elements;
 
 static int _load_list(gui_elements *gui);
+static void _bt_load_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info);
+static void _show_gui(gui_elements *g, Eina_Bool work_offline);
 
 /* Globals */
 static gui_elements *gui = NULL;
 static Eina_List *apps= NULL;  /* List of (app_data_st *) */
 static Elm_Genlist_Item_Class itc;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
+static Ecore_Ipc_Server *svr = NULL;
 
 Eina_Bool
 _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
@@ -58,7 +62,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
 
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
-   if (!gui->work_offline)
+   if (svr)
      {
         connect_st t = { getpid(), __FILE__ };
         p = packet_compose(GUI_CLIENT_CONNECT, &t, sizeof(t), &size);
@@ -68,6 +72,8 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
              ecore_ipc_server_flush(ev->server);
              free(p);
           }
+
+        elm_win_title_set(gui->win, CLIENT_NAME);
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -87,6 +93,9 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *e
    printf("Lost server with ip %s!\n", ecore_ipc_server_ip_get(ev->server));
 
    ecore_ipc_server_del(ev->server);
+   svr = NULL; /* Global svr var */
+   _show_gui(gui, EINA_TRUE);
+
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -124,12 +133,12 @@ _set_selected_app(void *data, Evas_Object *pobj,
    app_data_st *st = data;
    if (st)
      {
-        if (gui->work_offline)
+        if (!svr)
           {  /* Got TREE_DATA from file, update this immidately */
              gui->sel_app = st;
              app_info_st *app = st->app->data;
              char *str = malloc(strlen(app->name)+32);
-             sprintf(str, "%s [%d] OFFLINE", app->name, app->pid);
+             sprintf(str, "%s [%d]", app->name, app->pid);
              elm_object_text_set(pobj, str);
              free(str);
              _load_list(gui);
@@ -160,8 +169,11 @@ _set_selected_app(void *data, Evas_Object *pobj,
         gui->sel_app = NULL;
      }
 
-   if (!gui->work_offline)
-     elm_object_disabled_set(gui->bt_save, (gui->sel_app == NULL));
+   if (svr)
+     {  /* Enable/Desable buttons only if we are online */
+        elm_object_disabled_set(gui->bt_load, (gui->sel_app == NULL));
+        elm_object_disabled_set(gui->bt_save, (gui->sel_app == NULL));
+     }
 }
 
 static int
@@ -180,8 +192,6 @@ _add_app_to_dd_list(Evas_Object *dd_list, app_data_st *st)
 
    char *str = malloc(strlen(app->name)+32);
    sprintf(str, "%s [%d]", app->name, app->pid);
-   if (gui->work_offline)
-     strcat(str, " OFFLINE");
 
    elm_hoversel_item_add(dd_list, str, NULL, ELM_ICON_NONE,
          _set_selected_app, st);
@@ -455,7 +465,6 @@ client_win_del(void *data EINA_UNUSED,
 static Ecore_Ipc_Server *
 _connect_to_daemon(gui_elements *g)
 {
-   static Ecore_Ipc_Server *svr = NULL;
    if (svr && ecore_ipc_server_connected_get(svr))
      return svr;  /* Already connected */
 
@@ -518,9 +527,8 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
    highlight_st st = { (unsigned long long) (uintptr_t) app->ptr,
         (unsigned long long) (uintptr_t)  treeit->ptr };
 
-   if (!gui->work_offline)
+   if (svr)
      {
-        Ecore_Ipc_Server *svr = _connect_to_daemon(g);
         void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size);
         if (p)
           {
@@ -544,7 +552,7 @@ _load_list(gui_elements *g)
         elm_genlist_clear(g->prop_list);
         app_info_st *st = g->sel_app->app->data;
 
-        if (gui->work_offline)
+        if (!svr)
           {
              _update_tree_offline(g, g->sel_app->td);
              return 0;
@@ -554,7 +562,6 @@ _load_list(gui_elements *g)
                  (void *) (uintptr_t) st->ptr))
           {  /* do it only if app selected AND found in apps list */
              int size;
-             Ecore_Ipc_Server *svr = _connect_to_daemon(g);
              data_req_st t = { (unsigned long long) (uintptr_t) NULL,
                   (unsigned long long) (uintptr_t) st->ptr };
 
@@ -633,14 +640,6 @@ _bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 }
 
 static void
-_chk_changed(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
-{  /* Disbale entry when working offline */
-   gui_elements *g = data;
-   g->work_offline = elm_check_state_get(obj);
-   elm_object_disabled_set(g->en, g->work_offline);
-}
-
-static void
 _dismiss_inwin(gui_elements *g)
 {
    g->address = strdup(elm_entry_entry_get(g->en));
@@ -650,20 +649,11 @@ _dismiss_inwin(gui_elements *g)
 }
 
 static void
-_cancel_bt_clicked(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+_show_gui(gui_elements *g, Eina_Bool work_offline)
 {
-   _dismiss_inwin(data);
-   elm_exit(); /* exit the program's main loop that runs in elm_run() */
-}
-
-static void
-_ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
-{  /* Set the IP, PORT, then connect to server */
-   gui_elements *g = data;
-   _dismiss_inwin(g);
-
-   if (g->work_offline)
+   if (work_offline)
      {  /* Replace bt_load with fileselector button */
+        elm_win_title_set(g->win, CLIENT_NAME_OFFLINE);
         elm_box_unpack(g->hbx, g->bt_load);
         evas_object_del(g->bt_load);
 
@@ -690,10 +680,12 @@ _ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_U
         evas_object_smart_callback_add(g->bt_save, "file,chosen",
               _bt_save_file, g);
 
+        elm_object_disabled_set(g->bt_load, (g->sel_app == NULL));
         elm_object_disabled_set(g->bt_save, (g->sel_app == NULL));
         evas_object_show(g->bt_save);
 
-        if(!_connect_to_daemon(data))
+        svr = _connect_to_daemon(g);
+        if(!svr)
           {
              printf("Failed to connect to server.\n");
              elm_exit(); /* exit the program's main loop,runs in elm_run() */
@@ -702,7 +694,30 @@ _ok_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_U
 
    evas_object_show(g->bx);
    evas_object_show(g->panel);
+}
 
+static void
+_cancel_bt_clicked(void *data,
+      Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   _dismiss_inwin(data);
+   elm_exit(); /* exit the program's main loop that runs in elm_run() */
+}
+
+static void
+_ok_bt_clicked(void *data,
+      Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{  /* Set the IP, PORT, then connect to server */
+   _dismiss_inwin(data);
+   _show_gui(data, EINA_FALSE);
+}
+
+static void
+_ofl_bt_clicked(void *data,
+      Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{  /* Disbale entry when working offline */
+   _dismiss_inwin(data);
+   _show_gui(data, EINA_TRUE);
 }
 
 #ifndef ELM_LIB_QUICKLAUNCH
@@ -713,12 +728,12 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    /* For inwin popup */
    Evas_Object *lb, *bxx, *bt_bx, *bt_ok, *bt_cancel;
-   Evas_Object *ck_ofl; /* work_offline_check  */
+   Evas_Object *bt_ofl; /* work_offline button  */
    gui = calloc(1, sizeof(gui_elements));
 
    gui->win = win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
-   elm_win_title_set(win, "Clouseau Client");
+   elm_win_title_set(win, CLIENT_NAME_OFFLINE);
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
@@ -886,18 +901,6 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_box_pack_end(bxx, gui->en);
    evas_object_show(gui->en);
 
-   ck_ofl = elm_check_add(bxx);
-   elm_object_text_set(ck_ofl, "Work Offline");
-   evas_object_size_hint_weight_set(ck_ofl,
-         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ck_ofl,
-         EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_smart_callback_add(ck_ofl, "changed", _chk_changed, gui);
-   gui->work_offline = EINA_FALSE;
-   elm_check_state_set(ck_ofl, gui->work_offline);
-   elm_box_pack_end(bxx, ck_ofl);
-   evas_object_show(ck_ofl);
-
    bt_bx = elm_box_add(gui->inwin);
    elm_box_horizontal_set(bt_bx, EINA_TRUE);
    elm_box_homogeneous_set(bt_bx, EINA_TRUE);
@@ -923,6 +926,14 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    elm_box_pack_end(bt_bx, bt_ok);
    evas_object_show(bt_ok);
+
+   bt_ofl = elm_button_add(gui->inwin);
+   elm_object_text_set(bt_ofl, "Work Offline");
+   evas_object_smart_callback_add(bt_ofl, "clicked",
+         _ofl_bt_clicked, (void *) gui);
+
+   elm_box_pack_end(bt_bx, bt_ofl);
+   evas_object_show(bt_ofl);
 
    elm_win_inwin_content_set(gui->inwin, bxx);
    /* END   - Popup to get IP, PORT from user */
