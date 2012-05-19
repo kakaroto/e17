@@ -21,32 +21,113 @@ cdef class Slider(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_slider_add(parent.obj))
 
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
-
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
-
-    def icon_set(self, c_evas.Object icon):
-        elm_object_part_content_set(self.obj, "icon", icon.obj)
-
     def span_size_set(self, size):
         elm_slider_span_size_set(self.obj, size)
+
+    def span_size_get(self):
+        return elm_slider_span_size_get(self.obj)
+
+    property span_size:
+        def __get__(self):
+            return self.span_size_get()
+
+        def __set__(self, size):
+            self.span_size_set(size)
 
     def unit_format_set(self, format):
         elm_slider_unit_format_set(self.obj, format)
 
+    def unit_format_get(self):
+        return elm_slider_unit_format_get(self.obj)
+
+    property unit_format:
+        def __get__(self):
+            return self.unit_format_get()
+
+        def __set__(self, format):
+            self.unit_format_set(format)
+
     def indicator_format_set(self, format):
         elm_slider_indicator_format_set(self.obj, format)
+
+    def indicator_format_get(self):
+        return elm_slider_indicator_format_get(self.obj)
+
+    property indicator_format:
+        def __get__(self):
+            return self.indicator_format_get()
+
+        def __set__(self, format):
+            self.indicator_format_set(format)
+
+    #TODO: def indicator_format_function_set()
+
+    #TODO: def units_format_function_set()
 
     def horizontal_set(self, horizontal):
         elm_slider_horizontal_set(self.obj, horizontal)
 
+    def horizontal_get(self):
+        return bool(elm_slider_horizontal_get(self.obj))
+
+    property horizontal:
+        def __get__(self):
+            return self.horizontal_get()
+        def __set__(self, horizontal):
+            self.horizontal_set(horizontal)
+
     def min_max_set(self, min, max):
         elm_slider_min_max_set(self.obj, min, max)
 
+    def min_max_get(self):
+        cdef double min, max
+        elm_slider_min_max_get(self.obj, &min, &max)
+        return (min, max)
+
+    property min_max:
+        def __get__(self):
+            return self.value_get()
+
+        def __set__(self, value):
+            self.value_set(*value)
+
+    def value_set(self, value):
+        elm_slider_value_set(self.obj, value)
+
+    def value_get(self):
+        return elm_slider_value_get(self.obj)
+
+    property value:
+        def __get__(self):
+            return self.value_get()
+        def __set__(self, value):
+            self.value_set(value)
+
+    def inverted_set(self, inverted):
+        elm_slider_inverted_set(self.obj, inverted)
+
+    def inverted_get(self):
+        return bool(elm_slider_inverted_get(self.obj))
+
+    property inverted:
+        def __get__(self):
+            return self.inverted_get()
+
+        def __set__(self, inverted):
+            self.inverted_set(inverted)
+
+    def indicator_show_set(self, show):
+        elm_slider_indicator_show_set(self.obj, show)
+
+    def indicator_show_get(self):
+        return bool(elm_slider_indicator_show_get(self.obj))
+
+    property indicator_show:
+        def __get__(self):
+            return self.indicator_show_get()
+
+        def __set__(self, show):
+            self.indicator_show_set(show)
 
     def callback_changed_add(self, func, *args, **kwargs):
         self._callback_add("changed", func, *args, **kwargs)
@@ -71,19 +152,5 @@ cdef class Slider(Object):
 
     def callback_delay_changed_del(self, func):
         self._callback_del("delay,changed", func)
-
-
-    property value:
-        def __get__(self):
-            cdef double value
-            value = elm_slider_value_get(self.obj)
-            return value
-
-        def __set__(self, value):
-            elm_slider_value_set(self.obj, value)
-
-    def inverted_set(self, inverted):
-        elm_slider_inverted_set(self.obj, inverted)
-
 
 _elm_widget_type_register("slider", Slider)

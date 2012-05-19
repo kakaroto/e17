@@ -18,6 +18,15 @@ def my_scroller_go_300_900(bt, sc):
 def my_scroller_go_900_900(obj, sc):
     sc.region_bring_in(900, 900, 318, 318)
 
+def cb_edges(obj, border):
+    print("Border callback:", border)
+
+def cb_drags(obj, action):
+    print("Drag callback:", action)
+
+def cb_anims(obj, action):
+    print("Anim callback:", action)
+
 def scroller_clicked(obj):
     win = elementary.Window("scroller", elementary.ELM_WIN_BASIC)
     win.title_set("Scroller")
@@ -58,6 +67,14 @@ def scroller_clicked(obj):
 
     sc = elementary.Scroller(win)
     sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    sc.callback_edge_top_add(cb_edges, "top")
+    sc.callback_edge_bottom_add(cb_edges, "bottom")
+    sc.callback_edge_left_add(cb_edges, "left")
+    sc.callback_edge_right_add(cb_edges, "right")
+    sc.callback_scroll_drag_start_add(cb_drags, "start")
+    sc.callback_scroll_drag_stop_add(cb_drags, "stop")
+    sc.callback_scroll_anim_start_add(cb_anims, "start")
+    sc.callback_scroll_anim_stop_add(cb_anims, "stop")
     win.resize_object_add(sc)
 
     sc.content_set(tb)
