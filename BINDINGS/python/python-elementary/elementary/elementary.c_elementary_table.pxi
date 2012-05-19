@@ -24,11 +24,30 @@ cdef class Table(Object):
     def homogeneous_set(self, homogeneous):
         elm_table_homogeneous_set(self.obj, homogeneous)
 
-    def homogenous_set(self, homogeneous):
-        elm_table_homogeneous_set(self.obj, homogeneous)
+    def homogeneous_get(self):
+        return elm_table_homogeneous_get(self.obj)
+
+    property homogeneous:
+        def __get__(self):
+            return self.homogeneous_get()
+    
+        def __set__(self, value):
+            self.homogeneous_set(value)
 
     def padding_set(self, horizontal, vertical):
         elm_table_padding_set(self.obj, horizontal, vertical)
+
+    def padding_get(self):
+        cdef c_evas.Evas_Coord horizontal, vertical
+        elm_table_padding_get(self.obj, &horizontal, &vertical)
+        return (horizontal, vertical)
+
+    property padding:
+        def __get__(self):
+            return self.padding_get()
+    
+        def __set__(self, value):
+            self.padding_set(*value)
 
     def pack(self, c_evas.Object subobj, x, y, w, h):
         elm_table_pack(self.obj, subobj.obj, x, y, w, h)
@@ -39,5 +58,12 @@ cdef class Table(Object):
     def clear(self, clear):
         elm_table_clear(self.obj, clear)
 
+    def pack_set(c_evas.Object subobj, x, y, w, h):
+        elm_table_pack_set(subobj.obj, x, y, w, h)
+
+    def pack_get(c_evas.Object subobj):
+        cdef int x, y, w, h
+        elm_table_pack_get(subobj.obj, &x, &y, &w, &h)
+        return (x, y, w, h)
 
 _elm_widget_type_register("table", Table)

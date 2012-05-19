@@ -838,14 +838,6 @@ cdef extern from "Elementary.h":
     void elm_label_slide_duration_set(evas.c_evas.Evas_Object *obj, double duration)
     double elm_label_slide_duration_get(evas.c_evas.Evas_Object *obj)
 
-    # Table object
-    evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
-    void elm_table_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
-    void elm_table_padding_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord horizontal, evas.c_evas.Evas_Coord vertical)
-    void elm_table_pack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
-    void elm_table_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
-    void elm_table_clear(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool clear)
-
     # Layout object
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -1081,6 +1073,18 @@ cdef extern from "Elementary.h":
     void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
     evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void elm_panel_toggle(evas.c_evas.Evas_Object *obj)
+
+    # Table object (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_table_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
+    evas.c_evas.Eina_Bool    elm_table_homogeneous_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_table_padding_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord horizontal, evas.c_evas.Evas_Coord vertical)
+    void                     elm_table_padding_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord *horizontal, evas.c_evas.Evas_Coord *vertical)
+    void                     elm_table_pack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
+    void                     elm_table_unpack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
+    void                     elm_table_clear(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool clear)
+    void                     elm_table_pack_set(evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
+    void                     elm_table_pack_get(evas.c_evas.Evas_Object *subobj, int *x, int *y, int *w, int *h)
 
     # Window object (api:DONE  cb:DONE  test:TODO  doc:DONE)
     evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent, char *name, Elm_Win_Type type)
