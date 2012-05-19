@@ -17,20 +17,12 @@
 #
 
 cdef class Radio(Object):
-    def __init__(self, c_evas.Object parent):
-        Object.__init__(self, parent.evas)
-        self._set_obj(elm_radio_add(parent.obj))
-
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
-
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
-
-    def icon_set(self, c_evas.Object icon):
-        elm_object_part_content_set(self.obj, "icon", icon.obj)
+    def __init__(self, c_evas.Object parent, obj=None):
+        if obj is None:
+            Object.__init__(self, parent.evas)
+            self._set_obj(elm_radio_add(parent.obj))
+        else:
+            self._set_obj(<c_evas.Evas_Object*>obj)
 
     def group_add(self, c_evas.Object group):
         elm_radio_group_add(self.obj, group.obj)
@@ -38,17 +30,39 @@ cdef class Radio(Object):
     def state_value_set(self, value):
         elm_radio_state_value_set(self.obj, value)
 
+    def state_value_get(self):
+        return elm_radio_state_value_get(self.obj)
+
+    property state_value:
+        def __get__(self):
+            return self.state_value_get()
+        def __set__(self, value):
+            self.state_value_set(value)
+
     def value_set(self, value):
         elm_radio_value_set(self.obj, value)
 
     def value_get(self):
         return elm_radio_value_get(self.obj)
 
+    property value:
+        def __get__(self):
+            return self.value_get()
+        def __set__(self, value):
+            self.value_set(value)
+
+    def selected_object_get(self):
+        cdef c_evas.Evas_Object *selected
+        selected = elm_radio_selected_object_get(self.obj)
+        if selected == NULL:
+            return None
+        else:
+            return Radio(None, <object>selected)
+
     def callback_changed_add(self, func, *args, **kwargs):
         self._callback_add("changed", func, *args, **kwargs)
 
     def callback_changed_del(self, func):
         self._callback_del("changed", func)
-
 
 _elm_widget_type_register("radio", Radio)
