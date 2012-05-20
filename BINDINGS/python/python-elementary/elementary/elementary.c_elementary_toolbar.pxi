@@ -39,7 +39,6 @@ cdef class ToolbarItem(WidgetItem):
         self.cbt = None
         Py_DECREF(self)
 
-
     def __init__(self, c_evas.Object toolbar, icon, label,
                  callback, *args, **kargs):
         cdef c_evas.Evas_Object *ic = NULL
@@ -77,52 +76,18 @@ cdef class ToolbarItem(WidgetItem):
         def __get__(self):
             return self.prev_get()
 
-    def delete(self):
-        """Delete the item"""
-        if self.obj == NULL:
-            raise ValueError("Object already deleted")
-        elm_object_item_del(self.obj)
+    def priority_set(self, priority):
+        elm_toolbar_item_priority_set(self.obj, priority)
 
-    def icon_get(self):
-        cdef const_char_ptr i
-        i = elm_toolbar_item_icon_get(self.obj)
-        if i == NULL:
-            return None
-        return i
+    def priority_get(self):
+        return elm_toolbar_item_priority_get(self.obj)
 
-    property icon:
+    property priority:
         def __get__(self):
-            return self.icon_get()
+            return self.priority_get()
 
-    def label_set(self, label):
-        elm_object_item_text_set(self.obj, label)
-
-    def label_get(self):
-        cdef const_char_ptr l
-        l = elm_object_item_text_get(self.obj)
-        if l == NULL:
-            return None
-        return l
-
-    property label:
-        def __get__(self):
-            return self.label_get()
-
-        def __set__(self, value):
-            self.label_set(value)
-
-    def data_get(self):
-        cdef void* data
-        data = elm_object_item_data_get(self.obj)
-        if data == NULL:
-            return None
-        else:
-            (tb, func, it, a, ka) = <object>data
-            return (a, ka)
-
-    property data:
-        def __get__(self):
-            return self.data_get()
+        def __set__(self, priority):
+            self.priority_set(priority)
 
     def selected_set(self, selected):
         """Select the item"""
@@ -138,6 +103,23 @@ cdef class ToolbarItem(WidgetItem):
         def __get__(self):
             return elm_toolbar_item_selected_get(self.obj)
 
+    def icon_set(self, ic):
+        elm_toolbar_item_icon_set(self.obj, ic)
+
+    def icon_get(self):
+        cdef const_char_ptr i
+        i = elm_toolbar_item_icon_get(self.obj)
+        if i == NULL:
+            return None
+        return i
+
+    property icon:
+        def __get__(self):
+            return self.icon_get()
+
+        def __set__(self, ic):
+            self.icon_set(ic)
+
     def disabled_set(self, disabled):
         elm_object_item_disabled_set(self.obj, disabled)
 
@@ -145,11 +127,25 @@ cdef class ToolbarItem(WidgetItem):
         return elm_object_item_disabled_get(self.obj)
 
     property disabled:
-        def __set__(self, disabled):
-            elm_object_item_disabled_set(self.obj, disabled)
-
         def __get__(self):
-            return elm_object_item_disabled_get(self.obj)
+            return self.disabled_get()
+    
+        def __set__(self, value):
+            self.disabled_set(value)
+
+    def object_get(self):
+        cdef c_evas.Evas_Object *obj = elm_toolbar_item_object_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def icon_object_get(self):
+        cdef c_evas.Evas_Object *obj = elm_toolbar_item_icon_object_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    #TODO def icon_memfile_set(self, img, size, format, key):
+        #elm_toolbar_item_icon_memfile_set(self.obj, img, size, format, key)
+
+    def icon_file_set(self, file, key):
+        elm_toolbar_item_icon_file_set(self.obj, file, key)
 
     def separator_set(self, separator):
         elm_toolbar_item_separator_set(self.obj, separator)
@@ -175,117 +171,34 @@ cdef class ToolbarItem(WidgetItem):
         else:
             return Menu(None, <object>menu)
 
-    def tooltip_text_set(self, char *text):
-        """ Set the text to be shown in the tooltip object
+    property menu:
+        def __get__(self):
+            return self.menu_get()
+    
+        def __set__(self, value):
+            self.menu_set(value)
+    
 
-        Setup the text as tooltip object. The object can have only one
-        tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @tooltip_content_cb_set
-        """
-        elm_object_item_tooltip_text_set(self.obj, text)
+    #TODO def state_add(self, icon, label, func, data):
+        #return elm_toolbar_item_state_add(self.obj, icon, label, func, data)
 
-    def tooltip_content_cb_set(self, func, *args, **kargs):
-        """ Set the content to be shown in the tooltip object
+    #TODO def state_del(self, state):
+        #return bool(elm_toolbar_item_state_del(self.obj, state))
 
-        @param: B{func} Function to be create tooltip content, called when
-                need show tooltip.
+    #TODO def state_set(self, state):
+        #return bool(elm_toolbar_item_state_set(self.obj, state))
 
-        Setup the tooltip to object. The object can have only one tooltip,
-        so any previews tooltip data is removed. @func(with @{args,kargs}) will
-        be called every time that need show the tooltip and it should return a
-        valid Evas_Object. This object is then managed fully by tooltip system
-        and is deleted when the tooltip is gone.
-        """
-        if not callable(func):
-            raise TypeError("func must be callable")
+    #TODO def state_unset(self):
+        #elm_toolbar_item_state_unset(self.obj)
 
-        cdef void *cbdata
+    #TODO def state_get(self):
+        #return elm_toolbar_item_state_get(self.obj)
 
-        data = (func, self, args, kargs)
-        Py_INCREF(data)
-        cbdata = <void *>data
-        elm_object_item_tooltip_content_cb_set(self.obj,
-                                                _tooltip_item_content_create,
-                                                cbdata,
-                                                _tooltip_item_data_del_cb)
+    #TODO def state_next(self):
+        #return elm_toolbar_item_state_next(self.obj)
 
-    def item_tooltip_unset(self):
-        """ Unset tooltip from object
-
-        Remove tooltip from object. If used the @tool_text_set the internal
-        copy of label will be removed correctly. If used
-        @tooltip_content_cb_set, the data will be unreferred but no freed.
-        """
-        elm_object_item_tooltip_unset(self.obj)
-
-    def tooltip_style_set(self, style=None):
-        """ Sets a different style for this object tooltip.
-
-        @note before you set a style you should define a tooltip with
-        elm_object_item_tooltip_content_cb_set() or
-        elm_object_item_tooltip_text_set()
-        """
-        if style:
-            elm_object_item_tooltip_style_set(self.obj, style)
-        else:
-            elm_object_item_tooltip_style_set(self.obj, NULL)
-
-    def tooltip_style_get(self):
-        """ Get the style for this object tooltip.
-        """
-        cdef const_char_ptr style
-        style = elm_object_item_tooltip_style_get(self.obj)
-        if style == NULL:
-            return None
-        return style
-
-    def cursor_set(self, char *cursor):
-        """ Set the cursor to be shown when mouse is over the toolbar item
-
-        Set the cursor that will be displayed when mouse is over the
-        item. The item can have only one cursor set to it, so if
-        this function is called twice for an item, the previous set
-        will be unset.
-        """
-        elm_object_item_cursor_set(self.obj, cursor)
-
-    def cursor_unset(self):
-        """  Unset the cursor to be shown when mouse is over the toolbar item
-        """
-        elm_object_item_cursor_unset(self.obj)
-
-    def cursor_style_set(self, style=None):
-        """ Sets a different style for this object cursor.
-
-        @note before you set a style you should define a cursor with
-        elm_object_item_cursor_set()
-        """
-        if style:
-            elm_object_item_cursor_style_set(self.obj, style)
-        else:
-            elm_object_item_cursor_style_set(self.obj, NULL)
-
-    def cursor_style_get(self):
-        """ Get the style for this object cursor.
-        """
-        cdef const_char_ptr style
-        style = elm_object_item_cursor_style_get(self.obj)
-        if style == NULL:
-            return None
-        return style
-
-    def cursor_engine_only_set(self, engine_only):
-        """ Sets cursor engine only usage for this object.
-
-        @note before you set engine only usage you should define a cursor with
-        elm_object_item_cursor_set()
-        """
-        elm_object_item_cursor_engine_only_set(self.obj, bool(engine_only))
-
-    def cursor_engine_only_get(self):
-        """ Get the engine only usage for this object.
-        """
-        return elm_object_item_cursor_engine_only_get(self.obj)
+    #TODO def state_prev(self):
+        #return elm_toolbar_item_state_prev(self.obj)
 
 cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     cdef void *data
@@ -307,40 +220,10 @@ cdef class Toolbar(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_toolbar_add(parent.obj))
 
-    def menu_parent_set(self, c_evas.Object parent):
-        elm_toolbar_menu_parent_set(self.obj, parent.obj)
-
-    property menu_parent:
-        def __set__(self, c_evas.Object parent):
-            elm_toolbar_menu_parent_set(self.obj, parent.obj)
-
-
-    def homogeneous_set(self, homogeneous):
-        elm_toolbar_homogeneous_set(self.obj, homogeneous)
-
-    property homogeneous:
-        def __set__(self, homogeneous):
-            elm_toolbar_homogeneous_set(self.obj, homogeneous)
-
-    def homogenous_set(self, homogenous):
-        elm_toolbar_homogeneous_set(self.obj, homogenous)
-
-    property homogenous:
-        def __set__(self, homogeneous):
-            elm_toolbar_homogeneous_set(self.obj, homogeneous)
-
-    def align_set(self, align):
-        elm_toolbar_align_set(self.obj, align)
-
-    property align:
-        def __set__(self, align):
-            elm_toolbar_align_set(self.obj, align)
-
-
     def icon_size_set(self, icon_size):
         elm_toolbar_icon_size_set(self.obj, icon_size)
 
-    def icon_size_get(self, icon_size):
+    def icon_size_get(self):
         return elm_toolbar_icon_size_get(self.obj)
 
     property icon_size:
@@ -349,6 +232,108 @@ cdef class Toolbar(Object):
 
         def __get__(self):
             return elm_toolbar_icon_size_get(self.obj)
+
+    def icon_order_lookup_set(self, order):
+        elm_toolbar_icon_order_lookup_set(self.obj, order)
+
+    def icon_order_lookup_get(self):
+        return elm_toolbar_icon_order_lookup_get(self.obj)
+
+    property icon_order_lookup:
+        def __set__(self, order):
+            elm_toolbar_icon_order_lookup_set(self.obj, order)
+
+        def __get__(self):
+            return elm_toolbar_icon_order_lookup_get(self.obj)
+
+    def item_append(self, icon, label, callback = None, *args, **kargs):
+        """Appends a new item to the toolbar
+
+        @parm: L{icon} icon for the item
+        @parm: L{label} label for the item
+        @parm: L{callback} function to click if the user clicked on the item
+        """
+        # Everything is done in the ToolbarItem class, because of wrapping the
+        # C structures in python classes
+        return ToolbarItem(self, icon, label, callback, *args, **kargs)
+
+    #TODO: def item_prepend(self, icon, label, callback = None, *args, **kargs):
+        #return ToolbarItem(self, icon, label, callback, *args, **kargs)
+
+    #TODO: def item_insert_before(self, before, icon, label, callback = None, *args, **kargs):
+        #return ToolbarItem(self, icon, label, callback, *args, **kargs)
+
+    #TODO: def item_insert_after(self, after, icon, label, callback = None, *args, **kargs):
+        #return ToolbarItem(self, icon, label, callback, *args, **kargs)
+
+    def menu_parent_set(self, c_evas.Object parent):
+        elm_toolbar_menu_parent_set(self.obj, parent.obj)
+
+    def menu_parent_get(self):
+        cdef c_evas.Evas_Object *parent = elm_toolbar_menu_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> parent)
+
+    #TODO elm_toolbar_item_find_by_label(self, label):
+        #return elm_toolbar_item_find_by_label(self.obj, label)
+
+    property menu_parent:
+        def __get__(self):
+            return self.menu_parent_get()
+    
+        def __set__(self, value):
+            self.menu_parent_set(value)
+
+    def homogeneous_set(self, homogeneous):
+        elm_toolbar_homogeneous_set(self.obj, homogeneous)
+
+    def homogeneous_get(self):
+        return elm_toolbar_homogeneous_get(self.obj)
+
+    property homogeneous:
+        def __set__(self, homogeneous):
+            elm_toolbar_homogeneous_set(self.obj, homogeneous)
+
+        def __get__(self):
+            return elm_toolbar_homogeneous_get(self.obj)
+
+    def shrink_mode_set(self, mode):
+        elm_toolbar_shrink_mode_set(self.obj, mode)
+
+    def shrink_mode_get(self):
+        return elm_toolbar_shrink_mode_get(self.obj)
+
+    property shrink_mode:
+        def __get__(self):
+            return self.shrink_mode_get()
+    
+        def __set__(self, value):
+            self.shrink_mode_set(value)
+
+    def horizontal_set(self, horizontal):
+        elm_toolbar_horizontal_set(self.obj, horizontal)
+
+    def horizontal_get(self):
+        return elm_toolbar_horizontal_get(self.obj)
+
+    property horizontal:
+        def __set__(self, horizontal):
+            elm_toolbar_horizontal_set(self.obj, horizontal)
+
+        def __get__(self):
+            return elm_toolbar_horizontal_get(self.obj)
+
+    def align_set(self, align):
+        elm_toolbar_align_set(self.obj, align)
+
+    def align_get(self):
+        return elm_toolbar_align_get(self.obj)
+
+    property align:
+        def __set__(self, align):
+            elm_toolbar_align_set(self.obj, align)
+
+        def __get__(self):
+            return elm_toolbar_align_get(self.obj)
 
     def selected_item_get(self):
         cdef Elm_Object_Item *it
@@ -376,24 +361,40 @@ cdef class Toolbar(Object):
     property last_item:
         def __get__(self):
             return self.last_item_get()
-    
-    def item_append(self, icon, label, callback = None, *args, **kargs):
-        """
-        Appends a new item to the toolbar
 
-        @parm: L{icon} icon for the item
-        @parm: L{label} label for the item
-        @parm: L{callback} function to click if the user clicked on the item
-        """
-        # Everything is done in the ToolbarItem class, because of wrapping the
-        # C structures in python classes
-        return ToolbarItem(self, icon, label, callback, *args, **kargs)
+    def items_count(self):
+        return elm_toolbar_items_count(self.obj)
+
+    def select_mode_set(self, mode):
+        elm_toolbar_select_mode_set(self.obj, mode)
+
+    def select_mode_get(self):
+        return elm_toolbar_select_mode_get(self.obj)
+
+    property select_mode:
+        def __get__(self):
+            return self.select_mode_get()
+    
+        def __set__(self, value):
+            self.select_mode_set(value)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
+
+    def callback_longpressed_add(self, func, *args, **kwargs):
+        self._callback_add("longpressed", func, *args, **kwargs)
+
+    def callback_longpressed_del(self, func):
+        self._callback_del("longpressed", func)
+
+    def callback_language_changed_add(self, func, *args, **kwargs):
+        self._callback_add("language,changed", func, *args, **kwargs)
+
+    def callback_language_changed_del(self, func):
+        self._callback_del("language,changed", func)
 
 
 _elm_widget_type_register("toolbar", Toolbar)
