@@ -8,7 +8,7 @@
 #include "eet_data.h"
 
 #define RUNNING_DIR  "/tmp"
-#define LOCK_FILE "clouseaud.lock"
+#define LOCK_FILE ".clouseaud.lock"
 #define LOG_FILE  "clouseaud.log"
 
 static Eina_List *gui = NULL; /* List of app_info_st for gui clients */
