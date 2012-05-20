@@ -992,17 +992,6 @@ cdef extern from "Elementary.h":
     Elm_Object_Item *elm_naviframe_item_simple_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void         elm_naviframe_item_simple_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
-    # Progressbar widget
-    evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
-    void         elm_progressbar_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
-    void         elm_progressbar_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
-    void         elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)
-    void         elm_progressbar_pulse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool pulse)
-    void         elm_progressbar_pulse(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
-    void         elm_progressbar_unit_format_set(evas.c_evas.Evas_Object *obj, char *format)
-    void         elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val)
-    double       elm_progressbar_value_get(evas.c_evas.Evas_Object *obj)
-
     # Separator
     evas.c_evas.Evas_Object *elm_separator_add(evas.c_evas.Evas_Object *parent)
     void elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj,
@@ -1026,6 +1015,22 @@ cdef extern from "Elementary.h":
     void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
     evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void elm_panel_toggle(evas.c_evas.Evas_Object *obj)
+
+    # Progressbar object (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_progressbar_pulse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool pulse)
+    evas.c_evas.Eina_Bool    elm_progressbar_pulse_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_progressbar_pulse(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
+    void                     elm_progressbar_value_set(evas.c_evas.Evas_Object *obj, double val)
+    double                   elm_progressbar_value_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_progressbar_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
+    evas.c_evas.Evas_Coord   elm_progressbar_span_size_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_progressbar_unit_format_set(evas.c_evas.Evas_Object *obj, char *format)
+    char                    *elm_progressbar_unit_format_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_progressbar_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
+    evas.c_evas.Eina_Bool    elm_progressbar_horizontal_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)
+    evas.c_evas.Eina_Bool    elm_progressbar_inverted_get(evas.c_evas.Evas_Object *obj)
 
     # Photo object (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)

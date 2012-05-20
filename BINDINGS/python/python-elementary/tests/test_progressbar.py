@@ -85,7 +85,7 @@ def progressbar_clicked(obj):
 
     pb3 = elementary.Progressbar(win)
     pb3.text_set("Label")
-    pb3.icon_set(ic1)
+    pb3.content_set(ic1)
     pb3.inverted_set(True)
     pb3.unit_format_set("%1.1f units")
     pb3.span_size_set(200)
@@ -129,7 +129,7 @@ def progressbar_clicked(obj):
     pb6 = elementary.Progressbar(win)
     pb6.horizontal_set(False)
     pb6.text_set("Label")
-    pb6.icon_set(ic2)
+    pb6.content_set(ic2)
     pb6.inverted_set(True)
     pb6.unit_format_set("%1.2f%%")
     pb6.span_size_set(200)

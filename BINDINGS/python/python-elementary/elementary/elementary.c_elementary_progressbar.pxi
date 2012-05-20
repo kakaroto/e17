@@ -21,37 +21,14 @@ cdef class Progressbar(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_progressbar_add(parent.obj))
 
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
-
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
-
-    def icon_set(self, c_evas.Object icon):
-        elm_object_part_content_set(self.obj, NULL, icon.obj)
-
-    def span_size_set(self, size):
-        elm_progressbar_span_size_set(self.obj, size)
-
-    def horizontal_set(self, horizontal):
-        elm_progressbar_horizontal_set(self.obj, horizontal)
-
-    def inverted_set(self, inverted):
-        elm_progressbar_inverted_set(self.obj, inverted)
-
     def pulse_set(self, pulse):
         elm_progressbar_pulse_set(self.obj, pulse)
 
+    def pulse_get(self):
+        return elm_progressbar_pulse_get(self.obj)
+
     def pulse(self, state):
         elm_progressbar_pulse(self.obj, state)
-
-    def unit_format_set(self, format):
-        if format is None:
-            elm_progressbar_unit_format_set(self.obj, NULL)
-        else:
-            elm_progressbar_unit_format_set(self.obj, format)
 
     def value_set(self, value):
         elm_progressbar_value_set(self.obj, value)
@@ -59,5 +36,66 @@ cdef class Progressbar(Object):
     def value_get(self):
         return elm_progressbar_value_get(self.obj)
 
+    property value:
+        def __get__(self):
+            return self.value_get()
+
+        def __set__(self, value):
+            self.value_set(value)
+
+    def span_size_set(self, size):
+        elm_progressbar_span_size_set(self.obj, size)
+
+    def span_size_get(self):
+        return elm_progressbar_span_size_get(self.obj)
+
+    property span_size:
+        def __get__(self):
+            return self.span_size_get()
+
+        def __set__(self, size):
+            self.span_size_set(size)
+
+    def unit_format_set(self, format):
+        if format is None:
+            elm_progressbar_unit_format_set(self.obj, NULL)
+        else:
+            elm_progressbar_unit_format_set(self.obj, format)
+
+    def unit_format_get(self):
+        return elm_progressbar_unit_format_get(self.obj)
+
+    property unit_format:
+        def __get__(self):
+            self.unit_format_get()
+
+        def __set__(self, format):
+            self.unit_format_set(format)
+
+    def horizontal_set(self, horizontal):
+        elm_progressbar_horizontal_set(self.obj, horizontal)
+
+    def horizontal_get(self):
+        return bool(elm_progressbar_horizontal_get(self.obj))
+
+    property horizontal:
+        def __get__(self):
+            return self.horizontal_get()
+
+        def __set__(self, horizontal):
+            self.horizontal_set(horizontal)
+
+    def inverted_set(self, inverted):
+        elm_progressbar_inverted_set(self.obj, inverted)
+
+    def inverted_get(self):
+        return bool(elm_progressbar_inverted_get(self.obj))
+
+    property inverted:
+        def __get__(self):
+            return self.inverted_get()
+
+        def __set__(self, inverted):
+            self.inverted_set(inverted)
 
 _elm_widget_type_register("progressbar", Progressbar)
