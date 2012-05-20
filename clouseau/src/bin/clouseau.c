@@ -54,6 +54,8 @@ static Elm_Genlist_Item_Class itc;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 static Ecore_Ipc_Server *svr = NULL;
 static Eina_Bool _add_callback_called = EINA_FALSE;
+static void _cancel_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
+static void _ofl_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
 
 static void
 _titlebar_string_set(gui_elements *g, Eina_Bool online)
@@ -100,14 +102,63 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    return ECORE_CALLBACK_RENEW;
 }
 
+static void
+_work_offline_popup(void)
+{
+   Evas_Object *bxx, *lb, *bt_bx, *bt_ofl, *bt_exit;
+   /* START - Popup asking user to close client or work offline */
+   gui->inwin = elm_win_inwin_add(gui->win);
+   evas_object_show(gui->inwin);
+
+   bxx = elm_box_add(gui->inwin);
+   elm_object_style_set(gui->inwin, "minimal_vertical");
+   evas_object_size_hint_weight_set(bxx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bxx);
+
+   lb = elm_label_add(gui->inwin);
+   evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(lb, EVAS_HINT_FILL, 0.0);
+   elm_object_text_set(lb, "Connection to server failed.");
+   elm_box_pack_end(bxx, lb);
+   evas_object_show(lb);
+
+   bt_bx = elm_box_add(gui->inwin);
+   elm_box_horizontal_set(bt_bx, EINA_TRUE);
+   elm_box_homogeneous_set(bt_bx, EINA_TRUE);
+   evas_object_size_hint_align_set(bt_bx, 0.5, 0.5);
+   evas_object_size_hint_weight_set(bt_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bt_bx);
+   elm_box_pack_end(bxx, bt_bx);
+
+   /* Add the exit button */
+   bt_exit = elm_button_add(gui->inwin);
+   elm_object_text_set(bt_exit, "Exit");
+   evas_object_smart_callback_add(bt_exit, "clicked",
+         _cancel_bt_clicked, (void *) gui);
+
+   elm_box_pack_end(bt_bx, bt_exit);
+   evas_object_show(bt_exit);
+
+   bt_ofl = elm_button_add(gui->inwin);
+   elm_object_text_set(bt_ofl, "Work Offline");
+   evas_object_smart_callback_add(bt_ofl, "clicked",
+         _ofl_bt_clicked, (void *) gui);
+
+   elm_box_pack_end(bt_bx, bt_ofl);
+   evas_object_show(bt_ofl);
+
+   elm_win_inwin_content_set(gui->inwin, bxx);
+   /* END   - Popup asking user to close client or work offline */
+}
 
 Eina_Bool
 _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *ev)
 {
    if ((!_add_callback_called) || (!ev->server))
      {  /* if initial connection with daemon failed - exit */
-        printf("Failed to establish connection to the server.\nExiting.\n");
-        ecore_main_loop_quit();
+        ecore_ipc_server_del(ev->server);
+        svr = NULL; /* Global svr var */
+        _work_offline_popup();
         return ECORE_CALLBACK_RENEW;
      }
 
@@ -677,10 +728,35 @@ _bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 static void
 _dismiss_inwin(gui_elements *g)
 {
-   g->address = strdup(elm_entry_entry_get(g->en));
+   g->address = (g->en) ? strdup(elm_entry_entry_get(g->en)) : NULL;
    evas_object_del(g->inwin);
    g->en = NULL;
    g->inwin = NULL;
+}
+
+static void
+_remove_apps_with_no_tree_data(gui_elements *g)
+{  /* We need to remove apps with no tree data when losing commection
+    * with daemon. We may have apps in our list that were added but
+    * tree-data was NOT loaded.
+    * In this case, we want to remove them if connection was lost.    */
+
+   Eina_List *l, *l_next;
+   app_data_st *st;
+   app_closed_st t;
+   Variant_st *v;
+   EINA_LIST_FOREACH_SAFE(apps, l, l_next, st)
+     {
+        if (!st->td)
+          {  /* We actually fake APP_CLOSED message, for app NO tree */
+             t.ptr = (unsigned long long) (uintptr_t)
+                (((app_info_st *) st->app->data)->ptr);
+
+             /* v is freed by _remove_app */
+             v = variant_alloc(APP_CLOSED, sizeof(t), &t);
+             _remove_app(g, v); /* v->data is (app_closed_st *) */
+          }
+     }
 }
 
 static void
@@ -691,6 +767,9 @@ _show_gui(gui_elements *g, Eina_Bool work_offline)
         _titlebar_string_set(g, EINA_FALSE);
         elm_box_unpack(g->hbx, g->bt_load);
         evas_object_del(g->bt_load);
+
+        /* We need this in case conneciton closed and no tree data */
+        _remove_apps_with_no_tree_data(g);
 
         g->bt_load = elm_fileselector_button_add(g->win);
         elm_box_pack_start(g->hbx, g->bt_load);
