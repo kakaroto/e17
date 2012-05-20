@@ -230,7 +230,7 @@ def list2_clicked(obj, item=None):
 
     bx2 = elementary.Box(win)
     bx2.horizontal_set(True)
-    bx2.homogenous_set(True)
+    bx2.homogeneous_set(True)
     bx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 
