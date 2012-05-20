@@ -853,11 +853,6 @@ cdef extern from "Elementary.h":
     void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
     char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
 
-    # Photo object
-    evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
-    void elm_photo_file_set(evas.c_evas.Evas_Object *obj, char *file)
-    void elm_photo_size_set(evas.c_evas.Evas_Object *obj, int size)
-
     # Hoversel object
     evas.c_evas.Evas_Object *elm_hoversel_add(evas.c_evas.Evas_Object *parent)
     void elm_hoversel_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
@@ -1031,6 +1026,16 @@ cdef extern from "Elementary.h":
     void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
     evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void elm_panel_toggle(evas.c_evas.Evas_Object *obj)
+
+    # Photo object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Eina_Bool    elm_photo_file_set(evas.c_evas.Evas_Object *obj, char *file)
+    void                     elm_photo_thumb_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    void                     elm_photo_size_set(evas.c_evas.Evas_Object *obj, int size)
+    void                     elm_photo_fill_inside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill)
+    void                     elm_photo_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
+    void                     elm_photo_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
+    evas.c_evas.Eina_Bool    elm_photo_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
     # Radio object (api:DONE  cb:DONE  test:OK  doc:TODO)
     evas.c_evas.Evas_Object *elm_radio_add(evas.c_evas.Evas_Object *parent)
