@@ -53,6 +53,7 @@ static Eina_List *apps= NULL;  /* List of (app_data_st *) */
 static Elm_Genlist_Item_Class itc;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 static Ecore_Ipc_Server *svr = NULL;
+static Eina_Bool _add_callback_called = EINA_FALSE;
 
 Eina_Bool
 _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
@@ -60,6 +61,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    void *p;
    int size = 0;
 
+   _add_callback_called = EINA_TRUE;
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
    if (svr)
@@ -83,8 +85,8 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
 Eina_Bool
 _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *ev)
 {
-   if (!ev->server)
-     {
+   if ((!_add_callback_called) || (!ev->server))
+     {  /* if initial connection with daemon failed - exit */
         printf("Failed to establish connection to the server.\nExiting.\n");
         ecore_main_loop_quit();
         return ECORE_CALLBACK_RENEW;
