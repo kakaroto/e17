@@ -1,1 +1,4 @@
-EEnvader.fractal takes inspiration from http://levitated.net/daily/levInvaderFractal.html
+EEnvader.fractal is a wallpaper that takes inspiration from http://levitated.net/daily/levInvaderFractal.html
+
+If you want to install it in your home directory, use
+./autogen.sh --enable-homedir-install
