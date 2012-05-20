@@ -267,12 +267,14 @@ static void
 _remove_app(gui_elements *g, Variant_st *v)
 {
    app_closed_st *app = v->data;
-   app_info_st *sel_app = g->sel_app->app->data;
+   /* Handle the case that NO app is selected, set sel_app to NULL */
+   app_info_st *sel_app = (g->sel_app) ? g->sel_app->app->data : NULL;
    app_data_st *st = (app_data_st *)
       eina_list_search_unsorted(apps, _app_ptr_cmp,
             (void *) (uintptr_t) app->ptr);
 
-   if (app->ptr == sel_app->ptr)
+   /* if NO app selected OR closing app is the selected one, reset display */
+   if ((!sel_app) || (app->ptr == sel_app->ptr))
      _set_selected_app(NULL, g->dd_list, NULL);
 
    if (st)
