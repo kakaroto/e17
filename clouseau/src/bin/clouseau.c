@@ -15,7 +15,7 @@
 #endif
 
 #define CLIENT_NAME         "Clouseau Client"
-#define CLIENT_NAME_OFFLINE "Clouseau Client - Offline"
+
 struct _app_data_st
 {
    Variant_st *app;  /* app->data is (app_info_st *)   */
@@ -55,6 +55,25 @@ static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 static Ecore_Ipc_Server *svr = NULL;
 static Eina_Bool _add_callback_called = EINA_FALSE;
 
+static void
+_titlebar_string_set(gui_elements *g, Eina_Bool online)
+{
+   if (online)
+     {
+        char *str = malloc(strlen(CLIENT_NAME) + strlen(g->address) + 32);
+        sprintf(str, "%s - %s", CLIENT_NAME, g->address);
+        elm_win_title_set(g->win, str);
+        free(str);
+     }
+   else
+     {
+        char *str = malloc(strlen(CLIENT_NAME) + 32);
+        sprintf(str, "%s - Offline", CLIENT_NAME);
+        elm_win_title_set(g->win, str);
+        free(str);
+     }
+}
+
 Eina_Bool
 _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
 {
@@ -75,7 +94,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
              free(p);
           }
 
-        elm_win_title_set(gui->win, CLIENT_NAME);
+        _titlebar_string_set(gui, EINA_TRUE);
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -146,7 +165,7 @@ _app_name_get(app_info_st *app)
         sprintf(str, "%s [%d]", app->name, app->pid);
      }
 
-   return str;
+   return str;  /* User has to free(str) */
 }
 
 static void
@@ -667,7 +686,7 @@ _show_gui(gui_elements *g, Eina_Bool work_offline)
 {
    if (work_offline)
      {  /* Replace bt_load with fileselector button */
-        elm_win_title_set(g->win, CLIENT_NAME_OFFLINE);
+        _titlebar_string_set(g, EINA_FALSE);
         elm_box_unpack(g->hbx, g->bt_load);
         evas_object_del(g->bt_load);
 
@@ -747,7 +766,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    gui->win = win = elm_win_add(NULL, "client", ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
-   elm_win_title_set(win, CLIENT_NAME_OFFLINE);
+
+   _titlebar_string_set(gui, EINA_FALSE);
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
