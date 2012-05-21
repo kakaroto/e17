@@ -310,6 +310,7 @@ cdef extern from "Elementary.h":
         evas.c_evas.Evas_Coord h
 
     ctypedef struct Elm_Entry_Anchor_Hover_Info:
+        Elm_Entry_Anchor_Info *anchor_info
         evas.c_evas.Evas_Object *hover
         evas.c_evas.Eina_Rectangle hover_parent
         evas.c_evas.Eina_Bool hover_left

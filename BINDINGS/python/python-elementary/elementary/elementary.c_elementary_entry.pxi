@@ -59,10 +59,11 @@ def _entryanchor_conv(long addr):
     eai.w = ei.w
     eai.h = ei.h
     return eai
-    
+
 def _entryanchorhover_conv(long addr):
     cdef Elm_Entry_Anchor_Hover_Info *ehi = <Elm_Entry_Anchor_Hover_Info *>addr
     eahi = EntryAnchorHoverInfo()
+    eahi.anchor_info = <object>ehi.anchor_info
     eahi.hover = Hover(None, <object>ehi.hover)
     eahi.hover_parent = (ehi.hover_parent.x, ehi.hover_parent.y,
                        ehi.hover_parent.w, ehi.hover_parent.h)
@@ -76,107 +77,6 @@ cdef class Entry(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_entry_add(parent.obj))
-
-    # TODO XXX check if there are missed cb
-    def callback_changed_add(self, func, *args, **kwargs):
-        self._callback_add("changed", func, *args, **kwargs)
-
-    def callback_changed_del(self, func):
-        self._callback_del("changed", func)
-
-    def callback_changed_user_add(self, func, *args, **kwargs):
-        self._callback_add("changed,user", func, *args, **kwargs)
-
-    def callback_changed_user_del(self, func):
-        self._callback_del("changed,user", func)
-
-    def callback_selection_start_add(self, func, *args, **kwargs):
-        self._callback_add("selection,start", func, *args, **kwargs)
-
-    def callback_selection_start_del(self, func):
-        self._callback_del("selection,start", func)
-
-    def callback_selection_changed_add(self, func, *args, **kwargs):
-        self._callback_add("selection,changed", func, *args, **kwargs)
-
-    def callback_selection_changed_del(self, func):
-        self._callback_del("selection,changed", func)
-
-    def callback_selection_cleared_add(self, func, *args, **kwargs):
-        self._callback_add("selection,cleared", func, *args, **kwargs)
-
-    def callback_selection_cleared_del(self, func):
-        self._callback_del("selection,cleared", func)
-
-    def callback_selection_paste_add(self, func, *args, **kwargs):
-        self._callback_add("selection,paste", func, *args, **kwargs)
-
-    def callback_selection_paste_del(self, func):
-        self._callback_del("selection,paste", func)
-
-    def callback_selection_copy_add(self, func, *args, **kwargs):
-        self._callback_add("selection,copy", func, *args, **kwargs)
-
-    def callback_selection_copy_del(self, func):
-        self._callback_del("selection,copy", func)
-
-    def callback_selection_cut_add(self, func, *args, **kwargs):
-        self._callback_add("selection,cut", func, *args, **kwargs)
-
-    def callback_selection_cut_del(self, func):
-        self._callback_del("selection,cut", func)
-
-    def callback_cursor_changed_add(self, func, *args, **kwargs):
-        self._callback_add("cursor,changed", func, *args, **kwargs)
-
-    def callback_cursor_changed_del(self, func):
-        self._callback_del("cursor,changed", func)
-
-    def callback_anchor_clicked_add(self, func, *args, **kwargs):
-        self._callback_add_full("anchor,clicked", _entryanchor_conv,
-                                func, *args, **kwargs)
-
-    def callback_anchor_clicked_del(self, func):
-        self._callback_del_full("anchor,clicked", _entryanchor_conv,
-                                func)
-
-    def callback_anchor_hover_opened_add(self, func, *args, **kwargs):
-        self._callback_add_full("anchor,hover,opened", _entryanchorhover_conv,
-                                func, *args, **kwargs)
-
-    def callback_anchor_hover_opened_del(self, func):
-        self._callback_del_full("anchor,hover,opened", _entryanchorhover_conv,
-                                func)
-
-    def callback_activated_add(self, func, *args, **kwargs):
-        self._callback_add("activated", func, *args, **kwargs)
-
-    def callback_activated_del(self, func):
-        self._callback_del("activated", func)
-
-    def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add("clicked", func, *args, **kwargs)
-
-    def callback_clicked_del(self, func):
-        self._callback_del("clicked", func)
-
-    def callback_double_clicked_add(self, func, *args, **kwargs):
-        self._callback_add("clicked,double", func, *args, **kwargs)
-
-    def callback_double_clicked_del(self, func):
-        self._callback_del("clicked,double", func)
-
-    def callback_focused_add(self, func, *args, **kwargs):
-        self._callback_add("focused", func, *args, **kwargs)
-
-    def callback_focused_del(self, func):
-        self._callback_del("focused", func)
-
-    def callback_unfocused_add(self, func, *args, **kwargs):
-        self._callback_add("unfocused", func, *args, **kwargs)
-
-    def callback_unfocused_del(self, func):
-        self._callback_del("unfocused", func)
 
     def single_line_set(self, single_line):
         elm_entry_single_line_set(self.obj, single_line)
@@ -250,7 +150,7 @@ cdef class Entry(Object):
     property line_wrap:
         def __get__(self):
             return self.line_wrap_get()
-    
+
         def __set__(self, value):
             self.line_wrap_set(value)
 
@@ -326,7 +226,7 @@ cdef class Entry(Object):
     property cursor_pos:
         def __get__(self):
             return self.cursor_pos_get()
-    
+
         def __set__(self, value):
             self.cursor_pos_set(value)
 
@@ -355,7 +255,7 @@ cdef class Entry(Object):
     property context_menu_disabled:
         def __get__(self):
             return self.context_menu_disabled_get()
-    
+
         def __set__(self, value):
             self.context_menu_disabled_set(value)
 
@@ -382,14 +282,14 @@ cdef class Entry(Object):
     def file_get(self):
         cdef char *file
         cdef Elm_Text_Format format
-        
+
         elm_entry_file_get(self.obj, &file, &format)
         return (file, format)
 
     property file:
         def __get__(self):
             return self.file_get()
-    
+
         def __set__(self, value):
             self.file_set(value)
 
@@ -405,7 +305,7 @@ cdef class Entry(Object):
     property autosave:
         def __get__(self):
             return self.autosave_get()
-    
+
         def __set__(self, value):
             self.autosave_set(value)
 
@@ -437,14 +337,14 @@ cdef class Entry(Object):
 
     def bounce_get(self):
         cdef c_evas.Eina_Bool h_bounce, v_bounce
-        
+
         elm_entry_bounce_get(self.obj, &h_bounce, &v_bounce)
         return (h_bounce, v_bounce)
 
     property bounce:
         def __get__(self):
             return self.bounce_get()
-    
+
         def __set__(self, value):
             self.bounce_set(*value)
 
@@ -457,7 +357,7 @@ cdef class Entry(Object):
     property input_panel_layout:
         def __get__(self):
             return self.input_panel_layout_get()
-    
+
         def __set__(self, value):
             self.input_panel_layout_set(value)
 
@@ -470,7 +370,7 @@ cdef class Entry(Object):
     property input_panel_enabled:
         def __get__(self):
             return self.input_panel_enabled_get()
-    
+
         def __set__(self, value):
             self.input_panel_enabled_set(value)
 
@@ -489,7 +389,7 @@ cdef class Entry(Object):
     property input_panel_language:
         def __get__(self):
             return self.input_panel_language_get()
-    
+
         def __set__(self, value):
             self.input_panel_language_set(value)
 
@@ -506,7 +406,7 @@ cdef class Entry(Object):
     property input_panel_return_key_type:
         def __get__(self):
             return self.input_panel_return_key_type_get()
-    
+
         def __set__(self, value):
             self.input_panel_return_key_type_set(value)
 
@@ -519,7 +419,7 @@ cdef class Entry(Object):
     property input_panel_return_key_disabled:
         def __get__(self):
             return self.input_panel_return_key_disabled_get()
-    
+
         def __set__(self, value):
             self.input_panel_return_key_disabled_set(value)
 
@@ -539,7 +439,7 @@ cdef class Entry(Object):
     property prediction_allow:
         def __get__(self):
             return self.prediction_allow_get()
-    
+
         def __set__(self, value):
             self.prediction_allow_set(value)
 
@@ -555,7 +455,7 @@ cdef class Entry(Object):
     property cnp_mode:
         def __get__(self):
             return self.cnp_mode_get()
-    
+
         def __set__(self, value):
             self.cnp_mode_set(value)
 
@@ -590,5 +490,166 @@ cdef class Entry(Object):
     def anchor_hover_end(self):
         elm_entry_anchor_hover_end(self.obj)
 
+    def callback_changed_add(self, func, *args, **kwargs):
+        self._callback_add("changed", func, *args, **kwargs)
+
+    def callback_changed_del(self, func):
+        self._callback_del("changed", func)
+
+    def callback_changed_user_add(self, func, *args, **kwargs):
+        self._callback_add("changed,user", func, *args, **kwargs)
+
+    def callback_changed_user_del(self, func):
+        self._callback_del("changed,user", func)
+
+    def callback_activated_add(self, func, *args, **kwargs):
+        self._callback_add("activated", func, *args, **kwargs)
+
+    def callback_activated_del(self, func):
+        self._callback_del("activated", func)
+
+    def callback_press_add(self, func, *args, **kwargs):
+        self._callback_add("press", func, *args, **kwargs)
+
+    def callback_press_del(self, func):
+        self._callback_del("press", func)
+
+    def callback_longpressed_add(self, func, *args, **kwargs):
+        self._callback_add("longpressed", func, *args, **kwargs)
+
+    def callback_longpressed_del(self, func):
+        self._callback_del("longpressed", func)
+
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
+
+    def callback_double_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked,double", func, *args, **kwargs)
+
+    def callback_double_clicked_del(self, func):
+        self._callback_del("clicked,double", func)
+
+    def callback_triple_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked,triple", func, *args, **kwargs)
+
+    def callback_triple_clicked_del(self, func):
+        self._callback_del("clicked,triple", func)
+
+    def callback_focused_add(self, func, *args, **kwargs):
+        self._callback_add("focused", func, *args, **kwargs)
+
+    def callback_focused_del(self, func):
+        self._callback_del("focused", func)
+
+    def callback_unfocused_add(self, func, *args, **kwargs):
+        self._callback_add("unfocused", func, *args, **kwargs)
+
+    def callback_unfocused_del(self, func):
+        self._callback_del("unfocused", func)
+
+    def callback_selection_paste_add(self, func, *args, **kwargs):
+        self._callback_add("selection,paste", func, *args, **kwargs)
+
+    def callback_selection_paste_del(self, func):
+        self._callback_del("selection,paste", func)
+
+    def callback_selection_copy_add(self, func, *args, **kwargs):
+        self._callback_add("selection,copy", func, *args, **kwargs)
+
+    def callback_selection_copy_del(self, func):
+        self._callback_del("selection,copy", func)
+
+    def callback_selection_cut_add(self, func, *args, **kwargs):
+        self._callback_add("selection,cut", func, *args, **kwargs)
+
+    def callback_selection_cut_del(self, func):
+        self._callback_del("selection,cut", func)
+
+    def callback_selection_start_add(self, func, *args, **kwargs):
+        self._callback_add("selection,start", func, *args, **kwargs)
+
+    def callback_selection_start_del(self, func):
+        self._callback_del("selection,start", func)
+
+    def callback_selection_changed_add(self, func, *args, **kwargs):
+        self._callback_add("selection,changed", func, *args, **kwargs)
+
+    def callback_selection_changed_del(self, func):
+        self._callback_del("selection,changed", func)
+
+    def callback_selection_cleared_add(self, func, *args, **kwargs):
+        self._callback_add("selection,cleared", func, *args, **kwargs)
+
+    def callback_selection_cleared_del(self, func):
+        self._callback_del("selection,cleared", func)
+
+    def callback_cursor_changed_add(self, func, *args, **kwargs):
+        self._callback_add("cursor,changed", func, *args, **kwargs)
+
+    def callback_cursor_changed_del(self, func):
+        self._callback_del("cursor,changed", func)
+
+    def callback_anchor_clicked_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,clicked", _entryanchor_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_clicked_del(self, func):
+        self._callback_del_full("anchor,clicked", _entryanchor_conv,
+                                func)
+
+    def callback_anchor_in_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,in", _entryanchor_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_in_del(self, func):
+        self._callback_del_full("anchor,in", _entryanchor_conv,
+                                func)
+
+    def callback_anchor_out_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,out", _entryanchor_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_out_del(self, func):
+        self._callback_del_full("anchor,out", _entryanchor_conv,
+                                func)
+
+    def callback_anchor_up_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,up", _entryanchor_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_up_del(self, func):
+        self._callback_del_full("anchor,up", _entryanchor_conv,
+                                func)
+
+    def callback_anchor_down_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,down", _entryanchor_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_down_del(self, func):
+        self._callback_del_full("anchor,down", _entryanchor_conv,
+                                func)
+
+    def callback_anchor_hover_opened_add(self, func, *args, **kwargs):
+        self._callback_add_full("anchor,hover,opened", _entryanchorhover_conv,
+                                func, *args, **kwargs)
+
+    def callback_anchor_hover_opened_del(self, func):
+        self._callback_del_full("anchor,hover,opened", _entryanchorhover_conv,
+                                func)
+
+    def callback_preedit_changed_add(self, func, *args, **kwargs):
+        self._callback_add("preedit,changed", func, *args, **kwargs)
+
+    def callback_preedit_changed_del(self, func):
+        self._callback_del("preedit,changed", func)
+
+    def callback_language_changed_add(self, func, *args, **kwargs):
+        self._callback_add("language,changed", func, *args, **kwargs)
+
+    def callback_language_changed_del(self, func):
+        self._callback_del("language,changed", func)
 
 _elm_widget_type_register("entry", Entry)
