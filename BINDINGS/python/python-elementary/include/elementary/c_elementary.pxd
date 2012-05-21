@@ -808,6 +808,12 @@ cdef extern from "Elementary.h":
 
     # Button object
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_button_autorepeat_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool on)
+    evas.c_evas.Eina_Bool    elm_button_autorepeat_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_button_autorepeat_initial_timeout_set(evas.c_evas.Evas_Object *obj, double t)
+    double                   elm_button_autorepeat_initial_timeout_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_button_autorepeat_gap_timeout_set(evas.c_evas.Evas_Object *obj, double t)
+    double                   elm_button_autorepeat_gap_timeout_get(evas.c_evas.Evas_Object *obj)
 
     # Web object
     ctypedef struct Elm_Web_Frame_Load_Error:
