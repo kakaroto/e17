@@ -33,7 +33,7 @@ class FileSelector(Manager, elementary.Table):
                                  evas.EVAS_HINT_FILL)
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                   evas.EVAS_HINT_EXPAND)
-        self.homogenous_set(False)
+        self.homogeneous_set(False)
 
         self._filter_call = None
         self._home = os.getenv("HOME")
@@ -112,7 +112,8 @@ class FileSelector(Manager, elementary.Table):
         self._right_bx.show()
 
 
-        self._nav_path = elementary.ScrolledEntry(self)
+        self._nav_path = elementary.Entry(self)
+        self._nav_path.scrollable_set(True)
         self._nav_path.single_line_set(True)
         self._nav_path.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._nav_path.size_hint_align_set(evas.EVAS_HINT_FILL,
@@ -135,7 +136,8 @@ class FileSelector(Manager, elementary.Table):
         self._right_bx.pack_end(self._files)
         self._files.show()
 
-        self._file_entry = elementary.ScrolledEntry(self)
+        self._file_entry = elementary.Entry(self)
+        self._file_entry.scrollable_set(True)
         self._file_entry.single_line_set(True)
         self._file_entry.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._file_entry.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)

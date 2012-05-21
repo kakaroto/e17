@@ -99,7 +99,7 @@ class CollapsablesBox(elementary.Box):
     def __init__(self, parent):
         elementary.Box.__init__(self, parent)
         self.horizontal_set(False)
-        self.homogenous_set(False)
+        self.homogeneous_set(False)
 
         self._spacer = self.evas.Rectangle(color=(0, 0, 0, 0))
         self._spacer.size_hint_weight_set(evas.EVAS_HINT_EXPAND,

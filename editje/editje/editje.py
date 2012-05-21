@@ -71,7 +71,7 @@ class Editje(elementary.Window, OpenFileManager):
 
         elementary.Window.__init__(self, "editje", elementary.ELM_WIN_BASIC)
         self.title_set("Editje - Edje Editor")
-        self.callback_destroy_add(self._destroy_cb)
+        self.callback_delete_request_add(self._destroy_cb)
         self.resize(800, 600)
 
         # Load Edje Theme File
@@ -283,13 +283,13 @@ class Editje(elementary.Window, OpenFileManager):
         self.e.save(save_ok, save_error)
 
     def save_as(self):
-        self.callback_destroy_del(self._destroy_cb)
+        self.callback_delete_request_del(self._destroy_cb)
 
         def popup_cancel(bt):
             win.hide()
             win.delete()
             self.block(False)
-            self.callback_destroy_add(self._destroy_cb)
+            self.callback_delete_request_add(self._destroy_cb)
 
         def save(bt, mode=None):
             new_file = fs.file
@@ -334,7 +334,7 @@ class Editje(elementary.Window, OpenFileManager):
 
         win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
         win.title_set("Save as")
-        win.callback_destroy_add(popup_cancel)
+        win.callback_delete_request_add(popup_cancel)
         win.resize(600, 480)
         win.maximized_set(True)
 
@@ -501,7 +501,8 @@ class Editje(elementary.Window, OpenFileManager):
         self.main_edje.part_text_set("details_group_label", "Group:")
         self.main_edje.part_text_set("details_file_label", "File:")
 
-        self._group_name_entry = elementary.ScrolledEntry(self)
+        self._group_name_entry = elementary.Entry(self)
+        self._group_name_entry.scrollable_set(True)
         self._group_name_entry.context_menu_disabled_set(True)
         self._group_name_entry.size_hint_weight_set(1.0, 1.0)
         self._group_name_entry.size_hint_align_set(-1.0, -1.0)
@@ -609,7 +610,7 @@ class Editje(elementary.Window, OpenFileManager):
             self.block(False)
             self._child_to_close.remove(w)
         w = elementary.Window("edje-test", elementary.ELM_WIN_BASIC)
-        w.callback_destroy_add(test_window_closed)
+        w.callback_delete_request_add(test_window_closed)
         w.autodel_set(True)
         w.resize(*self.e.group_size)
         w.title_set("Edje Test")
@@ -784,7 +785,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._mode_set_cb(self._modes_selector, None, "Parts")
 
     def _toolbar_init(self):
-        self._toolbar_pager = elementary.Pager(self)
+        self._toolbar_pager = elementary.Naviframe(self)
         self._toolbar_pager.style_set("editje.downwards")
         self._toolbar_pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                  evas.EVAS_HINT_EXPAND)
@@ -813,7 +814,7 @@ class Editje(elementary.Window, OpenFileManager):
         bx.pack_end(self._modes_selector)
         self._modes_selector.show()
 
-        self._mainbar_pager = elementary.Pager(self)
+        self._mainbar_pager = elementary.Naviframe(self)
         self._mainbar_pager.style_set("editje.rightwards")
         self._mainbar_pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                  evas.EVAS_HINT_EXPAND)
@@ -823,7 +824,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._mainbar_pager.show()
 
     def _sidebar_init(self):
-        self._sidebar_pager = elementary.Pager(self)
+        self._sidebar_pager = elementary.Naviframe(self)
         self._sidebar_pager.style_set("editje.leftwards")
         self._sidebar_pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                                  evas.EVAS_HINT_EXPAND)
@@ -837,9 +838,9 @@ class Editje(elementary.Window, OpenFileManager):
             name, "", 0, self._mode_set_cb, name)
         self._modes[name] = (item, toolbar, mainbar, sidebar)
         item.icon_set(self.theme, icon, elementary.ELM_ICON_FILE)
-        self._toolbar_pager.content_push(toolbar)
-        self._mainbar_pager.content_push(mainbar)
-        self._sidebar_pager.content_push(sidebar)
+        self._toolbar_pager.item_simple_push(toolbar)
+        self._mainbar_pager.item_simple_push(mainbar)
+        self._sidebar_pager.item_simple_push(sidebar)
 
     def _mode_get(self):
         return self._mode
@@ -911,9 +912,9 @@ class Editje(elementary.Window, OpenFileManager):
             return
 
         item, toolbar, mainbar, sidebar = self._modes[name]
-        self._toolbar_pager.content_promote(toolbar)
-        self._mainbar_pager.content_promote(mainbar)
-        self._sidebar_pager.content_promote(sidebar)
+        self._toolbar_pager.item_simple_promote(toolbar)
+        self._mainbar_pager.item_simple_promote(mainbar)
+        self._sidebar_pager.item_simple_promote(sidebar)
 
         if self.mode:
             self._context_save(self.mode)

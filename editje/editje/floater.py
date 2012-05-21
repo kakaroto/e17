@@ -17,7 +17,7 @@
 
 import evas
 import edje
-from elementary import Layout, Button, InnerWindow, Box, Pager, \
+from elementary import Layout, Button, InnerWindow, Box, Naviframe, \
                        Icon, Label, Notify, ELM_NOTIFY_ORIENT_TOP, Separator
 import sysconfig
 
@@ -232,7 +232,7 @@ class Wizard(InnerWindow):
         InnerWindow.content_set(self, self.__layout)
         self.__layout.show()
 
-        self.__pager = Pager(self)
+        self.__pager = Naviframe(self)
         self.__pager.style_set("editje.rightwards")
         self.__pager.show()
         self.__layout.content_set("content", self.__pager)
@@ -291,7 +291,7 @@ class Wizard(InnerWindow):
         self.__pages[name] = (title, subtitle, box, content, actions, {})
         self.title_text = title
         self.subtitle_text = subtitle
-        self.__pager.content_push(box)
+        self.__pager.item_simple_push(box)
         self.__current_page = name
 
     def content_add(self, pg_name, c):
@@ -332,7 +332,7 @@ class Wizard(InnerWindow):
             title, subtitle, box, content, actions, action_btns = page
             self.title_text = title
             self.subtitle_text = subtitle
-            self.__pager.content_promote(box)
+            self.__pager.item_simple_promote(box)
             self.__current_page = page_name
 
     def notify(self, message):

@@ -54,7 +54,8 @@ class WidgetEntry(Widget, WidgetEntryValidator):
         WidgetEntryValidator.__init__(self)
         self._value = ""
 
-        self.entry = elementary.ScrolledEntry(parent)
+        self.entry = elementary.Entry(parent)
+        self.entry.scrollable_set(True)
         self.entry.single_line_set(True)
         self.entry.style_set("editje.details")
         self.entry.size_hint_weight_set(1.0, 0.0)

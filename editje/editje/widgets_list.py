@@ -84,7 +84,7 @@ class WidgetsList(Collapsable):
 
     # Groups
     def _content_load(self):
-        self._pager = elementary.Pager(self)
+        self._pager = elementary.Naviframe(self)
         self._pager.style_set("editje.rightwards")
         self._pager.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                          evas.EVAS_HINT_EXPAND)
@@ -101,7 +101,7 @@ class WidgetsList(Collapsable):
         self._groups_list.go()
         self._groups_list.show()
 
-        self._pager.content_push(self._groups_list)
+        self._pager.item_simple_push(self._groups_list)
 
     def _group_selected_cb(self, li, it):
         group = it.label_get()
@@ -128,7 +128,7 @@ class WidgetsList(Collapsable):
 
         it.selected = False
 
-        self._pager.content_push(parts_list)
+        self._pager.item_simple_push(parts_list)
 
     # Options
     def _options_load(self):
@@ -141,7 +141,7 @@ class WidgetsList(Collapsable):
         self._options = False
 
     def _back_cb(self, obj, emission, source):
-        self._pager.content_pop()
+        self._pager.item_pop()
         self._group = None
         self.options = False
 

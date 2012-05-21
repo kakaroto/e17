@@ -17,7 +17,7 @@
 
 import evas
 
-from elementary import InnerWindow, Layout, Box, ScrolledEntry
+from elementary import InnerWindow, Layout, Box, Entry
 from floater import WizardAction
 import sysconfig
 
@@ -69,7 +69,8 @@ class LogWindow(InnerWindow):
         layout.show()
         layout.content_set("content", box)
 
-        self.__sc = ScrolledEntry(self)
+        self.__sc = Entry(self)
+        self.__sc.scrollable_set(True)
         self.__sc.editable_set(False)
         self.__sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                 evas.EVAS_HINT_EXPAND)

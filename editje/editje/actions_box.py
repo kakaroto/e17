@@ -23,7 +23,7 @@ class ActionsBox(elementary.Box):
     def __init__(self, parent):
         elementary.Box.__init__(self, parent)
         self.horizontal_set(True)
-        self.homogenous_set(False)
+        self.homogeneous_set(False)
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 

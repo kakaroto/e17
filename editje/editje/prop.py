@@ -186,7 +186,7 @@ class PropertyTable(elementary.Table):
         self._value_changed_cb = value_changed_cb
         self._group_name = group_name
 
-        #self.homogenous_set(True)
+        #self.homogeneous_set(True)
         self.size_hint_weight_set(1.0, 0.0)
         self.size_hint_align_set(-1.0, 0.0)
 

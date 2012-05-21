@@ -18,7 +18,7 @@
 import re
 
 import evas
-from elementary import Label, Box, Pager, Button, Icon, List
+from elementary import Label, Box, Naviframe, Button, Icon, List
 
 from details_widget_entry_button import WidgetEntryButton
 from floater import Floater
@@ -60,7 +60,7 @@ class WidgetStates(WidgetEntryButton):
         self.newstate_entry = NameEntry(self._pop)
         self.newstate_entry.entry = self._state_newname()
         self.newstate_entry.show()
-        self.pager.content_push(self.newstate_entry)
+        self.pager.item_simple_push(self.newstate_entry)
         self._pop.actions_clear()
         self._pop.action_add("Add", self._states_added_cb)
         self._pop.action_add("Close", self._cancel_clicked)
@@ -180,7 +180,7 @@ class WidgetStates(WidgetEntryButton):
         self._pop.actions_clear()
         self._pop.action_add("New", self._state_add_new_cb)
         self._pop.action_add("Close", self._cancel_clicked)
-        self.pager.content_pop()
+        self.pager.item_pop()
 
     def _reset_state_to_cb(self, it, st_from):
         part_name = self._edit_grp.part.name
@@ -249,13 +249,13 @@ class WidgetStates(WidgetEntryButton):
         else:
             lb_name.style_set("editje.statenormal")
 
-        self.pager.content_push(self.actions_box)
+        self.pager.item_simple_push(self.actions_box)
         self._pop.actions_clear()
         self._pop.action_add("Back", self._back_to_list_cb)
         self._pop.action_add("Close", self._cancel_clicked)
 
     def _back_to_list_cb(self, it, ti):
-        self.pager.content_pop()
+        self.pager.item_pop()
         self._pop.actions_clear()
         self._pop.action_add("New", self._state_add_new_cb)
         self._pop.action_add("Close", self._cancel_clicked)
@@ -264,14 +264,14 @@ class WidgetStates(WidgetEntryButton):
     def open(self):
         if not self._pop:
             self._pop = Floater(self.button, self.obj)
-            self.pager = Pager(self._pop)
+            self.pager = Naviframe(self._pop)
             self.pager.style_set("editje.rightwards")
             self.states = List(self._pop)
             self.states.size_hint_weight_set(
                 evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
             self.states.size_hint_align_set(-1.0, -1.0)
             self.states.show()
-            self.pager.content_push(self.states)
+            self.pager.item_simple_push(self.states)
             self._pop.content_set(self.pager)
             self._pop.size_min_set(self.pop_min_w, self.pop_min_h)
             self._pop.title_set("States selection")

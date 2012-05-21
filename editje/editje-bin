@@ -227,7 +227,7 @@ if __name__ == "__main__":
 
     try:
         open_editje(*args_list, **args_dict)
-    except SystemExit, e:
+    except SystemExit as e:
         elementary.shutdown()
         sys.exit(str(e))
 
