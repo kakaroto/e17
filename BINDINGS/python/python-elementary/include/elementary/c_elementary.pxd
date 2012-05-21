@@ -498,8 +498,10 @@ cdef extern from "Elementary.h":
 
     # Inwin object
     evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
-    void elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
-    void elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    void                    elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
+    void                    elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    evas.c_evas.Evas_Object *elm_win_inwin_content_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_win_inwin_content_unset(evas.c_evas.Evas_Object *obj)
 
     # Background object (api:DONE  cb:TODO  test:DONE  doc:TODO))
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
