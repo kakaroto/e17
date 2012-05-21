@@ -30,6 +30,9 @@ PKG_CHECK_MODULES(EFL,
   [
    elementary >= 0.7.0
    evas >= 1.0.0
+   ecore >= 1.0.0
+   ecore-ipc >= 1.0.0
+   edje >= 1.0.0
   ]
 )
 
