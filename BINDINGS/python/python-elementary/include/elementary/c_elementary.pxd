@@ -359,7 +359,6 @@ cdef extern from "Elementary.h":
     ctypedef evas.c_evas.Eina_Bool (*Elm_Event_Cb) (void *data, evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *src, evas.c_evas.Evas_Callback_Type t, void *event_info)
 
     ctypedef struct Elm_Object_Item
-    ctypedef struct Elm_Carousel_Item
     ctypedef struct Elm_Theme
 
     # Basic elementary functions
@@ -917,14 +916,6 @@ cdef extern from "Elementary.h":
     Elm_Object_Item *elm_list_item_next(Elm_Object_Item *it)
     void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void 	elm_list_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
-
-
-    # Carousel object
-    evas.c_evas.Evas_Object *elm_carousel_add(evas.c_evas.Evas_Object *parent)
-    Elm_Carousel_Item *elm_carousel_item_add(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    void         elm_carousel_item_del(Elm_Carousel_Item *item)
-    void         elm_carousel_item_select(Elm_Carousel_Item *item)
-
 
     # Generic List
     evas.c_evas.Evas_Object *elm_genlist_add(evas.c_evas.Evas_Object *parent)
