@@ -51,4 +51,10 @@ cdef class Label(Object):
     def slide_duration_get(self):
         elm_label_slide_duration_get(self.obj)
 
+    def callback_language_changed_add(self, func, *args, **kwargs):
+        self._callback_add("language,changed", func, *args, **kwargs)
+
+    def callback_language_changed_del(self, func):
+        self._callback_del("language,changed", func)
+
 _elm_widget_type_register("label", Label)

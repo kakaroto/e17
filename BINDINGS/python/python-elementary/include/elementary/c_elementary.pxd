@@ -884,18 +884,18 @@ cdef extern from "Elementary.h":
 
     void elm_web_console_message_hook_set(evas.c_evas.Evas_Object *obj, Elm_Web_Console_Message func, void *data)
 
-    # Label object
+    # Label object (TODO: Label inherits from Layout)
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
-    void elm_label_line_wrap_set(evas.c_evas.Evas_Object *obj, Elm_Wrap_Type wrap)
-    Elm_Wrap_Type elm_label_line_wrap_get(evas.c_evas.Evas_Object *obj)
-    void elm_label_wrap_width_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w)
-    evas.c_evas.Evas_Coord elm_label_wrap_width_get(evas.c_evas.Evas_Object *obj)
-    void elm_label_ellipsis_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool ellipsis)
-    evas.c_evas.Eina_Bool elm_label_ellipsis_get(evas.c_evas.Evas_Object *obj)
-    void elm_label_slide_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool slide)
-    evas.c_evas.Eina_Bool elm_label_slide_get(evas.c_evas.Evas_Object *obj)
-    void elm_label_slide_duration_set(evas.c_evas.Evas_Object *obj, double duration)
-    double elm_label_slide_duration_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_label_line_wrap_set(evas.c_evas.Evas_Object *obj, Elm_Wrap_Type wrap)
+    Elm_Wrap_Type            elm_label_line_wrap_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_label_wrap_width_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w)
+    evas.c_evas.Evas_Coord   elm_label_wrap_width_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_label_ellipsis_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool ellipsis)
+    evas.c_evas.Eina_Bool    elm_label_ellipsis_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_label_slide_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool slide)
+    evas.c_evas.Eina_Bool    elm_label_slide_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_label_slide_duration_set(evas.c_evas.Evas_Object *obj, double duration)
+    double                   elm_label_slide_duration_get(evas.c_evas.Evas_Object *obj)
 
     # Layout object
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
