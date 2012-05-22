@@ -1059,11 +1059,10 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_naviframe_item_simple_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void                     elm_naviframe_item_simple_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
-    # Separator
+    # Separator (TODO: Separator inherits from Layout)
     evas.c_evas.Evas_Object *elm_separator_add(evas.c_evas.Evas_Object *parent)
-    void elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj,
-                                      evas.c_evas.Eina_Bool)
-    evas.c_evas.Eina_Bool elm_separator_horizontal_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool)
+    evas.c_evas.Eina_Bool    elm_separator_horizontal_get(evas.c_evas.Evas_Object *obj)
 
     # Menu object (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_menu_add(evas.c_evas.Evas_Object *parent)
