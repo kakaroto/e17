@@ -16,16 +16,14 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from c_elementary import Object, Window, Background, Icon, \
-    Box, Button, Web, Scroller, Label, Frame, Flip, Table, \
-    Clock, Layout, Hover, Entry, Bubble, \
-    Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
-    Radio, Check, Naviframe, InnerWindow, Image, Spinner, Fileselector, \
-    FileselectorEntry, FileselectorButton, Notify, \
-    Separator, Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, \
-    Genlist, GenlistItem, GenlistItemClass, WidgetItem, \
-    Gengrid, GengridItem, GengridItemClass, \
-    init, shutdown, run, exit, scale_get, scale_set, \
+from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
+    Scroller, Label, Frame, Flip, Table, Clock, Layout, Hover, Entry, Bubble, \
+    Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, Radio, \
+    Check, Naviframe, NaviframeItem, InnerWindow, Image, Spinner, \
+    Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
+    Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
+    GenlistItem, GenlistItemClass, WidgetItem, Gengrid, GengridItem, \
+    GengridItemClass, init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
     tooltip_delay_set, tooltip_delay_get, cursor_engine_only_set, \
