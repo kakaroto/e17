@@ -49,17 +49,4 @@ cdef class Panel(Object):
     def toggle(self):
         elm_panel_toggle(self.obj)
 
-    def content_set(self, c_evas.Object content):
-        cdef c_evas.Evas_Object *o
-        if content is not None:
-            o = content.obj
-        else:
-            o = NULL
-        elm_object_part_content_set(self.obj, NULL, o)
-
-    property content:
-        def __set__(self, c_evas.Object content):
-            self.content_set(content)
-
-
 _elm_widget_type_register("panel", Panel)

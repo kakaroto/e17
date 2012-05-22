@@ -211,10 +211,10 @@ cdef extern from "Elementary.h":
         ELM_OBJECT_SELECT_MODE_MAX
 
     ctypedef enum Elm_Panel_Orient:
-        ELM_PANEL_ORIENT_TOP,
-        ELM_PANEL_ORIENT_BOTTOM,
-        ELM_PANEL_ORIENT_LEFT,
-        ELM_PANEL_ORIENT_RIGHT,
+        ELM_PANEL_ORIENT_TOP
+        ELM_PANEL_ORIENT_BOTTOM
+        ELM_PANEL_ORIENT_LEFT
+        ELM_PANEL_ORIENT_RIGHT
 
     ctypedef enum Elm_Policy:
         ELM_POLICY_QUIT
@@ -1004,13 +1004,13 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_List *elm_menu_item_subitems_get(Elm_Object_Item *item)
     void  elm_menu_item_icon_name_set(Elm_Object_Item *it, const_char_ptr icon)
 
-    # Panel
+    # Panel (api:DONE  cb:N/A  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
-    void elm_panel_orient_set(evas.c_evas.Evas_Object *obj, Elm_Panel_Orient orient)
-    Elm_Panel_Orient elm_panel_orient_get(evas.c_evas.Evas_Object *obj)
-    void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
-    evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
-    void elm_panel_toggle(evas.c_evas.Evas_Object *obj)
+    void                     elm_panel_orient_set(evas.c_evas.Evas_Object *obj, Elm_Panel_Orient orient)
+    Elm_Panel_Orient         elm_panel_orient_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
+    evas.c_evas.Eina_Bool    elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_panel_toggle(evas.c_evas.Evas_Object *obj)
 
     # Progressbar object (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
