@@ -59,67 +59,35 @@ cdef class MenuItem:
         Py_INCREF(self)
         elm_object_item_del_cb_set(self.obj, _menu_item_del_cb)
 
-    def delete(self):
-        """Delete the menu item"""
-        if self.obj == NULL:
-            raise ValueError("Object already deleted")
-        elm_object_item_del(self.obj)
-
-    def label_set(self, label):
-        elm_object_item_text_set(self.obj, label)
-
-    def label_get(self):
-        cdef const_char_ptr l
-        l = elm_object_item_text_get(self.obj)
-        if l == NULL:
-            return None
-        return l
-
-    property label:
-        def __get__(self):
-            return self.label_get()
-
-        def __set__(self, value):
-            self.label_set(value)
+    def object_get(self):
+        return <Object>elm_menu_item_object_get(self.obj)
 
     def icon_name_set(self, icon):
         elm_menu_item_icon_name_set(self.obj, icon)
 
-    property icon_name_set:
+    def icon_name_get(self):
+        return elm_menu_item_icon_name_get(self.obj)
+
+    property icon_name:
+        def __get__(self):
+            return self.icon_name_get()
         def __set__(self, icon):
             self.icon_name_set(icon)
 
-    def icon_set(self, icon):
-        _METHOD_DEPRECATED(self, "icon_name_set")
-        self.icon_name_set(icon)
+    def selected_set(self, selected):
+        elm_menu_item_selected_set(self.obj, selected)
 
-    property icon:
-        def __set__(self, icon):
-            self.icon_set(icon)
+    def selected_get(self):
+        return elm_menu_item_selected_get(self.obj)
 
-    def disabled_set(self, disabled):
-        elm_object_item_disabled_set(self.obj, disabled)
-
-    property disabled:
-        def __set__(self, disabled):
-            elm_object_item_disabled_set(self.obj, disabled)
-
-    def data_get(self):
-        """Returns the callback data given at creation time.
-
-        @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
-        """
-        cdef void* data
-        data = elm_object_item_data_get(self.obj)
-        if data == NULL:
-            return None
-        else:
-            (obj, callback, it, a, ka) = <object>data
-            return (a, ka)
-
-    property data:
+    property selected:
         def __get__(self):
-            return self.data_get()
+            return self.selected_get()
+        def __set__(self, selected):
+            self.selected_set(selected)
+
+    def is_separator(self):
+        return False
 
     def subitems_get(self):
         cdef evas.c_evas.const_Eina_List *lst, *itr
@@ -138,6 +106,30 @@ cdef class MenuItem:
     property subitems:
         def __get__(self):
             return self.subitems_get()
+
+    def index_get(self):
+        return elm_menu_item_index_get(self.obj)
+
+    def next_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_menu_item_next_get(self.obj)
+        return _elm_menu_item_to_python(it)
+
+    def prev_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_menu_item_prev_get(self.obj)
+        return _elm_menu_item_to_python(it)
+
+cdef _elm_menu_item_to_python(Elm_Object_Item *it):
+    cdef void *data
+    cdef object prm
+    if it == NULL:
+        return None
+    data = elm_object_item_data_get(it)
+    if data == NULL:
+        return None
+    prm = <object>data
+    return prm[2]
 
 cdef void _menu_item_separator_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
     it = <object>data
@@ -163,12 +155,8 @@ cdef class MenuItemSeparator:
         Py_INCREF(self)
         elm_object_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
 
-    def delete(self):
-        """Delete the menu item"""
-        if self.obj == NULL:
-            raise ValueError("Object already deleted")
-        elm_object_item_del(self.obj)
-
+    def is_separator(self):
+        return True
 
 cdef class Menu(Object):
     def __init__(self, c_evas.Object parent, obj = None):
@@ -181,12 +169,39 @@ cdef class Menu(Object):
     def parent_set(self, c_evas.Object parent):
         elm_menu_parent_set(self.obj, parent.obj)
 
+    def parent_get(self):
+        cdef c_evas.Evas_Object *o
+        o = elm_menu_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long>o)
+
     property parent:
-        def __set__(self, c_evas.Object parent):
-            elm_menu_parent_set(self.obj, parent.obj)
+        def __get__(self):
+            return self.parent_get()
+        def __set__(self, parent):
+            self.parent_set(parent)
 
     def move(self, x, y):
         elm_menu_move(self.obj, x, y)
+
+    def close(self):
+        elm_menu_close(self.obj)
+
+    def items_get(self):
+        cdef Elm_Object_Item *it
+        cdef c_evas.const_Eina_List *lst
+        cdef void *data
+        cdef object prm
+
+        lst = elm_menu_items_get(self.obj)
+        ret = []
+        ret_append = ret.append
+        while lst:
+            it = <Elm_Object_Item *>lst.data
+            lst = lst.next
+            o = _elm_menu_item_to_python(it)
+            if o is not None:
+                ret_append(o)
+        return ret
 
     def item_add(self, parent = None, label = None, icon = None, callback = None, *args, **kwargs):
         return MenuItem(self, parent, label, icon, callback, *args, **kwargs)
@@ -194,5 +209,37 @@ cdef class Menu(Object):
     def item_separator_add(self, item = None):
         return MenuItemSeparator(self, item)
 
+    def selected_item_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_menu_selected_item_get(self.obj)
+        return _elm_toolbar_item_to_python(it)
+
+    property selected_item:
+        def __get__(self):
+            return self.selected_item_get()
+
+    def last_item_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_menu_last_item_get(self.obj)
+        return _elm_menu_item_to_python(it)
+
+    property last_item:
+        def __get__(self):
+            return self.last_item_get()
+
+    def first_item_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_menu_first_item_get(self.obj)
+        return _elm_menu_item_to_python(it)
+
+    property first_item:
+        def __get__(self):
+            return self.first_item_get()
+
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
 
 _elm_widget_type_register("menu", Menu)
