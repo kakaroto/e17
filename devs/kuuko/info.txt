@@ -1,0 +1,10 @@
+Login:         kuuko
+IRC Nick:      kuuko
+Name:          Kai Huuhko
+Location:      Helsinki, Finland
+E-Mail:        kai.huuhko@gmail.com
+WWW:           http://www.kaihuuhko.com/
+Managing:      none
+Contributing:  Python bindings
+Platform:      Funtoo (Linux)
+GeoData:       60.230490 24.926659
