@@ -16,71 +16,20 @@
 # along with python-elementary. If not, see <http://www.gnu.org/licenses/>.
 
 cdef class Notify(Object):
-    """Display a window in a particular region of the application (top,
-    bottom, etc.  A timeout can be set to automatically close the
-    window. This is so that, after an show() on a notify
-    object, if a timeout was set on it, it will <b>automatically</b>
-    get hidden after that time.
+    """Display a container in a particular region of the parent.
+
+    A timeout can be set to automatically hide the notify. This is so that,
+    after an evas_object_show() on a notify object, if a timeout was set on it,
+    it will automatically get hidden after that time.
+
     """
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_notify_add(parent.obj))
 
-    def content_set(self, c_evas.Object content):
-        """ Set the content of the notify widget
-
-        Once the content object is set, a previously set one will be deleted.
-        If you want to keep that old content object, use the
-        content_unset() function.
-
-        @param obj: The notify object
-        @param content: The content will be filled in this notify object
-        """
-        cdef c_evas.Evas_Object *o
-        if content is not None:
-            o = content.obj
-        else:
-            o = NULL
-        elm_object_part_content_set(self.obj, NULL, o)
-
-    def content_unset(self):
-        """ Unset the content of the notify widget
-
-        Unparent and return the content object which was set for this widget
-
-        @param obj: The notify object
-        @return: The content that was being used
-        """
-        cdef c_evas.Evas_Object *o
-        o = elm_object_part_content_unset(self.obj, NULL)
-        if o == NULL:
-            return None
-
-        cdef Object obj
-        obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
-
-        return obj;
-
-    def content_get(self):
-        """ Return the content of the notify widget
-
-        @param obj: The notify object
-        @return: The content that is being used
-        """
-        cdef c_evas.Evas_Object *o
-        o = elm_object_part_content_get(self.obj, NULL)
-        if o == NULL:
-            return None
-
-        cdef Object obj
-        obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
-
-        return obj;
-
     def parent_set(self, c_evas.Object parent):
-        """ Set the notify parent
+        """Set the notify parent.
 
-        @param obj: The notify object
         @param content: The new parent
         """
         cdef c_evas.Evas_Object *o
@@ -90,26 +39,28 @@ cdef class Notify(Object):
             o = NULL
         elm_notify_parent_set(self.obj, o)
 
-    def orient_set(self, int orient):
-        """ Set the orientation
+    def parent_get(self):
+        """Get the notify parent."""
+        cdef c_evas.Evas_Object *o
+        o = elm_notify_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long>o)
 
-        @param obj: The notify object
+    def orient_set(self, int orient):
+        """Set the orientation.
+
         @param orient: The new orientation
         """
         elm_notify_orient_set(self.obj, orient)
 
     def orient_get(self):
-        """ Return the orientation
-        @param obj: the notify objects
-        """
+        """Return the orientation."""
         return elm_notify_orient_get(self.obj)
 
     def timeout_set(self, double timeout):
-        """ Set the time before the notify window is hidden.
+        """Set the time before the notify window is hidden.
 
         Set a value < 0 to disable a running timer.
 
-        @param obj: The notify object
         @param time: The new timeout
 
         @note: If the value > 0 and the notify is visible, the timer will be started
@@ -118,12 +69,10 @@ cdef class Notify(Object):
         elm_notify_timeout_set(self.obj, timeout)
 
     def timeout_get(self):
-        """ Return the timeout value (in seconds)
-        @param obj: the notify object
-        """
+        """Return the timeout value (in seconds)."""
         return elm_notify_timeout_get(self.obj)
 
-    def repeat_events_set(self, repeat):
+    def allow_events_set(self, repeat):
         """
         When True if the user clicks outside the window the events will be
         catch by the others widgets, else the events are block and the signal
@@ -131,18 +80,26 @@ cdef class Notify(Object):
 
         @note: The default value is True.
 
-        @param obj: The notify object
-        @parm: repeats If True events are repeats, else no
+        @param repeat: repeats If True events are repeats, else no
         """
         elm_notify_allow_events_set(self.obj, repeat)
 
-    def repeat_events_get(self):
-        """
-        Return True if events are repeat below the notify object
-
-        @param obj: the notify object
-        """
+    def allow_events_get(self):
+        """Return True if events are repeat below the notify object."""
         return bool(elm_notify_allow_events_get(self.obj))
 
+    def callback_timeout_add(self, func, *args, **kwargs):
+        """When timeout happens on notify and it's hidden."""
+        self._callback_add("timeout", func, *args, **kwargs)
+
+    def callback_timeout_del(self, func):
+        self._callback_del("timeout", func)
+
+    def callback_block_clicked_add(self, func, *args, **kwargs):
+        """When a click outside of the notify happens."""
+        self._callback_add("block,clicked", func, *args, **kwargs)
+
+    def callback_block_clicked_del(self, func):
+        self._callback_del("block,clicked", func)
 
 _elm_widget_type_register("notify", Notify)

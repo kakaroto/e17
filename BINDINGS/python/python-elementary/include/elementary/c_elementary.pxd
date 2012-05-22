@@ -203,6 +203,18 @@ cdef extern from "Elementary.h":
         ELM_LIST_LIMIT
         ELM_LIST_EXPAND
 
+    ctypedef enum Elm_Notify_Orient:
+        ELM_NOTIFY_ORIENT_TOP
+        ELM_NOTIFY_ORIENT_CENTER
+        ELM_NOTIFY_ORIENT_BOTTOM
+        ELM_NOTIFY_ORIENT_LEFT
+        ELM_NOTIFY_ORIENT_RIGHT
+        ELM_NOTIFY_ORIENT_TOP_LEFT
+        ELM_NOTIFY_ORIENT_TOP_RIGHT
+        ELM_NOTIFY_ORIENT_BOTTOM_LEFT
+        ELM_NOTIFY_ORIENT_BOTTOM_RIGHT
+        ELM_NOTIFY_ORIENT_LAST
+
     ctypedef enum Elm_Object_Select_Mode:
         ELM_OBJECT_SELECT_MODE_DEFAULT        # default select mode
         ELM_OBJECT_SELECT_MODE_ALWAYS         # always select mode
@@ -864,15 +876,16 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_layout_end_get(evas.c_evas.Evas_Object *obj)
     void elm_layout_sizing_eval(evas.c_evas.Evas_Object *obj)
 
-    # Notify object
+    # Notify object (api:DONE  cb:DONE  test:TODO  doc:DONE)
     evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
-    void elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
-    int elm_notify_orient_get(evas.c_evas.Evas_Object *obj)
-    void elm_notify_timeout_set(evas.c_evas.Evas_Object *obj, double timeout)
-    double elm_notify_timeout_get(evas.c_evas.Evas_Object *obj)
-    void elm_notify_allow_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
-    evas.c_evas.Eina_Bool elm_notify_allow_events_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Evas_Object *elm_notify_parent_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
+    int                      elm_notify_orient_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_timeout_set(evas.c_evas.Evas_Object *obj, double timeout)
+    double                   elm_notify_timeout_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_allow_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
+    evas.c_evas.Eina_Bool    elm_notify_allow_events_get(evas.c_evas.Evas_Object *obj)
 
     # Hover object
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
