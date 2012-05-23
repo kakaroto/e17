@@ -37,7 +37,7 @@ def radio_clicked(obj):
 
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     rd = elementary.Radio(win)
     rd.state_value_set(1)
     rd.group_add(rdg)
@@ -64,7 +64,7 @@ def radio_clicked(obj):
 
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     rd = elementary.Radio(win)
     rd.state_value_set(4)
     rd.group_add(rdg)
@@ -75,7 +75,7 @@ def radio_clicked(obj):
 
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     rd = elementary.Radio(win)
     rd.state_value_set(5)
     rd.group_add(rdg)

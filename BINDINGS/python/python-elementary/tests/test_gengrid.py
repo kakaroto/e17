@@ -61,7 +61,7 @@ def gengrid_clicked(obj):
     # main table
     tb = elementary.Table(win)
     win.resize_object_add(tb)
-    tb.homogenous_set(0)
+    tb.homogeneous_set(0)
     tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     tb.show()
 

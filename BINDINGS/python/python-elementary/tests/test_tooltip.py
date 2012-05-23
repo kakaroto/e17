@@ -8,7 +8,7 @@ import evas
 def _tt_icon(obj, *args, **kargs):
     ic = elementary.Icon(obj)
     ic.file_set("images/logo_small.png")
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     ic.resize(64, 64)
     return ic
 
@@ -18,7 +18,7 @@ def _tt_item_icon(obj, item, *args, **kargs):
 def _tt_icon2(obj, *args, **kargs):
     ic = elementary.Icon(obj)
     ic.file_set("images/icon_00.png")
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     ic.resize(64, 64)
     return ic
 
@@ -45,7 +45,7 @@ def tooltip_clicked(obj):
     bx.show()
 
     tb = elementary.Toolbar(win)
-    tb.homogenous_set(False)
+    tb.homogeneous_set(False)
     tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
     tb.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
     bx.pack_end(tb)

@@ -52,7 +52,7 @@ def check_clicked(obj):
 
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     ck = elementary.Check(win)
     ck.text_set("Icon no scale")
     ck.content_set(ic)
@@ -85,7 +85,7 @@ def check_clicked(obj):
     ic = elementary.Icon(win)
     ic.file_set('images/logo_small.png')
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     ck = elementary.Check(win)
     ck.content_set(ic)
     ck.callback_changed_add(ck_4)

@@ -43,7 +43,7 @@ def hover_clicked(obj, item=None):
 
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     bx.pack_end(ic)
     ic.show()
 
@@ -124,7 +124,7 @@ def hover2_clicked(obj, item=None):
 
     ic = elementary.Icon(win)
     ic.file_set("images/logo_small.png")
-    ic.scale_set(0, 0)
+    ic.resizable_set(0, 0)
     bx.pack_end(ic)
     ic.show()
 

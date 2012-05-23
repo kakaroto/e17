@@ -14,7 +14,7 @@ def icon_transparent_clicked(obj):
 
     icon = elementary.Icon(win)
     icon.file_set("images/logo.png")
-    icon.scale_set(0, 0)
+    icon.resizable_set(0, 0)
     win.resize_object_add(icon)
     icon.show()
 

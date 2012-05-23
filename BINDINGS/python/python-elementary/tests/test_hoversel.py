@@ -86,7 +86,7 @@ def hoversel_clicked(obj):
 
     ic = elementary.Icon(win)
     ic.file_set("images/sky_03.jpg")
-    bt.icon_set(ic)
+    bt.content_set(ic)
     ic.show()
 
     bt.item_add("Item 1", "apps", elementary.ELM_ICON_STANDARD)

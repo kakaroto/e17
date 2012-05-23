@@ -32,7 +32,7 @@ def bubble_clicked(obj, item=None):
 
     bb = elementary.Bubble(win)
     bb.text_set("Message 1")
-    bb.text_part_set("info", "Corner: top_left")
+    bb.part_text_set("info", "Corner: top_left")
     bb.content_set(lb)
     bb.part_content_set("icon", ic)
     bb.pos = elementary.ELM_BUBBLE_POS_TOP_LEFT
@@ -51,7 +51,7 @@ def bubble_clicked(obj, item=None):
 
     bb = elementary.Bubble(win)
     bb.text_set("Message 2")
-    bb.text_part_set("info", "Corner: top_right")
+    bb.part_text_set("info", "Corner: top_right")
     bb.content_set(lb)
     bb.part_content_set("icon", ic)
     bb.pos = elementary.ELM_BUBBLE_POS_TOP_RIGHT
@@ -70,7 +70,7 @@ def bubble_clicked(obj, item=None):
 
     bb = elementary.Bubble(win)
     bb.text_set("Message 3")
-    bb.text_part_set("info", "Corner: bottom_left")
+    bb.part_text_set("info", "Corner: bottom_left")
     bb.content_set(ic)
     bb.pos = elementary.ELM_BUBBLE_POS_BOTTOM_LEFT
     bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
@@ -88,7 +88,7 @@ def bubble_clicked(obj, item=None):
 
     bb = elementary.Bubble(win)
     bb.text_set("Message 4")
-    bb.text_part_set("info", "Corner: bottom_right")
+    bb.part_text_set("info", "Corner: bottom_right")
     bb.content_set(lb)
     bb.part_content_set("icon", ic)
     bb.pos = elementary.ELM_BUBBLE_POS_BOTTOM_RIGHT
