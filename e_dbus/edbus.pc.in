@@ -8,4 +8,4 @@ Description: DBus convenience library
 @pkgconfig_requires_private@: @requirement_edbus@
 Version: @VERSION@
 Libs: -L${libdir} -ledbus @dbus_libs@
-Cflags: -I${includedir}/e_dbus-@VMAJ@ @dbus_cflags@ 
+Cflags: -I${includedir}/e_dbus-@VMAJ@
