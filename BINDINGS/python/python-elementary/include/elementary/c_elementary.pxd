@@ -629,16 +629,6 @@ cdef extern from "Elementary.h":
     void                     elm_object_item_cursor_engine_only_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool engine_only)
     evas.c_evas.Eina_Bool    elm_object_item_cursor_engine_only_get(Elm_Object_Item *it)
 
-    # X specific call - wont't work on non-x engines (return 0)
-    Ecore_X_Window elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
-
-    # Inwin object
-    evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
-    void                    elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
-    void                    elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-    evas.c_evas.Evas_Object *elm_win_inwin_content_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Evas_Object *elm_win_inwin_content_unset(evas.c_evas.Evas_Object *obj)
-
     # Background object (api:DONE  cb:TODO  test:DONE  doc:TODO))
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bg_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -673,6 +663,15 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
     Elm_Bubble_Pos           elm_bubble_pos_get(evas.c_evas.Evas_Object *obj)
+
+    # Button object
+    evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_button_autorepeat_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool on)
+    evas.c_evas.Eina_Bool    elm_button_autorepeat_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_button_autorepeat_initial_timeout_set(evas.c_evas.Evas_Object *obj, double t)
+    double                   elm_button_autorepeat_initial_timeout_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_button_autorepeat_gap_timeout_set(evas.c_evas.Evas_Object *obj, double t)
+    double                   elm_button_autorepeat_gap_timeout_get(evas.c_evas.Evas_Object *obj)
 
     # Check widget (api:DONE  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
@@ -790,18 +789,6 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_mode_set(evas.c_evas.Evas_Object *obj, Elm_Fileselector_Mode mode)
     Elm_Fileselector_Mode    elm_fileselector_mode_get(evas.c_evas.Evas_Object *obj)
 
-    # Flip object (api:DONE  cb:DONE  test:DONE doc:TODO)
-    evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
-    evas.c_evas.Eina_Bool    elm_flip_front_visible_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_flip_perspective_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord foc, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
-    void                     elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
-    void                     elm_flip_interaction_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Interaction mode)
-    Elm_Flip_Interaction     elm_flip_interaction_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_flip_interaction_direction_enabled_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, evas.c_evas.Eina_Bool enabled)
-    evas.c_evas.Eina_Bool    elm_flip_interaction_direction_enabled_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
-    void                     elm_flip_interaction_direction_hitsize_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, double hitsize)
-    double                   elm_flip_interaction_direction_hitsize_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
-
     # Fileselector Button widget (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_fileselector_button_add(evas.c_evas.Evas_Object *parent)
     void                     elm_fileselector_button_window_title_set(evas.c_evas.Evas_Object *obj, char *title)
@@ -837,6 +824,18 @@ cdef extern from "Elementary.h":
     char                    *elm_fileselector_entry_path_get(evas.c_evas.Evas_Object *obj)
     void                     elm_fileselector_entry_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
     evas.c_evas.Eina_Bool    elm_fileselector_entry_expandable_get(evas.c_evas.Evas_Object *obj)
+
+    # Flip object (api:DONE  cb:DONE  test:DONE doc:TODO)
+    evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Eina_Bool    elm_flip_front_visible_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_flip_perspective_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord foc, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
+    void                     elm_flip_go(evas.c_evas.Evas_Object *obj, Elm_Flip_Mode mode)
+    void                     elm_flip_interaction_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Interaction mode)
+    Elm_Flip_Interaction     elm_flip_interaction_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_flip_interaction_direction_enabled_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, evas.c_evas.Eina_Bool enabled)
+    evas.c_evas.Eina_Bool    elm_flip_interaction_direction_enabled_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
+    void                     elm_flip_interaction_direction_hitsize_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, double hitsize)
+    double                   elm_flip_interaction_direction_hitsize_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
 
     # Frame object (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_frame_add(evas.c_evas.Evas_Object *parent)
@@ -919,6 +918,70 @@ cdef extern from "Elementary.h":
     void                     elm_gengrid_item_cursor_engine_only_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool engine_only)
     evas.c_evas.Eina_Bool    elm_gengrid_item_cursor_engine_only_get(Elm_Object_Item *item)
 
+    # Generic List
+    evas.c_evas.Evas_Object *elm_genlist_add(evas.c_evas.Evas_Object *parent)
+    void elm_genlist_clear(evas.c_evas.Evas_Object *obj)
+    void elm_genlist_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
+    void elm_genlist_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
+    void elm_genlist_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
+    void elm_genlist_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
+    void elm_genlist_block_count_set(evas.c_evas.Evas_Object *obj, int n)
+    Elm_Object_Item *elm_genlist_item_append(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Object_Item *elm_genlist_item_prepend(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Object_Item *elm_genlist_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *before, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Object_Item *elm_genlist_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *after, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+    Elm_Object_Item *elm_genlist_selected_item_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List *elm_genlist_selected_items_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List *elm_genlist_realized_items_get(evas.c_evas.Evas_Object *obj)
+    Elm_Object_Item *elm_genlist_at_xy_item_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, int *posret)
+    Elm_Object_Item *elm_genlist_first_item_get(evas.c_evas.Evas_Object *obj)
+    Elm_Object_Item *elm_genlist_last_item_get(evas.c_evas.Evas_Object *obj)
+
+    Elm_Object_Item *elm_genlist_item_next_get(Elm_Object_Item *item)
+    Elm_Object_Item *elm_genlist_item_prev_get(Elm_Object_Item *item)
+    Elm_Object_Item *elm_genlist_item_parent_get(Elm_Object_Item *it)
+    void elm_genlist_item_subitems_clear(Elm_Object_Item *item)
+    void elm_genlist_item_selected_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool selected)
+    evas.c_evas.Eina_Bool elm_genlist_item_selected_get(Elm_Object_Item *item)
+    void elm_genlist_item_expanded_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool expanded)
+    evas.c_evas.Eina_Bool elm_genlist_item_expanded_get(Elm_Object_Item *item)
+    void elm_genlist_item_select_mode_set(Elm_Object_Item *it, Elm_Object_Select_Mode mode)
+    Elm_Object_Select_Mode elm_genlist_item_select_mode_get(Elm_Object_Item *it)
+    void elm_genlist_item_show(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
+    void elm_genlist_item_bring_in(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
+    void elm_genlist_item_update(Elm_Object_Item *item)
+    void elm_genlist_item_fields_update(Elm_Object_Item *item, char *parts, Elm_Genlist_Item_Field_Type itf)
+    void         elm_genlist_item_tooltip_text_set(Elm_Object_Item *item, char *text)
+    void         elm_genlist_item_tooltip_content_cb_set(Elm_Object_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
+    void         elm_genlist_item_tooltip_unset(Elm_Object_Item *item)
+    void         elm_genlist_item_tooltip_style_set(Elm_Object_Item *item, char *style)
+    char*        elm_genlist_item_tooltip_style_get(Elm_Object_Item *item)
+    void         elm_genlist_item_cursor_set(Elm_Object_Item *item, char *cursor)
+    void         elm_genlist_item_cursor_unset(Elm_Object_Item *item)
+    void         elm_genlist_item_cursor_style_set(Elm_Object_Item *item, char *style)
+    char*        elm_genlist_item_cursor_style_get(Elm_Object_Item *item)
+    void         elm_genlist_item_cursor_engine_only_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool engine_only)
+    evas.c_evas.Eina_Bool elm_genlist_item_cursor_engine_only_get(Elm_Object_Item *item)
+    Elm_List_Mode elm_genlist_mode_get(evas.c_evas.Evas_Object *obj)
+    void         elm_genlist_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
+
+    # Hover object
+    evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
+    void elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
+    void elm_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
+    char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
+
+    # Hoversel object
+    evas.c_evas.Evas_Object *elm_hoversel_add(evas.c_evas.Evas_Object *parent)
+    void elm_hoversel_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    void elm_hoversel_hover_begin(evas.c_evas.Evas_Object *obj)
+    void elm_hoversel_hover_end(evas.c_evas.Evas_Object *obj)
+    void elm_hoversel_clear(evas.c_evas.Evas_Object *obj)
+    Elm_Object_Item *elm_hoversel_item_add(evas.c_evas.Evas_Object *obj, char *label, char *icon_file, Elm_Icon_Type icon_type, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    void elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
+    void elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
+
     # Icon object (api:TODO  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool    elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -974,39 +1037,12 @@ cdef extern from "Elementary.h":
     void                     elm_image_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
     evas.c_evas.Eina_Bool    elm_image_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
-    # Button object
-    evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
-    void                     elm_button_autorepeat_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool on)
-    evas.c_evas.Eina_Bool    elm_button_autorepeat_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_button_autorepeat_initial_timeout_set(evas.c_evas.Evas_Object *obj, double t)
-    double                   elm_button_autorepeat_initial_timeout_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_button_autorepeat_gap_timeout_set(evas.c_evas.Evas_Object *obj, double t)
-    double                   elm_button_autorepeat_gap_timeout_get(evas.c_evas.Evas_Object *obj)
-
-    # Web object
-    ctypedef struct Elm_Web_Frame_Load_Error:
-        int code
-        evas.c_evas.Eina_Bool is_cancellation
-        const_char_ptr domain
-        const_char_ptr description
-        const_char_ptr failing_url
-        evas.c_evas.Evas_Object *frame
-
-    ctypedef void (*Elm_Web_Console_Message)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id)
-
-    evas.c_evas.Eina_Bool elm_need_web()
-    evas.c_evas.Eina_Bool elm_web_history_enabled_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Evas_Object *elm_web_webkit_view_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Evas_Object *elm_web_add(evas.c_evas.Evas_Object *parent)
-    evas.c_evas.Eina_Bool elm_web_uri_set(evas.c_evas.Evas_Object *obj,char *uri)
-    const_char_ptr elm_web_uri_get(evas.c_evas.Evas_Object *obj)
-    const_char_ptr elm_web_useragent_get(evas.c_evas.Evas_Object *obj)
-    double elm_web_zoom_get(evas.c_evas.Evas_Object *obj)
-    Elm_Web_Zoom_Mode elm_web_zoom_mode_get(evas.c_evas.Evas_Object *obj)
-
-    evas.c_evas.Eina_Bool elm_web_back(evas.c_evas.Evas_Object *obj)
-
-    void elm_web_console_message_hook_set(evas.c_evas.Evas_Object *obj, Elm_Web_Console_Message func, void *data)
+    # Inwin object
+    evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
+    void                     elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
+    evas.c_evas.Evas_Object *elm_win_inwin_content_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_win_inwin_content_unset(evas.c_evas.Evas_Object *obj)
 
     # Label object (TODO: Label inherits from Layout)
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
@@ -1057,34 +1093,6 @@ cdef extern from "Elementary.h":
     void                     elm_layout_end_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *end)
     evas.c_evas.Evas_Object *elm_layout_end_get(evas.c_evas.Evas_Object *obj)
 
-    # Notify object (api:DONE  cb:DONE  test:TODO  doc:DONE)
-    evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
-    void                     elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    evas.c_evas.Evas_Object *elm_notify_parent_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
-    int                      elm_notify_orient_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_notify_timeout_set(evas.c_evas.Evas_Object *obj, double timeout)
-    double                   elm_notify_timeout_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_notify_allow_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
-    evas.c_evas.Eina_Bool    elm_notify_allow_events_get(evas.c_evas.Evas_Object *obj)
-
-    # Hover object
-    evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
-    void elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
-    void elm_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
-    char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
-
-    # Hoversel object
-    evas.c_evas.Evas_Object *elm_hoversel_add(evas.c_evas.Evas_Object *parent)
-    void elm_hoversel_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void elm_hoversel_hover_begin(evas.c_evas.Evas_Object *obj)
-    void elm_hoversel_hover_end(evas.c_evas.Evas_Object *obj)
-    void elm_hoversel_clear(evas.c_evas.Evas_Object *obj)
-    Elm_Object_Item *elm_hoversel_item_add(evas.c_evas.Evas_Object *obj, char *label, char *icon_file, Elm_Icon_Type icon_type, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    void elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
-    void elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
-
     # List object
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
     Elm_Object_Item *elm_list_item_append(evas.c_evas.Evas_Object *obj, char *label, evas.c_evas.Evas_Object *icon, evas.c_evas.Evas_Object *end, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
@@ -1112,52 +1120,28 @@ cdef extern from "Elementary.h":
     void elm_list_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
     void 	elm_list_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
 
-    # Generic List
-    evas.c_evas.Evas_Object *elm_genlist_add(evas.c_evas.Evas_Object *parent)
-    void elm_genlist_clear(evas.c_evas.Evas_Object *obj)
-    void elm_genlist_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
-    void elm_genlist_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
-    void elm_genlist_bounce_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool h_bounce, evas.c_evas.Eina_Bool v_bounce)
-    void elm_genlist_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
-    void elm_genlist_block_count_set(evas.c_evas.Evas_Object *obj, int n)
-    Elm_Object_Item *elm_genlist_item_append(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
-    Elm_Object_Item *elm_genlist_item_prepend(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
-    Elm_Object_Item *elm_genlist_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *before, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
-    Elm_Object_Item *elm_genlist_item_insert_after(evas.c_evas.Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *after, Elm_Genlist_Item_Type flags, evas.c_evas.Evas_Smart_Cb func, void *func_data)
-    Elm_Object_Item *elm_genlist_selected_item_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_List *elm_genlist_selected_items_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_List *elm_genlist_realized_items_get(evas.c_evas.Evas_Object *obj)
-    Elm_Object_Item *elm_genlist_at_xy_item_get(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, int *posret)
-    Elm_Object_Item *elm_genlist_first_item_get(evas.c_evas.Evas_Object *obj)
-    Elm_Object_Item *elm_genlist_last_item_get(evas.c_evas.Evas_Object *obj)
-
-    Elm_Object_Item *elm_genlist_item_next_get(Elm_Object_Item *item)
-    Elm_Object_Item *elm_genlist_item_prev_get(Elm_Object_Item *item)
-    Elm_Object_Item *elm_genlist_item_parent_get(Elm_Object_Item *it)
-    void elm_genlist_item_subitems_clear(Elm_Object_Item *item)
-    void elm_genlist_item_selected_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool selected)
-    evas.c_evas.Eina_Bool elm_genlist_item_selected_get(Elm_Object_Item *item)
-    void elm_genlist_item_expanded_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool expanded)
-    evas.c_evas.Eina_Bool elm_genlist_item_expanded_get(Elm_Object_Item *item)
-    void elm_genlist_item_select_mode_set(Elm_Object_Item *it, Elm_Object_Select_Mode mode)
-    Elm_Object_Select_Mode elm_genlist_item_select_mode_get(Elm_Object_Item *it)
-    void elm_genlist_item_show(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
-    void elm_genlist_item_bring_in(Elm_Object_Item *item, Elm_Genlist_Item_Scrollto_Type scrollto_type)
-    void elm_genlist_item_update(Elm_Object_Item *item)
-    void elm_genlist_item_fields_update(Elm_Object_Item *item, char *parts, Elm_Genlist_Item_Field_Type itf)
-    void         elm_genlist_item_tooltip_text_set(Elm_Object_Item *item, char *text)
-    void         elm_genlist_item_tooltip_content_cb_set(Elm_Object_Item *item, Elm_Tooltip_Item_Content_Cb func, void *data, evas.c_evas.Evas_Smart_Cb del_cb)
-    void         elm_genlist_item_tooltip_unset(Elm_Object_Item *item)
-    void         elm_genlist_item_tooltip_style_set(Elm_Object_Item *item, char *style)
-    char*        elm_genlist_item_tooltip_style_get(Elm_Object_Item *item)
-    void         elm_genlist_item_cursor_set(Elm_Object_Item *item, char *cursor)
-    void         elm_genlist_item_cursor_unset(Elm_Object_Item *item)
-    void         elm_genlist_item_cursor_style_set(Elm_Object_Item *item, char *style)
-    char*        elm_genlist_item_cursor_style_get(Elm_Object_Item *item)
-    void         elm_genlist_item_cursor_engine_only_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool engine_only)
-    evas.c_evas.Eina_Bool elm_genlist_item_cursor_engine_only_get(Elm_Object_Item *item)
-    Elm_List_Mode elm_genlist_mode_get(evas.c_evas.Evas_Object *obj)
-    void         elm_genlist_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
+    # Menu object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    evas.c_evas.Evas_Object *elm_menu_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Evas_Object *elm_menu_parent_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_menu_move(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
+    void                     elm_menu_close(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_List   *elm_menu_items_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_menu_item_object_get(Elm_Object_Item *it)
+    Elm_Object_Item         *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent, char *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    void                     elm_menu_item_icon_name_set(Elm_Object_Item *it, const_char_ptr icon)
+    const_char_ptr           elm_menu_item_icon_name_get(Elm_Object_Item *it)
+    void                     elm_menu_item_selected_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool selected)
+    evas.c_evas.Eina_Bool    elm_menu_item_selected_get(Elm_Object_Item *it)
+    Elm_Object_Item         *elm_menu_item_separator_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent)
+    evas.c_evas.Eina_Bool    elm_menu_item_is_separator(Elm_Object_Item *it)
+    evas.c_evas.Eina_List   *elm_menu_item_subitems_get(Elm_Object_Item *it)
+    int                      elm_menu_item_index_get(Elm_Object_Item *it)
+    Elm_Object_Item         *elm_menu_selected_item_get(evas.c_evas.Evas_Object *obj)
+    Elm_Object_Item         *elm_menu_last_item_get(evas.c_evas.Evas_Object *obj)
+    Elm_Object_Item         *elm_menu_first_item_get(evas.c_evas.Evas_Object *obj)
+    Elm_Object_Item         *elm_menu_item_next_get(Elm_Object_Item *it)
+    Elm_Object_Item         *elm_menu_item_prev_get(Elm_Object_Item *it)
 
     # Naviframe widget (api:TODO  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_naviframe_add(evas.c_evas.Evas_Object *parent)
@@ -1183,33 +1167,16 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_naviframe_item_simple_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void                     elm_naviframe_item_simple_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
-    # Separator (TODO: Separator inherits from Layout)
-    evas.c_evas.Evas_Object *elm_separator_add(evas.c_evas.Evas_Object *parent)
-    void                     elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool)
-    evas.c_evas.Eina_Bool    elm_separator_horizontal_get(evas.c_evas.Evas_Object *obj)
-
-    # Menu object (api:DONE  cb:DONE  test:TODO  doc:TODO)
-    evas.c_evas.Evas_Object *elm_menu_add(evas.c_evas.Evas_Object *parent)
-    void                     elm_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    evas.c_evas.Evas_Object *elm_menu_parent_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_menu_move(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
-    void                     elm_menu_close(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_List   *elm_menu_items_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Evas_Object *elm_menu_item_object_get(Elm_Object_Item *it)
-    Elm_Object_Item         *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent, char *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    void                     elm_menu_item_icon_name_set(Elm_Object_Item *it, const_char_ptr icon)
-    const_char_ptr           elm_menu_item_icon_name_get(Elm_Object_Item *it)
-    void                     elm_menu_item_selected_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool selected)
-    evas.c_evas.Eina_Bool    elm_menu_item_selected_get(Elm_Object_Item *it)
-    Elm_Object_Item         *elm_menu_item_separator_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent)
-    evas.c_evas.Eina_Bool    elm_menu_item_is_separator(Elm_Object_Item *it)
-    evas.c_evas.Eina_List   *elm_menu_item_subitems_get(Elm_Object_Item *it)
-    int                      elm_menu_item_index_get(Elm_Object_Item *it)
-    Elm_Object_Item         *elm_menu_selected_item_get(evas.c_evas.Evas_Object *obj)
-    Elm_Object_Item         *elm_menu_last_item_get(evas.c_evas.Evas_Object *obj)
-    Elm_Object_Item         *elm_menu_first_item_get(evas.c_evas.Evas_Object *obj)
-    Elm_Object_Item         *elm_menu_item_next_get(Elm_Object_Item *it)
-    Elm_Object_Item         *elm_menu_item_prev_get(Elm_Object_Item *it)
+    # Notify object (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Evas_Object *elm_notify_parent_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
+    int                      elm_notify_orient_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_timeout_set(evas.c_evas.Evas_Object *obj, double timeout)
+    double                   elm_notify_timeout_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_notify_allow_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
+    evas.c_evas.Eina_Bool    elm_notify_allow_events_get(evas.c_evas.Evas_Object *obj)
 
     # Panel (api:DONE  cb:N/A  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
@@ -1218,6 +1185,16 @@ cdef extern from "Elementary.h":
     void                     elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
     evas.c_evas.Eina_Bool    elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void                     elm_panel_toggle(evas.c_evas.Evas_Object *obj)
+
+    # Photo object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Eina_Bool    elm_photo_file_set(evas.c_evas.Evas_Object *obj, char *file)
+    void                     elm_photo_thumb_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
+    void                     elm_photo_size_set(evas.c_evas.Evas_Object *obj, int size)
+    void                     elm_photo_fill_inside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill)
+    void                     elm_photo_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
+    void                     elm_photo_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
+    evas.c_evas.Eina_Bool    elm_photo_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
     # Progressbar object (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
@@ -1234,16 +1211,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_progressbar_horizontal_get(evas.c_evas.Evas_Object *obj)
     void                     elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)
     evas.c_evas.Eina_Bool    elm_progressbar_inverted_get(evas.c_evas.Evas_Object *obj)
-
-    # Photo object (api:DONE  cb:DONE  test:TODO  doc:TODO)
-    evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
-    evas.c_evas.Eina_Bool    elm_photo_file_set(evas.c_evas.Evas_Object *obj, char *file)
-    void                     elm_photo_thumb_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
-    void                     elm_photo_size_set(evas.c_evas.Evas_Object *obj, int size)
-    void                     elm_photo_fill_inside_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fill)
-    void                     elm_photo_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
-    void                     elm_photo_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
-    evas.c_evas.Eina_Bool    elm_photo_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
     # Radio object (api:DONE  cb:DONE  test:OK  doc:TODO)
     evas.c_evas.Evas_Object *elm_radio_add(evas.c_evas.Evas_Object *parent)
@@ -1277,6 +1244,11 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_scroller_propagate_events_get(evas.c_evas.Evas_Object *obj)
     void                     elm_scroller_gravity_set(evas.c_evas.Evas_Object *obj, double x, double y)
     void                     elm_scroller_gravity_get(evas.c_evas.Evas_Object *obj, double *x, double *y)
+
+    # Separator (TODO: Separator inherits from Layout)
+    evas.c_evas.Evas_Object *elm_separator_add(evas.c_evas.Evas_Object *parent)
+    void                     elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool)
+    evas.c_evas.Eina_Bool    elm_separator_horizontal_get(evas.c_evas.Evas_Object *obj)
 
     # Slider object (api:DONEwithTODO  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_slider_add(evas.c_evas.Evas_Object *parent)
@@ -1382,6 +1354,31 @@ cdef extern from "Elementary.h":
     void                     elm_toolbar_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_toolbar_select_mode_get(evas.c_evas.Evas_Object *obj)
 
+    # Web object
+    ctypedef struct Elm_Web_Frame_Load_Error:
+        int code
+        evas.c_evas.Eina_Bool is_cancellation
+        const_char_ptr domain
+        const_char_ptr description
+        const_char_ptr failing_url
+        evas.c_evas.Evas_Object *frame
+
+    ctypedef void (*Elm_Web_Console_Message)(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id)
+
+    evas.c_evas.Eina_Bool elm_need_web()
+    evas.c_evas.Eina_Bool elm_web_history_enabled_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_web_webkit_view_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Evas_Object *elm_web_add(evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Eina_Bool elm_web_uri_set(evas.c_evas.Evas_Object *obj,char *uri)
+    const_char_ptr elm_web_uri_get(evas.c_evas.Evas_Object *obj)
+    const_char_ptr elm_web_useragent_get(evas.c_evas.Evas_Object *obj)
+    double elm_web_zoom_get(evas.c_evas.Evas_Object *obj)
+    Elm_Web_Zoom_Mode elm_web_zoom_mode_get(evas.c_evas.Evas_Object *obj)
+
+    evas.c_evas.Eina_Bool elm_web_back(evas.c_evas.Evas_Object *obj)
+
+    void elm_web_console_message_hook_set(evas.c_evas.Evas_Object *obj, Elm_Web_Console_Message func, void *data)
+
     # Window object (api:DONE  cb:DONE  test:TODO  doc:DONE)
     evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent, char *name, Elm_Win_Type type)
     void                     elm_win_resize_object_add(evas.c_evas.Evas_Object* obj, evas.c_evas.Evas_Object* subobj)
@@ -1468,3 +1465,6 @@ cdef extern from "Elementary.h":
 
     void                     elm_win_screen_position_get(evas.c_evas.Evas_Object *obj, int *x, int *y)
     evas.c_evas.Eina_Bool    elm_win_socket_listen(evas.c_evas.Evas_Object *obj, char *svcname, int svcnum, evas.c_evas.Eina_Bool svcsys)
+
+    # X specific call - wont't work on non-x engines (return 0)
+    Ecore_X_Window           elm_win_xwindow_get(evas.c_evas.Evas_Object *obj)
