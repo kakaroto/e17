@@ -280,7 +280,7 @@ cdef class Entry(Object):
         elm_entry_file_set(self.obj, file, format)
 
     def file_get(self):
-        cdef char *file
+        cdef const_char_ptr file
         cdef Elm_Text_Format format
 
         elm_entry_file_get(self.obj, &file, &format)

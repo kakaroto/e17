@@ -109,9 +109,8 @@ cdef class Window(Object):
 
     def icon_object_get(self):
         """Get the icon object used for the window."""
-        cdef Object o
-        o = <Object>elm_win_icon_object_get(self.obj)
-        return o
+        cdef c_evas.const_Evas_Object *obj = elm_win_icon_object_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
 
     property icon_object:
         def __get__(self):
