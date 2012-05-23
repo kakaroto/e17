@@ -517,7 +517,7 @@ cdef extern from "Elementary.h":
     char                    *elm_object_style_get(evas.c_evas.Evas_Object *obj)
     void                     elm_object_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
     evas.c_evas.Eina_Bool    elm_object_disabled_get(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Eina_Bool   elm_object_widget_check(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool    elm_object_widget_check(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Evas_Object *elm_object_parent_widget_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Evas_Object *elm_object_top_widget_get(evas.c_evas.Evas_Object *obj)
     char                    *elm_object_widget_type_get(evas.c_evas.Evas_Object *obj)
@@ -538,7 +538,7 @@ cdef extern from "Elementary.h":
 
     # Object - Focus (elm_focus.h)
     evas.c_evas.Eina_Bool    elm_object_focus_get(evas.c_evas.Evas_Object *obj)
-    void                     elm_object_focus_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool x)
+    void                     elm_object_focus_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool focus)
     void                     elm_object_focus_allow_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enable)
     evas.c_evas.Eina_Bool    elm_object_focus_allow_get(evas.c_evas.Evas_Object *obj)
     void                     elm_object_focus_custom_chain_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_List *objs)
@@ -546,7 +546,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.const_Eina_List *elm_object_focus_custom_chain_get(evas.c_evas.const_Evas_Object *obj)
     void                     elm_object_focus_custom_chain_append(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *relative_child)
     void                     elm_object_focus_custom_chain_prepend(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child, evas.c_evas.Evas_Object *relative_child)
-    #void                     elm_object_focus_next(evas.c_evas.Evas_Object *obj, Elm_Focus_Direction dir)
+    #void                     elm_object_focus_next(evas.c_evas.Evas_Object *obj, Elm_Focus_Direction direction)
     void                     elm_object_tree_focus_allow_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool focusable)
     evas.c_evas.Eina_Bool    elm_object_tree_focus_allow_get(evas.c_evas.Evas_Object *obj)
 
@@ -588,10 +588,10 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_object_tooltip_window_mode_get(evas.c_evas.Evas_Object *obj)
 
     # Object - Translatable text (elm_general.h)
-    void                     elm_object_domain_translatable_text_part_set(evas.c_evas.Evas_Object *obj, const_char_ptr part, const_char_ptr domain, const_char_ptr text)
-    void                     elm_object_domain_translatable_text_set(evas.c_evas.Evas_Object *obj, domain, text)
-    void                     elm_object_translatable_text_set(evas.c_evas.Evas_Object *obj, text)
-    char                    *elm_object_translatable_text_part_get(evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    void                     elm_object_domain_translatable_text_part_set(evas.c_evas.Evas_Object *obj, char *part, char *domain, char *text)
+    void                     elm_object_domain_translatable_text_set(evas.c_evas.Evas_Object *obj, char *domain, char *text)
+    void                     elm_object_translatable_text_set(evas.c_evas.Evas_Object *obj, char *text)
+    char                    *elm_object_translatable_text_part_get(evas.c_evas.Evas_Object *obj, char *part)
     void                     elm_object_translatable_text_get(evas.c_evas.Evas_Object *obj)
 
     # Object Item

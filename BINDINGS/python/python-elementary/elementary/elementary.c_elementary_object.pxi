@@ -89,19 +89,89 @@ cdef class Canvas(evas.c_evas.Canvas):
 cdef class Object(evas.c_evas.Object):
     cdef object _elmcallbacks
     cdef object _elm_event_cbs
-    """
-    elementary.Object
+    """An abstract class to manage object and callback handling.
 
-    An abstract class to manage object and callback handling. All
-    widgets are based on this class
-    """
-    def scale_set(self, scale):
-        elm_object_scale_set(self.obj, scale)
+    All widgets are based on this class.
 
-    def scale_get(self):
-        cdef double scale
-        scale = elm_object_scale_get(self.obj)
-        return scale
+    """
+
+    def part_text_set(self, part, text):
+        """Sets the text of a given part of this object.
+
+        @parm: B{part} part name to set the text.
+        @parm: B{text} text to set.
+        @see: L{text_set()} and L{text_part_get()}
+        """
+        elm_object_part_text_set(self.obj, part, text)
+
+    def text_set(self, text):
+        """Sets the main text for this object.
+
+        @parm: B{text} any text to set as the main textual part of this object.
+        @see: L{text_get()} and L{text_part_set()}
+        """
+        elm_object_text_set(self.obj, text)
+
+    def part_text_get(self, part):
+        """Gets the text of a given part of this object.
+
+        @parm: B{part} part name to get the text.
+        @return: the text of a part or None if nothing was set.
+        @see: L{text_get()} and L{text_part_set()}
+        """
+        cdef const_char_ptr l
+        l = elm_object_part_text_get(self.obj, part)
+        if l == NULL:
+            return None
+        return l
+
+    def text_get(self):
+        """Gets the main text for this object.
+
+        @return: the main text or None if nothing was set.
+        @see: L{text_set()} and L{text_part_get()}
+        """
+        cdef const_char_ptr l
+        l = elm_object_text_get(self.obj)
+        if l == NULL:
+            return None
+        return l
+
+    property text:
+        def __get__(self):
+            return self.text_get()
+
+        def __set__(self, value):
+            self.text_set(value)
+
+    def part_content_set(self, char *part, Object obj):
+        elm_object_part_content_set(self.obj, part, obj.obj)
+
+    def content_set(self, Object obj):
+        elm_object_part_content_set(self.obj, NULL, obj.obj)
+
+    def part_content_get(self, char *part):
+        cdef c_evas.Evas_Object *obj = elm_object_part_content_get(self.obj, part)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def content_get(self):
+        cdef c_evas.Evas_Object *obj = elm_object_content_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def part_content_unset(self, char *part):
+        cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, part)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def content_unset(self):
+        cdef c_evas.Evas_Object *obj = elm_object_content_unset(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def access_info_set(self, txt):
+        elm_object_access_info_set(self.obj, txt)
+
+    def name_find(self, name, recurse):
+        cdef c_evas.Evas_Object *obj = elm_object_name_find(self.obj, name, recurse)
+        return evas.c_evas._Object_from_instance(<long> obj)
 
     def style_set(self, style):
         elm_object_style_set(self.obj, style)
@@ -115,34 +185,185 @@ cdef class Object(evas.c_evas.Object):
         elm_object_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
-        return elm_object_disabled_get(self.obj)
+        return bool(elm_object_disabled_get(self.obj))
 
-    def focus(self):
-        _METHOD_DEPRECATED(self, "focus_set")
-        elm_object_focus_set(self.obj, 1)
+    def widget_check(self):
+        return bool(elm_object_widget_check(self.obj))
 
-    def unfocus(self):
-        _METHOD_DEPRECATED(self, "focus_set")
-        elm_object_focus_set(self.obj, 0)
+    def parent_widget_get(self):
+        cdef c_evas.Evas_Object *obj = elm_object_parent_widget_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
 
+    def top_widget_get(self):
+        cdef c_evas.Evas_Object *obj = elm_object_top_widget_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def widget_type_get(self):
+        return elm_object_widget_type_get(self.obj)
+
+    def signal_emit(self, emission, source):
+        elm_object_signal_emit(self.obj, emission, source)
+
+    #def signal_callback_add(self, emission, source, func, data):
+        #elm_object_signal_callback_add(self.obj, emission, source, func, data)
+
+    #def signal_callback_del(self, emission, source, func):
+        #elm_object_signal_callback_del(self.obj, emission, source, func)
+
+    def event_callback_add(self, func, *args, **kargs):
+        if not callable(func):
+            raise TypeError("func must be callable")
+
+        if self._elm_event_cbs is None:
+            self._elm_event_cbs = []
+
+        if not self._elm_event_cbs:
+            elm_object_event_callback_add(self.obj, _event_callback, NULL)
+
+        data = (func, args, kargs)
+        self._elm_event_cbs.append(data)
+
+    def event_callback_del(self, func, *args, **kargs):
+        data = (func, args, kargs)
+        self._elm_event_cbs.remove(data)
+
+        if not self._elm_event_cbs:
+            elm_object_event_callback_del(self.obj, _event_callback, NULL)
+
+    # Cursors
+    def cursor_set(self, char *cursor):
+        """ Set the cursor to be shown when mouse is over the object
+
+        Set the cursor that will be displayed when mouse is over the
+        object. The object can have only one cursor set to it, so if
+        this function is called twice for an object, the previous set
+        will be unset.
+        """
+        elm_object_cursor_set(self.obj, cursor)
+
+    def cursor_get(self):
+        return elm_object_cursor_get(self.obj)
+
+    def cursor_unset(self):
+        """ Unset cursor for object
+
+        Unset cursor for object, and set the cursor to default if the mouse
+        was over this object.
+        """
+        elm_object_cursor_unset(self.obj)
+
+    def cursor_style_set(self, style=None):
+        """ Sets a different style for this object cursor.
+
+        @note before you set a style you should define a cursor with
+        elm_object_cursor_set()
+        """
+        if style:
+            elm_object_cursor_style_set(self.obj, style)
+        else:
+            elm_object_cursor_style_set(self.obj, NULL)
+
+    def cursor_style_get(self):
+        """ Get the style for this object cursor.
+        """
+        cdef const_char_ptr style
+        style = elm_object_cursor_style_get(self.obj)
+        if style == NULL:
+            return None
+        return style
+
+    def cursor_theme_search_enabled_set(self, engine_only):
+        """ Sets cursor engine only usage for this object.
+
+        @note before you set engine only usage you should define a cursor with
+        elm_object_cursor_set()
+        """
+        elm_object_cursor_theme_search_enabled_set(self.obj, bool(engine_only))
+
+    def cursor_theme_search_enabled_get(self):
+        """ Get the engine only usage for this object.
+        """
+        return elm_object_cursor_theme_search_enabled_get(self.obj)
+
+    # Focus
     def focus_get(self):
-        elm_object_focus_get(self.obj)
+        return bool(elm_object_focus_get(self.obj))
+
+    def focus_set(self, focus):
+        elm_object_focus_set(self.obj, focus)
 
     def focus_allow_set(self, allow):
         elm_object_focus_allow_set(self.obj, allow)
-    
+
     def focus_allow_get(self):
         return elm_object_focus_allow_get(self.obj)
-    
-    def scroll_hold_pop(self):
-        """Pop the scroll hold by 1
 
-        This decrements the scroll hold count by one. If it is more
-        than 0 it will take effect on the parents of the indicated
-        object.
-        """
-        elm_object_scroll_hold_pop(self.obj)
+    def focus_custom_chain_set(self, lst):
+        elm_object_focus_custom_chain_unset(self.obj)
+        cdef Object obj
+        for obj in lst:
+            elm_object_focus_custom_chain_append(self.obj, obj.obj, NULL)
 
+    def focus_custom_chain_unset(self, lst):
+        elm_object_focus_custom_chain_unset(self.obj)
+
+    def focus_custom_chain_get(self):
+        cdef c_evas.Evas_Object *o
+        cdef Object obj
+        cdef evas.c_evas.const_Eina_List *lst
+        ret = []
+        lst = elm_object_focus_custom_chain_get(self.obj)
+        while lst:
+            o = <c_evas.Evas_Object *> lst.data
+            obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+            ret.append(obj)
+            lst = lst.next
+        return ret
+
+    def focus_custom_chain_append(self, Object obj, Object relative=None):
+        cdef c_evas.Evas_Object *rel = NULL
+        if relative:
+            rel = relative.obj
+        elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
+
+    def focus_custom_chain_prepend(self, Object obj, Object relative=None):
+        cdef c_evas.Evas_Object *rel = NULL
+        if relative:
+            rel = relative.obj
+        elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
+
+    #def focus_next(self, direction):
+        #elm_object_focus_next(self.obj, direction)
+
+    def tree_focus_allow_set(self, focusable):
+        elm_object_tree_focus_allow_set(self.obj, focusable)
+
+    def tree_focus_allow_get(self):
+        return bool(elm_object_tree_focus_allow_get(self.obj))
+
+    # Mirroring
+    def mirrored_get(self):
+        return bool(elm_object_mirrored_get(self.obj))
+
+    def mirrored_set(self, mirrored):
+        elm_object_mirrored_set(self.obj, mirrored)
+
+    def mirrored_automatic_get(self):
+        return bool(elm_object_mirrored_automatic_get(self.obj))
+
+    def mirrored_automatic_set(self, automatic):
+        elm_object_mirrored_automatic_set(self.obj, automatic)
+
+    # Scaling
+    def scale_set(self, scale):
+        elm_object_scale_set(self.obj, scale)
+
+    def scale_get(self):
+        cdef double scale
+        scale = elm_object_scale_get(self.obj)
+        return scale
+
+    # Scrollhints
     def scroll_hold_push(self):
         """Push the scroll hold by 1
 
@@ -152,14 +373,14 @@ cdef class Object(evas.c_evas.Object):
         """
         elm_object_scroll_hold_push(self.obj)
 
-    def scroll_freeze_pop(self):
-        """Pop the scroll freeze by 1
+    def scroll_hold_pop(self):
+        """Pop the scroll hold by 1
 
-        This decrements the scroll freeze count by one. If it is more
+        This decrements the scroll hold count by one. If it is more
         than 0 it will take effect on the parents of the indicated
         object.
         """
-        elm_object_scroll_freeze_pop(self.obj)
+        elm_object_scroll_hold_pop(self.obj)
 
     def scroll_freeze_push(self):
         """Push the scroll freeze by 1
@@ -170,6 +391,35 @@ cdef class Object(evas.c_evas.Object):
         """
         elm_object_scroll_freeze_push(self.obj)
 
+    def scroll_freeze_pop(self):
+        """Pop the scroll freeze by 1
+
+        This decrements the scroll freeze count by one. If it is more
+        than 0 it will take effect on the parents of the indicated
+        object.
+        """
+        elm_object_scroll_freeze_pop(self.obj)
+
+    def scroll_lock_x_set(self, lock):
+        elm_object_scroll_lock_x_set(self.obj, lock)
+
+    def scroll_lock_y_set(self, lock):
+        elm_object_scroll_lock_y_set(self.obj, lock)
+
+    def scroll_lock_x_get(self):
+        return bool(elm_object_scroll_lock_x_get(self.obj))
+
+    def scroll_lock_y_get(self):
+        return bool(elm_object_scroll_lock_y_get(self.obj))
+
+    # Theme
+    #def theme_set(self, Elm_Theme* th):
+        #elm_object_theme_set(self.obj, th)
+
+    #def theme_get(self):
+        #return <Elm_Theme>elm_object_theme_get(self.obj)
+
+    # Tooltips
     def tooltip_show(self):
         """ Force show tooltip of object
 
@@ -196,6 +446,12 @@ cdef class Object(evas.c_evas.Object):
         Internaly, this method call @tooltip_content_cb_set
         """
         elm_object_tooltip_text_set(self.obj, text)
+
+    def tooltip_domain_translatable_text_set(self, domain, text):
+        elm_object_tooltip_domain_translatable_text_set(self.obj, domain, text)
+
+    def tooltip_translatable_text_set(self, text):
+        elm_object_tooltip_translatable_text_set(self.obj, text)
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
@@ -251,112 +507,29 @@ cdef class Object(evas.c_evas.Object):
             return None
         return style
 
-    def cursor_set(self, char *cursor):
-        """ Set the cursor to be shown when mouse is over the object
+    def tooltip_window_mode_set(self, disable):
+        return bool(elm_object_tooltip_window_mode_set(self.obj, disable))
 
-        Set the cursor that will be displayed when mouse is over the
-        object. The object can have only one cursor set to it, so if
-        this function is called twice for an object, the previous set
-        will be unset.
-        """
-        elm_object_cursor_set(self.obj, cursor)
+    def tooltip_window_mode_get(self):
+        return bool(elm_object_tooltip_window_mode_get(self.obj))
 
-    def cursor_unset(self):
-        """ Unset cursor for object
+    #Translatable text
+    def domain_translatable_text_part_set(self, part, domain, text):
+        elm_object_domain_translatable_text_part_set(self.obj, part, domain, text)
 
-        Unset cursor for object, and set the cursor to default if the mouse
-        was over this object.
-        """
-        elm_object_cursor_unset(self.obj)
+    def domain_translatable_text_set(self, domain, text):
+        elm_object_domain_translatable_text_set(self.obj, domain, text)
 
-    def cursor_style_set(self, style=None):
-        """ Sets a different style for this object cursor.
+    def translatable_text_set(self, text):
+        elm_object_translatable_text_set(self.obj, text)
 
-        @note before you set a style you should define a cursor with
-        elm_object_cursor_set()
-        """
-        if style:
-            elm_object_cursor_style_set(self.obj, style)
-        else:
-            elm_object_cursor_style_set(self.obj, NULL)
+    def translatable_text_part_get(self, part):
+        return elm_object_translatable_text_part_get(self.obj, part)
 
-    def cursor_style_get(self):
-        """ Get the style for this object cursor.
-        """
-        cdef const_char_ptr style
-        style = elm_object_cursor_style_get(self.obj)
-        if style == NULL:
-            return None
-        return style
+    def translatable_text_get(self):
+        elm_object_translatable_text_get(self.obj)
 
-    def cursor_engine_only_set(self, engine_only):
-        """ Sets cursor engine only usage for this object.
-
-        @note before you set engine only usage you should define a cursor with
-        elm_object_cursor_set()
-        """
-        elm_object_cursor_theme_search_enabled_set(self.obj, bool(engine_only))
-
-    def cursor_engine_only_get(self):
-        """ Get the engine only usage for this object.
-        """
-        return elm_object_cursor_theme_search_enabled_get(self.obj)
-
-    def text_set(self, text):
-        """Sets the main text for this object.
-
-        @parm: B{text} any text to set as the main textual part of this object.
-        @see: L{text_get()} and L{text_part_set()}
-        """
-        elm_object_text_set(self.obj, text)
-
-    def text_get(self):
-        """Gets the main text for this object.
-
-        @return: the main text or None if nothing was set.
-        @see: L{text_set()} and L{text_part_get()}
-        """
-        cdef const_char_ptr l
-        l = elm_object_text_get(self.obj)
-        if l == NULL:
-            return None
-        return l
-
-    property text:
-        def __get__(self):
-            return self.text_get()
-
-        def __set__(self, value):
-            self.text_set(value)
-
-    def text_part_set(self, part, text):
-        """Sets the text of a given part of this object.
-
-        @parm: B{part} part name to set the text.
-        @parm: B{text} text to set.
-        @see: L{text_set()} and L{text_part_get()}
-        """
-        elm_object_part_text_set(self.obj, part, text)
-
-    def text_part_get(self, part):
-        """Gets the text of a given part of this object.
-
-        @parm: B{part} part name to get the text.
-        @return: the text of a part or None if nothing was set.
-        @see: L{text_get()} and L{text_part_set()}
-        """
-        cdef const_char_ptr l
-        l = elm_object_part_text_get(self.obj, part)
-        if l == NULL:
-            return None
-        return l
-
-    def content_set(self, Object obj):
-        elm_object_part_content_set(self.obj, NULL, obj.obj)
-
-    def part_content_set(self, char *part, Object obj):
-        elm_object_part_content_set(self.obj, part, obj.obj)
-
+    # Callbacks
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 
@@ -462,60 +635,6 @@ cdef class Object(evas.c_evas.Object):
         @return: Address of saved Evas_Object
         """
         return <long>self.obj
-
-    def focus_custom_chain_set(self, lst):
-        elm_object_focus_custom_chain_unset(self.obj)
-        cdef Object obj
-        for obj in lst:
-            elm_object_focus_custom_chain_append(self.obj, obj.obj, NULL)
-
-    def focus_custom_chain_get(self):
-        cdef c_evas.Evas_Object *o
-        cdef Object obj
-        cdef evas.c_evas.const_Eina_List *lst
-        ret = []
-        lst = elm_object_focus_custom_chain_get(self.obj)
-        while lst:
-            o = <c_evas.Evas_Object *> lst.data
-            obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
-            ret.append(obj)
-            lst = lst.next
-        return ret
-
-    def focus_custom_chain_unset(self, lst):
-        elm_object_focus_custom_chain_unset(self.obj)
-
-    def focus_custom_chain_append(self, Object obj, Object relative=None):
-        cdef c_evas.Evas_Object *rel = NULL
-        if relative:
-            rel = relative.obj
-        elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
-
-    def focus_custom_chain_prepend(self, Object obj, Object relative=None):
-        cdef c_evas.Evas_Object *rel = NULL
-        if relative:
-            rel = relative.obj
-        elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
-
-    def elm_event_callback_add(self, func, *args, **kargs):
-        if not callable(func):
-            raise TypeError("func must be callable")
-
-        if self._elm_event_cbs is None:
-            self._elm_event_cbs = []
-
-        if not self._elm_event_cbs:
-            elm_object_event_callback_add(self.obj, _event_callback, NULL)
-
-        data = (func, args, kargs)
-        self._elm_event_cbs.append(data)
-
-    def elm_event_callback_del(self, func, *args, **kargs):
-        data = (func, args, kargs)
-        self._elm_event_cbs.remove(data)
-
-        if not self._elm_event_cbs:
-            elm_object_event_callback_del(self.obj, _event_callback, NULL)
 
 
 def __elm_widget_cls_resolver(long ptr):
