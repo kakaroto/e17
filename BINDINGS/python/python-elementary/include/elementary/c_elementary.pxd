@@ -965,12 +965,14 @@ cdef extern from "Elementary.h":
     Elm_List_Mode elm_genlist_mode_get(evas.c_evas.Evas_Object *obj)
     void         elm_genlist_mode_set(evas.c_evas.Evas_Object *obj, Elm_List_Mode mode)
 
-    # Hover object
+    # Hover object (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
-    void elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
-    void elm_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    void elm_hover_style_set(evas.c_evas.Evas_Object *obj, char *style)
-    char  *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
+    void                     elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
+    evas.c_evas.Evas_Object *elm_hover_target_get(evas.c_evas.Evas_Object *obj)
+    void                     elm_hover_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
+    evas.c_evas.Evas_Object *elm_hover_parent_get(evas.c_evas.Evas_Object *obj)
+    char                    *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
+    void                     elm_hover_dismiss(evas.c_evas.Evas_Object *obj)
 
     # Hoversel object
     evas.c_evas.Evas_Object *elm_hoversel_add(evas.c_evas.Evas_Object *parent)

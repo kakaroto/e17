@@ -24,20 +24,25 @@ cdef class Hover(Object):
         else:
             self._set_obj(<c_evas.Evas_Object*>obj)
 
-    def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add("clicked", func, *args, **kwargs)
-
-    def callback_clicked_del(self, func):
-        self._callback_del("clicked", func)
-
     def target_set(self, c_evas.Object target):
         elm_hover_target_set(self.obj, target.obj)
+
+    def target_get(self):
+        cdef c_evas.Evas_Object *obj = elm_hover_target_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    property target:
+        def __get__(self):
+            return self.target_get()
+        def __set__(self, target):
+            self.target_set(target)
 
     def parent_set(self, c_evas.Object parent):
         elm_hover_parent_set(self.obj, parent.obj)
 
-    def content_set(self, swallow, c_evas.Object content):
-        elm_object_part_content_set(self.obj, swallow, content.obj)
+    def parent_get(self):
+        cdef c_evas.Evas_Object *obj = elm_hover_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
 
     def best_content_location_get(self, axis):
         cdef const_char_ptr string
@@ -46,5 +51,19 @@ cdef class Hover(Object):
             return None
         return string
 
+    def dismiss(self):
+        elm_hover_dismiss(self.obj)
+
+    def callback_clicked_add(self, func, *args, **kwargs):
+        self._callback_add("clicked", func, *args, **kwargs)
+
+    def callback_clicked_del(self, func):
+        self._callback_del("clicked", func)
+
+    def callback_smart_changed_add(self, func, *args, **kwargs):
+        self._callback_add("smart,changed", func, *args, **kwargs)
+
+    def callback_smart_changed_del(self, func):
+        self._callback_del("smart,changed", func)
 
 _elm_widget_type_register("hover", Hover)
