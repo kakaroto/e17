@@ -27,7 +27,6 @@ cdef void _hoversel_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_i
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
-
 cdef class HoverselItem:
     """A item for the hoversel widget"""
     cdef Elm_Object_Item *item
@@ -83,17 +82,64 @@ cdef class HoverselItem:
             icon_group = cicon_group
         return (icon_file, icon_group, cicon_type)
 
-    def label_get(self):
-        cdef const_char_ptr l
-        l = elm_object_item_text_get(self.item)
-        if l == NULL:
-            return None
-        return l
+cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
+    cdef void *data
+    cdef object prm
+    if it == NULL:
+        return None
+    data = elm_object_item_data_get(it)
+    if data == NULL:
+        return None
+    prm = <object>data
+    return prm[2]
 
 cdef class Hoversel(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))
+
+    def horizontal_set(self, horizontal):
+        elm_hoversel_horizontal_set(self.obj, horizontal)
+
+    def horizontal_get(self):
+        return bool(elm_hoversel_horizontal_get(self.obj))
+
+    def hover_parent_set(self, c_evas.Object parent):
+        elm_hoversel_hover_parent_set(self.obj, parent.obj)
+
+    def hover_parent_get(self):
+        cdef c_evas.Evas_Object *obj = elm_hoversel_hover_parent_get(self.obj)
+        return evas.c_evas._Object_from_instance(<long> obj)
+
+    def hover_begin(self):
+        elm_hoversel_hover_begin(self.obj)
+
+    def hover_end(self):
+        elm_hoversel_hover_end(self.obj)
+
+    def expanded_get(self):
+        return bool(elm_hoversel_expanded_get(self.obj))
+
+    def clear(self):
+        elm_hoversel_clear(self.obj)
+
+    def items_get(self):
+        cdef Elm_Object_Item *it
+        cdef c_evas.const_Eina_List *lst
+
+        lst = elm_hoversel_items_get(self.obj)
+        ret = []
+        ret_append = ret.append
+        while lst:
+            it = <Elm_Object_Item *>lst.data
+            lst = lst.next
+            o = _elm_hoversel_item_to_python(it)
+            if o is not None:
+                ret_append(o)
+        return ret
+
+    def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
+        return HoverselItem(self, label, icon_file, icon_type, callback, *args, **kwargs)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
@@ -112,52 +158,5 @@ cdef class Hoversel(Object):
 
     def callback_dismissed_del(self, func):
         self._callback_del("dismissed", func)
-
-
-    def hover_parent_set(self, c_evas.Object parent):
-        elm_hoversel_hover_parent_set(self.obj, parent.obj)
-
-    def label_set(self, label):
-        _METHOD_DEPRECATED(self, "text_set")
-        self.text_set(label)
-
-    def label_get(self):
-        _METHOD_DEPRECATED(self, "text_get")
-        return self.text_get()
-
-    property label:
-        def __get__(self):
-            return self.label_get()
-
-        def __set__(self, value):
-            self.label_set(value)
-
-    def icon_set(self, c_evas.Object icon):
-        elm_object_part_content_set(self.obj, "icon", icon.obj);
-
-    def icon_get(self):
-        cdef c_evas.Evas_Object *icon
-        icon = elm_object_part_content_get(self.obj, "icon")
-        return evas.c_evas._Object_from_instance(<long> icon)
-
-    property icon:
-        def __get__(self):
-            return self.icon_get()
-
-        def __set__(self, value):
-            self.icon_set(value)
-
-    def hover_begin(self):
-        elm_hoversel_hover_begin(self.obj)
-
-    def hover_end(self):
-        elm_hoversel_hover_end(self.obj)
-
-    def clear(self):
-        elm_hoversel_clear(self.obj)
-
-    def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
-        return HoverselItem(self, label, icon_file, icon_type, callback, *args, **kwargs)
-
 
 _elm_widget_type_register("hoversel", Hoversel)
