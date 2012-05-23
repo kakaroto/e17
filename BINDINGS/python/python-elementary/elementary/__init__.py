@@ -22,7 +22,7 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Check, Naviframe, NaviframeItem, InnerWindow, Image, Spinner, \
     Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
     Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
-    GenlistItem, GenlistItemClass, WidgetItem, Gengrid, GengridItem, \
+    GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
     GengridItemClass, init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \

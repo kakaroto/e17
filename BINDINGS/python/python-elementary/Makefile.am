@@ -40,6 +40,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_menu.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
+	elementary/elementary.c_elementary_object_item.pxi \
 	elementary/elementary.c_elementary_naviframe.pxi \
 	elementary/elementary.c_elementary_panel.pxi \
 	elementary/elementary.c_elementary_photo.pxi \
@@ -52,7 +53,6 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_table.pxi \
 	elementary/elementary.c_elementary_toolbar.pxi \
 	elementary/elementary.c_elementary_web.pxi \
-	elementary/elementary.c_elementary_widget_item.pxi \
 	elementary/elementary.c_elementary_window.pxi
 
 # elementary tests are not actual unit tests but a test AND a nice example

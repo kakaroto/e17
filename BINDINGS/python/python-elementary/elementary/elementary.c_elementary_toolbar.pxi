@@ -27,11 +27,10 @@ cdef void _toolbar_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_in
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
-cdef class ToolbarItem(WidgetItem):
+cdef class ToolbarItem(ObjectItem):
     """
     A item for the toolbar
     """
-    cdef Elm_Object_Item *obj
     cdef object cbt
 
     def __del_cb(self):
@@ -129,7 +128,7 @@ cdef class ToolbarItem(WidgetItem):
     property disabled:
         def __get__(self):
             return self.disabled_get()
-    
+
         def __set__(self, value):
             self.disabled_set(value)
 
@@ -174,10 +173,10 @@ cdef class ToolbarItem(WidgetItem):
     property menu:
         def __get__(self):
             return self.menu_get()
-    
+
         def __set__(self, value):
             self.menu_set(value)
-    
+
 
     #TODO def state_add(self, icon, label, func, data):
         #return elm_toolbar_item_state_add(self.obj, icon, label, func, data)
@@ -279,7 +278,7 @@ cdef class Toolbar(Object):
     property menu_parent:
         def __get__(self):
             return self.menu_parent_get()
-    
+
         def __set__(self, value):
             self.menu_parent_set(value)
 
@@ -305,7 +304,7 @@ cdef class Toolbar(Object):
     property shrink_mode:
         def __get__(self):
             return self.shrink_mode_get()
-    
+
         def __set__(self, value):
             self.shrink_mode_set(value)
 
@@ -374,7 +373,7 @@ cdef class Toolbar(Object):
     property select_mode:
         def __get__(self):
             return self.select_mode_get()
-    
+
         def __set__(self, value):
             self.select_mode_set(value)
 

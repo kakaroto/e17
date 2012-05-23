@@ -17,9 +17,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class NaviframeItem(WidgetItem):
-    cdef Elm_Object_Item *obj
-
+cdef class NaviframeItem(ObjectItem):
     def item_pop_to(self):
         elm_naviframe_item_pop_to(self.obj)
 

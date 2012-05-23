@@ -42,7 +42,7 @@ cdef enum Elm_List_Item_Insert_Kind:
     ELM_LIST_ITEM_INSERT_BEFORE
     ELM_LIST_ITEM_INSERT_AFTER
 
-cdef class ListItem(WidgetItem):
+cdef class ListItem(ObjectItem):
     """
     An item for the list widget
     """

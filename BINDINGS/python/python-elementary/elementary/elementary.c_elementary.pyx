@@ -189,7 +189,7 @@ cdef _elm_widget_type_unregister(char *name):
 
 
 include "elementary.c_elementary_object.pxi"
-include "elementary.c_elementary_widget_item.pxi"
+include "elementary.c_elementary_object_item.pxi"
 include "elementary.c_elementary_window.pxi"
 include "elementary.c_elementary_innerwindow.pxi"
 include "elementary.c_elementary_background.pxi"

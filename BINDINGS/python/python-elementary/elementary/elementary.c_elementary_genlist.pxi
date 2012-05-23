@@ -283,11 +283,10 @@ cdef class GenlistItemClass:
         return False
 
 
-cdef class GenlistItem(WidgetItem):
+cdef class GenlistItem(ObjectItem):
     """
     An item for the genlist widget
     """
-    cdef Elm_Object_Item *obj
     cdef object params
 
     cdef int _set_obj(self, Elm_Object_Item *obj, params) except 0:
