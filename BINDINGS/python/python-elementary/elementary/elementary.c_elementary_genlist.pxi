@@ -321,6 +321,19 @@ cdef class GenlistItem(ObjectItem):
                 self.params[3],
                 self.params[1])
 
+    def data_get(self):
+        cdef void* data
+        data = elm_object_item_data_get(self.obj)
+        if data == NULL:
+            return None
+        else:
+            (item_class, item_data, ret, func) = <object>data
+            return item_data
+
+    property data:
+        def __get__(self):
+            return self.data_get()
+
     def next_get(self):
         cdef Elm_Object_Item *it
         it = elm_genlist_item_next_get(self.obj)
@@ -339,49 +352,6 @@ cdef class GenlistItem(ObjectItem):
         def __get__(self):
             return self.prev_get()
 
-    def parent_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_item_parent_get(self.obj)
-        return _elm_genlist_item_to_python(it)
-
-    property parent:
-        def __get__(self):
-            return self.parent_get()
-
-    def genlist_get(self):
-        cdef c_evas.Evas_Object *o
-        o = elm_object_item_widget_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
-
-    property genlist:
-        def __get__(self):
-            return self.genlist_get()
-
-    def data_get(self):
-        cdef void* data
-        data = elm_object_item_data_get(self.obj)
-        if data == NULL:
-            return None
-        else:
-            (item_class, item_data, ret, func) = <object>data
-            return item_data
-
-    property data:
-        def __get__(self):
-            return self.data_get()
-
-    def delete(self):
-        elm_object_item_del(self.obj)
-
-    def update(self):
-        elm_genlist_item_update(self.obj)
-
-    def fields_update(self, parts, itf):
-        elm_genlist_item_fields_update(self.obj, parts, itf)
-
-    def subitems_clear(self):
-        elm_genlist_item_subitems_clear(self.obj)
-
     def selected_set(self, selected):
         elm_genlist_item_selected_set(self.obj, bool(selected))
 
@@ -395,43 +365,23 @@ cdef class GenlistItem(ObjectItem):
         def __set__(self, selected):
             self.selected_set(selected)
 
-    def expanded_set(self, expanded):
-        elm_genlist_item_expanded_set(self.obj, bool(expanded))
-
-    def expanded_get(self, ):
-        return bool(elm_genlist_item_expanded_get(self.obj))
-
-    property expanded:
-        def __get__(self):
-            return self.expanded_get()
-
-        def __set__(self, expanded):
-            self.expanded_set(expanded)
-
-    def disabled_set(self, disabled):
-        elm_object_item_disabled_set(self.obj, bool(disabled))
-
-    def disabled_get(self):
-        return bool(elm_object_item_disabled_get(self.obj))
-
-    property disabled:
-        def __get__(self):
-            return self.disabled_get()
-
-        def __set__(self, disabled):
-            self.disabled_set(disabled)
-
-    def select_mode_set(self, mode):
-        elm_genlist_item_select_mode_set(self.obj, mode)
-
-    def select_mode_get(self):
-        return elm_genlist_item_select_mode_get(self.obj)
-
     def show(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
         elm_genlist_item_show(self.obj, scrollto_type)
 
     def bring_in(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
         elm_genlist_item_bring_in(self.obj, scrollto_type)
+
+    def update(self):
+        elm_genlist_item_update(self.obj)
+
+    #def item_class_update(self, Elm_Genlist_Item_Class itc):
+        #elm_genlist_item_item_class_update(self.obj, itc)
+
+    #def item_class_get(self):
+        #return elm_genlist_item_item_class_get(self.obj)
+
+    def index_get(self):
+        return elm_genlist_item_index_get(self.obj)
 
     def tooltip_text_set(self, char *text):
         """ Set the text to be shown in the tooltip object
@@ -497,6 +447,12 @@ cdef class GenlistItem(ObjectItem):
             return None
         return style
 
+    def tooltip_window_mode_set(self, disable):
+        return bool(elm_genlist_item_tooltip_window_mode_set(self.obj, disable))
+
+    def tooltip_window_mode_get(self):
+        return bool(elm_genlist_item_tooltip_window_mode_get(self.obj))
+
     def cursor_set(self, char *cursor):
         """ Set the cursor to be shown when mouse is over the genlist item
 
@@ -506,6 +462,9 @@ cdef class GenlistItem(ObjectItem):
         will be unset.
         """
         elm_genlist_item_cursor_set(self.obj, cursor)
+
+    def cursor_get(self):
+        return elm_genlist_item_cursor_get(self.obj)
 
     def cursor_unset(self):
         """  Unset the cursor to be shown when mouse is over the genlist item
@@ -545,6 +504,79 @@ cdef class GenlistItem(ObjectItem):
         """
         return elm_genlist_item_cursor_engine_only_get(self.obj)
 
+    def parent_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_genlist_item_parent_get(self.obj)
+        return _elm_genlist_item_to_python(it)
+
+    property parent:
+        def __get__(self):
+            return self.parent_get()
+
+    def subitems_clear(self):
+        elm_genlist_item_subitems_clear(self.obj)
+
+    def expanded_set(self, expanded):
+        elm_genlist_item_expanded_set(self.obj, bool(expanded))
+
+    def expanded_get(self, ):
+        return bool(elm_genlist_item_expanded_get(self.obj))
+
+    property expanded:
+        def __get__(self):
+            return self.expanded_get()
+
+        def __set__(self, expanded):
+            self.expanded_set(expanded)
+
+    def expanded_depth_get(self):
+        return elm_genlist_item_expanded_depth_get(self.obj)
+
+    def all_contents_unset(self):
+        cdef Elm_Object_Item *it
+        cdef c_evas.Eina_List *lst
+
+        elm_genlist_item_all_contents_unset(self.obj, &lst)
+        ret = []
+        ret_append = ret.append
+        while lst:
+            it = <Elm_Object_Item *>lst.data
+            lst = lst.next
+            o = _elm_genlist_item_to_python(it)
+            if o is not None:
+                ret_append(o)
+        return ret
+
+    def promote(self):
+        elm_genlist_item_promote(self.obj)
+
+    def demote(self):
+        elm_genlist_item_demote(self.obj)
+
+    def fields_update(self, parts, itf):
+        elm_genlist_item_fields_update(self.obj, parts, itf)
+
+    def decorate_mode_set(self, decorate_it_type, decorate_it_set):
+        elm_genlist_item_decorate_mode_set(self.obj, decorate_it_type, decorate_it_set)
+
+    def decorate_mode_get(self):
+        return elm_genlist_item_decorate_mode_get(self.obj)
+
+    def type_get(self):
+        cdef Elm_Genlist_Item_Type ittype = elm_genlist_item_type_get(self.obj)
+        return <Elm_Genlist_Item_Type>ittype
+
+    def flip_set(self, flip):
+        elm_genlist_item_flip_set(self.obj, flip)
+
+    def flip_get(self):
+        return bool(elm_genlist_item_flip_get(self.obj))
+
+    def select_mode_set(self, mode):
+        elm_genlist_item_select_mode_set(self.obj, mode)
+
+    def select_mode_get(self):
+        return elm_genlist_item_select_mode_get(self.obj)
 
 def _genlist_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
@@ -591,30 +623,22 @@ cdef class Genlist(Object):
     def multi_select_set(self, multi):
         elm_genlist_multi_select_set(self.obj, bool(multi))
 
-    def horizontal_mode_set(self, Elm_List_Mode mode):
-        _METHOD_DEPRECATED(self, "horizontal_set")
-        elm_genlist_mode_set(self.obj, mode)
-
-    def horizontal_set(self, Elm_List_Mode mode):
-        elm_genlist_mode_set(self.obj, mode)
-
-    def horizontal_get(self):
-        return elm_genlist_mode_get(self.obj)
-
-    def select_mode_set(self, mode):
-        elm_genlist_select_mode_set(self.obj, mode)
+    def multi_select_get(self):
+        return bool(elm_genlist_multi_select_get(self.obj))
 
     def mode_set(self, mode = ELM_LIST_COMPRESS):
         elm_genlist_mode_set(self.obj, mode)
 
+    def mode_get(self):
+        return elm_genlist_mode_get(self.obj)
+
     def bounce_set(self, h_bounce, v_bounce):
         elm_genlist_bounce_set(self.obj, bool(h_bounce), bool(v_bounce))
 
-    def homogeneous_set(self, homogeneous):
-        elm_genlist_homogeneous_set(self.obj, bool(homogeneous))
-
-    def block_count_set(self, int n):
-        elm_genlist_block_count_set(self.obj, n)
+    def bounce_get(self):
+        cdef c_evas.Eina_Bool h_bounce, v_bounce
+        elm_genlist_bounce_get(self.obj, &h_bounce, &v_bounce)
+        return (h_bounce, v_bounce)
 
     def item_append(self, GenlistItemClass item_class not None, item_data,
                     GenlistItem parent_item=None,
@@ -832,6 +856,17 @@ cdef class Genlist(Object):
         else:
             return None
 
+    #Elm_Object_Item         *elm_genlist_item_sorted_insert(self.obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, evas.c_evas.Eina_Compare_Cb comp, evas.c_evas.Evas_Smart_Cb func, void *func_data)
+
+    def selected_item_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_genlist_selected_item_get(self.obj)
+        return _elm_genlist_item_to_python(it)
+
+    property selected_item:
+        def __get__(self):
+            return self.selected_item_get()
+
     def selected_items_get(self):
         cdef Elm_Object_Item *it
         cdef c_evas.const_Eina_List *lst
@@ -862,15 +897,6 @@ cdef class Genlist(Object):
                 ret_append(o)
         return ret
 
-    def selected_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_selected_item_get(self.obj)
-        return _elm_genlist_item_to_python(it)
-
-    property selected_item:
-        def __get__(self):
-            return self.selected_item_get()
-
     def first_item_get(self):
         cdef Elm_Object_Item *it
         it = elm_genlist_first_item_get(self.obj)
@@ -889,10 +915,84 @@ cdef class Genlist(Object):
         def __get__(self):
             return self.last_item_get()
 
+    def scroller_policy_set(self, policy_h, policy_v):
+        elm_genlist_scroller_policy_set(self.obj, policy_h, policy_v)
+
+    def scroller_policy_get(self):
+        cdef Elm_Scroller_Policy policy_h, policy_v
+        elm_genlist_scroller_policy_get(self.obj, &policy_h, &policy_v)
+        return (policy_h, policy_v)
+
+    def realized_items_update(self):
+        elm_genlist_realized_items_update(self.obj)
+
+    def items_count(self):
+        return elm_genlist_items_count(self.obj)
+
+    def homogeneous_set(self, homogeneous):
+        elm_genlist_homogeneous_set(self.obj, bool(homogeneous))
+
+    def homogeneous_get(self):
+        return bool(elm_genlist_homogeneous_get(self.obj))
+
+    def block_count_set(self, int n):
+        elm_genlist_block_count_set(self.obj, n)
+
+    def block_count_get(self):
+        return elm_genlist_block_count_get(self.obj)
+
+    def longpress_timeout_set(self, timeout):
+        elm_genlist_longpress_timeout_set(self.obj, timeout)
+
+    def longpress_timeout_get(self):
+        return elm_genlist_longpress_timeout_get(self.obj)
+
     def at_xy_item_get(self, int x, int y):
         cdef Elm_Object_Item *it
         it = elm_genlist_at_xy_item_get(self.obj, x, y, NULL)
         return _elm_genlist_item_to_python(it)
+
+    def decorated_item_get(self):
+        cdef Elm_Object_Item *it
+        it = elm_genlist_decorated_item_get(self.obj)
+        return _elm_genlist_item_to_python(it)
+
+    def reorder_mode_set(self, reorder_mode):
+        elm_genlist_reorder_mode_set(self.obj, reorder_mode)
+
+    def reorder_mode_get(self):
+        return bool(elm_genlist_reorder_mode_get(self.obj))
+
+    def decorate_mode_set(self, decorated):
+        elm_genlist_decorate_mode_set(self.obj, decorated)
+
+    def decorate_mode_get(self):
+        return bool(elm_genlist_decorate_mode_get(self.obj))
+
+    def tree_effect_enabled_set(self, enabled):
+        elm_genlist_tree_effect_enabled_set(self.obj, enabled)
+
+    def tree_effect_enabled_get(self):
+        return bool(elm_genlist_tree_effect_enabled_get(self.obj))
+
+    def highlight_mode_set(self, highlight):
+        elm_genlist_highlight_mode_set(self.obj, highlight)
+
+    def highlight_mode_get(self):
+        return bool(elm_genlist_highlight_mode_get(self.obj))
+
+    def select_mode_set(self, mode):
+        elm_genlist_select_mode_set(self.obj, mode)
+
+    def select_mode_get(self):
+        return elm_genlist_select_mode_get(self.obj)
+
+    def callback_activated_add(self, func, *args, **kwargs):
+        self._callback_add_full("activated", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_activated_del(self, func):
+        self._callback_del_full("activated",  _genlist_item_conv, func)
 
     def callback_clicked_double_add(self, func, *args, **kwargs):
         self._callback_add_full("clicked,double", _genlist_item_conv,
@@ -901,19 +1001,103 @@ cdef class Genlist(Object):
     def callback_clicked_double_del(self, func):
         self._callback_del_full("clicked,double",  _genlist_item_conv, func)
 
-    def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add_full("clicked", _genlist_item_conv,
-                                func, *args, **kwargs)
-
-    def callback_clicked_del(self, func):
-        self._callback_del_full("clicked",  _genlist_item_conv, func)
-
     def callback_selected_add(self, func, *args, **kwargs):
         self._callback_add_full("selected", _genlist_item_conv,
                                 func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected",  _genlist_item_conv, func)
+        self._callback_del_full("selected", _genlist_item_conv, func)
+
+    def callback_unselected_add(self, func, *args, **kwargs):
+        self._callback_add_full("unselected", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_unselected_del(self, func):
+        self._callback_del_full("unselected",  _genlist_item_conv, func)
+
+    def callback_expanded_add(self, func, *args, **kwargs):
+        self._callback_add_full("expanded", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_expanded_del(self, func):
+        self._callback_del_full("expanded",  _genlist_item_conv, func)
+
+    def callback_contracted_add(self, func, *args, **kwargs):
+        self._callback_add_full("contracted", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_contracted_del(self, func):
+        self._callback_del_full("contracted",  _genlist_item_conv, func)
+
+    def callback_expand_request_add(self, func, *args, **kwargs):
+        self._callback_add_full("expand,request", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_expand_request_del(self, func):
+        self._callback_del_full("expand,request",  _genlist_item_conv, func)
+
+    def callback_contract_request_add(self, func, *args, **kwargs):
+        self._callback_add_full("contract,request", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_contract_request_del(self, func):
+        self._callback_del_full("contract,request",  _genlist_item_conv, func)
+
+    def callback_realized_add(self, func, *args, **kwargs):
+        self._callback_add_full("realized", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_realized_del(self, func):
+        self._callback_del_full("realized",  _genlist_item_conv, func)
+
+    def callback_unrealized_add(self, func, *args, **kwargs):
+        self._callback_add_full("unrealized", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_unrealized_del(self, func):
+        self._callback_del_full("unrealized",  _genlist_item_conv, func)
+
+    def callback_drag_start_up_add(self, func, *args, **kwargs):
+        self._callback_add_full("drag,start,up", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_drag_start_up_del(self, func):
+        self._callback_del_full("drag,start,up",  _genlist_item_conv, func)
+
+    def callback_drag_start_down_add(self, func, *args, **kwargs):
+        self._callback_add_full("drag,start,down", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_drag_start_down_del(self, func):
+        self._callback_del_full("drag,start,down",  _genlist_item_conv, func)
+
+    def callback_drag_start_left_add(self, func, *args, **kwargs):
+        self._callback_add_full("drag,start,left", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_drag_start_left_del(self, func):
+        self._callback_del_full("drag,start,left",  _genlist_item_conv, func)
+
+    def callback_drag_start_right_add(self, func, *args, **kwargs):
+        self._callback_add_full("drag,start,right", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_drag_start_right_del(self, func):
+        self._callback_del_full("drag,start,right",  _genlist_item_conv, func)
+
+    def callback_drag_stop_add(self, func, *args, **kwargs):
+        self._callback_add_full("drag,stop", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_drag_stop_del(self, func):
+        self._callback_del_full("drag,stop",  _genlist_item_conv, func)
+
+    def callback_drag_add(self, func, *args, **kwargs):
+        self._callback_add_full("drag", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_drag_del(self, func):
+        self._callback_del_full("drag",  _genlist_item_conv, func)
 
     def callback_longpressed_add(self, func, *args, **kwargs):
         self._callback_add_full("longpressed", _genlist_item_conv,
@@ -921,6 +1105,129 @@ cdef class Genlist(Object):
 
     def callback_longpressed_del(self, func):
         self._callback_del_full("longpressed", _genlist_item_conv, func)
+
+    def callback_scroll_anim_start_add(self, func, *args, **kwargs):
+        self._callback_add("scroll,anim,start", func, *args, **kwargs)
+
+    def callback_scroll_anim_start_del(self, func):
+        self._callback_del("scroll,anim,start", func)
+
+    def callback_scroll_anim_stop_add(self, func, *args, **kwargs):
+        self._callback_add("scroll,anim,stop", func, *args, **kwargs)
+
+    def callback_scroll_anim_stop_del(self, func):
+        self._callback_del("scroll,anim,stop", func)
+
+    def callback_scroll_drag_start_add(self, func, *args, **kwargs):
+        self._callback_add("scroll,drag,start", func, *args, **kwargs)
+
+    def callback_scroll_drag_start_del(self, func):
+        self._callback_del("scroll,drag,start", func)
+
+    def callback_scroll_drag_stop_add(self, func, *args, **kwargs):
+        self._callback_add("scroll,drag,stop", func, *args, **kwargs)
+
+    def callback_scroll_drag_stop_del(self, func):
+        self._callback_del("scroll,drag,stop", func)
+
+    def callback_edge_top_add(self, func, *args, **kwargs):
+        self._callback_add("edge,top", func, *args, **kwargs)
+
+    def callback_edge_top_del(self, func):
+        self._callback_del("edge,top", func)
+
+    def callback_edge_bottom_add(self, func, *args, **kwargs):
+        self._callback_add("edge,bottom", func, *args, **kwargs)
+
+    def callback_edge_bottom_del(self, func):
+        self._callback_del("edge,bottom", func)
+
+    def callback_edge_left_add(self, func, *args, **kwargs):
+        self._callback_add("edge,left", func, *args, **kwargs)
+
+    def callback_edge_left_del(self, func):
+        self._callback_del("edge,left", func)
+
+    def callback_edge_right_add(self, func, *args, **kwargs):
+        self._callback_add("edge,right", func, *args, **kwargs)
+
+    def callback_edge_right_del(self, func):
+        self._callback_del("edge,right", func)
+
+    def callback_multi_swipe_left_add(self, func, *args, **kwargs):
+        self._callback_add("multi,swipe,left", func, *args, **kwargs)
+
+    def callback_multi_swipe_left_del(self, func):
+        self._callback_del("multi,swipe,left", func)
+
+    def callback_multi_swipe_right_add(self, func, *args, **kwargs):
+        self._callback_add("multi,swipe,right", func, *args, **kwargs)
+
+    def callback_multi_swipe_right_del(self, func):
+        self._callback_del("multi,swipe,right", func)
+
+    def callback_multi_swipe_up_add(self, func, *args, **kwargs):
+        self._callback_add("multi,swipe,up", func, *args, **kwargs)
+
+    def callback_multi_swipe_up_del(self, func):
+        self._callback_del("multi,swipe,up", func)
+
+    def callback_multi_swipe_down_add(self, func, *args, **kwargs):
+        self._callback_add("multi,swipe,down", func, *args, **kwargs)
+
+    def callback_multi_swipe_down_del(self, func):
+        self._callback_del("multi,swipe,down", func)
+
+    def callback_multi_pinch_out_add(self, func, *args, **kwargs):
+        self._callback_add("multi,pinch,out", func, *args, **kwargs)
+
+    def callback_multi_pinch_out_del(self, func):
+        self._callback_del("multi,pinch,out", func)
+
+    def callback_multi_pinch_in_add(self, func, *args, **kwargs):
+        self._callback_add("multi,pinch,in", func, *args, **kwargs)
+
+    def callback_multi_pinch_in_del(self, func):
+        self._callback_del("multi,pinch,in", func)
+
+    def callback_swipe_add(self, func, *args, **kwargs):
+        self._callback_add("swipe", func, *args, **kwargs)
+
+    def callback_swipe_del(self, func):
+        self._callback_del("swipe", func)
+
+    def callback_moved_add(self, func, *args, **kwargs):
+        self._callback_add_full("moved", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_moved_del(self, func):
+        self._callback_del_full("moved",  _genlist_item_conv, func)
+
+    def callback_moved_after_add(self, func, *args, **kwargs):
+        self._callback_add_full("moved,after", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_moved_after_del(self, func):
+        self._callback_del_full("moved,after",  _genlist_item_conv, func)
+
+    def callback_moved_before_add(self, func, *args, **kwargs):
+        self._callback_add_full("moved,before", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_moved_before_del(self, func):
+        self._callback_del_full("moved,before",  _genlist_item_conv, func)
+
+    def callback_language_changed_add(self, func, *args, **kwargs):
+        self._callback_add("language,changed", func, *args, **kwargs)
+
+    def callback_language_changed_del(self, func):
+        self._callback_del("language,changed", func)
+
+    def callback_tree_effect_finished_add(self, func, *args, **kwargs):
+        self._callback_add("tree,effect,finished", func, *args, **kwargs)
+
+    def callback_tree_effect_finished_del(self, func):
+        self._callback_del("tree,effect,finished", func)
 
 
 _elm_widget_type_register("genlist", Genlist)
