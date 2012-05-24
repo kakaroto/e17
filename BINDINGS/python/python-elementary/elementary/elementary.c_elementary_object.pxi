@@ -187,6 +187,12 @@ cdef class Object(evas.c_evas.Object):
     def disabled_get(self):
         return bool(elm_object_disabled_get(self.obj))
 
+    property disabled:
+        def __get__(self):
+            return self.disabled_get()
+        def __set__(self, disabled):
+            self.disabled_set(disabled)
+
     def widget_check(self):
         return bool(elm_object_widget_check(self.obj))
 

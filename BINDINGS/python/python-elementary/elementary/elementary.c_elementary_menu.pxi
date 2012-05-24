@@ -27,8 +27,7 @@ cdef void _menu_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info)
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
-cdef class MenuItem:
-    cdef Elm_Object_Item *obj
+cdef class MenuItem(ObjectItem):
     cdef object cbt
 
     def __del_cb(self):

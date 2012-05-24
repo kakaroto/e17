@@ -148,6 +148,12 @@ cdef class ObjectItem:
     def disabled_get(self):
         return bool(elm_object_item_disabled_get(self.obj))
 
+    property disabled:
+        def __get__(self):
+            return self.disabled_get()
+        def __set__(self, disabled):
+            self.disabled_set(disabled)
+
     #def delete_cb_set(self, del_cb):
         #elm_object_item_del_cb_set(self.obj, del_cb)
 

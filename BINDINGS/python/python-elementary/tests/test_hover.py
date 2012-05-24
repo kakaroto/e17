@@ -36,7 +36,7 @@ def hover_clicked(obj, item=None):
 
     bt = elementary.Button(win)
     bt.text_set("Popup")
-    hv.content_set("middle", bt)
+    hv.part_content_set("middle", bt)
     bt.show()
 
     bx = elementary.Box(win)
@@ -64,21 +64,21 @@ def hover_clicked(obj, item=None):
 
     bx.show()
 
-    hv.content_set("top", bx)
+    hv.part_content_set("top", bx)
 
     bt = elementary.Button(win)
     bt.text_set("Bottom")
-    hv.content_set("bottom", bt)
+    hv.part_content_set("bottom", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Left")
-    hv.content_set("left", bt)
+    hv.part_content_set("left", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Right")
-    hv.content_set("right", bt)
+    hv.part_content_set("right", bt)
     bt.show()
 
     bg.size_hint_min_set(160, 160)
@@ -117,7 +117,7 @@ def hover2_clicked(obj, item=None):
 
     bt = elementary.Button(win)
     bt.text_set("Popup")
-    hv.content_set("middle", bt)
+    hv.part_content_set("middle", bt)
     bt.show()
 
     bx = elementary.Box(win)
@@ -144,21 +144,21 @@ def hover2_clicked(obj, item=None):
     bt.show()
 
     bx.show()
-    hv.content_set("top", bx)
+    hv.part_content_set("top", bx)
 
     bt = elementary.Button(win)
     bt.text_set("Bot")
-    hv.content_set("bottom", bt)
+    hv.part_content_set("bottom", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Left")
-    hv.content_set("left", bt)
+    hv.part_content_set("left", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Right")
-    hv.content_set("right", bt)
+    hv.part_content_set("right", bt)
     bt.show()
 
     bg.size_hint_min_set(160, 160)
