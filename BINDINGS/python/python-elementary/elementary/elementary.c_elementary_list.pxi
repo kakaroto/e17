@@ -41,6 +41,7 @@ cdef enum Elm_List_Item_Insert_Kind:
     ELM_LIST_ITEM_INSERT_PREPEND
     ELM_LIST_ITEM_INSERT_BEFORE
     ELM_LIST_ITEM_INSERT_AFTER
+    ELM_LIST_ITEM_INSERT_SORTED
 
 cdef class ListItem(ObjectItem):
     """
@@ -88,6 +89,8 @@ cdef class ListItem(ObjectItem):
         elif kind == ELM_LIST_ITEM_INSERT_PREPEND:
             self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj,
                                               cb, cbdata)
+        #elif kind == ELM_LIST_ITEM_INSERT_SORTED:
+            #self.item = elm_list_item_sorted_insert(list.obj, label, icon_obj, end_obj, cb, cbdata, cmp_f)
         else:
             if before_after == None:
                 raise ValueError("need a valid after object to add an item before/after another item")
@@ -118,76 +121,53 @@ cdef class ListItem(ObjectItem):
              self.label_get(), bool(self.icon_get()),
              bool(self.end_get()), self.cbt[1], self.cbt[3], self.cbt[4])
 
-    def delete(self):
-        if self.item == NULL:
-            raise ValueError("Object already deleted")
-        elm_object_item_del(self.item)
-
     def selected_set(self, selected):
         elm_list_item_selected_set(self.item, selected)
 
+    def selected_get(self):
+        return bool(elm_list_item_selected_get(self.item))
+
     property selected:
         def __get__(self):
-            return elm_list_item_selected_get(self.item)
-
+            return self.selected_get()
         def __set__(self, selected):
-            elm_list_item_selected_set(self.item, selected)
+            self.selected_set(selected)
+
+    def separator_set(self, separator):
+        elm_list_item_separator_set(self.item, separator)
+
+    def separator_get(self):
+        return bool(elm_list_item_separator_get(self.item))
+
+    property separator:
+        def __get__(self):
+            return self.separator_get()
+        def __set__(self, separator):
+            self.separator_set(separator)
 
     def show(self):
         elm_list_item_show(self.item)
 
-    def data_get(self):
-        """Returns the callback data given at creation time.
+    def bring_in(self):
+        elm_list_item_bring_in(self.item)
 
-        @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
+    def object_get(self):
+        """Returns the base object set for this list item.
+
+        Base object is the one that visually represents the list item
+        row. It must not be changed in a way that breaks the list
+        behavior (like deleting the base!), but it might be used to
+        feed Edje signals to add more features to row representation.
+
+        @rtype: edje.Edje
         """
-        cdef void* data
-        data = elm_object_item_data_get(self.item)
-        if data == NULL:
+        cdef c_evas.Evas_Object *obj
+        cdef void *data
+
+        obj = elm_list_item_object_get(self.item)
+        if obj == NULL:
             return None
-        else:
-            (obj, callback, it, a, ka) = <object>data
-
-            return (a, ka)
-
-    property data:
-        def __get__(self):
-            return self.data_get()
-
-    def icon_get(self):
-        """Returns the icon object set for this list item at creation time.
-
-        @rtype: evas.c_evas.Object
-        """
-        cdef c_evas.Evas_Object *icon
-        icon = elm_object_item_part_content_get(self.item, NULL)
-        return evas.c_evas._Object_from_instance(<long> icon)
-
-    property icon:
-        def __get__(self):
-            return self.icon_get()
-
-    def label_get(self):
-        """Returns the label string set for this list item.
-
-        @rtype: str
-        """
-        cdef const_char_ptr l
-        l = elm_object_item_text_get(self.item)
-        if l == NULL:
-            return None
-        return l
-
-    def label_set(self, char *label):
-        """Set the label string for this list item."""
-        elm_object_item_text_set(self.item, label)
-
-    property label:
-        def __get__(self):
-            return self.label_get()
-
-        def __set__(self, label):
-            self.label_set(label)
+        return evas.c_evas._Object_from_instance(<long>obj)
 
     property prev:
         def __get__(self):
@@ -227,187 +207,10 @@ cdef class ListItem(ObjectItem):
         (obj, callback, it, a, ka) = <object>data
         return it
 
-    def end_get(self):
-        """Returns the end object set for this list item at creation time.
-
-        End object will be placed at the right side, may contain an
-        action or status for this item.
-
-        @rtype: evas.c_evas.Object
-        """
-        cdef c_evas.Evas_Object *obj
-        cdef void *data
-
-        obj = elm_object_item_part_content_get(self.item, "end")
-        if obj == NULL:
-            return None
-        return evas.c_evas._Object_from_instance(<long>obj)
-
-    property end:
-        def __get__(self):
-            return self.end_get()
-
-    def base_get(self):
-        """Returns the base object set for this list item.
-
-        Base object is the one that visually represents the list item
-        row. It must not be changed in a way that breaks the list
-        behavior (like deleting the base!), but it might be used to
-        feed Edje signals to add more features to row representation.
-
-        @rtype: edje.Edje
-        """
-        cdef c_evas.Evas_Object *obj
-        cdef void *data
-
-        obj = elm_list_item_object_get(self.item)
-        if obj == NULL:
-            return None
-        return evas.c_evas._Object_from_instance(<long>obj)
-
-    property base:
-        def __get__(self):
-            return self.base_get()
-
-    def tooltip_text_set(self, char *text):
-        """ Set the text to be shown in the tooltip object
-
-        Setup the text as tooltip object. The object can have only one
-        tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @tooltip_content_cb_set
-        """
-        elm_object_item_tooltip_text_set(self.item, text)
-
-    def tooltip_content_cb_set(self, func, *args, **kargs):
-        """ Set the content to be shown in the tooltip object
-
-        @param: B{func} Function to be create tooltip content, called when
-                need show tooltip.
-
-        Setup the tooltip to object. The object can have only one tooltip,
-        so any previews tooltip data is removed. @func(with @{args,kargs}) will
-        be called every time that need show the tooltip and it should return a
-        valid Evas_Object. This object is then managed fully by tooltip system
-        and is deleted when the tooltip is gone.
-        """
-        if not callable(func):
-            raise TypeError("func must be callable")
-
-        cdef void *cbdata
-
-        data = (func, self, args, kargs)
-        Py_INCREF(data)
-        cbdata = <void *>data
-        elm_object_item_tooltip_content_cb_set(self.item,
-                                             _tooltip_item_content_create,
-                                             cbdata, _tooltip_item_data_del_cb)
-
-    def item_tooltip_unset(self):
-        """ Unset tooltip from object
-
-        Remove tooltip from object. If used the @tool_text_set the internal
-        copy of label will be removed correctly. If used
-        @tooltip_content_cb_set, the data will be unreferred but no freed.
-        """
-        elm_object_item_tooltip_unset(self.item)
-
-    def tooltip_style_set(self, style=None):
-        """ Sets a different style for this object tooltip.
-
-        @note before you set a style you should define a tooltip with
-        elm_object_item_tooltip_content_cb_set() or
-        elm_object_item_tooltip_text_set()
-        """
-        if style:
-            elm_object_item_tooltip_style_set(self.item, style)
-        else:
-            elm_object_item_tooltip_style_set(self.item, NULL)
-
-    def tooltip_style_get(self):
-        """ Get the style for this object tooltip.
-        """
-        cdef const_char_ptr style
-        style = elm_object_item_tooltip_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
-
-    def cursor_set(self, char *cursor):
-        """ Set the cursor to be shown when mouse is over the list item
-
-        Set the cursor that will be displayed when mouse is over the
-        item. The item can have only one cursor set to it, so if
-        this function is called twice for an item, the previous set
-        will be unset.
-        """
-        elm_object_item_cursor_set(self.item, cursor)
-
-    def cursor_unset(self):
-        """  Unset the cursor to be shown when mouse is over the list item
-        """
-        elm_object_item_cursor_unset(self.item)
-
-    def cursor_style_set(self, style=None):
-        """ Sets a different style for this object cursor.
-
-        @note before you set a style you should define a cursor with
-        elm_object_item_cursor_set()
-        """
-        if style:
-            elm_object_item_cursor_style_set(self.item, style)
-        else:
-            elm_object_item_cursor_style_set(self.item, NULL)
-
-    def cursor_style_get(self):
-        """ Get the style for this object cursor.
-        """
-        cdef const_char_ptr style
-        style = elm_object_item_cursor_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
-
-    def cursor_engine_only_set(self, engine_only):
-        """ Sets cursor engine only usage for this object.
-
-        @note before you set engine only usage you should define a cursor with
-        elm_object_item_cursor_set()
-        """
-        elm_object_item_cursor_engine_only_set(self.item, bool(engine_only))
-
-    def cursor_engine_only_get(self):
-        """ Get the engine only usage for this object.
-        """
-        return elm_object_item_cursor_engine_only_get(self.item)
-
-
 cdef class List(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_list_add(parent.obj))
-
-    def item_append(self, label, c_evas.Object icon = None,
-                    c_evas.Object end = None, callback = None, *args, **kargs):
-        return ListItem(ELM_LIST_ITEM_INSERT_APPEND, self, label, icon, end,
-                        None, callback, *args, **kargs)
-
-    def item_prepend(self, label, c_evas.Object icon = None,
-                     c_evas.Object end = None, callback = None, *args, **kargs):
-        return ListItem(ELM_LIST_ITEM_INSERT_PREPEND, self, label, icon, end,
-                        None, callback, *args, **kargs)
-
-    def item_insert_before(self, ListItem before, label, c_evas.Object icon = None,
-                           c_evas.Object end = None, callback = None, *args, **kargs):
-        return ListItem(ELM_LIST_ITEM_INSERT_BEFORE, self, label, icon, end,
-                        before, callback, *args, **kargs)
-
-    def item_insert_after(self, ListItem after, label, c_evas.Object icon = None,
-                          c_evas.Object end = None, callback = None, *args, **kargs):
-        return ListItem(ELM_LIST_ITEM_INSERT_AFTER, self, label, icon, end,
-                        after, callback, *args, **kargs)
-
-    def clear(self):
-        elm_list_clear(self.obj)
 
     def go(self):
         elm_list_go(self.obj)
@@ -415,35 +218,96 @@ cdef class List(Object):
     def multi_select_set(self, multi):
         elm_list_multi_select_set(self.obj, multi)
 
+    def multi_select_get(self):
+        return bool(elm_list_multi_select_get(self.obj))
+
     property multi_select:
         def __get__(self):
             return elm_list_multi_select_get(self.obj)
-
         def __set__(self, multi):
             elm_list_multi_select_set(self.obj, multi)
 
     def mode_set(self, Elm_List_Mode mode):
         elm_list_mode_set(self.obj, mode)
 
+    def mode_get(self):
+        return elm_list_mode_get(self.obj)
+
     property mode:
         def __get__(self):
             return elm_list_mode_get(self.obj)
-
         def __set__(self, Elm_List_Mode mode):
             elm_list_mode_set(self.obj, mode)
 
     property horizontal:
         def __get__(self):
             return elm_list_horizontal_get(self.obj)
-
         def __set__(self, horizontal):
             elm_list_horizontal_set(self.obj, horizontal)
 
     def select_mode_set(self, mode):
         elm_list_select_mode_set(self.obj, mode)
 
+    def select_mode_get(self):
+        return elm_list_select_mode_get(self.obj)
+
     def bounce_set(self, h, v):
         elm_list_bounce_set(self.obj, h, v)
+
+    def bounce_get(self):
+        cdef c_evas.Eina_Bool h, v
+        elm_list_bounce_get(self.obj, &h, &v)
+        return (h, v)
+
+    def scroller_policy_set(self, policy_h, policy_v):
+        elm_list_scroller_policy_set(self.obj, policy_h, policy_v)
+
+    def scroller_policy_get(self):
+        cdef Elm_Scroller_Policy policy_h, policy_v
+        elm_list_scroller_policy_get(self.obj, &policy_h, &policy_v)
+        return (policy_h, policy_v)
+
+    def item_append(self, label, c_evas.Object icon = None,
+                    c_evas.Object end = None, callback = None, *args, **kargs):
+        return ListItem(ELM_LIST_ITEM_INSERT_APPEND, self, label, icon, end,
+                        None, callback, *args, **kargs)
+
+    def item_prepend(self, label, c_evas.Object icon = None,
+                    c_evas.Object end = None, callback = None, *args, **kargs):
+        return ListItem(ELM_LIST_ITEM_INSERT_PREPEND, self, label, icon, end,
+                        None, callback, *args, **kargs)
+
+    def item_insert_before(self, ListItem before, label, c_evas.Object icon = None,
+                    c_evas.Object end = None, callback = None, *args, **kargs):
+        return ListItem(ELM_LIST_ITEM_INSERT_BEFORE, self, label, icon, end,
+                        before, callback, *args, **kargs)
+
+    def item_insert_after(self, ListItem after, label, c_evas.Object icon = None,
+                    c_evas.Object end = None, callback = None, *args, **kargs):
+        return ListItem(ELM_LIST_ITEM_INSERT_AFTER, self, label, icon, end,
+                        after, callback, *args, **kargs)
+
+    #def item_sorted_insert(self, label, c_evas.Object icon = None,
+                    #c_evas.Object end = None, callback = None, *args, **kargs):
+        #return ListItem(ELM_LIST_ITEM_INSERT_SORTED, self, label, icon, end,
+                        #None, callback, *args, **kargs)
+
+    def clear(self):
+        elm_list_clear(self.obj)
+
+    def items_get(self):
+        cdef evas.c_evas.const_Eina_List *lst, *itr
+        cdef void *data
+        ret = []
+        lst = elm_list_items_get(self.obj)
+        itr = lst
+        while itr:
+            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
+            if data != NULL:
+                (o, callback, it, a, ka) = <object>data
+                ret.append(it)
+            itr = itr.next
+        return ret
 
     def selected_item_get(self):
         cdef Elm_Object_Item *obj
@@ -472,19 +336,46 @@ cdef class List(Object):
             itr = itr.next
         return ret
 
-    def items_get(self):
-        cdef evas.c_evas.const_Eina_List *lst, *itr
+    def first_item_get(self):
+        cdef Elm_Object_Item *obj
         cdef void *data
-        ret = []
-        lst = elm_list_items_get(self.obj)
-        itr = lst
-        while itr:
-            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
-            if data != NULL:
-                (o, callback, it, a, ka) = <object>data
-                ret.append(it)
-            itr = itr.next
-        return ret
+        obj = elm_list_first_item_get(self.obj)
+        if obj == NULL:
+            return None
+        data = elm_object_item_data_get(obj)
+        if data == NULL:
+            return None
+        else:
+            (o, callback, it, a, ka) = <object>data
+            return it
+
+    property first_item:
+        def __get__(self):
+            return self.first_item_get()
+
+    def last_item_get(self):
+        cdef Elm_Object_Item *obj
+        cdef void *data
+        obj = elm_list_last_item_get(self.obj)
+        if obj == NULL:
+            return None
+        data = elm_object_item_data_get(obj)
+        if data == NULL:
+            return None
+        else:
+            (o, callback, it, a, ka) = <object>data
+            return it
+
+    property last_item:
+        def __get__(self):
+            return self.last_item_get()
+
+    def callback_activated_add(self, func, *args, **kwargs):
+        self._callback_add_full("activated", _list_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_activated_del(self, func):
+        self._callback_del_full("activated",  _list_item_conv, func)
 
     def callback_clicked_double_add(self, func, *args, **kwargs):
         self._callback_add_full("clicked,double", _list_item_conv,
@@ -492,13 +383,6 @@ cdef class List(Object):
 
     def callback_clicked_double_del(self, func):
         self._callback_del_full("clicked,double",  _list_item_conv, func)
-
-    def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add_full("clicked", _list_item_conv,
-                                func, *args, **kwargs)
-
-    def callback_clicked_del(self, func):
-        self._callback_del_full("clicked",  _list_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
         self._callback_add_full("selected", _list_item_conv,
@@ -521,8 +405,34 @@ cdef class List(Object):
     def callback_longpressed_del(self, func):
         self._callback_del_full("longpressed", _list_item_conv, func)
 
-    def scroller_policy_set(self, policy_h, policy_v):
-        elm_list_scroller_policy_set(self.obj, policy_h, policy_v)
+    def callback_edge_top_add(self, func, *args, **kwargs):
+        self._callback_add("edge,top", func, *args, **kwargs)
 
+    def callback_edge_top_del(self, func):
+        self._callback_del("edge,top",  func)
+
+    def callback_edge_bottom_add(self, func, *args, **kwargs):
+        self._callback_add("edge,bottom", func, *args, **kwargs)
+
+    def callback_edge_bottom_del(self, func):
+        self._callback_del("edge,bottom",  func)
+
+    def callback_edge_left_add(self, func, *args, **kwargs):
+        self._callback_add("edge,left", func, *args, **kwargs)
+
+    def callback_edge_left_del(self, func):
+        self._callback_del("edge,left",  func)
+
+    def callback_edge_right_add(self, func, *args, **kwargs):
+        self._callback_add("edge,right", func, *args, **kwargs)
+
+    def callback_edge_right_del(self, func):
+        self._callback_del("edge,right",  func)
+
+    def callback_language_changed_add(self, func, *args, **kwargs):
+        self._callback_add("language,changed", func, *args, **kwargs)
+
+    def callback_language_changed_del(self, func):
+        self._callback_del("language,changed",  func)
 
 _elm_widget_type_register("list", List)

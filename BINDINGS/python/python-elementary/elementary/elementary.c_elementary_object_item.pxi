@@ -117,11 +117,27 @@ cdef class ObjectItem:
         elm_object_item_access_info_set(self.obj, txt)
 
     def data_get(self):
-        cdef void *obj = elm_object_item_data_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        """Returns the callback data given at creation time.
 
-    def data_set(self, data):
-        elm_object_item_data_set(self.obj, <void*>data)
+        @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
+        """
+        cdef void* data
+        data = elm_object_item_data_get(self.obj)
+        if data == NULL:
+            return None
+        else:
+            (obj, callback, it, a, ka) = <object>data
+
+            return (a, ka)
+
+    #def data_set(self, data):
+        #elm_object_item_data_set(self.obj, <void*>data)
+
+    property data:
+        def __get__(self):
+            return self.data_get()
+        #def __set__(self, data):
+            #self.data_set(data)
 
     def signal_emit(self, emission, source):
         elm_object_item_signal_emit(self.obj, emission, source)
@@ -132,10 +148,12 @@ cdef class ObjectItem:
     def disabled_get(self):
         return bool(elm_object_item_disabled_get(self.obj))
 
-    #def del_cb_set(self, del_cb):
+    #def delete_cb_set(self, del_cb):
         #elm_object_item_del_cb_set(self.obj, del_cb)
 
-    def _del(self):
+    def delete(self):
+        if self.obj == NULL:
+            raise ValueError("Object already deleted")
         elm_object_item_del(self.obj)
 
     def tooltip_text_set(self, char *text):
