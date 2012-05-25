@@ -629,7 +629,11 @@ cdef extern from "Elementary.h":
     void                     elm_object_item_cursor_engine_only_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool engine_only)
     evas.c_evas.Eina_Bool    elm_object_item_cursor_engine_only_get(Elm_Object_Item *it)
 
-    # Background object (api:DONE  cb:TODO  test:DONE  doc:TODO))
+    # Widgets
+
+    # Actionslider          (XXX)
+
+    # Background            (api:DONE  cb:N/A   test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_bg_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bg_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void                     elm_bg_file_get(evas.c_evas.Evas_Object *obj, char **file, char **group)
@@ -639,7 +643,7 @@ cdef extern from "Elementary.h":
     void                     elm_bg_color_get(evas.c_evas.Evas_Object *obj, int *r, int *g, int *b)
     void                     elm_bg_load_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord w, evas.c_evas.Evas_Coord h)
 
-    # Box object (DONE with TODO) XXX
+    # Box                   (api:TODO  cb:N/A   test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_box_add(evas.c_evas.Evas_Object *parent)
     void                     elm_box_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
     evas.c_evas.Eina_Bool    elm_box_horizontal_get(evas.c_evas.Evas_Object *obj)
@@ -659,12 +663,12 @@ cdef extern from "Elementary.h":
     void                     elm_box_align_set(evas.c_evas.Evas_Object *obj, double horizontal, double vertical)
     void                     elm_box_align_get(evas.c_evas.Evas_Object *obj, double *horizontal, double *vertical)
 
-    # Bubble object (api:DONE  cb:TODO  test:DONE  doc:TODO)
+    # Bubble                (api:DONE  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
     void                     elm_bubble_pos_set(evas.c_evas.Evas_Object *obj, Elm_Bubble_Pos pos)
     Elm_Bubble_Pos           elm_bubble_pos_get(evas.c_evas.Evas_Object *obj)
 
-    # Button object
+    # Button                (api:DONE  cb:DONE  test:DONE  doc:DONE)
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
     void                     elm_button_autorepeat_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool on)
     evas.c_evas.Eina_Bool    elm_button_autorepeat_get(evas.c_evas.Evas_Object *obj)
@@ -673,12 +677,14 @@ cdef extern from "Elementary.h":
     void                     elm_button_autorepeat_gap_timeout_set(evas.c_evas.Evas_Object *obj, double t)
     double                   elm_button_autorepeat_gap_timeout_get(evas.c_evas.Evas_Object *obj)
 
-    # Check widget (api:DONE  cb:TODO  test:DONE  doc:TODO)
+    # Calendar              (XXX)
+
+    # Check                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
     void                     elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
     evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
 
-    # Clock object (api:DONE  cb:TODO  test:DONE  doc:TODO)
+    # Clock                 (api:DONE  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_clock_add(evas.c_evas.Evas_Object *parent)
     void                     elm_clock_time_set(evas.c_evas.Evas_Object *obj, int hrs, int min, int sec)
     void                     elm_clock_time_get(evas.c_evas.Evas_Object *obj, int *hrs, int *min, int *sec)
@@ -693,7 +699,19 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(evas.c_evas.Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(evas.c_evas.Evas_Object *obj)
 
-    # Entry Object (api:DONEwithTODO  cb:TODO  test:TODO  doc:TODO) XXX
+    # Colorselector         (XXX)
+
+    # Conformant            (XXX)
+
+    # Ctxpopup              (XXX)
+
+    # Datetime              (XXX)
+
+    # Dayselector           (XXX)
+
+    # Diskselector          (XXX)
+
+    # Entry                 (api:TODO  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_entry_add(evas.c_evas.Evas_Object *parent)
     void                     elm_entry_single_line_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool single_line)
     evas.c_evas.Eina_Bool    elm_entry_single_line_get(evas.c_evas.Evas_Object *obj)
@@ -772,7 +790,7 @@ cdef extern from "Elementary.h":
     char                    *elm_entry_anchor_hover_style_get(evas.c_evas.Evas_Object *obj)
     void                     elm_entry_anchor_hover_end(evas.c_evas.Evas_Object *obj)
 
-    # Fileselector widget (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Fileselector          (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_fileselector_add(evas.c_evas.Evas_Object *parent)
     void                     elm_fileselector_is_save_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool is_save)
     evas.c_evas.Eina_Bool    elm_fileselector_is_save_get(evas.c_evas.Evas_Object *obj)
@@ -789,7 +807,7 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_mode_set(evas.c_evas.Evas_Object *obj, Elm_Fileselector_Mode mode)
     Elm_Fileselector_Mode    elm_fileselector_mode_get(evas.c_evas.Evas_Object *obj)
 
-    # Fileselector Button widget (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Fileselector Button   (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_fileselector_button_add(evas.c_evas.Evas_Object *parent)
     void                     elm_fileselector_button_window_title_set(evas.c_evas.Evas_Object *obj, char *title)
     char                    *elm_fileselector_button_window_title_get(evas.c_evas.Evas_Object *obj)
@@ -806,7 +824,7 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_button_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
     evas.c_evas.Eina_Bool    elm_fileselector_button_expandable_get(evas.c_evas.Evas_Object *obj)
 
-    # Fileselector Entry widget (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Fileselector Entry    (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_fileselector_entry_add(evas.c_evas.Evas_Object *parent)
     void                     elm_fileselector_entry_window_title_set(evas.c_evas.Evas_Object *obj, char *title)
     char                    *elm_fileselector_entry_window_title_get(evas.c_evas.Evas_Object *obj)
@@ -825,7 +843,7 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_entry_expandable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool value)
     evas.c_evas.Eina_Bool    elm_fileselector_entry_expandable_get(evas.c_evas.Evas_Object *obj)
 
-    # Flip object (api:DONE  cb:DONE  test:DONE doc:TODO)
+    # Flip                  (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool    elm_flip_front_visible_get(evas.c_evas.Evas_Object *obj)
     void                     elm_flip_perspective_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord foc, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
@@ -837,7 +855,9 @@ cdef extern from "Elementary.h":
     void                     elm_flip_interaction_direction_hitsize_set(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir, double hitsize)
     double                   elm_flip_interaction_direction_hitsize_get(evas.c_evas.Evas_Object *obj, Elm_Flip_Direction dir)
 
-    # Frame object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Flipselector          (XXX)
+
+    # Frame                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_frame_add(evas.c_evas.Evas_Object *parent)
     void                     elm_frame_autocollapse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool autocollapse)
     evas.c_evas.Eina_Bool    elm_frame_autocollapse_get(evas.c_evas.Evas_Object *obj)
@@ -845,7 +865,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_frame_collapse_get(evas.c_evas.Evas_Object *obj)
     void                     elm_frame_collapse_go(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool collapse)
 
-    # Gengrid object (api:DONEwithTODO  cd:TODO  test:OK  doc:HALF)
+    # Generic Grid          (api:TODO  cb:TODO  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_gengrid_add(evas.c_evas.Evas_Object *parent)
     void                     elm_gengrid_clear(evas.c_evas.Evas_Object *obj)
     void                     elm_gengrid_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
@@ -918,7 +938,7 @@ cdef extern from "Elementary.h":
     void                     elm_gengrid_item_cursor_engine_only_set(Elm_Object_Item *item, evas.c_evas.Eina_Bool engine_only)
     evas.c_evas.Eina_Bool    elm_gengrid_item_cursor_engine_only_get(Elm_Object_Item *item)
 
-    # Generic List (api:TODO  cb:DONE  test:TODO  doc:DONE)
+    # Generic List          (api:TODO  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_genlist_add(evas.c_evas.Evas_Object *parent)
     void                     elm_genlist_clear(evas.c_evas.Evas_Object *obj)
     void                     elm_genlist_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
@@ -1001,7 +1021,11 @@ cdef extern from "Elementary.h":
     void                     elm_genlist_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_genlist_select_mode_get(evas.c_evas.Evas_Object *obj)
 
-    # Hover object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # GLView                (XXX)
+
+    # Grid                  (XXX)
+
+    # Hover                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_hover_add(evas.c_evas.Evas_Object *parent)
     void                     elm_hover_target_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *target)
     evas.c_evas.Evas_Object *elm_hover_target_get(evas.c_evas.Evas_Object *obj)
@@ -1010,7 +1034,7 @@ cdef extern from "Elementary.h":
     char                    *elm_hover_best_content_location_get(evas.c_evas.Evas_Object *obj, Elm_Hover_Axis pref_axis)
     void                     elm_hover_dismiss(evas.c_evas.Evas_Object *obj)
 
-    # Hoversel object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Hoversel              (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_hoversel_add(evas.c_evas.Evas_Object *parent)
     void                     elm_hoversel_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
     evas.c_evas.Eina_Bool    elm_hoversel_horizontal_get(evas.c_evas.Evas_Object *obj)
@@ -1025,7 +1049,7 @@ cdef extern from "Elementary.h":
     void                     elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
     void                     elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
 
-    # Icon object (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # Icon                  (api:TODO  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_icon_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool    elm_icon_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     #evas.c_evas.Eina_Bool   elm_icon_memfile_set(evas.c_evas.Evas_Object *obj, void *img, size_t size, char *format, char *key);
@@ -1056,7 +1080,7 @@ cdef extern from "Elementary.h":
     void                     elm_icon_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
     evas.c_evas.Eina_Bool    elm_icon_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
-    # Image object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Image                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_image_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool    elm_image_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     void                     elm_image_file_get(evas.c_evas.Evas_Object *obj, char **file, char **group)
@@ -1080,14 +1104,16 @@ cdef extern from "Elementary.h":
     void                     elm_image_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
     evas.c_evas.Eina_Bool    elm_image_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
-    # Inwin object
+    # Index                 (XXX)
+
+    # Inwin                 (api:DONE  cb:N/A   test:DONE  doc:DONE)
     evas.c_evas.Evas_Object *elm_win_inwin_add(evas.c_evas.Evas_Object *obj)
     void                     elm_win_inwin_activate(evas.c_evas.Evas_Object *obj)
     void                     elm_win_inwin_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     evas.c_evas.Evas_Object *elm_win_inwin_content_get(evas.c_evas.Evas_Object *obj)
     evas.c_evas.Evas_Object *elm_win_inwin_content_unset(evas.c_evas.Evas_Object *obj)
 
-    # Label object (TODO: Label inherits from Layout)
+    # Label                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_label_add(evas.c_evas.Evas_Object *parent)
     void                     elm_label_line_wrap_set(evas.c_evas.Evas_Object *obj, Elm_Wrap_Type wrap)
     Elm_Wrap_Type            elm_label_line_wrap_get(evas.c_evas.Evas_Object *obj)
@@ -1100,7 +1126,7 @@ cdef extern from "Elementary.h":
     void                     elm_label_slide_duration_set(evas.c_evas.Evas_Object *obj, double duration)
     double                   elm_label_slide_duration_get(evas.c_evas.Evas_Object *obj)
 
-    # Layout object (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # Layout                (api:TODO  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool    elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     evas.c_evas.Eina_Bool    elm_layout_theme_set(evas.c_evas.Evas_Object *obj, char *clas, char *group, char *style)
@@ -1136,7 +1162,7 @@ cdef extern from "Elementary.h":
     void                     elm_layout_end_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *end)
     evas.c_evas.Evas_Object *elm_layout_end_get(evas.c_evas.Evas_Object *obj)
 
-    # List object (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # List                  (api:TODO  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_list_add(evas.c_evas.Evas_Object *parent)
     void                     elm_list_go(evas.c_evas.Evas_Object *obj)
     void                     elm_list_multi_select_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool multi)
@@ -1172,7 +1198,11 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_list_first_item_get(evas.c_evas.Evas_Object *obj)
     Elm_Object_Item         *elm_list_last_item_get(evas.c_evas.Evas_Object *obj)
 
-    # Menu object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Map                   (XXX)
+
+    # Mapbuf                (XXX)
+
+    # Menu                  (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_menu_add(evas.c_evas.Evas_Object *parent)
     void                     elm_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     evas.c_evas.Evas_Object *elm_menu_parent_get(evas.c_evas.Evas_Object *obj)
@@ -1195,7 +1225,9 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_menu_item_next_get(Elm_Object_Item *it)
     Elm_Object_Item         *elm_menu_item_prev_get(Elm_Object_Item *it)
 
-    # Naviframe widget (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # Multibuttonentry      (XXX)
+
+    # Naviframe             (api:TODO  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_naviframe_add(evas.c_evas.Evas_Object *parent)
     Elm_Object_Item         *elm_naviframe_item_push(evas.c_evas.Evas_Object *obj, char *title_label, evas.c_evas.Evas_Object *prev_btn, evas.c_evas.Evas_Object *next_btn, evas.c_evas.Evas_Object *content, char *item_style)
     Elm_Object_Item         *elm_naviframe_item_insert_before(evas.c_evas.Evas_Object *obj, Elm_Object_Item *before, const_char_ptr title_label, evas.c_evas.Evas_Object *prev_btn, evas.c_evas.Evas_Object *next_btn, evas.c_evas.Evas_Object *content, const_char_ptr item_style)
@@ -1219,7 +1251,7 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_naviframe_item_simple_push(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void                     elm_naviframe_item_simple_promote(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
-    # Notify object (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Notify                (api:DONE  cb:DONE  test:DONE  doc:DONE)
     evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
     void                     elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     evas.c_evas.Evas_Object *elm_notify_parent_get(evas.c_evas.Evas_Object *obj)
@@ -1230,7 +1262,7 @@ cdef extern from "Elementary.h":
     void                     elm_notify_allow_events_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool repeat)
     evas.c_evas.Eina_Bool    elm_notify_allow_events_get(evas.c_evas.Evas_Object *obj)
 
-    # Panel (api:DONE  cb:N/A  test:TODO  doc:TODO)
+    # Panel                 (api:DONE  cb:N/A   test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
     void                     elm_panel_orient_set(evas.c_evas.Evas_Object *obj, Elm_Panel_Orient orient)
     Elm_Panel_Orient         elm_panel_orient_get(evas.c_evas.Evas_Object *obj)
@@ -1238,7 +1270,9 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool    elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void                     elm_panel_toggle(evas.c_evas.Evas_Object *obj)
 
-    # Photo object (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Panes                 (XXX)
+
+    # Photo                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_photo_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool    elm_photo_file_set(evas.c_evas.Evas_Object *obj, char *file)
     void                     elm_photo_thumb_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
@@ -1248,7 +1282,13 @@ cdef extern from "Elementary.h":
     void                     elm_photo_aspect_fixed_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool fixed)
     evas.c_evas.Eina_Bool    elm_photo_aspect_fixed_get(evas.c_evas.Evas_Object *obj)
 
-    # Progressbar object (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Photocam              (XXX)
+
+    # Plug                  (XXX)
+
+    # Popup                 (XXX)
+
+    # Progressbar           (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_progressbar_add(evas.c_evas.Evas_Object *parent)
     void                     elm_progressbar_pulse_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool pulse)
     evas.c_evas.Eina_Bool    elm_progressbar_pulse_get(evas.c_evas.Evas_Object *obj)
@@ -1264,7 +1304,7 @@ cdef extern from "Elementary.h":
     void                     elm_progressbar_inverted_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool inverted)
     evas.c_evas.Eina_Bool    elm_progressbar_inverted_get(evas.c_evas.Evas_Object *obj)
 
-    # Radio object (api:DONE  cb:DONE  test:OK  doc:TODO)
+    # Radio                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_radio_add(evas.c_evas.Evas_Object *parent)
     void                     elm_radio_group_add(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *group)
     void                     elm_radio_state_value_set(evas.c_evas.Evas_Object *obj, int value)
@@ -1274,7 +1314,9 @@ cdef extern from "Elementary.h":
     #void                    elm_radio_value_pointer_set(evas.c_evas.Evas_Object *obj, int *valuep)
     evas.c_evas.Evas_Object *elm_radio_selected_object_get(evas.c_evas.Evas_Object *obj)
 
-    # Scroller object (api:DONE  cb:DONE  test:OK  doc:TODO)
+    # Route                 (XXX)
+
+    # Scroller              (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_scroller_add(evas.c_evas.Evas_Object *parent)
     void                     elm_scroller_custom_widget_base_theme_set(evas.c_evas.Evas_Object *obj, char *widget, char *base)
     void                     elm_scroller_content_min_limit(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool w, evas.c_evas.Eina_Bool h)
@@ -1297,12 +1339,14 @@ cdef extern from "Elementary.h":
     void                     elm_scroller_gravity_set(evas.c_evas.Evas_Object *obj, double x, double y)
     void                     elm_scroller_gravity_get(evas.c_evas.Evas_Object *obj, double *x, double *y)
 
-    # Separator (TODO: Separator inherits from Layout)
+    # SegmentControl        (XXX)
+
+    # Separator             (api:DONE  cb:N/A   test:TODO  doc:TODO)
     evas.c_evas.Evas_Object *elm_separator_add(evas.c_evas.Evas_Object *parent)
     void                     elm_separator_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool)
     evas.c_evas.Eina_Bool    elm_separator_horizontal_get(evas.c_evas.Evas_Object *obj)
 
-    # Slider object (api:DONEwithTODO  cb:DONE  test:TODO  doc:TODO)
+    # Slider                (api:TODO  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_slider_add(evas.c_evas.Evas_Object *parent)
     void                     elm_slider_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
     evas.c_evas.Evas_Coord   elm_slider_span_size_get(evas.c_evas.Evas_Object *obj)
@@ -1321,7 +1365,9 @@ cdef extern from "Elementary.h":
     void                     elm_slider_indicator_show_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool show)
     evas.c_evas.Eina_Bool    elm_slider_indicator_show_get(evas.c_evas.Evas_Object *obj)
 
-    # Spinner object (api:DONE  cb:DONE  test:OK  doc:TODO)
+    # Slideshow             (XXX)
+
+    # Spinner               (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_spinner_add(evas.c_evas.Evas_Object *parent)
     void                     elm_spinner_label_format_set(evas.c_evas.Evas_Object *obj, char *format)
     char                    *elm_spinner_label_format_get(evas.c_evas.Evas_Object *obj)
@@ -1343,7 +1389,7 @@ cdef extern from "Elementary.h":
     void                     elm_spinner_round_set(evas.c_evas.Evas_Object *obj, int rnd)
     int                      elm_spinner_round_get(evas.c_evas.Evas_Object *obj)
 
-    # Table object (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Table                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
     void                     elm_table_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
     evas.c_evas.Eina_Bool    elm_table_homogeneous_get(evas.c_evas.Evas_Object *obj)
@@ -1355,7 +1401,9 @@ cdef extern from "Elementary.h":
     void                     elm_table_pack_set(evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
     void                     elm_table_pack_get(evas.c_evas.Evas_Object *subobj, int *x, int *y, int *w, int *h)
 
-    # Toolbar object (api:DONEwithTODO  cb:DONE  test:OK  doc:TODO)
+    # Thumb                 (XXX)
+
+    # Toolbar               (api:TODO  cb:DONE  test:DONE  doc:TODO)
     evas.c_evas.Evas_Object *elm_toolbar_add(evas.c_evas.Evas_Object *parent)
     void                     elm_toolbar_icon_size_set(evas.c_evas.Evas_Object *obj, int icon_size)
     int                      elm_toolbar_icon_size_get(evas.c_evas.Evas_Object *obj)
@@ -1406,7 +1454,11 @@ cdef extern from "Elementary.h":
     void                     elm_toolbar_select_mode_set(evas.c_evas.Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_toolbar_select_mode_get(evas.c_evas.Evas_Object *obj)
 
-    # Web object
+    # Transit               (XXX)
+
+    # Video                 (XXX)
+
+    # Web                   (XXX)
     ctypedef struct Elm_Web_Frame_Load_Error:
         int code
         evas.c_evas.Eina_Bool is_cancellation
@@ -1431,7 +1483,7 @@ cdef extern from "Elementary.h":
 
     void elm_web_console_message_hook_set(evas.c_evas.Evas_Object *obj, Elm_Web_Console_Message func, void *data)
 
-    # Window object (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Window                (api:DONE  cb:DONE  test:TODO  doc:DONE)
     evas.c_evas.Evas_Object *elm_win_add(evas.c_evas.Evas_Object* parent, char *name, Elm_Win_Type type)
     void                     elm_win_resize_object_add(evas.c_evas.Evas_Object* obj, evas.c_evas.Evas_Object* subobj)
     void                     elm_win_resize_object_del(evas.c_evas.Evas_Object* obj, evas.c_evas.Evas_Object* subobj)
