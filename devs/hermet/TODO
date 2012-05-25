@@ -4,7 +4,7 @@ d3d_gl - start hurry (vincent)
 map - afterimage problem 
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
-map - after alpha to 0, then the rendering is not be updated.
+map - rendering doesnt' updated while turn on/off map_enabled_set repeatedly
 line - width_set API? 
 text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
@@ -24,3 +24,9 @@ notify - let check the smart member relationship
 popup - let check the smart member relationship
 index - check the FIXEMEs
 conformant - how to skip the calc the size if the window is in background.
+
+<Expedite>
+Check the mouse up outside of the window.
+
+<Ecore_X>
+Generate ecore_x_common to remove duplicated code between xcb and xlib
