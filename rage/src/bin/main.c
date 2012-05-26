@@ -9,6 +9,7 @@ struct _Mode
    int mode;
 };
 
+char        *vidmod = NULL; 
 Evas        *evas = NULL;
 char        *theme = NULL;
 char        *config = NULL;
@@ -85,6 +86,8 @@ main(int argc, char **argv)
      ECORE_GETOPT_VALUE_NONE
    };
 
+   vidmod = getenv("RAGE_MOD");
+   if (!vidmod) vidmod = "xine";
    /* init ecore, eet, evas, edje etc. */
    eet_init();
    ecore_init();
@@ -471,7 +474,7 @@ main_menu_video_over_delay(void *data)
 
    vli = data;
    if (over_video) minivid_del(over_video);
-   over_video = minivid_add("xine", vli->vi->path, 1);
+   over_video = minivid_add(vidmod, vli->vi->path, 1);
    layout_swallow("video_preview", over_video);
    over_delay_timer = NULL;
    return EINA_FALSE;
@@ -494,7 +497,7 @@ main_menu_video_view(void *data)
 	minivid_del(over_video);
 	over_video = NULL;
      }
-   video_init("xine", vli->vi->path, "video");
+   video_init(vidmod, vli->vi->path, "video");
 }
 
 static void
@@ -673,7 +676,7 @@ main_menu_dvd_watch(void *data)
 	minivid_del(over_video);
 	over_video = NULL;
      }
-   video_init("xine", "dvd://", "video");
+   video_init(vidmod, "dvd://", "video");
 }
 
 static void
@@ -759,7 +762,7 @@ main_menu_tv(void *data)
 	minivid_del(over_video);
 	over_video = NULL;
      }
-   dvb_init("xine", "", "video");
+   dvb_init(vidmod, "", "video");
 //   system("tvtime -m -n PAL -f custom");
 /*
    system("xine -f --no-gui "

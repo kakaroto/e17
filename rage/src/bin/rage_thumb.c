@@ -19,7 +19,7 @@ static void help_show(void);
 static Eina_Bool signal_exit(void *data, int ev_type, void *ev);
 static Eina_Bool frame_grab(void *data);
 
-char *module_filename = "xine";
+char *vidmod = NULL;
 Ecore_Evas *ee = NULL, *ee_im = NULL, *ee_im2 = NULL;
 Evas *evas = NULL, *evas_im = NULL, *evas_im2 = NULL;
 Evas_Object *video = NULL, *bg = NULL, *im = NULL, *im2 = NULL;
@@ -41,6 +41,9 @@ Eet_File *ef = NULL;
 int
 main(int argc, char **argv)
 {
+   vidmod = getenv("RAGE_MOD");
+   if (!vidmod) vidmod = "xine";
+   
    if (!ecore_init()) return -1;
    ecore_app_args_set(argc, (const char **)argv);
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, signal_exit, NULL);
@@ -58,7 +61,7 @@ main(int argc, char **argv)
 
    video = emotion_object_add(evas);
    emotion_object_module_option_set(video, "audio", "off");
-   emotion_object_init(video, module_filename);
+   emotion_object_init(video, vidmod);
    emotion_object_file_set(video, file);
    evas_object_smart_callback_add(video, "frame_resize", video_resize_cb, NULL);
    evas_object_smart_callback_add(video, "decode_stop", video_stopped_cb, NULL);
