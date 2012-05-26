@@ -36,6 +36,7 @@ cdef extern from "Evas.h":
     ctypedef int Evas_Coord
     ctypedef int Evas_Callback_Type
     ctypedef void (*Evas_Smart_Cb)(void *data, Evas_Object *obj, void *event_info)
+    ctypedef int Evas_Font_Size
 
 cdef extern from "Eina.h":
     ctypedef struct Eina_List:
@@ -138,6 +139,10 @@ cdef extern from "Elementary.h":
         ELM_FLIP_PAGE_RIGHT
         ELM_FLIP_PAGE_UP
         ELM_FLIP_PAGE_DOWN
+
+    ctypedef enum Elm_Focus_Direction:
+        ELM_FOCUS_PREVIOUS
+        ELM_FOCUS_NEXT
 
     ctypedef enum Elm_Genlist_Item_Type:
         ELM_GENLIST_ITEM_NONE
@@ -351,11 +356,11 @@ cdef extern from "Elementary.h":
         Eina_Bool hover_top
         Eina_Bool hover_bottom
 
-    #ctypedef struct Elm_Toolbar_Item_State:
-        #char *icon
-        #char *label
-        #Evas_Smart_Cb func
-        #void *data
+    ctypedef struct Elm_Toolbar_Item_State:
+        char *icon
+        char *label
+        Evas_Smart_Cb func
+        void *data
 
 
     ctypedef char *(*GenlistItemLabelGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
@@ -471,7 +476,7 @@ cdef extern from "Elementary.h":
     Eina_List               *elm_config_text_classes_list_get()
     void                     elm_config_text_classes_list_free(Eina_List *list)
     Eina_List               *elm_config_font_overlay_list_get()
-    #void                     elm_config_font_overlay_set(char *text_class, char *font, Evas_Font_Size size)
+    void                     elm_config_font_overlay_set(char *text_class, char *font, Evas_Font_Size size)
     void                     elm_config_font_overlay_unset(char *text_class)
     void                     elm_config_font_overlay_apply()
     Evas_Coord               elm_config_finger_size_get()
@@ -567,7 +572,7 @@ cdef extern from "Elementary.h":
     const_Eina_List         *elm_object_focus_custom_chain_get(const_Evas_Object *obj)
     void                     elm_object_focus_custom_chain_append(Evas_Object *obj, Evas_Object *child, Evas_Object *relative_child)
     void                     elm_object_focus_custom_chain_prepend(Evas_Object *obj, Evas_Object *child, Evas_Object *relative_child)
-    #void                     elm_object_focus_next(Evas_Object *obj, Elm_Focus_Direction direction)
+    void                     elm_object_focus_next(Evas_Object *obj, Elm_Focus_Direction direction)
     void                     elm_object_tree_focus_allow_set(Evas_Object *obj, Eina_Bool focusable)
     Eina_Bool                elm_object_tree_focus_allow_get(Evas_Object *obj)
 
@@ -1066,7 +1071,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_hoversel_expanded_get(Evas_Object *obj)
     void                     elm_hoversel_clear(Evas_Object *obj)
     Eina_List               *elm_hoversel_items_get(Evas_Object *obj)
-    Elm_Object_Item         *elm_hoversel_item_add(Evas_Object *obj, char *label, char *icon_file, Elm_Icon_Type icon_type, void (*func)(void *data, Evas_Object *obj, void *event_info), void *data)
+    Elm_Object_Item         *elm_hoversel_item_add(Evas_Object *obj, char *label, char *icon_file, Elm_Icon_Type icon_type, Evas_Smart_Cb func, void *data)
     void                     elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
     void                     elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
 
@@ -1152,8 +1157,8 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_layout_file_set(Evas_Object *obj, char *file, char *group)
     Eina_Bool                elm_layout_theme_set(Evas_Object *obj, char *clas, char *group, char *style)
     void                     elm_layout_signal_emit(Evas_Object *obj, char *emission, char *source)
-    #void                     elm_layout_signal_callback_add(Evas_Object *obj, char *emission, char *source, Edje_Signal_Cb func, void *data)
-    #void                    *elm_layout_signal_callback_del(Evas_Object *obj, char *emission, char *source, Edje_Signal_Cb func)
+    void                     elm_layout_signal_callback_add(Evas_Object *obj, char *emission, char *source, Edje_Signal_Cb func, void *data)
+    void                    *elm_layout_signal_callback_del(Evas_Object *obj, char *emission, char *source, Edje_Signal_Cb func)
     Eina_Bool                elm_layout_box_append(Evas_Object *obj, char *part, Evas_Object *child)
     Eina_Bool                elm_layout_box_prepend(Evas_Object *obj, char *part, Evas_Object *child)
     Eina_Bool                elm_layout_box_insert_before(Evas_Object *obj, char *part, Evas_Object *child, Evas_Object *reference)
@@ -1198,11 +1203,11 @@ cdef extern from "Elementary.h":
     void                     elm_list_bounce_get(Evas_Object *obj, Eina_Bool *h_bounce, Eina_Bool *v_bounce)
     void                     elm_list_scroller_policy_set(Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
     void                     elm_list_scroller_policy_get(Evas_Object *obj, Elm_Scroller_Policy *policy_h, Elm_Scroller_Policy *policy_v)
-    Elm_Object_Item         *elm_list_item_append(Evas_Object *obj, char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_list_item_prepend(Evas_Object *obj, char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_list_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_list_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_list_item_sorted_insert(Evas_Object *obj, char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data, Eina_Compare_Cb cmp_func)
+    Elm_Object_Item         *elm_list_item_append(Evas_Object *obj, char *label, Evas_Object *icon, Evas_Object *end, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_list_item_prepend(Evas_Object *obj, char *label, Evas_Object *icon, Evas_Object *end, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_list_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, char *label, Evas_Object *icon, Evas_Object *end, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_list_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, char *label, Evas_Object *icon, Evas_Object *end, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_list_item_sorted_insert(Evas_Object *obj, char *label, Evas_Object *icon, Evas_Object *end, Evas_Smart_Cb func, void *data, Eina_Compare_Cb cmp_func)
     void                     elm_list_clear(Evas_Object *obj)
     Eina_List               *elm_list_items_get(Evas_Object *obj)
     Elm_Object_Item         *elm_list_selected_item_get(Evas_Object *obj)
@@ -1231,7 +1236,7 @@ cdef extern from "Elementary.h":
     void                     elm_menu_close(Evas_Object *obj)
     Eina_List               *elm_menu_items_get(Evas_Object *obj)
     Evas_Object             *elm_menu_item_object_get(Elm_Object_Item *it)
-    Elm_Object_Item         *elm_menu_item_add(Evas_Object *obj, Elm_Object_Item *parent, char *icon, char *label, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
+    Elm_Object_Item         *elm_menu_item_add(Evas_Object *obj, Elm_Object_Item *parent, char *icon, char *label, Evas_Smart_Cb func, void *data)
     void                     elm_menu_item_icon_name_set(Elm_Object_Item *it, const_char_ptr icon)
     const_char_ptr           elm_menu_item_icon_name_get(Elm_Object_Item *it)
     void                     elm_menu_item_selected_set(Elm_Object_Item *it, Eina_Bool selected)
@@ -1430,10 +1435,10 @@ cdef extern from "Elementary.h":
     int                      elm_toolbar_icon_size_get(Evas_Object *obj)
     void                     elm_toolbar_icon_order_lookup_set(Evas_Object *obj, Elm_Icon_Lookup_Order order)
     Elm_Icon_Lookup_Order    elm_toolbar_icon_order_lookup_get(Evas_Object *obj)
-    Elm_Object_Item         *elm_toolbar_item_append(Evas_Object *obj, char *icon, char *label, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_toolbar_item_prepend(Evas_Object *obj, char *icon, char *label, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_toolbar_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, char *icon, char *label, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
-    Elm_Object_Item         *elm_toolbar_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, char *icon, char *label, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
+    Elm_Object_Item         *elm_toolbar_item_append(Evas_Object *obj, char *icon, char *label, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_toolbar_item_prepend(Evas_Object *obj, char *icon, char *label, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_toolbar_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, char *icon, char *label, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_toolbar_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, char *icon, char *label, Evas_Smart_Cb func, void *data)
     Elm_Object_Item         *elm_toolbar_first_item_get(Evas_Object *obj)
     Elm_Object_Item         *elm_toolbar_last_item_get(Evas_Object *obj)
     Elm_Object_Item         *elm_toolbar_item_next_get(Elm_Object_Item *item)
@@ -1462,13 +1467,13 @@ cdef extern from "Elementary.h":
     double                   elm_toolbar_align_get(Evas_Object *obj)
     void                     elm_toolbar_item_menu_set(Elm_Object_Item *item, Eina_Bool menu)
     Evas_Object             *elm_toolbar_item_menu_get(Elm_Object_Item *item)
-    #Elm_Toolbar_Item_State  *elm_toolbar_item_state_add(Elm_Object_Item *item, char *icon, char *label, Evas_Smart_Cb func, void *data)
-    #Eina_Bool                elm_toolbar_item_state_del(Elm_Object_Item *item, Elm_Toolbar_Item_State *state)
-    #Eina_Bool                elm_toolbar_item_state_set(Elm_Object_Item *item, Elm_Toolbar_Item_State *state)
-    #void                     elm_toolbar_item_state_unset(Elm_Object_Item *item)
-    #Elm_Toolbar_Item_State  *elm_toolbar_item_state_get(Elm_Object_Item *item)
-    #Elm_Toolbar_Item_State  *elm_toolbar_item_state_next(Elm_Object_Item *item)
-    #Elm_Toolbar_Item_State  *elm_toolbar_item_state_prev(Elm_Object_Item *item)
+    Elm_Toolbar_Item_State  *elm_toolbar_item_state_add(Elm_Object_Item *item, char *icon, char *label, Evas_Smart_Cb func, void *data)
+    Eina_Bool                elm_toolbar_item_state_del(Elm_Object_Item *item, Elm_Toolbar_Item_State *state)
+    Eina_Bool                elm_toolbar_item_state_set(Elm_Object_Item *item, Elm_Toolbar_Item_State *state)
+    void                     elm_toolbar_item_state_unset(Elm_Object_Item *item)
+    Elm_Toolbar_Item_State  *elm_toolbar_item_state_get(Elm_Object_Item *item)
+    Elm_Toolbar_Item_State  *elm_toolbar_item_state_next(Elm_Object_Item *item)
+    Elm_Toolbar_Item_State  *elm_toolbar_item_state_prev(Elm_Object_Item *item)
     void                     elm_toolbar_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_toolbar_horizontal_get(Evas_Object *obj)
     unsigned int             elm_toolbar_items_count(Evas_Object *obj)
