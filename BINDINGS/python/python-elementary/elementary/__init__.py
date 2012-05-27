@@ -23,7 +23,7 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
     Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
-    GengridItemClass, Actionslider, \
+    GengridItemClass, Actionslider, Calendar, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
@@ -50,6 +50,17 @@ ELM_BUBBLE_POS_TOP_RIGHT = 1
 ELM_BUBBLE_POS_BOTTOM_LEFT = 2
 ELM_BUBBLE_POS_BOTTOM_RIGHT = 3
 
+ELM_CALENDAR_UNIQUE = 0
+ELM_CALENDAR_DAILY = 1
+ELM_CALENDAR_WEEKLY = 2
+ELM_CALENDAR_MONTHLY = 3
+ELM_CALENDAR_ANNUALLY = 4
+
+ELM_CALENDAR_SELECT_MODE_DEFAULT = 0
+ELM_CALENDAR_SELECT_MODE_ALWAYS = 1
+ELM_CALENDAR_SELECT_MODE_NONE = 2
+ELM_CALENDAR_SELECT_MODE_ONDEMAND = 3
+
 ELM_CLOCK_EDIT_DEFAULT = 0
 ELM_CLOCK_EDIT_HOUR_DECIMAL = 1 << 0
 ELM_CLOCK_EDIT_HOUR_UNIT = 1 << 1
@@ -62,6 +73,15 @@ ELM_CLOCK_EDIT_ALL = (1 << 6) - 1
 ELM_CNP_MODE_MARKUP = 0
 ELM_CNP_MODE_NO_IMAGE = 1
 ELM_CNP_MODE_PLAINTEXT = 2
+
+ELM_DAY_SUNDAY = 0
+ELM_DAY_MONDAY = 1
+ELM_DAY_TUESDAY = 2
+ELM_DAY_WEDNESDAY = 3
+ELM_DAY_THURSDAY = 4
+ELM_DAY_FRIDAY = 5
+ELM_DAY_SATURDAY = 6
+ELM_DAY_LAST = 7
 
 ELM_FILESELECTOR_LIST = 0
 ELM_FILESELECTOR_GRID = 1

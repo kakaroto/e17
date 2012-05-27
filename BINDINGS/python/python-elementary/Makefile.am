@@ -20,6 +20,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_box.pxi \
 	elementary/elementary.c_elementary_bubble.pxi \
 	elementary/elementary.c_elementary_button.pxi \
+	elementary/elementary.c_elementary_calendar.pxi \
 	elementary/elementary.c_elementary_check.pxi \
 	elementary/elementary.c_elementary_clock.pxi \
 	elementary/elementary.c_elementary_entry.pxi \

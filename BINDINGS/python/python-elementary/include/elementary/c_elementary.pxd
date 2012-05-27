@@ -102,6 +102,29 @@ cdef extern from "Elementary.h":
         ELM_BUBBLE_POS_BOTTOM_LEFT
         ELM_BUBBLE_POS_BOTTOM_RIGHT
 
+    ctypedef enum Elm_Calendar_Mark_Repeat_Type:
+        ELM_CALENDAR_UNIQUE
+        ELM_CALENDAR_DAILY
+        ELM_CALENDAR_WEEKLY
+        ELM_CALENDAR_MONTHLY
+        ELM_CALENDAR_ANNUALLY
+
+    ctypedef enum Elm_Calendar_Select_Mode:
+        ELM_CALENDAR_SELECT_MODE_DEFAULT
+        ELM_CALENDAR_SELECT_MODE_ALWAYS
+        ELM_CALENDAR_SELECT_MODE_NONE
+        ELM_CALENDAR_SELECT_MODE_ONDEMAND
+
+    ctypedef enum Elm_Calendar_Weekday:
+        ELM_DAY_SUNDAY
+        ELM_DAY_MONDAY
+        ELM_DAY_TUESDAY
+        ELM_DAY_WEDNESDAY
+        ELM_DAY_THURSDAY
+        ELM_DAY_FRIDAY
+        ELM_DAY_SATURDAY
+        ELM_DAY_LAST
+
     ctypedef enum Elm_Clock_Edit_Mode:
         ELM_CLOCK_EDIT_DEFAULT = 0
         ELM_CLOCK_EDIT_HOUR_DECIMAL = 1 << 0
@@ -346,6 +369,13 @@ cdef extern from "Elementary.h":
 
 
     # structs
+    #ctypedef struct Elm_Calendar_Mark:
+        #Evas_Object *obj
+        #Eina_List *node
+        #struct tm mark_time
+        #const_char_ptr mark_type
+        #Elm_Calendar_Mark_Repeat_Type repeat
+
     ctypedef struct Elm_Entry_Anchor_Info:
         char *name
         int   button
@@ -368,7 +398,6 @@ cdef extern from "Elementary.h":
         char *label
         Evas_Smart_Cb func
         void *data
-
 
     ctypedef char *(*GenlistItemLabelGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Evas_Object *(*GenlistItemIconGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
@@ -403,6 +432,7 @@ cdef extern from "Elementary.h":
     ctypedef Evas_Object *(*Elm_Tooltip_Content_Cb) (void *data, Evas_Object *obj, Evas_Object *tooltip)
     ctypedef Evas_Object *(*Elm_Tooltip_Item_Content_Cb) (void *data, Evas_Object *obj, Evas_Object *tooltip, void *item)
     ctypedef Eina_Bool (*Elm_Event_Cb) (void *data, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type t, void *event_info)
+    #ctypedef char * (*Elm_Calendar_Format_Cb)(struct tm *stime)
 
     ctypedef struct Elm_Object_Item
     ctypedef struct Elm_Theme
@@ -718,7 +748,26 @@ cdef extern from "Elementary.h":
     void                     elm_button_autorepeat_gap_timeout_set(Evas_Object *obj, double t)
     double                   elm_button_autorepeat_gap_timeout_get(Evas_Object *obj)
 
-    # Calendar              (XXX)
+    # Calendar              (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    Evas_Object             *elm_calendar_add(Evas_Object *parent)
+    #const_char_ptr          *elm_calendar_weekdays_names_get(Evas_Object *obj)
+    #void                     elm_calendar_weekdays_names_set(Evas_Object *obj, const_char_ptr weekdays[])
+    void                     elm_calendar_min_max_year_set(Evas_Object *obj, int min, int max)
+    void                     elm_calendar_min_max_year_get(Evas_Object *obj, int *min, int *max)
+    void                     elm_calendar_select_mode_set(Evas_Object *obj, Elm_Calendar_Select_Mode mode)
+    Elm_Calendar_Select_Mode elm_calendar_select_mode_get(Evas_Object *obj)
+    #void                     elm_calendar_selected_time_set(Evas_Object *obj, struct tm *selected_time)
+    #Eina_Bool                elm_calendar_selected_time_get(Evas_Object *obj, struct tm *selected_time)
+    #void                     elm_calendar_format_function_set(Evas_Object *obj, Elm_Calendar_Format_Cb format_func)
+    #Elm_Calendar_Mark       *elm_calendar_mark_add(Evas_Object *obj, const_char_ptr mark_type, struct tm *mark_time, Elm_Calendar_Mark_Repeat_Type repeat)
+    #void                     elm_calendar_mark_del(Elm_Calendar_Mark *mark)
+    void                     elm_calendar_marks_clear(Evas_Object *obj)
+    const_Eina_List         *elm_calendar_marks_get(Evas_Object *obj)
+    void                     elm_calendar_marks_draw(Evas_Object *obj)
+    void                     elm_calendar_interval_set(Evas_Object *obj, double interval)
+    double                   elm_calendar_interval_get(Evas_Object *obj)
+    void                     elm_calendar_first_day_of_week_set(Evas_Object *obj, Elm_Calendar_Weekday day)
+    Elm_Calendar_Weekday     elm_calendar_first_day_of_week_get(Evas_Object *obj)
 
     # Check                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
     Evas_Object             *elm_check_add(Evas_Object *parent)
