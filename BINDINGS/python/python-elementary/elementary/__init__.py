@@ -23,7 +23,8 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
     Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
-    GengridItemClass, init, shutdown, run, exit, scale_get, scale_set, \
+    GengridItemClass, Actionslider, \
+    init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
     tooltip_delay_set, tooltip_delay_get, cursor_engine_only_set, \
@@ -31,6 +32,12 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     focus_highlight_enabled_set, focus_highlight_animate_get, \
     focus_highlight_animate_set, preferred_engine_get, preferred_engine_set, \
     engine_get, engine_set
+
+ELM_ACTIONSLIDER_NONE = 0
+ELM_ACTIONSLIDER_LEFT = 1 << 0
+ELM_ACTIONSLIDER_CENTER = 1 << 1
+ELM_ACTIONSLIDER_RIGHT = 1 << 2
+ELM_ACTIONSLIDER_ALL = (1 << 3) - 1
 
 ELM_BG_OPTION_CENTER = 0
 ELM_BG_OPTION_SCALE = 1

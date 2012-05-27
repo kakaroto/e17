@@ -35,6 +35,7 @@ from test_flip import flip_clicked, flip_interactive_clicked
 from test_tooltip import tooltip_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
 from test_web import web_clicked
+from test_actionslider import actionslider_clicked
 
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
@@ -147,6 +148,7 @@ if __name__ == "__main__":
                 ("Hoversel", hoversel_clicked),
                 ("Menu", menu_clicked),
                 ("Radios", radio_clicked),
+                ("Actionslider", actionslider_clicked),
             ]),
 #             ("Storyboard", [ TODO
 #                ("Naviframe", pager_clicked),

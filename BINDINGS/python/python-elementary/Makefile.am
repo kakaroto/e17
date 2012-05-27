@@ -15,6 +15,7 @@ c_elementary_includes = \
 
 
 c_elementary_deps = \
+	elementary/elementary.c_elementary_actionslider.pxi \
 	elementary/elementary.c_elementary_background.pxi \
 	elementary/elementary.c_elementary_box.pxi \
 	elementary/elementary.c_elementary_bubble.pxi \
