@@ -140,6 +140,11 @@ cdef extern from "Elementary.h":
         ELM_CNP_MODE_NO_IMAGE   # copy & paste text without item(image) tag
         ELM_CNP_MODE_PLAINTEXT  # copy & paste text without markup tag
 
+    ctypedef enum Elm_Colorselector_Mode:
+        ELM_COLORSELECTOR_PALETTE
+        ELM_COLORSELECTOR_COMPONENTS
+        ELM_COLORSELECTOR_BOTH
+
     ctypedef enum Elm_Fileselector_Mode:
         ELM_FILESELECTOR_LIST
         ELM_FILESELECTOR_GRID
@@ -368,6 +373,7 @@ cdef extern from "Elementary.h":
         ELM_WRAP_MIXED
 
 
+
     # structs
     #ctypedef struct Elm_Calendar_Mark:
         #Evas_Object *obj
@@ -375,6 +381,16 @@ cdef extern from "Elementary.h":
         #struct tm mark_time
         #const_char_ptr mark_type
         #Elm_Calendar_Mark_Repeat_Type repeat
+
+    ctypedef struct Elm_Color_RGBA:
+        unsigned int r
+        unsigned int g
+        unsigned int b
+        unsigned int a
+
+    ctypedef struct _Elm_Custom_Palette:
+        const_char_ptr palette_name
+        Eina_List *color_list
 
     ctypedef struct Elm_Entry_Anchor_Info:
         char *name
@@ -789,7 +805,18 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(Evas_Object *obj)
 
-    # Colorselector         (XXX)
+    # Colorselector         (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    Evas_Object             *elm_colorselector_add(Evas_Object *parent)
+    void                     elm_colorselector_color_set(Evas_Object *obj, int r, int g, int b, int a)
+    void                     elm_colorselector_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
+    void                     elm_colorselector_mode_set(Evas_Object *obj, Elm_Colorselector_Mode mode)
+    Elm_Colorselector_Mode   elm_colorselector_mode_get(Evas_Object *obj)
+    void                     elm_colorselector_palette_item_color_get(Elm_Object_Item *it, int *r, int *g, int *b, int *a)
+    void                     elm_colorselector_palette_item_color_set(Elm_Object_Item *it, int r, int g, int b, int a)
+    Elm_Object_Item         *elm_colorselector_palette_color_add(Evas_Object *obj, int r, int g, int b, int a)
+    void                     elm_colorselector_palette_clear(Evas_Object *obj)
+    void                     elm_colorselector_palette_name_set(Evas_Object *obj, const_char_ptr palette_name)
+    const_char_ptr           elm_colorselector_palette_name_get(Evas_Object *obj)
 
     # Conformant            (XXX)
 

@@ -23,6 +23,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_calendar.pxi \
 	elementary/elementary.c_elementary_check.pxi \
 	elementary/elementary.c_elementary_clock.pxi \
+	elementary/elementary.c_elementary_colorselector.pxi \
 	elementary/elementary.c_elementary_entry.pxi \
 	elementary/elementary.c_elementary_fileselector.pxi \
 	elementary/elementary.c_elementary_fileselector_entry.pxi \
