@@ -94,7 +94,7 @@
  </p>
 <p><pre><code>svn co svn+ssh://USER@svn.enlightenment.org/var/svn/e
 </code></pre></p>
-<p><pre><code>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
+<p><pre><code>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/trunk/evas
 </code></pre></p>
  <p>
   Our SVN tree is divided up and categorized. The <b>trunk</b>
