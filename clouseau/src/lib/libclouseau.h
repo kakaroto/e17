@@ -93,6 +93,7 @@ typedef struct _st_edje st_edje;
 struct _st_textblock
 {
    const char *style;
+   const char *text;
 };
 typedef struct _st_textblock st_textblock;
 

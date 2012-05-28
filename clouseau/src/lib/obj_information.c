@@ -162,6 +162,8 @@ textblock_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_textblock, "style",
          style, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, st_textblock, "text",
+         text, EET_T_STRING);
 
    return d;
 }
@@ -472,6 +474,7 @@ obj_information_free(Obj_Information *oinfo)
    else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
      {
         eina_stringshare_del(oinfo->extra_props.u.textblock.style);
+	eina_stringshare_del(oinfo->extra_props.u.textblock.text);
      }
 
    free(oinfo);
@@ -578,12 +581,15 @@ obj_information_get(Tree_Item *treeit)
    else if (!strcmp("textblock", evas_object_type_get(obj)))
      {
         const char *style;
+        const char *text;
         const Evas_Textblock_Style *ts;
         oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_TEXTBLOCK;
 
         ts = evas_object_textblock_style_get(obj);
         style = evas_textblock_style_get(ts);
+        text = evas_object_textblock_text_markup_get(obj);
         oinfo->extra_props.u.textblock.style = eina_stringshare_add(style);
+        oinfo->extra_props.u.textblock.text = eina_stringshare_add(text);
      }
    else
      {
@@ -928,8 +934,14 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         main_tit->string = eina_stringshare_add("Textblock");
         information_tree = eina_list_append(information_tree, main_tit);
 
-        snprintf(buf, sizeof(buf), "Style: %s",
+        snprintf(buf, sizeof(buf), "Style: '%s'",
               oinfo->extra_props.u.textblock.style);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Text: '%s'",
+                 oinfo->extra_props.u.textblock.text);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
