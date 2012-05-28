@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class PaletteItem(ObjectItem):
+cdef class ColorselectorPaletteItem(ObjectItem):
     def __init__(self, c_evas.Object colorselector, r, g, b, a):
         self.obj = elm_colorselector_palette_color_add(colorselector.obj, r, g, b, a)
 
@@ -73,6 +73,9 @@ cdef class Colorselector(Object):
             return self.mode_get()
         def __set__(self, mode):
             self.mode_set(mode)
+
+    def palette_color_add(self, r, g, b, a):
+        return ColorselectorPaletteItem(self, r, g, b, a)
 
     def palette_clear(self):
         elm_colorselector_palette_clear(self.obj)
