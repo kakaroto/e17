@@ -23,7 +23,7 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
     Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
-    GengridItemClass, Actionslider, Calendar, Colorselector, Index, \
+    GengridItemClass, Actionslider, Calendar, Colorselector, Index, Ctxpopup, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
@@ -77,6 +77,12 @@ ELM_CNP_MODE_PLAINTEXT = 2
 ELM_COLORSELECTOR_PALETTE = 0
 ELM_COLORSELECTOR_COMPONENTS = 1
 ELM_COLORSELECTOR_BOTH = 2
+
+ELM_CTXPOPUP_DIRECTION_DOWN = 0
+ELM_CTXPOPUP_DIRECTION_RIGHT = 1
+ELM_CTXPOPUP_DIRECTION_LEFT = 2
+ELM_CTXPOPUP_DIRECTION_UP = 3
+ELM_CTXPOPUP_DIRECTION_UNKNOWN = 4
 
 ELM_DAY_SUNDAY = 0
 ELM_DAY_MONDAY = 1
