@@ -17,6 +17,10 @@
 #
 
 cdef class Calendar(Object):
+    def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
+        self._set_obj(elm_calendar_add(parent.obj))
+
     #def weekdays_names_get(self):
         #cdef const_char_ptr *weekdays = elm_calendar_weekdays_names_get(self.obj)
         #return weekdays
