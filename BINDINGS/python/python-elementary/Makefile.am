@@ -36,6 +36,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_hoversel.pxi \
 	elementary/elementary.c_elementary_icon.pxi \
 	elementary/elementary.c_elementary_image.pxi \
+	elementary/elementary.c_elementary_index.pxi \
 	elementary/elementary.c_elementary_innerwindow.pxi \
 	elementary/elementary.c_elementary_label.pxi \
 	elementary/elementary.c_elementary_layout.pxi \
