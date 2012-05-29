@@ -16,15 +16,34 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+def _image_callback_conv(long addr):
+    cdef const_char_ptr s = <const_char_ptr>addr
+    if s == NULL:
+        return None
+    else:
+        return s
+
 cdef class Image(Object):
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_image_add(parent.obj))
 
-    def file_set(self, filename, group = ""):
-        elm_image_file_set(self.obj, filename, group)
+    #def memfile_set(self, img, size, format, key):
+        #return bool(elm_image_memfile_set(self.obj, img, size, format, key))
+
+    def file_set(self, filename, group = None):
+        """
+        Set the path of the image for the icon
+
+        @parm: B{filename} Filename of the image
+        """
+        if group == None:
+            elm_image_file_set(self.obj, filename, NULL)
+        else:
+            elm_image_file_set(self.obj, filename, group)
 
     def file_get(self):
+        """Get the path of the image for the icon"""
         cdef const_char_ptr filename, group
         elm_image_file_get(self.obj, &filename, &group)
         return (filename, group)
@@ -144,10 +163,47 @@ cdef class Image(Object):
         def __set__(self, aspect_fixed):
             self.aspect_fixed_set(aspect_fixed)
 
+    def animated_available_get(self):
+        return bool(elm_image_animated_available_get(self.obj))
+
+    property animated_available:
+        def __get__(self):
+            return self.animated_available_get()
+
+    def animated_set(self, animated):
+        elm_image_animated_set(self.obj, animated)
+
+    def animated_get(self):
+        return bool(elm_image_animated_get(self.obj))
+
+    property animated:
+        def __get__(self):
+            return self.animated_get()
+        def __set__(self, animated):
+            self.animated_set(animated)
+
+    def animated_play_set(self, play):
+        elm_image_animated_play_set(self.obj, play)
+
+    def animated_play_get(self):
+        return bool(elm_image_animated_play_get(self.obj))
+
+    property animated_play:
+        def __get__(self):
+            return self.animated_play_get()
+        def __set__(self, animated_play):
+            self.animated_play_set(animated_play)
+
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
+
+    def callback_drop_add(self, func, *args, **kwargs):
+        self._callback_add_full("drop", _image_callback_conv, func, *args, **kwargs)
+
+    def callback_drop_del(self, func):
+        self._callback_del_full("drop", _image_callback_conv, func)
 
 _elm_widget_type_register("image", Image)

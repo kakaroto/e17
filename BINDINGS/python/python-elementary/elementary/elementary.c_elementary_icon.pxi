@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Icon(Object):
+cdef class Icon(Image):
     """
     A simple icon widget
 
@@ -29,24 +29,6 @@ cdef class Icon(Object):
         """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_icon_add(parent.obj))
-
-
-    def file_set(self, filename, group = None):
-        """
-        Set the path of the image for the icon
-
-        @parm: B{filename} Filename of the image
-        """
-        if group == None:
-            elm_icon_file_set(self.obj, filename, NULL)
-        else:
-            elm_icon_file_set(self.obj, filename, group)
-
-    def file_get(self):
-        """Get the path of the image for the icon"""
-        cdef const_char_ptr filename, group
-        elm_icon_file_get(self.obj, &filename, &group)
-        return (filename, group)
 
     def thumb_set(self, filename, group = None):
         """
@@ -71,44 +53,6 @@ cdef class Icon(Object):
         def __set__(self, standard):
             self.standard_set(standard)
 
-    def smooth_set(self, smooth):
-        elm_icon_smooth_set(self.obj,smooth)
-
-    def smooth_get(self):
-        return bool(elm_icon_smooth_get(self.obj))
-
-    property smooth:
-        def __get__(self):
-            return self.smooth_get()
-        def __set__(self, smooth):
-            self.smooth_set(smooth)
-
-    def no_scale_set(self,no_scale):
-        elm_icon_no_scale_set(self.obj,no_scale)
-
-    def no_scale_get(self):
-        return bool(elm_icon_no_scale_get(self.obj))
-
-    property no_scale:
-        def __get__(self):
-            return self.no_scale_get()
-        def __set__(self, no_scale):
-            self.no_scale_set(no_scale)
-
-    def resizable_set(self, scale_up, scale_down):
-        elm_icon_resizable_set(self.obj, scale_up, scale_down)
-
-    def resizable_get(self):
-        cdef evas.c_evas.Eina_Bool scale_up, scale_down
-        elm_icon_resizable_get(self.obj, &scale_up, &scale_down)
-        return (scale_up, scale_down)
-
-    property resizable:
-        def __get__(self):
-            return self.resizable_get()
-        def __set__(self, resizable):
-            self.resizable_set(resizable)
-
     def size_get(self):
         cdef int w, h
         elm_icon_size_get(self.obj, &w, &h)
@@ -117,35 +61,6 @@ cdef class Icon(Object):
     property size:
         def __get__(self):
             return self.size_get()
-
-    def fill_outside_set(self, fill_outside):
-        elm_icon_fill_outside_set(self.obj, fill_outside)
-
-    def fill_outside_get(self):
-        return bool(elm_icon_fill_outside_get(self.obj))
-
-    property fill_outside:
-        def __get__(self):
-            return self.fill_outside_get()
-        def __set__(self, fill_outside):
-            self.fill_outside_set(fill_outside)
-
-    def prescale_set(self, size):
-        elm_icon_prescale_set(self.obj, size)
-
-    def prescale_get(self):
-        return elm_icon_prescale_get(self.obj)
-
-    property prescale:
-        def __get__(self):
-            return self.prescale_get()
-        def __set__(self, prescale):
-            self.prescale_set(prescale)
-
-    def object_get(self):
-        cdef c_evas.const_Evas_Object *o
-        o = elm_icon_object_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
 
     def order_lookup_set(self, order):
         elm_icon_order_lookup_set(self.obj, order)
@@ -159,57 +74,10 @@ cdef class Icon(Object):
         def __set__(self, order_lookup):
             self.order_lookup_set(order_lookup)
 
-    def preload_disabled_set(self, disabled):
-        elm_icon_preload_disabled_set(self.obj, disabled)
-
-    def animated_available_get(self):
-        return bool(elm_icon_animated_available_get(self.obj))
-
-    property animated_available:
-        def __get__(self):
-            return self.animated_available_get()
-
-    def animated_set(self, animated):
-        elm_icon_animated_set(self.obj, animated)
-
-    def animated_get(self):
-        return bool(elm_icon_animated_get(self.obj))
-
-    property animated:
-        def __get__(self):
-            return self.animated_get()
-        def __set__(self, animated):
-            self.animated_set(animated)
-
-    def animated_play_set(self, play):
-        elm_icon_animated_play_set(self.obj, play)
-
-    def animated_play_get(self):
-        return bool(elm_icon_animated_play_get(self.obj))
-
-    property animated_play:
-        def __get__(self):
-            return self.animated_play_get()
-        def __set__(self, animated_play):
-            self.animated_play_set(animated_play)
-
-    def aspect_fixed_set(self, fixed):
-        elm_icon_aspect_fixed_set(self.obj, fixed)
-
-    def aspect_fixed_get(self):
-        return bool(elm_icon_aspect_fixed_get(self.obj))
-
-    property aspect_fixed:
-        def __get__(self):
-            return self.aspect_fixed_get()
-        def __set__(self, aspect_fixed):
-            self.aspect_fixed_set(aspect_fixed)
-
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
-
 
 _elm_widget_type_register("icon", Icon)
