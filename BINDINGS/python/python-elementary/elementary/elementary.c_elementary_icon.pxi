@@ -74,10 +74,16 @@ cdef class Icon(Image):
         def __set__(self, order_lookup):
             self.order_lookup_set(order_lookup)
 
-    def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add("clicked", func, *args, **kwargs)
+    def callback_thumb_done_add(self, func, *args, **kwargs):
+        self._callback_add("thumb,done", func, *args, **kwargs)
 
-    def callback_clicked_del(self, func):
-        self._callback_del("clicked", func)
+    def callback_thumb_done_del(self, func):
+        self._callback_del("thumb,done", func)
+
+    def callback_thumb_error_add(self, func, *args, **kwargs):
+        self._callback_add("thumb,error", func, *args, **kwargs)
+
+    def callback_thumb_error_del(self, func):
+        self._callback_del("thumb,error", func)
 
 _elm_widget_type_register("icon", Icon)
