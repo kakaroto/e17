@@ -53,15 +53,6 @@ cdef class Icon(Image):
         def __set__(self, standard):
             self.standard_set(standard)
 
-    def size_get(self):
-        cdef int w, h
-        elm_icon_size_get(self.obj, &w, &h)
-        return (w, h)
-
-    property size:
-        def __get__(self):
-            return self.size_get()
-
     def order_lookup_set(self, order):
         elm_icon_order_lookup_set(self.obj, order)
 
