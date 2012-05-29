@@ -5,37 +5,37 @@ import edje
 import ecore
 import evas
 
-from test_bg import bg_plain_clicked, bg_image_clicked
-from test_bubble import bubble_clicked
-from test_icon import icon_transparent_clicked
-from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
-from test_button import buttons_clicked
-from test_table import table_clicked
-from test_clock import clock_clicked
-from test_hover import hover_clicked, hover2_clicked
-from test_entry import entry_clicked, entry_scrolled_clicked
-from test_toolbar import toolbar_clicked
-from test_hoversel import hoversel_clicked
-from test_list import list_clicked, list2_clicked, list3_clicked
-from test_inwin import inner_window_clicked
-from test_check import check_clicked
-from test_radio import radio_clicked
-from test_progressbar import progressbar_clicked
-from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
-from test_separator import separator_clicked
-from test_scroller import scroller_clicked
-from test_notify import notify_clicked
-from test_menu import menu_clicked
-from test_panel import panel_clicked
-from test_layout import layout_clicked
-from test_spinner import spinner_clicked
-from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
-from test_gengrid import gengrid_clicked
-from test_flip import flip_clicked, flip_interactive_clicked
-from test_tooltip import tooltip_clicked
-from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
-from test_web import web_clicked
 from test_actionslider import actionslider_clicked
+from test_bg import bg_plain_clicked, bg_image_clicked
+from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
+from test_bubble import bubble_clicked
+from test_button import buttons_clicked
+from test_check import check_clicked
+from test_clock import clock_clicked
+from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
+from test_entry import entry_clicked, entry_scrolled_clicked
+from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
+from test_flip import flip_clicked, flip_interactive_clicked
+from test_gengrid import gengrid_clicked
+from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
+from test_hover import hover_clicked, hover2_clicked
+from test_hoversel import hoversel_clicked
+from test_icon import icon_clicked, icon_transparent_clicked
+from test_inwin import inner_window_clicked
+from test_layout import layout_clicked
+from test_list import list_clicked, list2_clicked, list3_clicked
+from test_menu import menu_clicked
+from test_notify import notify_clicked
+from test_panel import panel_clicked
+from test_progressbar import progressbar_clicked
+from test_radio import radio_clicked
+from test_scroller import scroller_clicked
+from test_separator import separator_clicked
+from test_spinner import spinner_clicked
+from test_table import table_clicked
+from test_toolbar import toolbar_clicked
+from test_tooltip import tooltip_clicked
+from test_web import web_clicked
 
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
@@ -119,6 +119,10 @@ if __name__ == "__main__":
                 ("Entry", entry_clicked),
                 ("Entry Scrolled", entry_scrolled_clicked),
             ]),
+             ("Images", [
+                ("Icon", icon_clicked),
+                ("Icon Transparent", icon_transparent_clicked),
+            ]),
              ("Lists", [
                 ("List", list_clicked),
                 ("List 2", list2_clicked),
@@ -166,7 +170,6 @@ if __name__ == "__main__":
                 ("Bg Plain", bg_plain_clicked),
                 ("Bg Image", bg_image_clicked),
                 ("InnerWindow", inner_window_clicked),
-                ("IconTransparent", icon_transparent_clicked),
             ])
             ]
 

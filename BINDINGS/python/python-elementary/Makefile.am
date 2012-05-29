@@ -63,13 +63,15 @@ c_elementary_deps = \
 
 # elementary tests are not actual unit tests but a test AND a nice example
 examples_files = \
+	tests/test.py \
+	tests/test.edj \
+	tests/cursors.edj \
+	tests/test_actionslider.py \
 	tests/test_bg.py \
 	tests/test_box.py \
 	tests/test_button.py \
 	tests/test_check.py \
 	tests/test_clock.py \
-	tests/test.edj \
-	tests/cursors.edj \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \
@@ -85,7 +87,6 @@ examples_files = \
 	tests/test_notify.py \
 	tests/test_panel.py \
 	tests/test_progressbar.py \
-	tests/test.py \
 	tests/test_radio.py \
 	tests/test_scroller.py \
 	tests/test_separator.py \
@@ -97,6 +98,7 @@ examples_files = \
 
 examples_images_files = \
 	tests/images/icon_00.png \
+	tests/images/insanely_huge_test_image.jpg \
 	tests/images/logo.png \
 	tests/images/logo_small.png \
 	tests/images/panel_01.jpg \
