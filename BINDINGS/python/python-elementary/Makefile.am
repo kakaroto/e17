@@ -58,6 +58,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_spinner.pxi \
 	elementary/elementary.c_elementary_table.pxi \
 	elementary/elementary.c_elementary_toolbar.pxi \
+	elementary/elementary.c_elementary_video.pxi \
 	elementary/elementary.c_elementary_web.pxi \
 	elementary/elementary.c_elementary_window.pxi
 
