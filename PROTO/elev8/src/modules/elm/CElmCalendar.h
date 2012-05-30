@@ -44,8 +44,8 @@ public:
    Handle<Value> max_year_get() const;
    void max_year_set(Handle<Value> val);
 
-   Handle<Value> enable_day_selection_get() const;
-   void enable_day_selection_set(Handle<Value> val);
+   Handle<Value> select_mode_get() const;
+   void select_mode_set(Handle<Value> val);
 
    Handle<Value> day_get() const;
    void day_set(Handle<Value> val);

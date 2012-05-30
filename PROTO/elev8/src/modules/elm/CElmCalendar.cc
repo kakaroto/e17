@@ -8,7 +8,7 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, weekday_names);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, min_year);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, max_year);
-GENERATE_PROPERTY_CALLBACKS(CElmCalendar, enable_day_selection);
+GENERATE_PROPERTY_CALLBACKS(CElmCalendar, select_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, day);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, month);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, year);
@@ -19,7 +19,7 @@ GENERATE_TEMPLATE(CElmCalendar,
                   PROPERTY(weekday_names),
                   PROPERTY(min_year),
                   PROPERTY(max_year),
-                  PROPERTY(enable_day_selection),
+                  PROPERTY(select_mode),
                   PROPERTY(day),
                   PROPERTY(month),
                   PROPERTY(year),
@@ -196,15 +196,15 @@ void CElmCalendar::max_year_set(Handle<Value> val)
    elm_calendar_min_max_year_set(eo, year_min, val->ToNumber()->Value());
 }
 
-Handle<Value> CElmCalendar::enable_day_selection_get(void) const
+Handle<Value> CElmCalendar::select_mode_get(void) const
 {
-   return Boolean::New(!elm_calendar_day_selection_disabled_get(eo));
+   return Number::New(elm_calendar_select_mode_get(eo));
 }
 
-void CElmCalendar::enable_day_selection_set(Handle<Value> val)
+void CElmCalendar::select_mode_set(Handle<Value> val)
 {
-   if (val->IsBoolean())
-     elm_calendar_day_selection_disabled_set(eo, !val->ToBoolean()->Value());
+   if (val->IsNumber())
+     elm_calendar_select_mode_set(eo, (Elm_Calendar_Select_Mode)val->ToNumber()->Value());
 }
 
 Handle<Value> CElmCalendar::day_get(void) const

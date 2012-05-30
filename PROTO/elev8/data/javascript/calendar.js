@@ -22,7 +22,7 @@ var my_window = elm.Window({
                 weekday_names: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
                 min_year: 1900,
                 max_year: 2100,
-                enable_day_selection: true,
+                select_mode: 0,
                 year: 2011,
                 month: 1,
                 date: 21,
