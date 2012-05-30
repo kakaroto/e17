@@ -29,3 +29,7 @@ else
 	cs add /usr/src/linux/cscope.out
 endif
 set csverb
+
+" Set color over 80 chars
+au BufRead *.c,*.cpp,*.h match ExtraOver /\s\+\%#\@<!$\|\%81v.*/
+highlight ExtraOver ctermbg=red ctermfg=white guibg=#59292
