@@ -48,10 +48,12 @@
       <li>libxdpms</li>
       <li>libxcursor</li>
       <li>libxprint</li>
+      <li>libxcb</li>
+      <li>libxcb-shape</li>
       <li>openssl</li>
       <li>curl</li>
       <li>libudev</li>
-      <li>lua</li>
+      <li>lua5.1 (not 5.0, not 5.2)</li>
      </ul>
     </p>
    </div>
