@@ -147,6 +147,7 @@
    <li>gcc</li>
    <li>autoconf 2.59 or better</li>
    <li>automake 1.10 or better</li>
+   <li>autopoint</li>
    <li>libtool</li>
    <li>make (gnu make)</li>
    <li>gettext</li>
@@ -170,6 +171,8 @@
    <li>libxinerama dev headers</li>
    <li>libxkbfile dev headers</li>
    <li>libxtst dev headers</li>
+   <li>libxcb dev headers</li>
+   <li>libxcb-shape dev headers</li>
   </ul>
  </p>
  <p>
@@ -180,7 +183,7 @@
  <p>
   <ul>
    <li>libtiff dev headers (tiff loading support in evas)</li>
-   <li>librsvg dev headers (svg loading support in evas)</li>
+   <li>libesvg dev headers (svg loading support in evas)</li>
    <li>libgif dev headers (gif loading support in evas)</li>
    <li>libungif dev headers (gif loading support in evas <em>*1</em>)</li>
    <li>libcurl dev headers (http download/fetch support in ecore <em>*2</em>)</li>
@@ -191,8 +194,10 @@
    <li>mesa-common dev headers (OpenGL2.0 or OpenGL-ES2.0 support in evas)</li>
    <li>libspectre dev headers (Postscript Loading support in evas_generic_loaders)</li>
    <li>libpoppler dev headers (PDF loading support in evas_generic_loaders)</li>
+   <li>librsvg dev headers (SVG loading support in evas_generic_loaders)</li>
    <li>libraw dev headers (RAW loading support in evas_generic_loaders)</li>
-   <li>libgstreamer dev headers (Video file loading support in evas_generic_loaders)</li>
+   <li>libgstreamer dev headers (Video file loading support in evas_generic_loaders or emotion)</li>
+   <li>libxine dev headers (Video file loading support in emotion)</li>
   </ul>
  </p>
  <p>
