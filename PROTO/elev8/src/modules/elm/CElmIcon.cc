@@ -31,15 +31,15 @@ void CElmIcon::resizable_up_set(Handle<Value> val)
    if (val->IsBoolean())
      {
         Eina_Bool down;
-        elm_icon_resizable_get(eo, NULL, &down);
-        elm_icon_resizable_set(eo, val->BooleanValue(), down);
+        elm_image_resizable_get(eo, NULL, &down);
+        elm_image_resizable_set(eo, val->BooleanValue(), down);
      }
 }
 
 Handle<Value> CElmIcon::resizable_up_get() const
 {
    Eina_Bool up;
-   elm_icon_resizable_get(eo, &up, NULL);
+   elm_image_resizable_get(eo, &up, NULL);
    return Boolean::New(up);
 }
 
@@ -48,27 +48,27 @@ void CElmIcon::resizable_down_set(Handle<Value> val)
    if (val->IsBoolean())
      {
         Eina_Bool up;
-        elm_icon_resizable_get(eo, &up, NULL);
-        elm_icon_resizable_set(eo, up, val->BooleanValue());
+        elm_image_resizable_get(eo, &up, NULL);
+        elm_image_resizable_set(eo, up, val->BooleanValue());
      }
 }
 
 Handle<Value> CElmIcon::resizable_down_get() const
 {
    Eina_Bool down;
-   elm_icon_resizable_get(eo, NULL, &down);
+   elm_image_resizable_get(eo, NULL, &down);
    return Boolean::New(down);
 }
 
 Handle<Value> CElmIcon::prescale_get() const
 {
-   return Integer::New(elm_icon_prescale_get(eo));
+   return Integer::New(elm_image_prescale_get(eo));
 }
 
 void CElmIcon::prescale_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     elm_icon_prescale_set(eo, val->IntegerValue());
+     elm_image_prescale_set(eo, val->IntegerValue());
 }
 
 void CElmIcon::image_set(Handle<Value> val)
@@ -80,7 +80,7 @@ void CElmIcon::image_set(Handle<Value> val)
 
    if (access(*str, R_OK) == 0)
      {
-        elm_icon_file_set(eo, *str, NULL);
+        elm_image_file_set(eo, *str, NULL);
         return;
      }
 
@@ -94,7 +94,7 @@ Handle<Value> CElmIcon::image_get(void) const
 {
    const char *file = NULL, *group = NULL;
 
-   elm_icon_file_get(eo, &file, &group);
+   elm_image_file_get(eo, &file, &group);
    if (file)
      return String::New(file);
 
