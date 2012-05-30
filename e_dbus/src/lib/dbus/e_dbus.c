@@ -636,7 +636,12 @@ e_dbus_init(void)
 EAPI int
 e_dbus_shutdown(void)
 {
-  if (--_edbus_init_count)
+   if (_edbus_init_count <= 0)
+     {
+        EINA_LOG_ERR("Init count not greater than 0 in shutdown.");
+        return 0;
+     }
+   if (--_edbus_init_count)
     return _edbus_init_count;
 
   e_dbus_object_shutdown();
