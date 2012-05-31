@@ -159,6 +159,14 @@ public:
    Handle<Value> elements_get() const;
    void elements_set(Handle<Value> val);
 
+   static Handle<Value> ElementGet(uint32_t index, const AccessorInfo& info);
+   static Handle<Value> ElementSet(uint32_t index, Local<Value> value,
+                                   const AccessorInfo& info);
+
+   static Handle<Value> ElementGet(Local<String> name, const AccessorInfo& info);
+   static Handle<Value> ElementSet(Local<String> name, Local<Value> value,
+                                   const AccessorInfo& info);
+
    static Handle<Value> Realise(const Arguments& args);
 
    static Local<Object> Realise(Handle<Value> desc, Handle<Value> parent);

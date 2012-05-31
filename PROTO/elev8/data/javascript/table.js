@@ -57,7 +57,7 @@ var win = elm.realise(elm.Window({
                         element: elm.Button({
                             label: "Pack outlier",
                             on_click: function(me) {
-                                win.elements.the_table.pack(outlier)
+                                win.elements.the_table.elements['outlier'] = outlier;
                             }
                         }),
                     },
