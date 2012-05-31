@@ -192,7 +192,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
        color_set, color_get, color, show, hide, visible_set, visible_get,
        visible, delete, is_deleted
     @group Positioning: pos_set, pos_get, pos, move, move_relative,
-       size_set, size_get, size, resize, resize, geometry_set, geometry_get,
+       size_set, size_get, size, resize, geometry_set, geometry_get,
        geometry, center_get, center_set, center, top_left_set, top_left_get,
        top_left, top_right_set, top_right_get, top_right, bottom_left_set,
        bottom_left_get, bottom_left, bottom_right_set, bottom_right_get,
@@ -409,12 +409,20 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         """
         return self.evas.top_get()
 
+    property top:
+        def __get__(self):
+            return self.top_get()
+
     def bottom_get(self):
         """Return the bottommost object. (Same as self.evas.bottom_get()).
 
         @rtype: L{Object}
         """
         return self.evas.bottom_get()
+
+    property bottom:
+        def __get__(self):
+            return self.bottom_get()
 
     def geometry_get(self):
         "@rtype: tuple of int"
