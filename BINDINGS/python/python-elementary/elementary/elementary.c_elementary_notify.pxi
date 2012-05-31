@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-elementary. If not, see <http://www.gnu.org/licenses/>.
 
-cdef class Notify(Object):
+cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNotify_Type]:
     """Display a container in a particular region of the parent.
 
     A timeout can be set to automatically hide the notify. This is so that,
@@ -103,3 +103,7 @@ cdef class Notify(Object):
         self._callback_del("block,clicked", func)
 
 _elm_widget_type_register("notify", Notify)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryNotify_Type # hack to install metaclass
+_install_metaclass(&PyElementaryNotify_Type, ElementaryObjectMeta)

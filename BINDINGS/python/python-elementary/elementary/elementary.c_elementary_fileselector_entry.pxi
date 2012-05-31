@@ -23,7 +23,7 @@ def _fs_entry_callback_conv(long addr):
     else:
         return s
 
-cdef class FileselectorEntry(Object):
+cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntry, type PyElementaryFileselectorEntry_Type]:
     cdef object _cbs
 
     def __init__(self, c_evas.Object parent):
@@ -44,7 +44,7 @@ cdef class FileselectorEntry(Object):
     property selected:
         def __get__(self):
             return self.selected_get()
-    
+
         def __set__(self, value):
             self.selected_set(value)
 
@@ -74,10 +74,10 @@ cdef class FileselectorEntry(Object):
     property window_title:
         def __get__(self):
             return self.window_title_get()
-    
+
         def __set__(self, value):
             self.window_title_set(value)
-    
+
     def window_size_set(self, width, height):
         elm_fileselector_entry_window_size_set(self.obj, width, height)
 
@@ -90,7 +90,7 @@ cdef class FileselectorEntry(Object):
     property window_size:
         def __get__(self):
             return self.window_size_get()
-    
+
         def __set__(self, value):
             self.window_size_set(*value)
 
@@ -107,7 +107,7 @@ cdef class FileselectorEntry(Object):
     property folder_only:
         def __get__(self):
             return self.folder_only_get()
-    
+
         def __set__(self, value):
             self.folder_only_set(value)
 
@@ -124,7 +124,7 @@ cdef class FileselectorEntry(Object):
     property inwin_mode:
         def __get__(self):
             return self.inwin_mode_get()
-    
+
         def __set__(self, value):
             self.inwin_mode_set(value)
 
@@ -141,7 +141,7 @@ cdef class FileselectorEntry(Object):
     property path:
         def __get__(self):
             return self.path_get()
-    
+
         def __set__(self, value):
             self.path_set(value)
 
@@ -158,7 +158,7 @@ cdef class FileselectorEntry(Object):
     property expandable:
         def __get__(self):
             return self.expandable_get()
-    
+
         def __set__(self, value):
             self.expandable_set(value)
 
@@ -175,7 +175,7 @@ cdef class FileselectorEntry(Object):
     property is_save:
         def __get__(self):
             return self.is_save_get()
-    
+
         def __set__(self, value):
             self.is_save_set(value)
 
@@ -193,5 +193,8 @@ cdef class FileselectorEntry(Object):
     def callback_done_del(self, func):
         self._callback_del_full("done", _fs_entry_callback_conv, func)
 
-
 _elm_widget_type_register("fileselector_entry", FileselectorEntry)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFileselectorEntry_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFileselectorEntry_Type, ElementaryObjectMeta)

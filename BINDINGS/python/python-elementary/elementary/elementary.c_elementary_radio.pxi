@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Radio(Object):
+cdef public class Radio(Object) [object PyElementaryRadio, type PyElementaryRadio_Type]:
     def __init__(self, c_evas.Object parent, obj=None):
         if obj is None:
             Object.__init__(self, parent.evas)
@@ -66,3 +66,7 @@ cdef class Radio(Object):
         self._callback_del("changed", func)
 
 _elm_widget_type_register("radio", Radio)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryRadio_Type # hack to install metaclass
+_install_metaclass(&PyElementaryRadio_Type, ElementaryObjectMeta)

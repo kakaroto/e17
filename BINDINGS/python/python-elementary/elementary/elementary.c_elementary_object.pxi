@@ -86,14 +86,14 @@ cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
         pass
 
-cdef class Object(evas.c_evas.Object):
-    cdef object _elmcallbacks
-    cdef object _elm_event_cbs
+cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type PyElementaryObject_Type]:
     """An abstract class to manage object and callback handling.
 
     All widgets are based on this class.
 
     """
+    cdef object _elmcallbacks
+    cdef object _elm_event_cbs
 
     def part_text_set(self, part, text):
         """Sets the text of a given part of this object.
@@ -658,3 +658,7 @@ evas.c_evas._extended_object_mapping_register("elm_widget",
 #       in elm will be ported to the new hierarchical pattern.
 evas.c_evas._extended_object_mapping_register("elm_widget_compat",
                                               __elm_widget_cls_resolver)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryObject_Type # hack to install metaclass
+_install_metaclass(&PyElementaryObject_Type, ElementaryObjectMeta)

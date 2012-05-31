@@ -47,7 +47,7 @@ cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-cdef class Naviframe(Object):
+cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElementaryNaviframe_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_naviframe_add(parent.obj))
@@ -177,3 +177,7 @@ cdef class Naviframe(Object):
         self._callback_add("title,clicked", func)
 
 _elm_widget_type_register("naviframe", Naviframe)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryNaviframe_Type # hack to install metaclass
+_install_metaclass(&PyElementaryNaviframe_Type, ElementaryObjectMeta)

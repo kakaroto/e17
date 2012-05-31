@@ -43,7 +43,7 @@ def _colorselector_item_conv(long addr):
         prm = <object>data
         return prm[2]
 
-cdef class Colorselector(Object):
+cdef public class Colorselector(Object) [object PyElementaryColorselector, type PyElementaryColorselector_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_colorselector_add(parent.obj))
@@ -109,3 +109,9 @@ cdef class Colorselector(Object):
 
     def callback_color_item_longpressed_del(self, func):
         self._callback_del_full("color,item,longpressed", _colorselector_item_conv, func)
+
+_elm_widget_type_register("colorselector", Colorselector)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryColorselector_Type # hack to install metaclass
+_install_metaclass(&PyElementaryColorselector_Type, ElementaryObjectMeta)

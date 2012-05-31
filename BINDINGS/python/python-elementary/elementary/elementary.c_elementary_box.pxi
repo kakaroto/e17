@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Box(Object):
+cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_box_add(parent.obj))
@@ -72,7 +72,7 @@ cdef class Box(Object):
         cdef c_evas.Evas_Object *o
         cdef Object obj
         cdef evas.c_evas.const_Eina_List *lst
-        
+
         ret = []
         lst = elm_box_children_get(self.obj)
         while lst:
@@ -122,8 +122,12 @@ cdef class Box(Object):
         elm_box_recalculate(self.obj)
 
     # XXX TODO elm_box_layout_*
-    
+
     # XXX TODO elm_box_transition_*
 
 
 _elm_widget_type_register("box", Box)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryBox_Type # hack to install metaclass
+_install_metaclass(&PyElementaryBox_Type, ElementaryObjectMeta)

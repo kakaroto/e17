@@ -604,8 +604,7 @@ cdef _elm_genlist_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-
-cdef class Genlist(Object):
+cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementaryGenlist_Type]:
     """Creates a generic, scalable and extensible list widget.
 
     Unlike L{List}, this widget allows more items while keeping
@@ -1229,5 +1228,8 @@ cdef class Genlist(Object):
     def callback_tree_effect_finished_del(self, func):
         self._callback_del("tree,effect,finished", func)
 
-
 _elm_widget_type_register("genlist", Genlist)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryGenlist_Type # hack to install metaclass
+_install_metaclass(&PyElementaryGenlist_Type, ElementaryObjectMeta)

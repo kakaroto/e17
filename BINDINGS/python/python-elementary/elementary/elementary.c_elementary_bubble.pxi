@@ -16,8 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-cdef class Bubble(Object):
+cdef public class Bubble(Object) [object PyElementaryBubble, type PyElementaryBubble_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_bubble_add(parent.obj))
@@ -35,5 +34,8 @@ cdef class Bubble(Object):
         def __set__(self, value):
             self.pos_set(value)
 
-
 _elm_widget_type_register("bubble", Bubble)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryBubble_Type # hack to install metaclass
+_install_metaclass(&PyElementaryBubble_Type, ElementaryObjectMeta)

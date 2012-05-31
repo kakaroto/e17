@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Calendar(Object):
+cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementaryCalendar_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_calendar_add(parent.obj))
@@ -85,3 +85,9 @@ cdef class Calendar(Object):
 
     def callback_changed_del(self, func):
         self._callback_del("changed", func)
+
+_elm_widget_type_register("calendar", Calendar)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryCalendar_Type # hack to install metaclass
+_install_metaclass(&PyElementaryCalendar_Type, ElementaryObjectMeta)

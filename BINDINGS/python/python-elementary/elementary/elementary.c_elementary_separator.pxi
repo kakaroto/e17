@@ -16,8 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-cdef class Separator(Object):
+cdef public class Separator(Object) [object PyElementarySeparator, type PyElementarySeparator_Type]:
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_separator_add(parent.obj))
 
@@ -34,5 +33,8 @@ cdef class Separator(Object):
         def __set__(self, value):
             self.horizontal_set(value)
 
-
 _elm_widget_type_register("separator", Separator)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementarySeparator_Type # hack to install metaclass
+_install_metaclass(&PyElementarySeparator_Type, ElementaryObjectMeta)

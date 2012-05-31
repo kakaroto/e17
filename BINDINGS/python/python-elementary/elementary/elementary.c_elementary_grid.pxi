@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Grid(Object):
+cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_Type]:
 
     """A grid layout widget.
 
@@ -128,3 +128,9 @@ cdef class Grid(Object):
             ret.append(obj)
             lst = lst.next
         return ret
+
+_elm_widget_type_register("grid", Grid)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryGrid_Type # hack to install metaclass
+_install_metaclass(&PyElementaryGrid_Type, ElementaryObjectMeta)

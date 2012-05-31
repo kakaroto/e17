@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Progressbar(Object):
+cdef public class Progressbar(Object) [object PyElementaryProgressbar, type PyElementaryProgressbar_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_progressbar_add(parent.obj))
@@ -99,3 +99,7 @@ cdef class Progressbar(Object):
             self.inverted_set(inverted)
 
 _elm_widget_type_register("progressbar", Progressbar)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryProgressbar_Type # hack to install metaclass
+_install_metaclass(&PyElementaryProgressbar_Type, ElementaryObjectMeta)

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Spinner(Object):
+cdef public class Spinner(Object) [object PyElementarySpinner, type PyElementarySpinner_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_spinner_add(parent.obj))
@@ -34,7 +34,7 @@ cdef class Spinner(Object):
     property label_format:
         def __get__(self):
             return self.label_format_get()
-    
+
         def __set__(self, value):
             self.label_format_set(value)
 
@@ -49,10 +49,10 @@ cdef class Spinner(Object):
     property min_max:
         def __get__(self):
             return self.min_max_get()
-    
+
         def __set__(self, value):
             self.min_max_set(*value)
-    
+
     def step_set(self, step):
         elm_spinner_step_set(self.obj, step)
 
@@ -158,5 +158,8 @@ cdef class Spinner(Object):
     def callback_delay_changed_del(self, func):
         self._callback_del("delay,changed", func)
 
-
 _elm_widget_type_register("spinner", Spinner)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementarySpinner_Type # hack to install metaclass
+_install_metaclass(&PyElementarySpinner_Type, ElementaryObjectMeta)

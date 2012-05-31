@@ -207,7 +207,7 @@ cdef class ListItem(ObjectItem):
         (obj, callback, it, a, ka) = <object>data
         return it
 
-cdef class List(Object):
+cdef public class List(Object) [object PyElementaryList, type PyElementaryList_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_list_add(parent.obj))
@@ -436,3 +436,7 @@ cdef class List(Object):
         self._callback_del("language,changed",  func)
 
 _elm_widget_type_register("list", List)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryList_Type # hack to install metaclass
+_install_metaclass(&PyElementaryList_Type, ElementaryObjectMeta)

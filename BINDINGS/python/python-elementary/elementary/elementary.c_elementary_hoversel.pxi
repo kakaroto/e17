@@ -93,7 +93,7 @@ cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-cdef class Hoversel(Object):
+cdef public class Hoversel(Object) [object PyElementaryHoversel, type PyElementaryHoversel_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))
@@ -160,3 +160,7 @@ cdef class Hoversel(Object):
         self._callback_del("dismissed", func)
 
 _elm_widget_type_register("hoversel", Hoversel)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryHoversel_Type # hack to install metaclass
+_install_metaclass(&PyElementaryHoversel_Type, ElementaryObjectMeta)

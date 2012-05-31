@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Frame(Object):
+cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFrame_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_frame_add(parent.obj))
@@ -30,7 +30,7 @@ cdef class Frame(Object):
     property autocollapse:
         def __get__(self):
             return self.autocollapse_get()
-    
+
         def __set__(self, value):
             self.autocollapse_set(value)
 
@@ -43,7 +43,7 @@ cdef class Frame(Object):
     property collapse:
         def __get__(self):
             return self.collapse_get()
-    
+
         def __set__(self, value):
             self.collapse_set(value)
 
@@ -57,5 +57,8 @@ cdef class Frame(Object):
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
 
-
 _elm_widget_type_register("frame", Frame)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFrame_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFrame_Type, ElementaryObjectMeta)

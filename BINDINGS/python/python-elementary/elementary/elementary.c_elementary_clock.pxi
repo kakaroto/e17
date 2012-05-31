@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Clock(Object):
+cdef public class Clock(Object) [object PyElementaryClock, type PyElementaryClock_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_clock_add(parent.obj))
@@ -36,7 +36,7 @@ cdef class Clock(Object):
 
         def __set__(self, value):
             self.time_set(*value)
-    
+
     def edit_set(self, edit):
         elm_clock_edit_set(self.obj, edit)
 
@@ -72,7 +72,7 @@ cdef class Clock(Object):
     property show_am_pm:
         def __get__(self):
             return self.show_am_pm_get()
-    
+
         def __set__(self, value):
             self.show_am_pm_set(value)
 
@@ -85,7 +85,7 @@ cdef class Clock(Object):
     property show_seconds:
         def __get__(self):
             return self.show_seconds_get()
-    
+
         def __set__(self, value):
             self.show_seconds_set(value)
 
@@ -98,9 +98,12 @@ cdef class Clock(Object):
     property first_interval:
         def __get__(self):
             return self.first_interval_get()
-    
+
         def __set__(self, value):
             self.first_interval_set(value)
 
-
 _elm_widget_type_register("clock", Clock)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryClock_Type # hack to install metaclass
+_install_metaclass(&PyElementaryClock_Type, ElementaryObjectMeta)

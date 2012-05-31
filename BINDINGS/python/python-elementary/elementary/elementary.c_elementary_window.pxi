@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Window(Object):
+cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWindow_Type]:
     """
     Elementary Window class.
 
@@ -752,3 +752,7 @@ cdef class Window(Object):
         self._callback_del("unmaximized")
 
 _elm_widget_type_register("win", Window)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryWindow_Type # hack to install metaclass
+_install_metaclass(&PyElementaryWindow_Type, ElementaryObjectMeta)

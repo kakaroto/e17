@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Scroller(Object):
+cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementaryScroller_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_scroller_add(parent.obj))
@@ -41,10 +41,10 @@ cdef class Scroller(Object):
     property policy:
         def __get__(self):
             return self.policy_get()
-    
+
         def __set__(self, value):
             self.policy_set(*value)
-    
+
     def region_get(self):
         cdef c_evas.Evas_Coord x, y, w, h
         elm_scroller_region_get(self.obj, &x, &y, &w, &h)
@@ -66,10 +66,10 @@ cdef class Scroller(Object):
     property bounce:
         def __get__(self):
             return self.bounce_get()
-    
+
         def __set__(self, value):
             self.bounce_set(*value)
-    
+
     def page_relative_set(self, h_pagerel, v_pagerel):
         elm_scroller_page_relative_set(self.obj, h_pagerel, v_pagerel)
 
@@ -119,7 +119,7 @@ cdef class Scroller(Object):
     property gravity:
         def __get__(self):
             return self.gravity_get()
-    
+
         def __set__(self, value):
             self.gravity_set(*value)
 
@@ -177,5 +177,8 @@ cdef class Scroller(Object):
     def callback_scroll_drag_stop_del(self, func):
         self._callback_del("scroll,drag,stop", func)
 
-
 _elm_widget_type_register("scroller", Scroller)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryScroller_Type # hack to install metaclass
+_install_metaclass(&PyElementaryScroller_Type, ElementaryObjectMeta)

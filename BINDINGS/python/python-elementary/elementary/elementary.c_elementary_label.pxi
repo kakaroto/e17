@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Label(Object):
+cdef public class Label(Object) [object PyElementaryLabel, type PyElementaryLabel_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_label_add(parent.obj))
@@ -58,3 +58,7 @@ cdef class Label(Object):
         self._callback_del("language,changed", func)
 
 _elm_widget_type_register("label", Label)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryLabel_Type # hack to install metaclass
+_install_metaclass(&PyElementaryLabel_Type, ElementaryObjectMeta)

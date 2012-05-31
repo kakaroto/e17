@@ -210,8 +210,7 @@ cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-
-cdef class Toolbar(Object):
+cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementaryToolbar_Type]:
     """
     A toolbar
     """
@@ -395,5 +394,8 @@ cdef class Toolbar(Object):
     def callback_language_changed_del(self, func):
         self._callback_del("language,changed", func)
 
-
 _elm_widget_type_register("toolbar", Toolbar)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryToolbar_Type # hack to install metaclass
+_install_metaclass(&PyElementaryToolbar_Type, ElementaryObjectMeta)

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Background(Object):
+cdef public class Background(Object) [object PyElementaryBackground, type PyElementaryBackground_Type]:
     """
     Background widget object
 
@@ -70,7 +70,7 @@ cdef class Background(Object):
     def option_set(self, option):
         """
         Set the mode of display of the background
-        
+
         @param: B{option} choose from Elm_Bg_Option
         """
         elm_bg_option_set(self.obj, option)
@@ -93,7 +93,7 @@ cdef class Background(Object):
     def color_set(self, r, g, b):
         """
         Set the color of the bg
-    
+
         @param B{r} the red component (range: 0 to 255)
         @param B{g} the green component (range: 0 to 255)
         @param B{b} the blue component (range: 0 to 255)
@@ -103,7 +103,7 @@ cdef class Background(Object):
     def color_get(self):
         """
         Get the color of the bg
-        
+
         @return: the tuple (r, g, b)
         """
         cdef int r, g, b
@@ -121,7 +121,7 @@ cdef class Background(Object):
     def load_size_set(self, w, h):
         """
         Set the load size of the background image
-    
+
         @param B{w} width
         @param B{h} height
         """
@@ -133,3 +133,7 @@ cdef class Background(Object):
 
 
 _elm_widget_type_register("bg", Background)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryBackground_Type # hack to install metaclass
+_install_metaclass(&PyElementaryBackground_Type, ElementaryObjectMeta)

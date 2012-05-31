@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Table(Object):
+cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTable_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_table_add(parent.obj))
@@ -30,7 +30,7 @@ cdef class Table(Object):
     property homogeneous:
         def __get__(self):
             return self.homogeneous_get()
-    
+
         def __set__(self, value):
             self.homogeneous_set(value)
 
@@ -45,7 +45,7 @@ cdef class Table(Object):
     property padding:
         def __get__(self):
             return self.padding_get()
-    
+
         def __set__(self, value):
             self.padding_set(*value)
 
@@ -67,3 +67,7 @@ cdef class Table(Object):
         return (x, y, w, h)
 
 _elm_widget_type_register("table", Table)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryTable_Type # hack to install metaclass
+_install_metaclass(&PyElementaryTable_Type, ElementaryObjectMeta)

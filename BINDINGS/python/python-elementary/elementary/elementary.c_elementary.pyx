@@ -187,6 +187,32 @@ cdef _elm_widget_type_register(char *name, cls):
 cdef _elm_widget_type_unregister(char *name):
     _elm_widget_type_mapping.pop(name)
 
+cdef extern from "Python.h":
+    ctypedef struct PyTypeObject:
+        PyTypeObject *ob_type
+
+cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
+    Py_INCREF(metaclass)
+    ctype.ob_type = <PyTypeObject*>metaclass
+
+class ElementaryObjectMeta(type):
+    def __init__(cls, name, bases, dict_):
+        type.__init__(cls, name, bases, dict_)
+        cls._fetch_evt_callbacks()
+
+    def _fetch_evt_callbacks(cls):
+        if "__evas_event_callbacks__" in cls.__dict__:
+            return
+
+        cls.__evas_event_callbacks__ = []
+        append = cls.__evas_event_callbacks__.append
+
+        for name in dir(cls):
+            val = getattr(cls, name)
+            if not callable(val) or not hasattr(val, "evas_event_callback"):
+                continue
+            evt = getattr(val, "evas_event_callback")
+            append((name, evt))
 
 include "elementary.c_elementary_object.pxi"
 include "elementary.c_elementary_object_item.pxi"

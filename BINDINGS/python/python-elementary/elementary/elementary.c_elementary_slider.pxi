@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Slider(Object):
+cdef public class Slider(Object) [object PyElementarySlider, type PyElementarySlider_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_slider_add(parent.obj))
@@ -154,3 +154,7 @@ cdef class Slider(Object):
         self._callback_del("delay,changed", func)
 
 _elm_widget_type_register("slider", Slider)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementarySlider_Type # hack to install metaclass
+_install_metaclass(&PyElementarySlider_Type, ElementaryObjectMeta)

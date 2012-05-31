@@ -134,9 +134,7 @@ cdef void _menu_item_separator_del_cb(void *data, c_evas.Evas_Object *o, void *e
     it = <object>data
     it.__del_cb()
 
-cdef class MenuItemSeparator:
-    cdef Elm_Object_Item *obj
-
+cdef class MenuItemSeparator(ObjectItem):
     def __del_cb(self):
         self.obj = NULL
         Py_DECREF(self)
@@ -157,7 +155,7 @@ cdef class MenuItemSeparator:
     def is_separator(self):
         return True
 
-cdef class Menu(Object):
+cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_Type]:
     def __init__(self, c_evas.Object parent, obj = None):
         if obj is None:
             Object.__init__(self, parent.evas)
@@ -242,3 +240,7 @@ cdef class Menu(Object):
         self._callback_del("clicked", func)
 
 _elm_widget_type_register("menu", Menu)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryMenu_Type # hack to install metaclass
+_install_metaclass(&PyElementaryMenu_Type, ElementaryObjectMeta)

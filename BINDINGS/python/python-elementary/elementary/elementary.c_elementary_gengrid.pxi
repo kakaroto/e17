@@ -611,8 +611,7 @@ cdef _elm_gengrid_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-
-cdef class Gengrid(Object):
+cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementaryGengrid_Type]:
     """Creates a generic, scalable and extensible grid widget.
 
     Like L{Genlist}, this widget allows more items while keeping
@@ -1067,12 +1066,6 @@ cdef class Gengrid(Object):
         def __set__(self, value):
             self.highlight_mode_set(value)
 
-
-
-
-
-
-
     def callback_clicked_double_add(self, func, *args, **kwargs):
         self._callback_add_full("clicked,double", _gengrid_item_conv,
                                 func, *args, **kwargs)
@@ -1101,5 +1094,8 @@ cdef class Gengrid(Object):
     def callback_unselected_del(self, func):
         self._callback_del_full("unselected", _gengrid_item_conv, func)
 
-
 _elm_widget_type_register("gengrid", Gengrid)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryGengrid_Type # hack to install metaclass
+_install_metaclass(&PyElementaryGengrid_Type, ElementaryObjectMeta)

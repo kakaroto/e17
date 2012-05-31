@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Layout(Object):
+cdef public class Layout(Object) [object PyElementaryLayout, type PyElementaryLayout_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_layout_add(parent.obj))
@@ -155,3 +155,7 @@ cdef class Layout(Object):
         self._callback_del("theme,changed", func)
 
 _elm_widget_type_register("layout", Layout)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryLayout_Type # hack to install metaclass
+_install_metaclass(&PyElementaryLayout_Type, ElementaryObjectMeta)

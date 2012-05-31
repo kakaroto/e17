@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Flip(Object):
+cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_flip_add(parent.obj))
@@ -43,7 +43,7 @@ cdef class Flip(Object):
     property interaction:
         def __get__(self):
             return self.interactione_get()
-    
+
         def __set__(self, value):
             self.interaction_set(value)
 
@@ -78,3 +78,7 @@ cdef class Flip(Object):
         self._callback_del("animate,done", func)
 
 _elm_widget_type_register("flip", Flip)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFlip_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFlip_Type, ElementaryObjectMeta)

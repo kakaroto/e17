@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Button(Object):
+cdef public class Button(Object) [object PyElementaryButton, type PyElementaryButton_Type]:
     """This is a push-button.
 
     The button has the following styles available:
@@ -115,3 +115,7 @@ cdef class Button(Object):
         self._callback_del("unpressed", func)
 
 _elm_widget_type_register("button", Button)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryButton_Type # hack to install metaclass
+_install_metaclass(&PyElementaryButton_Type, ElementaryObjectMeta)

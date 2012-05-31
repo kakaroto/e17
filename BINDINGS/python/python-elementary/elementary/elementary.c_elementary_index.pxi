@@ -88,7 +88,7 @@ cdef Elm_Object_Item *_elm_index_item_from_python(IndexItem item):
     else:
         return item.obj
 
-cdef class Index(Object):
+cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryIndex_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_index_add(parent.obj))
@@ -198,3 +198,9 @@ cdef class Index(Object):
 
     def callback_level_down_del(self, func):
         self._callback_del("level,down", func)
+
+_elm_widget_type_register("index", Index)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryIndex_Type # hack to install metaclass
+_install_metaclass(&PyElementaryIndex_Type, ElementaryObjectMeta)

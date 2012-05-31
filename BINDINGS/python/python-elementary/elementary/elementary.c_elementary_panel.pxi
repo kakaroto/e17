@@ -17,7 +17,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Panel(Object):
+cdef public class Panel(Object) [object PyElementaryPanel, type PyElementaryPanel_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_panel_add(parent.obj))
@@ -50,3 +50,7 @@ cdef class Panel(Object):
         elm_panel_toggle(self.obj)
 
 _elm_widget_type_register("panel", Panel)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryPanel_Type # hack to install metaclass
+_install_metaclass(&PyElementaryPanel_Type, ElementaryObjectMeta)
