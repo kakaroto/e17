@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+     |-----handy-ruler------------------------------------------------------|
+ecore: 
+ecore: Enlightenment's core event abstraction layer and OS abstraction layer
+ecore: 
+ecore: Ecore is the event/X abstraction layer that makes doing selections,
+ecore: Xdnd, general X stuff, event loops, timeouts and idle handlers fast,
+ecore: optimized, and convenient. It's a separate library so anyone can make
+ecore: use of the work put into Ecore to make this job easy for applications.
+ecore: 
+ecore: Ecore is part of the EFL
+ecore: 
+ecore: 

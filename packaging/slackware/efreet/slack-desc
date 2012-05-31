@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+      |-----handy-ruler------------------------------------------------------|
+efreet: 
+efreet: Enlightenment's library for handling of freedesktop.org specs
+efreet: (desktop/icon/theme/etc...) 
+efreet: 
+efreet: An implementation of several specifications from freedesktop.org 
+efreet: intended for use in Enlightenment DR17 (e17) and other applications 
+efreet: using the Enlightenment Foundation Libraries (EFL).
+efreet: 
+efreet: Efreet is part of the EFL
+efreet: 
+efreet: 

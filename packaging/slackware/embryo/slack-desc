@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+      |-----handy-ruler------------------------------------------------------|
+embryo: 
+embryo: Enlightenment's virtual machine engine and bytecode compiler.
+embryo: 
+embryo: Embryo is primarily a shared library that gives you an API to load 
+embryo: and control interpreted programs compiled into an abstract machine 
+embryo: bytecode that it understands.  This abstract (or virtual) machine is 
+embryo: similar to a real machine with a CPU, but it is emulated in software.
+embryo: Embryo is used by edje.
+embryo: 
+embryo: Embryo is part of the EFL
+embryo: 

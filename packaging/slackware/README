@@ -1,0 +1,21 @@
+This is a basic infrastructure to build slackware packages from the E17
+subversion repository. It's a kind of unstable SlackE17 for people who wants
+bleeding-edge code and compile themself. Of course, there is absolutly no 
+guarantee that everything will build flawlessly at any time.
+
+To use this, you must:
+- have a recent Slackware or Slackware64 distro (13.37 or current)
+- got lua* and remix* packages installed (needed for dependencies)
+- connman* package is not required but useful
+- launch slacke17-svn-build.sh from this directory
+- take a small nap during compilation
+
+Packages will be under ${TMP}/slacke17-svn along with build logs
+
+Note: Add optimization to gcc via the ECFLAGS environment variable.
+
+* You can find these specific packages on the SlackE17 download page:
+http://sourceforge.net/projects/slacke17/files/slacke17/efl-1.2.0/ 
+
+-- 
+Jerome Pinot (ngc891)

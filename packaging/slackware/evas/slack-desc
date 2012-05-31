@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+    |-----handy-ruler------------------------------------------------------|
+evas: 
+evas: Hardware-accelerated retained canvas API
+evas: 
+evas: Evas is a clean display canvas API for several target display systems
+evas: that can draw anti-aliased text, smooth super and sub-sampled scaled
+evas: images, alpha-blend objects much and more.
+evas: 
+evas: Evas is part of the EFL
+evas: 
+evas: 
+evas: 

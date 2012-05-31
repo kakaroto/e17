@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+    |-----handy-ruler------------------------------------------------------|
+edje: 
+edje: Enlightenment's graphical layout and animation library
+edje: 
+edje: Edje is a complex graphical design and layout engine. It provides a
+edje: mechanism for allowing configuration data to define visual elements in
+edje: terms of layout, behavior, and appearance. Edje allows for multiple
+edje: collections of layouts in one file, allowing a complete set of images,
+edje: animations, and controls to exist as a unified whole.
+edje: 
+edje: Edje is part of EFL
+edje:

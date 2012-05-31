@@ -1,0 +1,90 @@
+#!/bin/bash
+#
+# Begin ethumb.SlackBuild
+
+# Set some variables
+NAME=ethumb
+BUILD=1jp
+CWD=$(pwd)
+TMP=${TMP:-/tmp}
+PKG=${TMP}/package-${NAME}
+LC_ALL=POSIX
+
+# Detecting arch
+if [ -z "${ARCH}" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+    *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+# Set C flags, ECFLAGS could be used for extra optimization
+SCFLAGS="-O2 -fomit-frame-pointer -pipe"
+if [ "${ARCH}" = "i486" ]; then
+  SCFLAGS="${SCFLAGS} -march=i486 -mtune=i686 ${ECFLAGS}"
+  LIBDIR="/usr/lib"
+  MFLAGS="-j2"
+elif [ "${ARCH}" = "x86_64" ]; then
+  SCFLAGS="${SCFLAGS} -fPIC ${ECFLAGS}"
+  LIBDIR="/usr/lib64"
+  MFLAGS="-j3"
+fi
+
+# Create temporary folders
+if [ ! -d ${TMP} ]; then
+  mkdir -p ${TMP}
+fi
+rm -rf ${PKG}
+mkdir -p ${PKG}
+
+# Go to source code
+cd ../../../${NAME}
+VERSION=r`svn info | grep Revision | cut -d ' ' -f2`
+
+# Correct ownership
+chown -R root:root .
+find . \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \;
+find . \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+# Better to clean before if possible
+if [ -f Makefile ]; then
+  make maintainer-clean
+fi
+
+# Configure
+CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
+  ./autogen.sh \
+    --prefix=/usr \
+    --libdir=${LIBDIR} \
+    --build=${ARCH}-slackware-linux
+
+# Build
+make ${MFLAGS}
+
+# Install
+make DESTDIR=${PKG} install
+
+mkdir -p ${PKG}/usr/doc/${NAME}-${VERSION}
+install -m644 ABOUT-NLS AUTHORS BUGS COPYING README TODO \
+  ${PKG}/usr/doc/${NAME}-${VERSION}/
+
+# Add API doc
+make doc
+mkdir -p ${PKG}/usr/doc/EFL/api
+cp -r doc/html ${PKG}/usr/doc/EFL/api/${NAME}
+ln -s /usr/doc/EFL/api/${NAME} ${PKG}/usr/doc/${NAME}-${VERSION}/html
+
+# Clean
+find ${PKG}/usr/doc/EFL -type f -exec chmod 644 {} \;
+find ${PKG} | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+find ${PKG} | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+
+# Build the package
+cd ${PKG}
+mkdir install
+install -m644 ${CWD}/slack-desc install/
+makepkg -l y -c n ${TMP}/${NAME}-${VERSION}-${ARCH}-${BUILD}.txz
+rm -rf ${PKG}
+
+# End ethumb.SlackBuild

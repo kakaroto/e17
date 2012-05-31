@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+   |-----handy-ruler------------------------------------------------------|
+eet: 
+eet: Enlightenment's file chunk reading/writing library. 
+eet: 
+eet: Eet is a tiny library designed to write an arbitary set of chunks of 
+eet: data to a file and optionally compress each chunk (very much like a 
+eet: zip file) and allow fast random-access reading of the file later on.
+eet: It does not do zip as a zip itself has more complexity than is 
+eet: needed, and it was much simpler to implement this once here.
+eet: 
+eet: Eet is part of the EFL
+eet:
