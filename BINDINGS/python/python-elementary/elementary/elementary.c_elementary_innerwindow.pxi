@@ -21,12 +21,11 @@ cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyEl
     """An inwin is a window inside a window that is useful for a quick popup.
 
     There are three styles available in the default theme. These are:
-
-    default: The inwin is sized to take over most of the window it's placed in.
-    minimal: The size of the inwin will be the minimum necessary to show its
-    contents.
-    minimal_vertical: Horizontally, the inwin takes as much space as possible,
-    vertically only as much as it needs to fit its contents.
+      - default: The inwin is sized to take over most of the window it's placed in.
+      - minimal: The size of the inwin will be the minimum necessary to show its
+        contents.
+      - minimal_vertical: Horizontally, the inwin takes as much space as possible,
+        vertically only as much as it needs to fit its contents.
     """
 
     def __init__(self, c_evas.Object parent):
@@ -40,7 +39,7 @@ cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyEl
     def content_set(self, c_evas.Object content):
         """Set the content of an inwin object.
 
-        @parm: B{content:} The object to set as content
+        @param content: The object to set as content
         """
         cdef c_evas.Evas_Object *o
         if content is not None:

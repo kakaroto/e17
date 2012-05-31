@@ -38,8 +38,8 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     def size_set(self, w, h):
         """Set the virtual size of the grid.
 
-        @param w The virtual width of the grid
-        @param h The virtual height of the grid
+        @param w: The virtual width of the grid
+        @param h: The virtual height of the grid
 
         """
         elm_grid_size_set(self.obj, w, h)
@@ -47,7 +47,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     def size_get(self):
         """Get the virtual size of the grid.
 
-        @return The virtual width and height of the grid
+        @return: The virtual width and height of the grid
 
         """
         cdef Evas_Coord w, h
@@ -58,11 +58,11 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         Pack child at given position and size
 
-        @param subobj The child to pack
-        @param x The virtual x coord at which to pack it
-        @param y The virtual y coord at which to pack it
-        @param w The virtual width at which to pack it
-        @param h The virtual height at which to pack it
+        @param subobj: The child to pack
+        @param x: The virtual x coord at which to pack it
+        @param y: The virtual y coord at which to pack it
+        @param w: The virtual width at which to pack it
+        @param h: The virtual height at which to pack it
 
         """
         elm_grid_pack(self.obj, subobj.obj, x, y, w, h)
@@ -70,7 +70,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     def unpack(self, c_evas.Object subobj):
         """Unpack a child from a grid object
 
-        @param subobj The child to unpack
+        @param subobj: The child to unpack
 
         """
         elm_grid_unpack(self.obj, subobj.obj)
@@ -79,7 +79,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         Faster way to remove all child objects from a grid object.
 
-        @param clear If true, it will delete just removed children
+        @param clear: If true, it will delete just removed children
 
         """
         elm_grid_clear(self.obj, clear)
@@ -87,11 +87,11 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     def pack_set(c_evas.Object subobj, x, y, w, h):
         """Set packing of an existing child at to position and size
 
-        @param subobj The child to set packing of
-        @param x The virtual x coord at which to pack it
-        @param y The virtual y coord at which to pack it
-        @param w The virtual width at which to pack it
-        @param h The virtual height at which to pack it
+        @param subobj: The child to set packing of
+        @param x: The virtual x coord at which to pack it
+        @param y: The virtual y coord at which to pack it
+        @param w: The virtual width at which to pack it
+        @param h: The virtual height at which to pack it
 
         """
         elm_grid_pack_set(subobj.obj, x, y, w, h)
@@ -99,11 +99,11 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     def pack_get(c_evas.Object subobj):
         """Get packing of a child
 
-        @param subobj The child to query
-        @param x Pointer to integer to store the virtual x coord
-        @param y Pointer to integer to store the virtual y coord
-        @param w Pointer to integer to store the virtual width
-        @param h Pointer to integer to store the virtual height
+        @param subobj: The child to query
+        @param x: Pointer to integer to store the virtual x coord
+        @param y: Pointer to integer to store the virtual y coord
+        @param w: Pointer to integer to store the virtual width
+        @param h: Pointer to integer to store the virtual height
 
         """
         cdef Evas_Coord x, y, w, h
@@ -113,7 +113,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     def children_get(self):
         """Get the list of the children for the grid.
 
-        @return The list of children
+        @return: The list of children
 
         """
         cdef c_evas.Evas_Object *o

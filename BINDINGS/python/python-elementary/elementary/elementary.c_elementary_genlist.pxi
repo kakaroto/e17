@@ -143,44 +143,40 @@ cdef class GenlistItemClass:
                  content_get_func=None, state_get_func=None, del_func=None):
         """GenlistItemClass constructor.
 
-        @parm: B{item_style} the string that defines the genlist item
-               theme to be used. The corresponding edje group will
-               have this as suffix.
+        @param item_style: the string that defines the genlist item
+            theme to be used. The corresponding edje group will
+            have this as suffix.
 
-        @parm: B{text_get_func} if provided will override the
-               behavior defined by L{text_get()} in this class. Its
-               purpose is to return the label string to be used by a
-               given part and row. This function should have the
-               signature:
+        @param text_get_func: if provided will override the
+            behavior defined by L{text_get()} in this class. Its
+            purpose is to return the label string to be used by a
+            given part and row. This function should have the
+            signature:
+            C{func(obj, part, item_data) -> str}
 
-                  C{func(obj, part, item_data) -> str}
+        @param content_get_func: if provided will override the behavior
+            defined by L{content_get()} in this class. Its purpose is
+            to return the icon object to be used (swalloed) by a
+            given part and row. This function should have the
+            signature:
+            C{func(obj, part, item_data) -> obj}
 
-        @parm: B{content_get_func} if provided will override the behavior
-               defined by L{content_get()} in this class. Its purpose is
-               to return the icon object to be used (swalloed) by a
-               given part and row. This function should have the
-               signature:
+        @param state_get_func: if provided will override the
+            behavior defined by L{state_get()} in this class. Its
+            purpose is to return the boolean state to be used by a
+            given part and row. This function should have the
+            signature:
+            C{func(obj, part, item_data) -> bool}
 
-                  C{func(obj, part, item_data) -> obj}
+        @param del_func: if provided will override the behavior
+            defined by L{del()} in this class. Its purpose is to be
+            called when row is deleted, thus finalizing resouces
+            and similar. This function should have the signature:
+            C{func(obj, part, item_data) -> str}
 
-        @parm: B{state_get_func} if provided will override the
-               behavior defined by L{state_get()} in this class. Its
-               purpose is to return the boolean state to be used by a
-               given part and row. This function should have the
-               signature:
-
-                  C{func(obj, part, item_data) -> bool}
-
-        @parm: B{del_func} if provided will override the behavior
-               defined by L{del()} in this class. Its purpose is to be
-               called when row is deleted, thus finalizing resouces
-               and similar. This function should have the signature:
-
-                  C{func(obj, part, item_data) -> str}
-
-        In all these signatures, 'obj' means Genlist and
-        'item_data' is the value given to Genlist item append/prepend
-        methods, it should represent your row model as you want.
+        @note: In all these signatures, 'obj' means Genlist and
+            'item_data' is the value given to Genlist item append/prepend
+            methods, it should represent your row model as you want.
         """
         if item_style:
             self._item_style = str(item_style)
@@ -249,9 +245,9 @@ cdef class GenlistItemClass:
     def text_get(self, c_evas.Object obj, char *part, item_data):
         """To be called by Genlist for each row to get its label.
 
-        @parm: B{obj:} the Genlist instance
-        @parm: B{part:} the part that is being handled.
-        @parm: B{item_data:} the value given to genlist append/prepend.
+        @param obj: the Genlist instance
+        @param part: the part that is being handled.
+        @param item_data: the value given to genlist append/prepend.
 
         @return: label to be used.
         @rtype: str or None
@@ -261,9 +257,9 @@ cdef class GenlistItemClass:
     def content_get(self, c_evas.Object obj, char *part, item_data):
         """To be called by Genlist for each row to get its icon.
 
-        @parm: B{obj:} the Genlist instance
-        @parm: B{part:} the part that is being handled.
-        @parm: B{item_data:} the value given to genlist append/prepend.
+        @param obj: the Genlist instance
+        @param part: the part that is being handled.
+        @param item_data: the value given to genlist append/prepend.
 
         @return: icon object to be used and swallowed.
         @rtype: evas Object or None
@@ -273,11 +269,11 @@ cdef class GenlistItemClass:
     def state_get(self, c_evas.Object obj, char *part, item_data):
         """To be called by Genlist for each row to get its state.
 
-        @parm: B{obj:} the Genlist instance
-        @parm: B{part:} the part that is being handled.
-        @parm: B{item_data:} the value given to genlist append/prepend.
+        @param obj: the Genlist instance
+        @param part: the part that is being handled.
+        @param item_data: the value given to genlist append/prepend.
 
-        @return: boolean state to be used.
+        @return: state to be used.
         @rtype: bool or None
         """
         return False
@@ -388,21 +384,21 @@ cdef class GenlistItem(ObjectItem):
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @tooltip_content_cb_set
+        Internally, this method calls @L{tooltip_content_cb_set}
         """
         elm_genlist_item_tooltip_text_set(self.obj, text)
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
 
-        @param: B{func} Function to be create tooltip content, called when
-                need show tooltip.
-
         Setup the tooltip to object. The object can have only one tooltip,
         so any previews tooltip data is removed. @func(with @{args,kargs}) will
         be called every time that need show the tooltip and it should return a
         valid Evas_Object. This object is then managed fully by tooltip system
         and is deleted when the tooltip is gone.
+
+        @param func: Function to be create tooltip content, called when
+            need show tooltip.
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -422,16 +418,16 @@ cdef class GenlistItem(ObjectItem):
 
         Remove tooltip from object. If used the @tool_text_set the internal
         copy of label will be removed correctly. If used
-        @tooltip_content_cb_set, the data will be unreferred but no freed.
+        @L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
         elm_genlist_item_tooltip_unset(self.obj)
 
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
 
-        @note before you set a style you should define a tooltip with
-        elm_genlist_item_tooltip_content_cb_set() or
-        elm_genlist_item_tooltip_text_set()
+        @note: before you set a style you should define a tooltip with
+            elm_genlist_item_tooltip_content_cb_set() or
+            elm_genlist_item_tooltip_text_set()
         """
         if style:
             elm_genlist_item_tooltip_style_set(self.obj, style)
@@ -474,8 +470,8 @@ cdef class GenlistItem(ObjectItem):
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
 
-        @note before you set a style you should define a cursor with
-        elm_genlist_item_cursor_set()
+        @note: before you set a style you should define a cursor with
+            elm_genlist_item_cursor_set()
         """
         if style:
             elm_genlist_item_cursor_style_set(self.obj, style)
@@ -494,8 +490,8 @@ cdef class GenlistItem(ObjectItem):
     def cursor_engine_only_set(self, engine_only):
         """ Sets cursor engine only usage for this object.
 
-        @note before you set engine only usage you should define a cursor with
-        elm_genlist_item_cursor_set()
+        @note: before you set engine only usage you should define a cursor with
+            elm_genlist_item_cursor_set()
         """
         elm_genlist_item_cursor_engine_only_set(self.obj, bool(engine_only))
 
@@ -645,28 +641,28 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
                     func=None):
         """Append a new item (add as last row) to this genlist.
 
-        @parm: B{item_class:} a valid instance that defines the
-               behavior of this row. See L{GenlistItemClass}.
-        @parm: B{item_data:} some data that defines the model of this
-               row. This value will be given to methods of
-               C{item_class} such as
-               L{GenlistItemClass.text_get()}. It will also be
-               provided to C{func} as its last parameter.
-        @parm: B{parent_item:} if this is a tree child, then the
-               parent item must be given here, otherwise it may be
-               None. The parent must have the flag
-               C{ELM_GENLIST_ITEM_SUBITEMS} set.
-        @parm: B{flags:} defines special behavior of this item:
-                - ELM_GENLIST_ITEM_NONE = 0
-                - ELM_GENLIST_ITEM_SUBITEMS = 1
-                - ELM_GENLIST_ITEM_GROUP = 2
-        @parm: B{func:} if not None, this must be a callable to be
-               called back when the item is selected. The function
-               signature is:
-                 C{func(item, obj, item_data)}
-               Where C{item} is the handle, C{obj} is the Evas object
-               that represents this item, and C{item_data} is the
-               value given as parameter to this function.
+        @param item_class: a valid instance that defines the
+            behavior of this row. See L{GenlistItemClass}.
+        @param item_data: some data that defines the model of this
+            row. This value will be given to methods of
+            C{item_class} such as
+            L{GenlistItemClass.text_get()}. It will also be
+            provided to C{func} as its last parameter.
+        @param parent_item: if this is a tree child, then the
+            parent item must be given here, otherwise it may be
+            None. The parent must have the flag
+            C{ELM_GENLIST_ITEM_SUBITEMS} set.
+        @param flags: defines special behavior of this item:
+            - ELM_GENLIST_ITEM_NONE = 0
+            - ELM_GENLIST_ITEM_SUBITEMS = 1
+            - ELM_GENLIST_ITEM_GROUP = 2
+        @param func: if not None, this must be a callable to be
+            called back when the item is selected. The function
+            signature is:
+            C{func(item, obj, item_data)}
+            Where C{item} is the handle, C{obj} is the Evas object
+            that represents this item, and C{item_data} is the
+            value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
         cdef Elm_Object_Item *item, *parent
@@ -699,28 +695,28 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
                      func=None):
         """Prepend a new item (add as first row) to this genlist.
 
-        @parm: B{item_class:} a valid instance that defines the
-               behavior of this row. See L{GenlistItemClass}.
-        @parm: B{item_data:} some data that defines the model of this
-               row. This value will be given to methods of
-               C{item_class} such as
-               L{GenlistItemClass.text_get()}. It will also be
-               provided to C{func} as its last parameter.
-        @parm: B{parent_item:} if this is a tree child, then the
-               parent item must be given here, otherwise it may be
-               None. The parent must have the flag
-               C{ELM_GENLIST_ITEM_SUBITEMS} set.
-        @parm: B{flags:} defines special behavior of this item:
-                - ELM_GENLIST_ITEM_NONE = 0
-                - ELM_GENLIST_ITEM_SUBITEMS = 1
-                - ELM_GENLIST_ITEM_GROUP = 2
-        @parm: B{func:} if not None, this must be a callable to be
-               called back when the item is selected. The function
-               signature is:
-                 C{func(item, obj, item_data)}
-               Where C{item} is the handle, C{obj} is the Evas object
-               that represents this item, and C{item_data} is the
-               value given as parameter to this function.
+        @param item_class: a valid instance that defines the
+            behavior of this row. See L{GenlistItemClass}.
+        @param item_data: some data that defines the model of this
+            row. This value will be given to methods of
+            C{item_class} such as
+            L{GenlistItemClass.text_get()}. It will also be
+            provided to C{func} as its last parameter.
+        @param parent_item: if this is a tree child, then the
+            parent item must be given here, otherwise it may be
+            None. The parent must have the flag
+            C{ELM_GENLIST_ITEM_SUBITEMS} set.
+        @param flags: defines special behavior of this item:
+            - ELM_GENLIST_ITEM_NONE = 0
+            - ELM_GENLIST_ITEM_SUBITEMS = 1
+            - ELM_GENLIST_ITEM_GROUP = 2
+        @param func: if not None, this must be a callable to be
+            called back when the item is selected. The function
+            signature is:
+            C{func(item, obj, item_data)}
+            Where C{item} is the handle, C{obj} is the Evas object
+            that represents this item, and C{item_data} is the
+            value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
         cdef Elm_Object_Item *item, *parent
@@ -753,26 +749,26 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
                            func=None):
         """Insert a new item (row) before another item in this genlist.
 
-        @parm: B{item_class:} a valid instance that defines the
-               behavior of this row. See L{GenlistItemClass}.
-        @parm: B{item_data:} some data that defines the model of this
-               row. This value will be given to methods of
-               C{item_class} such as
-               L{GenlistItemClass.text_get()}. It will also be
-               provided to C{func} as its last parameter.
-        @parm: B{before_item:} a reference item to use, the new item
-               will be inserted before it.
-        @parm: B{flags:} defines special behavior of this item:
-                - ELM_GENLIST_ITEM_NONE = 0
-                - ELM_GENLIST_ITEM_SUBITEMS = 1
-                - ELM_GENLIST_ITEM_GROUP = 2
-        @parm: B{func:} if not None, this must be a callable to be
-               called back when the item is selected. The function
-               signature is:
-                 C{func(item, obj, item_data)}
-               Where C{item} is the handle, C{obj} is the Evas object
-               that represents this item, and C{item_data} is the
-               value given as parameter to this function.
+        @param item_class: a valid instance that defines the
+            behavior of this row. See L{GenlistItemClass}.
+        @param item_data: some data that defines the model of this
+            row. This value will be given to methods of
+            C{item_class} such as
+            L{GenlistItemClass.text_get()}. It will also be
+            provided to C{func} as its last parameter.
+        @param before_item: a reference item to use, the new item
+            will be inserted before it.
+        @param flags: defines special behavior of this item:
+            - ELM_GENLIST_ITEM_NONE = 0
+            - ELM_GENLIST_ITEM_SUBITEMS = 1
+            - ELM_GENLIST_ITEM_GROUP = 2
+        @param func: if not None, this must be a callable to be
+            called back when the item is selected. The function
+            signature is:
+            C{func(item, obj, item_data)}
+            Where C{item} is the handle, C{obj} is the Evas object
+            that represents this item, and C{item_data} is the
+            value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
         cdef Elm_Object_Item *item, *before
@@ -807,26 +803,26 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
                           func=None):
         """Insert a new item (row) after another item in this genlist.
 
-        @parm: B{item_class:} a valid instance that defines the
-               behavior of this row. See L{GenlistItemClass}.
-        @parm: B{item_data:} some data that defines the model of this
-               row. This value will be given to methods of
-               C{item_class} such as
-               L{GenlistItemClass.text_get()}. It will also be
-               provided to C{func} as its last parameter.
-        @parm: B{after_item:} a reference item to use, the new item
-               will be inserted after it.
-        @parm: B{flags:} defines special behavior of this item:
-                - ELM_GENLIST_ITEM_NONE = 0
-                - ELM_GENLIST_ITEM_SUBITEMS = 1
-                - ELM_GENLIST_ITEM_GROUP = 2
-        @parm: B{func:} if not None, this must be a callable to be
-               called back when the item is selected. The function
-               signature is:
-                 C{func(item, obj, item_data)}
-               Where C{item} is the handle, C{obj} is the Evas object
-               that represents this item, and C{item_data} is the
-               value given as parameter to this function.
+        @param item_class: a valid instance that defines the
+            behavior of this row. See L{GenlistItemClass}.
+        @param item_data: some data that defines the model of this
+            row. This value will be given to methods of
+            C{item_class} such as
+            L{GenlistItemClass.text_get()}. It will also be
+            provided to C{func} as its last parameter.
+        @param after_item: a reference item to use, the new item
+            will be inserted after it.
+        @param flags: defines special behavior of this item:
+            - ELM_GENLIST_ITEM_NONE = 0
+            - ELM_GENLIST_ITEM_SUBITEMS = 1
+            - ELM_GENLIST_ITEM_GROUP = 2
+        @param func: if not None, this must be a callable to be
+            called back when the item is selected. The function
+            signature is:
+            C{func(item, obj, item_data)}
+            Where C{item} is the handle, C{obj} is the Evas object
+            that represents this item, and C{item_data} is the
+            value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
         cdef Elm_Object_Item *item, *after

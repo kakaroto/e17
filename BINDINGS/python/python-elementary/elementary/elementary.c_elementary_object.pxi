@@ -98,8 +98,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def part_text_set(self, part, text):
         """Sets the text of a given part of this object.
 
-        @parm: B{part} part name to set the text.
-        @parm: B{text} text to set.
+        @param part: part name to set the text.
+        @param text: text to set.
         @see: L{text_set()} and L{text_part_get()}
         """
         elm_object_part_text_set(self.obj, part, text)
@@ -107,7 +107,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def text_set(self, text):
         """Sets the main text for this object.
 
-        @parm: B{text} any text to set as the main textual part of this object.
+        @param text: any text to set as the main textual part of this object.
         @see: L{text_get()} and L{text_part_set()}
         """
         elm_object_text_set(self.obj, text)
@@ -115,7 +115,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
 
-        @parm: B{part} part name to get the text.
+        @param part: part name to get the text.
         @return: the text of a part or None if nothing was set.
         @see: L{text_get()} and L{text_part_set()}
         """
@@ -261,7 +261,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
 
-        @note before you set a style you should define a cursor with
+        @note: before you set a style you should define a cursor with
         elm_object_cursor_set()
         """
         if style:
@@ -281,7 +281,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def cursor_theme_search_enabled_set(self, engine_only):
         """ Sets cursor engine only usage for this object.
 
-        @note before you set engine only usage you should define a cursor with
+        @note: before you set engine only usage you should define a cursor with
         elm_object_cursor_set()
         """
         elm_object_cursor_theme_search_enabled_set(self.obj, bool(engine_only))
@@ -449,7 +449,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @tooltip_content_cb_set
+        Internaly, this method call @L{tooltip_content_cb_set}
         """
         elm_object_tooltip_text_set(self.obj, text)
 
@@ -462,15 +462,15 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
 
-        @param: B{func} Function to be create tooltip content, called when
-                need show tooltip.
-
         Setup the tooltip to object. The object can have only one
         tooltip, so any previews tooltip data is removed. func(owner,
         tooltip, args, kargs) will be called every time that need
         show the tooltip and it should return a valid
         Evas_Object. This object is then managed fully by tooltip
         system and is deleted when the tooltip is gone.
+
+        @param func: Function to be create tooltip content, called when
+            need show tooltip.
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -488,16 +488,16 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         Remove tooltip from object. If used the @tool_text_set the internal
         copy of label will be removed correctly. If used
-        @tooltip_content_cb_set, the data will be unreferred but no freed.
+        @L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
         elm_object_tooltip_unset(self.obj)
 
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
 
-        @note before you set a style you should define a tooltip with
-        elm_object_tooltip_content_cb_set() or
-        elm_object_tooltip_text_set()
+        @note: before you set a style you should define a tooltip with
+            elm_object_tooltip_content_cb_set() or
+            elm_object_tooltip_text_set()
         """
         if style:
             elm_object_tooltip_style_set(self.obj, style)
@@ -539,12 +539,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 
-        @parm: B{event} event name
-        @parm: B{event_conv} Conversion function to get the
+        @param event: event name
+        @param event_conv: Conversion function to get the
                pointer (as a long) to the object to be given to the
                function as the second parameter. If None, then no
                parameter will be given to the callback.
-        @parm: B{func} what to callback. Should have the signature:
+        @param func: what to callback. Should have the signature:
            C{function(object, event_info, *args, **kargs)}
            C{function(object, *args, **kargs)} (if no event_conv is provided)
         @raise TypeError: if B{func} is not callable.
@@ -570,10 +570,10 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         Removes a callback that was added by L{callback_add()}.
 
-        @parm: B{event} event name
-        @parm: B{event_conv} same as registered with _callback_add_full()
-        @parm: B{func} what to callback, should have be previously registered.
-        @precond: B{event}, B{event_conv} and B{func} must be used as
+        @param event: event name
+        @param event_conv: same as registered with _callback_add_full()
+        @param func: what to callback, should have be previously registered.
+        @precond: event, B{event_conv} and B{func} must be used as
            parameter for L{_callback_add_full()}.
 
         @raise ValueError: if there was no B{func} connected with this event.
@@ -603,8 +603,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def _callback_add(self, char *event, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 
-        @parm: B{event} event name
-        @parm: B{func} what to callback. Should have the signature:
+        @param event: event name
+        @param func: what to callback. Should have the signature:
            C{function(object, *args, **kargs)}
         @raise TypeError: if B{func} is not callable.
         """
@@ -615,10 +615,10 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         Removes a callback that was added by L{callback_add()}.
 
-        @parm: B{event} event name
-        @parm: B{func} what to callback, should have be previously registered.
-        @precond: B{event} and B{func} must be used as parameter for
-           L{_callback_add_full()}.
+        @param event: event name
+        @param func: what to callback, should have be previously registered.
+        @precond: event and B{func} must be used as parameter for
+            L{_callback_add_full()}.
 
         @raise ValueError: if there was no B{func} connected with this event.
         """

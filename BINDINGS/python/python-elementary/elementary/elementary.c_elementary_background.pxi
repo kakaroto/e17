@@ -27,7 +27,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
     def __init__(self, c_evas.Object parent):
         """Initialize the background
 
-        @parm: B{parent} Parent window
+        @param parent: Parent window
         """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_bg_add(parent.obj))
@@ -36,8 +36,8 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """
         Set the file (image or edje) used for the background
 
-        @param: B{filename} The file path
-        @param: B{group} Optional key (group in Edje) within the file
+        @param filename: The file path
+        @param group: Optional key (group in Edje) within the file
 
         This sets the image file used in the background object. The image (or edje)
         will be stretched (retaining aspect if its an image file) to completely fill
@@ -71,7 +71,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """
         Set the mode of display of the background
 
-        @param: B{option} choose from Elm_Bg_Option
+        @param option: choose from Elm_Bg_Option
         """
         elm_bg_option_set(self.obj, option)
 
@@ -94,9 +94,9 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """
         Set the color of the bg
 
-        @param B{r} the red component (range: 0 to 255)
-        @param B{g} the green component (range: 0 to 255)
-        @param B{b} the blue component (range: 0 to 255)
+        @param r: the red component (range: 0 to 255)
+        @param g: the green component (range: 0 to 255)
+        @param b: the blue component (range: 0 to 255)
         """
         elm_bg_color_set(self.obj, r, g, b)
 
@@ -122,8 +122,8 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """
         Set the load size of the background image
 
-        @param B{w} width
-        @param B{h} height
+        @param w: width
+        @param h: height
         """
         elm_bg_load_size_set(self.obj, w, h)
 

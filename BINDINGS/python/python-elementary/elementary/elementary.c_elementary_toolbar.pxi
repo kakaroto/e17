@@ -247,9 +247,9 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
     def item_append(self, icon, label, callback = None, *args, **kargs):
         """Appends a new item to the toolbar
 
-        @parm: L{icon} icon for the item
-        @parm: L{label} label for the item
-        @parm: L{callback} function to click if the user clicked on the item
+        @param icon: icon for the item
+        @param label: label for the item
+        @param callback: function to click if the user clicked on the item
         """
         # Everything is done in the ToolbarItem class, because of wrapping the
         # C structures in python classes

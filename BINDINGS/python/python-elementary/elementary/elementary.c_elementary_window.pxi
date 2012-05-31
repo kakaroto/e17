@@ -25,8 +25,8 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
 
     def __init__(self, name, type):
         """
-        @parm: B{name} Name of the window
-        @parm: B{type} Type of the Window
+        @param name: Name of the window
+        @param type: Type of the Window
         """
         self._set_obj(elm_win_add(NULL, name, type))
 
@@ -38,21 +38,21 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def resize_object_add(self, c_evas.Object subobj):
         """Add subobj as a resize object of window obj.
 
-        @parm: B{subobj} Widget object
+        @param subobj: Widget object
         """
         elm_win_resize_object_add(self.obj, subobj.obj)
 
     def resize_object_del(self, c_evas.Object subobj):
         """Delete subobj as a resize object of window obj.
 
-        @parm: B{subobj} Widget object
+        @param subobj: Widget object
         """
         elm_win_resize_object_del(self.obj, subobj.obj)
 
     def title_set(self, title):
         """Set the title of the window.
 
-        @parm: B{title} Title for the window
+        @param title: Title for the window
         """
         elm_win_title_set(self.obj, title)
 
@@ -69,7 +69,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def icon_name_set(self, icon_name):
         """Set the icon name of the window.
 
-        @parm: B{icon_name} Icon name for the window
+        @param icon_name: Icon name for the window
         """
         elm_win_icon_name_set(self.obj, icon_name)
 
@@ -86,7 +86,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def role_set(self, role):
         """Set the role of the window.
 
-        @parm: B{role} Role for the window
+        @param role: Role for the window
         """
         elm_win_role_set(self.obj, role)
 
@@ -103,7 +103,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def icon_object_set(self, c_evas.Object icon):
         """Set the object to represent the window icon.
 
-        @parm: B{icon} Icon object for the window
+        @param icon: Icon object for the window
         """
         elm_win_icon_object_set(self.obj, icon.obj)
 
@@ -121,7 +121,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def autodel_set(self, autodel):
         """Set the window's autodel state.
 
-        @parm: B{audodel} Auto deletion property
+        @param audodel: Auto deletion property
         """
         elm_win_autodel_set(self.obj, autodel)
 
@@ -154,7 +154,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def borderless_set(self, borderless):
         """Set the borderless state of the window.
 
-        @parm: B{borderless} Borderless state
+        @param borderless: Borderless state
         """
         elm_win_borderless_set(self.obj, borderless)
 
@@ -171,7 +171,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def shaped_set(self,shaped):
         """Set the shaped state of the window.
 
-        @parm: B{shaped} Shaped property
+        @param shaped: Shaped property
         """
         elm_win_shaped_set(self.obj, shaped)
 
@@ -188,7 +188,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def alpha_set(self,alpha):
         """Set the alpha channel state of the window.
 
-        @parm: b{alpha} Alpha channel state
+        @param alpha: Alpha channel state
         """
         elm_win_alpha_set(self.obj, alpha)
 
@@ -205,7 +205,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def override_set(self, override):
         """Set the override property
 
-        @parm: B{override} Override property
+        @param override: Override property
         """
         elm_win_override_set(self.obj, override)
 
@@ -222,7 +222,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def fullscreen_set(self, fullscreen):
         """Set the window to fullscreen mode
 
-        @parm: B{fullscreen} Fullscreen mode
+        @param fullscreen: Fullscreen mode
         """
         elm_win_fullscreen_set(self.obj, fullscreen)
 
@@ -243,7 +243,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def maximized_set(self, maximized):
         """Set the maximized state of a window.
 
-        @parm: B{maximized} Maximized state for the window
+        @param maximized: Maximized state for the window
         """
         elm_win_maximized_set(self.obj, maximized)
 
@@ -260,7 +260,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def iconified_set(self, iconified):
         """Set the iconified state of the window.
 
-        @parm: B{iconified}
+        @param iconified: iconified state
         """
         elm_win_iconified_set(self.obj, iconified)
 
@@ -277,7 +277,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def withdrawn_set(self, withdrawn):
         """Set the withdrawn state of the window.
 
-        @parm: B{withdrawn}
+        @param withdrawn: withdrawn state
         """
         elm_win_withdrawn_set(self.obj, withdrawn)
 
@@ -294,7 +294,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def urgent_set(self, urgent):
         """Set the urgent state of the window.
 
-        @parm: B{urgent}
+        @param urgent: urgent state
         """
         elm_win_urgent_set(self.obj, urgent)
 
@@ -311,7 +311,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def demand_attention_set(self, demand_attention):
         """Set the demand attention state of the window.
 
-        @parm: B{demand_attention}
+        @param demand_attention: demand attention state
         """
         elm_win_demand_attention_set(self.obj, demand_attention)
 
@@ -328,7 +328,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def modal_set(self, modal):
         """Set the Modal state of the window.
 
-        @parm: B{modal}
+        @param modal: Modal state
         """
         elm_win_modal_set(self.obj, modal)
 
@@ -345,7 +345,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def aspect_set(self, aspect):
         """Set the aspect ratio of a window.
 
-        @param B{aspect} If 0, the window has no aspect limits, otherwise it is width divided by height
+        @param aspect: If 0, the window has no aspect limits, otherwise it is width divided by height
         """
         elm_win_aspect_set(self.obj, aspect)
 
@@ -362,7 +362,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def layer_set(self, layer):
         """Set the layer of the window.
 
-        @parm: B{layer}
+        @param layer: Layer
         """
         elm_win_layer_set(self.obj, layer)
 
@@ -379,7 +379,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def rotation_set(self, rotation):
         """Set the rotation of the window.
 
-        @parm: B{rotation}
+        @param rotation: Rotation
         """
         elm_win_rotation_set(self.obj, rotation)
 
@@ -396,14 +396,14 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def rotation_with_resize_set(self, rotation):
         """Rotates the window and resizes it.
 
-        @param B{rotation} The rotation of the window in degrees (0-360), counter-clockwise.
+        @param rotation: The rotation of the window in degrees (0-360), counter-clockwise.
         """
         elm_win_rotation_set(self.obj, rotation)
 
     def sticky_set(self, sticky):
         """Set the Sticky state of the window.
 
-        @parm: B{sticky}
+        @param sticky: Sticky state
         """
         elm_win_sticky_set(self.obj, sticky)
 
@@ -420,7 +420,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def conformant_set(self, conformant):
         """Set if this window is an illume conformant window.
 
-        @parm: B{conformant}
+        @param conformant: Conformant state
         """
         elm_win_conformant_set(self.obj, conformant)
 
@@ -437,7 +437,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def quickpanel_set(self, quickpanel):
         """Set a window to be an illume quickpanel window.
 
-        @parm: B{quickpanel}
+        @param quickpanel:
         """
         elm_win_quickpanel_set(self.obj, quickpanel)
 
@@ -454,7 +454,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def quickpanel_priority_major_set(self, priority):
         """Set the major priority of a quickpanel window.
 
-        @parm: B{priority}
+        @param priority:
         """
         elm_win_quickpanel_priority_major_set(self.obj, priority)
 
@@ -471,7 +471,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def quickpanel_priority_minor_set(self, priority):
         """Set the major priority of a quickpanel window.
 
-        @parm: B{quickpanel_priority_minor}
+        @param quickpanel_priority_minor:
         """
         elm_win_quickpanel_priority_minor_set(self.obj, priority)
 
@@ -488,7 +488,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def quickpanel_zone_set(self, zone):
         """Set which zone this quickpanel should appear in.
 
-        @parm: B{quickpanel_zone}
+        @param quickpanel_zone:
         """
         elm_win_quickpanel_zone_set(self.obj, zone)
 
@@ -505,15 +505,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def prop_focus_skip_set(self, skip):
         """Set the window to be skipped by keyboard focus
 
-        @param B{skip} The skip flag state, a boolean.
+        @param skip: The skip flag state, a boolean.
         """
         elm_win_prop_focus_skip_set(self.obj, skip)
 
     def illume_command_send(self, command, *params):
         """Send a command to the windowing environment
 
-        @param B{command}The command to send
-        @param B{params} Optional parameters for the command.
+        @param command: The command to send
+        @param params: Optional parameters for the command.
         """
         elm_win_illume_command_send(self.obj, command, params)
 
@@ -530,7 +530,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def screen_constrain_set(self, constrain):
         """Constrain the maximum width and height of a window to the width and height of its screen.
 
-        @parm: B{constrain}
+        @param constrain:
         """
         elm_win_screen_constrain_set(self.obj, constrain)
 
@@ -580,7 +580,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def keyboard_mode_set(self, mode):
         """Sets the keyboard mode of the window.
 
-        @parm: B{mode} The mode to set, one of Elm_Win_Keyboard_Mode
+        @param mode: The mode to set, one of Elm_Win_Keyboard_Mode
         """
         elm_win_keyboard_mode_set(self.obj, mode)
 
@@ -597,7 +597,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def keyboard_win_set(self, is_keyboard):
         """Sets whether the window is a keyboard.
 
-        @parm: B{is_keyboard} If true, the window is a virtual keyboard
+        @param is_keyboard: If true, the window is a virtual keyboard
         """
         elm_win_keyboard_win_set(self.obj, is_keyboard)
 
@@ -648,9 +648,9 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def socket_listen(self, svcname, svcnum, svcsys):
         """Create a socket to provide the service for Plug widget
 
-        @param B{svcname} The name of the service to be advertised. ensure that it is unique.
-        @param B{svcnum} A number (any value, 0 being the common default) to differentiate multiple instances of services with the same name.
-        @param B{svcsys} A boolean that if true, specifies to create a system-wide service all users can connect to, otherwise the service is private to the user id that created the service.
+        @param svcname: The name of the service to be advertised. ensure that it is unique.
+        @param svcnum: A number (any value, 0 being the common default) to differentiate multiple instances of services with the same name.
+        @param svcsys: A boolean that if true, specifies to create a system-wide service all users can connect to, otherwise the service is private to the user id that created the service.
         """
         return bool(elm_win_socket_listen(self.obj, svcname, svcnum, svcsys))
 

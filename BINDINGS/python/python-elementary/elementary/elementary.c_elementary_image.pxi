@@ -35,7 +35,7 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         """
         Set the path of the image for the icon
 
-        @parm: B{filename} Filename of the image
+        @param filename: Filename of the image
         """
         if group == None:
             elm_image_file_set(self.obj, filename, NULL)

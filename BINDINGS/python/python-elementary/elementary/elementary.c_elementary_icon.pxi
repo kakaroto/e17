@@ -25,7 +25,7 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
     """
     def __init__(self, c_evas.Object parent):
         """
-        @parm: B{parent} Parent Object
+        @param parent: Parent Object
         """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_icon_add(parent.obj))
@@ -34,7 +34,7 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
         """
         Set the file that will be used, but use a generated thumbnail.
 
-        @parm: B{filename} Filename of the image
+        @param filename: Filename of the image
         """
         if group == None:
             elm_icon_thumb_set(self.obj, filename, NULL)

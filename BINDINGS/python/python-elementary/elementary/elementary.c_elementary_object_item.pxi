@@ -67,8 +67,8 @@ cdef class ObjectItem(object):
     def part_text_set(self, part, text):
         """Sets the text of a given part of this object.
 
-        @parm: B{part} part name to set the text.
-        @parm: B{text} text to set.
+        @param part: part name to set the text.
+        @param text: text to set.
         @see: L{text_set()} and L{text_part_get()}
         """
         elm_object_item_part_text_set(self.obj, part, text)
@@ -76,7 +76,7 @@ cdef class ObjectItem(object):
     def text_set(self, text):
         """Sets the main text for this object.
 
-        @parm: B{text} any text to set as the main textual part of this object.
+        @param text: any text to set as the main textual part of this object.
         @see: L{text_get()} and L{text_part_set()}
         """
         elm_object_item_text_set(self.obj, text)
@@ -84,7 +84,7 @@ cdef class ObjectItem(object):
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
 
-        @parm: B{part} part name to get the text.
+        @param part part name to get the text.
         @return: the text of a part or None if nothing was set.
         @see: L{text_get()} and L{text_part_set()}
         """
@@ -180,7 +180,7 @@ cdef class ObjectItem(object):
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
 
-        @param: B{func} Function to be create tooltip content, called when
+        @param func Function to be create tooltip content, called when
                 need show tooltip.
 
         Setup the tooltip to object. The object can have only one
@@ -213,7 +213,7 @@ cdef class ObjectItem(object):
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
 
-        @note before you set a style you should define a tooltip with
+        @note: before you set a style you should define a tooltip with
         elm_object_item_tooltip_content_cb_set() or
         elm_object_item_tooltip_text_set()
         """
@@ -255,7 +255,7 @@ cdef class ObjectItem(object):
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
 
-        @note before you set a style you should define a cursor with
+        @note: before you set a style you should define a cursor with
         elm_object_item_cursor_set()
         """
         if style:
@@ -275,7 +275,7 @@ cdef class ObjectItem(object):
     def cursor_engine_only_set(self, engine_only):
         """ Sets cursor engine only usage for this object.
 
-        @note before you set engine only usage you should define a cursor with
+        @note: before you set engine only usage you should define a cursor with
         elm_object_item_cursor_set()
         """
         elm_object_item_cursor_engine_only_set(self.obj, bool(engine_only))

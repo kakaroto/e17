@@ -20,21 +20,21 @@ cdef public class Button(Object) [object PyElementaryButton, type PyElementaryBu
     """This is a push-button.
 
     The button has the following styles available:
-    default: a normal button.
-    anchor: Like default, but the button fades away when the mouse is not over
-    it, leaving only the text or icon.
-    hoversel_vertical: Internally used by Hoversel to give a continuous look
-    across its options.
-    hoversel_vertical_entry: Another internal for Hoversel.
-    naviframe: Internally used by Naviframe for its back button.
-    colorselector: Internally used by Colorselector for its left and right
-    buttons.
+      - default: a normal button.
+      - anchor: Like default, but the button fades away when the mouse is not over
+        it, leaving only the text or icon.
+      - hoversel_vertical: Internally used by Hoversel to give a continuous look
+        across its options.
+      - hoversel_vertical_entry: Another internal for Hoversel.
+      - naviframe: Internally used by Naviframe for its back button.
+      - colorselector: Internally used by Colorselector for its left and right
+        buttons.
 
     Default content parts of the button widget that you can use for are:
-    "icon" - An icon of the button
+      - "icon" - An icon of the button
 
     Default text parts of the button widget that you can use for are:
-    "default" - Label of the button
+      - "default" - Label of the button
 
     """
 
