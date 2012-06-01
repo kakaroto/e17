@@ -827,7 +827,7 @@ cdef extern from "Elementary.h":
 
     # Conformant            (XXX)
 
-    # Ctxpopup              (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Ctxpopup              (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_ctxpopup_add(Evas_Object *parent)
     void                     elm_ctxpopup_hover_parent_set(Evas_Object *obj, Evas_Object *parent)
     Evas_Object             *elm_ctxpopup_hover_parent_get(Evas_Object *obj)
