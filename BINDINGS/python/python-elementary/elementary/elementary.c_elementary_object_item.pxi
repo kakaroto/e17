@@ -31,9 +31,7 @@ cdef void _tooltip_item_data_del_cb(void *data, c_evas.Evas_Object *o, void *eve
    Py_DECREF(<object>data)
 
 cdef class ObjectItem(object):
-    """
-    An generic item for the widgets
-    """
+    """A generic item for the widgets."""
     cdef void *base
     cdef Elm_Object_Item *obj
 
@@ -69,7 +67,7 @@ cdef class ObjectItem(object):
 
         @param part: part name to set the text.
         @param text: text to set.
-        @see: L{text_set()} and L{text_part_get()}
+        @see: L{text_set()} and L{part_text_get()}
         """
         elm_object_item_part_text_set(self.obj, part, text)
 
@@ -77,16 +75,16 @@ cdef class ObjectItem(object):
         """Sets the main text for this object.
 
         @param text: any text to set as the main textual part of this object.
-        @see: L{text_get()} and L{text_part_set()}
+        @see: L{text_get()} and L{part_text_set()}
         """
         elm_object_item_text_set(self.obj, text)
 
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
 
-        @param part part name to get the text.
+        @param part: part name to get the text.
         @return: the text of a part or None if nothing was set.
-        @see: L{text_get()} and L{text_part_set()}
+        @see: L{text_get()} and L{part_text_set()}
         """
         cdef const_char_ptr l
         l = elm_object_item_part_text_get(self.obj, part)
@@ -98,7 +96,7 @@ cdef class ObjectItem(object):
         """Gets the main text for this object.
 
         @return: the main text or None if nothing was set.
-        @see: L{text_set()} and L{text_part_get()}
+        @see: L{text_set()} and L{part_text_get()}
         """
         cdef const_char_ptr l
         l = elm_object_item_text_get(self.obj)
@@ -163,11 +161,11 @@ cdef class ObjectItem(object):
         elm_object_item_del(self.obj)
 
     def tooltip_text_set(self, char *text):
-        """ Set the text to be shown in the tooltip object
+        """Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @tooltip_content_cb_set
+        Internally, this method calls L{tooltip_content_cb_set}
         """
         elm_object_item_tooltip_text_set(self.obj, text)
 
@@ -178,17 +176,17 @@ cdef class ObjectItem(object):
         return bool(elm_object_item_tooltip_window_mode_get(self.obj))
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
-        """ Set the content to be shown in the tooltip object
-
-        @param func Function to be create tooltip content, called when
-                need show tooltip.
+        """Set the content to be shown in the tooltip object
 
         Setup the tooltip to object. The object can have only one
-        tooltip, so any previews tooltip data is removed. func(owner,
-        tooltip, args, kargs) will be called every time that need
+        tooltip, so any previews tooltip data is removed. C{func(owner,
+        tooltip, args, kargs)} will be called every time that need
         show the tooltip and it should return a valid
         Evas_Object. This object is then managed fully by tooltip
         system and is deleted when the tooltip is gone.
+
+        @param func: Function to be create tooltip content, called when
+            need show tooltip.
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -202,20 +200,19 @@ cdef class ObjectItem(object):
                                           cbdata, _tooltip_item_data_del_cb)
 
     def tooltip_unset(self):
-        """ Unset tooltip from object
+        """Unset tooltip from object
 
-        Remove tooltip from object. If used the @tool_text_set the internal
+        Remove tooltip from object. If used the L{tooltip_text_set} the internal
         copy of label will be removed correctly. If used
-        @tooltip_content_cb_set, the data will be unreferred but no freed.
+        L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
         elm_object_item_tooltip_unset(self.obj)
 
     def tooltip_style_set(self, style=None):
-        """ Sets a different style for this object tooltip.
+        """Sets a different style for this object tooltip.
 
         @note: before you set a style you should define a tooltip with
-        elm_object_item_tooltip_content_cb_set() or
-        elm_object_item_tooltip_text_set()
+        L{tooltip_content_cb_set()} or L{tooltip_text_set()}
         """
         if style:
             elm_object_item_tooltip_style_set(self.obj, style)
@@ -223,8 +220,7 @@ cdef class ObjectItem(object):
             elm_object_item_tooltip_style_set(self.obj, NULL)
 
     def tooltip_style_get(self):
-        """ Get the style for this object tooltip.
-        """
+        """Get the style for this object tooltip."""
         cdef const_char_ptr style
         style = elm_object_item_tooltip_style_get(self.obj)
         if style == NULL:
@@ -232,7 +228,7 @@ cdef class ObjectItem(object):
         return style
 
     def cursor_set(self, char *cursor):
-        """ Set the cursor to be shown when mouse is over the object
+        """Set the cursor to be shown when mouse is over the object
 
         Set the cursor that will be displayed when mouse is over the
         object. The object can have only one cursor set to it, so if
@@ -245,7 +241,7 @@ cdef class ObjectItem(object):
         return elm_object_item_cursor_get(self.obj)
 
     def cursor_unset(self):
-        """ Unset cursor for object
+        """Unset cursor for object
 
         Unset cursor for object, and set the cursor to default if the mouse
         was over this object.
@@ -253,10 +249,10 @@ cdef class ObjectItem(object):
         elm_object_item_cursor_unset(self.obj)
 
     def cursor_style_set(self, style=None):
-        """ Sets a different style for this object cursor.
+        """Sets a different style for this object cursor.
 
         @note: before you set a style you should define a cursor with
-        elm_object_item_cursor_set()
+        L{cursor_set()}
         """
         if style:
             elm_object_item_cursor_style_set(self.obj, style)
@@ -264,8 +260,7 @@ cdef class ObjectItem(object):
             elm_object_item_cursor_style_set(self.obj, NULL)
 
     def cursor_style_get(self):
-        """ Get the style for this object cursor.
-        """
+        """Get the style for this object cursor."""
         cdef const_char_ptr style
         style = elm_object_item_cursor_style_get(self.obj)
         if style == NULL:
@@ -273,16 +268,15 @@ cdef class ObjectItem(object):
         return style
 
     def cursor_engine_only_set(self, engine_only):
-        """ Sets cursor engine only usage for this object.
+        """Sets cursor engine only usage for this object.
 
         @note: before you set engine only usage you should define a cursor with
-        elm_object_item_cursor_set()
+        L{cursor_set()}
         """
         elm_object_item_cursor_engine_only_set(self.obj, bool(engine_only))
 
     def cursor_engine_only_get(self):
-        """ Get the engine only usage for this object.
-        """
+        """Get the engine only usage for this object."""
         return elm_object_item_cursor_engine_only_get(self.obj)
 
 _elm_widget_type_register("object_item", ObjectItem)

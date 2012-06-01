@@ -25,14 +25,14 @@ def _actionslider_callback_conv(long addr):
 
 cdef public class Actionslider(Object) [object PyElementaryActionslider, type PyElementaryActionslider_Type]:
 
-    """An actionslider is a switcher for 2 or 3 labels with customizable magnet properties.
+    """An actionslider is a switcher for two or three labels with customizable magnet properties.
 
     The user drags and releases the indicator, to choose a label.
 
-    Labels occupy the following positions.
-      1. Left
-      2. Right
-      3. Center
+    Labels can occupy the following positions.
+      - Left
+      - Right
+      - Center
 
     Positions can be enabled or disabled.
 
@@ -42,15 +42,15 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
 
     @note: By default all positions are set as enabled.
 
-    This widget emits the following signals, besides the ones sent from @ref Layout:
-      - "selected" - when user selects an enabled position (the label is passed as event info)".
-      - "pos_changed" - when the indicator reaches any of the positions("left", "right" or "center").
+    This widget emits the following X{signals}, besides the ones sent from L{Layout}:
+      - B{selected} - when user selects an enabled position (the label is passed as event info)".
+      - B{pos_changed} - when the indicator reaches any of the positions("left", "right" or "center").
 
-    Default text parts of the actionslider widget that you can use for are:
-      - "indicator" - An indicator label of the actionslider
-      - "left" - A left label of the actionslider
-      - "right" - A right label of the actionslider
-      - "center" - A center label of the actionslider
+    Default X{text parts} of the actionslider widget that you can use for are:
+      - B{indicator} - An indicator label of the actionslider
+      - B{left} - A left label of the actionslider
+      - B{right} - A right label of the actionslider
+      - B{center} - A center label of the actionslider
 
     """
 
@@ -61,11 +61,16 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
     def selected_label_get(self):
         """Get actionslider selected label.
 
-        @return: The selected label
+        @return: The selected label.
+        @rtype: char *
         """
         return elm_actionslider_selected_label_get(self.obj)
 
     property selected_label:
+        """Selected label.
+
+        @type: char *
+        """
         def __get__(self):
             return self.selected_label_get()
 
@@ -73,6 +78,7 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
         """Set actionslider indicator position.
 
         @param pos: The position of the indicator.
+        @type pos: Elm_Actionslider_Pos
         """
         elm_actionslider_indicator_pos_set(self.obj, pos)
 
@@ -80,20 +86,26 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
         """Get actionslider indicator position.
 
         @return: The position of the indicator.
+        @rtype: Elm_Actionslider_Pos
         """
         return elm_actionslider_indicator_pos_get(self.obj)
 
     property indicator_pos:
+        """Indicator position.
+
+        @type: Elm_Actionslider_Pos
+        """
         def __get__(self):
             return self.indicator_pos_get()
         def __set__(self, pos):
             self.indicator_pos_set(pos)
 
     def magnet_pos_set(self, pos):
-        """Set actionslider magnet position. To make multiple positions magnets @c or
-        them together(e.g.: ELM_ACTIONSLIDER_LEFT | ELM_ACTIONSLIDER_RIGHT)
+        """Set actionslider magnet position. To make multiple positions magnets C{or}
+        them together(e.g.: C{ELM_ACTIONSLIDER_LEFT | ELM_ACTIONSLIDER_RIGHT})
 
         @param pos: Bit mask indicating the magnet positions.
+        @type pos: Elm_Actionslider_Pos
         """
         elm_actionslider_magnet_pos_set(self.obj, pos)
 
@@ -101,22 +113,28 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
         """Get actionslider magnet position.
 
         @return: The positions with magnet property.
+        @rtype: Elm_Actionslider_Pos
         """
         return elm_actionslider_magnet_pos_get(self.obj)
 
     property magnet_pos:
+        """Magnet position.
+
+        @type: Elm_Actionslider_Pos
+        """
         def __get__(self):
             return self.magnet_pos_get()
         def __set__(self, pos):
             self.magnet_pos_set(pos)
 
     def enabled_pos_set(self, pos):
-        """Set actionslider enabled position. To set multiple positions as enabled @c or
-        them together(e.g.: ELM_ACTIONSLIDER_LEFT | ELM_ACTIONSLIDER_RIGHT).
+        """Set actionslider enabled position. To set multiple positions as enabled C{or}
+        them together(e.g.: C{ELM_ACTIONSLIDER_LEFT | ELM_ACTIONSLIDER_RIGHT}).
 
         @note: All the positions are enabled by default.
 
         @param pos: Bit mask indicating the enabled positions.
+        @type pos: Elm_Actionslider_Pos
         """
         elm_actionslider_enabled_pos_set(self.obj, pos)
 
@@ -124,10 +142,15 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
         """Get actionslider enabled position.
 
         @return: The enabled positions.
+        @rtype: Elm_Actionslider_Pos
         """
         return elm_actionslider_enabled_pos_get(self.obj)
 
     property enabled_pos:
+        """Enabled position.
+
+        @type: Elm_Actionslider_Pos
+        """
         def __get__(self):
             return self.enabled_pos_get()
         def __set__(self, pos):

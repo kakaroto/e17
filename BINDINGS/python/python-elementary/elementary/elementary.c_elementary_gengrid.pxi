@@ -113,7 +113,7 @@ cdef class GengridItemClass:
     This class should be created and handled to the Gengrid itself.
 
     It may be subclassed, in this case the methods L{text_get()},
-    L{content_get()}, L{state_get()} and L{delete()} will be used.
+    L{content_get()}, L{state_get()} and C{delete()} will be used.
 
     It may also be instantiated directly, given getters to override as
     constructor parameters.
@@ -169,8 +169,8 @@ cdef class GengridItemClass:
             C{func(obj, part, item_data) -> bool}
 
         @param del_func: if provided will override the behavior
-            defined by L{del()} in this class. Its purpose is to be
-            called when item is deleted, thus finalizing resouces
+            defined by C{delete()} in this class. Its purpose is to be
+            called when item is deleted, thus finalizing resources
             and similar. This function should have the signature:
             C{func(obj, item_data)}
 
@@ -408,11 +408,11 @@ cdef class GengridItem(ObjectItem):
     # XXX TODO elm_gengrid_item_item_class_get
 
     def tooltip_text_set(self, char *text):
-        """ Set the text to be shown in the tooltip object
+        """Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @tooltip_content_cb_set
+        Internaly, this method call L{tooltip_content_cb_set}
         """
         elm_gengrid_item_tooltip_text_set(self.obj, text)
 
@@ -421,16 +421,16 @@ cdef class GengridItem(ObjectItem):
             return self.tooltip_text_get()
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
-        """ Set the content to be shown in the tooltip object
-
-        @param func: Function to be create tooltip content, called when
-            need show tooltip.
+        """Set the content to be shown in the tooltip object
 
         Setup the tooltip to object. The object can have only one tooltip,
-        so any previews tooltip data is removed. @func(with @{args,kargs}) will
+        so any previews tooltip data is removed. C{func(args, kargs)} will
         be called every time that need show the tooltip and it should return a
         valid Evas_Object. This object is then managed fully by tooltip system
         and is deleted when the tooltip is gone.
+
+        @param func: Function to be create tooltip content, called when
+            need show tooltip.
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -448,9 +448,9 @@ cdef class GengridItem(ObjectItem):
     def item_tooltip_unset(self):
         """ Unset tooltip from object
 
-        Remove tooltip from object. If used the @L{tool_text_set} the internal
+        Remove tooltip from object. If used the L{tooltip_text_set} the internal
         copy of label will be removed correctly. If used
-        @L{tooltip_content_cb_set}, the data will be unreferred but no freed.
+        L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
         elm_gengrid_item_tooltip_unset(self.obj)
 
@@ -496,7 +496,7 @@ cdef class GengridItem(ObjectItem):
             self.tooltip_window_mode_set(value)
 
     def cursor_set(self, char *cursor):
-        """ Set the cursor to be shown when mouse is over the gengrid item
+        """Set the cursor to be shown when mouse is over the gengrid item
 
         Set the cursor that will be displayed when mouse is over the
         item. The item can have only one cursor set to it, so if
@@ -516,15 +516,14 @@ cdef class GengridItem(ObjectItem):
             self.cursor_set(value)
 
     def cursor_unset(self):
-        """  Unset the cursor to be shown when mouse is over the gengrid item
-        """
+        """Unset the cursor to be shown when mouse is over the gengrid item."""
         elm_gengrid_item_cursor_unset(self.obj)
 
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
 
         @note: before you set a style you should define a cursor with
-        elm_gengrid_item_cursor_set()
+            L{cursor_set()}
         """
         if style:
             elm_gengrid_item_cursor_style_set(self.obj, style)
@@ -532,8 +531,7 @@ cdef class GengridItem(ObjectItem):
             elm_gengrid_item_cursor_style_set(self.obj, NULL)
 
     def cursor_style_get(self):
-        """ Get the style for this object cursor.
-        """
+        """Get the style for this object cursor."""
         cdef const_char_ptr style
         style = elm_gengrid_item_cursor_style_get(self.obj)
         if style == NULL:
@@ -548,16 +546,15 @@ cdef class GengridItem(ObjectItem):
             self.cursor_style_set(value)
 
     def cursor_engine_only_set(self, engine_only):
-        """ Sets cursor engine only usage for this object.
+        """Sets cursor engine only usage for this object.
 
         @note: before you set engine only usage you should define a cursor with
-        elm_gengrid_item_cursor_set()
+            L{cursor_set()}
         """
         elm_gengrid_item_cursor_engine_only_set(self.obj, bool(engine_only))
 
     def cursor_engine_only_get(self):
-        """ Get the engine only usage for this object.
-        """
+        """Get the engine only usage for this object."""
         return elm_gengrid_item_cursor_engine_only_get(self.obj)
 
     property cursor_engine_only:

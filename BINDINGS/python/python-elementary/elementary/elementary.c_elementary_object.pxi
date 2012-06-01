@@ -100,7 +100,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         @param part: part name to set the text.
         @param text: text to set.
-        @see: L{text_set()} and L{text_part_get()}
+        @see: L{text_set()} and L{part_text_get()}
         """
         elm_object_part_text_set(self.obj, part, text)
 
@@ -108,7 +108,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """Sets the main text for this object.
 
         @param text: any text to set as the main textual part of this object.
-        @see: L{text_get()} and L{text_part_set()}
+        @see: L{text_get()} and L{part_text_set()}
         """
         elm_object_text_set(self.obj, text)
 
@@ -117,7 +117,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         @param part: part name to get the text.
         @return: the text of a part or None if nothing was set.
-        @see: L{text_get()} and L{text_part_set()}
+        @see: L{text_get()} and L{part_text_set()}
         """
         cdef const_char_ptr l
         l = elm_object_part_text_get(self.obj, part)
@@ -129,7 +129,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """Gets the main text for this object.
 
         @return: the main text or None if nothing was set.
-        @see: L{text_set()} and L{text_part_get()}
+        @see: L{text_set()} and L{part_text_get()}
         """
         cdef const_char_ptr l
         l = elm_object_text_get(self.obj)
@@ -238,7 +238,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     # Cursors
     def cursor_set(self, char *cursor):
-        """ Set the cursor to be shown when mouse is over the object
+        """Set the cursor to be shown when mouse is over the object
 
         Set the cursor that will be displayed when mouse is over the
         object. The object can have only one cursor set to it, so if
@@ -251,7 +251,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         return elm_object_cursor_get(self.obj)
 
     def cursor_unset(self):
-        """ Unset cursor for object
+        """Unset cursor for object
 
         Unset cursor for object, and set the cursor to default if the mouse
         was over this object.
@@ -259,7 +259,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         elm_object_cursor_unset(self.obj)
 
     def cursor_style_set(self, style=None):
-        """ Sets a different style for this object cursor.
+        """Sets a different style for this object cursor.
 
         @note: before you set a style you should define a cursor with
         elm_object_cursor_set()
@@ -270,8 +270,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             elm_object_cursor_style_set(self.obj, NULL)
 
     def cursor_style_get(self):
-        """ Get the style for this object cursor.
-        """
+        """Get the style for this object cursor."""
         cdef const_char_ptr style
         style = elm_object_cursor_style_get(self.obj)
         if style == NULL:
@@ -427,7 +426,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     # Tooltips
     def tooltip_show(self):
-        """ Force show tooltip of object
+        """Force show tooltip of object
 
         Force show the tooltip and disable hide on mouse_out
         If another content is set as tooltip, the visible tooltip will hidden
@@ -438,18 +437,18 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         elm_object_tooltip_show(self.obj)
 
     def tooltip_hide(self):
-        """ Force hide tooltip of the object
+        """Force hide tooltip of the object
 
         Force hide tooltip of object and (re)enable future mouse interations.
         """
         elm_object_tooltip_hide(self.obj)
 
     def tooltip_text_set(self, char *text):
-        """ Set the text to be shown in the tooltip object
+        """Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
-        Internaly, this method call @L{tooltip_content_cb_set}
+        Internally, this method calls L{tooltip_content_cb_set}
         """
         elm_object_tooltip_text_set(self.obj, text)
 
@@ -460,11 +459,11 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         elm_object_tooltip_translatable_text_set(self.obj, text)
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
-        """ Set the content to be shown in the tooltip object
+        """Set the content to be shown in the tooltip object
 
         Setup the tooltip to object. The object can have only one
-        tooltip, so any previews tooltip data is removed. func(owner,
-        tooltip, args, kargs) will be called every time that need
+        tooltip, so any previews tooltip data is removed. C{func(owner,
+        tooltip, args, kargs)} will be called every time that need
         show the tooltip and it should return a valid
         Evas_Object. This object is then managed fully by tooltip
         system and is deleted when the tooltip is gone.
@@ -484,11 +483,11 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
                                           cbdata, _tooltip_data_del_cb)
 
     def tooltip_unset(self):
-        """ Unset tooltip from object
+        """Unset tooltip from object
 
-        Remove tooltip from object. If used the @tool_text_set the internal
+        Remove tooltip from object. If used the L{tooltip_text_set} the internal
         copy of label will be removed correctly. If used
-        @L{tooltip_content_cb_set}, the data will be unreferred but no freed.
+        L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
         elm_object_tooltip_unset(self.obj)
 
@@ -496,8 +495,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """ Sets a different style for this object tooltip.
 
         @note: before you set a style you should define a tooltip with
-            elm_object_tooltip_content_cb_set() or
-            elm_object_tooltip_text_set()
+            L{tooltip_content_cb_set()} or L{tooltip_text_set()}
         """
         if style:
             elm_object_tooltip_style_set(self.obj, style)
@@ -505,8 +503,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             elm_object_tooltip_style_set(self.obj, NULL)
 
     def tooltip_style_get(self):
-        """ Get the style for this object tooltip.
-        """
+        """Get the style for this object tooltip."""
         cdef const_char_ptr style
         style = elm_object_tooltip_style_get(self.obj)
         if style == NULL:
@@ -541,12 +538,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         @param event: event name
         @param event_conv: Conversion function to get the
-               pointer (as a long) to the object to be given to the
-               function as the second parameter. If None, then no
-               parameter will be given to the callback.
+            pointer (as a long) to the object to be given to the
+            function as the second parameter. If None, then no
+            parameter will be given to the callback.
         @param func: what to callback. Should have the signature:
-           C{function(object, event_info, *args, **kargs)}
-           C{function(object, *args, **kargs)} (if no event_conv is provided)
+            C{function(object, event_info, *args, **kargs)}
+            C{function(object, *args, **kargs)} (if no event_conv is provided)
         @raise TypeError: if B{func} is not callable.
         @raise TypeError: if B{event_conv} is not callable or None.
         """
@@ -568,12 +565,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def _callback_del_full(self, char *event, event_conv, func):
         """Remove a smart callback.
 
-        Removes a callback that was added by L{callback_add()}.
+        Removes a callback that was added by L{_callback_add_full()}.
 
         @param event: event name
-        @param event_conv: same as registered with _callback_add_full()
+        @param event_conv: same as registered with L{_callback_add_full()}
         @param func: what to callback, should have be previously registered.
-        @precond: event, B{event_conv} and B{func} must be used as
+        @precond: B{event}, B{event_conv} and B{func} must be used as
            parameter for L{_callback_add_full()}.
 
         @raise ValueError: if there was no B{func} connected with this event.
@@ -613,11 +610,11 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     def _callback_del(self, char *event, func):
         """Remove a smart callback.
 
-        Removes a callback that was added by L{callback_add()}.
+        Removes a callback that was added by L{_callback_add()}.
 
         @param event: event name
         @param func: what to callback, should have be previously registered.
-        @precond: event and B{func} must be used as parameter for
+        @precond: B{event} and B{func} must be used as parameter for
             L{_callback_add_full()}.
 
         @raise ValueError: if there was no B{func} connected with this event.

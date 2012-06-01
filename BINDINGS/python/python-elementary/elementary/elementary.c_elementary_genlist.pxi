@@ -113,7 +113,7 @@ cdef class GenlistItemClass:
     This class should be created and handled to the Genlist itself.
 
     It may be subclassed, in this case the methods L{text_get()},
-    L{content_get()}, L{state_get()} and L{delete()} will be used.
+    L{content_get()}, L{state_get()} and C{delete()} will be used.
 
     It may also be instantiated directly, given getters to override as
     constructor parameters.
@@ -169,7 +169,7 @@ cdef class GenlistItemClass:
             C{func(obj, part, item_data) -> bool}
 
         @param del_func: if provided will override the behavior
-            defined by L{del()} in this class. Its purpose is to be
+            defined by C{delete()} in this class. Its purpose is to be
             called when row is deleted, thus finalizing resouces
             and similar. This function should have the signature:
             C{func(obj, part, item_data) -> str}
@@ -384,7 +384,7 @@ cdef class GenlistItem(ObjectItem):
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
-        Internally, this method calls @L{tooltip_content_cb_set}
+        Internally, this method calls L{tooltip_content_cb_set}
         """
         elm_genlist_item_tooltip_text_set(self.obj, text)
 
@@ -392,7 +392,7 @@ cdef class GenlistItem(ObjectItem):
         """ Set the content to be shown in the tooltip object
 
         Setup the tooltip to object. The object can have only one tooltip,
-        so any previews tooltip data is removed. @func(with @{args,kargs}) will
+        so any previews tooltip data is removed. C{func(args,kargs)} will
         be called every time that need show the tooltip and it should return a
         valid Evas_Object. This object is then managed fully by tooltip system
         and is deleted when the tooltip is gone.
@@ -413,12 +413,12 @@ cdef class GenlistItem(ObjectItem):
                                                 cbdata,
                                                 _tooltip_item_data_del_cb)
 
-    def item_tooltip_unset(self):
+    def tooltip_unset(self):
         """ Unset tooltip from object
 
-        Remove tooltip from object. If used the @tool_text_set the internal
+        Remove tooltip from object. If used the L{tooltip_text_set} the internal
         copy of label will be removed correctly. If used
-        @L{tooltip_content_cb_set}, the data will be unreferred but no freed.
+        L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
         elm_genlist_item_tooltip_unset(self.obj)
 
