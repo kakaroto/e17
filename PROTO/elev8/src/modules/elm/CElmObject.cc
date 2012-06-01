@@ -757,7 +757,6 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
    HandleScope scope;
 
-   Local<String> real_str = String::NewSymbol("elm::realised");
    Local<String> elem_str = String::NewSymbol("element");
    Local<String> type_str = String::NewSymbol("type");
    Local<String> visible = String::NewSymbol("visible");
@@ -765,7 +764,7 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
    Local<Object> element = desc;
    Local<Object> realised;
 
-   if (!desc->GetHiddenValue(real_str).IsEmpty())
+   if (tmpl->HasInstance(desc))
      return scope.Close(desc);
 
    if (desc->GetHiddenValue(type_str).IsEmpty())
@@ -788,8 +787,6 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 
    if (element->Get(visible)->IsUndefined())
      obj->Set(visible, Boolean::New(true));
-
-   obj->SetHiddenValue(real_str, Boolean::New(true));
 
    if (realised.IsEmpty())
      realised = obj;
