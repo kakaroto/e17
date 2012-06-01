@@ -1,10 +1,8 @@
 <Evas>
 win32_gl - start hurry (vincent)  
 d3d_gl - start hurry (vincent)
-map - afterimage problem 
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
-map - rendering doesnt' updated while turn on/off map_enabled_set repeatedly
 line - width_set API? 
 text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
@@ -27,6 +25,3 @@ conformant - how to skip the calc the size if the window is in background.
 
 <Expedite>
 Check the mouse up outside of the window.
-
-<Ecore_X>
-Generate ecore_x_common to remove duplicated code between xcb and xlib
