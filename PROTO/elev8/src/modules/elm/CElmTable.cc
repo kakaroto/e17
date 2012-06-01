@@ -35,7 +35,12 @@ void CElmTable::DidRealiseElement(Local<Value> val)
 void CElmTable::pack(Handle<Object> obj)
 {
    Local<Value> x, y, colspan, rowspan;
-   Local<Object> element = obj->Get(String::NewSymbol("element"))->ToObject();
+   Local<Value> element = obj->Get(String::NewSymbol("element"));
+
+   if (element->IsUndefined())
+     return;
+
+   element = Realise(obj->Get(String::NewSymbol("element")), jsObject);
 
    x = obj->Get(String::NewSymbol("col"));
    y = obj->Get(String::NewSymbol("row"));
