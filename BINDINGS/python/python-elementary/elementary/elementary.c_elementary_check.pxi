@@ -17,17 +17,64 @@
 #
 
 cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryCheck_Type]:
+
+    """The check widget allows for toggling a value between true and false.
+
+    Check objects are a lot like radio objects in layout and
+    functionality, except they do not work as a group, but
+    independently, and only toggle the value of a boolean between false
+    and true. L{state_set()} sets the boolean state and
+    L{state_get()} returns the current state.
+
+    This widget emits the following signals, besides the ones sent from
+    L{Layout}:
+      - C{changed} - This is called whenever the user changes the state of
+        the check objects.
+
+    Default content parts of the check widget that you can use for are:
+      - "icon" - An icon of the check
+
+    Default text parts of the check widget that you can use for are:
+      - "default" - A label of the check
+      - "on" - On state label of the check
+      - "off" - Off state label of the check
+
+    """
+
     def __init__(self, c_evas.Object parent):
+        """Add a new Check object
+
+        @param parent: The parent object
+        @type parent: L{Object}
+        @return: The new object or None if it cannot be created
+        @rtype: L{Object}
+
+        """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_check_add(parent.obj))
 
     def state_set(self, value):
+        """Set the on/off state of the check object
+
+        This sets the state of the check. Calling this B{doesn't} cause
+        the "changed" signal to be emitted.
+
+        @param state: The state to use (True == on, False == off)
+        @type state: bool
+
+        """
         if value:
             elm_check_state_set(self.obj, 1)
         else:
             elm_check_state_set(self.obj, 0)
 
     def state_get(self):
+        """Get the state of the check object
+
+        @return: The boolean state
+        @rtype: bool
+
+        """
         cdef c_evas.Eina_Bool state
         state = elm_check_state_get(self.obj)
         if state == 0:
@@ -36,6 +83,11 @@ cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryChec
             return True
 
     property state:
+        """The state of the check object
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.state_get()
 
@@ -43,6 +95,7 @@ cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryChec
             self.state_set(value)
 
     def callback_changed_add(self, func, *args, **kwargs):
+        """This is called whenever the user changes the state of the check objects."""
         self._callback_add("changed", func, *args, **kwargs)
 
     def callback_changed_del(self, func):

@@ -792,12 +792,12 @@ cdef extern from "Elementary.h":
     void                     elm_calendar_first_day_of_week_set(Evas_Object *obj, Elm_Calendar_Weekday day)
     Elm_Calendar_Weekday     elm_calendar_first_day_of_week_get(Evas_Object *obj)
 
-    # Check                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Check                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_check_add(Evas_Object *parent)
     void                     elm_check_state_set(Evas_Object *obj, Eina_Bool state)
     Eina_Bool                elm_check_state_get(Evas_Object *obj)
 
-    # Clock                 (api:DONE  cb:TODO  test:DONE  doc:TODO)
+    # Clock                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_clock_add(Evas_Object *parent)
     void                     elm_clock_time_set(Evas_Object *obj, int hrs, int min, int sec)
     void                     elm_clock_time_get(Evas_Object *obj, int *hrs, int *min, int *sec)
@@ -812,7 +812,7 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(Evas_Object *obj)
 
-    # Colorselector         (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Colorselector         (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_colorselector_add(Evas_Object *parent)
     void                     elm_colorselector_color_set(Evas_Object *obj, int r, int g, int b, int a)
     void                     elm_colorselector_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
