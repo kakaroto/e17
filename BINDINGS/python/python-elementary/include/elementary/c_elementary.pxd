@@ -737,7 +737,7 @@ cdef extern from "Elementary.h":
     void                     elm_bg_color_get(Evas_Object *obj, int *r, int *g, int *b)
     void                     elm_bg_load_size_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 
-    # Box                   (api:TODO  cb:N/A   test:DONE  doc:TODO)
+    # Box                   (api:TODO  cb:N/A   test:DONE  doc:DONE)
     Evas_Object             *elm_box_add(Evas_Object *parent)
     void                     elm_box_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_box_horizontal_get(Evas_Object *obj)
@@ -762,7 +762,7 @@ cdef extern from "Elementary.h":
     void                     elm_bubble_pos_set(Evas_Object *obj, Elm_Bubble_Pos pos)
     Elm_Bubble_Pos           elm_bubble_pos_get(Evas_Object *obj)
 
-    # Button                (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Button                (api:DONE  cb:DONE  test:DONE  doc:TODO)
     Evas_Object             *elm_button_add(Evas_Object *parent)
     void                     elm_button_autorepeat_set(Evas_Object *obj, Eina_Bool on)
     Eina_Bool                elm_button_autorepeat_get(Evas_Object *obj)
@@ -1158,7 +1158,7 @@ cdef extern from "Elementary.h":
 
     # GLView                (XXX)
 
-    # Grid                  (api:DONE  cb:N/A   test:TODO  doc:DONE)
+    # Grid                  (api:DONE  cb:N/A   test:TODO  doc:TODO)
     Evas_Object             *elm_grid_add(Evas_Object *parent)
     void                     elm_grid_size_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
     void                     elm_grid_size_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
@@ -1253,7 +1253,7 @@ cdef extern from "Elementary.h":
     void                     elm_index_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_index_horizontal_get(Evas_Object *obj)
 
-    # Inwin                 (api:DONE  cb:N/A   test:DONE  doc:DONE)
+    # Inwin                 (api:DONE  cb:N/A   test:DONE  doc:TODO)
     Evas_Object             *elm_win_inwin_add(Evas_Object *obj)
     void                     elm_win_inwin_activate(Evas_Object *obj)
     void                     elm_win_inwin_content_set(Evas_Object *obj, Evas_Object *content)
@@ -1398,7 +1398,7 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_naviframe_item_simple_push(Evas_Object *obj, Evas_Object *content)
     void                     elm_naviframe_item_simple_promote(Evas_Object *obj, Evas_Object *content)
 
-    # Notify                (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Notify                (api:DONE  cb:DONE  test:DONE  doc:TODO)
     Evas_Object             *elm_notify_add(Evas_Object *parent)
     void                     elm_notify_parent_set(Evas_Object *obj, Evas_Object *parent)
     Evas_Object             *elm_notify_parent_get(Evas_Object *obj)
@@ -1603,7 +1603,7 @@ cdef extern from "Elementary.h":
 
     # Transit               (XXX)
 
-    # Video                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Video                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
     Evas_Object             *elm_player_add(Evas_Object *parent)
     Evas_Object             *elm_video_add(Evas_Object *parent)
     Eina_Bool                elm_video_file_set(Evas_Object *video, const_char_ptr filename)
@@ -1649,7 +1649,7 @@ cdef extern from "Elementary.h":
 
     void elm_web_console_message_hook_set(Evas_Object *obj, Elm_Web_Console_Message func, void *data)
 
-    # Window                (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Window                (api:DONE  cb:DONE  test:TODO  doc:TODO)
     Evas_Object             *elm_win_add(Evas_Object *parent, char *name, Elm_Win_Type type)
     void                     elm_win_resize_object_add(Evas_Object *obj, Evas_Object* subobj)
     void                     elm_win_resize_object_del(Evas_Object *obj, Evas_Object* subobj)
