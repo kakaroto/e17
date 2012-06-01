@@ -757,11 +757,8 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
    HandleScope scope;
 
-   Local<String> elem_str = String::NewSymbol("element");
    Local<String> type_str = String::NewSymbol("type");
-   Local<String> visible = String::NewSymbol("visible");
    Local<Object> desc = descValue->ToObject();
-   Local<Object> element = desc;
    Local<Object> realised;
 
    if (tmpl->HasInstance(desc))
@@ -769,29 +766,26 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 
    if (desc->GetHiddenValue(type_str).IsEmpty())
      {
-        element = desc->Get(elem_str)->ToObject();
         realised = desc->Clone();
      }
-
-   Handle<Value> params[] = { element, parent };
-   Local<Value> func = element->GetHiddenValue(type_str);
-   Local<Object> obj = Local<Function>::Cast(func)->NewInstance(2, params);
-
-   Local<Array> props = element->GetOwnPropertyNames();
-   for (unsigned int i = 0; i < props->Length(); i++)
-     {
-        Local<String> key = props->Get(i)->ToString();
-        Local<Value> val = element->Get(key);
-        obj->Set(key, val);
-     }
-
-   if (element->Get(visible)->IsUndefined())
-     obj->Set(visible, Boolean::New(true));
-
-   if (realised.IsEmpty())
-     realised = obj;
    else
-     realised->Set(elem_str, obj);
+     {
+        Handle<Value> params[] = { desc, parent };
+        Local<Value> func = desc->GetHiddenValue(type_str);
+        realised = Local<Function>::Cast(func)->NewInstance(2, params);
+
+        Local<Array> props = desc->GetOwnPropertyNames();
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+             Local<String> key = props->Get(i)->ToString();
+             Local<Value> val = desc->Get(key);
+             realised->Set(key, val);
+          }
+
+        Local<String> visible = String::NewSymbol("visible");
+        if (desc->Get(visible)->IsUndefined())
+          realised->Set(visible, Boolean::New(true));
+     }
 
    if (!parent->IsUndefined())
      {
