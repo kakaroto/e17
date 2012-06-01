@@ -17,6 +17,7 @@
 #
 
 cdef public class Background(Object) [object PyElementaryBackground, type PyElementaryBackground_Type]:
+
     """Background widget object
 
     Used for setting a solid color, image or
@@ -30,13 +31,15 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
 
     Default content parts of the bg widget that you can use for are:
       - B{overlay} - overlay of the bg
+
     """
 
     def __init__(self, c_evas.Object parent):
         """Initialize the background
 
         @param parent: Parent window
-        @type parent: Evas_Object *
+        @type parent: L{Object}
+
         """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_bg_add(parent.obj))
@@ -66,6 +69,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         @type group: char *
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
+
         """
         return bool(elm_bg_file_set(self.obj, filename, group))
 
@@ -74,6 +78,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
 
         @return: The tuple (filename, group)
         @rtype: tuple
+
         """
         cdef const_char_ptr filename, group
 
@@ -88,12 +93,13 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """The file (image or edje) used for the background.
 
         @type: tuple (char *filename, char *group)
+
         """
         def __get__(self):
             return self.file_get()
 
         def __set__(self, value):
-            return self.file_set(value)
+            self.file_set(value)
 
     def option_set(self, option):
         """Set the mode of display for a given background widget's image.
@@ -105,6 +111,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
 
         @param option: The desired background option
         @type option: Elm_Bg_Option
+
         """
         elm_bg_option_set(self.obj, option)
 
@@ -114,6 +121,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         @return: The image displaying mode in use for obj or ELM_BG_OPTION_LAST
             on errors.
         @rtype: Elm_Bg_Option
+
         """
         return elm_bg_option_get(self.obj)
 
@@ -121,6 +129,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """Mode of display.
 
         @type: Elm_Bg_Option
+
         """
         def __get__(self):
             return self.option_get()
@@ -144,15 +153,16 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         @type g: int
         @param b: The blue color component's value
         @type b: int
+
         """
         elm_bg_color_set(self.obj, r, g, b)
 
     def color_get(self):
-        """
-        Get the color set on a given background widget.
+        """Get the color set on a given background widget.
 
         @return: The tuple (r, g, b)
-        @rtype: tuple
+        @rtype: tuple of ints
+
         """
         cdef int r, g, b
 
@@ -163,6 +173,7 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """Set the color for the background.
 
         @type: tuple (int r, int g, int b)
+
         """
         def __get__(self):
             return self.color_get()
@@ -174,9 +185,6 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         """Set the size of the pixmap representation of the image set on a given
         background widget.
 
-        @warning: This function just makes sense if an image file was set with
-            L{file_set()}.
-
         This function sets a new size for pixmap representation of the
         given bg image. It allows for the image to be loaded already in the
         specified size, reducing the memory usage and load time (for
@@ -187,17 +195,22 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
             of the pixmap may differ depending on the type of image being
             loaded, being bigger than requested.
 
+        @warning: This function just makes sense if an image file was set with
+            L{file_set()}.
+
         @param w: The new width of the image pixmap representation.
         @type w: Evas_Coord
         @param h: The new height of the image pixmap representation.
         @type h: Evas_Coord
+
         """
         elm_bg_load_size_set(self.obj, w, h)
 
     property load_size:
         """Size of the pixmap representation.
 
-        @type: tuple(Evas_Coord w, Evas_Coord h)
+        @type: tuple (Evas_Coord w, Evas_Coord h)
+
         """
         def __set__(self, value):
             self.load_size_set(*value)
