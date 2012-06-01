@@ -757,12 +757,12 @@ cdef extern from "Elementary.h":
     void                     elm_box_align_set(Evas_Object *obj, double horizontal, double vertical)
     void                     elm_box_align_get(Evas_Object *obj, double *horizontal, double *vertical)
 
-    # Bubble                (api:DONE  cb:TODO  test:DONE  doc:TODO)
+    # Bubble                (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_bubble_add(Evas_Object *parent)
     void                     elm_bubble_pos_set(Evas_Object *obj, Elm_Bubble_Pos pos)
     Elm_Bubble_Pos           elm_bubble_pos_get(Evas_Object *obj)
 
-    # Button                (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Button                (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_button_add(Evas_Object *parent)
     void                     elm_button_autorepeat_set(Evas_Object *obj, Eina_Bool on)
     Eina_Bool                elm_button_autorepeat_get(Evas_Object *obj)
