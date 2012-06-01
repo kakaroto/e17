@@ -727,9 +727,9 @@ cdef extern from "Elementary.h":
     void                     elm_actionslider_enabled_pos_set(Evas_Object *obj, Elm_Actionslider_Pos pos)
     Elm_Actionslider_Pos     elm_actionslider_enabled_pos_get(Evas_Object *obj)
 
-    # Background            (api:DONE  cb:N/A   test:DONE  doc:TODO)
+    # Background            (api:DONE  cb:N/A   test:DONE  doc:DONE)
     Evas_Object             *elm_bg_add(Evas_Object *parent)
-    void                     elm_bg_file_set(Evas_Object *obj, char *file, char *group)
+    Eina_Bool                elm_bg_file_set(Evas_Object *obj, char *file, char *group)
     void                     elm_bg_file_get(Evas_Object *obj, char **file, char **group)
     void                     elm_bg_option_set(Evas_Object *obj, Elm_Bg_Option option)
     Elm_Bg_Option            elm_bg_option_get(Evas_Object *obj)

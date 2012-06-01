@@ -157,12 +157,14 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
             self.enabled_pos_set(pos)
 
     def callback_selected_add(self, func, *args, **kwargs):
+        """Called when user selects an enabled position. The label is passed as event info."""
         self._callback_add_full("selected", _actionslider_callback_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
         self._callback_del_full("selected", _actionslider_callback_conv, func)
 
     def callback_pos_changed_add(self, func, *args, **kwargs):
+        """Called when the indicator reaches any of the positions B{left}, B{right} or B{center}. The label is passed as event info."""
         self._callback_add_full("pos_changed", _actionslider_callback_conv, func, *args, **kwargs)
 
     def callback_pos_changed_del(self, func):
