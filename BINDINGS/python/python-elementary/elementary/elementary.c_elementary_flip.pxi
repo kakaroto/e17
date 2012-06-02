@@ -44,7 +44,7 @@ cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_T
         @param parent: The parent object
         @type parent: L{Object}
         @return: The new object or None if it cannot be created
-        @rtype:
+        @rtype: L{Object}
 
         """
         Object.__init__(self, parent.evas)
@@ -251,10 +251,10 @@ cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_T
         Returns the amount of sensitive area set by
         L{interaction_direction_hitsize_set()}.
 
-        @param dir The direction to check
+        @param dir: The direction to check
         @type dir: Elm_Flip_Direction
-        @return The size set for that direction
-        @type hitsize: double
+        @return: The size set for that direction
+        @rtype: double
 
         """
         return elm_flip_interaction_direction_hitsize_get(self.obj, direction)

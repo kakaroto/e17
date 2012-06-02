@@ -17,15 +17,15 @@
 #
 
 ctypedef enum Elm_Box_CLayout:
-   ELM_BOX_LAYOUT_HORIZONTAL
-   ELM_BOX_LAYOUT_VERTICAL
-   ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
-   ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
-   ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
-   ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
-   ELM_BOX_LAYOUT_FLOW_HORIZONTAL
-   ELM_BOX_LAYOUT_FLOW_VERTICAL
-   ELM_BOX_LAYOUT_STACK
+    ELM_BOX_LAYOUT_HORIZONTAL
+    ELM_BOX_LAYOUT_VERTICAL
+    ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
+    ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
+    ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
+    ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
+    ELM_BOX_LAYOUT_FLOW_HORIZONTAL
+    ELM_BOX_LAYOUT_FLOW_VERTICAL
+    ELM_BOX_LAYOUT_STACK
 
 cdef Evas_Object_Box_Layout _py_elm_box_layout_resolv(int layout) with gil:
     if layout == ELM_BOX_LAYOUT_HORIZONTAL:
@@ -458,19 +458,20 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         A box layout function affects how a box object displays child
         elements within its area. The list of pre-defined box layouts
         available in Evas is:
-         - elementary.ELM_BOX_LAYOUT_HORIZONTAL
-         - elementary.ELM_BOX_LAYOUT_VERTICAL
-         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
-         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
-         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
-         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
-         - elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL
-         - elementary.ELM_BOX_LAYOUT_FLOW_VERTICAL
-         - elementary.ELM_BOX_LAYOUT_STACK
+            - elementary.ELM_BOX_LAYOUT_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_FLOW_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_STACK
 
         Note that you cannot set a custom layout function.
 
-        @layout: the new layout to set
+        @param layout: the new layout to set
+        @type layout: Evas_Object_Box_Layout
 
         """
         cdef Evas_Object_Box_Layout ly
@@ -485,11 +486,14 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         just need to call this function with the starting layout and
         the final one.
 
-        @duration: the animation duration in seconds
-        @from_layout: one of elementary.ELM_BOX_LAYOUT_*
-        @to_layout: one of elementary.ELM_BOX_LAYOUT_*
+        @see: L{layout_set()} for the list of available layouts.
 
-        See layout_set() for the list of available layouts.
+        @param duration: the animation duration in seconds
+        @type duration: double
+        @param from_layout: one of elementary.ELM_BOX_LAYOUT_*
+        @type from_layout: Evas_Object_Box_Layout
+        @param to_layout: one of elementary.ELM_BOX_LAYOUT_*
+        @type to_layout: Evas_Object_Box_Layout
 
         """
         cdef Elm_Box_Transition *t
