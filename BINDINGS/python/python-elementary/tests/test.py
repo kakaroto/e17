@@ -185,7 +185,7 @@ if __name__ == "__main__":
         tbx.pack_end(frame)
 
         tbx2 = elementary.Box(win)
-        tbx2.layout_set("flow_horizontal")
+        tbx2.layout_set(elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL)
         tbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         tbx2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         frame.content_set(tbx2)
