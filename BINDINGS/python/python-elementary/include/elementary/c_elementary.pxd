@@ -54,7 +54,7 @@ cdef extern from "Evas.h":
     void evas_object_box_layout_flow_vertical(Evas_Object *o, Evas_Object_Box_Data *priv, void *data)
     void evas_object_box_layout_stack(Evas_Object *o, Evas_Object_Box_Data *priv, void *data)
     void elm_box_layout_transition(Evas_Object *o, Evas_Object_Box_Data *priv, void *data)
-    
+
 cdef extern from "Eina.h":
     ctypedef struct Eina_List:
         void      *data
@@ -998,7 +998,7 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_entry_selected_set(Evas_Object *obj, char *path)
     char                    *elm_fileselector_entry_selected_get(Evas_Object *obj)
 
-    # Flip                  (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Flip                  (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_flip_add(Evas_Object *parent)
     Eina_Bool                elm_flip_front_visible_get(Evas_Object *obj)
     void                     elm_flip_perspective_set(Evas_Object *obj, Evas_Coord foc, Evas_Coord x, Evas_Coord y)
