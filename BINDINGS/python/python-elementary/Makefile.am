@@ -200,6 +200,7 @@ clean-local: doc-clean
 doc-clean:
 	rm -fr doc/api/html
 doc: $(pyexecelementary_LTLIBRARIES) $(pyelementarydir_PYTHON)
+	mkdir -p doc/api/html
 	$(AM_V_GEN)PYTHONPATH="$$PWD:$$PWD/.libs:$$PYTHONPATH" \
 		$(EPYDOC) --html -o doc/api/html \
 			-n "@PACKAGE@ @VERSION@ API" \
