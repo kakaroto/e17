@@ -81,6 +81,7 @@ mv ${PKG}/usr/share/${NAME}/examples ${PKG}/usr/doc/EFL/examples/${NAME}
 ln -s /usr/doc/EFL/examples/${NAME} ${PKG}/usr/doc/${NAME}-${VERSION}/examples
 
 # Clean
+make maintainer-clean
 find ${PKG}/usr/doc/EFL -type f -exec chmod 644 {} \;
 find ${PKG} | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
 find ${PKG} | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
