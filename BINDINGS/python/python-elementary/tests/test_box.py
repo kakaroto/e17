@@ -150,6 +150,138 @@ def box_horiz_clicked(obj, item=None):
     win.show()
 # }}}
 
+#----- Box Layout -{{{-
+layout_list = ["horizontal","vertical","homogeneous_vertical",
+    "homogeneous_horizontal", "homogeneous_max_size_horizontal",
+    "homogeneous_max_size_vertical", "flow_horizontal", "flow_vertical", "stack"]
+current_layout = elementary.ELM_BOX_LAYOUT_HORIZONTAL
+
+def box_layout_button_cb(obj, box):
+    global current_layout
+
+    current_layout += 1
+    if current_layout >= len(layout_list):
+        current_layout = 0
+    obj.text_set("layout: %s" % layout_list[current_layout])
+    box.layout_set(current_layout)
+
+def box_layout_clicked(obj, item=None):
+    win = elementary.Window("box-layout", elementary.ELM_WIN_BASIC)
+    win.title_set("Box Layout")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    vbox = elementary.Box(win)
+    win.resize_object_add(vbox)
+    vbox.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    vbox.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    vbox.show()
+
+    bx = elementary.Box(win)
+    bx.layout_set(elementary.ELM_BOX_LAYOUT_HORIZONTAL)
+    bx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    vbox.pack_end(bx)
+    bx.show()
+
+    sep = elementary.Separator(win)
+    sep.horizontal_set(True)
+    vbox.pack_end(sep)
+    sep.show()
+
+    bt = elementary.Button(win)
+    bt.text_set("layout: %s" % layout_list[current_layout])
+    bt.callback_clicked_add(box_layout_button_cb, bx)
+    vbox.pack_end(bt)
+    bt.show()
+
+    for i in range(5):
+        ic = elementary.Icon(win)
+        ic.file_set("images/logo_small.png")
+        ic.resizable_set(0, 0)
+        ic.size_hint_align_set(0.5, 0.5)
+        bx.pack_end(ic)
+        ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.resizable_set(0, 0)
+    ic.size_hint_align_set(1.0, 1.0)
+    bx.pack_end(ic)
+    ic.show()
+
+    ic = elementary.Icon(win)
+    ic.file_set("images/logo_small.png")
+    ic.resizable_set(0, 0)
+    ic.size_hint_align_set(0.0, 0.0)
+    bx.pack_end(ic)
+    ic.show()
+
+    win.show()
+# }}}
+
+#----- Box Layout Transition-{{{-
+def box_transition_button_cb(obj, box):
+    global current_layout
+
+    from_ly = current_layout
+    current_layout += 1
+    if current_layout >= len(layout_list):
+        current_layout = 0
+
+    obj.text_set("layout: %s" % layout_list[current_layout])
+    box.layout_transition(0.4, from_ly, current_layout)
+
+def box_transition_clicked(obj, item=None):
+    win = elementary.Window("box-layout-transition", elementary.ELM_WIN_BASIC)
+    win.title_set("Box Layout Transition")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    vbox = elementary.Box(win)
+    win.resize_object_add(vbox)
+    vbox.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    vbox.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    vbox.show()
+
+    bx = elementary.Box(win)
+    bx.layout_set(elementary.ELM_BOX_LAYOUT_HORIZONTAL)
+    bx.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    bx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    vbox.pack_end(bx)
+    bx.show()
+
+    sep = elementary.Separator(win)
+    sep.horizontal_set(True)
+    vbox.pack_end(sep)
+    sep.show()
+
+    bt = elementary.Button(win)
+    bt.text_set("layout: %s" % layout_list[current_layout])
+    bt.callback_clicked_add(box_transition_button_cb, bx)
+    vbox.pack_end(bt)
+    bt.show()
+
+    for i in range(4):
+        ic = elementary.Icon(win)
+        ic.file_set("images/logo_small.png")
+        ic.resizable_set(0, 0)
+        ic.size_hint_align_set(0.5, 0.5)
+        bx.pack_end(ic)
+        ic.show()
+
+
+    win.show()
+# }}}
+
 #----- Main -{{{-
 if __name__ == "__main__":
     def destroy(obj):
@@ -184,7 +316,9 @@ if __name__ == "__main__":
 
     items = [("Box Vert", box_vert_clicked),
              ("Box Vert 2", box_vert2_clicked),
-             ("Box Horiz", box_horiz_clicked)]
+             ("Box Horiz", box_horiz_clicked),
+             ("Box Layout", box_layout_clicked),
+             ("Box Layout Transition", box_transition_clicked)]
 
     li = elementary.List(win)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)

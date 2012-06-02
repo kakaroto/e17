@@ -16,6 +16,39 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+ctypedef enum Elm_Box_CLayout:
+   ELM_BOX_LAYOUT_HORIZONTAL
+   ELM_BOX_LAYOUT_VERTICAL
+   ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
+   ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
+   ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
+   ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
+   ELM_BOX_LAYOUT_FLOW_HORIZONTAL
+   ELM_BOX_LAYOUT_FLOW_VERTICAL
+   ELM_BOX_LAYOUT_STACK
+
+cdef Evas_Object_Box_Layout _py_elm_box_layout_resolv(int layout) with gil:
+    if layout == ELM_BOX_LAYOUT_HORIZONTAL:
+        return evas_object_box_layout_horizontal
+    elif layout == ELM_BOX_LAYOUT_VERTICAL:
+        return evas_object_box_layout_vertical
+    elif layout == ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL:
+        return evas_object_box_layout_homogeneous_vertical
+    elif layout == ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL:
+        return evas_object_box_layout_homogeneous_horizontal
+    elif layout == ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL:
+        return evas_object_box_layout_homogeneous_max_size_horizontal
+    elif layout == ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL:
+        return evas_object_box_layout_homogeneous_max_size_vertical
+    elif layout == ELM_BOX_LAYOUT_FLOW_HORIZONTAL:
+        return evas_object_box_layout_flow_horizontal
+    elif layout == ELM_BOX_LAYOUT_FLOW_VERTICAL:
+        return evas_object_box_layout_flow_vertical
+    elif layout == ELM_BOX_LAYOUT_STACK:
+        return evas_object_box_layout_stack
+    return evas_object_box_layout_vertical
+
+
 cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type]:
 
     """A box arranges objects in a linear fashion, governed by a layout function
@@ -419,9 +452,57 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         """
         elm_box_recalculate(self.obj)
 
-    # XXX TODO elm_box_layout_*
+    def layout_set(self, layout):
+        """Set the layout function for the box.
 
-    # XXX TODO elm_box_transition_*
+        A box layout function affects how a box object displays child
+        elements within its area. The list of pre-defined box layouts
+        available in Evas is:
+         - elementary.ELM_BOX_LAYOUT_HORIZONTAL
+         - elementary.ELM_BOX_LAYOUT_VERTICAL
+         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
+         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
+         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
+         - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
+         - elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL
+         - elementary.ELM_BOX_LAYOUT_FLOW_VERTICAL
+         - elementary.ELM_BOX_LAYOUT_STACK
+
+        Note that you cannot set a custom layout function.
+
+        @layout: the new layout to set
+
+        """
+        cdef Evas_Object_Box_Layout ly
+
+        ly = _py_elm_box_layout_resolv(layout)
+        elm_box_layout_set(self.obj, ly, NULL, NULL);
+
+    def layout_transition(self, duration, from_layout, to_layout):
+        """Perform an animatation between two given different layout.
+
+        If you want to animate the change from one layout to another, you
+        just need to call this function with the starting layout and
+        the final one.
+
+        @duration: the animation duration in seconds
+        @from_layout: one of elementary.ELM_BOX_LAYOUT_*
+        @to_layout: one of elementary.ELM_BOX_LAYOUT_*
+
+        See layout_set() for the list of available layouts.
+
+        """
+        cdef Elm_Box_Transition *t
+        cdef Evas_Object_Box_Layout ly_from, ly_to
+
+        ly_from = _py_elm_box_layout_resolv(from_layout)
+        ly_to = _py_elm_box_layout_resolv(to_layout)
+        t = elm_box_transition_new(duration,
+                              ly_from, NULL, NULL,
+                              ly_to, NULL, NULL,
+                              NULL, NULL)
+        elm_box_layout_set(self.obj, elm_box_layout_transition, t,
+                           elm_box_transition_free)
 
 
 _elm_widget_type_register("box", Box)

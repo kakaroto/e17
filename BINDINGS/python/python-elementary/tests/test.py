@@ -8,6 +8,7 @@ import evas
 from test_actionslider import actionslider_clicked
 from test_bg import bg_plain_clicked, bg_image_clicked
 from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
+from test_box import box_layout_clicked, box_transition_clicked
 from test_bubble import bubble_clicked
 from test_button import buttons_clicked
 from test_check import check_clicked
@@ -100,6 +101,8 @@ if __name__ == "__main__":
                 ("Box Horiz", box_horiz_clicked),
                 ("Box Vert", box_vert_clicked),
                 ("Box Vert2", box_vert2_clicked),
+                ("Box Layout", box_layout_clicked),
+                ("Box Layout Transition", box_transition_clicked),
                 ("Table", table_clicked),
                 ("Layout", layout_clicked),
             ]),
@@ -182,7 +185,7 @@ if __name__ == "__main__":
         tbx.pack_end(frame)
 
         tbx2 = elementary.Box(win)
-        tbx2.horizontal_set(True)
+        tbx2.layout_set("flow_horizontal")
         tbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         tbx2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
         frame.content_set(tbx2)
