@@ -337,6 +337,19 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return bool(elm_entry_single_line_get(self.obj))
 
     property single_line:
+        """Single line mode.
+
+        In single line mode, entries don't ever wrap when the text reaches the
+        edge, and instead they keep growing horizontally. Pressing the C{Enter}
+        key will generate an C{"activate"} event instead of adding a new line.
+
+        When C{single_line} is C{False}, line wrapping takes effect again
+        and pressing enter will break the text into a different line
+        without generating any events.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.single_line_get()
 
@@ -368,6 +381,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return bool(elm_entry_password_get(self.obj))
 
     property password:
+        """Sets the entry to password mode.
+
+        In password mode, entries are implicitly single line and the display of
+        any text in them is replaced with asterisks (*).
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.password_get()
 
@@ -397,6 +418,13 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_entry_get(self.obj)
 
     property entry:
+        """The text displayed within the entry to C{entry}.
+
+        @note: Setting this bypasses text filters
+
+        @type: string
+
+        """
         def __get__(self):
             return self.entry_get()
 
@@ -545,6 +573,18 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_line_wrap_get(self.obj)
 
     property line_wrap:
+        """The line wrap type to use on multi-line entries.
+
+        This tells how the text will be implicitly cut into a new
+        line (without inserting a line break or paragraph separator) when it
+        reaches the far edge of the widget.
+
+        Note that this only makes sense for multi-line entries. A widget set
+        to be single line will never wrap.
+
+        @type: Elm_Wrap_Type
+
+        """
         def __get__(self):
             return self.line_wrap_get()
 
@@ -583,6 +623,19 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return bool(elm_entry_editable_get(self.obj))
 
     property editable:
+        """If the entry is to be editable or not.
+
+        By default, entries are editable and when focused, any text input by the
+        user will be inserted at the current cursor position. Setting this as
+        False will prevent the user from inputting text into the entry.
+
+        The only way to change the text of a non-editable entry is to use
+        L{Object.text_set()}, L{entry_insert()} and other related
+        functions and properties.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.editable_get()
 
@@ -745,6 +798,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_cursor_pos_get(self.obj)
 
     property cursor_pos:
+        """The cursor position in the entry
+
+        The value is the index of the character position within the
+        contents of the string.
+
+        @type: int
+
+        """
         def __get__(self):
             return self.cursor_pos_get()
 
@@ -816,6 +877,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_context_menu_disabled_get(self.obj)
 
     property context_menu_disabled:
+        """This disables the entry's contextual (longpress) menu.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.context_menu_disabled_get()
 
@@ -876,6 +942,18 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return (file, format)
 
     property file:
+        """The file for the text to display and then edit.
+
+        All changes are written back to the file after a short delay if
+        the entry object is set to autosave (which is the default).
+
+        If the entry had any other file set previously, any changes made to it
+        will be saved if the autosave feature is enabled, otherwise, the file
+        will be silently discarded and any non-saved changes will be lost.
+
+        @type: tuple of strings (file, format)
+
+        """
         def __get__(self):
             return self.file_get()
 
@@ -912,6 +990,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_autosave_get(self.obj)
 
     property autosave:
+        """Whether the entry object 'autosaves' the loaded text file or not.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.autosave_get()
 
@@ -944,21 +1027,68 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return bool(elm_entry_scrollable_get(self.obj))
 
     property scrollable:
+        """Enable or disable scrolling in entry
+
+        Normally the entry is not scrollable.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.scrollable_get()
 
         def __set__(self, value):
             self.scrollable_set(value)
 
-    def scrollbar_policy_set(self, Elm_Scroller_Policy h, Elm_Scroller_Policy v):
-        elm_entry_scrollbar_policy_set(self.obj, h, v)
-
     def icon_visible_set(self, visible):
+        """Sets the visibility of the end widget of the entry, set by
+        C{Object.part_content_set("end", content)}.
+
+        @param setting: True if the object should be displayed, False if not.
+        @type setting: bool
+
+        """
         elm_entry_icon_visible_set(self.obj, visible)
 
     property icon_visible:
+        """Sets the visibility of the end widget of the entry, set by
+        C{Object.part_content_set("end", content)}.
+
+        @type: bool
+
+        """
         def __set__(self, value):
             self.icon_visible_set(value)
+
+    def scrollbar_policy_set(self, Elm_Scroller_Policy h, Elm_Scroller_Policy v):
+        """This sets the entry's scrollbar policy (i.e. enabling/disabling
+        them).
+
+        Setting an entry to single-line mode with L{single_line_set()}
+        will automatically disable the display of scrollbars when the entry
+        moves inside its scroller.
+
+        @param h: The horizontal scrollbar policy to apply
+        @type h: Elm_Scroller_Policy
+        @param v: The vertical scrollbar policy to apply
+        @type v: Elm_Scroller_Policy
+
+        """
+        elm_entry_scrollbar_policy_set(self.obj, h, v)
+
+    property scrollbar_policy:
+        """This sets the entry's scrollbar policy (i.e. enabling/disabling
+        them).
+
+        Setting an entry to single-line mode with L{single_line_set()}
+        will automatically disable the display of scrollbars when the entry
+        moves inside its scroller.
+
+        @type: tuple of Elm_Scroller_Policy (h, v)
+
+        """
+        def __set__(self, value):
+            self.scrollbar_policy_set(value)
 
     def bounce_set(self, h_bounce, v_bounce):
         """This enables/disables bouncing within the entry.
@@ -987,6 +1117,12 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return (h_bounce, v_bounce)
 
     property bounce:
+        """Whether the entry will bounce when scrolling reaches
+        the end of the contained entry.
+
+        @type: tuple of bools (h_bounce, v_bounce)
+
+        """
         def __get__(self):
             return self.bounce_get()
 
@@ -1014,6 +1150,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_input_panel_layout_get(self.obj)
 
     property input_panel_layout:
+        """The input panel layout of the entry
+
+        @type: Elm_Input_Panel_Layout
+
+        """
         def __get__(self):
             return self.input_panel_layout_get()
 
@@ -1041,6 +1182,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return bool(elm_entry_input_panel_enabled_get(self.obj))
 
     property input_panel_enabled:
+        """Whether to show the input panel automatically or not.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.input_panel_enabled_get()
 
@@ -1093,6 +1239,13 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_input_panel_language_get(self.obj)
 
     property input_panel_language:
+        """The language mode of the input panel.
+
+        This API can be used if you want to show the alphabet keyboard mode.
+
+        @type: Elm_Input_Panel_Lang
+
+        """
         def __get__(self):
             return self.input_panel_language_get()
 
@@ -1127,6 +1280,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_input_panel_return_key_type_get(self.obj)
 
     property input_panel_return_key_type:
+        """The "return" key type. This type is used to set string or icon on
+        the "return" key of the input panel.
+
+        An input panel displays the string or icon associated with this type
+
+        @type: Elm_Input_Panel_Return_Key_Type
+
+        """
         def __get__(self):
             return self.input_panel_return_key_type_get()
 
@@ -1153,6 +1314,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_input_panel_return_key_disabled_get(self.obj)
 
     property input_panel_return_key_disabled:
+        """Whether the return key on the input panel is disabled or not.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.input_panel_return_key_disabled_get()
 
@@ -1201,6 +1367,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_prediction_allow_get(self.obj)
 
     property prediction_allow:
+        """Whether the entry should allow to use the text prediction.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.prediction_allow_get()
 
@@ -1238,6 +1409,17 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_cnp_mode_get(self.obj)
 
     property cnp_mode:
+        """Control pasting of text and images for the widget.
+
+        Normally the entry allows both text and images to be pasted.
+        By setting cnp_mode to be C{ELM_CNP_MODE_NO_IMAGE}, this prevents images from being copy or past.
+        By setting cnp_mode to be C{ELM_CNP_MODE_PLAINTEXT}, this remove all tags in text .
+
+        @note: this only changes the behaviour of text.
+
+        @type: Elm_Cnp_Mode
+
+        """
         def __get__(self):
             return self.cnp_mode_get()
 
@@ -1272,6 +1454,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return evas.c_evas._Object_from_instance(<long> anchor_hover_parent)
 
     property anchor_hover_parent:
+        """Parent of the hover popup
+
+        The parent object to use by the hover created by the entry
+        when an anchor is clicked. See L{Hover} for more details on this.
+
+        @type: L{Object}
+
+        """
         def __get__(self):
             return self.anchor_hover_parent_get()
 
@@ -1305,6 +1495,18 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         return elm_entry_anchor_hover_style_get(self.obj)
 
     property anchor_hover_style:
+        """The style that the hover should use
+
+        When creating the popup hover, entry will request that it's
+        themed according to C{style}.
+
+        Setting style to C{None} means disabling automatic hover.
+
+        @see: L{Object.style_set()}
+
+        @type: string
+
+        """
         def __get__(self):
             return self.anchor_hover_style_get()
 
@@ -1322,108 +1524,129 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         elm_entry_anchor_hover_end(self.obj)
 
     def callback_changed_add(self, func, *args, **kwargs):
+        """The text within the entry was changed."""
         self._callback_add("changed", func, *args, **kwargs)
 
     def callback_changed_del(self, func):
         self._callback_del("changed", func)
 
     def callback_changed_user_add(self, func, *args, **kwargs):
+        """The text within the entry was changed because of user interaction."""
         self._callback_add("changed,user", func, *args, **kwargs)
 
     def callback_changed_user_del(self, func):
         self._callback_del("changed,user", func)
 
     def callback_activated_add(self, func, *args, **kwargs):
+        """The enter key was pressed on a single line entry."""
         self._callback_add("activated", func, *args, **kwargs)
 
     def callback_activated_del(self, func):
         self._callback_del("activated", func)
 
     def callback_press_add(self, func, *args, **kwargs):
+        """A mouse button has been pressed on the entry."""
         self._callback_add("press", func, *args, **kwargs)
 
     def callback_press_del(self, func):
         self._callback_del("press", func)
 
     def callback_longpressed_add(self, func, *args, **kwargs):
+        """A mouse button has been pressed and held for a couple seconds."""
         self._callback_add("longpressed", func, *args, **kwargs)
 
     def callback_longpressed_del(self, func):
         self._callback_del("longpressed", func)
 
     def callback_clicked_add(self, func, *args, **kwargs):
+        """The entry has been clicked (mouse press and release)."""
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
 
     def callback_double_clicked_add(self, func, *args, **kwargs):
+        """The entry has been double clicked."""
         self._callback_add("clicked,double", func, *args, **kwargs)
 
     def callback_double_clicked_del(self, func):
         self._callback_del("clicked,double", func)
 
     def callback_triple_clicked_add(self, func, *args, **kwargs):
+        """The entry has been triple clicked."""
         self._callback_add("clicked,triple", func, *args, **kwargs)
 
     def callback_triple_clicked_del(self, func):
         self._callback_del("clicked,triple", func)
 
     def callback_focused_add(self, func, *args, **kwargs):
+        """The entry has received focus."""
         self._callback_add("focused", func, *args, **kwargs)
 
     def callback_focused_del(self, func):
         self._callback_del("focused", func)
 
     def callback_unfocused_add(self, func, *args, **kwargs):
+        """The entry has lost focus."""
         self._callback_add("unfocused", func, *args, **kwargs)
 
     def callback_unfocused_del(self, func):
         self._callback_del("unfocused", func)
 
     def callback_selection_paste_add(self, func, *args, **kwargs):
+        """A paste of the clipboard contents was requested."""
         self._callback_add("selection,paste", func, *args, **kwargs)
 
     def callback_selection_paste_del(self, func):
         self._callback_del("selection,paste", func)
 
     def callback_selection_copy_add(self, func, *args, **kwargs):
+        """A copy of the selected text into the clipboard was requested."""
         self._callback_add("selection,copy", func, *args, **kwargs)
 
     def callback_selection_copy_del(self, func):
         self._callback_del("selection,copy", func)
 
     def callback_selection_cut_add(self, func, *args, **kwargs):
+        """A cut of the selected text into the clipboard was requested."""
         self._callback_add("selection,cut", func, *args, **kwargs)
 
     def callback_selection_cut_del(self, func):
         self._callback_del("selection,cut", func)
 
     def callback_selection_start_add(self, func, *args, **kwargs):
+        """A selection has begun and no previous selection existed."""
         self._callback_add("selection,start", func, *args, **kwargs)
 
     def callback_selection_start_del(self, func):
         self._callback_del("selection,start", func)
 
     def callback_selection_changed_add(self, func, *args, **kwargs):
+        """The current selection has changed."""
         self._callback_add("selection,changed", func, *args, **kwargs)
 
     def callback_selection_changed_del(self, func):
         self._callback_del("selection,changed", func)
 
     def callback_selection_cleared_add(self, func, *args, **kwargs):
+        """The current selection has been cleared."""
         self._callback_add("selection,cleared", func, *args, **kwargs)
 
     def callback_selection_cleared_del(self, func):
         self._callback_del("selection,cleared", func)
 
     def callback_cursor_changed_add(self, func, *args, **kwargs):
+        """The cursor has changed position."""
         self._callback_add("cursor,changed", func, *args, **kwargs)
 
     def callback_cursor_changed_del(self, func):
         self._callback_del("cursor,changed", func)
 
     def callback_anchor_clicked_add(self, func, *args, **kwargs):
+        """An anchor has been clicked. The event_info
+        parameter for the callback will be an C{Elm_Entry_Anchor_Info}.
+
+        """
         self._callback_add_full("anchor,clicked", _entryanchor_conv,
                                 func, *args, **kwargs)
 
@@ -1432,6 +1655,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
                                 func)
 
     def callback_anchor_in_add(self, func, *args, **kwargs):
+        """Mouse cursor has moved into an anchor. The event_info
+        parameter for the callback will be an C{Elm_Entry_Anchor_Info}.
+
+        """
         self._callback_add_full("anchor,in", _entryanchor_conv,
                                 func, *args, **kwargs)
 
@@ -1440,6 +1667,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
                                 func)
 
     def callback_anchor_out_add(self, func, *args, **kwargs):
+        """Mouse cursor has moved out of an anchor. The event_info
+        parameter for the callback will be an C{Elm_Entry_Anchor_Info}.
+
+        """
         self._callback_add_full("anchor,out", _entryanchor_conv,
                                 func, *args, **kwargs)
 
@@ -1448,6 +1679,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
                                 func)
 
     def callback_anchor_up_add(self, func, *args, **kwargs):
+        """Mouse button has been unpressed on an anchor. The event_info
+        parameter for the callback will be an C{Elm_Entry_Anchor_Info}.
+
+        """
         self._callback_add_full("anchor,up", _entryanchor_conv,
                                 func, *args, **kwargs)
 
@@ -1456,6 +1691,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
                                 func)
 
     def callback_anchor_down_add(self, func, *args, **kwargs):
+        """Mouse button has been pressed on an anchor. The event_info
+        parameter for the callback will be an C{Elm_Entry_Anchor_Info}.
+
+        """
         self._callback_add_full("anchor,down", _entryanchor_conv,
                                 func, *args, **kwargs)
 
@@ -1472,12 +1711,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
                                 func)
 
     def callback_preedit_changed_add(self, func, *args, **kwargs):
+        """The preedit string has changed."""
         self._callback_add("preedit,changed", func, *args, **kwargs)
 
     def callback_preedit_changed_del(self, func):
         self._callback_del("preedit,changed", func)
 
     def callback_language_changed_add(self, func, *args, **kwargs):
+        """Program language changed."""
         self._callback_add("language,changed", func, *args, **kwargs)
 
     def callback_language_changed_del(self, func):

@@ -925,7 +925,7 @@ cdef extern from "Elementary.h":
     char                    *elm_entry_anchor_hover_style_get(Evas_Object *obj)
     void                     elm_entry_anchor_hover_end(Evas_Object *obj)
 
-    # Fileselector          (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Fileselector          (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_fileselector_add(Evas_Object *parent)
     void                     elm_fileselector_is_save_set(Evas_Object *obj, Eina_Bool is_save)
     Eina_Bool                elm_fileselector_is_save_get(Evas_Object *obj)
