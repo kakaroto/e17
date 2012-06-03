@@ -27,6 +27,15 @@ cdef void _hoversel_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_i
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
+def _hoversel_item_conv(long addr):
+    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
+    cdef void *data = elm_object_item_data_get(it)
+    if data == NULL:
+        return None
+    else:
+        cbt = <object>data
+        return cbt[2]
+
 cdef class HoverselItem:
     """A item for the hoversel widget"""
     cdef Elm_Object_Item *item
@@ -67,9 +76,33 @@ cdef class HoverselItem:
         elm_object_item_del(self.item)
 
     def icon_set(self, icon_file, icon_group, icon_type):
+        """This sets the icon for the given hoversel item.
+
+        The icon can be loaded from the standard set, from an image file, or from
+        an edje file.
+
+        @see: L{Hoversel.item_add()}
+
+        @param icon_file: An image file path on disk to use for the icon or standard
+            icon name
+        @type icon_file: string
+        @param icon_group: The edje group to use if C{icon_file} is an edje file. Set this
+            to None if the icon is not an edje file
+        @param icon_type: The icon type
+
+        """
         elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
 
     def icon_get(self):
+        """Get the icon object of the hoversel item
+
+        @see: L{icon_set()}
+        @see: L{Hoversel.item_add()}
+
+        @return: The image file path / Standard name, Icon group, Icon type
+        @rtype: (string, string, Elm_Icon_Type)
+
+        """
         cdef const_char_ptr cicon_file
         cdef const_char_ptr cicon_group
         cdef Elm_Icon_Type cicon_type
@@ -94,36 +127,131 @@ cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
     return prm[2]
 
 cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementaryHoversel_Type]:
+
+    """A hoversel is a button that pops up a list of items (automatically
+    choosing the direction to display) that have a label and, optionally, an
+    icon to select from.
+
+    It is a convenience widget to avoid the need to do
+    all the piecing together yourself. It is intended for a small number of
+    items in the hoversel menu (no more than 8), though is capable of many
+    more.
+
+    This widget emits the following signals, besides the ones sent from
+    L{Button}:
+        - C{"clicked"} - the user clicked the hoversel button and popped up
+            the sel
+        - C{"selected"} - an item in the hoversel list is selected. event_info
+            is the item
+        - C{"dismissed"} - the hover is dismissed
+
+    Default content parts of the hoversel widget that you can use for are:
+        - "icon" - An icon of the hoversel
+
+    Default text parts of the hoversel widget that you can use for are:
+        - "default" - Label of the hoversel
+
+    """
+
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))
 
     def horizontal_set(self, horizontal):
+        """This sets the hoversel to expand horizontally.
+
+        @note: The initial button will display horizontally regardless of this
+            setting.
+
+        @param horizontal: If True, the hover will expand horizontally to the
+            right.
+        @type horizontal: bool
+
+        """
         elm_hoversel_horizontal_set(self.obj, horizontal)
 
     def horizontal_get(self):
+        """This returns whether the hoversel is set to expand horizontally.
+
+        @see: L{horizontal_set()}
+
+        @return: If True, the hover will expand horizontally to the right.
+        @rtype: bool
+
+        """
         return bool(elm_hoversel_horizontal_get(self.obj))
 
     def hover_parent_set(self, c_evas.Object parent):
+        """Set the Hover parent
+
+        Sets the hover parent object, the area that will be darkened when the
+        hoversel is clicked. Should probably be the window that the hoversel is
+        in. See L{Hover} objects for more information.
+
+        @param parent: The parent to use
+        @type parent: L{Object}
+
+        """
         elm_hoversel_hover_parent_set(self.obj, parent.obj)
 
     def hover_parent_get(self):
+        """Get the Hover parent
+
+        Gets the hover parent object.
+
+        @see: elm_hoversel_hover_parent_set()
+
+        @return: The used parent
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *obj = elm_hoversel_hover_parent_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def hover_begin(self):
+        """This triggers the hoversel popup from code, the same as if the user
+        had clicked the button.
+
+        """
         elm_hoversel_hover_begin(self.obj)
 
     def hover_end(self):
+        """This dismisses the hoversel popup as if the user had clicked
+        outside the hover.
+
+        """
         elm_hoversel_hover_end(self.obj)
 
     def expanded_get(self):
+        """Returns whether the hoversel is expanded.
+
+        @return: This will return True if the hoversel is expanded or
+            False if it is not expanded.
+        @rtype: bool
+
+        """
         return bool(elm_hoversel_expanded_get(self.obj))
 
     def clear(self):
+        """This will remove all the children items from the hoversel.
+
+        @warning: Should B{not} be called while the hoversel is active; use
+            L{expanded_get()} to check first.
+
+        @see: L{ObjectItem.delete()}
+
+        """
         elm_hoversel_clear(self.obj)
 
     def items_get(self):
+        """Get the list of items within the given hoversel.
+
+        @see: L{item_add()}
+
+        @return: Returns a list of Elm_Object_Item*
+        @rtype: tuple of Elm_Object_Item
+
+        """
         cdef Elm_Object_Item *it
         cdef c_evas.const_Eina_List *lst
 
@@ -139,21 +267,47 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         return ret
 
     def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
+        """Add an item to the hoversel button
+
+        This adds an item to the hoversel to show when it is clicked. Note: if you
+        need to use an icon from an edje file then use
+        L{HoverselItem.icon_set()} right after this function, and set
+        icon_file to None here.
+
+        For more information on what C{icon_file} and C{icon_type} are, see the
+        L{Icon} "icon documentation".
+
+        @param label: The text label to use for the item (None if not desired)
+        @type label: string
+        @param icon_file: An image file path on disk to use for the icon or standard
+            icon name (None if not desired)
+        @type icon_file: string
+        @param icon_type: The icon type if relevant
+        @type icon_type: string
+        @param func: Convenience function to call when this item is selected
+        @type func: function
+        @return: The item added.
+        @rtype: Elm_Object_Item
+
+        """
         return HoverselItem(self, label, icon_file, icon_type, callback, *args, **kwargs)
 
     def callback_clicked_add(self, func, *args, **kwargs):
+        """The user clicked the hoversel button and popped up the sel."""
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
 
     def callback_selected_add(self, func, *args, **kwargs):
-        self._callback_add("selected", func, *args, **kwargs)
+        """An item in the hoversel list is selected. event_info is the item."""
+        self._callback_add_full("selected", _hoversel_item_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del("selected", func)
+        self._callback_del_full("selected", _hoversel_item_conv, func)
 
     def callback_dismissed_add(self, func, *args, **kwargs):
+        """The hover is dismissed."""
         self._callback_add("dismissed", func, *args, **kwargs)
 
     def callback_dismissed_del(self, func):

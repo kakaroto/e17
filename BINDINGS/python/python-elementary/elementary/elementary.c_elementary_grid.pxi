@@ -39,7 +39,9 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """Set the virtual size of the grid.
 
         @param w: The virtual width of the grid
+        @type w: Evas_Coord (int)
         @param h: The virtual height of the grid
+        @type h: Evas_Coord (int)
 
         """
         elm_grid_size_set(self.obj, w, h)
@@ -48,6 +50,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """Get the virtual size of the grid.
 
         @return: The virtual width and height of the grid
+        @rtype: tuple of Evas_Coords (int)
 
         """
         cdef Evas_Coord w, h
@@ -59,10 +62,15 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         Pack child at given position and size
 
         @param subobj: The child to pack
+        @type subobj: L{Object}
         @param x: The virtual x coord at which to pack it
+        @type x: Evas_Coord (int)
         @param y: The virtual y coord at which to pack it
+        @type y: Evas_Coord (int)
         @param w: The virtual width at which to pack it
+        @type w: Evas_Coord (int)
         @param h: The virtual height at which to pack it
+        @type h: Evas_Coord (int)
 
         """
         elm_grid_pack(self.obj, subobj.obj, x, y, w, h)
@@ -71,6 +79,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """Unpack a child from a grid object
 
         @param subobj: The child to unpack
+        @type subobj: L{Object}
 
         """
         elm_grid_unpack(self.obj, subobj.obj)
@@ -79,7 +88,8 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         Faster way to remove all child objects from a grid object.
 
-        @param clear: If true, it will delete just removed children
+        @param clear: If True, it will delete just removed children
+        @type clear: bool
 
         """
         elm_grid_clear(self.obj, clear)
@@ -88,10 +98,15 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """Set packing of an existing child at to position and size
 
         @param subobj: The child to set packing of
+        @type subobj: L{Object}
         @param x: The virtual x coord at which to pack it
+        @type x: Evas_Coord (int)
         @param y: The virtual y coord at which to pack it
+        @type y: Evas_Coord (int)
         @param w: The virtual width at which to pack it
+        @type w: Evas_Coord (int)
         @param h: The virtual height at which to pack it
+        @type h: Evas_Coord (int)
 
         """
         elm_grid_pack_set(subobj.obj, x, y, w, h)
@@ -100,10 +115,15 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """Get packing of a child
 
         @param subobj: The child to query
+        @type subobj: L{Object}
         @param x: Pointer to integer to store the virtual x coord
+        @type x: Evas_Coord (int)
         @param y: Pointer to integer to store the virtual y coord
+        @type y: Evas_Coord (int)
         @param w: Pointer to integer to store the virtual width
+        @type w: Evas_Coord (int)
         @param h: Pointer to integer to store the virtual height
+        @type h: Evas_Coord (int)
 
         """
         cdef Evas_Coord x, y, w, h
@@ -114,6 +134,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """Get the list of the children for the grid.
 
         @return: The list of children
+        @rtype: tuple of L{Object}s
 
         """
         cdef c_evas.Evas_Object *o

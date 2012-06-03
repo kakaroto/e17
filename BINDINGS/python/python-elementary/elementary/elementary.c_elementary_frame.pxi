@@ -17,17 +17,75 @@
 #
 
 cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFrame_Type]:
+
+    """Frame is a widget that holds some content and has a title.
+
+    The default look is a frame with a title, but Frame supports multiple
+    styles:
+        - default
+        - pad_small
+        - pad_medium
+        - pad_large
+        - pad_huge
+        - outdent_top
+        - outdent_bottom
+
+    Of all this styles only default shows the title.
+
+    This widget emits the following signals, besides the ones sent from
+    L{Layout}:
+        - C{"clicked"} - The user has clicked the frame's label
+
+    Default content parts of the frame widget that you can use for are:
+        - "default" - A content of the frame
+
+    Default text parts of the frame widget that you can use for are:
+        - "default" - Label of the frame
+
+    @group Callbacks: callback_*
+
+    """
+
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_frame_add(parent.obj))
 
     def autocollapse_set(self, autocollapse):
+        """Toggle autocollapsing of a frame
+
+        When C{autocollapse} is True, clicking a frame's label will collapse the frame
+        vertically, shrinking it to the height of the label.
+        By default, this is DISABLED.
+
+        @param autocollapse: Whether to enable autocollapse
+        @type autocollapse: bool
+
+        """
         elm_frame_autocollapse_set(self.obj, autocollapse)
 
     def autocollapse_get(self):
+        """Determine autocollapsing of a frame
+
+        When this returns True, clicking a frame's label will collapse the frame
+        vertically, shrinking it to the height of the label.
+        By default, this is DISABLED.
+
+        @return: Whether autocollapse is enabled
+        @rtype: bool
+
+        """
         return elm_frame_autocollapse_get(self.obj)
 
     property autocollapse:
+        """Autocollapsing of a frame
+
+        When this is True, clicking a frame's label will collapse the frame
+        vertically, shrinking it to the height of the label.
+        By default, this is DISABLED.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.autocollapse_get()
 
@@ -35,12 +93,33 @@ cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFram
             self.autocollapse_set(value)
 
     def collapse_set(self, autocollapse):
+        """Manually collapse a frame without animations
+
+        Use this to toggle the collapsed state of a frame, bypassing animations.
+
+        @param collapse: True to collapse, False to expand
+        @type collapse: bool
+
+        """
         elm_frame_collapse_set(self.obj, autocollapse)
 
     def collapse_get(self):
+        """Determine the collapse state of a frame
+
+        Use this to determine the collapse state of a frame.
+
+        @return: True if collapsed, False otherwise
+        @rtype: bool
+
+        """
         return elm_frame_collapse_get(self.obj)
 
     property collapse:
+        """Collapse state of a frame, bypassing animations
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.collapse_get()
 
@@ -48,10 +127,19 @@ cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFram
             self.collapse_set(value)
 
     def collapse_go(self, collapse):
+        """Manually collapse a frame with animations
+
+        Use this to toggle the collapsed state of a frame, triggering animations.
+
+        @param collapse: True to collapse, False to expand
+        @type collapse: bool
+
+        """
         elm_frame_collapse_go(self.obj, collapse)
 
 
     def callback_clicked_add(self, func, *args, **kwargs):
+        """The user has clicked the frame's label."""
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):

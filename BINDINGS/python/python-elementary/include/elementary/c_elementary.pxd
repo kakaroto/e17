@@ -1013,7 +1013,7 @@ cdef extern from "Elementary.h":
 
     # Flipselector          (XXX)
 
-    # Frame                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Frame                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_frame_add(Evas_Object *parent)
     void                     elm_frame_autocollapse_set(Evas_Object *obj, Eina_Bool autocollapse)
     Eina_Bool                elm_frame_autocollapse_get(Evas_Object *obj)
@@ -1179,7 +1179,7 @@ cdef extern from "Elementary.h":
 
     # GLView                (XXX)
 
-    # Grid                  (api:DONE  cb:N/A   test:TODO  doc:TODO)
+    # Grid                  (api:DONE  cb:N/A   test:TODO  doc:DONE)
     Evas_Object             *elm_grid_add(Evas_Object *parent)
     void                     elm_grid_size_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
     void                     elm_grid_size_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
@@ -1190,7 +1190,7 @@ cdef extern from "Elementary.h":
     void                     elm_grid_pack_get(Evas_Object *subobj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
     Eina_List               *elm_grid_children_get(Evas_Object *obj)
 
-    # Hover                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Hover                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_hover_add(Evas_Object *parent)
     void                     elm_hover_target_set(Evas_Object *obj, Evas_Object *target)
     Evas_Object             *elm_hover_target_get(Evas_Object *obj)
@@ -1199,7 +1199,7 @@ cdef extern from "Elementary.h":
     char                    *elm_hover_best_content_location_get(Evas_Object *obj, Elm_Hover_Axis pref_axis)
     void                     elm_hover_dismiss(Evas_Object *obj)
 
-    # Hoversel              (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Hoversel              (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_hoversel_add(Evas_Object *parent)
     void                     elm_hoversel_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_hoversel_horizontal_get(Evas_Object *obj)
