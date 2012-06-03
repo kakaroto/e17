@@ -93,7 +93,7 @@ cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-cdef public class Hoversel(Object) [object PyElementaryHoversel, type PyElementaryHoversel_Type]:
+cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementaryHoversel_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))

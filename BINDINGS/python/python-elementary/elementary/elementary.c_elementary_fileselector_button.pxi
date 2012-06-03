@@ -23,7 +23,7 @@ def _fs_button_callback_conv(long addr):
     else:
         return s
 
-cdef public class FileselectorButton(Object) [object PyElementaryFileselectorButton, type PyElementaryFileselectorButton_Type]:
+cdef public class FileselectorButton(Button) [object PyElementaryFileselectorButton, type PyElementaryFileselectorButton_Type]:
 
     """This is a button that, when clicked, creates an Elementary
     window (or inner window) B{with a L{Fileselector} "file
