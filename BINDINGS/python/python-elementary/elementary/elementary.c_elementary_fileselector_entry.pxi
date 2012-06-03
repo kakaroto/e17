@@ -70,8 +70,6 @@ cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntr
     are:
         - "button icon" - Button icon of the fileselector_entry
 
-    @group Callbacks: callback_*
-
     """
 
     cdef object _cbs

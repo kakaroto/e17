@@ -22,8 +22,6 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
 
     This class represents a basic window.
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, name, type):

@@ -42,8 +42,6 @@ cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFram
     Default text parts of the frame widget that you can use for are:
         - "default" - Label of the frame
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

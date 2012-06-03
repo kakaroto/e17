@@ -602,8 +602,6 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
     performance. The items may have different look and feel,
     not being restricted only to icon and label.
 
-    @group Callbacks: callback_*
-
     """
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)

@@ -49,8 +49,6 @@ cdef public class Clock(Object) [object PyElementaryClock, type PyElementaryCloc
     L{Layout}:
       - C{changed} - the clock's user changed the time
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

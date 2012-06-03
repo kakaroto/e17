@@ -61,8 +61,6 @@ cdef public class Fileselector(Object) [object PyElementaryFileselector, type Py
         - C{"done"} - the user has clicked on the "ok" or "cancel"
           buttons (C{event_info} is the selection's path)
 
-    @group Callbacks: callback_*
-
     """
 
     cdef object _cbs

@@ -55,8 +55,6 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
     L{Layout}:
       - C{changed} - emitted when the date in the calendar is changed.
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

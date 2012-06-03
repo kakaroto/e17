@@ -52,8 +52,6 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
 
     @note: By default all positions are set as enabled.
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

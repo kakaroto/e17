@@ -50,8 +50,6 @@ cdef public class Bubble(Object) [object PyElementaryBubble, type PyElementaryBu
       - B{default} - Label of the bubble
       - B{info} - info of the bubble
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

@@ -75,8 +75,6 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
     Default text parts of the ctxpopup items that you can use for are:
       - "default" - Title label in the title area
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

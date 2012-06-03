@@ -34,10 +34,10 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
     of the image API will act as a no-op.
 
     One can tune various properties of the image, like:
-    - pre-scaling,
-    - smooth scaling,
-    - orientation,
-    - aspect ratio during resizes, etc.
+        - pre-scaling,
+        - smooth scaling,
+        - orientation,
+        - aspect ratio during resizes, etc.
 
     An image object may also be made valid source and destination for
     drag and drop actions, through the L{editable_set()} call.
@@ -48,8 +48,6 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
             typed object onto the object in question -- the
             event info argument is the path to that image file
         - C{"clicked"} - This is called when a user has clicked the image
-
-    @group Callbacks: callback_*
 
     """
 
@@ -614,13 +612,11 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         """Start or stop an image object's animation.
 
         To actually start playing any image object's animation, if it
-        supports it, one must do something like:
+        supports it, one must do something like::
 
-        C{
-        if img.animated_available_get():
-            img.animated_set(True)
-            img.animated_play_set(True)
-        }
+            if img.animated_available_get():
+                img.animated_set(True)
+                img.animated_play_set(True)
 
         L{animated_set()} will enable animation on the image, B{but
         not start it yet}. This is the function one uses to start and
@@ -653,13 +649,11 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         """Start or stop an image object's animation.
 
         To actually start playing any image object's animation, if it
-        supports it, one must do something like:
+        supports it, one must do something like::
 
-        C{
-        if img.animated_available:
-            img.animated = True
-            img.animated_play = True
-        }
+            if img.animated_available:
+                img.animated = True
+                img.animated_play = True
 
         L{animated} will enable animation on the image, B{but not start it yet}.
         This is the property one uses to start and stop animation on

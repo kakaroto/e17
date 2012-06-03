@@ -258,8 +258,6 @@ cdef public class Player(Object) [object PyElementaryPlayer, type PyElementaryPl
     Default content parts of the player widget that you can use for are:
       - "video" - A video of the player
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

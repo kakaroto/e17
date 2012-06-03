@@ -22,8 +22,6 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
     after an evas_object_show() on a notify object, if a timeout was set on it,
     it will automatically get hidden after that time.
 
-    @group Callbacks: callback_*
-
     """
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)

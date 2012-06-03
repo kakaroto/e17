@@ -54,8 +54,6 @@ cdef public class FileselectorButton(Button) [object PyElementaryFileselectorBut
     are:
         - "icon" - Icon of the fileselector_button
 
-    @group Callbacks: callback_*
-
     """
 
     cdef object _cbs

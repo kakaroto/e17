@@ -87,8 +87,6 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
         - C{"thumb,done"} - L{thumb_set()} has completed with success
         - C{"thumb,error"} - L{thumb_set()} has failed
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

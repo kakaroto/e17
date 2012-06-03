@@ -286,8 +286,6 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
     Default text parts of the entry that you can use for are:
         - "default" - text of the entry
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):

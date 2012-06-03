@@ -119,6 +119,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         tooltip_content_cb_set, tooltip_unset, tooltip_style_set,
         tooltip_style_get, tooltip_window_mode_set, tooltip_window_mode_get
 
+    @group Callbacks: callback_*
+
     """
     cdef object _elmcallbacks
     cdef object _elm_event_cbs

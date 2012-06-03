@@ -36,8 +36,6 @@ cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_T
         - "front" - A front content of the flip
         - "back" - A back content of the flip
 
-    @group Callbacks: callback_*
-
     """
 
     def __init__(self, c_evas.Object parent):
