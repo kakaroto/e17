@@ -951,9 +951,16 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         return _elm_genlist_item_to_python(it)
 
     def decorated_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_decorated_item_get(self.obj)
-        return _elm_genlist_item_to_python(it)
+        cdef void *data
+        cdef object prm
+        cdef const_Elm_Object_Item *it = elm_genlist_decorated_item_get(self.obj)
+        if it == NULL:
+            return None
+        data = elm_object_item_data_get(it)
+        if data == NULL:
+            return None
+        prm = <object>data
+        return prm[2]
 
     def reorder_mode_set(self, reorder_mode):
         elm_genlist_reorder_mode_set(self.obj, reorder_mode)

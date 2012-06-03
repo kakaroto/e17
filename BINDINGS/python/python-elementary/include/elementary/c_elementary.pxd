@@ -475,6 +475,7 @@ cdef extern from "Elementary.h":
     #ctypedef char * (*Elm_Calendar_Format_Cb)(struct tm *stime)
 
     ctypedef struct Elm_Object_Item
+    ctypedef Elm_Object_Item const_Elm_Object_Item "const Elm_Object_Item"
     ctypedef struct Elm_Theme
 
     # General
