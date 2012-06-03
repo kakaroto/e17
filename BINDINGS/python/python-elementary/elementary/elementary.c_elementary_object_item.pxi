@@ -31,21 +31,66 @@ cdef void _tooltip_item_data_del_cb(void *data, c_evas.Evas_Object *o, void *eve
    Py_DECREF(<object>data)
 
 cdef class ObjectItem(object):
-    """A generic item for the widgets."""
+
+    """A generic item for the widgets.
+
+    @group General: widget_get, part_content_set, content_set, part_content_get,
+        content_get, part_content_unset, content_unset, part_text_set, text_set,
+        part_text_get, text_get, text, access_info_set, data_get, signal_emit,
+        tooltip_text_set, tooltip_window_mode_set, tooltip_window_mode_get,
+        tooltip_content_cb_set, tooltip_unset, tooltip_style_set,
+        tooltip_style_get, cursor_set, cursor_get, cursor_unset,
+        cursor_style_set, cursor_style_get, cursor_engine_only_set,
+        cursor_engine_only_get
+    @group Styles: disabled_set, disabled_get, disabled
+
+    """
+
     cdef void *base
     cdef Elm_Object_Item *obj
 
     def widget_get(self):
+        """Get the widget object's handle which contains a given item
+
+        @note: This returns the widget object itself that an item belongs to.
+        @note: Every elm_object_item supports this API
+
+        @return: The widget object
+        @rtype: L{Object}
+
+        """
         cdef c_evas.const_Evas_Object *obj = elm_object_item_widget_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def part_content_set(self, char *part, Object obj):
+        """Set a content of an object item
+
+        This sets a new object to an item as a content object. If any object was
+        already set as a content object in the same part, previous object will be
+        deleted automatically.
+
+        @note: Elementary object items may have many contents
+
+        @param part: The content part name to set (None for the default content)
+        @param content: The new content of the object item
+
+        """
         elm_object_item_part_content_set(self.obj, part, obj.obj)
 
     def content_set(self, Object obj):
         elm_object_item_part_content_set(self.obj, NULL, obj.obj)
 
     def part_content_get(self, char *part):
+        """Get a content of an object item
+
+        @note: Elementary object items may have many contents
+
+        @param part: The content part name to unset (None for the default content)
+        @type part: string
+        @return: content of the object item or None for any error
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_item_part_content_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long> obj)
 
@@ -54,6 +99,14 @@ cdef class ObjectItem(object):
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def part_content_unset(self, char *part):
+        """Unset a content of an object item
+
+        @note: Elementary object items may have many contents
+
+        @param part: The content part name to unset (None for the default content)
+        @type part: string
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_item_part_content_unset(self.obj, part)
         return evas.c_evas._Object_from_instance(<long> obj)
 
@@ -65,26 +118,34 @@ cdef class ObjectItem(object):
     def part_text_set(self, part, text):
         """Sets the text of a given part of this object.
 
-        @param part: part name to set the text.
-        @param text: text to set.
         @see: L{text_set()} and L{part_text_get()}
+
+        @param part: part name to set the text.
+        @type part: string
+        @param text: text to set.
+        @type text: string
         """
         elm_object_item_part_text_set(self.obj, part, text)
 
     def text_set(self, text):
         """Sets the main text for this object.
 
-        @param text: any text to set as the main textual part of this object.
         @see: L{text_get()} and L{part_text_set()}
+
+        @param text: any text to set as the main textual part of this object.
+        @type text: string
         """
         elm_object_item_text_set(self.obj, text)
 
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
 
-        @param part: part name to get the text.
-        @return: the text of a part or None if nothing was set.
         @see: L{text_get()} and L{part_text_set()}
+
+        @param part: part name to get the text.
+        @type part: string
+        @return: the text of a part or None if nothing was set.
+        @rtype: string
         """
         cdef const_char_ptr l
         l = elm_object_item_part_text_get(self.obj, part)
@@ -95,8 +156,10 @@ cdef class ObjectItem(object):
     def text_get(self):
         """Gets the main text for this object.
 
-        @return: the main text or None if nothing was set.
         @see: L{text_set()} and L{part_text_get()}
+
+        @return: the main text or None if nothing was set.
+        @rtype: string
         """
         cdef const_char_ptr l
         l = elm_object_item_text_get(self.obj)
@@ -105,6 +168,11 @@ cdef class ObjectItem(object):
         return l
 
     property text:
+        """The main text for this object.
+
+        @type: string
+
+        """
         def __get__(self):
             return self.text_get()
 
@@ -112,6 +180,12 @@ cdef class ObjectItem(object):
             self.text_set(value)
 
     def access_info_set(self, txt):
+        """Set the text to read out when in accessibility mode
+
+        @param txt: The text that describes the widget to people with poor or no vision
+        @type txt: string
+
+        """
         elm_object_item_access_info_set(self.obj, txt)
 
     def data_get(self):
@@ -138,15 +212,63 @@ cdef class ObjectItem(object):
             #self.data_set(data)
 
     def signal_emit(self, emission, source):
+        """Send a signal to the edje object of the widget item.
+
+        This function sends a signal to the edje object of the obj item. An
+        edje program can respond to a signal by specifying matching
+        'signal' and 'source' fields.
+
+        @param emission: The signal's name.
+        @type emission: string
+        @param source: The signal's source.
+        @type source: string
+
+        """
         elm_object_item_signal_emit(self.obj, emission, source)
 
     def disabled_set(self, disabled):
+        """Set the disabled state of an widget item.
+
+        Elementary object item can be B{disabled}, in which state they won't
+        receive input and, in general, will be themed differently from
+        their normal state, usually greyed out. Useful for contexts
+        where you don't want your users to interact with some of the
+        parts of you interface.
+
+        This sets the state for the widget item, either disabling it or
+        enabling it back.
+
+        @param disabled: The state to put in in: C{True} for
+            disabled, C{False} for enabled
+        @type disabled: bool
+
+        """
         elm_object_item_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
+        """Get the disabled state of an widget item.
+
+        This gets the state of the widget, which might be enabled or disabled.
+
+        @return: C{True}, if the widget item is disabled, C{False}
+            if it's enabled (or on errors)
+        @rtype: bool
+
+        """
         return bool(elm_object_item_disabled_get(self.obj))
 
     property disabled:
+        """The disabled state of an widget item.
+
+        Elementary object item can be B{disabled}, in which state they won't
+        receive input and, in general, will be themed differently from
+        their normal state, usually greyed out. Useful for contexts
+        where you don't want your users to interact with some of the
+        parts of you interface.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.disabled_get()
         def __set__(self, disabled):
