@@ -309,12 +309,12 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         evas_object_del(self.obj)
 
     def is_deleted(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(self.obj == NULL)
 
     def _set_common_params(self, size=None, pos=None, geometry=None,
                            color=None, name=None):
-        "Set common parameters in one go."
+        """Set common parameters in one go."""
         if size:
             self.size_set(*size)
         if pos:
@@ -327,7 +327,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.name_set(name)
 
     def evas_get(self):
-        "@rtype: L{Canvas}"
+        """@rtype: L{Canvas}"""
         return self.evas
 
     def type_get(self):
@@ -346,11 +346,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             return self.type_get()
 
     def layer_set(self, int l):
-        "@parm: B{l} layer number."
+        """@param l: layer number."""
         evas_object_layer_set(self.obj, l)
 
     def layer_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_layer_get(self.obj)
 
     property layer:
@@ -361,19 +361,19 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             return evas_object_layer_get(self.obj)
 
     def raise_(self):
-        "Raise to the top of its layer."
+        """Raise to the top of its layer."""
         evas_object_raise(self.obj)
 
     def lower(self):
-        "Lower to the bottom of its layer."
+        """Lower to the bottom of its layer."""
         evas_object_lower(self.obj)
 
     def stack_above(self, Object above):
-        "Reorder to be above the given one."
+        """Reorder to be above the given one."""
         evas_object_stack_above(self.obj, above.obj)
 
     def stack_below(self, Object below):
-        "Reorder to be below the given one."
+        """Reorder to be below the given one."""
         evas_object_stack_below(self.obj, below.obj)
 
     def above_get(self):
@@ -425,7 +425,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             return self.bottom_get()
 
     def geometry_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w, h
         evas_object_geometry_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
@@ -433,10 +433,14 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def geometry_set(self, int x, int y, int w, int h):
         """Set object geometry (position and size).
 
-        @parm: x
-        @parm: y
-        @parm: w
-        @parm: h
+        @param x:
+        @type x: int
+        @param y:
+        @type y: int
+        @param w:
+        @type w: int
+        @param h:
+        @type h: int
         """
         evas_object_move(self.obj, x, y)
         evas_object_resize(self.obj, w, h)
@@ -462,8 +466,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def size_set(self, int w, int h):
         """Set object size.
 
-        @parm: w
-        @parm: h
+        @param w:
+        @type w: int
+        @param h:
+        @type h: int
         """
         evas_object_resize(self.obj, w, h)
 
@@ -479,7 +485,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_resize(self.obj, w, h)
 
     def resize(self, int w, int h):
-        "Same as L{size_set()}."
+        """Same as L{size_set()}."""
         evas_object_resize(self.obj, w, h)
 
     def pos_get(self):
@@ -491,8 +497,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def pos_set(self, int x, int y):
         """Set object position.
 
-        @parm: x
-        @parm: y
+        @param x:
+        @type x: int
+        @param y:
+        @type y: int
         """
         evas_object_move(self.obj, x, y)
 
@@ -508,13 +516,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x, y)
 
     def top_left_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y
         evas_object_geometry_get(self.obj, &x, &y, NULL, NULL)
         return (x, y)
 
     def top_left_set(self, int x, int y):
-        "Set (x, y) of top-left corner."
+        """Set (x, y) of top-left corner."""
         evas_object_move(self.obj, x, y)
 
     property top_left:
@@ -529,13 +537,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x, y)
 
     def top_center_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w
         evas_object_geometry_get(self.obj, &x, &y, &w, NULL)
         return (x + w/2, y)
 
     def top_center_set(self, int x, int y):
-        "Set (x, y) of top-center."
+        """Set (x, y) of top-center."""
         cdef int w
         evas_object_geometry_get(self.obj, NULL, NULL, &w, NULL)
         evas_object_move(self.obj, x - w/2, y)
@@ -553,13 +561,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x - w/2, y)
 
     def top_right_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w
         evas_object_geometry_get(self.obj, &x, &y, &w, NULL)
         return (x + w, y)
 
     def top_right_set(self, int x, int y):
-        "Set (x, y) of top-right corner."
+        """Set (x, y) of top-right corner."""
         cdef int w
         evas_object_geometry_get(self.obj, NULL, NULL, &w, NULL)
         evas_object_move(self.obj, x - w, y)
@@ -577,13 +585,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x - w, y)
 
     def left_center_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, h
         evas_object_geometry_get(self.obj, &x, &y, NULL, &h)
         return (x, y + h/2)
 
     def left_center_set(self, int x, int y):
-        "Set (x, y) of left-center."
+        """Set (x, y) of left-center."""
         cdef int h
         evas_object_geometry_get(self.obj, NULL, NULL, NULL, &h)
         evas_object_move(self.obj, x, y - h/2)
@@ -601,13 +609,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x, y - h/2)
 
     def right_center_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w, h
         evas_object_geometry_get(self.obj, &x, &y, &w, &h)
         return (x + w, y + h/2)
 
     def right_center_set(self, int x, int y):
-        "Set (x, y) of right-center."
+        """Set (x, y) of right-center."""
         cdef int w, h
         evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
         evas_object_move(self.obj, x - w, y - h/2)
@@ -625,13 +633,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x - w, y - h/2)
 
     def bottom_left_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, h
         evas_object_geometry_get(self.obj, &x, &y, NULL, &h)
         return (x, y + h)
 
     def bottom_left_set(self, int x, int y):
-        "Set (x, y) of bottom-left corner."
+        """Set (x, y) of bottom-left corner."""
         cdef int h
         evas_object_geometry_get(self.obj, NULL, NULL, NULL, &h)
         evas_object_move(self.obj, x, y - h)
@@ -649,13 +657,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x, y - h)
 
     def bottom_center_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w, h
         evas_object_geometry_get(self.obj, &x, &y, &w, &h)
         return (x + w/2, y + h)
 
     def bottom_center_set(self, int x, int y):
-        "Set (x, y) of bottom-center."
+        """Set (x, y) of bottom-center."""
         cdef int w, h
         evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
         evas_object_move(self.obj, x - w/2, y - h)
@@ -673,13 +681,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x - w/2, y - h)
 
     def bottom_right_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w, h
         evas_object_geometry_get(self.obj, &x, &y, &w, &h)
         return (x + w, y + h)
 
     def bottom_right_set(self, int x, int y):
-        "Set (x, y) of bottom-right corner."
+        """Set (x, y) of bottom-right corner."""
         cdef int w, h
         evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
         evas_object_move(self.obj, x - w, y - h)
@@ -697,13 +705,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             evas_object_move(self.obj, x - w, y - h)
 
     def center_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int x, y, w, h
         evas_object_geometry_get(self.obj, &x, &y, &w, &h)
         return (x + w/2, y + h/2)
 
     def center_set(self, int x, int y):
-        "Set (x, y) of center."
+        """Set (x, y) of center."""
         cdef int w, h
         evas_object_geometry_get(self.obj, NULL, NULL, &w, &h)
         evas_object_move(self.obj, x - w/2, y - h/2)
@@ -762,8 +770,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{w} horizontal value.
-        @parm: B{h} vertical value.
+        @param w: horizontal value.
+        @type w: int
+        @param h: vertical value.
+        @type h: int
         """
         evas_object_size_hint_min_set(self.obj, w, h)
 
@@ -801,8 +811,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{w} horizontal value.
-        @parm: B{h} vertical value.
+        @param w: horizontal value.
+        @type w: int
+        @param h: vertical value.
+        @type h: int
         """
         evas_object_size_hint_max_set(self.obj, w, h)
 
@@ -840,8 +852,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{w} horizontal value.
-        @parm: B{h} vertical value.
+        @param w: horizontal value.
+        @type w: int
+        @param h: vertical value.
+        @type h: int
         """
         evas_object_size_hint_request_set(self.obj, w, h)
 
@@ -881,9 +895,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{aspect} aspect value, one of EVAS_ASPECT_CONTROL_*.
-        @parm: B{w} horizontal value.
-        @parm: B{h} vertical value.
+        @param aspect: aspect value, one of EVAS_ASPECT_CONTROL_*.
+        @param w: horizontal value.
+        @type w: int
+        @param h: vertical value.
+        @type h: int
         """
         evas_object_size_hint_aspect_set(self.obj, <Evas_Aspect_Control>aspect,
                                          w, h)
@@ -925,8 +941,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{x} horizontal value.
-        @parm: B{y} vertical value.
+        @param x: horizontal value.
+        @type x: float
+        @param y: vertical value.
+        @type y: float
         """
         evas_object_size_hint_align_set(self.obj, x, y)
 
@@ -942,6 +960,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
+
+        @type: tuple of floats
+
         """
         def __get__(self):
             return self.size_hint_align_get()
@@ -966,8 +987,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{x} horizontal value.
-        @parm: B{y} vertical value.
+        @param x: horizontal value.
+        @type x: float
+        @param y: vertical value.
+        @type y: float
         """
         evas_object_size_hint_weight_set(self.obj, x, y)
 
@@ -981,6 +1004,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
+
+        @type: tuple of floats
+
         """
         def __get__(self):
             return self.size_hint_weight_get()
@@ -1005,10 +1031,14 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         When this property changes, EVAS_CALLBACK_CHANGED_SIZE_HINTS
         will be emitted.
 
-        @parm: B{l} left value.
-        @parm: B{r} right value.
-        @parm: B{t} top value.
-        @parm: B{b} bottom value.
+        @param l: left value.
+        @type l: int
+        @param r: right value.
+        @type r: int
+        @param t: top value.
+        @type t: int
+        @param b: bottom value.
+        @type b: int
         """
         evas_object_size_hint_padding_set(self.obj, l, r, t, b)
 
@@ -1028,11 +1058,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.size_hint_padding_set(*spec)
 
     def move(self, int x, int y):
-        "Same as L{pos_set()}."
+        """Same as L{pos_set()}."""
         evas_object_move(self.obj, x, y)
 
     def move_relative(self, int dx, int dy):
-        "Move relatively to current position"
+        """Move relatively to current position"""
         cdef int x, y
         evas_object_geometry_get(self.obj, &x, &y, NULL, NULL)
         evas_object_move(self.obj, x + dx, y + dy)
@@ -1044,7 +1074,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         evas_object_hide(self.obj)
 
     def visible_get(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(evas_object_visible_get(self.obj))
 
     def visible_set(self, spec):
@@ -1061,11 +1091,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.visible_set(spec)
 
     def static_clip_get(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(evas_object_static_clip_get(self.obj))
 
     def static_clip_set(self, int value):
-        "Set a hint flag on the object that this is used as a static clipper."
+        """Set a hint flag on the object that this is used as a static clipper."""
         evas_object_static_clip_set(self.obj, value)
 
     property static_clip:
@@ -1085,7 +1115,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def render_op_set(self, int value):
         """Set the operation used for rendering.
 
-        @parm: B{value} EVAS_RENDER_BLEND, EVAS_RENDER_BLEND_REL,
+        @param value: EVAS_RENDER_BLEND, EVAS_RENDER_BLEND_REL,
            EVAS_RENDER_COPY, EVAS_RENDER_COPY_REL EVAS_RENDER_ADD,
            EVAS_RENDER_ADD_REL, EVAS_RENDER_SUB, EVAS_RENDER_SUB_REL,
            EVAS_RENDER_TINT, EVAS_RENDER_TINT_REL, EVAS_RENDER_MASK or
@@ -1101,11 +1131,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.render_op_set(value)
 
     def anti_alias_get(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(evas_object_anti_alias_get(self.obj))
 
     def anti_alias_set(self, int value):
-        "Enable or disable the object to be drawn anti-aliased."
+        """Enable or disable the object to be drawn anti-aliased."""
         evas_object_anti_alias_set(self.obj, value)
 
     property anti_alias:
@@ -1118,10 +1148,14 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def color_set(self, int r, int g, int b, int a):
         """Set object color using r, g, b, a (uses pre-multiply colorspace!)
 
-        @parm: r
-        @parm: g
-        @parm: b
-        @parm: a
+        @param r:
+        @type r: int
+        @param g:
+        @type g: int
+        @param b:
+        @type b: int
+        @param a:
+        @type a: int
 
         @note: You can convert non-premul to premul color space using
            L{evas.color_parse()} or using specific function
@@ -1143,7 +1177,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         return (r, g, b, a)
 
     property color:
-        "Object's (r, g, b, a) color, in pre-multiply colorspace"
+        """Object's (r, g, b, a) color, in pre-multiply colorspace"""
 
         def __get__(self):
             return self.color_get()
@@ -1163,7 +1197,8 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def clip_set(self, value):
         """Set the object to clip this object, or None to unset.
 
-        @parm: B{value} L{Object} or None to remove clip.
+        @param value: L{Object} or None to remove clip.
+        @type value: L{Object}
         """
         cdef Evas_Object *clip
         cdef Object o
@@ -1177,7 +1212,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             raise ValueError("clip must be evas.Object or None")
 
     def clip_unset(self):
-        "Remove any clip of this object."
+        """Remove any clip of this object."""
         evas_object_clip_unset(self.obj)
 
     property clip:
@@ -1209,7 +1244,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             return self.clipees_get()
 
     def name_get(self):
-        "@rtype: str"
+        """@rtype: str"""
         cdef const_char_ptr s
         s = evas_object_name_get(self.obj)
         if s != NULL:
@@ -1221,7 +1256,8 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         Names have no great utility, you can use them to help debug or even
         to retrive them later by L{Canvas.object_name_find()}.
 
-        @parm: value
+        @param value:
+        @type value: string
         """
         evas_object_name_set(self.obj, value)
 
@@ -1253,10 +1289,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def event_callback_add(self, int type, func, *args, **kargs):
         """Add a new callback for the given event.
 
-        @parm: B{type} an integer with event type code, like
+        @param type: an integer with event type code, like
                C{EVAS_CALLBACK_MOUSE_IN}, C{EVAS_CALLBACK_KEY_DOWN} and
                other C{EVAS_CALLBACK_*} constants.
-        @parm: B{func} function to call back, this function will have one of
+        @type type: int
+        @param func: function to call back, this function will have one of
                the following signatures:
                 - C{function(object, event, *args, **kargs)}
                 - C{function(object, *args, **kargs)}
@@ -1267,6 +1304,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
                Note that the object passed to the callback in B{event}
                parameter will only be valid during the callback, using it
                after callback returns will raise an ValueError.
+        @type func: function
 
         @raise ValueError: if B{type} is unknown.
         @raise TypeError: if B{func} is not callable.
@@ -1284,8 +1322,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def event_callback_del(self, int type, func):
         """Remove callback for the given event.
 
-        @parm: B{type} an integer with event type code.
-        @parm: B{func} function used with L{event_callback_add()}.
+        @param type: an integer with event type code.
+        @type type: int
+        @param func: function used with L{event_callback_add()}.
+        @type func: function
         @precond: B{type} and B{func} must be used as parameter for
            L{event_callback_add()}.
 
@@ -1306,7 +1346,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOUSE_IN, func, *a, **k)
 
     def on_mouse_in_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOUSE_IN, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOUSE_IN, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOUSE_IN, func)
 
     def on_mouse_out_add(self, func, *a, **k):
@@ -1317,7 +1357,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOUSE_OUT, func, *a, **k)
 
     def on_mouse_out_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOUSE_OUT, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOUSE_OUT, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOUSE_OUT, func)
 
     def on_mouse_down_add(self, func, *a, **k):
@@ -1328,7 +1368,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOUSE_DOWN, func, *a, **k)
 
     def on_mouse_down_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOUSE_DOWN, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOUSE_DOWN, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOUSE_DOWN, func)
 
     def on_mouse_up_add(self, func, *a, **k):
@@ -1339,7 +1379,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOUSE_UP, func, *a, **k)
 
     def on_mouse_up_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOUSE_UP, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOUSE_UP, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOUSE_UP, func)
 
     def on_mouse_move_add(self, func, *a, **k):
@@ -1350,7 +1390,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOUSE_MOVE, func, *a, **k)
 
     def on_mouse_move_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOUSE_MOVE, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOUSE_MOVE, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOUSE_MOVE, func)
 
     def on_mouse_wheel_add(self, func, *a, **k):
@@ -1361,7 +1401,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOUSE_WHEEL, func, *a, **k)
 
     def on_mouse_wheel_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOUSE_WHEEL, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOUSE_WHEEL, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOUSE_WHEEL, func)
 
     def on_free_add(self, func, *a, **k):
@@ -1375,7 +1415,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_FREE, func, *a, **k)
 
     def on_free_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_FREE, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_FREE, ...)"""
         self.event_callback_del(EVAS_CALLBACK_FREE, func)
 
     def on_key_down_add(self, func, *a, **k):
@@ -1386,7 +1426,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_KEY_DOWN, func, *a, **k)
 
     def on_key_down_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_KEY_DOWN, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_KEY_DOWN, ...)"""
         self.event_callback_del(EVAS_CALLBACK_KEY_DOWN, func)
 
     def on_key_up_add(self, func, *a, **k):
@@ -1397,7 +1437,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_KEY_UP, func, *a, **k)
 
     def on_key_up_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_KEY_UP, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_KEY_UP, ...)"""
         self.event_callback_del(EVAS_CALLBACK_KEY_UP, func)
 
     def on_focus_in_add(self, func, *a, **k):
@@ -1408,7 +1448,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_FOCUS_IN, func, *a, **k)
 
     def on_focus_in_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_FOCUS_IN, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_FOCUS_IN, ...)"""
         self.event_callback_del(EVAS_CALLBACK_FOCUS_IN, func)
 
     def on_focus_out_add(self, func, *a, **k):
@@ -1419,7 +1459,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_FOCUS_OUT, func, *a, **k)
 
     def on_focus_out_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_FOCUS_OUT, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_FOCUS_OUT, ...)"""
         self.event_callback_del(EVAS_CALLBACK_FOCUS_OUT, func)
 
     def on_show_add(self, func, *a, **k):
@@ -1430,7 +1470,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_SHOW, func, *a, **k)
 
     def on_show_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_SHOW, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_SHOW, ...)"""
         self.event_callback_del(EVAS_CALLBACK_SHOW, func)
 
     def on_hide_add(self, func, *a, **k):
@@ -1441,7 +1481,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_HIDE, func, *a, **k)
 
     def on_hide_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_HIDE, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_HIDE, ...)"""
         self.event_callback_del(EVAS_CALLBACK_HIDE, func)
 
     def on_move_add(self, func, *a, **k):
@@ -1452,7 +1492,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_MOVE, func, *a, **k)
 
     def on_move_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_MOVE, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_MOVE, ...)"""
         self.event_callback_del(EVAS_CALLBACK_MOVE, func)
 
     def on_resize_add(self, func, *a, **k):
@@ -1463,7 +1503,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_RESIZE, func, *a, **k)
 
     def on_resize_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_RESIZE, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_RESIZE, ...)"""
         self.event_callback_del(EVAS_CALLBACK_RESIZE, func)
 
     def on_restack_add(self, func, *a, **k):
@@ -1474,7 +1514,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_RESTACK, func, *a, **k)
 
     def on_restack_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_RESTACK, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_RESTACK, ...)"""
         self.event_callback_del(EVAS_CALLBACK_RESTACK, func)
 
     def on_del_add(self, func, *a, **k):
@@ -1488,27 +1528,27 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_add(EVAS_CALLBACK_DEL, func, *a, **k)
 
     def on_del_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_DEL, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_DEL, ...)"""
         self.event_callback_del(EVAS_CALLBACK_DEL, func)
 
     def on_hold_add(self, func, *a, **k):
-        "Same as event_callback_add(EVAS_CALLBACK_HOLD, ...)"
+        """Same as event_callback_add(EVAS_CALLBACK_HOLD, ...)"""
         self.event_callback_add(EVAS_CALLBACK_HOLD, func, *a, **k)
 
     def on_hold_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_HOLD, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_HOLD, ...)"""
         self.event_callback_del(EVAS_CALLBACK_HOLD, func)
 
     def on_changed_size_hints_add(self, func, *a, **k):
-        "Same as event_callback_add(EVAS_CALLBACK_CHANGED_SIZE_HINTS, ...)"
+        """Same as event_callback_add(EVAS_CALLBACK_CHANGED_SIZE_HINTS, ...)"""
         self.event_callback_add(EVAS_CALLBACK_CHANGED_SIZE_HINTS, func, *a, **k)
 
     def on_changed_size_hints_del(self, func):
-        "Same as event_callback_del(EVAS_CALLBACK_CHANGED_SIZE_HINTS, ...)"
+        """Same as event_callback_del(EVAS_CALLBACK_CHANGED_SIZE_HINTS, ...)"""
         self.event_callback_del(EVAS_CALLBACK_CHANGED_SIZE_HINTS, func)
 
     def pass_events_get(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(evas_object_pass_events_get(self.obj))
 
     def pass_events_set(self, int value):
@@ -1533,7 +1573,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.pass_events_set(value)
 
     def repeat_events_get(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(evas_object_repeat_events_get(self.obj))
 
     def repeat_events_set(self, int value):
@@ -1553,7 +1593,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.repeat_events_set(value)
 
     def propagate_events_get(self):
-        "@rtype: bool"
+        """@rtype: bool"""
         return bool(evas_object_propagate_events_get(self.obj))
 
     def propagate_events_set(self, int value):
@@ -1572,7 +1612,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.propagate_events_set(value)
 
     def pointer_mode_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return <int>evas_object_pointer_mode_get(self.obj)
 
     def pointer_mode_set(self, int value):
@@ -1589,7 +1629,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
         The default value is C{EVAS_OBJECT_POINTER_MODE_AUTOGRAB}.
 
-        @parm: B{value} EVAS_OBJECT_POINTER_MODE_AUTOGRAB or
+        @param value: EVAS_OBJECT_POINTER_MODE_AUTOGRAB or
            EVAS_OBJECT_POINTER_MODE_NOGRAB
         """
         evas_object_pointer_mode_set(self.obj, <Evas_Object_Pointer_Mode>value)
