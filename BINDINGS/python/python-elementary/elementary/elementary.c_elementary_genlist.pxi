@@ -607,6 +607,9 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
     performance. The items might contain subitems, thus being able to
     do 'tree' hierarchy. The rows may have different look and feel,
     not being restricted only to icon and label.
+
+    @group Callbacks: callback_*
+
     """
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)

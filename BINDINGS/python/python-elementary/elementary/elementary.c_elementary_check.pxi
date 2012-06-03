@@ -39,6 +39,8 @@ cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryChec
       - "on" - On state label of the check
       - "off" - Off state label of the check
 
+    @group Callbacks: callback_*
+
     """
 
     def __init__(self, c_evas.Object parent):

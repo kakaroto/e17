@@ -40,8 +40,6 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
 
     When the indicator is released, it will move to its nearest "enabled and magnetized" position.
 
-    @note: By default all positions are set as enabled.
-
     This widget emits the following X{signals}, besides the ones sent from L{Layout}:
       - B{selected} - when user selects an enabled position (the label is passed as event info)".
       - B{pos_changed} - when the indicator reaches any of the positions("left", "right" or "center").
@@ -51,6 +49,10 @@ cdef public class Actionslider(Object) [object PyElementaryActionslider, type Py
       - B{left} - A left label of the actionslider
       - B{right} - A right label of the actionslider
       - B{center} - A center label of the actionslider
+
+    @note: By default all positions are set as enabled.
+
+    @group Callbacks: callback_*
 
     """
 

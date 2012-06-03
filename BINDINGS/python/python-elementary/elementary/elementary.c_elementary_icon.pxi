@@ -22,6 +22,9 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
 
     If you need a widget which presents a icon and is clickable, this widget
     is the best option for you.
+
+    @group Callbacks: callback_*
+
     """
     def __init__(self, c_evas.Object parent):
         """

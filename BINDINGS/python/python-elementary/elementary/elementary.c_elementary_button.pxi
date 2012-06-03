@@ -46,6 +46,8 @@ cdef public class Button(Object) [object PyElementaryButton, type PyElementaryBu
     Default text parts of the button widget that you can use for are:
       - "default" - Label of the button
 
+    @group Callbacks: callback_*
+
     """
 
     def __init__(self, c_evas.Object parent):

@@ -61,6 +61,8 @@ cdef public class Colorselector(Object) [object PyElementaryColorselector, type 
       - @c "color,item,longpressed" - When user long presses on color item.
         The event_info parameter of the callback will be the selected color item.
 
+    @group Callbacks: callback_*
+
     """
 
     def __init__(self, c_evas.Object parent):
