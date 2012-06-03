@@ -695,7 +695,7 @@ cdef extern from "Elementary.h":
     void                     elm_object_domain_translatable_text_set(Evas_Object *obj, char *domain, char *text)
     void                     elm_object_translatable_text_set(Evas_Object *obj, char *text)
     char                    *elm_object_translatable_text_part_get(Evas_Object *obj, char *part)
-    void                     elm_object_translatable_text_get(Evas_Object *obj)
+    char                    *elm_object_translatable_text_get(Evas_Object *obj)
 
     # Object Item
     Evas_Object             *elm_object_item_widget_get(Elm_Object_Item *it)

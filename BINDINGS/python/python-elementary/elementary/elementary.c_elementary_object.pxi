@@ -91,6 +91,34 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     All widgets are based on this class.
 
+    @group General: part_text_set, text_set, part_text_get, text_get, text,
+        part_content_set, content_set, part_content_get, content_get,
+        part_content_unset, content_unset, access_info_set, name_find,
+        signal_emit, event_callback_add, event_callback_del,
+        domain_translatable_text_part_set, domain_translatable_text_set,
+        translatable_text_set, translatable_text_part_get,
+        translatable_text_get
+    @group Styles: style_set, style_get, disabled_set, disabled_get, disabled
+    @group Widget Tree Navigation: widget_check, parent_widget_get,
+        top_widget_get, widget_type_get
+    @group Cursors: cursor_set, cursor_get, cursor_unset, cursor_style_set,
+        cursor_style_get, cursor_theme_search_enabled_set,
+        cursor_theme_search_enabled_get
+    @group Focus: focus_get, focus_set, focus_allow_set, focus_allow_get,
+        focus_custom_chain_set, focus_custom_chain_unset,
+        focus_custom_chain_get, focus_custom_chain_append,
+        focus_custom_chain_prepend, tree_focus_allow_set, tree_focus_allow_get
+    @group Mirroring: mirrored_get, mirrored_set, mirrored_automatic_get,
+        mirrored_automatic_set
+    @group Widget Scaling: scale_set, scale_get
+    @group Scrollhints: scroll_hold_push, scroll_hold_pop, scroll_freeze_push,
+        scroll_freeze_pop, scroll_lock_x_set, scroll_lock_y_set,
+        scroll_lock_x_get, scroll_lock_y_get
+    @group Tooltips: tooltip_show, tooltip_hide, tooltip_text_set,
+        tooltip_domain_translatable_text_set, tooltip_translatable_text_set,
+        tooltip_content_cb_set, tooltip_unset, tooltip_style_set,
+        tooltip_style_get, tooltip_window_mode_set, tooltip_window_mode_get
+
     """
     cdef object _elmcallbacks
     cdef object _elm_event_cbs
@@ -144,13 +172,37 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         def __set__(self, value):
             self.text_set(value)
 
-    def part_content_set(self, char *part, Object obj):
+    def part_content_set(self, part, Object obj):
+        """Set a content of an object
+
+        This sets a new object to a widget as a content object. If any object was
+        already set as a content object in the same part, previous object will be
+        deleted automatically.
+
+        @note: Elementary objects may have many contents
+
+        @param part: The content part name to set (None for the default content)
+        @type part: string
+        @param content: The new content of the object
+        @type content: L{Object}
+
+        """
         elm_object_part_content_set(self.obj, part, obj.obj)
 
     def content_set(self, Object obj):
         elm_object_part_content_set(self.obj, NULL, obj.obj)
 
-    def part_content_get(self, char *part):
+    def part_content_get(self, part):
+        """Get a content of an object
+
+        @note: Elementary objects may have many contents
+
+        @param part: The content part name to get (None for the default content)
+        @type part: string
+        @return: content of the object or None for any error
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_part_content_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long> obj)
 
@@ -158,7 +210,15 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         cdef c_evas.Evas_Object *obj = elm_object_content_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
-    def part_content_unset(self, char *part):
+    def part_content_unset(self, part):
+        """Unset a content of an object
+
+        @note: Elementary objects may have many contents
+
+        @param part: The content part name to unset (None for the default content)
+        @type part: string
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, part)
         return evas.c_evas._Object_from_instance(<long> obj)
 
@@ -167,47 +227,193 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def access_info_set(self, txt):
+        """Set the text to read out when in accessibility mode
+
+        @param txt: The text that describes the widget to people with poor or no vision
+        @type txt: string
+
+        """
         elm_object_access_info_set(self.obj, txt)
 
     def name_find(self, name, recurse):
+        """Get a named object from the children
+
+        This function searches the children (or recursively children of
+        children and so on) of the given object looking for a child with
+        the name of C{name}. If the child is found the object is returned, or
+        None is returned. You can set the name of an object with
+        L{name_set()}. If the name is not unique within the child
+        objects (or the tree is C{recurse} is greater than 0) then it is
+        undefined as to which child of that name is returned, so ensure the name
+        is unique amongst children. If recurse is set to -1 it will recurse
+        without limit.
+
+        @param name: The name of the child to find
+        @type name: string
+        @param recurse: Set to the maximum number of levels to recurse (0 == none, 1 is only look at 1 level of children etc.)
+        @type recurse: int
+        @return: The found object of that name, or None if none is found
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_name_find(self.obj, name, recurse)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def style_set(self, style):
+        """Set the style to used by a given widget
+
+        This sets the style (by name) that will define the appearance of a
+        widget. Styles vary from widget to widget and may also be defined
+        by other themes by means of extensions and overlays.
+
+        @see: elm_theme_extension_add()
+        @see: elm_theme_extension_del()
+        @see: elm_theme_overlay_add()
+        @see: elm_theme_overlay_del()
+
+        @param style: The name of the style to use on it
+        @type style: string
+        @return: C{True} on success, C{False} otherwise
+        @rtype: bool
+
+        """
         elm_object_style_set(self.obj, style)
 
     def style_get(self):
+        """Get the style used by the widget
+
+        This gets the style being used for that widget. Note that the string
+        pointer is only valid as long as the object is valid and the style doesn't
+        change.
+
+        @see: L{style_set()}
+
+        @return: The style name used
+        @rtype: string
+
+        """
         cdef const_char_ptr style
         style = elm_object_style_get(self.obj)
         return style
 
     def disabled_set(self, disabled):
+        """Set the disabled state of an Elementary object.
+
+        Elementary objects can be B{disabled}, in which state they won't
+        receive input and, in general, will be themed differently from
+        their normal state, usually greyed out. Useful for contexts
+        where you don't want your users to interact with some of the
+        parts of you interface.
+
+        This sets the state for the widget, either disabling it or
+        enabling it back.
+
+        @param disabled: The state to put in in: C{True} for
+            disabled, C{False} for enabled
+        @type disabled: bool
+
+        """
         elm_object_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
+        """Get the disabled state of an Elementary object.
+
+        This gets the state of the widget, which might be enabled or disabled.
+
+        @return: C{True}, if the widget is disabled, C{False} if it's enabled
+            (or on errors)
+        @rtype: bool
+
+        """
         return bool(elm_object_disabled_get(self.obj))
 
     property disabled:
+        """The disabled state of an Elementary object.
+
+        Elementary objects can be B{disabled}, in which state they won't
+        receive input and, in general, will be themed differently from
+        their normal state, usually greyed out. Useful for contexts
+        where you don't want your users to interact with some of the
+        parts of you interface.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.disabled_get()
         def __set__(self, disabled):
             self.disabled_set(disabled)
 
     def widget_check(self):
+        """Check if the given Evas Object is an Elementary widget.
+
+        @return: C{True} if it is an elementary widget variant,
+            C{False} otherwise
+        @rtype: bool
+
+        """
         return bool(elm_object_widget_check(self.obj))
 
     def parent_widget_get(self):
+        """Get the first parent of the given object that is an Elementary
+        widget.
+
+        Use this to query for an object's parent widget.
+
+        @note: Most of Elementary users wouldn't be mixing non-Elementary
+            smart objects in the objects tree of an application, as this is
+            an advanced usage of Elementary with Evas. So, except for the
+            application's window, which is the root of that tree, all other
+            objects would have valid Elementary widget parents.
+
+        @return: the parent object that is an Elementary widget, or C{None},
+            if it was not found.
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_parent_widget_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def top_widget_get(self):
+        """Get the top level parent of an Elementary widget.
+
+        @return: The top level Elementary widget, or C{None} if parent cannot be
+            found.
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *obj = elm_object_top_widget_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def widget_type_get(self):
+        """Get the string that represents this Elementary widget.
+
+        @note: Elementary is weird and exposes itself as a single
+            Evas_Object_Smart_Class of type "elm_widget", so
+            evas_object_type_get() always return that, making debug and
+            language bindings hard. This function tries to mitigate this
+            problem, but the solution is to change Elementary to use
+            proper inheritance.
+
+        @return: Elementary widget name, or C{None} if not a valid widget.
+        @rtype: string
+
+        """
         return elm_object_widget_type_get(self.obj)
 
     def signal_emit(self, emission, source):
+        """Send a signal to the widget edje object.
+
+        This function sends a signal to the edje object of the obj. An
+        edje program can respond to a signal by specifying matching
+        'signal' and 'source' fields.
+
+        @param emission: The signal's name.
+        @type emission: string
+        @param source: The signal's source.
+        @type source: string
+
+        """
         elm_object_signal_emit(self.obj, emission, source)
 
     #def signal_callback_add(self, emission, source, func, data):
@@ -217,6 +423,54 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         #elm_object_signal_callback_del(self.obj, emission, source, func)
 
     def event_callback_add(self, func, *args, **kargs):
+        """Add a callback for input events (key up, key down, mouse wheel)
+        on a given Elementary widget
+
+        Every widget in an Elementary interface set to receive focus,
+        with elm_object_focus_allow_set(), will propagate B{all} of its
+        key up, key down and mouse wheel input events up to its parent
+        object, and so on. All of the focusable ones in this chain which
+        had an event callback set, with this call, will be able to treat
+        those events. There are two ways of making the propagation of
+        these event upwards in the tree of widgets to B{cease}:
+            - Just return C{True} on C{func}. C{False} will mean
+              the event was B{not} processed, so the propagation will go on.
+            - The C{event_info} pointer passed to C{func} will contain the
+              event's structure and, if you OR its C{event_flags} inner
+              value to C{EVAS_EVENT_FLAG_ON_HOLD}, you're telling Elementary
+              one has already handled it, thus killing the event's
+              propagation, too.
+
+        @note: Your event callback will be issued on those events taking
+            place only if no other child widget has consumed the
+            event already.
+
+        @note: Not to be confused with C{evas_object_event_callback_add()},
+            which will add event callbacks per type on general Evas objects
+            (no event propagation infrastructure taken in account).
+
+        @note: Not to be confused with L{signal_callback_add()},
+            which will add callbacks to B{signals} coming from a widget's theme,
+            not input events.
+
+        @note: Not to be confused with C{edje_object_signal_callback_add()},
+            which does the same as L{signal_callback_add()},
+            but directly on an Edje object.
+
+        @note: Not to be confused with C{evas_object_smart_callback_add()},
+            which adds callbacks to smart objects' B{smart events},
+            and not input events.
+
+        @see: L{event_callback_del()}
+
+        @param func: The callback function to be executed when the event
+            happens
+        @type func: function
+        @param *args: Optional arguments containing data passed to C{func}
+        @param **kwargs: Optional keyword arguments containing data passed to
+            C{func}
+
+        """
         if not callable(func):
             raise TypeError("func must be callable")
 
@@ -230,6 +484,20 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         self._elm_event_cbs.append(data)
 
     def event_callback_del(self, func, *args, **kargs):
+        """Remove an event callback from a widget.
+
+        This function removes a callback, previously attached to event emission.
+        The parameters func and args, kwargs must match exactly those passed to
+        a previous call to L{event_callback_add()}.
+
+        @param func: The callback function to be executed when the event is
+            emitted.
+        @type func: function
+        @param *args: Optional arguments containing data passed to C{func}
+        @param **kwargs: Optional keyword arguments containing data passed to
+            C{func}
+
+        """
         data = (func, args, kargs)
         self._elm_event_cbs.remove(data)
 
@@ -292,27 +560,100 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     # Focus
     def focus_get(self):
+        """Get the whether an Elementary object has the focus or not.
+
+        @see: L{focus_set()}
+        @return: C{True}, if the object is focused, C{False} if
+            not (and on errors).
+        @rtype: bool
+
+        """
         return bool(elm_object_focus_get(self.obj))
 
     def focus_set(self, focus):
+        """Set/unset focus to a given Elementary object.
+
+        @note: When you set focus to this object, if it can handle focus, will
+            take the focus away from the one who had it previously and will, for
+            now on, be the one receiving input events. Unsetting focus will remove
+            the focus from the object, passing it back to the previous element in the
+            focus chain list.
+
+        @see: L{focus_get()}
+        @see: L{focus_custom_chain_get()}
+
+        @param focus: C{True} set focus to a given object,
+            C{False} unset focus to a given object.
+        @type focus: bool
+
+        """
         elm_object_focus_set(self.obj, focus)
 
     def focus_allow_set(self, allow):
+        """Set the ability for an Elementary object to be focused
+
+        This sets whether the object is able to take focus or
+        not. Unfocusable objects do nothing when programmatically
+        focused, being the nearest focusable parent object the one
+        really getting focus. Also, when they receive mouse input, they
+        will get the event, but not take away the focus from where it
+        was previously.
+
+        @param enable: C{True} if the object can be focused,
+            C{False} if not (and on errors)
+        @type enable: bool
+
+        """
         elm_object_focus_allow_set(self.obj, allow)
 
     def focus_allow_get(self):
+        """Get whether an Elementary object is focusable or not
+
+        @note: Objects which are meant to be interacted with by input
+            events are created able to be focused, by default. All the
+            others are not.
+
+        @return: C{True} if the object is allowed to be focused,
+            C{False} if not (and on errors)
+        @rtype: bool
+
+        """
         return elm_object_focus_allow_get(self.obj)
 
     def focus_custom_chain_set(self, lst):
+        """Set custom focus chain.
+
+        This function overwrites any previous custom focus chain within
+        the list of objects. The previous list will be deleted and this list
+        will be managed by elementary. After it is set, don't modify it.
+
+        @note: On focus cycle, only will be evaluated children of this container.
+
+        @param objs: Chain of objects to pass focus
+        @type objs: tuple of L{Object}s
+
+        """
         elm_object_focus_custom_chain_unset(self.obj)
         cdef Object obj
         for obj in lst:
             elm_object_focus_custom_chain_append(self.obj, obj.obj, NULL)
 
-    def focus_custom_chain_unset(self, lst):
+    def focus_custom_chain_unset(self):
+        """Unset a custom focus chain on a given Elementary widget
+
+        Any focus chain previously set on the object (for its child objects)
+        is removed entirely after this call.
+
+        """
         elm_object_focus_custom_chain_unset(self.obj)
 
     def focus_custom_chain_get(self):
+        """Get custom focus chain
+
+        @return: Chain of objects
+        @rtype: tuple of L{Object}s
+
+        """
         cdef c_evas.Evas_Object *o
         cdef Object obj
         cdef evas.c_evas.const_Eina_List *lst
@@ -326,44 +667,145 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         return ret
 
     def focus_custom_chain_append(self, Object obj, Object relative=None):
+        """Append object to custom focus chain.
+
+        @note: If relative_child equal to None or not in custom chain, the object
+            will be added in end.
+
+        @note: On focus cycle, only will be evaluated children of this container.
+
+        @param child: The child to be added in custom chain
+        @type child: L{Object}
+        @param relative_child: The relative object to position the child
+        @type relative_child: L{Object}
+
+        """
         cdef c_evas.Evas_Object *rel = NULL
         if relative:
             rel = relative.obj
         elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
 
     def focus_custom_chain_prepend(self, Object obj, Object relative=None):
+        """Prepend object to custom focus chain.
+
+        @note: If relative_child equal to None or not in custom chain, the object
+            will be added in begin.
+
+        @note: On focus cycle, only will be evaluated children of this container.
+
+        @param child: The child to be added in custom chain
+        @type child: L{Object}
+        @param relative_child: The relative object to position the child
+        @type relative_child: L{Object}
+
+        """
         cdef c_evas.Evas_Object *rel = NULL
         if relative:
             rel = relative.obj
         elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
 
     #def focus_next(self, direction):
+        """Give focus to next object in object tree.
+
+        Give focus to next object in focus chain of one object sub-tree.
+        If the last object of chain already have focus, the focus will go to the
+        first object of chain.
+
+        @param dir: Direction to move the focus
+        @type dir: Elm_Focus_Direction
+
+        """
         #elm_object_focus_next(self.obj, direction)
 
     def tree_focus_allow_set(self, focusable):
+        """Make the elementary object and its children to be focusable
+        (or unfocusable).
+
+        This sets whether the object and its children objects
+        are able to take focus or not. If the tree is set as unfocusable,
+        newest focused object which is not in this tree will get focus.
+        This API can be helpful for an object to be deleted.
+        When an object will be deleted soon, it and its children may not
+        want to get focus (by focus reverting or by other focus controls).
+        Then, just use this API before deleting.
+
+        @see: L{tree_focus_allow_get()}
+
+        @param focusable: C{True} for focusable,
+            C{False} for unfocusable.
+        @type focusable: bool
+
+        """
         elm_object_tree_focus_allow_set(self.obj, focusable)
 
     def tree_focus_allow_get(self):
+        """Get whether an Elementary object and its children are focusable or not.
+
+        @see: L{tree_focus_allow_set()}
+
+        @return: C{True}, if the tree is focusable,
+            C{False} if not (and on errors).
+
+        """
         return bool(elm_object_tree_focus_allow_get(self.obj))
 
     # Mirroring
     def mirrored_get(self):
+        """Get the widget's mirrored mode.
+
+        @return: True if mirrored is set, False otherwise
+        @rtype: bool
+
+        """
         return bool(elm_object_mirrored_get(self.obj))
 
     def mirrored_set(self, mirrored):
+        """Set the widget's mirrored mode.
+
+        @param mirrored: True to set mirrored mode, False to unset it.
+        @type mirrored: bool
+
+        """
         elm_object_mirrored_set(self.obj, mirrored)
 
     def mirrored_automatic_get(self):
+        """Returns the widget's mirrored mode setting.
+
+        @return: mode setting of the object.
+        @rtype: bool
+
+        """
         return bool(elm_object_mirrored_automatic_get(self.obj))
 
     def mirrored_automatic_set(self, automatic):
+        """Sets the widget's mirrored mode setting.
+        When widget in automatic mode, it follows the system mirrored mode set by
+        elm_mirrored_set().
+
+        @param automatic: True for auto mirrored mode, False for manual.
+        @type automatic: bool
+
+        """
         elm_object_mirrored_automatic_set(self.obj, automatic)
 
     # Scaling
     def scale_set(self, scale):
+        """Set the scaling factor for a given Elementary object
+
+        @param scale: Scale factor (from C{0.0} up, with C{1.0} meaning
+            no scaling)
+        @type scale: double
+
+        """
         elm_object_scale_set(self.obj, scale)
 
     def scale_get(self):
+        """Get the scaling factor for a given Elementary object
+
+        @return: The scaling factor set by L{scale_set()}
+        @rtype: double
+
+        """
         cdef double scale
         scale = elm_object_scale_get(self.obj)
         return scale
@@ -518,6 +960,29 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     #Translatable text
     def domain_translatable_text_part_set(self, part, domain, text):
+        """Set the text for an objects' part, marking it as translatable.
+
+        The string to set as C{text} must be the original one. Do not pass the
+        return of @C{gettext()} here. Elementary will translate the string
+        internally and set it on the object using L{part_text_set()},
+        also storing the original string so that it can be automatically
+        translated when the language is changed with L{language_set()}.
+
+        The C{domain} will be stored along to find the translation in the
+        correct catalog. It can be None, in which case it will use whatever
+        domain was set by the application with C{textdomain()}. This is useful
+        in case you are building a library on top of Elementary that will have
+        its own translatable strings, that should not be mixed with those of
+        programs using the library.
+
+        @param part: The name of the part to set
+        @type part: string
+        @param domain: The translation domain to use
+        @type domain: string
+        @param text: The original, non-translated text to set
+        @type text: string
+
+        """
         elm_object_domain_translatable_text_part_set(self.obj, part, domain, text)
 
     def domain_translatable_text_set(self, domain, text):
@@ -527,10 +992,23 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         elm_object_translatable_text_set(self.obj, text)
 
     def translatable_text_part_get(self, part):
+        """Gets the original string set as translatable for an object
+
+        When setting translated strings, the function elm_object_part_text_get()
+        will return the translation returned by @c gettext(). To get the
+        original string use this function.
+
+        @param part: The name of the part that was set
+        @type part: string
+
+        @return: The original, untranslated string
+        @rtype: string
+
+        """
         return elm_object_translatable_text_part_get(self.obj, part)
 
     def translatable_text_get(self):
-        elm_object_translatable_text_get(self.obj)
+        return elm_object_translatable_text_get(self.obj)
 
     # Callbacks
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
