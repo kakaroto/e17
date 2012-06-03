@@ -70,7 +70,9 @@ static void _parse(EMap_Route *route)
 }
 
 static Eina_Bool _parser_cb(void *data, Eina_Simple_XML_Type type,
-                            const char *content, unsigned offset, unsigned length)
+                            const char *content,
+                            unsigned offset __UNUSED__,
+                            unsigned length)
 {
    EMap_Route *route = data;
    double d;

@@ -1,21 +1,6 @@
-
 MAINTAINERCLEANFILES = Makefile.in
 
-AM_CPPFLAGS = \
--I. \
--I$(top_srcdir)/src/lib \
--DPACKAGE_BIN_DIR=\"$(bindir)\" \
--DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\"
-
-INCLUDES = \
--I. \
--I$(top_srcdir)/src/lib \
--DPACKAGE_BIN_DIR=\"$(bindir)\" \
--DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
-@E_CFLAGS@
-
+AM_CPPFLAGS = @EMAP_CFLAGS@
 
 include_HEADERS = EMap.h 
 
@@ -27,8 +12,7 @@ route.c \
 route_node.c \
 route_gpx.c 
 
-libemap_la_DEPENDENCIES = $(top_builddir)/config.h
-libemap_la_LDFLAGS = @E_LIBS@
+libemap_la_LIBADD = @EMAP_LIBS@
+libemap_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
 
-clean-local:
-	@rm -rf *.gcno
+EXTRA_DIST = emap_private.h

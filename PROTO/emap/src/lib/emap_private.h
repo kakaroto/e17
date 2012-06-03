@@ -1,6 +1,7 @@
 #ifndef EMAP_PRIVATE_H_
 #define EMAP_PRIVATE_H_
 
+#include "../../config.h"
 #include "EMap.h"
 
 

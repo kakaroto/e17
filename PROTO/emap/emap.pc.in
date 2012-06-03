@@ -4,8 +4,8 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: emap
-Description: :)
+Description: Enlightenned map manager
 Version: @VERSION@
+@pkgconfig_requires_private@: @emap_requirements@
 Libs: -L${libdir} -lemap
 Cflags: -I${includedir}
-Requires: @requirements@
