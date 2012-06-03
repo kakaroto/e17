@@ -1214,7 +1214,7 @@ cdef extern from "Elementary.h":
     void                     elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
     void                     elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
 
-    # Icon                  (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # Icon                  (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_icon_add(Evas_Object *parent)
     void                     elm_icon_thumb_set(Evas_Object *obj, char *file, char *group)
     Eina_Bool                elm_icon_standard_set(Evas_Object *obj, char* name)
@@ -1222,7 +1222,7 @@ cdef extern from "Elementary.h":
     void                     elm_icon_order_lookup_set(Evas_Object *obj, Elm_Icon_Lookup_Order order)
     Elm_Icon_Lookup_Order    elm_icon_order_lookup_get(Evas_Object *obj)
 
-    # Image                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Image                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_image_add(Evas_Object *parent)
     Eina_Bool                elm_image_memfile_set(Evas_Object *obj, const_void *img, size_t size, const_char_ptr format, const_char_ptr key)
     Eina_Bool                elm_image_file_set(Evas_Object *obj, char *file, char *group)
