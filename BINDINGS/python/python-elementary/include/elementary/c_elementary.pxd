@@ -1252,7 +1252,7 @@ cdef extern from "Elementary.h":
     void                     elm_image_animated_play_set(Evas_Object *obj, Eina_Bool play)
     Eina_Bool                elm_image_animated_play_get(Evas_Object *obj)
 
-    # Index                 (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # Index                 (api:TODO  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_index_add(Evas_Object *parent)
     void                     elm_index_autohide_disabled_set(Evas_Object *obj, Eina_Bool disabled)
     Eina_Bool                elm_index_autohide_disabled_get(Evas_Object *obj)
@@ -1274,7 +1274,7 @@ cdef extern from "Elementary.h":
     void                     elm_index_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_index_horizontal_get(Evas_Object *obj)
 
-    # Inwin                 (api:DONE  cb:N/A   test:DONE  doc:TODO)
+    # Inwin                 (api:DONE  cb:N/A   test:DONE  doc:DONE)
     Evas_Object             *elm_win_inwin_add(Evas_Object *obj)
     void                     elm_win_inwin_activate(Evas_Object *obj)
     void                     elm_win_inwin_content_set(Evas_Object *obj, Evas_Object *content)

@@ -19,13 +19,24 @@
 cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyElementaryInnerWindow_Type]:
 
     """An inwin is a window inside a window that is useful for a quick popup.
+    It does not hover.
+
+    It works by creating an object that will occupy the entire window, so it
+    must be created using an L{Window} as parent only. The inwin
+    object can be hidden or restacked below every other object if it's
+    needed to show what's behind it without destroying it. If this is done,
+    the L{activate()} function can be used to bring it back to
+    full visibility again.
 
     There are three styles available in the default theme. These are:
-      - default: The inwin is sized to take over most of the window it's placed in.
-      - minimal: The size of the inwin will be the minimum necessary to show its
-        contents.
-      - minimal_vertical: Horizontally, the inwin takes as much space as possible,
-        vertically only as much as it needs to fit its contents.
+        - default: The inwin is sized to take over most of the window it's
+            placed in.
+        - minimal: The size of the inwin will be the minimum necessary to show
+            its contents.
+        - minimal_vertical: Horizontally, the inwin takes as much space as
+            possible, but it's sized vertically the most it needs to fit its
+            contents.
+
     """
 
     def __init__(self, c_evas.Object parent):
@@ -33,13 +44,29 @@ cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyEl
         self._set_obj(elm_win_inwin_add(parent.obj))
 
     def activate(self):
-        """Activates an inwin object, ensuring its visibility"""
+        """Activates an inwin object, ensuring its visibility
+
+        This function will make sure that the inwin is completely visible
+        by calling L{show()} and L{raise()} on it, to bring it
+        to the front. It also sets the keyboard focus to it, which will be passed
+        onto its content.
+
+        The object's theme will also receive the signal "elm,action,show" with
+        source "elm".
+
+        """
         elm_win_inwin_activate(self.obj)
 
     def content_set(self, c_evas.Object content):
         """Set the content of an inwin object.
 
+        Once the content object is set, a previously set one will be deleted.
+        If you want to keep that old content object, use the
+        L{content_unset()} function.
+
         @param content: The object to set as content
+        @type content: L{Object}
+
         """
         cdef c_evas.Evas_Object *o
         if content is not None:
@@ -51,26 +78,52 @@ cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyEl
     def content_get(self):
         """Get the content of an inwin object.
 
-        @return: The content that was being used
+        Return the content object for this widget.
+
+        The returned object is valid as long as the inwin is still alive and no
+        other content is set on it. Deleting the object will notify the inwin
+        about it and this one will be left empty.
+
+        If you need to remove an inwin's content to be reused somewhere else,
+        see L{content_unset()}.
+
+        @return: The content that is being used
+        @rtype: L{Object}
+
         """
         cdef c_evas.Evas_Object *o
         o = elm_win_inwin_content_get(self.obj)
         return <Object>o
 
-    property content:
-        def __get__(self):
-            return self.content_get()
-        def __set__(self, content):
-            self.content_set(content)
-
     def content_unset(self):
         """Unset the content of an inwin object.
 
+        Unparent and return the content object which was set for this widget.
+
         @return: The content that was being used
+        @rtype: L{Object}
+
         """
         cdef c_evas.Evas_Object *o
         o = elm_win_inwin_content_unset(self.obj)
         return <Object>o
+
+    property content:
+        """The content of an inwin object.
+
+        Once the content object is set, a previously set one will be deleted.
+        If you want to keep that old content object, use the
+        L{content_unset()} function.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return self.content_get()
+        def __set__(self, content):
+            self.content_set(content)
+        def __del__(self):
+            self.content_unset()
 
 _elm_widget_type_register("inwin", InnerWindow)
 
