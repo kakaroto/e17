@@ -1281,7 +1281,7 @@ cdef extern from "Elementary.h":
     Evas_Object             *elm_win_inwin_content_get(Evas_Object *obj)
     Evas_Object             *elm_win_inwin_content_unset(Evas_Object *obj)
 
-    # Label                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Label                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_label_add(Evas_Object *parent)
     void                     elm_label_line_wrap_set(Evas_Object *obj, Elm_Wrap_Type wrap)
     Elm_Wrap_Type            elm_label_line_wrap_get(Evas_Object *obj)
@@ -1294,7 +1294,7 @@ cdef extern from "Elementary.h":
     void                     elm_label_slide_duration_set(Evas_Object *obj, double duration)
     double                   elm_label_slide_duration_get(Evas_Object *obj)
 
-    # Layout                (api:TODO  cb:DONE  test:DONE  doc:TODO)
+    # Layout                (api:TODO  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_layout_add(Evas_Object *parent)
     Eina_Bool                elm_layout_file_set(Evas_Object *obj, char *file, char *group)
     Eina_Bool                elm_layout_theme_set(Evas_Object *obj, char *clas, char *group, char *style)
