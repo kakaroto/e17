@@ -1330,7 +1330,7 @@ cdef extern from "Elementary.h":
     void                     elm_layout_end_set(Evas_Object *obj, Evas_Object *end)
     Evas_Object             *elm_layout_end_get(Evas_Object *obj)
 
-    # List                  (api:TODO  cb:DONE  test:DONE  doc:TODO)
+    # List                  (api:TODO  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_list_add(Evas_Object *parent)
     void                     elm_list_go(Evas_Object *obj)
     void                     elm_list_multi_select_set(Evas_Object *obj, Eina_Bool multi)
@@ -1370,7 +1370,7 @@ cdef extern from "Elementary.h":
 
     # Mapbuf                (XXX)
 
-    # Menu                  (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Menu                  (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_menu_add(Evas_Object *parent)
     void                     elm_menu_parent_set(Evas_Object *obj, Evas_Object *parent)
     Evas_Object             *elm_menu_parent_get(Evas_Object *obj)
