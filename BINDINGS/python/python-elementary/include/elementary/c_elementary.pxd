@@ -1419,7 +1419,7 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_naviframe_item_simple_push(Evas_Object *obj, Evas_Object *content)
     void                     elm_naviframe_item_simple_promote(Evas_Object *obj, Evas_Object *content)
 
-    # Notify                (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Notify                (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_notify_add(Evas_Object *parent)
     void                     elm_notify_parent_set(Evas_Object *obj, Evas_Object *parent)
     Evas_Object             *elm_notify_parent_get(Evas_Object *obj)
@@ -1430,7 +1430,7 @@ cdef extern from "Elementary.h":
     void                     elm_notify_allow_events_set(Evas_Object *obj, Eina_Bool repeat)
     Eina_Bool                elm_notify_allow_events_get(Evas_Object *obj)
 
-    # Panel                 (api:DONE  cb:N/A   test:DONE  doc:TODO)
+    # Panel                 (api:DONE  cb:N/A   test:DONE  doc:DONE)
     Evas_Object             *elm_panel_add(Evas_Object *parent)
     void                     elm_panel_orient_set(Evas_Object *obj, Elm_Panel_Orient orient)
     Elm_Panel_Orient         elm_panel_orient_get(Evas_Object *obj)

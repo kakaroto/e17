@@ -16,13 +16,22 @@
 # along with python-elementary. If not, see <http://www.gnu.org/licenses/>.
 
 cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNotify_Type]:
+
     """Display a container in a particular region of the parent.
 
     A timeout can be set to automatically hide the notify. This is so that,
-    after an evas_object_show() on a notify object, if a timeout was set on it,
-    it will automatically get hidden after that time.
+    after an L{show()} on a notify object, if a timeout was set on it,
+    it will B{automatically} get hidden after that time.
+
+    Signals that you can add callbacks for are:
+        - "timeout" - when timeout happens on notify and it's hidden
+        - "block,clicked" - when a click outside of the notify happens
+
+    Default content parts of the notify widget that you can use are:
+    - C{"default"} - The main content of the notify
 
     """
+
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_notify_add(parent.obj))
@@ -30,7 +39,12 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
     def parent_set(self, c_evas.Object parent):
         """Set the notify parent.
 
-        @param content: The new parent
+        Once the parent object is set, a previously set one will be disconnected
+        and replaced.
+
+        @param parent: The new parent
+        @type parent: L{Object}
+
         """
         cdef c_evas.Evas_Object *o
         if parent is not None:
@@ -40,53 +54,154 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         elm_notify_parent_set(self.obj, o)
 
     def parent_get(self):
-        """Get the notify parent."""
+        """Get the notify parent
+
+        @see: L{parent_set()}
+
+        @return: The parent
+        @rtype: L{Object}
+
+        """
         cdef c_evas.Evas_Object *o
         o = elm_notify_parent_get(self.obj)
         return evas.c_evas._Object_from_instance(<long>o)
 
+    property parent:
+        """The notify parent.
+
+        Once the parent object is set, a previously set one will be disconnected
+        and replaced.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return self.parent_get()
+        def __set__(self, parent):
+            self.parent_set(parent)
+
     def orient_set(self, int orient):
         """Set the orientation.
 
+        Sets the position in which the notify will appear in its parent.
+
         @param orient: The new orientation
+        @type orient: Elm_Notify_Orient
+
         """
         elm_notify_orient_set(self.obj, orient)
 
     def orient_get(self):
-        """Return the orientation."""
+        """Return the orientation
+
+        @see: L{orient_set()}
+
+        @return: The orientation of the notification
+        @rtype: Elm_Notify_Orient
+
+        """
         return elm_notify_orient_get(self.obj)
 
+    property orient:
+        """The position in which the notify will appear in its parent.
+
+        @type: Elm_Notify_Orient
+
+        """
+        def __get__(self):
+            return self.orient_get()
+        def __set__(self, orient):
+            self.orient_set(orient)
+
     def timeout_set(self, double timeout):
-        """Set the time before the notify window is hidden.
+        """Set the time interval after which the notify window is going to be
+        hidden.
 
-        Set a value < 0 to disable a running timer.
+        This function sets a timeout and starts the timer controlling when the
+        notify is hidden. Since calling L{show()} on a notify restarts
+        the timer controlling when the notify is hidden, setting this before the
+        notify is shown will in effect mean starting the timer when the notify is
+        shown.
 
-        @param time: The new timeout
+        @note: Set a value <= 0.0 to disable a running timer.
 
-        @note: If the value > 0 and the notify is visible, the timer will be started
-        with this value, canceling any before started timer to this notify.
+        @note: If the value > 0.0 and the notify is previously visible, the
+            timer will be started with this value, canceling any running timer.
+
+        @param timeout: The timeout in seconds
+        @type timeout: float
+
         """
         elm_notify_timeout_set(self.obj, timeout)
 
     def timeout_get(self):
-        """Return the timeout value (in seconds)."""
+        """Return the timeout value (in seconds).
+
+        @see: L{timeout_set()}
+
+        """
         return elm_notify_timeout_get(self.obj)
 
-    def allow_events_set(self, repeat):
+    property timeout:
+        """The time interval after which the notify window is going to be
+        hidden.
+
+        Setting this starts the timer controlling when the
+        notify is hidden. Since calling L{show()} on a notify restarts
+        the timer controlling when the notify is hidden, setting this before the
+        notify is shown will in effect mean starting the timer when the notify is
+        shown.
+
+        @note: Set a value <= 0.0 to disable a running timer.
+
+        @note: If the value > 0.0 and the notify is previously visible, the
+            timer will be started with this value, canceling any running timer.
+
+        @type: float
+
         """
-        When True if the user clicks outside the window the events will be
-        catch by the others widgets, else the events are block and the signal
-        dismiss will be sent when the user click outside the window.
+        def __get__(self):
+            return self.timeout_get()
+        def __set__(self, timeout):
+            self.timeout_set(timeout)
+
+    def allow_events_set(self, repeat):
+        """Sets whether events should be passed to by a click outside its area.
+
+        When True if the user clicks outside the window the events will be caught
+        by the others widgets, else the events are blocked.
 
         @note: The default value is True.
 
-        @param repeat: repeats If True events are repeats, else no
+        @param allow: True if events are allowed, otherwise not
+        @type allow: bool
+
         """
         elm_notify_allow_events_set(self.obj, repeat)
 
     def allow_events_get(self):
-        """Return True if events are repeat below the notify object."""
+        """Return true if events are allowed below the notify object
+
+        @see: L{allow_events_set()}
+
+        """
         return bool(elm_notify_allow_events_get(self.obj))
+
+    property allow_events:
+        """Whether events should be passed to by a click outside its area.
+
+        When True if the user clicks outside the window the events will be caught
+        by the others widgets, else the events are blocked.
+
+        @note: The default value is True.
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return self.allow_events_get()
+        def __set__(self, allow_events):
+            self.allow_events_set(allow_events)
 
     def callback_timeout_add(self, func, *args, **kwargs):
         """When timeout happens on notify and it's hidden."""
