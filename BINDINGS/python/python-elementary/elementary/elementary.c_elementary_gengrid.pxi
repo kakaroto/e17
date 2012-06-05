@@ -285,16 +285,16 @@ cdef class GengridItem(ObjectItem):
     """
     cdef object params
 
-    cdef int _set_obj(self, Elm_Object_Item *obj, params) except 0:
-        assert self.obj == NULL, "Object must be clean"
-        self.obj = obj
+    cdef int _set_obj(self, Elm_Object_Item *item, params) except 0:
+        assert self.item == NULL, "Object must be clean"
+        self.item = item
         self.params = params
         Py_INCREF(self)
         return 1
 
     cdef int _unset_obj(self) except 0:
-        assert self.obj != NULL, "Object must wrap something"
-        self.obj = NULL
+        assert self.item != NULL, "Object must wrap something"
+        self.item = NULL
         self.params = None
         Py_DECREF(self)
         return 1
@@ -319,7 +319,7 @@ cdef class GengridItem(ObjectItem):
 
     def next_get(self):
         cdef Elm_Object_Item *it
-        it = elm_gengrid_item_next_get(self.obj)
+        it = elm_gengrid_item_next_get(self.item)
         return _elm_gengrid_item_to_python(it)
 
     property next:
@@ -328,7 +328,7 @@ cdef class GengridItem(ObjectItem):
 
     def prev_get(self):
         cdef Elm_Object_Item *it
-        it = elm_gengrid_item_prev_get(self.obj)
+        it = elm_gengrid_item_prev_get(self.item)
         return _elm_gengrid_item_to_python(it)
 
     property prev:
@@ -337,7 +337,7 @@ cdef class GengridItem(ObjectItem):
 
     def gengrid_get(self):
         cdef c_evas.Evas_Object *o
-        o = elm_object_item_widget_get(self.obj)
+        o = elm_object_item_widget_get(self.item)
         return evas.c_evas._Object_from_instance(<long>o)
 
     property gengrid:
@@ -346,7 +346,7 @@ cdef class GengridItem(ObjectItem):
 
     def data_get(self):
         cdef void* data
-        data = elm_object_item_data_get(self.obj)
+        data = elm_object_item_data_get(self.item)
         if data == NULL:
             return None
         else:
@@ -358,23 +358,23 @@ cdef class GengridItem(ObjectItem):
             return self.data_get()
 
     def index_get(self):
-        return elm_gengrid_item_index_get(self.obj)
+        return elm_gengrid_item_index_get(self.item)
 
     property index:
         def __get__(self):
             return self.index_get()
 
     def delete(self):
-        elm_object_item_del(self.obj)
+        elm_object_item_del(self.item)
 
     def update(self):
-        elm_gengrid_item_update(self.obj)
+        elm_gengrid_item_update(self.item)
 
     def selected_set(self, selected):
-        elm_gengrid_item_selected_set(self.obj, bool(selected))
+        elm_gengrid_item_selected_set(self.item, bool(selected))
 
     def selected_get(self):
-        return bool(elm_gengrid_item_selected_get(self.obj))
+        return bool(elm_gengrid_item_selected_get(self.item))
 
     property selected:
         def __get__(self):
@@ -384,14 +384,14 @@ cdef class GengridItem(ObjectItem):
             self.selected_set(selected)
 
     def show(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
-        elm_gengrid_item_show(self.obj, scrollto_type)
+        elm_gengrid_item_show(self.item, scrollto_type)
 
     def bring_in(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
-        elm_gengrid_item_bring_in(self.obj, scrollto_type)
+        elm_gengrid_item_bring_in(self.item, scrollto_type)
 
     def pos_get(self):
         cdef unsigned int x, y
-        elm_gengrid_item_pos_get(self.obj, &x, &y)
+        elm_gengrid_item_pos_get(self.item, &x, &y)
         return (x, y)
 
     # XXX TODO elm_gengrid_item_item_class_update
@@ -405,7 +405,7 @@ cdef class GengridItem(ObjectItem):
         tooltip, so any previous tooltip data is removed.
         Internaly, this method call L{tooltip_content_cb_set}
         """
-        elm_gengrid_item_tooltip_text_set(self.obj, text)
+        elm_gengrid_item_tooltip_text_set(self.item, text)
 
     property tooltip_text:
         def __get__(self):
@@ -431,7 +431,7 @@ cdef class GengridItem(ObjectItem):
         data = (func, self, args, kargs)
         Py_INCREF(data)
         cbdata = <void *>data
-        elm_gengrid_item_tooltip_content_cb_set(self.obj,
+        elm_gengrid_item_tooltip_content_cb_set(self.item,
                                                 _tooltip_item_content_create,
                                                 cbdata,
                                                 _tooltip_item_data_del_cb)
@@ -443,7 +443,7 @@ cdef class GengridItem(ObjectItem):
         copy of label will be removed correctly. If used
         L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
-        elm_gengrid_item_tooltip_unset(self.obj)
+        elm_gengrid_item_tooltip_unset(self.item)
 
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
@@ -453,15 +453,15 @@ cdef class GengridItem(ObjectItem):
             elm_gengrid_item_tooltip_text_set()
         """
         if style:
-            elm_gengrid_item_tooltip_style_set(self.obj, style)
+            elm_gengrid_item_tooltip_style_set(self.item, style)
         else:
-            elm_gengrid_item_tooltip_style_set(self.obj, NULL)
+            elm_gengrid_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
         cdef const_char_ptr style
-        style = elm_gengrid_item_tooltip_style_get(self.obj)
+        style = elm_gengrid_item_tooltip_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -474,10 +474,10 @@ cdef class GengridItem(ObjectItem):
             self.tooltip_style_set(value)
 
     def tooltip_window_mode_set(self, disable):
-        elm_gengrid_item_tooltip_window_mode_set(self.obj, bool(disable))
+        elm_gengrid_item_tooltip_window_mode_set(self.item, bool(disable))
 
     def tooltip_window_mode_get(self):
-        return bool(elm_gengrid_item_tooltip_window_mode_get(self.obj))
+        return bool(elm_gengrid_item_tooltip_window_mode_get(self.item))
 
     property tooltip_window_mode:
         def __get__(self):
@@ -494,10 +494,10 @@ cdef class GengridItem(ObjectItem):
         this function is called twice for an item, the previous set
         will be unset.
         """
-        elm_gengrid_item_cursor_set(self.obj, cursor)
+        elm_gengrid_item_cursor_set(self.item, cursor)
 
     def cursor_get(self):
-        return elm_gengrid_item_cursor_get(self.obj)
+        return elm_gengrid_item_cursor_get(self.item)
 
     property cursor:
         def __get__(self):
@@ -508,7 +508,7 @@ cdef class GengridItem(ObjectItem):
 
     def cursor_unset(self):
         """Unset the cursor to be shown when mouse is over the gengrid item."""
-        elm_gengrid_item_cursor_unset(self.obj)
+        elm_gengrid_item_cursor_unset(self.item)
 
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
@@ -517,14 +517,14 @@ cdef class GengridItem(ObjectItem):
             L{cursor_set()}
         """
         if style:
-            elm_gengrid_item_cursor_style_set(self.obj, style)
+            elm_gengrid_item_cursor_style_set(self.item, style)
         else:
-            elm_gengrid_item_cursor_style_set(self.obj, NULL)
+            elm_gengrid_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """Get the style for this object cursor."""
         cdef const_char_ptr style
-        style = elm_gengrid_item_cursor_style_get(self.obj)
+        style = elm_gengrid_item_cursor_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -542,11 +542,11 @@ cdef class GengridItem(ObjectItem):
         @note: before you set engine only usage you should define a cursor with
             L{cursor_set()}
         """
-        elm_gengrid_item_cursor_engine_only_set(self.obj, bool(engine_only))
+        elm_gengrid_item_cursor_engine_only_set(self.item, bool(engine_only))
 
     def cursor_engine_only_get(self):
         """Get the engine only usage for this object."""
-        return elm_gengrid_item_cursor_engine_only_get(self.obj)
+        return elm_gengrid_item_cursor_engine_only_get(self.item)
 
     property cursor_engine_only:
         def __get__(self):
@@ -556,10 +556,10 @@ cdef class GengridItem(ObjectItem):
             self.cursor_engine_only_set(value)
 
     def select_mode_set(self, mode):
-        elm_gengrid_item_select_mode_set(self.obj, mode)
+        elm_gengrid_item_select_mode_set(self.item, mode)
 
     def select_mode_get(self):
-        return elm_gengrid_item_select_mode_get(self.obj)
+        return elm_gengrid_item_select_mode_get(self.item)
 
     property select_mode:
         def __get__(self):
@@ -582,7 +582,7 @@ cdef Elm_Object_Item *_elm_gengrid_item_from_python(GengridItem item):
     if item is None:
         return NULL
     else:
-        return item.obj
+        return item.item
 
 cdef _elm_gengrid_item_to_python(Elm_Object_Item *it):
     cdef void *data

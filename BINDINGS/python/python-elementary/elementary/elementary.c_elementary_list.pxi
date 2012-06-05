@@ -47,17 +47,6 @@ cdef class ListItem(ObjectItem):
 
     """An item for the list widget."""
 
-    cdef Elm_Object_Item *item
-    cdef object cbt
-
-    def __cinit__(self):
-        self.item = NULL
-
-    def __del_cb(self):
-        self.item = NULL
-        self.cbt = None
-        Py_DECREF(self)
-
     def __init__(self, kind, c_evas.Object list, label, c_evas.Object icon = None,
                  c_evas.Object end = None, ListItem before_after = None,
                  callback = None, *args, **kargs):
@@ -109,8 +98,8 @@ cdef class ListItem(ObjectItem):
     def __str__(self):
         return ("%s(label=%r, icon=%s, end=%s, "
                 "callback=%r, args=%r, kargs=%s)") % \
-            (self.__class__.__name__, self.label_get(), bool(self.icon_get()),
-             bool(self.end_get()), self.cbt[1], self.cbt[3], self.cbt[4])
+            (self.__class__.__name__, self.text_get(), bool(self.part_content_get("icon")),
+             bool(self.part_content_get("end")), self.cbt[1], self.cbt[3], self.cbt[4])
 
     def __repr__(self):
         return ("%s(%#x, refcount=%d, Elm_Object_Item=%#x, "
@@ -118,8 +107,8 @@ cdef class ListItem(ObjectItem):
                 "callback=%r, args=%r, kargs=%s)") % \
             (self.__class__.__name__, <unsigned long><void *>self,
              PY_REFCOUNT(self), <unsigned long><void *>self.item,
-             self.label_get(), bool(self.icon_get()),
-             bool(self.end_get()), self.cbt[1], self.cbt[3], self.cbt[4])
+             self.text_get(), bool(self.part_content_get("icon")),
+             bool(self.part_content_get("end")), self.cbt[1], self.cbt[3], self.cbt[4])
 
     def selected_set(self, selected):
         """Set the selected state of an item.

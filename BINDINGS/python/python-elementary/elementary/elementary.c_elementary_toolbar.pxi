@@ -28,15 +28,8 @@ cdef void _toolbar_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_in
     it.__del_cb()
 
 cdef class ToolbarItem(ObjectItem):
-    """
-    A item for the toolbar
-    """
-    cdef object cbt
 
-    def __del_cb(self):
-        self.obj = NULL
-        self.cbt = None
-        Py_DECREF(self)
+    """An item for the toolbar."""
 
     def __init__(self, c_evas.Object toolbar, icon, label,
                  callback, *args, **kargs):
@@ -52,14 +45,14 @@ cdef class ToolbarItem(ObjectItem):
 
         self.cbt = (toolbar, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.obj = elm_toolbar_item_append(toolbar.obj, icon, label, cb, cbdata)
+        self.item = elm_toolbar_item_append(toolbar.obj, icon, label, cb, cbdata)
 
         Py_INCREF(self)
-        elm_object_item_del_cb_set(self.obj, _toolbar_item_del_cb)
+        elm_object_item_del_cb_set(self.item, _toolbar_item_del_cb)
 
     def next_get(self):
         cdef Elm_Object_Item *it
-        it = elm_toolbar_item_next_get(self.obj)
+        it = elm_toolbar_item_next_get(self.item)
         return _elm_toolbar_item_to_python(it)
 
     property next:
@@ -68,7 +61,7 @@ cdef class ToolbarItem(ObjectItem):
 
     def prev_get(self):
         cdef Elm_Object_Item *it
-        it = elm_toolbar_item_prev_get(self.obj)
+        it = elm_toolbar_item_prev_get(self.item)
         return _elm_toolbar_item_to_python(it)
 
     property prev:
@@ -76,10 +69,10 @@ cdef class ToolbarItem(ObjectItem):
             return self.prev_get()
 
     def priority_set(self, priority):
-        elm_toolbar_item_priority_set(self.obj, priority)
+        elm_toolbar_item_priority_set(self.item, priority)
 
     def priority_get(self):
-        return elm_toolbar_item_priority_get(self.obj)
+        return elm_toolbar_item_priority_get(self.item)
 
     property priority:
         def __get__(self):
@@ -90,24 +83,24 @@ cdef class ToolbarItem(ObjectItem):
 
     def selected_set(self, selected):
         """Select the item"""
-        elm_toolbar_item_selected_set(self.obj, selected)
+        elm_toolbar_item_selected_set(self.item, selected)
 
     def selected_get(self):
-        return elm_toolbar_item_selected_get(self.obj)
+        return elm_toolbar_item_selected_get(self.item)
 
     property selected:
         def __set__(self, selected):
-            elm_toolbar_item_selected_set(self.obj, selected)
+            elm_toolbar_item_selected_set(self.item, selected)
 
         def __get__(self):
-            return elm_toolbar_item_selected_get(self.obj)
+            return elm_toolbar_item_selected_get(self.item)
 
     def icon_set(self, ic):
-        elm_toolbar_item_icon_set(self.obj, ic)
+        elm_toolbar_item_icon_set(self.item, ic)
 
     def icon_get(self):
         cdef const_char_ptr i
-        i = elm_toolbar_item_icon_get(self.obj)
+        i = elm_toolbar_item_icon_get(self.item)
         if i == NULL:
             return None
         return i
@@ -120,10 +113,10 @@ cdef class ToolbarItem(ObjectItem):
             self.icon_set(ic)
 
     def disabled_set(self, disabled):
-        elm_object_item_disabled_set(self.obj, disabled)
+        elm_object_item_disabled_set(self.item, disabled)
 
     def disabled_get(self):
-        return elm_object_item_disabled_get(self.obj)
+        return elm_object_item_disabled_get(self.item)
 
     property disabled:
         def __get__(self):
@@ -133,38 +126,38 @@ cdef class ToolbarItem(ObjectItem):
             self.disabled_set(value)
 
     def object_get(self):
-        cdef c_evas.Evas_Object *obj = elm_toolbar_item_object_get(self.obj)
+        cdef c_evas.Evas_Object *obj = elm_toolbar_item_object_get(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def icon_object_get(self):
-        cdef c_evas.Evas_Object *obj = elm_toolbar_item_icon_object_get(self.obj)
+        cdef c_evas.Evas_Object *obj = elm_toolbar_item_icon_object_get(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     #TODO def icon_memfile_set(self, img, size, format, key):
-        #elm_toolbar_item_icon_memfile_set(self.obj, img, size, format, key)
+        #elm_toolbar_item_icon_memfile_set(self.item, img, size, format, key)
 
     def icon_file_set(self, file, key):
-        elm_toolbar_item_icon_file_set(self.obj, file, key)
+        elm_toolbar_item_icon_file_set(self.item, file, key)
 
     def separator_set(self, separator):
-        elm_toolbar_item_separator_set(self.obj, separator)
+        elm_toolbar_item_separator_set(self.item, separator)
 
     def separator_get(self):
-        return elm_toolbar_item_separator_get(self.obj)
+        return elm_toolbar_item_separator_get(self.item)
 
     property separator:
         def __set__(self, separator):
-            elm_toolbar_item_separator_set(self.obj, separator)
+            elm_toolbar_item_separator_set(self.item, separator)
 
         def __get__(self):
-            return elm_toolbar_item_separator_get(self.obj)
+            return elm_toolbar_item_separator_get(self.item)
 
     def menu_set(self, menu):
-        elm_toolbar_item_menu_set(self.obj, menu)
+        elm_toolbar_item_menu_set(self.item, menu)
 
     def menu_get(self):
         cdef c_evas.Evas_Object *menu
-        menu = elm_toolbar_item_menu_get(self.obj)
+        menu = elm_toolbar_item_menu_get(self.item)
         if menu == NULL:
             return None
         else:
@@ -179,25 +172,25 @@ cdef class ToolbarItem(ObjectItem):
 
 
     #TODO def state_add(self, icon, label, func, data):
-        #return elm_toolbar_item_state_add(self.obj, icon, label, func, data)
+        #return elm_toolbar_item_state_add(self.item, icon, label, func, data)
 
     #TODO def state_del(self, state):
-        #return bool(elm_toolbar_item_state_del(self.obj, state))
+        #return bool(elm_toolbar_item_state_del(self.item, state))
 
     #TODO def state_set(self, state):
-        #return bool(elm_toolbar_item_state_set(self.obj, state))
+        #return bool(elm_toolbar_item_state_set(self.item, state))
 
     #TODO def state_unset(self):
-        #elm_toolbar_item_state_unset(self.obj)
+        #elm_toolbar_item_state_unset(self.item)
 
     #TODO def state_get(self):
-        #return elm_toolbar_item_state_get(self.obj)
+        #return elm_toolbar_item_state_get(self.item)
 
     #TODO def state_next(self):
-        #return elm_toolbar_item_state_next(self.obj)
+        #return elm_toolbar_item_state_next(self.item)
 
     #TODO def state_prev(self):
-        #return elm_toolbar_item_state_prev(self.obj)
+        #return elm_toolbar_item_state_prev(self.item)
 
 cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     cdef void *data

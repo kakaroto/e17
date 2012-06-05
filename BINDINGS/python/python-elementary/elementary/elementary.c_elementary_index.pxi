@@ -60,33 +60,33 @@ cdef class IndexItem(ObjectItem):
         cbdata = <void*>self.cbt
 
         if kind == ELM_INDEX_ITEM_INSERT_APPEND:
-            self.obj = elm_index_item_append(index.obj, letter, cb, cbdata)
+            self.item = elm_index_item_append(index.obj, letter, cb, cbdata)
         elif kind == ELM_INDEX_ITEM_INSERT_PREPEND:
-            self.obj = elm_index_item_prepend(index.obj, letter, cb, cbdata)
+            self.item = elm_index_item_prepend(index.obj, letter, cb, cbdata)
         #elif kind == ELM_INDEX_ITEM_INSERT_SORTED:
-            #self.obj = elm_index_item_sorted_insert(index.obj, letter, cb, cbdata, cmp_f, cmp_data_f)
+            #self.item = elm_index_item_sorted_insert(index.obj, letter, cb, cbdata, cmp_f, cmp_data_f)
         else:
             if before_after == None:
                 raise ValueError("need a valid after object to add an item before/after another item")
             if kind == ELM_INDEX_ITEM_INSERT_BEFORE:
-                self.obj = elm_index_item_insert_before(index.obj, before_after.obj, letter, cb, cbdata)
+                self.item = elm_index_item_insert_before(index.obj, before_after.item, letter, cb, cbdata)
             else:
-                self.obj = elm_index_item_insert_after(index.obj, before_after.obj, letter, cb, cbdata)
+                self.item = elm_index_item_insert_after(index.obj, before_after.item, letter, cb, cbdata)
 
         Py_INCREF(self)
-        elm_object_item_del_cb_set(self.obj, _index_item_del_cb)
+        elm_object_item_del_cb_set(self.item, _index_item_del_cb)
 
     def selected_set(self, selected):
-        elm_index_item_selected_set(self.obj, selected)
+        elm_index_item_selected_set(self.item, selected)
 
     def letter_get(self):
-        return elm_index_item_letter_get(self.obj)
+        return elm_index_item_letter_get(self.item)
 
 cdef Elm_Object_Item *_elm_index_item_from_python(IndexItem item):
     if item is None:
         return NULL
     else:
-        return item.obj
+        return item.item
 
 cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryIndex_Type]:
 

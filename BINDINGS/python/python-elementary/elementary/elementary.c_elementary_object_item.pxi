@@ -46,8 +46,16 @@ cdef class ObjectItem(object):
 
     """
 
-    cdef void *base
-    cdef Elm_Object_Item *obj
+    cdef Elm_Object_Item *item
+    cdef object cbt
+
+    def __cinit__(self):
+        self.item = NULL
+
+    def __del_cb(self):
+        self.item = NULL
+        self.cbt = None
+        Py_DECREF(self)
 
     def widget_get(self):
         """Get the widget object's handle which contains a given item
@@ -59,7 +67,7 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_object_item_widget_get(self.obj)
+        cdef c_evas.const_Evas_Object *obj = elm_object_item_widget_get(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def part_content_set(self, char *part, Object obj):
@@ -75,10 +83,10 @@ cdef class ObjectItem(object):
         @param content: The new content of the object item
 
         """
-        elm_object_item_part_content_set(self.obj, part, obj.obj)
+        elm_object_item_part_content_set(self.item, part, obj.obj)
 
     def content_set(self, Object obj):
-        elm_object_item_part_content_set(self.obj, NULL, obj.obj)
+        elm_object_item_part_content_set(self.item, NULL, obj.obj)
 
     def part_content_get(self, char *part):
         """Get a content of an object item
@@ -91,11 +99,11 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_get(self.obj, part)
+        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_get(self.item, part)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_get(self):
-        cdef c_evas.Evas_Object *obj = elm_object_item_content_get(self.obj)
+        cdef c_evas.Evas_Object *obj = elm_object_item_content_get(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def part_content_unset(self, char *part):
@@ -107,11 +115,11 @@ cdef class ObjectItem(object):
         @type part: string
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_unset(self.obj, part)
+        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_unset(self.item, part)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_unset(self):
-        cdef c_evas.Evas_Object *obj = elm_object_item_content_unset(self.obj)
+        cdef c_evas.Evas_Object *obj = elm_object_item_content_unset(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
 
@@ -125,7 +133,7 @@ cdef class ObjectItem(object):
         @param text: text to set.
         @type text: string
         """
-        elm_object_item_part_text_set(self.obj, part, text)
+        elm_object_item_part_text_set(self.item, part, text)
 
     def text_set(self, text):
         """Sets the main text for this object.
@@ -135,7 +143,7 @@ cdef class ObjectItem(object):
         @param text: any text to set as the main textual part of this object.
         @type text: string
         """
-        elm_object_item_text_set(self.obj, text)
+        elm_object_item_text_set(self.item, text)
 
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
@@ -148,7 +156,7 @@ cdef class ObjectItem(object):
         @rtype: string
         """
         cdef const_char_ptr l
-        l = elm_object_item_part_text_get(self.obj, part)
+        l = elm_object_item_part_text_get(self.item, part)
         if l == NULL:
             return None
         return l
@@ -162,7 +170,7 @@ cdef class ObjectItem(object):
         @rtype: string
         """
         cdef const_char_ptr l
-        l = elm_object_item_text_get(self.obj)
+        l = elm_object_item_text_get(self.item)
         if l == NULL:
             return None
         return l
@@ -186,7 +194,7 @@ cdef class ObjectItem(object):
         @type txt: string
 
         """
-        elm_object_item_access_info_set(self.obj, txt)
+        elm_object_item_access_info_set(self.item, txt)
 
     def data_get(self):
         """Returns the callback data given at creation time.
@@ -194,7 +202,7 @@ cdef class ObjectItem(object):
         @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
         """
         cdef void* data
-        data = elm_object_item_data_get(self.obj)
+        data = elm_object_item_data_get(self.item)
         if data == NULL:
             return None
         else:
@@ -203,7 +211,7 @@ cdef class ObjectItem(object):
             return (a, ka)
 
     #def data_set(self, data):
-        #elm_object_item_data_set(self.obj, <void*>data)
+        #elm_object_item_data_set(self.item, <void*>data)
 
     property data:
         def __get__(self):
@@ -224,7 +232,7 @@ cdef class ObjectItem(object):
         @type source: string
 
         """
-        elm_object_item_signal_emit(self.obj, emission, source)
+        elm_object_item_signal_emit(self.item, emission, source)
 
     def disabled_set(self, disabled):
         """Set the disabled state of an widget item.
@@ -243,7 +251,7 @@ cdef class ObjectItem(object):
         @type disabled: bool
 
         """
-        elm_object_item_disabled_set(self.obj, disabled)
+        elm_object_item_disabled_set(self.item, disabled)
 
     def disabled_get(self):
         """Get the disabled state of an widget item.
@@ -255,7 +263,7 @@ cdef class ObjectItem(object):
         @rtype: bool
 
         """
-        return bool(elm_object_item_disabled_get(self.obj))
+        return bool(elm_object_item_disabled_get(self.item))
 
     property disabled:
         """The disabled state of an widget item.
@@ -275,12 +283,12 @@ cdef class ObjectItem(object):
             self.disabled_set(disabled)
 
     #def delete_cb_set(self, del_cb):
-        #elm_object_item_del_cb_set(self.obj, del_cb)
+        #elm_object_item_del_cb_set(self.item, del_cb)
 
     def delete(self):
-        if self.obj == NULL:
+        if self.item == NULL:
             raise ValueError("Object already deleted")
-        elm_object_item_del(self.obj)
+        elm_object_item_del(self.item)
 
     def tooltip_text_set(self, char *text):
         """Set the text to be shown in the tooltip object
@@ -289,13 +297,13 @@ cdef class ObjectItem(object):
         tooltip, so any previous tooltip data is removed.
         Internally, this method calls L{tooltip_content_cb_set}
         """
-        elm_object_item_tooltip_text_set(self.obj, text)
+        elm_object_item_tooltip_text_set(self.item, text)
 
     def tooltip_window_mode_set(self, disable):
-        return bool(elm_object_item_tooltip_window_mode_set(self.obj, disable))
+        return bool(elm_object_item_tooltip_window_mode_set(self.item, disable))
 
     def tooltip_window_mode_get(self):
-        return bool(elm_object_item_tooltip_window_mode_get(self.obj))
+        return bool(elm_object_item_tooltip_window_mode_get(self.item))
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """Set the content to be shown in the tooltip object
@@ -318,7 +326,7 @@ cdef class ObjectItem(object):
         data = (func, args, kargs)
         Py_INCREF(data)
         cbdata = <void *>data
-        elm_object_item_tooltip_content_cb_set(self.obj, _tooltip_item_content_create,
+        elm_object_item_tooltip_content_cb_set(self.item, _tooltip_item_content_create,
                                           cbdata, _tooltip_item_data_del_cb)
 
     def tooltip_unset(self):
@@ -328,7 +336,7 @@ cdef class ObjectItem(object):
         copy of label will be removed correctly. If used
         L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
-        elm_object_item_tooltip_unset(self.obj)
+        elm_object_item_tooltip_unset(self.item)
 
     def tooltip_style_set(self, style=None):
         """Sets a different style for this object tooltip.
@@ -337,14 +345,14 @@ cdef class ObjectItem(object):
         L{tooltip_content_cb_set()} or L{tooltip_text_set()}
         """
         if style:
-            elm_object_item_tooltip_style_set(self.obj, style)
+            elm_object_item_tooltip_style_set(self.item, style)
         else:
-            elm_object_item_tooltip_style_set(self.obj, NULL)
+            elm_object_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """Get the style for this object tooltip."""
         cdef const_char_ptr style
-        style = elm_object_item_tooltip_style_get(self.obj)
+        style = elm_object_item_tooltip_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -357,10 +365,10 @@ cdef class ObjectItem(object):
         this function is called twice for an object, the previous set
         will be unset.
         """
-        elm_object_item_cursor_set(self.obj, cursor)
+        elm_object_item_cursor_set(self.item, cursor)
 
     def cursor_get(self):
-        return elm_object_item_cursor_get(self.obj)
+        return elm_object_item_cursor_get(self.item)
 
     def cursor_unset(self):
         """Unset cursor for object
@@ -368,7 +376,7 @@ cdef class ObjectItem(object):
         Unset cursor for object, and set the cursor to default if the mouse
         was over this object.
         """
-        elm_object_item_cursor_unset(self.obj)
+        elm_object_item_cursor_unset(self.item)
 
     def cursor_style_set(self, style=None):
         """Sets a different style for this object cursor.
@@ -377,14 +385,14 @@ cdef class ObjectItem(object):
         L{cursor_set()}
         """
         if style:
-            elm_object_item_cursor_style_set(self.obj, style)
+            elm_object_item_cursor_style_set(self.item, style)
         else:
-            elm_object_item_cursor_style_set(self.obj, NULL)
+            elm_object_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """Get the style for this object cursor."""
         cdef const_char_ptr style
-        style = elm_object_item_cursor_style_get(self.obj)
+        style = elm_object_item_cursor_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -395,10 +403,10 @@ cdef class ObjectItem(object):
         @note: before you set engine only usage you should define a cursor with
         L{cursor_set()}
         """
-        elm_object_item_cursor_engine_only_set(self.obj, bool(engine_only))
+        elm_object_item_cursor_engine_only_set(self.item, bool(engine_only))
 
     def cursor_engine_only_get(self):
         """Get the engine only usage for this object."""
-        return elm_object_item_cursor_engine_only_get(self.obj)
+        return elm_object_item_cursor_engine_only_get(self.item)
 
 _elm_widget_type_register("object_item", ObjectItem)

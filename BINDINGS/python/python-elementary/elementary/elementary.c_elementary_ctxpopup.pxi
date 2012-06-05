@@ -24,13 +24,6 @@ cdef void _ctxpopup_callback(void *cbt, c_evas.Evas_Object *obj, void *event_inf
         traceback.print_exc()
 
 cdef class CtxpopupItem(ObjectItem):
-    cdef object cbt
-
-    def __del_cb(self):
-        self.obj = NULL
-        self.cbt = None
-        Py_DECREF(self)
-
     def __init__(self, c_evas.Object ctxpopup, label, c_evas.Object icon = None, callback = None, *args, **kargs):
         cdef c_evas.Evas_Object* icon_obj
         cdef void* cbdata = NULL
@@ -48,7 +41,7 @@ cdef class CtxpopupItem(ObjectItem):
 
         self.cbt = (ctxpopup, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.obj = elm_ctxpopup_item_append(ctxpopup.obj, label, icon_obj, cb, cbdata)
+        self.item = elm_ctxpopup_item_append(ctxpopup.obj, label, icon_obj, cb, cbdata)
 
 cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementaryCtxpopup_Type]:
 

@@ -18,15 +18,15 @@
 
 cdef class ColorselectorPaletteItem(ObjectItem):
     def __init__(self, c_evas.Object colorselector, r, g, b, a):
-        self.obj = elm_colorselector_palette_color_add(colorselector.obj, r, g, b, a)
+        self.item = elm_colorselector_palette_color_add(colorselector.obj, r, g, b, a)
 
     def color_get(self):
         cdef int r, g, b, a
-        elm_colorselector_palette_item_color_get(self.obj, &r, &g, &b, &a)
+        elm_colorselector_palette_item_color_get(self.item, &r, &g, &b, &a)
         return (r, g, b, a)
 
     def color_set(self, r, g, b, a):
-        elm_colorselector_palette_item_color_set(self.obj, r, g, b, a)
+        elm_colorselector_palette_item_color_set(self.item, r, g, b, a)
 
     property color:
         def __get__(self):

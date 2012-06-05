@@ -19,22 +19,22 @@
 
 cdef class NaviframeItem(ObjectItem):
     def item_pop_to(self):
-        elm_naviframe_item_pop_to(self.obj)
+        elm_naviframe_item_pop_to(self.item)
 
     def item_promote(self):
-        elm_naviframe_item_promote(self.obj)
+        elm_naviframe_item_promote(self.item)
 
     def style_set(self, style):
-        elm_naviframe_item_style_set(self.obj, style)
+        elm_naviframe_item_style_set(self.item, style)
 
     def style_get(self):
-        return elm_naviframe_item_style_get(self.obj)
+        return elm_naviframe_item_style_get(self.item)
 
     def title_visible_set(self, visible):
-        elm_naviframe_item_title_visible_set(self.obj, visible)
+        elm_naviframe_item_title_visible_set(self.item, visible)
 
     def title_visible_get(self):
-        return bool(elm_naviframe_item_title_visible_get(self.obj))
+        return bool(elm_naviframe_item_title_visible_get(self.item))
 
 cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
     cdef void *data
@@ -58,7 +58,7 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
 
         item = elm_naviframe_item_push(self.obj, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
         if item != NULL:
-            ret.obj = item
+            ret.item = item
             return ret
         else:
             return None
@@ -67,9 +67,9 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
         cdef NaviframeItem ret = NaviframeItem()
         cdef Elm_Object_Item *item
 
-        item = elm_naviframe_item_insert_before(self.obj, before.obj, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
+        item = elm_naviframe_item_insert_before(self.obj, before.item, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
         if item != NULL:
-            ret.obj = item
+            ret.item = item
             return ret
         else:
             return None
@@ -78,9 +78,9 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
         cdef NaviframeItem ret = NaviframeItem()
         cdef Elm_Object_Item *item
 
-        item = elm_naviframe_item_insert_after(self.obj, after.obj, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
+        item = elm_naviframe_item_insert_after(self.obj, after.item, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
         if item != NULL:
-            ret.obj = item
+            ret.item = item
             return ret
         else:
             return None
@@ -156,7 +156,7 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
 
         item = elm_naviframe_item_simple_push(self.obj, content.obj)
         if item != NULL:
-            ret.obj = item
+            ret.item = item
             return ret
         else:
             return None

@@ -36,15 +36,9 @@ def _hoversel_item_conv(long addr):
         cbt = <object>data
         return cbt[2]
 
-cdef class HoverselItem:
-    """A item for the hoversel widget"""
-    cdef Elm_Object_Item *item
-    cdef object cbt
+cdef class HoverselItem(ObjectItem):
 
-    def __del_cb(self):
-        self.item = NULL
-        self.cbt = None
-        Py_DECREF(self)
+    """An item for the Hoversel widget."""
 
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type,
                  callback, *args, **kargs):

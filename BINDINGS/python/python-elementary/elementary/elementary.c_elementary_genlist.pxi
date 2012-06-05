@@ -285,16 +285,16 @@ cdef class GenlistItem(ObjectItem):
     """
     cdef object params
 
-    cdef int _set_obj(self, Elm_Object_Item *obj, params) except 0:
-        assert self.obj == NULL, "Object must be clean"
-        self.obj = obj
+    cdef int _set_obj(self, Elm_Object_Item *item, params) except 0:
+        assert self.item == NULL, "Object must be clean"
+        self.item = item
         self.params = params
         Py_INCREF(self)
         return 1
 
     cdef int _unset_obj(self) except 0:
-        assert self.obj != NULL, "Object must wrap something"
-        self.obj = NULL
+        assert self.item != NULL, "Object must wrap something"
+        self.item = NULL
         self.params = None
         Py_DECREF(self)
         return 1
@@ -312,14 +312,14 @@ cdef class GenlistItem(ObjectItem):
                (self.__class__.__name__,
                 <unsigned long><void*>self,
                 PY_REFCOUNT(self),
-                <unsigned long>self.obj,
+                <unsigned long>self.item,
                 self.params[0].__class__.__name__,
                 self.params[3],
                 self.params[1])
 
     def data_get(self):
         cdef void* data
-        data = elm_object_item_data_get(self.obj)
+        data = elm_object_item_data_get(self.item)
         if data == NULL:
             return None
         else:
@@ -332,7 +332,7 @@ cdef class GenlistItem(ObjectItem):
 
     def next_get(self):
         cdef Elm_Object_Item *it
-        it = elm_genlist_item_next_get(self.obj)
+        it = elm_genlist_item_next_get(self.item)
         return _elm_genlist_item_to_python(it)
 
     property next:
@@ -341,7 +341,7 @@ cdef class GenlistItem(ObjectItem):
 
     def prev_get(self):
         cdef Elm_Object_Item *it
-        it = elm_genlist_item_prev_get(self.obj)
+        it = elm_genlist_item_prev_get(self.item)
         return _elm_genlist_item_to_python(it)
 
     property prev:
@@ -349,10 +349,10 @@ cdef class GenlistItem(ObjectItem):
             return self.prev_get()
 
     def selected_set(self, selected):
-        elm_genlist_item_selected_set(self.obj, bool(selected))
+        elm_genlist_item_selected_set(self.item, bool(selected))
 
     def selected_get(self):
-        return bool(elm_genlist_item_selected_get(self.obj))
+        return bool(elm_genlist_item_selected_get(self.item))
 
     property selected:
         def __get__(self):
@@ -362,22 +362,22 @@ cdef class GenlistItem(ObjectItem):
             self.selected_set(selected)
 
     def show(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
-        elm_genlist_item_show(self.obj, scrollto_type)
+        elm_genlist_item_show(self.item, scrollto_type)
 
     def bring_in(self, scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN):
-        elm_genlist_item_bring_in(self.obj, scrollto_type)
+        elm_genlist_item_bring_in(self.item, scrollto_type)
 
     def update(self):
-        elm_genlist_item_update(self.obj)
+        elm_genlist_item_update(self.item)
 
     #def item_class_update(self, Elm_Genlist_Item_Class itc):
-        #elm_genlist_item_item_class_update(self.obj, itc)
+        #elm_genlist_item_item_class_update(self.item, itc)
 
     #def item_class_get(self):
-        #return elm_genlist_item_item_class_get(self.obj)
+        #return elm_genlist_item_item_class_get(self.item)
 
     def index_get(self):
-        return elm_genlist_item_index_get(self.obj)
+        return elm_genlist_item_index_get(self.item)
 
     def tooltip_text_set(self, char *text):
         """ Set the text to be shown in the tooltip object
@@ -386,7 +386,7 @@ cdef class GenlistItem(ObjectItem):
         tooltip, so any previous tooltip data is removed.
         Internally, this method calls L{tooltip_content_cb_set}
         """
-        elm_genlist_item_tooltip_text_set(self.obj, text)
+        elm_genlist_item_tooltip_text_set(self.item, text)
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
@@ -408,7 +408,7 @@ cdef class GenlistItem(ObjectItem):
         data = (func, self, args, kargs)
         Py_INCREF(data)
         cbdata = <void *>data
-        elm_genlist_item_tooltip_content_cb_set(self.obj,
+        elm_genlist_item_tooltip_content_cb_set(self.item,
                                                 _tooltip_item_content_create,
                                                 cbdata,
                                                 _tooltip_item_data_del_cb)
@@ -420,7 +420,7 @@ cdef class GenlistItem(ObjectItem):
         copy of label will be removed correctly. If used
         L{tooltip_content_cb_set}, the data will be unreferred but no freed.
         """
-        elm_genlist_item_tooltip_unset(self.obj)
+        elm_genlist_item_tooltip_unset(self.item)
 
     def tooltip_style_set(self, style=None):
         """ Sets a different style for this object tooltip.
@@ -430,24 +430,24 @@ cdef class GenlistItem(ObjectItem):
             elm_genlist_item_tooltip_text_set()
         """
         if style:
-            elm_genlist_item_tooltip_style_set(self.obj, style)
+            elm_genlist_item_tooltip_style_set(self.item, style)
         else:
-            elm_genlist_item_tooltip_style_set(self.obj, NULL)
+            elm_genlist_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
         cdef const_char_ptr style
-        style = elm_genlist_item_tooltip_style_get(self.obj)
+        style = elm_genlist_item_tooltip_style_get(self.item)
         if style == NULL:
             return None
         return style
 
     def tooltip_window_mode_set(self, disable):
-        return bool(elm_genlist_item_tooltip_window_mode_set(self.obj, disable))
+        return bool(elm_genlist_item_tooltip_window_mode_set(self.item, disable))
 
     def tooltip_window_mode_get(self):
-        return bool(elm_genlist_item_tooltip_window_mode_get(self.obj))
+        return bool(elm_genlist_item_tooltip_window_mode_get(self.item))
 
     def cursor_set(self, char *cursor):
         """ Set the cursor to be shown when mouse is over the genlist item
@@ -457,15 +457,15 @@ cdef class GenlistItem(ObjectItem):
         this function is called twice for an item, the previous set
         will be unset.
         """
-        elm_genlist_item_cursor_set(self.obj, cursor)
+        elm_genlist_item_cursor_set(self.item, cursor)
 
     def cursor_get(self):
-        return elm_genlist_item_cursor_get(self.obj)
+        return elm_genlist_item_cursor_get(self.item)
 
     def cursor_unset(self):
         """  Unset the cursor to be shown when mouse is over the genlist item
         """
-        elm_genlist_item_cursor_unset(self.obj)
+        elm_genlist_item_cursor_unset(self.item)
 
     def cursor_style_set(self, style=None):
         """ Sets a different style for this object cursor.
@@ -474,15 +474,15 @@ cdef class GenlistItem(ObjectItem):
             elm_genlist_item_cursor_set()
         """
         if style:
-            elm_genlist_item_cursor_style_set(self.obj, style)
+            elm_genlist_item_cursor_style_set(self.item, style)
         else:
-            elm_genlist_item_cursor_style_set(self.obj, NULL)
+            elm_genlist_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """ Get the style for this object cursor.
         """
         cdef const_char_ptr style
-        style = elm_genlist_item_cursor_style_get(self.obj)
+        style = elm_genlist_item_cursor_style_get(self.item)
         if style == NULL:
             return None
         return style
@@ -493,16 +493,16 @@ cdef class GenlistItem(ObjectItem):
         @note: before you set engine only usage you should define a cursor with
             elm_genlist_item_cursor_set()
         """
-        elm_genlist_item_cursor_engine_only_set(self.obj, bool(engine_only))
+        elm_genlist_item_cursor_engine_only_set(self.item, bool(engine_only))
 
     def cursor_engine_only_get(self):
         """ Get the engine only usage for this object.
         """
-        return elm_genlist_item_cursor_engine_only_get(self.obj)
+        return elm_genlist_item_cursor_engine_only_get(self.item)
 
     def parent_get(self):
         cdef Elm_Object_Item *it
-        it = elm_genlist_item_parent_get(self.obj)
+        it = elm_genlist_item_parent_get(self.item)
         return _elm_genlist_item_to_python(it)
 
     property parent:
@@ -510,13 +510,13 @@ cdef class GenlistItem(ObjectItem):
             return self.parent_get()
 
     def subitems_clear(self):
-        elm_genlist_item_subitems_clear(self.obj)
+        elm_genlist_item_subitems_clear(self.item)
 
     def expanded_set(self, expanded):
-        elm_genlist_item_expanded_set(self.obj, bool(expanded))
+        elm_genlist_item_expanded_set(self.item, bool(expanded))
 
     def expanded_get(self, ):
-        return bool(elm_genlist_item_expanded_get(self.obj))
+        return bool(elm_genlist_item_expanded_get(self.item))
 
     property expanded:
         def __get__(self):
@@ -526,13 +526,13 @@ cdef class GenlistItem(ObjectItem):
             self.expanded_set(expanded)
 
     def expanded_depth_get(self):
-        return elm_genlist_item_expanded_depth_get(self.obj)
+        return elm_genlist_item_expanded_depth_get(self.item)
 
     def all_contents_unset(self):
         cdef Elm_Object_Item *it
         cdef c_evas.Eina_List *lst
 
-        elm_genlist_item_all_contents_unset(self.obj, &lst)
+        elm_genlist_item_all_contents_unset(self.item, &lst)
         ret = []
         ret_append = ret.append
         while lst:
@@ -544,35 +544,35 @@ cdef class GenlistItem(ObjectItem):
         return ret
 
     def promote(self):
-        elm_genlist_item_promote(self.obj)
+        elm_genlist_item_promote(self.item)
 
     def demote(self):
-        elm_genlist_item_demote(self.obj)
+        elm_genlist_item_demote(self.item)
 
     def fields_update(self, parts, itf):
-        elm_genlist_item_fields_update(self.obj, parts, itf)
+        elm_genlist_item_fields_update(self.item, parts, itf)
 
     def decorate_mode_set(self, decorate_it_type, decorate_it_set):
-        elm_genlist_item_decorate_mode_set(self.obj, decorate_it_type, decorate_it_set)
+        elm_genlist_item_decorate_mode_set(self.item, decorate_it_type, decorate_it_set)
 
     def decorate_mode_get(self):
-        return elm_genlist_item_decorate_mode_get(self.obj)
+        return elm_genlist_item_decorate_mode_get(self.item)
 
     def type_get(self):
-        cdef Elm_Genlist_Item_Type ittype = elm_genlist_item_type_get(self.obj)
+        cdef Elm_Genlist_Item_Type ittype = elm_genlist_item_type_get(self.item)
         return <Elm_Genlist_Item_Type>ittype
 
     def flip_set(self, flip):
-        elm_genlist_item_flip_set(self.obj, flip)
+        elm_genlist_item_flip_set(self.item, flip)
 
     def flip_get(self):
-        return bool(elm_genlist_item_flip_get(self.obj))
+        return bool(elm_genlist_item_flip_get(self.item))
 
     def select_mode_set(self, mode):
-        elm_genlist_item_select_mode_set(self.obj, mode)
+        elm_genlist_item_select_mode_set(self.item, mode)
 
     def select_mode_get(self):
-        return elm_genlist_item_select_mode_get(self.obj)
+        return elm_genlist_item_select_mode_get(self.item)
 
 def _genlist_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
@@ -587,7 +587,7 @@ cdef Elm_Object_Item *_elm_genlist_item_from_python(GenlistItem item):
     if item is None:
         return NULL
     else:
-        return item.obj
+        return item.item
 
 cdef _elm_genlist_item_to_python(Elm_Object_Item *it):
     cdef void *data

@@ -28,13 +28,6 @@ cdef void _menu_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info)
     it.__del_cb()
 
 cdef class MenuItem(ObjectItem):
-    cdef object cbt
-
-    def __del_cb(self):
-        self.obj = NULL
-        self.cbt = None
-        Py_DECREF(self)
-
     def __init__(self, c_evas.Object menu, MenuItem parent, label, icon,
                  callback, *args, **kargs):
         cdef Elm_Object_Item *parent_obj = NULL
@@ -43,7 +36,7 @@ cdef class MenuItem(ObjectItem):
         cb = NULL
 
         if parent:
-            parent_obj = parent.obj
+            parent_obj = parent.item
 
         if callback:
             if not callable(callback):
@@ -52,11 +45,11 @@ cdef class MenuItem(ObjectItem):
 
         self.cbt = (menu, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.obj = elm_menu_item_add(menu.obj, parent_obj, icon, label,
+        self.item = elm_menu_item_add(menu.obj, parent_obj, icon, label,
                                           cb, cbdata)
 
         Py_INCREF(self)
-        elm_object_item_del_cb_set(self.obj, _menu_item_del_cb)
+        elm_object_item_del_cb_set(self.item, _menu_item_del_cb)
 
     def object_get(self):
         """Get the Evas_Object of an Elm_Object_Item
@@ -66,7 +59,7 @@ cdef class MenuItem(ObjectItem):
         @return: The edje object containing the swallowed content
 
         """
-        return <Object>elm_menu_item_object_get(self.obj)
+        return <Object>elm_menu_item_object_get(self.item)
 
     def icon_name_set(self, icon):
         """Set the icon of a menu item to the standard icon with name C{icon}
@@ -77,7 +70,7 @@ cdef class MenuItem(ObjectItem):
         @type icon: string
 
         """
-        elm_menu_item_icon_name_set(self.obj, icon)
+        elm_menu_item_icon_name_set(self.item, icon)
 
     def icon_name_get(self):
         """Get the string representation from the icon of a menu item
@@ -88,7 +81,7 @@ cdef class MenuItem(ObjectItem):
         @rtype: string
 
         """
-        return elm_menu_item_icon_name_get(self.obj)
+        return elm_menu_item_icon_name_get(self.item)
 
     property icon_name:
         """The standard icon name of a menu item
@@ -110,7 +103,7 @@ cdef class MenuItem(ObjectItem):
         @type selected: bool
 
         """
-        elm_menu_item_selected_set(self.obj, selected)
+        elm_menu_item_selected_set(self.item, selected)
 
     def selected_get(self):
         """Get the selected state of the item.
@@ -121,7 +114,7 @@ cdef class MenuItem(ObjectItem):
         @rtype: bool
 
         """
-        return elm_menu_item_selected_get(self.obj)
+        return elm_menu_item_selected_get(self.item)
 
     property selected:
         """The selected state of the item.
@@ -155,7 +148,7 @@ cdef class MenuItem(ObjectItem):
         cdef evas.c_evas.const_Eina_List *lst, *itr
         cdef void *data
         ret = []
-        lst = elm_menu_item_subitems_get(self.obj)
+        lst = elm_menu_item_subitems_get(self.item)
         itr = lst
         while itr:
             data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
@@ -186,7 +179,7 @@ cdef class MenuItem(ObjectItem):
         @rtype: int
 
         """
-        return elm_menu_item_index_get(self.obj)
+        return elm_menu_item_index_get(self.item)
 
     def next_get(self):
         """Get the next item in the menu.
@@ -196,7 +189,7 @@ cdef class MenuItem(ObjectItem):
 
         """
         cdef Elm_Object_Item *it
-        it = elm_menu_item_next_get(self.obj)
+        it = elm_menu_item_next_get(self.item)
         return _elm_menu_item_to_python(it)
 
     def prev_get(self):
@@ -207,7 +200,7 @@ cdef class MenuItem(ObjectItem):
 
         """
         cdef Elm_Object_Item *it
-        it = elm_menu_item_prev_get(self.obj)
+        it = elm_menu_item_prev_get(self.item)
         return _elm_menu_item_to_python(it)
 
 cdef _elm_menu_item_to_python(Elm_Object_Item *it):
@@ -226,22 +219,18 @@ cdef void _menu_item_separator_del_cb(void *data, c_evas.Evas_Object *o, void *e
     it.__del_cb()
 
 cdef class MenuItemSeparator(ObjectItem):
-    def __del_cb(self):
-        self.obj = NULL
-        Py_DECREF(self)
-
     def __init__(self, c_evas.Object menu, MenuItem parent):
         cdef Elm_Object_Item *parent_obj = NULL
 
         if parent:
-            parent_obj = parent.obj
-        self.obj = elm_menu_item_separator_add(menu.obj, parent_obj)
-        if not self.obj:
+            parent_obj = parent.item
+        self.item = elm_menu_item_separator_add(menu.obj, parent_obj)
+        if not self.item:
             raise RuntimeError("Error creating separator")
 
-        elm_object_item_data_set(self.obj, <void*>self)
+        elm_object_item_data_set(self.item, <void*>self)
         Py_INCREF(self)
-        elm_object_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
+        elm_object_item_del_cb_set(self.item, _menu_item_separator_del_cb)
 
     def is_separator(self):
         """Returns whether the item is a separator.
