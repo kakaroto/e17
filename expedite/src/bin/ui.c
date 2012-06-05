@@ -435,13 +435,10 @@ _ui_mouse_down(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNU
    if (ev->button != 1) return;
    if (menu_active)
      {
-	down_x = ev->canvas.x;
-	down_y = ev->canvas.y;
-	down++;
-	down_menu_sel = menu_sel;
-     }
-   else
-     {
+        down_x = ev->canvas.x;
+        down_y = ev->canvas.y;
+        down++;
+        down_menu_sel = menu_sel;
      }
 }
 
@@ -454,19 +451,19 @@ _ui_mouse_up(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
    if (ev->button != 1) return;
    if (menu_active)
      {
-	Evas_Coord dx, dy;
+        Evas_Coord dx, dy;
 
-	dx = ev->canvas.x - down_x;
-	dy = ev->canvas.y - down_y;
-	if ((((dx * dx) + (dy * dy)) < (20 * 20)) &&
-	    (menu_sel == down_menu_sel))
-	  _ui_select();
-	down--;
+        dx = ev->canvas.x - down_x;
+        dy = ev->canvas.y - down_y;
+        if ((((dx * dx) + (dy * dy)) < (20 * 20)) &&
+            (menu_sel == down_menu_sel))
+          _ui_select();
+        down--;
      }
    else
      {
-	evas_event_feed_key_down(evas, "Escape", "Escape", NULL, NULL, 0, NULL);
-	evas_event_feed_key_up(evas, "Escape", "Escape", NULL, NULL, 0, NULL);
+        evas_event_feed_key_down(evas, "Escape", "Escape", NULL, NULL, 0, NULL);
+        evas_event_feed_key_up(evas, "Escape", "Escape", NULL, NULL, 0, NULL);
      }
 }
 
@@ -479,14 +476,12 @@ _ui_mouse_move(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNU
    if (!down) return;
    if (menu_active)
      {
-	menu_sel = down_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
-	/* scroll */
-	if (menu_sel < 0) menu_sel = 0;
-	else if ((unsigned int)menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
-	menu_anim_sel = menu_sel;
-     }
-   else
-     {
+        menu_sel = down_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
+        /* scroll */
+        if (menu_sel < 0) menu_sel = 0;
+        else if ((unsigned int)menu_sel >= eina_list_count(menu))
+          menu_sel = eina_list_count(menu) - 1;
+        menu_anim_sel = menu_sel;
      }
 }
 
