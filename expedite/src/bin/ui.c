@@ -423,7 +423,6 @@ _ui_key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, 
 }
 
 static Evas_Coord down_x, down_y;
-static int down = 0;
 static int down_menu_sel = 0;
 
 static void
@@ -437,7 +436,6 @@ _ui_mouse_down(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNU
      {
         down_x = ev->canvas.x;
         down_y = ev->canvas.y;
-        down++;
         down_menu_sel = menu_sel;
      }
 }
@@ -458,7 +456,6 @@ _ui_mouse_up(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
         if ((((dx * dx) + (dy * dy)) < (20 * 20)) &&
             (menu_sel == down_menu_sel))
           _ui_select();
-        down--;
      }
    else
      {
@@ -473,7 +470,7 @@ _ui_mouse_move(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNU
    Evas_Event_Mouse_Move *ev;
 
    ev = event_info;
-   if (!down) return;
+   if (ev->buttons != 1) return;
    if (menu_active)
      {
         menu_sel = down_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
