@@ -174,7 +174,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         def __set__(self, value):
             self.text_set(value)
 
-    def part_content_set(self, part, Object obj):
+    def part_content_set(self, part, c_evas.Object obj):
         """Set a content of an object
 
         This sets a new object to a widget as a content object. If any object was
@@ -191,7 +191,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         elm_object_part_content_set(self.obj, part, obj.obj)
 
-    def content_set(self, Object obj):
+    def content_set(self, c_evas.Object obj):
         elm_object_part_content_set(self.obj, NULL, obj.obj)
 
     def part_content_get(self, part):
