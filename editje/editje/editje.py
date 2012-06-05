@@ -938,7 +938,7 @@ class Editje(elementary.Window, OpenFileManager):
         ico.file_set(theme_file, group)
         ico.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
         ico.show()
-        self._modes_selector.icon = ico
+        self._modes_selector.content = ico
 
     def _set_scrolled_contents(self, box):
         scr = elementary.Scroller(self)

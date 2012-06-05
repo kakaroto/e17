@@ -43,7 +43,7 @@ class WidgetEntryButton(WidgetEntry):
             ico.file_set(self.theme_file, "editje/icon/entry_button")
         ico.size_hint_min_set(18, 18)
         ico.show()
-        self.button.icon_set(ico)
+        self.button.content_set(ico)
         self.button.size_hint_min_set(20, 20)
 
         self.box = elementary.Box(parent)

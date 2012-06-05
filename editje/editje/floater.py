@@ -312,7 +312,7 @@ class Wizard(InnerWindow):
             if icon:
                 ico = Icon(self._parent)
                 ico.file_set(self.__theme_file, "editje/icon/" + icon)
-                btn.icon_set(ico)
+                btn.content_set(ico)
                 ico.show()
 
             action_btns[label] = btn

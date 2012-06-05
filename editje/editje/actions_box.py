@@ -41,7 +41,7 @@ class ActionsBox(elementary.Box):
         if icon:
             ico = elementary.Icon(self._parent)
             ico.file_set(self.__theme_file, "editje/icon/" + icon)
-            btn.icon_set(ico)
+            btn.content_set(ico)
             ico.show()
 
         self._actions[label] = btn
