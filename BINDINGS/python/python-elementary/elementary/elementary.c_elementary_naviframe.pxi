@@ -41,18 +41,14 @@ cdef class NaviframeItem(ObjectItem):
             return self.title_visible_get()
         def __set__(self, value):
             self.title_visible_set(value)
-    
+
 cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
-    cdef void *data
-    cdef object prm
+    cdef NaviframeItem ret = NaviframeItem()
 
     if it == NULL:
         return None
-    data = elm_object_item_data_get(it) # TODO this doesnt work, return NULL. try top_item_get()
-    if data == NULL:
-        return None
-    prm = <object>data
-    return prm[2]
+    ret.item = it
+    return ret
 
 cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElementaryNaviframe_Type]:
     def __init__(self, c_evas.Object parent):

@@ -41,7 +41,7 @@ def page3(bt, nf):
     bt = elementary.Button(nf)
     bt.callback_clicked_add(navi_pop, nf)
     bt.text_set("Prev")
-    
+
     bt2 = elementary.Button(nf)
     bt2.callback_clicked_add(page4, nf)
     bt2.text_set("Next")
@@ -72,23 +72,20 @@ def page5(bt, nf):
     bt = elementary.Button(nf)
     bt.callback_clicked_add(navi_pop, nf)
     bt.text_set("Page 4")
-    
+
     bt2 = elementary.Button(nf)
     bt2.callback_clicked_add(page6, nf)
     bt2.text_set("Page 6")
 
     content = content_new(nf, "images/sky_01.jpg");
-    item = nf.item_push("Page 5", bt, bt2, content, "basic")
-    # item = nf.item_insert_after(nf.top_item_get(), "Page 5", bt, bt2, content, "basic") # THIS SHOULD WORK
+    item = nf.item_insert_after(nf.top_item_get(), "Page 5", bt, bt2, content, "basic")
     item.part_text_set("subtitle", "This page is inserted without transition (TODO)")
-    print nf.top_item_get() # TODO dont work
-    print nf.bottom_item_get() # TODO dont work
 
 def page6(bt, nf):
     bt = elementary.Button(nf)
     bt.callback_clicked_add(navi_pop, nf)
     bt.text_set("Page 5")
-    
+
     bt2 = elementary.Button(nf)
     bt2.callback_clicked_add(page7, nf)
     bt2.text_set("Page 7")
@@ -119,7 +116,7 @@ def naviframe_clicked(obj):
     bg = elementary.Background(win)
     win.resize_object_add(bg)
     bg.show()
-    
+
     nf = elementary.Naviframe(win)
     win.resize_object_add(nf)
     nf.show()
