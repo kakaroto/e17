@@ -36,12 +36,19 @@ cdef class NaviframeItem(ObjectItem):
     def title_visible_get(self):
         return bool(elm_naviframe_item_title_visible_get(self.item))
 
+    property title_visible:
+        def __get__(self):
+            return self.title_visible_get()
+        def __set__(self, value):
+            self.title_visible_set(value)
+    
 cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
     cdef void *data
     cdef object prm
+
     if it == NULL:
         return None
-    data = elm_object_item_data_get(it)
+    data = elm_object_item_data_get(it) # TODO this doesnt work, return NULL. try top_item_get()
     if data == NULL:
         return None
     prm = <object>data
@@ -56,7 +63,11 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
         cdef NaviframeItem ret = NaviframeItem()
         cdef Elm_Object_Item *item
 
-        item = elm_naviframe_item_push(self.obj, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
+        item = elm_naviframe_item_push(self.obj, title_label,
+                                       prev_btn.obj if prev_btn else NULL,
+                                       next_btn.obj if next_btn else NULL,
+                                       content.obj if content else NULL,
+                                       item_style if item_style else NULL)
         if item != NULL:
             ret.item = item
             return ret
