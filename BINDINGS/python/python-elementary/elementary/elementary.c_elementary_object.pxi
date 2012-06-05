@@ -228,6 +228,14 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         cdef c_evas.Evas_Object *obj = elm_object_content_unset(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
+    property content:
+        def __get__(self):
+            return self.content_get()
+        def __set__(self, content):
+            self.content_set(content)
+        def __del__(self):
+            self.content_unset()
+
     def access_info_set(self, txt):
         """Set the text to read out when in accessibility mode
 
