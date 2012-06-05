@@ -85,6 +85,7 @@ examples_files = \
 	tests/test_layout.py \
 	tests/test_list.py \
 	tests/test_menu.py \
+	tests/test_naviframe.py \
 	tests/test_notify.py \
 	tests/test_panel.py \
 	tests/test_progressbar.py \
@@ -110,7 +111,8 @@ examples_images_files = \
 	tests/images/sky_02.jpg \
 	tests/images/sky_03.jpg \
 	tests/images/sky_04.jpg \
-	tests/images/wood_01.jpg
+	tests/images/wood_01.jpg \
+	tests/images/icon_right_arrow.png
 
 tests_files =
 
