@@ -17,6 +17,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, classes);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
+GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
+GENERATE_METHOD_CALLBACKS(CElmGenGrid, update_item);
 
 GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(item_size_horizontal),
@@ -29,7 +31,9 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(multi_select),
                   PROPERTY(classes),
                   METHOD(append),
-                  METHOD(clear));
+                  METHOD(clear),
+                  METHOD(delete_item),
+                  METHOD(update_item));
 
 CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_gengrid_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -61,7 +65,32 @@ Handle<Value> CElmGenGrid::append(const Arguments& args)
    ItemClass<CElmGenGrid> *item_class = static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
    Item<CElmGenGrid> *item = new Item<CElmGenGrid>(item_class, args[1], args[2]);
 
-   elm_gengrid_item_append(eo, item_class->GetElmClass(), item, Item<CElmGenGrid>::OnSelect, item);
+   item->object_item = elm_gengrid_item_append(eo, item_class->GetElmClass(), item, Item<CElmGenGrid>::OnSelect, item);
+
+   return External::Wrap(item);
+}
+
+Handle<Value> CElmGenGrid::delete_item(const Arguments &args)
+{
+   static_cast<Item<CElmGenGrid> *>(External::Unwrap(args[0]))->Destroy();
+   return Undefined();
+}
+
+Handle<Value> CElmGenGrid::update_item(const Arguments &args)
+{
+   Item<CElmGenGrid> *item = static_cast<Item<CElmGenGrid> *>(External::Unwrap(args[0]));
+   if (!item)
+     return Undefined();
+
+   if (!args[1]->IsUndefined())
+     {
+        item->data.Dispose();
+        item->data = Persistent<Value>::New(args[1]);
+     }
+
+   if (item->object_item)
+     elm_gengrid_item_update(item->object_item);
+
    return Undefined();
 }
 

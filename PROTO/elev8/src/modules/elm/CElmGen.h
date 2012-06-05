@@ -17,6 +17,7 @@ struct Item {
    ItemClass<T> *klass;
    Persistent<Value> data;
    Persistent<Value> select_callback;
+   Elm_Object_Item *object_item;
 
    Item(ItemClass<T> *k, Handle<Value> d, Handle<Value> s)
       : klass(k)
@@ -37,6 +38,12 @@ struct Item {
       Local<Function> callback(Function::Cast(*item->select_callback));
       Handle<Value> args[1] = { item->data };
       callback->Call(item->data->ToObject(), 1, args);
+   }
+
+   void Destroy()
+   {
+      if (object_item)
+         elm_object_item_del(object_item);
    }
 };
 

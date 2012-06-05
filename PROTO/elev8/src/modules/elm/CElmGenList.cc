@@ -21,6 +21,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, classes);
 GENERATE_METHOD_CALLBACKS(CElmGenList, append);
 GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
+GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
+GENERATE_METHOD_CALLBACKS(CElmGenList, update_item);
 
 GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(homogeneous),
@@ -37,7 +39,9 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(multi_select),
                   PROPERTY(classes),
                   METHOD(append),
-                  METHOD(clear));
+                  METHOD(clear),
+                  METHOD(delete_item),
+                  METHOD(update_item));
 
 CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -68,8 +72,33 @@ Handle<Value> CElmGenList::append(const Arguments& args)
    ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
    Item<CElmGenList> *item = new Item<CElmGenList>(item_class, args[1], args[2]);
 
-   elm_genlist_item_append(eo, item_class->GetElmClass(), item, NULL,
-                           ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
+   item->object_item = elm_genlist_item_append(eo, item_class->GetElmClass(), item, NULL,
+          ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
+
+   return External::Wrap(item);
+}
+
+Handle<Value> CElmGenList::delete_item(const Arguments &args)
+{
+   static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]))->Destroy();
+   return Undefined();
+}
+
+Handle<Value> CElmGenList::update_item(const Arguments &args)
+{
+   Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
+   if (!item)
+     return Undefined();
+
+   if (!args[1]->IsUndefined())
+     {
+        item->data.Dispose();
+        item->data = Persistent<Value>::New(args[1]);
+     }
+
+   if (item->object_item)
+     elm_genlist_item_update(item->object_item);
+
    return Undefined();
 }
 
