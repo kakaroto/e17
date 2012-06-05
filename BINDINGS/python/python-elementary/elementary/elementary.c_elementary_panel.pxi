@@ -42,7 +42,7 @@ cdef public class Panel(Object) [object PyElementaryPanel, type PyElementaryPane
 
         Sets from where the panel will (dis)appear.
 
-        @param orient The panel orientation.
+        @param orient: The panel orientation.
         @type orient: Elm_Panel_Orient
 
         """

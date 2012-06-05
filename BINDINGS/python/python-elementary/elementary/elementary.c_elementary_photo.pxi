@@ -17,35 +17,123 @@
 #
 
 cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhoto_Type]:
+
+    """An Elementary photo widget is intended for displaying a photo, for
+    ex., a person's image (contact).
+
+    Simple, yet with a very specific purpose. It has a decorative frame
+    around the inner image itself, on the default theme.
+
+    This widget relies on an internal L{Icon}, so that the APIs of these two
+    widgets are similar (drag and drop is also possible here, for example).
+
+    Signals that you can add callbacks for are:
+        - C{"clicked"} - This is called when a user has clicked the photo
+        - C{"drag,start"} - One has started dragging the inner image out of the
+                            photo's frame
+        - C{"drag,end"} - One has dropped the dragged image somewhere
+
+    """
+
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_photo_add(parent.obj))
 
     def file_set(self, filename):
+        """Set the file that will be used as photo
+
+        @param file: The path to file that will be used as photo
+        @type file: string
+
+        @return: (True = success, False = error)
+        @rtype: bool
+
+        """
         if filename:
            return bool(elm_photo_file_set(self.obj, filename))
         else:
            return bool(elm_photo_file_set(self.obj, NULL))
 
     def thumb_set(self, filename, group):
+        """Set the file that will be used as thumbnail in the photo.
+
+        @param file: The path to file that will be used as thumbnail.
+        @type file: string
+        @param group: The key used in case of an EET file.
+        @type group: string
+
+        """
         elm_photo_thumb_set(self.obj, filename, group)
 
     def size_set(self, size):
+        """Set the size that will be used on the photo
+
+        @param size: The size of the photo
+        @type size: int
+
+        """
         elm_photo_size_set(self.obj, size)
 
     def fill_inside_set(self, fill):
+        """Set if the photo should be completely visible or not.
+
+        @param fill: If True the photo will be completely visible.
+        @type fill: bool
+
+        """
         elm_photo_fill_inside_set(self.obj, fill)
 
     def editable_set(self, fill):
+        """Set editability of the photo.
+
+        An editable photo can be dragged to or from, and can be cut or
+        pasted too.  Note that pasting an image or dropping an item on
+        the image will delete the existing content.
+
+        @param set: To set of clear editability.
+        @type set: bool
+
+        """
         elm_photo_editable_set(self.obj, fill)
 
     def aspect_fixed_set(self, fixed):
+        """Set whether the original aspect ratio of the photo should be kept on resize.
+
+        The original aspect ratio (width / height) of the photo is usually
+        distorted to match the object's size. Enabling this option will fix
+        this original aspect, and the way that the photo is fit into
+        the object's area
+
+        @see: L{aspect_fixed_get()}
+
+        @param fixed: C{True} if the photo should fix the aspect,
+            C{False} otherwise.
+        @type fixed: bool
+
+        """
         elm_photo_aspect_fixed_set(self.obj, fixed)
 
     def aspect_fixed_get(self):
+        """Get if the object keeps the original aspect ratio.
+
+        @return: C{True} if the object keeps the original aspect, C{False}
+            otherwise.
+        @rtype: bool
+
+        """
         return elm_photo_aspect_fixed_get(self.obj)
 
     property aspect_fixed:
+        """Whether the original aspect ratio of the photo should be kept on resize.
+
+        The original aspect ratio (width / height) of the photo is usually
+        distorted to match the object's size. Enabling this option will fix
+        this original aspect, and the way that the photo is fit into
+        the object's area
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.aspect_fixed_get()
 
@@ -53,18 +141,24 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
             self.aspect_fixed_set(fixed)
 
     def callback_clicked_add(self, func, *args, **kwargs):
+        """This is called when a user has clicked the photo."""
         self._callback_add("clicked", func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
 
     def callback_drag_start_add(self, func, *args, **kwargs):
+        """One has started dragging the inner image out of the photo's
+        frame.
+
+        """
         self._callback_add("drag,start", func, *args, **kwargs)
 
     def callback_drag_start_del(self, func):
         self._callback_del("drag,start", func)
 
     def callback_drag_end_add(self, func, *args, **kwargs):
+        """One has dropped the dragged image somewhere."""
         self._callback_add("drag,end", func, *args, **kwargs)
 
     def callback_drag_end_del(self, func):

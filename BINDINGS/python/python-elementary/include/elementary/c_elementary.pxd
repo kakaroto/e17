@@ -1440,7 +1440,7 @@ cdef extern from "Elementary.h":
 
     # Panes                 (XXX)
 
-    # Photo                 (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Photo                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_photo_add(Evas_Object *parent)
     Eina_Bool                elm_photo_file_set(Evas_Object *obj, char *file)
     void                     elm_photo_thumb_set(Evas_Object *obj, char *file, char *group)
@@ -1456,7 +1456,7 @@ cdef extern from "Elementary.h":
 
     # Popup                 (XXX)
 
-    # Progressbar           (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Progressbar           (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_progressbar_add(Evas_Object *parent)
     void                     elm_progressbar_pulse_set(Evas_Object *obj, Eina_Bool pulse)
     Eina_Bool                elm_progressbar_pulse_get(Evas_Object *obj)

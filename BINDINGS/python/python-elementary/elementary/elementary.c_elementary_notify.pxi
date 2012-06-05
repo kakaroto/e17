@@ -28,7 +28,7 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         - "block,clicked" - when a click outside of the notify happens
 
     Default content parts of the notify widget that you can use are:
-    - C{"default"} - The main content of the notify
+        - C{"default"} - The main content of the notify
 
     """
 

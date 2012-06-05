@@ -145,7 +145,7 @@ cdef class ListItem(ObjectItem):
         elm_list_item_selected_set(self.item, selected)
 
     def selected_get(self):
-        """Get whether the C{item is selected or not.
+        """Get whether the item is selected or not.
 
         @see: L{List.selected_item_set()}
         @see: L{selected_set()} for details.
@@ -202,7 +202,7 @@ cdef class ListItem(ObjectItem):
 
         @see: L{separator_set()} for details.
 
-        @return C{True} means item is a separator. C{False} indicates it's not.
+        @return: C{True} means item is a separator. C{False} indicates it's not.
         @rtype: bool
 
         """
@@ -216,11 +216,7 @@ cdef class ListItem(ObjectItem):
         If set as separator it will display separator theme, so won't display
         icons or label.
 
-        @see: L{separator_get()}
-
-        @param setting: C{True} to set item as separator or C{False} to
-            unset, i.e., item will be used as a regular item.
-        @type setting: bool
+        @type: bool
 
         """
         def __get__(self):
@@ -229,7 +225,7 @@ cdef class ListItem(ObjectItem):
             self.separator_set(separator)
 
     def show(self):
-        """Show C{item in the list view.
+        """Show the item in the list view.
 
         It won't animate list until item is visible. If such behavior is wanted,
         use L{bring_in()} instead.
@@ -418,7 +414,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         @param multi: C{True} to enable multi selection or C{False} to
             disable it.
-        @type: bool
+        @type multi: bool
 
         """
         elm_list_multi_select_set(self.obj, multi)
@@ -493,7 +489,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         @note: Default value is ELM_LIST_SCROLL.
 
-        @type mode: Elm_List_Mode
+        @type: Elm_List_Mode
 
         """
         def __get__(self):
@@ -903,10 +899,10 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """Return a list of the currently selected list items.
 
         Multiple items can be selected if multi select is enabled. It can be
-        done with elm_list_multi_select_set().
+        done with L{multi_select_set()}.
 
-        @see elm_list_selected_item_get()
-        @see elm_list_multi_select_set()
+        @see: L{selected_item_get()}
+        @see: L{multi_select_set()}
 
         @return: A tuple of list items, or C{None} on failure.
         @rtype: tuple of L{ListItem}s
