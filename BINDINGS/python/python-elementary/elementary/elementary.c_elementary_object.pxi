@@ -424,7 +424,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     #def signal_callback_del(self, emission, source, func):
         #elm_object_signal_callback_del(self.obj, emission, source, func)
 
-    def event_callback_add(self, func, *args, **kargs):
+    # XXX: Clashes badly with evas event_callback_*
+    def elm_event_callback_add(self, func, *args, **kargs):
         """Add a callback for input events (key up, key down, mouse wheel)
         on a given Elementary widget
 
@@ -485,7 +486,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         data = (func, args, kargs)
         self._elm_event_cbs.append(data)
 
-    def event_callback_del(self, func, *args, **kargs):
+    def elm_event_callback_del(self, func, *args, **kargs):
         """Remove an event callback from a widget.
 
         This function removes a callback, previously attached to event emission.
