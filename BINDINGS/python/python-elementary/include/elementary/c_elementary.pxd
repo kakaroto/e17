@@ -1472,19 +1472,19 @@ cdef extern from "Elementary.h":
     void                     elm_progressbar_inverted_set(Evas_Object *obj, Eina_Bool inverted)
     Eina_Bool                elm_progressbar_inverted_get(Evas_Object *obj)
 
-    # Radio                 (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Radio                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_radio_add(Evas_Object *parent)
     void                     elm_radio_group_add(Evas_Object *obj, Evas_Object *group)
     void                     elm_radio_state_value_set(Evas_Object *obj, int value)
     int                      elm_radio_state_value_get(Evas_Object *obj)
     void                     elm_radio_value_set(Evas_Object *obj, int value)
     int                      elm_radio_value_get(Evas_Object *obj)
-    #void                     elm_radio_value_pointer_set(Evas_Object *obj, int *valuep)
+    void                     elm_radio_value_pointer_set(Evas_Object *obj, int *valuep)
     Evas_Object             *elm_radio_selected_object_get(Evas_Object *obj)
 
     # Route                 (XXX)
 
-    # Scroller              (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Scroller              (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_scroller_add(Evas_Object *parent)
     void                     elm_scroller_custom_widget_base_theme_set(Evas_Object *obj, char *widget, char *base)
     void                     elm_scroller_content_min_limit(Evas_Object *obj, Eina_Bool w, Eina_Bool h)
