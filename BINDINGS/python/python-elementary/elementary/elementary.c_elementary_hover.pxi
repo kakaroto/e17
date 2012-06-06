@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Hover(Layout) [object PyElementaryHover, type PyElementaryHover_Type]:
+cdef public class Hover(Object) [object PyElementaryHover, type PyElementaryHover_Type]:
 
     """A Hover object will hover over its C{parent} object at the C{target}
     location.

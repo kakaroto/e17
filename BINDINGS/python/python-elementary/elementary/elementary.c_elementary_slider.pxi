@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Slider(Layout) [object PyElementarySlider, type PyElementarySlider_Type]:
+cdef public class Slider(Object) [object PyElementarySlider, type PyElementarySlider_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_slider_add(parent.obj))

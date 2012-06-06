@@ -626,8 +626,7 @@ cdef public class Layout(Object) [object PyElementaryLayout, type PyElementaryLa
         """
         return bool(elm_layout_part_cursor_engine_only_get(self.obj, part_name))
 
-    #XXX: Has the part_ prefix to remain compatible with Object methods
-    def part_content_set(self, swallow, c_evas.Object content):
+    def content_set(self, swallow, c_evas.Object content):
         """Set the layout content.
 
         Once the content object is set, a previously set one will be deleted.
@@ -656,10 +655,9 @@ cdef public class Layout(Object) [object PyElementaryLayout, type PyElementaryLa
             o = content.obj
         else:
             o = NULL
-        return elm_layout_content_set(self.obj, swallow, o)
+        elm_object_part_content_set(self.obj, swallow, o)
 
-    #XXX: Has the part_ prefix to remain compatible with Object methods
-    def part_content_get(self, swallow):
+    def content_get(self, swallow):
         """Get the child object in the given content part.
 
         @param swallow: The SWALLOW part to get its content
@@ -668,11 +666,10 @@ cdef public class Layout(Object) [object PyElementaryLayout, type PyElementaryLa
         @return: The swallowed object or None if none or an error occurred
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_layout_content_get(self.obj, swallow)
+        cdef c_evas.const_Evas_Object *obj = elm_object_part_content_get(self.obj, swallow)
         return evas.c_evas._Object_from_instance(<long> obj)
 
-    #XXX: Has the part_ prefix to remain compatible with Object methods
-    def part_content_unset(self, swallow):
+    def content_unset(self, swallow):
         """Unset the layout content.
 
         Unparent and return the content object which was set for this part.
@@ -683,11 +680,10 @@ cdef public class Layout(Object) [object PyElementaryLayout, type PyElementaryLa
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_content_unset(self.obj, swallow)
+        cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, swallow)
         return evas.c_evas._Object_from_instance(<long> obj)
 
-    #XXX: Has the part_ prefix to remain compatible with Object methods
-    def part_text_set(self, part, text):
+    def text_set(self, part, text):
         """Set the text of the given part
 
         @param part: The TEXT part where to set the text
@@ -699,8 +695,7 @@ cdef public class Layout(Object) [object PyElementaryLayout, type PyElementaryLa
         """
         elm_layout_text_set(self.obj, part, text)
 
-    #XXX: Has the part_ prefix to remain compatible with Object methods
-    def part_text_get(self, part):
+    def text_get(self, part):
         """Get the text set in the given part
 
         @param part: The TEXT part to retrieve the text off

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Label(Layout) [object PyElementaryLabel, type PyElementaryLabel_Type]:
+cdef public class Label(Object) [object PyElementaryLabel, type PyElementaryLabel_Type]:
 
     """Widget to display text, with simple html-like markup.
 
