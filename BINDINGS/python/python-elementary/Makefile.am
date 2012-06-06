@@ -96,7 +96,8 @@ examples_files = \
 	tests/test_table.py \
 	tests/test_toolbar.py \
 	tests/test_tooltip.py \
-	tests/test_web.py
+	tests/test_web.py \
+	tests/test_win.py
 
 examples_images_files = \
 	tests/images/icon_00.png \

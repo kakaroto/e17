@@ -38,6 +38,7 @@ from test_table import table_clicked
 from test_toolbar import toolbar_clicked
 from test_tooltip import tooltip_clicked
 from test_web import web_clicked
+from test_win import window_states_clicked
 
 #----- Main -{{{-
 def destroy(obj, str1, str2, str3, str4):
@@ -174,6 +175,7 @@ if __name__ == "__main__":
                 ("Bg Plain", bg_plain_clicked),
                 ("Bg Image", bg_image_clicked),
                 ("InnerWindow", inner_window_clicked),
+                ("Window States", window_states_clicked),
             ])
             ]
 
