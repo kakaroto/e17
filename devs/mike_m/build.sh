@@ -10,7 +10,7 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 	libxrender-dev libgif-dev libglu1-mesa-dev mesa-common-dev
 	librsvg2-dev libfribidi-dev libpixman-1-dev
 	libxss-dev libxp-dev
-	libxtst-dev graphviz libasound2-dev libpam0g-dev"
+	libxtst-dev graphviz libasound2-dev libpam0g-dev libdbus-1-dev"
 
 defpkgs="eina eet evas ecore eio eeze embryo edje e_dbus efreet PROTO/libeweather elementary e"
 #
