@@ -23,7 +23,7 @@ def _actionslider_callback_conv(long addr):
     else:
         return s
 
-cdef public class Actionslider(Object) [object PyElementaryActionslider, type PyElementaryActionslider_Type]:
+cdef public class Actionslider(Layout) [object PyElementaryActionslider, type PyElementaryActionslider_Type]:
 
     """An actionslider is a switcher for two or three labels with customizable magnet properties.
 

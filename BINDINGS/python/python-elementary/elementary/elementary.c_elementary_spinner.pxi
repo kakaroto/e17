@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Spinner(Object) [object PyElementarySpinner, type PyElementarySpinner_Type]:
+cdef public class Spinner(Layout) [object PyElementarySpinner, type PyElementarySpinner_Type]:
     def __init__(self, c_evas.Object parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_spinner_add(parent.obj))

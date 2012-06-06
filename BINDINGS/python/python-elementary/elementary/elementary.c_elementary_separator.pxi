@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Separator(Object) [object PyElementarySeparator, type PyElementarySeparator_Type]:
+cdef public class Separator(Layout) [object PyElementarySeparator, type PyElementarySeparator_Type]:
     def __init__(self, c_evas.Object parent):
         self._set_obj(elm_separator_add(parent.obj))
 

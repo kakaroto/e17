@@ -38,7 +38,7 @@ cdef class CalendarMark(object):
         """
         #elm_calendar_mark_del(mark)
 
-cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementaryCalendar_Type]:
+cdef public class Calendar(Layout) [object PyElementaryCalendar, type PyElementaryCalendar_Type]:
 
     """This is a calendar widget.
 

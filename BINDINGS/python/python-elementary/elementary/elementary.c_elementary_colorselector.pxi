@@ -43,7 +43,7 @@ def _colorselector_item_conv(long addr):
         prm = <object>data
         return prm[2]
 
-cdef public class Colorselector(Object) [object PyElementaryColorselector, type PyElementaryColorselector_Type]:
+cdef public class Colorselector(Layout) [object PyElementaryColorselector, type PyElementaryColorselector_Type]:
 
     """A Colorselector is a color selection widget.
 

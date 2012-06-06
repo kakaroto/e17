@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryCheck_Type]:
+cdef public class Check(Layout) [object PyElementaryCheck, type PyElementaryCheck_Type]:
 
     """The check widget allows for toggling a value between true and false.
 

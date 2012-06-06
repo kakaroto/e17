@@ -107,7 +107,7 @@ cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
     ret.item = it
     return ret
 
-cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElementaryNaviframe_Type]:
+cdef public class Naviframe(Layout) [object PyElementaryNaviframe, type PyElementaryNaviframe_Type]:
 
     """Naviframe stands for navigation frame. It's a views manager
     for applications.

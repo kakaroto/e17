@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Button(Object) [object PyElementaryButton, type PyElementaryButton_Type]:
+cdef public class Button(Layout) [object PyElementaryButton, type PyElementaryButton_Type]:
 
     """This is a push-button. Press it and run some function. It can contain
     a simple label and icon object and it also has an autorepeat feature.

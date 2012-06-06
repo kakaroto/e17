@@ -88,7 +88,7 @@ cdef Elm_Object_Item *_elm_index_item_from_python(IndexItem item):
     else:
         return item.item
 
-cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryIndex_Type]:
+cdef public class Index(Layout) [object PyElementaryIndex, type PyElementaryIndex_Type]:
 
     """An index widget gives you an index for fast access to whichever
     group of other UI items one might have.
