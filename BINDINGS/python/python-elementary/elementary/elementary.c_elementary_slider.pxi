@@ -384,10 +384,10 @@ cdef public class Slider(Object) [object PyElementarySlider, type PyElementarySl
 
         """
         def __get__(self):
-            return self.value_get()
+            return self.min_max_get()
 
         def __set__(self, value):
-            self.value_set(*value)
+            self.min_max_set(*value)
 
     def value_set(self, value):
         """Set the value the slider displays.
