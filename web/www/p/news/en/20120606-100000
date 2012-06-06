@@ -1,0 +1,53 @@
+New EFL bugfix release release cycle 1.0.2
+Mike Blumenkrantz
+discomfitor@efl.so
+
+<p>
+We'd like to announce a new bugfix release of our core stable libraries.
+Efreet is exempted because there have been no changes.
+</p>
+
+<p><ul>
+
+<li>Eina 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.4.2 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.4.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.4.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Embryo 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/embryo-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eeze 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/eeze-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
