@@ -19,24 +19,23 @@
 cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Type]:
 
     """An icon object is used to display standard icon images ("delete",
-    "edit", "arrows", etc.) or images coming from a custom file (PNG,
-    JPG, EDJE, etc.), on icon contexts.
+    "edit", "arrows", etc.) or images coming from a custom file (PNG, JPG,
+    EDJE, etc.), on icon contexts.
 
-    The icon image requested can be in the Elementary theme in use, or
-    in the C{freedesktop.org} theme paths. It's possible to set the
-    order of preference from where an image will be fetched.
+    The icon image requested can be in the Elementary theme in use, or in
+    the C{freedesktop.org} theme paths. It's possible to set the order of
+    preference from where an image will be fetched.
 
-    This widget inherits from the L{Image} one, so that all the
-    functions acting on it also work for icon objects.
+    This widget inherits from the L{Image} one, so that all the functions
+    acting on it also work for icon objects.
 
-    You should be using an icon, instead of an image, whenever one of
-    the following apply:
+    You should be using an icon, instead of an image, whenever one of the
+    following apply:
         - you need a B{thumbnail} version of an original image
         - you need freedesktop.org provided icon images
         - you need theme provided icon images (Edje groups)
 
-    Default images provided by Elementary's default theme are described
-    below.
+    Default images provided by Elementary's default theme are described below.
 
     These are names for icons that were first intended to be used in
     toolbars, but can be used in many other places too:
@@ -167,10 +166,9 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
         If name is not found in any of the expected locations and it is the
         absolute path of an image file, this image will be used.
 
-        @note: The icon image set can be changed by L{Image.file_set()}.
+        @note: The icon image set can be changed by L{Image.file}.
 
-        @see: L{standard_get()}
-        @see: L{Image.file_set()}
+        @see: L{Image.file}
 
         @type: string
 

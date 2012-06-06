@@ -72,16 +72,16 @@ cdef class HoverselItem(ObjectItem):
     def icon_set(self, icon_file, icon_group, icon_type):
         """This sets the icon for the given hoversel item.
 
-        The icon can be loaded from the standard set, from an image file, or from
-        an edje file.
+        The icon can be loaded from the standard set, from an image file, or
+        from an edje file.
 
         @see: L{Hoversel.item_add()}
 
-        @param icon_file: An image file path on disk to use for the icon or standard
-            icon name
+        @param icon_file: An image file path on disk to use for the icon or
+            standard icon name
         @type icon_file: string
-        @param icon_group: The edje group to use if C{icon_file} is an edje file. Set this
-            to None if the icon is not an edje file
+        @param icon_group: The edje group to use if C{icon_file} is an edje
+            file. Set this to None if the icon is not an edje file
         @param icon_type: The icon type
 
         """
@@ -126,10 +126,9 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
     choosing the direction to display) that have a label and, optionally, an
     icon to select from.
 
-    It is a convenience widget to avoid the need to do
-    all the piecing together yourself. It is intended for a small number of
-    items in the hoversel menu (no more than 8), though is capable of many
-    more.
+    It is a convenience widget to avoid the need to do all the piecing
+    together yourself. It is intended for a small number of items in the
+    hoversel menu (no more than 8), though is capable of many more.
 
     This widget emits the following signals, besides the ones sent from
     L{Button}:
@@ -263,8 +262,8 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
     def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
         """Add an item to the hoversel button
 
-        This adds an item to the hoversel to show when it is clicked. Note: if you
-        need to use an icon from an edje file then use
+        This adds an item to the hoversel to show when it is clicked. Note:
+        if you need to use an icon from an edje file then use
         L{HoverselItem.icon_set()} right after this function, and set
         icon_file to None here.
 
@@ -273,8 +272,8 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
 
         @param label: The text label to use for the item (None if not desired)
         @type label: string
-        @param icon_file: An image file path on disk to use for the icon or standard
-            icon name (None if not desired)
+        @param icon_file: An image file path on disk to use for the icon or
+            standard icon name (None if not desired)
         @type icon_file: string
         @param icon_type: The icon type if relevant
         @type icon_type: string

@@ -703,17 +703,13 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         elm_entry_cursor_line_end_set(self.obj)
 
     def cursor_selection_begin(self):
-        """This begins a selection within the entry as though
-        the user were holding down the mouse button to make a selection.
-
-        """
+        """This begins a selection within the entry as though the user were
+        holding down the mouse button to make a selection."""
         elm_entry_cursor_selection_begin(self.obj)
 
     def cursor_selection_end(self):
-        """This ends a selection within the entry as though
-        the user had just released the mouse button while making a selection.
-
-        """
+        """This ends a selection within the entry as though the user had
+        just released the mouse button while making a selection."""
         elm_entry_cursor_selection_end(self.obj)
 
     def cursor_is_format_get(self):

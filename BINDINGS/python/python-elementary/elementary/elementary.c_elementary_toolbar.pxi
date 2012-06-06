@@ -55,7 +55,7 @@ cdef class ToolbarItem(ObjectItem):
 
         @note: If it is the last item, C{None} will be returned.
 
-        @see: L{ToolbarItem.append()}
+        @see: L{Toolbar.item_append()}
 
         @return: The item after C{item}, or C{None} if none or on failure.
         @rtype: L{ToolbarItem}
@@ -74,7 +74,7 @@ cdef class ToolbarItem(ObjectItem):
 
         @note: If it is the first item, C{None} will be returned.
 
-        @see: L{ToolbarItem.prepend()}
+        @see: L{Toolbar.item_prepend()}
 
         @return: The item before C{item}, or C{None} if none or on failure.
         @rtype: L{ToolbarItem}
@@ -127,7 +127,7 @@ cdef class ToolbarItem(ObjectItem):
     def selected_get(self):
         """Get whether the item is selected or not.
 
-        @see: L{Toolbar.selected_item_set()} for details.
+        @see: L{Toolbar.selected_item_get()} for details.
         @see: L{selected_get()}
 
         @return: C{True} means item is selected. C{False} indicates it's not.
@@ -165,7 +165,7 @@ cdef class ToolbarItem(ObjectItem):
             return elm_toolbar_item_selected_get(self.item)
 
     def icon_set(self, ic):
-        """Set the icon associated with C{item.
+        """Set the icon associated with the item.
 
         Toolbar will load icon image from fdo or current theme.
         This behavior can be set by L{Toolbar.icon_order_lookup_set()} function.
@@ -184,7 +184,7 @@ cdef class ToolbarItem(ObjectItem):
     def icon_get(self):
         """Get the string used to set the icon of item.
 
-        @see: L{icon_set() for details.
+        @see: L{icon_set()} for details.
 
         @return: The string associated with the icon object.
         @rtype: string
@@ -216,7 +216,7 @@ cdef class ToolbarItem(ObjectItem):
     def icon_object_get(self):
         """Get the icon object of item.
 
-        @see: L{icon_set(), L{icon_file_set()}, or L{icon_memfile_set()} for
+        @see: L{icon_set()}, L{icon_file_set()}, or L{icon_memfile_set()} for
             details.
 
         @return: The icon object
@@ -422,7 +422,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
 
         @note: Default value is C{32}. It reads value from elm config.
 
-        @see: L{icon_size_get()
+        @see: L{icon_size_get()}
 
         @param icon_size: The icon size in pixels
         @type icon_size: int
@@ -621,8 +621,8 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
     def first_item_get(self):
         """Get the first item in the given toolbar widget's list of items.
 
-        @see: L{item_append()
-        @see: L{last_item_get()
+        @see: L{item_append()}
+        @see: L{last_item_get()}
 
         @return: The first item or C{None}, if it has no items (and on errors)
         @rtype: L{ToolbarItem}
@@ -639,8 +639,8 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
     def last_item_get(self):
         """Get the last item in the given toolbar widget's list of items.
 
-        @see: L{item_prepend()
-        @see: L{first_item_get()
+        @see: L{item_prepend()}
+        @see: L{first_item_get()}
 
         @return: The last item or C{None}, if it has no items (and on errors)
         @rtype: L{ToolbarItem}
@@ -674,7 +674,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
 
         The selected item always will be highlighted on toolbar.
 
-        @see: L{selected_items_get()
+        @see: L{selected_items_get()}
 
         @return: The selected toolbar item.
         @rtype: L{ToolbarItem}
@@ -777,7 +777,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         L{Menu.parent_set()}.
 
         @see: L{Menu.parent_set()} for details.
-        @see: L{ToolbarItem.menu_set() for details.
+        @see: L{ToolbarItem.menu_set()} for details.
 
         @param parent: The parent of the menu objects.
         @type parent: L{Object}

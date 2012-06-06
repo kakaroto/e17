@@ -474,7 +474,7 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
             while pushing/popping items.
 
         @see: L{event_enabled_get()}
-        @see: L{freeze_events_set()}
+        @see: L{c_evas.Object.freeze_events_set()}
 
         @param enabled: Events are received when enabled is C{True}, and
             ignored otherwise.
@@ -504,7 +504,7 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
             L{freeze_events_set()} internally. So don't call the API
             while pushing/popping items.
 
-        @see: L{freeze_events_set()}
+        @see: L{c_evas.Object.freeze_events_set()}
 
         @type: bool
 
@@ -533,7 +533,7 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
     def item_simple_promote(self, c_evas.Object content):
         """Simple version of item_promote.
 
-        @see: L{item_promote}
+        @see: L{NaviframeItem.item_promote}
 
         """
         elm_naviframe_item_simple_promote(self.obj, content.obj)

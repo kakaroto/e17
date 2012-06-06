@@ -51,9 +51,9 @@ cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFram
     def autocollapse_set(self, autocollapse):
         """Toggle autocollapsing of a frame
 
-        When C{autocollapse} is True, clicking a frame's label will collapse the frame
-        vertically, shrinking it to the height of the label.
-        By default, this is DISABLED.
+        When C{autocollapse} is True, clicking a frame's label will collapse
+        the frame vertically, shrinking it to the height of the label. By
+        default, this is DISABLED.
 
         @param autocollapse: Whether to enable autocollapse
         @type autocollapse: bool
@@ -64,9 +64,9 @@ cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFram
     def autocollapse_get(self):
         """Determine autocollapsing of a frame
 
-        When this returns True, clicking a frame's label will collapse the frame
-        vertically, shrinking it to the height of the label.
-        By default, this is DISABLED.
+        When this returns True, clicking a frame's label will collapse the
+        frame vertically, shrinking it to the height of the label. By
+        default, this is DISABLED.
 
         @return: Whether autocollapse is enabled
         @rtype: bool
@@ -78,8 +78,8 @@ cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFram
         """Autocollapsing of a frame
 
         When this is True, clicking a frame's label will collapse the frame
-        vertically, shrinking it to the height of the label.
-        By default, this is DISABLED.
+        vertically, shrinking it to the height of the label. By default,
+        this is DISABLED.
 
         @type: bool
 

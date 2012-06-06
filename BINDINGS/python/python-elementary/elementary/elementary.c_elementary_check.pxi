@@ -20,36 +20,27 @@ cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryChec
 
     """The check widget allows for toggling a value between true and false.
 
-    Check objects are a lot like radio objects in layout and
-    functionality, except they do not work as a group, but
-    independently, and only toggle the value of a boolean between false
-    and true. L{state_set()} sets the boolean state and
-    L{state_get()} returns the current state.
+    Check objects are a lot like radio objects in layout and functionality,
+    except they do not work as a group, but independently, and only toggle
+    the value of a boolean between false and true. L{state_set()} sets the
+    boolean state and L{state_get()} returns the current state.
 
     This widget emits the following signals, besides the ones sent from
     L{Layout}:
-      - C{changed} - This is called whenever the user changes the state of
-        the check objects.
+        - C{changed} - This is called whenever the user changes the state of
+            the check objects.
 
     Default content parts of the check widget that you can use for are:
-      - "icon" - An icon of the check
+        - "icon" - An icon of the check
 
     Default text parts of the check widget that you can use for are:
-      - "default" - A label of the check
-      - "on" - On state label of the check
-      - "off" - Off state label of the check
+        - "default" - A label of the check
+        - "on" - On state label of the check
+        - "off" - Off state label of the check
 
     """
 
     def __init__(self, c_evas.Object parent):
-        """Add a new Check object
-
-        @param parent: The parent object
-        @type parent: L{Object}
-        @return: The new object or None if it cannot be created
-        @rtype: L{Object}
-
-        """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_check_add(parent.obj))
 
@@ -83,7 +74,10 @@ cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryChec
             return True
 
     property state:
-        """The state of the check object
+        """The of/off state of the check object
+
+        This property reflects the state of the check. Setting it B{doesn't}
+        cause the "changed" signal to be emitted.
 
         @type: bool
 
@@ -95,7 +89,8 @@ cdef public class Check(Object) [object PyElementaryCheck, type PyElementaryChec
             self.state_set(value)
 
     def callback_changed_add(self, func, *args, **kwargs):
-        """This is called whenever the user changes the state of the check objects."""
+        """This is called whenever the user changes the state of the check
+        objects."""
         self._callback_add("changed", func, *args, **kwargs)
 
     def callback_changed_del(self, func):

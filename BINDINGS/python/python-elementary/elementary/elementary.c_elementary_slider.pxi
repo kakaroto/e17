@@ -18,13 +18,13 @@
 
 cdef public class Slider(Object) [object PyElementarySlider, type PyElementarySlider_Type]:
 
-    """The slider adds a draggable “slider” widget for selecting the value of
+    """The slider adds a draggable "slider" widget for selecting the value of
     something within a range.
 
     A slider can be horizontal or vertical. It can contain an Icon and has a
     primary label as well as a units label (that is formatted with floating
     point values and thus accepts a printf-style format string, like
-    “%1.2f units”. There is also an indicator string that may be somewhere
+    "%1.2f units". There is also an indicator string that may be somewhere
     else (like on the slider itself) that also accepts a format string like
     units. Label, Icon Unit and Indicator strings/objects are optional.
 
@@ -512,7 +512,7 @@ cdef public class Slider(Object) [object PyElementarySlider, type PyElementarySl
 
         @see: L{indicator_show_set()} for details.
 
-        @return: C{True}, if C{obj is enlarging indicator, or C{False}
+        @return: C{True}, if the object is enlarging indicator, or C{False}
             otherwise (and on errors).
         @rtype: bool
 

@@ -139,8 +139,8 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def resize_object_del(self, c_evas.Object subobj):
         """Delete C{subobj} as a resize object of the window.
 
-        This function removes the object C{subobj from the resize objects of
-        the window C{obj. It will not delete the object itself, which will be
+        This function removes the object C{subobj} from the resize objects of
+        the window. It will not delete the object itself, which will be
         left unmanaged and should be deleted by the developer, manually handled
         or set as child of some other container.
 
@@ -409,7 +409,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def shaped_get(self):
         """Get the shaped state of a window.
 
-        @see: L{shaped_set()
+        @see: L{shaped_set()}
 
         @return: If true, the window is shaped
         @rtype: bool
@@ -478,7 +478,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def override_get(self):
         """Get the override state of a window.
 
-        @see: L{override_set()
+        @see: L{override_set()}
 
         @return: If true, the window is overridden
         @rtype: bool
@@ -778,7 +778,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def sticky_get(self):
         """Get the sticky state of the window.
 
-        @see: L{sticky_set()
+        @see: L{sticky_set()}
 
         @return: If true, the window's sticky state is enabled
         @rtype: bool

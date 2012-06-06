@@ -47,31 +47,25 @@ cdef public class Colorselector(Object) [object PyElementaryColorselector, type 
 
     """A Colorselector is a color selection widget.
 
-    It allows application to set a series of colors. It also allows to load/save
-    colors from/to config with a unique identifier, by default, the colors are
-    loaded/saved from/to config using "default" identifier. The colors
-    can be picked by user from the color set by clicking on individual
-    color item on the palette or by selecting it from selector.
+    It allows application to set a series of colors. It also allows to
+    load/save colors from/to config with a unique identifier, by default,
+    the colors are loaded/saved from/to config using "default" identifier.
+    The colors can be picked by user from the color set by clicking on
+    individual color item on the palette or by selecting it from selector.
 
     This widget emits the following signals, besides the ones sent from
     L{Layout}:
-      - @c "changed" - When the color value changes on selector
-      - @c "color,item,selected" - When user clicks on color item.
-        The event_info parameter of the callback will be the selected color item.
-      - @c "color,item,longpressed" - When user long presses on color item.
-        The event_info parameter of the callback will be the selected color item.
+        - C{"changed"} - When the color value changes on selector
+        - C{"color,item,selected"} - When user clicks on color item.
+            The event_info parameter of the callback will be the selected
+            color item.
+        - C{"color,item,longpressed"} - When user long presses on color item.
+            The event_info parameter of the callback will be the selected
+            color item.
 
     """
 
     def __init__(self, c_evas.Object parent):
-        """Add a new colorselector to the parent
-
-        @param parent: The parent object
-        @type parent: L{Object}
-        @return: The new object or None if it cannot be created
-        @rtype: L{Object}
-
-        """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_colorselector_add(parent.obj))
 
@@ -157,7 +151,7 @@ cdef public class Colorselector(Object) [object PyElementaryColorselector, type 
         @param a: a-value of color
         @type a: int
         @return: A new color palette Item.
-        @rtype: L{ColorSelectorPaletteItem}
+        @rtype: L{ColorselectorPaletteItem}
 
         """
         return ColorselectorPaletteItem(self, r, g, b, a)
@@ -169,9 +163,9 @@ cdef public class Colorselector(Object) [object PyElementaryColorselector, type 
     def palette_name_set(self, palette_name):
         """Set current palette's name
 
-        When colorpalette name is set, colors will be loaded from and saved to config
-        using the set name. If no name is set then colors will be loaded from or
-        saved to "default" config.
+        When colorpalette name is set, colors will be loaded from and saved
+        to config using the set name. If no name is set then colors will be
+        loaded from or saved to "default" config.
 
         @param palette_name: Name of palette
         @type palette_name: string
@@ -192,7 +186,11 @@ cdef public class Colorselector(Object) [object PyElementaryColorselector, type 
         return elm_colorselector_palette_name_get(self.obj)
 
     property palette_name:
-        """Current palette's name.
+        """The current palette's name
+
+        When colorpalette name is set, colors will be loaded from and saved
+        to config using the set name. If no name is set then colors will be
+        loaded from or saved to "default" config.
 
         @type: string
 
@@ -210,20 +208,16 @@ cdef public class Colorselector(Object) [object PyElementaryColorselector, type 
         self._callback_del("selected", func)
 
     def callback_color_item_selected_add(self, func, *args, **kwargs):
-        """When user clicks on color item.
-        The event_info parameter of the callback will be the selected color item.
-
-        """
+        """When user clicks on color item. The event_info parameter of the
+        callback will be the selected color item."""
         self._callback_add_full("color,item,selected", _colorselector_item_conv, func, *args, **kwargs)
 
     def callback_color_item_selected_del(self, func):
         self._callback_del_full("color,item,selected", _colorselector_item_conv, func)
 
     def callback_color_item_longpressed_add(self, func, *args, **kwargs):
-        """When user long presses on color item.
-        The event_info parameter of the callback will be the selected color item.
-
-        """
+        """When user long presses on color item. The event_info parameter of
+        the callback will be the selected color item."""
         self._callback_add_full("color,item,longpressed", _colorselector_item_conv, func, *args, **kwargs)
 
     def callback_color_item_longpressed_del(self, func):

@@ -46,29 +46,18 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
     date, year and month. Applications are able to set specific dates to be
     reported back, when selected, in the smart callbacks of the calendar widget.
     The API of this widget lets the applications perform other functions, like:
-      - placing marks on specific dates
-      - setting the bounds for the calendar (minimum and maximum years)
-      - setting the day names of the week (e.g. "Thu" or "Thursday")
-      - setting the year and month format.
+        - placing marks on specific dates
+        - setting the bounds for the calendar (minimum and maximum years)
+        - setting the day names of the week (e.g. "Thu" or "Thursday")
+        - setting the year and month format.
 
     This widget emits the following signals, besides the ones sent from
     L{Layout}:
-      - C{changed} - emitted when the date in the calendar is changed.
+        - C{changed} - emitted when the date in the calendar is changed.
 
     """
 
     def __init__(self, c_evas.Object parent):
-        """Add a new calendar widget to the given parent Elementary (container)
-        object.
-
-        This function inserts a new calendar widget on the canvas.
-
-        @param parent: The parent object.
-        @type parent: L{Object}
-        @return: a new calendar widget handle or C{None}, on errors.
-        @rtype: L{Object}
-
-        """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_calendar_add(parent.obj))
 
@@ -96,15 +85,13 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
 
         The first string should be related to Sunday, the second to Monday...
 
-        The usage should be like this:
-        C{
-        const char *weekdays[] =
-        {
-          "Sunday", "Monday", "Tuesday", "Wednesday",
-          "Thursday", "Friday", "Saturday"
-        };
-        elm_calendar_weekdays_names_set(calendar, weekdays);
-        }
+        The usage should be like this::
+            weekdays =
+            (
+              "Sunday", "Monday", "Tuesday", "Wednesday",
+              "Thursday", "Friday", "Saturday"
+            )
+            calendar.weekdays_names_set(weekdays)
 
         @see: L{weekdays_name_get()}
 
@@ -213,18 +200,16 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
         that will be freed by the widget after usage.
         A pointer to the string and a pointer to the time struct will be provided.
 
-        Example:
-        C{
-        static char *
-        _format_month_year(struct tmselected_time)
-        {
-            char buf[32];
-            if (!strftime(buf, sizeof(buf), "%B %Y", selected_time)) return NULL;
-            return strdup(buf);
-        }
+        Example::
+            static char *
+            _format_month_year(struct tm selected_time)
+            {
+                char buf[32];
+                if (!strftime(buf, sizeof(buf), "%B %Y", selected_time)) return NULL;
+                return strdup(buf);
+            }
 
-        elm_calendar_format_function_set(calendar, _format_month_year);
-        }
+            elm_calendar_format_function_set(calendar, _format_month_year);
 
         @param format_func: Function to set the month-year string given
             the selected date
@@ -246,22 +231,20 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
 
         Marks created with this method can be deleted with L{mark_del()}.
 
-        Example:
-        C{
-        struct tm selected_time;
-        time_t current_time;
+        Example::
+            struct tm selected_time;
+            time_t current_time;
 
-        current_time = time(NULL) + 5 84600;
-        localtime_r(&current_time, &selected_time);
-        elm_calendar_mark_add(cal, "holiday", selected_time,
-         ELM_CALENDAR_ANNUALLY);
+            current_time = time(NULL) + 5 84600;
+            localtime_r(&current_time, &selected_time);
+            elm_calendar_mark_add(cal, "holiday", selected_time,
+             ELM_CALENDAR_ANNUALLY);
 
-        current_time = time(NULL) + 1 84600;
-        localtime_r(&current_time, &selected_time);
-        elm_calendar_mark_add(cal, "checked", selected_time, ELM_CALENDAR_UNIQUE);
+            current_time = time(NULL) + 1 84600;
+            localtime_r(&current_time, &selected_time);
+            elm_calendar_mark_add(cal, "checked", selected_time, ELM_CALENDAR_UNIQUE);
 
-        elm_calendar_marks_draw(cal);
-        }
+            elm_calendar_marks_draw(cal);
 
         @see: L{marks_draw()}
         @see L{mark_del()}
@@ -344,7 +327,7 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
         @see: L{interval_get()}
 
         @param interval: The (first) interval value in seconds
-        @type interval: double
+        @type interval: float
 
         """
         elm_calendar_interval_set(self.obj, interval)
@@ -356,7 +339,7 @@ cdef public class Calendar(Object) [object PyElementaryCalendar, type PyElementa
         @see: L{interval_set()} for more details
 
         @return: The (first) interval value, in seconds, set on it
-        @rtype: double
+        @rtype: float
 
         """
         return elm_calendar_interval_get(self.obj)

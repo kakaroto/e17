@@ -25,8 +25,8 @@ def _fs_entry_callback_conv(long addr):
 
 cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntry, type PyElementaryFileselectorEntry_Type]:
 
-    """This is an entry made to be filled with or display a B{file
-    system path string}.
+    """This is an entry made to be filled with or display a file
+    system path string.
 
     Besides the entry itself, the widget has a L{FileselectorButton}
     on its side, which will raise an internal L{Fileselector}, when clicked,

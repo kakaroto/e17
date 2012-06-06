@@ -98,7 +98,7 @@ cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryInde
 
     Index widgets are by default hidden and just appear when the
     user clicks over it's reserved area in the canvas. In its
-    default theme, it's an area one L{Fingers} "finger" wide on
+    default theme, it's an area one C{finger} wide on
     the right side of the index widget's container.
 
     When items on the index are selected, smart callbacks get
@@ -377,7 +377,7 @@ cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryInde
     def item_clear(self):
         """Removes B{all} items from a given index widget.
 
-        If deletion callbacks are set, via L{ObjectItem.del_cb_set()},
+        If deletion callbacks are set, via L{delete_cb_set()},
         that callback function will be called for each item.
 
         """
@@ -440,8 +440,9 @@ cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryInde
         @note: Vertical mode is set by default.
 
         @param horizontal: C{True} to enable horizontal or C{False} to
-            disable it, i.e., to enable vertical mode. it's an area one L{Fingers}
-            "finger" wide on the bottom side of the index widget's container.
+            disable it, i.e., to enable vertical mode. it's an area one
+            C{"finger"} wide on the bottom side of the index widget's
+            container.
         @type horizontal: bool
 
         """
@@ -463,9 +464,9 @@ cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryInde
         """Enable or disable horizontal mode on the index object
 
         In horizontal mode items are displayed on index from left to right,
-        instead of from top to bottom. Also, the index will scroll horizontally.
-        It's an area one L{Fingers} "finger" wide on the bottom side of the
-        index widget's container.
+        instead of from top to bottom. Also, the index will scroll
+        horizontally. It's an area one C{finger} wide on the bottom side of
+        the index widget's container.
 
         @note: Vertical mode is set by default.
 
@@ -486,33 +487,32 @@ cdef public class Index(Object) [object PyElementaryIndex, type PyElementaryInde
         self._callback_del_full("changed",  _index_item_conv, func)
 
     def callback_changed_delay_add(self, func, *args, **kwargs):
-        """When the selected index item changes, but
-        after a small idling period. C{event_info} is the selected
-        item's data."""
+        """When the selected index item changes, but after a small idling
+        period. C{event_info} is the selected item's data."""
         self._callback_add_full("changed,delay", _index_item_conv, func, *args, **kwargs)
 
     def callback_changed_delay_del(self, func):
         self._callback_del_full("changed,delay",  _index_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
-        """When the user releases a mouse button and
-        selects an item. C{event_info} is the selected item's data ."""
+        """When the user releases a mouse button and selects an item.
+        C{event_info} is the selected item's data ."""
         self._callback_add_full("selected", _index_item_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
         self._callback_del_full("selected",  _index_item_conv, func)
 
     def callback_level_up_add(self, func, *args, **kwargs):
-        """When the user moves a finger from the first
-        level to the second level."""
+        """When the user moves a finger from the first level to the second
+        level."""
         self._callback_add("level,up", func, *args, **kwargs)
 
     def callback_level_up_del(self, func):
         self._callback_del("level,up", func)
 
     def callback_level_down_add(self, func, *args, **kwargs):
-        """When the user moves a finger from the second
-        level to the first level."""
+        """When the user moves a finger from the second level to the first
+        level."""
         self._callback_add("level,down", func, *args, **kwargs)
 
     def callback_level_down_del(self, func):

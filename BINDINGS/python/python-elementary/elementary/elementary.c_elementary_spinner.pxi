@@ -27,7 +27,7 @@ cdef public class Spinner(Object) [object PyElementarySpinner, type PyElementary
 
     A spinner has a label that is formatted with floating
     point values and thus accepts a printf-style format string, like
-    “%1.2f units”.
+    "%1.2f units".
 
     It also allows specific values to be replaced by pre-defined labels.
 

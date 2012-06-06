@@ -47,7 +47,7 @@ cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyEl
         """Activates an inwin object, ensuring its visibility
 
         This function will make sure that the inwin is completely visible
-        by calling L{show()} and L{raise()} on it, to bring it
+        by calling L{show()} and L{_raise()} on it, to bring it
         to the front. It also sets the keyboard focus to it, which will be passed
         onto its content.
 

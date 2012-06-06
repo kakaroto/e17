@@ -73,13 +73,14 @@ cdef class ObjectItem(object):
     def part_content_set(self, char *part, Object obj):
         """Set a content of an object item
 
-        This sets a new object to an item as a content object. If any object was
-        already set as a content object in the same part, previous object will be
-        deleted automatically.
+        This sets a new object to an item as a content object. If any object
+        was already set as a content object in the same part, previous
+        object will be deleted automatically.
 
         @note: Elementary object items may have many contents
 
-        @param part: The content part name to set (None for the default content)
+        @param part: The content part name to set (None for the default
+            content)
         @param content: The new content of the object item
 
         """
@@ -93,7 +94,8 @@ cdef class ObjectItem(object):
 
         @note: Elementary object items may have many contents
 
-        @param part: The content part name to unset (None for the default content)
+        @param part: The content part name to unset (None for the default
+            content)
         @type part: string
         @return: content of the object item or None for any error
         @rtype: L{Object}
@@ -111,7 +113,8 @@ cdef class ObjectItem(object):
 
         @note: Elementary object items may have many contents
 
-        @param part: The content part name to unset (None for the default content)
+        @param part: The content part name to unset (None for the default
+            content)
         @type part: string
 
         """
@@ -132,6 +135,7 @@ cdef class ObjectItem(object):
         @type part: string
         @param text: text to set.
         @type text: string
+
         """
         elm_object_item_part_text_set(self.item, part, text)
 
@@ -142,6 +146,7 @@ cdef class ObjectItem(object):
 
         @param text: any text to set as the main textual part of this object.
         @type text: string
+
         """
         elm_object_item_text_set(self.item, text)
 
@@ -154,6 +159,7 @@ cdef class ObjectItem(object):
         @type part: string
         @return: the text of a part or None if nothing was set.
         @rtype: string
+
         """
         cdef const_char_ptr l
         l = elm_object_item_part_text_get(self.item, part)
@@ -168,6 +174,7 @@ cdef class ObjectItem(object):
 
         @return: the main text or None if nothing was set.
         @rtype: string
+
         """
         cdef const_char_ptr l
         l = elm_object_item_text_get(self.item)
@@ -190,7 +197,8 @@ cdef class ObjectItem(object):
     def access_info_set(self, txt):
         """Set the text to read out when in accessibility mode
 
-        @param txt: The text that describes the widget to people with poor or no vision
+        @param txt: The text that describes the widget to people with poor
+            or no vision
         @type txt: string
 
         """
@@ -200,6 +208,7 @@ cdef class ObjectItem(object):
         """Returns the callback data given at creation time.
 
         @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
+
         """
         cdef void* data
         data = elm_object_item_data_get(self.item)
@@ -269,10 +278,10 @@ cdef class ObjectItem(object):
         """The disabled state of an widget item.
 
         Elementary object item can be B{disabled}, in which state they won't
-        receive input and, in general, will be themed differently from
-        their normal state, usually greyed out. Useful for contexts
-        where you don't want your users to interact with some of the
-        parts of you interface.
+        receive input and, in general, will be themed differently from their
+        normal state, usually greyed out. Useful for contexts where you
+        don't want your users to interact with some of the parts of you
+        interface.
 
         @type: bool
 
@@ -294,8 +303,9 @@ cdef class ObjectItem(object):
         """Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
-        tooltip, so any previous tooltip data is removed.
-        Internally, this method calls L{tooltip_content_cb_set}
+        tooltip, so any previous tooltip data is removed. Internally, this
+        method calls L{tooltip_content_cb_set}
+
         """
         elm_object_item_tooltip_text_set(self.item, text)
 
@@ -308,15 +318,17 @@ cdef class ObjectItem(object):
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """Set the content to be shown in the tooltip object
 
-        Setup the tooltip to object. The object can have only one
-        tooltip, so any previews tooltip data is removed. C{func(owner,
-        tooltip, args, kargs)} will be called every time that need
-        show the tooltip and it should return a valid
-        Evas_Object. This object is then managed fully by tooltip
-        system and is deleted when the tooltip is gone.
+        Setup the tooltip to object. The object can have only one tooltip,
+        so any previews tooltip data is removed. C{func(owner, tooltip,
+        args, kargs)} will be called every time that need show the tooltip
+        and it should return a valid Evas_Object. This object is then
+        managed fully by tooltip system and is deleted when the tooltip is
+        gone.
 
         @param func: Function to be create tooltip content, called when
             need show tooltip.
+        @type func: function
+
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -332,9 +344,10 @@ cdef class ObjectItem(object):
     def tooltip_unset(self):
         """Unset tooltip from object
 
-        Remove tooltip from object. If used the L{tooltip_text_set} the internal
-        copy of label will be removed correctly. If used
+        Remove tooltip from object. If used the L{tooltip_text_set} the
+        internal copy of label will be removed correctly. If used
         L{tooltip_content_cb_set}, the data will be unreferred but no freed.
+
         """
         elm_object_item_tooltip_unset(self.item)
 
@@ -342,7 +355,8 @@ cdef class ObjectItem(object):
         """Sets a different style for this object tooltip.
 
         @note: before you set a style you should define a tooltip with
-        L{tooltip_content_cb_set()} or L{tooltip_text_set()}
+            L{tooltip_content_cb_set()} or L{tooltip_text_set()}
+
         """
         if style:
             elm_object_item_tooltip_style_set(self.item, style)
@@ -360,10 +374,10 @@ cdef class ObjectItem(object):
     def cursor_set(self, char *cursor):
         """Set the cursor to be shown when mouse is over the object
 
-        Set the cursor that will be displayed when mouse is over the
-        object. The object can have only one cursor set to it, so if
-        this function is called twice for an object, the previous set
-        will be unset.
+        Set the cursor that will be displayed when mouse is over the object.
+        The object can have only one cursor set to it, so if this function
+        is called twice for an object, the previous set will be unset.
+
         """
         elm_object_item_cursor_set(self.item, cursor)
 
@@ -375,6 +389,7 @@ cdef class ObjectItem(object):
 
         Unset cursor for object, and set the cursor to default if the mouse
         was over this object.
+
         """
         elm_object_item_cursor_unset(self.item)
 
@@ -382,7 +397,8 @@ cdef class ObjectItem(object):
         """Sets a different style for this object cursor.
 
         @note: before you set a style you should define a cursor with
-        L{cursor_set()}
+            L{cursor_set()}
+
         """
         if style:
             elm_object_item_cursor_style_set(self.item, style)
@@ -401,7 +417,8 @@ cdef class ObjectItem(object):
         """Sets cursor engine only usage for this object.
 
         @note: before you set engine only usage you should define a cursor with
-        L{cursor_set()}
+            L{cursor_set()}
+
         """
         elm_object_item_cursor_engine_only_set(self.item, bool(engine_only))
 

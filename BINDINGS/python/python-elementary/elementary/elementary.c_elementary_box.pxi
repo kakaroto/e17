@@ -71,7 +71,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
     will be placed within the space given to the box widget itself.
 
     The size hints of each object also affect how they are placed and sized
-    within the box. C{size_hint_min_set()} will give the minimum
+    within the box. L{size_hint_min_set()} will give the minimum
     size the object can have, and the box will use it as the basis for all
     latter calculations. Elementary widgets set their own minimum size as
     needed, so there's rarely any need to use it manually.
@@ -88,7 +88,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
     Besides how much space each object is allocated, it's possible to control
     how the widget will be placed within that space using
-    C{size_hint_align_set()}. By default, this value will be 0.5
+    L{size_hint_align_set()}. By default, this value will be 0.5
     for both axis, meaning the object will be centered, but any value from
     0.0 (left or top, for the C{x} and C{y} axis, respectively) to 1.0
     (right or bottom) can be used. The special value C{EVAS_HINT_FILL}, which
@@ -113,8 +113,8 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         By default, the box will be in vertical mode and non-homogeneous.
 
         @param parent: The parent object
-        @type parent: Evas_Object
-        @return: The new object or NULL if it cannot be created
+        @type parent: L{Object}
+        @return: The new object or None if it cannot be created
         @rtype: L{Object}
 
         """
@@ -150,6 +150,12 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
     property horizontal:
         """The horizontal orientation.
 
+        By default, box object arranges their contents vertically from top to
+        bottom. By setting this property as C{True}, the box will become
+        horizontal, arranging contents from left to right.
+
+        @note: This flag is ignored if a custom layout function is set.
+
         @type: bool
 
         """
@@ -182,7 +188,12 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         return bool(elm_box_homogeneous_get(self.obj))
 
     property homogeneous:
-        """Homogeneous mode.
+        """Whether the box is using homogeneous mode or not
+
+        If enabled, homogeneous layout makes all items the same size, according
+        to the size of the largest of its children.
+
+        @note: This flag is ignored if a custom layout function is set.
 
         @type: bool
 
@@ -349,7 +360,10 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         return ret
 
     property children:
-        """A list of the child objects.
+        """Retrieve a list of the objects packed into the box
+
+        Returns a C{tuple} with the child L{Object}s.
+        The order of the list corresponds to the packing order the box uses.
 
         @type: tuple of L{Object}s
 
@@ -376,10 +390,10 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
     def padding_get(self):
         """Get the space (padding) between the box's elements.
 
+        @see: L{padding_set()}
+
         @return: The horizontal and vertical space between elements
         @rtype: tuple of Evas_Coords (int)
-
-        @see: L{padding_set()}
 
         """
         cdef int horizontal, vertical
@@ -388,9 +402,14 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         return (horizontal, vertical)
 
     property padding:
-        """Space (padding) between the box's elements.
+        """The space (padding) between the box's elements.
 
-        @type: tuple with Evas_Coord (int)
+        Extra space in pixels that will be added between a box child and its
+        neighbors after its containing cell has been calculated. This padding
+        is set for all elements in the box, besides any possible padding that
+        individual elements may have through their size hints.
+
+        @type: tuple of Evas_Coords (int)
 
         """
         def __get__(self):
@@ -407,9 +426,9 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         the space given for the whole box widget.
 
         @param horizontal: The horizontal alignment of elements
-        @type horizontal: double
+        @type horizontal: float
         @param vertical: The vertical alignment of elements
-        @type vertical: double
+        @type vertical: float
 
         """
         elm_box_align_set(self.obj, horizontal, vertical)
@@ -418,7 +437,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         """Get the alignment of the whole bounding box of contents.
 
         @return: The horizontal and vertical alignment of elements
-        @rtype: tuple of doubles
+        @rtype: tuple of floats
 
         @see: L{align_set()}
 
@@ -429,9 +448,13 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         return (horizontal, vertical)
 
     property align:
-        """Alignment of the whole bounding box of contents.
+        """Set the alignment of the whole bounding box of contents.
 
-        @type: tuple of doubles
+        Sets how the bounding box containing all the elements of the box, after
+        their sizes and position has been calculated, will be aligned within
+        the space given for the whole box widget.
+
+        @rtype: tuple of floats
 
         """
         def __get__(self):

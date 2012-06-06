@@ -20,17 +20,16 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
 
     """Background widget object
 
-    Used for setting a solid color, image or
-    Edje group as a background to a window or any container object.
+    Used for setting a solid color, image or Edje group as a background to a
+    window or any container object.
 
-    The background widget is used for setting (solid) background
-    decorations to a window (unless it has transparency enabled) or to
-    any container object. It works just like an image, but has some
-    properties useful to a background, like setting it to tiled,
-    centered, scaled or stretched.
+    The background widget is used for setting (solid) background decorations
+    to a window (unless it has transparency enabled) or to any container
+    object. It works just like an image, but has some properties useful to a
+    background, like setting it to tiled, centered, scaled or stretched.
 
     Default content parts of the bg widget that you can use for are:
-      - B{overlay} - overlay of the bg
+        - B{overlay} - overlay of the bg
 
     """
 
@@ -47,16 +46,16 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
     def file_set(self, filename, group = ""):
         """Set the file (image or edje collection) to give life for the background.
 
-        This sets the image file used in the background object. If the
-        image comes from an Edje group, it will be stretched to completely
-        fill the background object. If it comes from a traditional image file, it
-        will by default be centered in this widget's are (thus retaining
-        its aspect), what could lead to some parts being not visible. You
-        may change the mode of exhibition for a real image file with
-        elm_bg_option_set().
+        This sets the image file used in the background object. If the image
+        comes from an Edje group, it will be stretched to completely fill
+        the background object. If it comes from a traditional image file, it
+        will by default be centered in this widget's are (thus retaining its
+        aspect), what could lead to some parts being not visible. You may
+        change the mode of exhibition for a real image file with
+        L{option_set()}.
 
-        @note: Once the image of B{obj} is set, a previously set one will be
-            deleted, even if B{file} is C{None}.
+        @note: Once the image is set, a previously set one will be deleted,
+            even if B{file} is C{None}.
 
         @note: This will only affect the contents of one of the background's
             swallow spots, namely C{"elm.swallow.background"}. If you want to
@@ -64,9 +63,9 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
             that method on this object.
 
         @param file: The file path
-        @type file: char *
+        @type file: string
         @param group: Optional key (group in Edje) within the file
-        @type group: char *
+        @type group: string
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -90,9 +89,25 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         return (filename, group)
 
     property file:
-        """The file (image or edje) used for the background.
+        """The file (image or edje collection) giving life for the background.
 
-        @type: tuple (char *filename, char *group)
+        This property contains the image file name (and edje group) used in
+        the background object. If the image comes from an Edje group, it
+        will be stretched to completely fill the background object. If it
+        comes from a traditional image file, it will by default be centered
+        in this widget's are (thus retaining its aspect), what could lead to
+        some parts being not visible. You may change the mode of exhibition
+        for a real image file with L{option_set()}.
+
+        @note: Once the image is set, a previously set one will be deleted,
+            even if B{file} is C{None}.
+
+        @note: This will only affect the contents of one of the background's
+            swallow spots, namely C{"elm.swallow.background"}. If you want to
+            achieve the L{Layout}'s file setting behavior, you'll have to call
+            that method on this object.
+
+        @type: (string file, string group)
 
         """
         def __get__(self):
@@ -126,7 +141,12 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         return elm_bg_option_get(self.obj)
 
     property option:
-        """Mode of display.
+        """The mode of display for a given background widget's image.
+
+        This property reflects how the background widget will display its
+        image. This will only work if L{file} was previously called with an
+        image file. The image can be displayed tiled, scaled, centered or
+        stretched.
 
         @type: Elm_Bg_Option
 
@@ -170,9 +190,16 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         return (r, g, b)
 
     property color:
-        """Set the color for the background.
+        """The color on a given background widget.
 
-        @type: tuple (int r, int g, int b)
+        This property reflects the color used for the background rectangle,
+        in RGB format. Each color component's range is from 0 to 255.
+
+        @note: You probably only want to use this property if you haven't
+            previously set L{file}, so that you just want a solid color
+            background.
+
+        @type: (int r, int g, int b)
 
         """
         def __get__(self):
@@ -207,9 +234,23 @@ cdef public class Background(Object) [object PyElementaryBackground, type PyElem
         elm_bg_load_size_set(self.obj, w, h)
 
     property load_size:
-        """Size of the pixmap representation.
+        """The size of the pixmap representation of the image set on a given
+        background widget.
 
-        @type: tuple (Evas_Coord w, Evas_Coord h)
+        This property sets a new size for pixmap representation of the
+        given bg image. It allows for the image to be loaded already in the
+        specified size, reducing the memory usage and load time (for
+        example, when loading a big image file with its load size set to a
+        smaller size)
+
+        @note: This is just a hint for the underlying system. The real size
+            of the pixmap may differ depending on the type of image being
+            loaded, being bigger than requested.
+
+        @warning: This function just makes sense if an image file was set with
+            L{file}.
+
+        @type: (Evas_Coord w, Evas_Coord h)
 
         """
         def __set__(self, value):

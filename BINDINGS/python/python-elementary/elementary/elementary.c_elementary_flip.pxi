@@ -29,8 +29,8 @@ cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_T
     For a list of supported animations see L{go()}.
 
     Signals that you can add callbacks for are:
-    "animate,begin" - when a flip animation was started
-    "animate,done" - when a flip animation is finished
+        - "animate,begin" - when a flip animation was started
+        - "animate,done" - when a flip animation is finished
 
     Default content parts of the flip widget that you can use for are:
         - "front" - A front content of the flip

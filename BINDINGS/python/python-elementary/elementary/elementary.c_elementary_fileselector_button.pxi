@@ -25,15 +25,15 @@ def _fs_button_callback_conv(long addr):
 
 cdef public class FileselectorButton(Button) [object PyElementaryFileselectorButton, type PyElementaryFileselectorButton_Type]:
 
-    """This is a button that, when clicked, creates an Elementary
-    window (or inner window) B{with a L{Fileselector} "file
-    selector widget" within}. When a file is chosen, the (inner)
-    window is closed and the button emits a signal having the
-    selected file as it's C{event_info}.
+    """This is a button that, when clicked, creates an Elementary window (or
+    inner window) with a L{Fileselector} "file selector widget" within.
 
-    This widget encapsulates operations on its internal file
-    selector on its own API. There is less control over its file
-    selector than that one would have instantiating one directly.
+    When a file is chosen, the (inner) window is closed and the button emits
+    a signal having the selected file as it's C{event_info}.
+
+    This widget encapsulates operations on its internal file selector on its
+    own API. There is less control over its file selector than that one
+    would have instantiating one directly.
 
     The following styles are available for this button:
         - C{"default"}
@@ -91,8 +91,7 @@ cdef public class FileselectorButton(Button) [object PyElementaryFileselectorBut
         elm_fileselector_button_window_title_set(self.obj, title)
 
     def window_title_get(self):
-        """Get the title for a given file selector button widget's
-        window
+        """Get the title for a given file selector button widget's window
 
         @see: L{window_title_get()} for more details
 
@@ -395,7 +394,7 @@ cdef public class FileselectorButton(Button) [object PyElementaryFileselectorBut
         selector will raise an Elementary "inner window", instead of a
         dedicated Elementary window. By default, it won't.
 
-        @see: L{Inwin} for more information on inner windows
+        @see: L{InnerWindow} for more information on inner windows
         @see: L{inwin_mode_get()}
 
         @param value: C{True} to make it use an inner window, C{False} to make
@@ -427,7 +426,7 @@ cdef public class FileselectorButton(Button) [object PyElementaryFileselectorBut
         selector will raise an Elementary "inner window", instead of a
         dedicated Elementary window. By default, it won't.
 
-        @see: L{Inwin} for more information on inner windows
+        @see: L{InnerWindow} for more information on inner windows
 
         @type: bool
 

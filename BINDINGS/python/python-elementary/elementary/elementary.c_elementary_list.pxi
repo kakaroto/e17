@@ -124,8 +124,8 @@ cdef class ListItem(ObjectItem):
         Selected items will be highlighted.
 
         @see: L{selected_get()}
-        @see: L{Item.selected_item_get()}
-        @see: L{multi_select_set()}
+        @see: L{List.selected_item_get()}
+        @see: L{List.multi_select_set()}
 
         @param selected: The selected state
         @type selected: bool
@@ -136,7 +136,7 @@ cdef class ListItem(ObjectItem):
     def selected_get(self):
         """Get whether the item is selected or not.
 
-        @see: L{List.selected_item_set()}
+        @see: L{List.selected_item_get()}
         @see: L{selected_set()} for details.
 
         @return: C{True} means item is selected. C{False} indicates it's not.
@@ -158,8 +158,8 @@ cdef class ListItem(ObjectItem):
 
         Selected items will be highlighted.
 
-        @see: L{Item.selected_item}
-        @see: L{multi_select}
+        @see: L{List.selected_item}
+        @see: L{List.multi_select}
 
         @type: bool
 

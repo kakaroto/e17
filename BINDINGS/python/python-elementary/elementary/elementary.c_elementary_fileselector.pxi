@@ -422,11 +422,9 @@ cdef public class Fileselector(Object) [object PyElementaryFileselector, type Py
             self.mode_set(value)
 
     def callback_selected_add(self, func, *args, **kwargs):
-        """The user has clicked on a file (when not in folders-only mode)
-        or directory (when in folders-only mode). Parameter C{event_info}
-        contains the selected file or directory.
-
-        """
+        """The user has clicked on a file (when not in folders-only mode) or
+        directory (when in folders-only mode). Parameter C{event_info}
+        contains the selected file or directory."""
         self._callback_add_full("selected", _fs_callback_conv,
                                 func, *args, **kwargs)
 
@@ -434,10 +432,8 @@ cdef public class Fileselector(Object) [object PyElementaryFileselector, type Py
         self._callback_del_full("selected", _fs_callback_conv, func)
 
     def callback_directory_open_add(self, func, *args, **kwargs):
-        """The list has been populated with new content
-        (C{event_info} is the directory's path).
-
-        """
+        """The list has been populated with new content (C{event_info} is
+        the directory's path)."""
         self._callback_add_full("directory,open", _fs_callback_conv,
                                 func, *args, **kwargs)
 
@@ -446,9 +442,7 @@ cdef public class Fileselector(Object) [object PyElementaryFileselector, type Py
 
     def callback_done_add(self, func, *args, **kwargs):
         """The user has clicked on the "ok" or "cancel" buttons
-        (C{event_info} is a pointer to the selection's path).
-
-        """
+        (C{event_info} is a pointer to the selection's path)."""
         self._callback_add_full("done", _fs_callback_conv,
                                 func, *args, **kwargs)
 

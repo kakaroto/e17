@@ -25,13 +25,12 @@ def _image_callback_conv(long addr):
 
 cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImage_Type]:
 
-    """An Elementary image object allows one to load and display an B{image}
-    file on it, be it from a disk file or from a memory
-    region.
+    """An Elementary image object allows one to load and display an image
+    file on it, be it from a disk file or from a memory region.
 
-    Exceptionally, one may also load an Edje group as the
-    contents of the image. In this case, though, most of the functions
-    of the image API will act as a no-op.
+    Exceptionally, one may also load an Edje group as the contents of the
+    image. In this case, though, most of the functions of the image API will
+    act as a no-op.
 
     One can tune various properties of the image, like:
         - pre-scaling,
@@ -39,8 +38,8 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         - orientation,
         - aspect ratio during resizes, etc.
 
-    An image object may also be made valid source and destination for
-    drag and drop actions, through the L{editable_set()} call.
+    An image object may also be made valid source and destination for drag
+    and drop actions, through the L{editable_set()} call.
 
     Signals that you can add callbacks for are:
 
@@ -64,9 +63,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         @see: L{file_get()}
 
         @note: This function will trigger the Edje file case based on the
-        extension of the C{file} string (expects C{".edj"}, for this
-        case). If one wants to force this type of file independently of the
-        extension, L{file_edje_set()} must be used, instead.
+            extension of the C{file} string (expects C{".edj"}, for this
+            case). If one wants to force this type of file independently of
+            the extension, L{file_edje_set()} must be used, instead.
 
         @param file: The path to file that will be used as image source
         @type file: string
@@ -221,7 +220,7 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
     def resizable_set(self, size_up, size_down):
         """Set if the object is (up/down) resizable.
 
-        This function limits the image resize ability. If L{size_up} is set to
+        This function limits the image resize ability. If C{size_up} is set to
         C{False}, the object can't have its height or width resized to a value
         higher than the original image size. Same is valid for C{size_down}.
 
@@ -251,11 +250,11 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
     property resizable:
         """Whether the object is (up/down) resizable.
 
-        This limits the image resize ability. If L{size_up} is set to
-        C{False}, the object can't have its height or width resized to a value
-        higher than the original image size. Same is valid for C{size_down}.
+        This limits the image resize ability. If  set to C{False}, the
+        object can't have its height or width resized to a value higher than
+        the original image size. Same is valid for C{size_down}.
 
-        @type: tuple of bools
+        @type: (bool size_up, bool size_down)
 
         """
         def __get__(self):

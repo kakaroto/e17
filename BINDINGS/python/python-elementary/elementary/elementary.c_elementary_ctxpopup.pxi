@@ -47,38 +47,30 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
 
     """Context popup widget.
 
-    A ctxpopup is a widget that, when shown, pops up a list of items.
-    It automatically chooses an area inside its parent object's view to
-    optimally fit into it. In the default theme, it will also point an
-    arrow to it's top left position at the time one shows it. Ctxpopup
-    items have a label and/or an icon. It is intended for a small
-    number of items (hence the use of list, not genlist).
-
-    @note: Ctxpopup is a specialization of L{Hover}.
+    A ctxpopup is a widget that, when shown, pops up a list of items. It
+    automatically chooses an area inside its parent object's view to
+    optimally fit into it. In the default theme, it will also point an arrow
+    to it's top left position at the time one shows it. Ctxpopup items have
+    a label and/or an icon. It is intended for a small number of items
+    (hence the use of list, not genlist).
 
     Signals that you can add callbacks for are:
     "dismissed" - the ctxpopup was dismissed
 
     Default content parts of the ctxpopup widget that you can use for are:
-      - "default" - A content of the ctxpopup
+        - "default" - A content of the ctxpopup
 
     Default content parts of the ctxpopup items that you can use for are:
-      - "icon" - An icon in the title area
+        - "icon" - An icon in the title area
 
     Default text parts of the ctxpopup items that you can use for are:
-      - "default" - Title label in the title area
+        - "default" - Title label in the title area
+
+    @note: Ctxpopup is a specialization of L{Hover}.
 
     """
 
     def __init__(self, c_evas.Object parent):
-        """Add a new Ctxpopup object to the parent.
-
-        @param parent: Parent object
-        @type parent: L{Object}
-        @return: New object or C{None}, if it cannot be created
-        @rtype: L{Object}
-
-        """
         Object.__init__(self, parent.evas)
         self._set_obj(elm_ctxpopup_add(parent.obj))
 
@@ -145,8 +137,9 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
     def item_append(self, label, c_evas.Object icon, func, *args, **kwargs):
         """Add a new item to a ctxpopup object.
 
-        @warning: Ctxpopup can't hold both an item list and a content at the same
-        time. When an item is added, any previous content will be removed.
+        @warning: Ctxpopup can't hold both an item list and a content at the
+        same time. When an item is added, any previous content will be
+        removed.
 
         @see: L{Object.content_set()}
 
@@ -166,8 +159,8 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         """Set the direction priority order of a ctxpopup.
 
         This functions gives a chance to user to set the priority of ctxpopup
-        showing direction. This doesn't guarantee the ctxpopup will appear in the
-        requested direction.
+        showing direction. This doesn't guarantee the ctxpopup will appear
+        in the requested direction.
 
         @param first: 1st priority of direction
         @type first: Elm_Ctxpopup_Direction
@@ -197,7 +190,8 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
     def direction_get(self):
         """Get the current direction of a ctxpopup.
 
-        @warning: Only once the ctxpopup is shown can the direction be determined
+        @warning: Only once the ctxpopup is shown can the direction be
+            determined
 
         @return: current direction of a ctxpopup
         @rtype: Elm_Ctxpopup_Direction
@@ -208,9 +202,9 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
     def dismiss(self):
         """Dismiss a ctxpopup object
 
-        Use this function to simulate clicking outside the ctxpopup to dismiss it.
-        In this way, the ctxpopup will be hidden and the "clicked" signal will be
-        emitted.
+        Use this function to simulate clicking outside the ctxpopup to
+        dismiss it. In this way, the ctxpopup will be hidden and the
+        "clicked" signal will be emitted.
 
         """
         elm_ctxpopup_dismiss(self.obj)
