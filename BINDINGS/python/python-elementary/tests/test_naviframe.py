@@ -33,10 +33,6 @@ def page2(bt, nf):
     item = nf.item_push("Page 2", None, bt, content, "basic")
     item.part_text_set("subtitle", "Here is sub-title part!")
 
-    # THIS SHOULD WORK
-    print nf.top_item_get()
-    print nf.bottom_item_get()
-
 def page3(bt, nf):
     bt = elementary.Button(nf)
     bt.callback_clicked_add(navi_pop, nf)

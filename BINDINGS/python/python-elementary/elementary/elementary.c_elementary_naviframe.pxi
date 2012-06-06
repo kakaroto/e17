@@ -60,6 +60,17 @@ cdef class NaviframeItem(ObjectItem):
         """
         return elm_naviframe_item_style_get(self.item)
 
+    property style:
+        """Set the item style
+
+        @type: string
+
+        """
+        def __get__(self):
+            return self.style_get()
+        def __set__(self, value):
+            self.style_set(value)
+
     def title_visible_set(self, visible):
         """Show/Hide the title area
 
