@@ -405,7 +405,7 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
 
     def prev_btn_auto_pushed_get(self):
         """Get a value whether prev button(back button) will be auto pushed or
-            not.
+        not.
 
         @see: L{item_push()}
         @see: L{prev_btn_auto_pushed_set()}
@@ -432,7 +432,6 @@ cdef public class Naviframe(Object) [object PyElementaryNaviframe, type PyElemen
 
     def items_get(self):
         """Get a list of all the naviframe items.
-        @note The returned list MUST be freed.
 
         @return: A tuple of naviframe items or C{None} on failure.
         @rtype: tuple of L{NaviframeItem}s

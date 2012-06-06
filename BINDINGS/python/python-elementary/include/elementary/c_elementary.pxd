@@ -1509,12 +1509,12 @@ cdef extern from "Elementary.h":
 
     # SegmentControl        (XXX)
 
-    # Separator             (api:DONE  cb:N/A   test:TODO  doc:TODO)
+    # Separator             (api:DONE  cb:N/A   test:DONE  doc:DONE)
     Evas_Object             *elm_separator_add(Evas_Object *parent)
     void                     elm_separator_horizontal_set(Evas_Object *obj, Eina_Bool)
     Eina_Bool                elm_separator_horizontal_get(Evas_Object *obj)
 
-    # Slider                (api:TODO  cb:DONE  test:DONE  doc:TODO)
+    # Slider                (api:TODO  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_slider_add(Evas_Object *parent)
     void                     elm_slider_span_size_set(Evas_Object *obj, Evas_Coord size)
     Evas_Coord               elm_slider_span_size_get(Evas_Object *obj)
@@ -1522,6 +1522,8 @@ cdef extern from "Elementary.h":
     char                    *elm_slider_unit_format_get(Evas_Object *obj)
     void                     elm_slider_indicator_format_set(Evas_Object *obj, char *indicator)
     char                    *elm_slider_indicator_format_get(Evas_Object *obj)
+    #void                     elm_slider_indicator_format_function_set(Evas_Object *obj, char *(*func)(double val), void (*free_func)(char *str))
+    #void                     elm_slider_units_format_function_set(Evas_Object *obj, char *(*func)(double val), void (*free_func)(char *str))
     void                     elm_slider_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_slider_horizontal_get(Evas_Object *obj)
     void                     elm_slider_min_max_set(Evas_Object *obj, double min, double max)
@@ -1535,7 +1537,7 @@ cdef extern from "Elementary.h":
 
     # Slideshow             (XXX)
 
-    # Spinner               (api:DONE  cb:DONE  test:DONE  doc:TODO)
+    # Spinner               (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_spinner_add(Evas_Object *parent)
     void                     elm_spinner_label_format_set(Evas_Object *obj, char *format)
     char                    *elm_spinner_label_format_get(Evas_Object *obj)
