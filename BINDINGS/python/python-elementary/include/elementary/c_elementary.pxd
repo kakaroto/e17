@@ -1677,6 +1677,7 @@ cdef extern from "Elementary.h":
 
     # Window                (api:DONE  cb:DONE  test:TODO  doc:TODO)
     Evas_Object             *elm_win_add(Evas_Object *parent, char *name, Elm_Win_Type type)
+    Evas_Object             *elm_win_util_standard_add(char* name, char* title)
     void                     elm_win_resize_object_add(Evas_Object *obj, Evas_Object* subobj)
     void                     elm_win_resize_object_del(Evas_Object *obj, Evas_Object* subobj)
     void                     elm_win_title_set(Evas_Object *obj, char *title)
