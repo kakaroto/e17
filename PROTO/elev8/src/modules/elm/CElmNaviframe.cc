@@ -56,7 +56,7 @@ Handle<Value> CElmNaviframe::push(const Arguments& args)
    if (!args[1]->IsString())
      return ThrowException(Exception::Error(String::New("Parameter 2 should be a string")));
 
-   if (args.Length() >= 3)
+   if (args.Length() >= 3 && !args[2]->IsUndefined())
      {
         if (!args[2]->IsObject())
           return ThrowException(Exception::Error(String::New("Parameter 3 should either be undefined or an object description")));
@@ -64,7 +64,7 @@ Handle<Value> CElmNaviframe::push(const Arguments& args)
         prev_btn = Realise(args[2]->ToObject(), GetJSObject());
      }
 
-   if (args.Length() >= 4)
+   if (args.Length() >= 4 && !args[3]->IsUndefined())
      {
         if (!args[3]->IsObject())
           return ThrowException(Exception::Error(String::New("Parameter 4 should either be undefined or an object description")));
