@@ -33,21 +33,36 @@ cdef public class Video(Object) [object PyElementaryVideo, type PyElementaryVide
     def video_file_set(self, filename):
         """Define the file or URI that will be the video source.
 
-        @param filename: The file or URI to target.
-            Local files can be specified using file:// or by using full file paths.
-            URI could be remote source of video, like http:// or local source like
-            WebCam (v4l2://). (You can use Emotion API to request and list
-            the available Webcam on your system).
-
-        @return: @c EINA_TRUE on success, @c EINA_FALSE otherwise
-
         This function will explicitly define a file or URI as a source
         for the video of the Elm_Video object.
+
+        @param filename: The file or URI to target.
+            Local files can be specified using file:// or by using full file
+            paths. URI could be remote source of video, like http:// or
+            local source like WebCam (v4l2://). (You can use Emotion API to
+            request and list the available Webcam on your system).
+        @type filename: string
+
+        @return: C{True} on success, C{False} otherwise
+        @rtype: bool
 
         """
         return bool(elm_video_file_set(self.obj, filename))
 
     property video_file:
+        """Define the file or URI that will be the video source.
+
+        Setting this property will explicitly define a file or URI as a source
+        for the video of the Elm_Video object.
+
+        Local files can be specified using file:// or by using full file
+        paths. URI could be remote source of video, like http:// or
+        local source like WebCam (v4l2://). (You can use Emotion API to
+        request and list the available Webcam on your system).
+
+        @type: string
+
+        """
         def __set__(self, filename):
             self.video_file_set(filename)
 
@@ -55,70 +70,80 @@ cdef public class Video(Object) [object PyElementaryVideo, type PyElementaryVide
         """Get the underlying Emotion object.
 
         @return: the underlying Emotion object.
+        @rtype: emotion.Object
 
         """
         cdef evas.c_evas.Evas_Object *o = elm_video_emotion_get(self.obj)
         return evas.c_evas._Object_from_instance(<long>o)
 
     property emotion:
+        """The underlying Emotion object.
+
+        @type: emotion.Object
+
+        """
         def __get__(self):
             return self.emotion_get()
 
     def play(self):
-        """Start to play the video.
-
-        Start to play the video and cancel all suspend state.
-
-        """
+        """Start to play the video and cancel all suspend state."""
         elm_video_play(self.obj)
 
     def pause(self):
-        """Pause the video
-
-        Pause the video and start a timer to trigger suspend mode.
-
-        """
+        """Pause the video and start a timer to trigger suspend mode."""
         elm_video_pause(self.obj)
 
     def stop(self):
-        """Stop the video
-
-        Stop the video and put the emotion in deep sleep mode.
-
-        """
+        """Stop the video and put the emotion in deep sleep mode."""
         elm_video_stop(self.obj)
 
     def is_playing_get(self):
         """Is the video actually playing.
 
-        @return: @c EINA_TRUE if the video is actually playing.
-
         You should consider watching event on the object instead of polling
         the object state.
+
+        @return: C{True} if the video is actually playing.
+        @rtype: bool
 
         """
         return bool(elm_video_is_playing_get(self.obj))
 
     property is_playing:
+        """Is the video actually playing.
+
+        You should consider watching event on the object instead of polling
+        the object state.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.is_playing_get()
 
     def is_seekable_get(self):
         """Is it possible to seek inside the video.
 
-        @return: @c EINA_TRUE if is possible to seek inside the video.
+        @return: C{True} if is possible to seek inside the video.
+        @rtype: bool
 
         """
         return bool(elm_video_is_seekable_get(self.obj))
 
     property is_seekable:
+        """Is it possible to seek inside the video.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.is_seekable_get()
 
     def audio_mute_get(self):
         """Is the audio muted.
 
-        @return: @c EINA_TRUE if the audio is muted.
+        @return: C{True} if the audio is muted.
+        @rtype: bool
 
         """
         return bool(elm_video_audio_mute_get(self.obj))
@@ -127,11 +152,17 @@ cdef public class Video(Object) [object PyElementaryVideo, type PyElementaryVide
         """Change the mute state of the Elm_Video object.
 
         @param mute: The new mute state.
+        @type mute: bool
 
         """
         elm_video_audio_mute_set(self.obj, mute)
 
     property audio_mute:
+        """Is the audio muted.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.audio_mute_get()
         def __set__(self, mute):
@@ -141,83 +172,114 @@ cdef public class Video(Object) [object PyElementaryVideo, type PyElementaryVide
         """Get the audio level of the current video.
 
         @return: the current audio level.
+        @rtype: float
 
         """
         return elm_video_audio_level_get(self.obj)
 
     def audio_level_set(self, double volume):
-        """Set the audio level of an Elm_Video object.
+        """Set the audio level of an Video object.
 
         @param volume: The new audio volume.
+        @type volume: float
 
         """
         elm_video_audio_level_set(self.obj, volume)
 
     property audio_level:
+        """The audio level of the current video.
+
+        @type: float
+
+        """
         def __get__(self):
             return self.audio_level_get()
         def __set__(self, volume):
             self.audio_level_set(volume)
 
     def play_position_get(self):
-        """Get the current position (in seconds) being played in the Elm_Video object.
+        """Get the current position (in seconds) being played in the Video
+        object.
 
         @return: The time (in seconds) since the beginning of the media file.
+        @rtype: float
 
         """
         return elm_video_play_position_get(self.obj)
 
     def play_position_set(self, double position):
-        """Set the current position (in seconds) to be played in the
-        Elm_Video object.
+        """Set the current position (in seconds) to be played in the Video
+        object.
 
-        @param position: The time (in seconds) since the beginning of the media file.
+        @param position: The time (in seconds) since the beginning of the
+            media file.
+        @type position: float
 
         """
         elm_video_play_position_set(self.obj, position)
 
     property play_position:
+        """Get the current position (in seconds) being played in the Video
+        object.
+
+        @type: float
+
+        """
         def __get__(self):
             return self.play_position_get()
         def __set__(self, position):
             self.play_position_set(position)
 
     def play_length_get(self):
-        """Get the total playing time (in seconds) of the Elm_Video object.
+        """Get the total playing time (in seconds) of the Video object.
 
         @return: The total duration (in seconds) of the media file.
+        @rtype: float
 
         """
         return elm_video_play_length_get(self.obj)
 
     property play_length:
+        """The total playing time (in seconds) of the Video object.
+
+        @type: float
+
+        """
         def __get__(self):
             return self.play_length_get()
 
     def remember_position_set(self, remember):
         """Set whether the object can remember the last played position.
 
-        @param video: The video object.
-        @param remember: the last played position of the Elm_Video object.
-
         @note: This API only serves as indication. System support is required.
+
+        @param remember: whether the object remembers the last played position
+            (C{True}) or not.
+        @type remember: bool
 
         """
         elm_video_remember_position_set(self.obj, remember)
 
     def remember_position_get(self):
-        """Set whether the object can remember the last played position.
-
-        @param video: The video object.
-        @return: whether the object remembers the last played position (@c EINA_TRUE)
-        or not.
+        """Get whether the object can remember the last played position.
 
         @note: This API only serves as indication. System support is required.
+
+        @return: whether the object remembers the last played position
+            (C{True}) or not.
+        @rtype: bool
 
         """
         return bool(elm_video_remember_position_get(self.obj))
 
     property remember_position:
+        """Whether the object can remember the last played position.
+
+        @note: This API only serves as indication. System support is required.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.remember_position_get()
         def __set__(self, remember):
@@ -226,17 +288,26 @@ cdef public class Video(Object) [object PyElementaryVideo, type PyElementaryVide
     def title_get(self):
         """Get the title (for instance DVD title) from this emotion object.
 
-        @param video: The Elm_Video object.
-        @return: A string containing the title.
-
         This function is only useful when playing a DVD.
 
         @note: Don't change or free the string returned by this function.
+
+        @return: A string containing the title.
+        @rtype: string
 
         """
         return elm_video_title_get(self.obj)
 
     property title:
+        """The title (for instance DVD title) from this emotion object.
+
+        This property is only useful when playing a DVD.
+
+        @note: Don't change or free the string returned by this function.
+
+        @type: string
+
+        """
         def __get__(self):
             return self.title_get()
 
@@ -248,15 +319,26 @@ _install_metaclass(&PyElementaryVideo_Type, ElementaryObjectMeta)
 
 cdef public class Player(Object) [object PyElementaryPlayer, type PyElementaryPlayer_Type]:
 
-    """Elm_Player is a video player that need to be linked with an Elm_Video.
+    """Player is a video player that need to be linked with a L{Video}.
 
     It takes care of updating its content according to Emotion events and
     provides a way to theme itself. It also automatically raises the priority of
-    the linked Elm_Video so it will use the video decoder, if available. It also
-    activates the "remember" function on the linked Elm_Video object.
+    the linked L{Video} so it will use the video decoder, if available. It also
+    activates the "remember" function on the linked L{Video} object.
+
+    The player widget emits the following signals, besides the ones
+    sent from L{Layout}:
+        - C{"forward,clicked"} - the user clicked the forward button.
+        - C{"info,clicked"} - the user clicked the info button.
+        - C{"next,clicked"} - the user clicked the next button.
+        - C{"pause,clicked"} - the user clicked the pause button.
+        - C{"play,clicked"} - the user clicked the play button.
+        - C{"prev,clicked"} - the user clicked the prev button.
+        - C{"rewind,clicked"} - the user clicked the rewind button.
+        - C{"stop,clicked"} - the user clicked the stop button.
 
     Default content parts of the player widget that you can use for are:
-      - "video" - A video of the player
+        - "video" - A video of the player
 
     """
 
@@ -265,48 +347,56 @@ cdef public class Player(Object) [object PyElementaryPlayer, type PyElementaryPl
         self._set_obj(elm_player_add(parent.obj))
 
     def callback_forward_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the forward button."""
         self._callback_add_full("forward,clicked", func, *args, **kwargs)
 
     def callback_forward_clicked_del(self, func):
         self._callback_del_full("forward,clicked", func)
 
     def callback_info_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the info button."""
         self._callback_add_full("info,clicked", func, *args, **kwargs)
 
     def callback_info_clicked_del(self, func):
         self._callback_del_full("info,clicked", func)
 
     def callback_next_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the next button."""
         self._callback_add_full("next,clicked", func, *args, **kwargs)
 
     def callback_next_clicked_del(self, func):
         self._callback_del_full("next,clicked", func)
 
     def callback_pause_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the pause button."""
         self._callback_add_full("pause,clicked", func, *args, **kwargs)
 
     def callback_pause_clicked_del(self, func):
         self._callback_del_full("pause,clicked", func)
 
     def callback_play_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the play button."""
         self._callback_add_full("play,clicked", func, *args, **kwargs)
 
     def callback_play_clicked_del(self, func):
         self._callback_del_full("play,clicked", func)
 
     def callback_prev_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the prev button."""
         self._callback_add_full("prev,clicked", func, *args, **kwargs)
 
     def callback_prev_clicked_del(self, func):
         self._callback_del_full("prev,clicked", func)
 
     def callback_rewind_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the rewind button."""
         self._callback_add_full("rewind,clicked", func, *args, **kwargs)
 
     def callback_rewind_clicked_del(self, func):
         self._callback_del_full("rewind,clicked", func)
 
     def callback_stop_clicked_add(self, func, *args, **kwargs):
+        """the user clicked the stop button."""
         self._callback_add_full("stop,clicked", func, *args, **kwargs)
 
     def callback_stop_clicked_del(self, func):
