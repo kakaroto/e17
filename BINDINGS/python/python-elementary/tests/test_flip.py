@@ -27,7 +27,7 @@ def flip_clicked(obj, item=None):
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
-    # main vertical box 
+    # main vertical box
     box = elementary.Box(win)
     box.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(box)
@@ -47,29 +47,29 @@ def flip_clicked(obj, item=None):
     o = elementary.Background(win)
     o.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     o.file_set("images/sky_01.jpg")
-    fl.content_front_set(o)
+    fl.part_content_set("front", o)
     o.show()
 
     # back content (layout)
     ly = elementary.Layout(win)
     ly.file_set("test.edj", "layout")
     ly.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    fl.content_back_set(ly)
+    fl.part_content_set("back", ly)
     ly.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 1")
-    ly.content_set("element1", bt)
+    ly.part_content_set("element1", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 2")
-    ly.content_set("element2", bt)
+    ly.part_content_set("element2", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 3")
-    ly.content_set("element3", bt)
+    ly.part_content_set("element3", bt)
     bt.show()
 
     # flip buttons (first row)
@@ -101,7 +101,7 @@ def flip_clicked(obj, item=None):
     hbox.horizontal_set(True)
     hbox.show()
     box.pack_end(hbox)
-    
+
     for mode in [elementary.ELM_FLIP_CUBE_LEFT,
                  elementary.ELM_FLIP_CUBE_RIGHT,
                  elementary.ELM_FLIP_CUBE_UP,
@@ -159,7 +159,7 @@ def flip_interactive_clicked(obj, item=None):
     bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bg.show()
 
-    # main vertical box 
+    # main vertical box
     box = elementary.Box(win)
     box.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     win.resize_object_add(box)
@@ -187,29 +187,29 @@ def flip_interactive_clicked(obj, item=None):
     o = elementary.Background(win)
     o.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     o.file_set("images/sky_01.jpg")
-    fl.content_front_set(o)
+    fl.part_content_set("front", o)
     o.show()
 
     # back content (layout)
     ly = elementary.Layout(win)
     ly.file_set("test.edj", "layout")
     ly.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    fl.content_back_set(ly)
+    fl.part_content_set("back", ly)
     ly.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 1")
-    ly.content_set("element1", bt)
+    ly.part_content_set("element1", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 2")
-    ly.content_set("element2", bt)
+    ly.part_content_set("element2", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 3")
-    ly.content_set("element3", bt)
+    ly.part_content_set("element3", bt)
     bt.show()
 
 

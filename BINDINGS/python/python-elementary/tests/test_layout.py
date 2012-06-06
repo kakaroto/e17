@@ -12,7 +12,7 @@ def _event(*args, **kargs):
 def layout_clicked(obj):
     win = elementary.Window("layout", elementary.ELM_WIN_BASIC)
     win.title_set("Layout")
-    win.event_callback_add(_event)
+    win.elm_event_callback_add(_event)
     win.autodel_set(True)
 
     bg = elementary.Background(win)
@@ -28,19 +28,19 @@ def layout_clicked(obj):
 
     bt = elementary.Button(win)
     bt.text_set("Button 1")
-    ly.content_set("element1", bt)
-    bt.event_callback_add(_event)
-    bt.event_callback_del(_event)
+    ly.part_content_set("element1", bt)
+    bt.elm_event_callback_add(_event)
+    bt.elm_event_callback_del(_event)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 2")
-    ly.content_set("element2", bt)
+    ly.part_content_set("element2", bt)
     bt.show()
 
     bt = elementary.Button(win)
     bt.text_set("Button 3")
-    ly.content_set("element3", bt)
+    ly.part_content_set("element3", bt)
     bt.show()
 
     win.show()

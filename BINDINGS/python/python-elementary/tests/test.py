@@ -26,6 +26,7 @@ from test_inwin import inner_window_clicked
 from test_layout import layout_clicked
 from test_list import list_clicked, list2_clicked, list3_clicked
 from test_menu import menu_clicked
+from test_naviframe import naviframe_clicked
 from test_notify import notify_clicked
 from test_panel import panel_clicked
 from test_progressbar import progressbar_clicked
@@ -135,6 +136,9 @@ if __name__ == "__main__":
                 ("Genlist Group", genlist3_clicked),
                 ("Gengrid", gengrid_clicked),
             ]),
+             ("Naviframe", [
+                ("Naviframe", naviframe_clicked),
+            ]),
              ("Popups", [
                 ("Hover", hover_clicked),
                 ("Hover 2", hover2_clicked),
@@ -157,9 +161,6 @@ if __name__ == "__main__":
                 ("Radios", radio_clicked),
                 ("Actionslider", actionslider_clicked),
             ]),
-#             ("Storyboard", [ TODO
-#                ("Naviframe", pager_clicked),
-#            ]),
              ("Times & Dates", [
                 ("Clock", clock_clicked),
             ]),
@@ -198,7 +199,7 @@ if __name__ == "__main__":
             bt.show()
             tbx2.pack_end(bt)
 
-    win.resize(320,520)
+    win.resize(480, 480)
     win.show()
     elementary.run()
     elementary.shutdown()

@@ -1395,7 +1395,7 @@ cdef extern from "Elementary.h":
 
     # Multibuttonentry      (XXX)
 
-    # Naviframe             (api:TODO  cb:DONE  test:TODO  doc:DONE)
+    # Naviframe             (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_naviframe_add(Evas_Object *parent)
     Elm_Object_Item         *elm_naviframe_item_push(Evas_Object *obj, char *title_label, Evas_Object *prev_btn, Evas_Object *next_btn, Evas_Object *content, char *item_style)
     Elm_Object_Item         *elm_naviframe_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, const_char_ptr title_label, Evas_Object *prev_btn, Evas_Object *next_btn, Evas_Object *content, const_char_ptr item_style)
