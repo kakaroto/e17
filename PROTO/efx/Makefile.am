@@ -1,5 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = efx.pc
+
 SUBDIRS = src data
 EXTRA_DIST = \
   AUTHORS \

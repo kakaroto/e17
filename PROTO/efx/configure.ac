@@ -55,8 +55,9 @@ AC_TYPE_SIZE_T
 AC_FUNC_ALLOCA
 AC_C___ATTRIBUTE__
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([EFX_DEPS], [eina >= 1.1.999 eet >= 1.5.0 evas >= 1.1.999 ecore >= 1.1.999])
-
+EFX_REQUIRES="eina >= 1.1.999 eet >= 1.5.0 evas >= 1.1.999 ecore >= 1.1.999"
+PKG_CHECK_MODULES([EFX_DEPS], [$EFX_REQUIRES])
+AC_SUBST([EFX_REQUIRES])
 want_tests="auto"
 AC_ARG_ENABLE([tests],
    [AC_HELP_STRING([--disable-tests], [disable test binaries. @<:@default=detect@:>@])],
@@ -85,5 +86,6 @@ AC_CONFIG_FILES([
   src/Makefile
   src/lib/Makefile
   src/bin/Makefile
+  efx.pc
 ])
 AC_OUTPUT
