@@ -65,11 +65,11 @@ _spin_stop(Evas_Object *obj, Eina_Bool reset)
    esd->frame = 0;
    if (reset)
      {
-        esd->e->map_data.rotation = 0;
+        esd->e->map_data.rotation = esd->start = 0;
         efx_rotate_center_init(esd->e, NULL);
         _spin_cb(esd);
         evas_object_event_callback_del_full(obj, EVAS_CALLBACK_FREE, (Evas_Object_Event_Cb)_obj_del, esd);
-        _obj_del(esd, NULL, NULL, NULL);
+        _obj_del(NULL, NULL, e->obj, NULL);
         INF("reset spinning object %p", obj);
      }
    else
