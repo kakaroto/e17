@@ -1,0 +1,56 @@
+EFL 버그 수정 버전 배포 1.2.1
+2012년 6월 8일 마이크 블루멘크란츠 discomfitor@efl.so
+
+<p>
+핵심 EFL 라이브러리 안정 버전 1.2에 대한 버그 수정 버전 1.2.1을 배포합니다. 아래 열거된 라이브러리만 1.2 배포 이후에 버그 수정을 하였습니다.
+</p>
+
+<p><ul>
+
+<li>Eina 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.6.1 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.6.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.6.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eio 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/eio-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eio-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Emotion 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/emotion-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/emotion-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ethumb 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/ethumb-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ethumb-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Elementary 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/elementary-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/elementary-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
