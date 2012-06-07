@@ -20,7 +20,7 @@ em_util_icon_add(Evas_Object *obj, const char *icon)
               path = efreet_icon_path_find("Human", icon, 48);
      }
    if (path)
-     elm_icon_file_set(ow, path, NULL);
+     elm_image_file_set(ow, path, NULL);
 #endif
 
    return ow;
