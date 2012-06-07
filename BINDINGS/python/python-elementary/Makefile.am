@@ -24,6 +24,8 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_check.pxi \
 	elementary/elementary.c_elementary_clock.pxi \
 	elementary/elementary.c_elementary_colorselector.pxi \
+	elementary/elementary.c_elementary_configuration.pxi \
+	elementary/elementary.c_elementary_conformant.pxi \
 	elementary/elementary.c_elementary_ctxpopup.pxi \
 	elementary/elementary.c_elementary_entry.pxi \
 	elementary/elementary.c_elementary_fileselector.pxi \
@@ -74,6 +76,7 @@ examples_files = \
 	tests/test_button.py \
 	tests/test_check.py \
 	tests/test_clock.py \
+	tests/test_config.py \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \

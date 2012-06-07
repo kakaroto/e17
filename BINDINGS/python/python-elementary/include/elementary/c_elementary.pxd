@@ -447,6 +447,11 @@ cdef extern from "Elementary.h":
 
     ctypedef Eina_Bool       (*Elm_Event_Cb)                (void *data, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type t, void *event_info)
 
+    ctypedef struct Elm_Font_Overlay:
+        const_char_ptr text_class
+        const_char_ptr font
+        Evas_Font_Size size
+
     ctypedef char           *(*GenlistItemLabelGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Evas_Object    *(*GenlistItemIconGetFunc)      (void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Eina_Bool       (*GenlistItemStateGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
@@ -479,6 +484,10 @@ cdef extern from "Elementary.h":
 
     ctypedef struct Elm_Object_Item
     ctypedef Elm_Object_Item const_Elm_Object_Item "const Elm_Object_Item"
+
+    ctypedef struct Elm_Text_Class:
+        const_char_ptr name
+        const_char_ptr desc
 
     ctypedef struct Elm_Theme
 
@@ -880,7 +889,8 @@ cdef extern from "Elementary.h":
     void                     elm_colorselector_palette_name_set(Evas_Object *obj, const_char_ptr palette_name)
     const_char_ptr           elm_colorselector_palette_name_get(Evas_Object *obj)
 
-    # Conformant            (XXX)
+    # Conformant            (api:DONE  cb:N/A   test:TODO  doc:DONE)
+    Evas_Object             *elm_conformant_add(Evas_Object *parent)
 
     # Ctxpopup              (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_ctxpopup_add(Evas_Object *parent)
