@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Progressbar(Object) [object PyElementaryProgressbar, type PyElementaryProgressbar_Type]:
+cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type PyElementaryProgressbar_Type]:
 
     """
     The progress bar is a widget for visually representing the progress

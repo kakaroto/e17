@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Frame(Object) [object PyElementaryFrame, type PyElementaryFrame_Type]:
+cdef public class Frame(LayoutClass) [object PyElementaryFrame, type PyElementaryFrame_Type]:
 
     """Frame is a widget that holds some content and has a title.
 

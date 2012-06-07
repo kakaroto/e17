@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Background(Object) [object PyElementaryBackground, type PyElementaryBackground_Type]:
+cdef public class Background(LayoutClass) [object PyElementaryBackground, type PyElementaryBackground_Type]:
 
     """Background widget object
 

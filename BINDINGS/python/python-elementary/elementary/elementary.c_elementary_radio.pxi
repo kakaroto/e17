@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Radio(Object) [object PyElementaryRadio, type PyElementaryRadio_Type]:
+cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementaryRadio_Type]:
 
     """Radio is a widget that allows for one or more options to be displayed
     and have the user choose only one of them.

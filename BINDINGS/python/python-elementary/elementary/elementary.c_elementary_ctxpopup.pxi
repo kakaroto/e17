@@ -55,7 +55,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
     (hence the use of list, not genlist).
 
     Signals that you can add callbacks for are:
-    "dismissed" - the ctxpopup was dismissed
+        - "dismissed" - the ctxpopup was dismissed
 
     Default content parts of the ctxpopup widget that you can use for are:
         - "default" - A content of the ctxpopup

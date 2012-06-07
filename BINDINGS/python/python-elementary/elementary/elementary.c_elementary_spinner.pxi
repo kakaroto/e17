@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Spinner(Object) [object PyElementarySpinner, type PyElementarySpinner_Type]:
+cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyElementarySpinner_Type]:
 
     """A spinner is a widget which allows the user to increase or decrease
     numeric values using arrow buttons, or edit values directly, clicking

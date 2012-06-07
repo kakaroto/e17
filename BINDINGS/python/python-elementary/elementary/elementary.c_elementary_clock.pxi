@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Clock(Object) [object PyElementaryClock, type PyElementaryClock_Type]:
+cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementaryClock_Type]:
 
     """This is a digital clock widget.
 

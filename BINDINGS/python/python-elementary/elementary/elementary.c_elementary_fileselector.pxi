@@ -23,7 +23,7 @@ def _fs_callback_conv(long addr):
     else:
         return s
 
-cdef public class Fileselector(Object) [object PyElementaryFileselector, type PyElementaryFileselector_Type]:
+cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, type PyElementaryFileselector_Type]:
 
     """
     A file selector is a widget that allows a user to navigate

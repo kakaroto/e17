@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Bubble(Object) [object PyElementaryBubble, type PyElementaryBubble_Type]:
+cdef public class Bubble(LayoutClass) [object PyElementaryBubble, type PyElementaryBubble_Type]:
 
     """The Bubble is a widget to show text similar to how speech is
     represented in comics.

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Separator(Object) [object PyElementarySeparator, type PyElementarySeparator_Type]:
+cdef public class Separator(LayoutClass) [object PyElementarySeparator, type PyElementarySeparator_Type]:
 
     """Separator is a very thin object used to separate other objects.
 

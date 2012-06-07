@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Slider(Object) [object PyElementarySlider, type PyElementarySlider_Type]:
+cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElementarySlider_Type]:
 
     """The slider adds a draggable "slider" widget for selecting the value of
     something within a range.

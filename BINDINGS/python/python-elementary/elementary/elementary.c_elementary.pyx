@@ -216,6 +216,7 @@ class ElementaryObjectMeta(type):
 
 include "elementary.c_elementary_object.pxi"
 include "elementary.c_elementary_object_item.pxi"
+include "elementary.c_elementary_layout_class.pxi"
 include "elementary.c_elementary_layout.pxi"
 include "elementary.c_elementary_image.pxi"
 include "elementary.c_elementary_button.pxi"

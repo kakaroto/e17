@@ -42,6 +42,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_innerwindow.pxi \
 	elementary/elementary.c_elementary_label.pxi \
 	elementary/elementary.c_elementary_layout.pxi \
+	elementary/elementary.c_elementary_layout_class.pxi \
 	elementary/elementary.c_elementary_list.pxi \
 	elementary/elementary.c_elementary_menu.pxi \
 	elementary/elementary.c_elementary_notify.pxi \

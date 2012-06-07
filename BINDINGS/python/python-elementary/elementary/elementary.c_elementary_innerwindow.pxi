@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class InnerWindow(Window) [object PyElementaryInnerWindow, type PyElementaryInnerWindow_Type]:
+cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type PyElementaryInnerWindow_Type]:
 
     """An inwin is a window inside a window that is useful for a quick popup.
     It does not hover.
