@@ -1,0 +1,51 @@
+EFL 버그 수정 버전 배포 1.0.2
+2012년 6월 6일 마이크 블루멘크란츠 discomfitor@efl.so
+
+<p>
+핵심 EFL 라이브러리 안정 버전 1.0에 대한 버그 수정 버전 1.0.2를 배포합니다. Efreet은 버그 수정을 하지 않아 이번 배포에서 제외되었습니다.
+</p>
+
+<p><ul>
+
+<li>Eina 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.4.2 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.4.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.4.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Embryo 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/embryo-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eeze 1.0.2 - 
+[<a href="http://download.enlightenment.org/releases/eeze-1.0.2.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.0.2.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
