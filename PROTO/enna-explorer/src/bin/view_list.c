@@ -147,7 +147,7 @@ _list_item_default_content_get(void *data, Evas_Object *obj, const char *part)
 
          if (ENNA_FILE_IS_BROWSABLE(li->file))
              {
-                 elm_icon_file_set(ic, enna_config_theme_get(), li->file->icon);
+                 elm_image_file_set(ic, enna_config_theme_get(), li->file->icon);
              }
          else
              {
@@ -158,7 +158,7 @@ _list_item_default_content_get(void *data, Evas_Object *obj, const char *part)
                  icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 48);
                  if (!icon)
                      icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 48);
-                 elm_icon_file_set(ic, icon, NULL);
+                 elm_image_file_set(ic, icon, NULL);
                  /* Don't generate thumb in list, it's too small */
                  /* elm_icon_thumb_set(ic, li->file->mrl, NULL); */
              }
@@ -273,7 +273,7 @@ _list_item_track_content_get(void *data, Evas_Object *obj, const char *part)
         if (!starred)
           return NULL;
         ic = elm_icon_add(obj);
-        elm_icon_file_set(ic, enna_config_theme_get(), "icon/favorite");
+        elm_image_file_set(ic, enna_config_theme_get(), "icon/favorite");
         evas_object_size_hint_min_set(ic, 24, 24);
         evas_object_show(ic);
         return ic;
@@ -299,11 +299,11 @@ _list_item_track_content_get(void *data, Evas_Object *obj, const char *part)
                snprintf(cv, sizeof(cv), "%s/covers/%s",
                         enna_util_data_home_get(), cover);
 
-             elm_icon_file_set(ic, cv, NULL);
+             elm_image_file_set(ic, cv, NULL);
           }
         else
           {
-             elm_icon_file_set(ic,
+             elm_image_file_set(ic,
                                enna_config_theme_get(), "cover/music/file");
           }
         evas_object_size_hint_min_set(ic, 50, 50);
@@ -386,11 +386,11 @@ _list_item_film_content_get(void *data, Evas_Object *obj, const char *part)
                snprintf(cv, sizeof(cv), "%s/covers/%s",
                         enna_util_data_home_get(), cover);
 
-             elm_icon_file_set(ic, cv, NULL);
+             elm_image_file_set(ic, cv, NULL);
           }
         else
           {
-             elm_icon_file_set(ic,
+             elm_image_file_set(ic,
                                enna_config_theme_get(), "cover/music/file");
           }
         evas_object_show(ic);

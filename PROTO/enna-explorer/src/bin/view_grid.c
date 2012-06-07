@@ -102,7 +102,7 @@ _grid_item_content_get(void *data, Evas_Object *obj, const char *part)
           {
               ic = elm_icon_add(obj);
               elm_icon_standard_set(ic, "inode-directory");
-              //elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
+              //elm_image_file_set(ic, enna_config_theme_get(), gi->file->icon);
               evas_object_size_hint_min_set(ic, 64, 64);
           }
         else
@@ -132,7 +132,7 @@ _grid_item_content_get(void *data, Evas_Object *obj, const char *part)
              else
                {
                   ic = elm_icon_add(obj);
-                  elm_icon_file_set(ic, gi->file->icon, NULL);
+                  elm_image_file_set(ic, gi->file->icon, NULL);
                   evas_object_size_hint_min_set(ic, 64, 64);
                }
           }

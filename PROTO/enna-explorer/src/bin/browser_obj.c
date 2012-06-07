@@ -278,7 +278,7 @@ _update_cb(void *data, Enna_File *file)
 
 /*    o_back_btn = elm_button_add(o_layout); */
 /*    o_ic = elm_icon_add(sd->o_layout); */
-/*    elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left"); */
+/*    elm_image_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left"); */
 /*    elm_object_content_set(o_back_btn, o_ic); */
 /*    evas_object_size_hint_min_set(o_ic, 32, 32); */
 /*    evas_object_show(o_ic); */
@@ -292,9 +292,9 @@ _update_cb(void *data, Enna_File *file)
 
 /*    o_ic = elm_icon_add(o_layout); */
 /*    if (!file) */
-/*      elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/home"); */
+/*      elm_image_file_set(o_ic, enna_config_theme_get(), "icon/home"); */
 /*    else */
-/*      elm_icon_file_set(o_ic, enna_config_theme_get(), file->icon); */
+/*      elm_image_file_set(o_ic, enna_config_theme_get(), file->icon); */
 /*    elm_object_content_set(o_layout, "enna.swallow.icon", o_ic); */
 
 /*    o_edje = elm_layout_edje_get(o_layout); */

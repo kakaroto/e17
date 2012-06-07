@@ -103,8 +103,8 @@ static Evas_Object *
 _cover_empty_add(Evas_Object *parent, unsigned short size)
 {
    Evas_Object *cover = elm_icon_add(parent);
-   elm_icon_smooth_set(cover, size >= 32);
-   elm_icon_prescale_set(cover, size);
+   elm_image_smooth_set(cover, size >= 32);
+   elm_image_prescale_set(cover, size);
    return cover;
 }
 
@@ -148,7 +148,7 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    if ((size > large_cover->w) || (size > large_cover->h))
      {
         icon = _cover_empty_add(parent, size);
-        elm_icon_file_set(icon, large_cover->path, NULL);
+        elm_image_file_set(icon, large_cover->path, NULL);
         return icon;
      }
 
@@ -237,7 +237,7 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    db_album_covers_update(db, album);
 
    icon = _cover_empty_add(parent, size);
-   elm_icon_file_set(icon, file, NULL);
+   elm_image_file_set(icon, file, NULL);
 
    ecore_evas_free(ee);
    return icon;
@@ -312,7 +312,7 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
 
    if (!best_match) return _cover_without_image_set(cover);
 
-   if (!elm_icon_file_set(cover, best_match->path, NULL))
+   if (!elm_image_file_set(cover, best_match->path, NULL))
      {
         album->covers = eina_inlist_remove
           (album->covers, EINA_INLIST_GET(best_match));

@@ -174,7 +174,7 @@ draw_search_highlights(Elm_Object_Item *gg_it)
         Highlight_Data *item = malloc(sizeof(Highlight_Data));
         Evas_Object *r;
         r = elm_icon_add(app->win);
-        elm_icon_file_set(r, PACKAGE_DATA_DIR "/default.edj",
+        elm_image_file_set(r, PACKAGE_DATA_DIR "/default.edj",
                           "highlight");
 
         item->x = rec->x1 * sh + 25;
@@ -789,9 +789,9 @@ gl_content_get(void        *data,
 
    ic = elm_icon_add(obj);
    if (!strcmp(data, "Open"))
-     elm_icon_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "openfile");
+     elm_image_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "openfile");
    else
-     elm_icon_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "fullscreen");
+     elm_image_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "fullscreen");
    return ic;
 }
 
@@ -896,7 +896,7 @@ create_main_win(App *app)
    elm_object_style_set(app->entry, "efenniht/search");
    elm_entry_single_line_set(app->entry, EINA_TRUE);
    btsearch = elm_icon_add(app->win);
-   elm_icon_file_set(btsearch, PACKAGE_DATA_DIR "/default.edj",
+   elm_image_file_set(btsearch, PACKAGE_DATA_DIR "/default.edj",
                      "search_button");
    evas_object_size_hint_min_set(btsearch, 20, 20);
    evas_object_show(btsearch);

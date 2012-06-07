@@ -479,7 +479,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              ic = elm_icon_add(bx);
              snprintf(buf, sizeof(buf), "%s/images/clipper.png",
                    PACKAGE_DATA_DIR);
-             elm_icon_file_set(ic, buf, NULL);
+             elm_image_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
              evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
@@ -491,7 +491,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              ic = elm_icon_add(bx);
              snprintf(buf, sizeof(buf), "%s/images/hidden.png",
                    PACKAGE_DATA_DIR);
-             elm_icon_file_set(ic, buf, NULL);
+             elm_image_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
              evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
@@ -509,7 +509,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              ic = elm_icon_add(parent);
              snprintf(buf, sizeof(buf), "%s/images/clipper.png",
                    PACKAGE_DATA_DIR);
-             elm_icon_file_set(ic, buf, NULL);
+             elm_image_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
              return ic;
@@ -520,7 +520,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              ic = elm_icon_add(parent);
              snprintf(buf, sizeof(buf), "%s/images/hidden.png",
                    PACKAGE_DATA_DIR);
-             elm_icon_file_set(ic, buf, NULL);
+             elm_image_file_set(ic, buf, NULL);
              evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
                    1, 1);
              return ic;

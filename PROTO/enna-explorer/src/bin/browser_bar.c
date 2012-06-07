@@ -156,11 +156,11 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    o_seg = elm_segment_control_add(o_layout);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/view_list");
+   elm_image_file_set(o_ic, enna_config_theme_get(), "icon/view_list");
    elm_segment_control_item_add(o_seg, o_ic, NULL);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/view_grid");
+   elm_image_file_set(o_ic, enna_config_theme_get(), "icon/view_grid");
    elm_segment_control_item_add(o_seg, o_ic, NULL);
    evas_object_show(o_seg);
    elm_box_pack_end(o_box, o_seg);
@@ -172,7 +172,7 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    o_seg = elm_button_add(o_layout);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/search");
+   elm_image_file_set(o_ic, enna_config_theme_get(), "icon/search");
    elm_object_content_set(o_seg, o_ic);
    elm_object_style_set(o_seg, "black");
    evas_object_show(o_seg);
@@ -182,7 +182,7 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    o_seg = elm_button_add(o_layout);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/settings");
+   elm_image_file_set(o_ic, enna_config_theme_get(), "icon/settings");
    elm_object_content_set(o_seg, o_ic);
    elm_object_style_set(o_seg, "black");
    evas_object_show(o_seg);
