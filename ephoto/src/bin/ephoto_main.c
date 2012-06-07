@@ -495,7 +495,7 @@ ephoto_thumb_path_set(Evas_Object *o, const char *path)
                   group = eina_list_data_get(g);
                   edje_file_collection_list_free(g);
                }
-             elm_icon_file_set(o, path, group);
+             elm_image_file_set(o, path, group);
              evas_object_data_set(o, "ephoto_format", NULL);
              return;
           }
