@@ -1,0 +1,57 @@
+New EFL bugfix release cycle 1.2.1
+Mike Blumenkrantz
+discomfitor@efl.so
+
+<p>
+We'd like to announce a new bugfix release of our core stable libraries. Only the listed libraries have received any bug fixes since their initial 1.2 release.
+</p>
+
+<p><ul>
+
+<li>Eina 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.6.1 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.6.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.6.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.2.1 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.2.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.2.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eio 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/eio-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eio-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Emotion 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/emotion-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/emotion-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ethumb 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/ethumb-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ethumb-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Elementary 1.0.1 - 
+[<a href="http://download.enlightenment.org/releases/elementary-1.0.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/elementary-1.0.1.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
