@@ -15,13 +15,13 @@ elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
 
    if (!icon)
      {
-	elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
+	elm_image_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
 	return ic;
      }
 
    if (icon && icon[0] == '/')
        {
-           elm_icon_file_set(ic, icon, NULL);
+           elm_image_file_set(ic, icon, NULL);
            return ic;
        }
 
@@ -44,9 +44,9 @@ elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
      }
 
    if (path)
-       elm_icon_file_set(ic, path, NULL);
-   else if (!elm_icon_file_set(ic, elfe_home_cfg->theme, icon))
-       elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
+       elm_image_file_set(ic, path, NULL);
+   else if (!elm_image_file_set(ic, elfe_home_cfg->theme, icon))
+       elm_image_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
 
    return ic;
 }

@@ -58,9 +58,9 @@ _content_get(void *data, Evas_Object *obj, const char *part)
      {
 	ic = elm_icon_add(obj);
         if (gitem->icon_path && gitem->icon_path[0] == '/')
-            elm_icon_file_set(ic, gitem->icon_path, NULL);
+            elm_image_file_set(ic, gitem->icon_path, NULL);
         else
-            elm_icon_file_set(ic, elfe_home_cfg->theme, gitem->icon_path);
+            elm_image_file_set(ic, elfe_home_cfg->theme, gitem->icon_path);
         evas_object_size_hint_min_set(ic, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
         evas_object_size_hint_max_set(ic, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
      }
@@ -265,7 +265,7 @@ elfe_allapps_add(Evas_Object *parent)
    bt = elm_button_add(allapps->selector);
    elm_object_text_set(bt, "Apps");
    ic = elm_icon_add(bt);
-   elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/applications");
+   elm_image_file_set(ic, elfe_home_cfg->theme, "icon/applications");
    evas_object_show(ic);
    elm_object_content_set(bt, ic);
    evas_object_show(bt);
@@ -280,7 +280,7 @@ elfe_allapps_add(Evas_Object *parent)
    bt = elm_button_add(allapps->selector);
    elm_object_text_set(bt, "Widgets");
    ic = elm_icon_add(bt);
-   elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/widgets");
+   elm_image_file_set(ic, elfe_home_cfg->theme, "icon/widgets");
    evas_object_show(ic);
    elm_object_content_set(bt, ic);
    evas_object_show(bt);
@@ -295,7 +295,7 @@ elfe_allapps_add(Evas_Object *parent)
    bt = elm_button_add(allapps->selector);
    elm_object_text_set(bt, "Config");
    ic = elm_icon_add(bt);
-   elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/configuration");
+   elm_image_file_set(ic, elfe_home_cfg->theme, "icon/configuration");
    evas_object_show(ic);
    elm_object_content_set(bt, ic);
    evas_object_show(bt);
