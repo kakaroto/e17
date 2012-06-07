@@ -1,0 +1,43 @@
+New EFL bugfix release release cycle 1.1.1
+Mike Blumenkrantz
+discomfitor@efl.so
+
+<p>
+We'd like to announce a new bugfix release of our core stable libraries.
+Only the listed libraries have received any bug fixes since their initial 1.1 release.
+</p>
+
+<p><ul>
+
+<li>Eina 1.1.1 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.1.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.1.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.5.1 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.5.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.5.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.1.1 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.1.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.1.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.1.1 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.1.1 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.1.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.1.1.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.1.1 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.1.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.1.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
