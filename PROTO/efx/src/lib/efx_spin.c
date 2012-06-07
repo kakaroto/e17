@@ -25,7 +25,7 @@ _obj_del(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj, void *e
         e->spin_data = NULL;
         free(esd);
      }
-   if ((!esd->e->owner) && (!esd->e->followers)) efx_free(e);
+   if ((!e->owner) && (!e->followers)) efx_free(e);
 }
 
 static Eina_Bool
