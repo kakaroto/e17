@@ -542,7 +542,7 @@ Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Object_Item 
 		if(p && *p) {
 			snprintf(file_path, PATH_MAX, "%s/cache/icons/%s", home, p);
 			if( (icon = elm_icon_add(parent)) )
-				elm_icon_file_set(icon, file_path, "fubar?");
+				elm_image_file_set(icon, file_path, "fubar?");
 		}
 	}
 
@@ -592,7 +592,7 @@ void user_show(void *data) {
 				icon = elm_icon_add(ud->win);
 					evas_object_size_hint_weight_set(icon, 1, 1);
 					evas_object_size_hint_align_set(icon, -1, -1);
-					elm_icon_file_set(icon, icon_path, "fubar?");
+					elm_image_file_set(icon, icon_path, "fubar?");
 					elm_table_pack(table, icon, 0, 0, 1, 2);
 				evas_object_show(icon);
 			}
@@ -743,7 +743,7 @@ static void group_show(void *data) {
 					icon = elm_icon_add(gd->win);
 						evas_object_size_hint_weight_set(icon, 1, 1);
 						evas_object_size_hint_align_set(icon, -1, -1);
-						elm_icon_file_set(icon, path, "fubar?");
+						elm_image_file_set(icon, path, "fubar?");
 						elm_box_pack_end(box2, icon);
 					evas_object_show(icon);
 				}
@@ -1371,7 +1371,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
                             if(ii) {
                                 printf("using icon %s for %s\n", ii->path, a->mime_type);
                                 mime_icon = elm_icon_add(gui.win);
-                                elm_icon_file_set(mime_icon, ii->path, NULL);
+                                elm_image_file_set(mime_icon, ii->path, NULL);
                             }
                         }
                         li = elm_list_item_sorted_insert(list, p + 1, mime_icon, NULL, on_attachment_click, a, NULL);
@@ -2133,7 +2133,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_size_hint_align_set(box2, -1, -1);
 
 			icon = elm_icon_add(gui.win);
-			elm_icon_file_set(icon, theme, "icon/status/post/enabled");
+			elm_image_file_set(icon, theme, "icon/status/post/enabled");
 			evas_object_show(icon);
 
 			gui.post = elm_button_add(gui.win);
@@ -2146,7 +2146,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_show(gui.post);
 
 			icon = elm_icon_add(gui.win);
-			elm_icon_file_set(icon, theme, "icon/edit/dm");
+			elm_image_file_set(icon, theme, "icon/edit/dm");
 			evas_object_show(icon);
 
 			bt = elm_button_add(gui.win);
@@ -2159,7 +2159,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_show(bt);
 
 			icon = elm_icon_add(gui.win);
-			elm_icon_file_set(icon, theme, "icon/edit/hide");
+			elm_image_file_set(icon, theme, "icon/edit/hide");
 			evas_object_show(icon);
 
 			bt = elm_button_add(gui.win);
