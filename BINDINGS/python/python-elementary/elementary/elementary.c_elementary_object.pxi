@@ -321,6 +321,17 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         style = elm_object_style_get(self.obj)
         return style
 
+    property style:
+        """The style to be used by the widget
+
+        @type: string
+
+        """
+        def __get__(self):
+            return self.style_get()
+        def __set__(self, value):
+            self.style_set(value)
+    
     def disabled_set(self, disabled):
         """Set the disabled state of an Elementary object.
 
@@ -399,6 +410,16 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         cdef c_evas.Evas_Object *obj = elm_object_parent_widget_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
+    property parent_widget:
+        """The first parent of the given object that is an Elementary
+        widget. This is a readonly property.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return self.parent_widget_get()
+    
     def top_widget_get(self):
         """Get the top level parent of an Elementary widget.
 
@@ -409,6 +430,16 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         cdef c_evas.Evas_Object *obj = elm_object_top_widget_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
+
+    property top_widget:
+        """The top level parent of an Elementary widget.
+        This is a readonly property.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return self.top_widget_get()
 
     def widget_type_get(self):
         """Get the string that represents this Elementary widget.
@@ -425,6 +456,16 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
         """
         return elm_object_widget_type_get(self.obj)
+
+    property widget_type:
+        """The string that represents this Elementary widget.
+        This is a readonly property.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return elm_object_widget_type_get(self.obj)
 
     def signal_emit(self, emission, source):
         """Send a signal to the widget edje object.
@@ -552,6 +593,19 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         elm_object_cursor_unset(self.obj)
 
+    property cursor:
+        """The cursor to be shown when mouse is over the object
+
+        @type: string
+
+        """
+        def __get__(self):
+            return self.cursor_get()
+        def __set__(self, value):
+            self.cursor_set(value)
+        def __del__(self):
+            self.cursor_unset()
+
     def cursor_style_set(self, style=None):
         """Sets a different style for this object cursor.
 
@@ -572,6 +626,13 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return None
         return style
 
+    property cursor_style:
+        """The style for this object cursor."""
+        def __get__(self):
+            return self.cursor_style_get()
+        def __set__(self, value):
+            self.cursor_style_set(value)
+    
     def cursor_theme_search_enabled_set(self, engine_only):
         """ Sets cursor engine only usage for this object.
 
@@ -585,6 +646,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """ Get the engine only usage for this object."""
         return elm_object_cursor_theme_search_enabled_get(self.obj)
 
+    property cursor_theme_search_enabled:
+        def __get__(self):
+            return self.cursor_theme_search_enabled_get()
+        def __set__(self, value):
+            self.cursor_theme_search_enabled_set(value)
+    
     # Focus
     def focus_get(self):
         """Get the whether an Elementary object has the focus or not.
@@ -646,6 +713,17 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         return elm_object_focus_allow_get(self.obj)
 
+    property focus_allow:
+        """The ability for the Elementary object to be focused.
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return self.focus_allow_get()
+        def __set__(self, value):
+            self.focus_allow_set(value)
+    
     def focus_custom_chain_set(self, lst):
         """Set custom focus chain.
 
@@ -656,7 +734,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @note: On focus cycle, only will be evaluated children of this container.
 
         @param objs: Chain of objects to pass focus
-        @type objs: tuple of L{Object}s
+        @type objs: list of L{Object}s
 
         """
         elm_object_focus_custom_chain_unset(self.obj)
@@ -677,7 +755,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """Get custom focus chain
 
         @return: Chain of objects
-        @rtype: tuple of L{Object}s
+        @rtype: list of L{Object}s
 
         """
         cdef c_evas.Evas_Object *o
@@ -692,6 +770,19 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             lst = lst.next
         return ret
 
+    property focus_custom_chain:
+        """The custom focus chain.
+
+        @type: list of L{Object}s
+
+        """
+        def __get__(self):
+            return self.focus_custom_chain_get()
+        def __set__(self, value):
+            self.focus_custom_chain_set(value)
+        def __del__(self):
+            self.focus_custom_chain_unset()
+    
     def focus_custom_chain_append(self, Object obj, Object relative=None):
         """Append object to custom focus chain.
 
@@ -777,6 +868,18 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         return bool(elm_object_tree_focus_allow_get(self.obj))
 
+    property tree_focus_allow:
+        """Whether the Elementary object and its children are focusable
+        or not.
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return self.tree_focus_allow_get()
+        def __set__(self, value):
+            self.tree_focus_allow_set(value)
+    
     # Mirroring
     def mirrored_get(self):
         """Get the widget's mirrored mode.
@@ -796,6 +899,17 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         elm_object_mirrored_set(self.obj, mirrored)
 
+    property mirrored:
+        """The widget's mirrored mode.
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return self.mirrored_get()
+        def __set__(self, value):
+            self.mirrored_set(value)
+    
     def mirrored_automatic_get(self):
         """Returns the widget's mirrored mode setting.
 
@@ -815,6 +929,17 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         elm_object_mirrored_automatic_set(self.obj, automatic)
 
+    property mirrored_automatic:
+        """The widget's mirrored mode setting.
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return self.mirrored_automatic_get()
+        def __set__(self, value):
+            self.mirrored_automatic_set(value)
+    
     # Scaling
     def scale_set(self, scale):
         """Set the scaling factor for a given Elementary object
@@ -836,6 +961,17 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         cdef double scale
         scale = elm_object_scale_get(self.obj)
         return scale
+
+    property scale:
+        """The scaling factor for the Elementary object.
+
+        @type: double
+
+        """
+        def __get__(self):
+            return self.scale_get()
+        def __set__(self, value):
+            self.scale_set(value)
 
     # Scrollhints
     def scroll_hold_push(self):
@@ -882,6 +1018,18 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     def scroll_lock_y_get(self):
         return bool(elm_object_scroll_lock_y_get(self.obj))
+
+    property scroll_lock_x:
+        def __get__(self):
+            return self.scroll_lock_x_get()
+        def __set__(self, value):
+            self.scroll_lock_x_set(value)
+
+    property scroll_lock_y:
+        def __get__(self):
+            return self.scroll_lock_y_get()
+        def __set__(self, value):
+            self.scroll_lock_y_set(value)
 
     # Theme
     #def theme_set(self, Elm_Theme* th):
@@ -976,12 +1124,29 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return None
         return style
 
+    property tooltip_style:
+        """The style for this object tooltip.
+
+        @type: string
+
+        """
+        def __get__(self):
+            return self.tooltip_style_get()
+        def __set__(self, value):
+            self.tooltip_style_set(value)
+    
     def tooltip_window_mode_set(self, disable):
         return bool(elm_object_tooltip_window_mode_set(self.obj, disable))
 
     def tooltip_window_mode_get(self):
         return bool(elm_object_tooltip_window_mode_get(self.obj))
 
+    property tooltip_window_mode:
+        def __get__(self):
+            return self.tooltip_window_mode_get()
+        def __set__(self, value):
+            self.tooltip_window_mode_set(value)
+    
     #Translatable text
     def domain_translatable_text_part_set(self, part, domain, text):
         """Set the text for an objects' part, marking it as translatable.
@@ -1033,6 +1198,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
     def translatable_text_get(self):
         return elm_object_translatable_text_get(self.obj)
+
+    property translatable_text:
+        def __get__(self):
+            return self.translatable_text_get()
+        def __set__(self, value):
+            self.translatable_text_set(value)
 
     # Callbacks
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
