@@ -41,12 +41,141 @@ from test_tooltip import tooltip_clicked
 from test_web import web_clicked
 from test_win import window_states_clicked
 
+
+items = [("Booleans", [
+            ("Checks", check_clicked),
+            #("Toggles", toggles_clicked),TODO make a toggle with check
+        ]),
+         ("Boundaries", [
+            ("Bubble", bubble_clicked),
+            ("Separator", separator_clicked),
+        ]),
+         ("Buttons", [
+            ("Buttons", buttons_clicked),
+        ]),
+         ("Containers", [
+            ("Box Horiz", box_horiz_clicked),
+            ("Box Vert", box_vert_clicked),
+            ("Box Vert2", box_vert2_clicked),
+            ("Box Layout", box_layout_clicked),
+            ("Box Layout Transition", box_transition_clicked),
+            ("Table", table_clicked),
+            ("Layout", layout_clicked),
+        ]),
+         ("Cursors", [
+            ("Cursor", cursor_clicked),
+            ("Cursor2", cursor2_clicked),
+            ("Cursor3", cursor3_clicked),
+        ]),
+         ("Dividers", [
+            ("Panel", panel_clicked),
+        ]),
+         ("Effects", [
+            ("Flip", flip_clicked),
+            ("Flip Interactive", flip_interactive_clicked),
+        ]),
+         ("Entries", [
+            ("Label", label_clicked),
+            ("Entry", entry_clicked),
+            ("Entry Scrolled", entry_scrolled_clicked),
+        ]),
+         ("Images", [
+            ("Icon", icon_clicked),
+            ("Icon Transparent", icon_transparent_clicked),
+        ]),
+         ("Lists", [
+            ("List", list_clicked),
+            ("List 2", list2_clicked),
+            ("List 3", list3_clicked),
+            ("Genlist", genlist_clicked),
+            ("Genlist 2", genlist2_clicked),
+            ("Genlist Group", genlist3_clicked),
+            ("Gengrid", gengrid_clicked),
+        ]),
+         ("Naviframe", [
+            ("Naviframe", naviframe_clicked),
+        ]),
+         ("Popups", [
+            ("Hover", hover_clicked),
+            ("Hover 2", hover2_clicked),
+            ("Notify", notify_clicked),
+            ("Tooltip", tooltip_clicked),
+        ]),
+         ("Range Values", [
+            ("Spinner", spinner_clicked),
+            ("Progressbar", progressbar_clicked),
+        ]),
+         ("Scroller", [
+            ("Scroller", scroller_clicked),
+        ]),
+         ("Selectors", [
+            ("File Selector", fileselector_clicked),
+            ("FS button", fileselector_button_clicked),
+            ("FS entry", fileselector_entry_clicked),
+            ("Hoversel", hoversel_clicked),
+            ("Menu", menu_clicked),
+            ("Radios", radio_clicked),
+            ("Actionslider", actionslider_clicked),
+        ]),
+         ("Times & Dates", [
+            ("Clock", clock_clicked),
+        ]),
+        ("Toolbars", [
+            ("Toolbar", toolbar_clicked),
+        ]),
+         ("Web", [
+            ("Web", web_clicked),
+        ]),
+         ("Window / Backgroud", [
+            ("Bg Plain", bg_plain_clicked),
+            ("Bg Image", bg_image_clicked),
+            ("InnerWindow", inner_window_clicked),
+            ("Window States", window_states_clicked),
+        ])
+        ]
+
 #----- Main -{{{-
+def menu_create(search, win):
+    tbx.clear()
+    for category in items:
+        frame = elementary.Frame(win)
+        frame.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        frame.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        frame.text = category[0]
+        frame.show()
+        tbx.pack_end(frame)
+
+        tbx2 = elementary.Box(win)
+        tbx2.layout_set(elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL)
+        tbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        tbx2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
+        frame.content_set(tbx2)
+        tbx2.show()
+
+        cnt = 0
+        for test in category[1]:
+            if (search == None) or (test[0].lower().find(search.lower()) > -1):
+                bt = elementary.Button(win)
+                bt.text = test[0]
+                bt.callback_clicked_add(test[1])
+                bt.show()
+                tbx2.pack_end(bt)
+                cnt += 1
+
+        if cnt < 1:
+            frame.delete()
+
 def destroy(obj, str1, str2, str3, str4):
     print "DEBUG: window destroy callback called!"
     print "DEBUG: str1='%s', str2='%s', str3='%s', str4='%s'" %(str1, str2,
                                                                 str3, str4)
     elementary.exit()
+
+def cb_mirroring(toggle):
+    elementary.Configuration().mirrored = toggle.state
+
+def cb_filter(en, win):
+    menu_create(en.text_get(), win)
 
 if __name__ == "__main__":
     elementary.init()
@@ -76,6 +205,35 @@ if __name__ == "__main__":
     fr.content_set(lb)
     lb.show()
 
+    tg = elementary.Check(win)
+    tg.style = "toggle"
+    tg.text = "UI-Mirroring:"
+    tg.callback_changed_add(cb_mirroring)
+    box0.pack_end(tg)
+    tg.show()
+
+    bx1 = elementary.Box(win)
+    bx1.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    bx1.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
+    bx1.horizontal_set(True)
+    box0.pack_end(bx1)
+    bx1.show()
+
+    lb = elementary.Label(win)
+    lb.text_set("Filter:")
+    bx1.pack_end(lb)
+    lb.show()
+
+    en = elementary.Entry(win)
+    en.single_line_set(True)
+    en.scrollable_set(True)
+    en.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    en.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    en.callback_changed_add(cb_filter, win)
+    bx1.pack_end(en)
+    en.show()
+    en.focus_set(True)
+
     sc = elementary.Scroller(win)
     sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
@@ -89,119 +247,7 @@ if __name__ == "__main__":
     sc.content_set(tbx)
     tbx.show()
 
-    items = [("Booleans", [
-                ("Checks", check_clicked),
-                #("Toggles", toggles_clicked),TODO make a toggle with check
-            ]),
-             ("Boundaries", [
-                ("Bubble", bubble_clicked),
-                ("Separator", separator_clicked),
-            ]),
-             ("Buttons", [
-                ("Buttons", buttons_clicked),
-            ]),
-             ("Containers", [
-                ("Box Horiz", box_horiz_clicked),
-                ("Box Vert", box_vert_clicked),
-                ("Box Vert2", box_vert2_clicked),
-                ("Box Layout", box_layout_clicked),
-                ("Box Layout Transition", box_transition_clicked),
-                ("Table", table_clicked),
-                ("Layout", layout_clicked),
-            ]),
-             ("Cursors", [
-                ("Cursor", cursor_clicked),
-                ("Cursor2", cursor2_clicked),
-                ("Cursor3", cursor3_clicked),
-            ]),
-             ("Dividers", [
-                ("Panel", panel_clicked),
-            ]),
-             ("Effects", [
-                ("Flip", flip_clicked),
-                ("Flip Interactive", flip_interactive_clicked),
-            ]),
-             ("Entries", [
-                ("Label", label_clicked),
-                ("Entry", entry_clicked),
-                ("Entry Scrolled", entry_scrolled_clicked),
-            ]),
-             ("Images", [
-                ("Icon", icon_clicked),
-                ("Icon Transparent", icon_transparent_clicked),
-            ]),
-             ("Lists", [
-                ("List", list_clicked),
-                ("List 2", list2_clicked),
-                ("List 3", list3_clicked),
-                ("Genlist", genlist_clicked),
-                ("Genlist 2", genlist2_clicked),
-                ("Genlist Group", genlist3_clicked),
-                ("Gengrid", gengrid_clicked),
-            ]),
-             ("Naviframe", [
-                ("Naviframe", naviframe_clicked),
-            ]),
-             ("Popups", [
-                ("Hover", hover_clicked),
-                ("Hover 2", hover2_clicked),
-                ("Notify", notify_clicked),
-                ("Tooltip", tooltip_clicked),
-            ]),
-             ("Range Values", [
-                ("Spinner", spinner_clicked),
-                ("Progressbar", progressbar_clicked),
-            ]),
-             ("Scroller", [
-                ("Scroller", scroller_clicked),
-            ]),
-             ("Selectors", [
-                ("File Selector", fileselector_clicked),
-                ("FS button", fileselector_button_clicked),
-                ("FS entry", fileselector_entry_clicked),
-                ("Hoversel", hoversel_clicked),
-                ("Menu", menu_clicked),
-                ("Radios", radio_clicked),
-                ("Actionslider", actionslider_clicked),
-            ]),
-             ("Times & Dates", [
-                ("Clock", clock_clicked),
-            ]),
-            ("Toolbars", [
-                ("Toolbar", toolbar_clicked),
-            ]),
-             ("Web", [
-                ("Web", web_clicked),
-            ]),
-             ("Window / Backgroud", [
-                ("Bg Plain", bg_plain_clicked),
-                ("Bg Image", bg_image_clicked),
-                ("InnerWindow", inner_window_clicked),
-                ("Window States", window_states_clicked),
-            ])
-            ]
-
-    for category in items:
-        frame = elementary.Frame(win)
-        frame.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-        frame.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-        frame.text = category[0]
-        frame.show()
-        tbx.pack_end(frame)
-
-        tbx2 = elementary.Box(win)
-        tbx2.layout_set(elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL)
-        tbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        tbx2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        frame.content_set(tbx2)
-        tbx2.show()
-
-        for test in category[1]:
-            bt = elementary.Button(win)
-            bt.text = test[0]
-            bt.callback_clicked_add(test[1])
-            bt.show()
-            tbx2.pack_end(bt)
+    menu_create(None, win)
 
     win.resize(480, 480)
     win.show()
