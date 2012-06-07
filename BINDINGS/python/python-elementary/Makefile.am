@@ -27,6 +27,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_configuration.pxi \
 	elementary/elementary.c_elementary_conformant.pxi \
 	elementary/elementary.c_elementary_ctxpopup.pxi \
+	elementary/elementary.c_elementary_dayselector.pxi \
 	elementary/elementary.c_elementary_entry.pxi \
 	elementary/elementary.c_elementary_fileselector.pxi \
 	elementary/elementary.c_elementary_fileselector_entry.pxi \

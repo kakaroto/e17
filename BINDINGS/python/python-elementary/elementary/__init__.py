@@ -26,7 +26,7 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
     GengridItemClass, Actionslider, Calendar, Colorselector, Index, Ctxpopup, \
-    Grid, Video, Player, Configuration, Conformant, \
+    Grid, Video, Player, Configuration, Conformant, Dayselector, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
@@ -97,6 +97,13 @@ ELM_CTXPOPUP_DIRECTION_LEFT = 2
 ELM_CTXPOPUP_DIRECTION_UP = 3
 ELM_CTXPOPUP_DIRECTION_UNKNOWN = 4
 
+ELM_DATETIME_YEAR    = 0
+ELM_DATETIME_MONTH   = 1
+ELM_DATETIME_DATE    = 2
+ELM_DATETIME_HOUR    = 3
+ELM_DATETIME_MINUTE  = 4
+ELM_DATETIME_AMPM    = 5
+
 ELM_DAY_SUNDAY = 0
 ELM_DAY_MONDAY = 1
 ELM_DAY_TUESDAY = 2
@@ -105,6 +112,14 @@ ELM_DAY_THURSDAY = 4
 ELM_DAY_FRIDAY = 5
 ELM_DAY_SATURDAY = 6
 ELM_DAY_LAST = 7
+
+ELM_DAYSELECTOR_SUN = 0
+ELM_DAYSELECTOR_MON = 1
+ELM_DAYSELECTOR_TUE = 2
+ELM_DAYSELECTOR_WED = 3
+ELM_DAYSELECTOR_THU = 4
+ELM_DAYSELECTOR_FRI = 5
+ELM_DAYSELECTOR_SAT = 6
 
 ELM_FILESELECTOR_LIST = 0
 ELM_FILESELECTOR_GRID = 1

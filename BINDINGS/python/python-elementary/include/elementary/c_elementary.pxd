@@ -27,7 +27,19 @@ cdef extern from "string.h":
     char *strdup(char *str)
 
 cdef extern from "time.h":
-    ctypedef struct tm
+    ctypedef struct tm:
+        int tm_sec
+        int tm_min
+        int tm_hour
+        int tm_mday
+        int tm_mon
+        int tm_year
+        int tm_wday
+        int tm_yday
+        int tm_isdst
+
+        long int tm_gmtoff
+        const_char_ptr tm_zone
 
 cdef extern from "Ecore.h":
     ctypedef void (*Ecore_Cb)(void *data)
@@ -171,6 +183,24 @@ cdef extern from "Elementary.h":
         ELM_COLORSELECTOR_PALETTE
         ELM_COLORSELECTOR_COMPONENTS
         ELM_COLORSELECTOR_BOTH
+
+    ctypedef enum Elm_Datetime_Field_Type:
+        ELM_DATETIME_YEAR    = 0
+        ELM_DATETIME_MONTH   = 1
+        ELM_DATETIME_DATE    = 2
+        ELM_DATETIME_HOUR    = 3
+        ELM_DATETIME_MINUTE  = 4
+        ELM_DATETIME_AMPM    = 5
+
+    ctypedef enum Elm_Dayselector_Day:
+        ELM_DAYSELECTOR_SUN = 0
+        ELM_DAYSELECTOR_MON
+        ELM_DAYSELECTOR_TUE
+        ELM_DAYSELECTOR_WED
+        ELM_DAYSELECTOR_THU
+        ELM_DAYSELECTOR_FRI
+        ELM_DAYSELECTOR_SAT
+        ELM_DAYSELECTOR_MAX
 
     ctypedef enum Elm_Fileselector_Mode:
         ELM_FILESELECTOR_LIST
@@ -906,8 +936,30 @@ cdef extern from "Elementary.h":
     void                     elm_ctxpopup_dismiss(Evas_Object *obj)
 
     # Datetime              (XXX)
+    Evas_Object             *elm_datetime_add(Evas_Object *parent)
+    const_char_ptr           elm_datetime_format_get(Evas_Object *obj)
+    void                     elm_datetime_format_set(Evas_Object *obj, const_char_ptr fmt)
+    Eina_Bool                elm_datetime_value_max_get(Evas_Object *obj, tm *maxtime)
+    Eina_Bool                elm_datetime_value_max_set(Evas_Object *obj, tm *maxtime)
+    Eina_Bool                elm_datetime_value_min_get(Evas_Object *obj, tm *mintime)
+    Eina_Bool                elm_datetime_value_min_set(Evas_Object *obj, tm *mintime)
+    void                     elm_datetime_field_limit_get(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, int *min, int *max)
+    void                     elm_datetime_field_limit_set(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, int min, int max)
+    Eina_Bool                elm_datetime_value_get(Evas_Object *obj, tm *currtime)
+    Eina_Bool                elm_datetime_value_set(Evas_Object *obj, tm *newtime)
+    Eina_Bool                elm_datetime_field_visible_get(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype)
+    void                     elm_datetime_field_visible_set(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, Eina_Bool visible)
 
-    # Dayselector           (XXX)
+    # Dayselector           (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    Evas_Object             *elm_dayselector_add(Evas_Object *parent)
+    void                     elm_dayselector_day_selected_set(Evas_Object *obj, Elm_Dayselector_Day day, Eina_Bool selected)
+    Eina_Bool                elm_dayselector_day_selected_get(Evas_Object *obj, Elm_Dayselector_Day day)
+    void                     elm_dayselector_week_start_set(Evas_Object *obj, Elm_Dayselector_Day day)
+    Elm_Dayselector_Day      elm_dayselector_week_start_get(Evas_Object *obj)
+    void                     elm_dayselector_weekend_start_set(Evas_Object *obj, Elm_Dayselector_Day day)
+    Elm_Dayselector_Day      elm_dayselector_weekend_start_get(Evas_Object *obj)
+    void                     elm_dayselector_weekend_length_set(Evas_Object *obj, unsigned int length)
+    unsigned int             elm_dayselector_weekend_length_get(Evas_Object *obj)
 
     # Diskselector          (XXX)
 
