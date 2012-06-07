@@ -23,6 +23,7 @@ from test_hover import hover_clicked, hover2_clicked
 from test_hoversel import hoversel_clicked
 from test_icon import icon_clicked, icon_transparent_clicked
 from test_inwin import inner_window_clicked
+from test_label import label_clicked
 from test_layout import layout_clicked
 from test_list import list_clicked, list2_clicked, list3_clicked
 from test_menu import menu_clicked
@@ -121,6 +122,7 @@ if __name__ == "__main__":
                 ("Flip Interactive", flip_interactive_clicked),
             ]),
              ("Entries", [
+                ("Label", label_clicked),
                 ("Entry", entry_clicked),
                 ("Entry Scrolled", entry_scrolled_clicked),
             ]),

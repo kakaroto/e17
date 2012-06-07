@@ -1377,7 +1377,7 @@ cdef extern from "Elementary.h":
     Evas_Object             *elm_win_inwin_content_get(Evas_Object *obj)
     Evas_Object             *elm_win_inwin_content_unset(Evas_Object *obj)
 
-    # Label                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Label                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_label_add(Evas_Object *parent)
     void                     elm_label_line_wrap_set(Evas_Object *obj, Elm_Wrap_Type wrap)
     Elm_Wrap_Type            elm_label_line_wrap_get(Evas_Object *obj)

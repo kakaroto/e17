@@ -87,6 +87,7 @@ examples_files = \
 	tests/test_hoversel.py \
 	tests/test_icon.py \
 	tests/test_inwin.py \
+	tests/test_label.py \
 	tests/test_layout.py \
 	tests/test_list.py \
 	tests/test_menu.py \
