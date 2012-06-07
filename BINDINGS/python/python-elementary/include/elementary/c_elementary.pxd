@@ -26,6 +26,9 @@ cdef extern from "string.h":
     void *memcpy(void *dst, void *src, int n)
     char *strdup(char *str)
 
+cdef extern from "time.h":
+    ctypedef struct tm
+
 cdef extern from "Ecore.h":
     ctypedef void (*Ecore_Cb)(void *data)
 
@@ -100,11 +103,11 @@ cdef extern from "Elementary.h":
 
     # enums
     ctypedef enum Elm_Actionslider_Pos:
-       ELM_ACTIONSLIDER_NONE
-       ELM_ACTIONSLIDER_LEFT
-       ELM_ACTIONSLIDER_CENTER
-       ELM_ACTIONSLIDER_RIGHT
-       ELM_ACTIONSLIDER_ALL
+        ELM_ACTIONSLIDER_NONE
+        ELM_ACTIONSLIDER_LEFT
+        ELM_ACTIONSLIDER_CENTER
+        ELM_ACTIONSLIDER_RIGHT
+        ELM_ACTIONSLIDER_ALL
 
     ctypedef enum Elm_Bg_Option:
         ELM_BG_OPTION_CENTER
@@ -273,14 +276,14 @@ cdef extern from "Elementary.h":
         ELM_INPUT_PANEL_LAYOUT_PASSWORD
 
     ctypedef enum Elm_Input_Panel_Return_Key_Type:
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_DEFAULT
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_DONE
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_GO
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_JOIN
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_LOGIN
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_NEXT
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH
-       ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_DEFAULT
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_DONE
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_GO
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_JOIN
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_LOGIN
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_NEXT
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH
+        ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND
 
     ctypedef enum Elm_List_Mode:
         ELM_LIST_COMPRESS
@@ -337,6 +340,14 @@ cdef extern from "Elementary.h":
         ELM_TOOLBAR_SHRINK_MENU
         ELM_TOOLBAR_SHRINK_EXPAND
         ELM_TOOLBAR_SHRINK_LAST
+
+    ctypedef enum Elm_Web_Window_Feature_Flag:
+        ELM_WEB_WINDOW_FEATURE_TOOLBAR
+        ELM_WEB_WINDOW_FEATURE_STATUSBAR
+        ELM_WEB_WINDOW_FEATURE_SCROLLBARS
+        ELM_WEB_WINDOW_FEATURE_MENUBAR
+        ELM_WEB_WINDOW_FEATURE_LOCATIONBAR
+        ELM_WEB_WINDOW_FEATURE_FULLSCREEN
 
     ctypedef enum Elm_Web_Zoom_Mode:
         ELM_WEB_ZOOM_MODE_MANUAL 	#Zoom controlled normally by elm_web_zoom_set.
@@ -396,15 +407,16 @@ cdef extern from "Elementary.h":
         ELM_WRAP_WORD
         ELM_WRAP_MIXED
 
+    # types & structs
 
+    ctypedef char           *(*Elm_Calendar_Format_Cb)     (tm *stime)
 
-    # structs
-    #ctypedef struct Elm_Calendar_Mark:
-        #Evas_Object *obj
-        #Eina_List *node
-        #struct tm mark_time
-        #const_char_ptr mark_type
-        #Elm_Calendar_Mark_Repeat_Type repeat
+    ctypedef struct Elm_Calendar_Mark:
+        Evas_Object *obj
+        Eina_List *node
+        tm *mark_time
+        const_char_ptr mark_type
+        Elm_Calendar_Mark_Repeat_Type repeat
 
     ctypedef struct Elm_Color_RGBA:
         unsigned int r
@@ -433,16 +445,12 @@ cdef extern from "Elementary.h":
         Eina_Bool hover_top
         Eina_Bool hover_bottom
 
-    ctypedef struct Elm_Toolbar_Item_State:
-        char *icon
-        char *label
-        Evas_Smart_Cb func
-        void *data
+    ctypedef Eina_Bool       (*Elm_Event_Cb)                (void *data, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type t, void *event_info)
 
-    ctypedef char *(*GenlistItemLabelGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
-    ctypedef Evas_Object *(*GenlistItemIconGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
-    ctypedef Eina_Bool (*GenlistItemStateGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
-    ctypedef void (*GenlistItemDelFunc)(void *data, Evas_Object *obj)
+    ctypedef char           *(*GenlistItemLabelGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
+    ctypedef Evas_Object    *(*GenlistItemIconGetFunc)      (void *data, Evas_Object *obj, const_char_ptr part)
+    ctypedef Eina_Bool       (*GenlistItemStateGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
+    ctypedef void            (*GenlistItemDelFunc)          (void *data, Evas_Object *obj)
 
     ctypedef struct Elm_Genlist_Item_Class_Func:
         GenlistItemLabelGetFunc text_get
@@ -454,10 +462,10 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Genlist_Item_Class_Func func
 
-    ctypedef char *(*GengridItemLabelGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
-    ctypedef Evas_Object *(*GengridItemIconGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
-    ctypedef Eina_Bool (*GengridItemStateGetFunc)(void *data, Evas_Object *obj, const_char_ptr part)
-    ctypedef void (*GengridItemDelFunc)(void *data, Evas_Object *obj)
+    ctypedef char           *(*GengridItemLabelGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
+    ctypedef Evas_Object    *(*GengridItemIconGetFunc)      (void *data, Evas_Object *obj, const_char_ptr part)
+    ctypedef Eina_Bool       (*GengridItemStateGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
+    ctypedef void            (*GengridItemDelFunc)          (void *data, Evas_Object *obj)
 
     ctypedef struct Elm_Gengrid_Item_Class_Func:
         GengridItemLabelGetFunc text_get
@@ -469,14 +477,37 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Gengrid_Item_Class_Func func
 
-    ctypedef Evas_Object *(*Elm_Tooltip_Content_Cb) (void *data, Evas_Object *obj, Evas_Object *tooltip)
-    ctypedef Evas_Object *(*Elm_Tooltip_Item_Content_Cb) (void *data, Evas_Object *obj, Evas_Object *tooltip, void *item)
-    ctypedef Eina_Bool (*Elm_Event_Cb) (void *data, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type t, void *event_info)
-    #ctypedef char * (*Elm_Calendar_Format_Cb)(struct tm *stime)
-
     ctypedef struct Elm_Object_Item
     ctypedef Elm_Object_Item const_Elm_Object_Item "const Elm_Object_Item"
+
     ctypedef struct Elm_Theme
+
+    ctypedef struct Elm_Toolbar_Item_State:
+        char *icon
+        char *label
+        Evas_Smart_Cb func
+        void *data
+
+    ctypedef Evas_Object    *(*Elm_Tooltip_Content_Cb)      (void *data, Evas_Object *obj, Evas_Object *tooltip)
+    ctypedef Evas_Object    *(*Elm_Tooltip_Item_Content_Cb) (void *data, Evas_Object *obj, Evas_Object *tooltip, void *item)
+
+    ctypedef struct Elm_Web_Frame_Load_Error:
+        int code
+        Eina_Bool is_cancellation
+        const_char_ptr domain
+        const_char_ptr description
+        const_char_ptr failing_url
+        Evas_Object *frame
+
+    ctypedef struct Elm_Web_Window_Features
+
+    ctypedef Evas_Object    *(*Elm_Web_Window_Open)         (void *data, Evas_Object *obj, Eina_Bool js, Elm_Web_Window_Features *window_features)
+    ctypedef Evas_Object    *(*Elm_Web_Dialog_Alert)        (void *data, Evas_Object *obj, const_char_ptr message)
+    ctypedef Evas_Object    *(*Elm_Web_Dialog_Confirm)      (void *data, Evas_Object *obj, const_char_ptr message, Eina_Bool *ret)
+    ctypedef Evas_Object    *(*Elm_Web_Dialog_Prompt)       (void *data, Evas_Object *obj, const_char_ptr message, const_char_ptr def_value, char **value, Eina_Bool *ret)
+    ctypedef Evas_Object    *(*Elm_Web_Dialog_File_Selector)(void *data, Evas_Object *obj, Eina_Bool allows_multiple, Eina_List *accept_types, Eina_List **selected, Eina_Bool *ret)
+    ctypedef void            (*Elm_Web_Console_Message)     (void *data, Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id)
+
 
     # General
     void                     elm_init(int argc, char** argv)
@@ -580,6 +611,9 @@ cdef extern from "Elementary.h":
 
     # Finger
     void                     elm_coords_finger_size_adjust(int times_w, Evas_Coord *w, int times_h, Evas_Coord *h)
+
+    # Need
+    Eina_Bool                elm_need_web()
 
     # Theme
     Elm_Theme               *elm_theme_new()
@@ -800,11 +834,11 @@ cdef extern from "Elementary.h":
     void                     elm_calendar_min_max_year_get(Evas_Object *obj, int *min, int *max)
     void                     elm_calendar_select_mode_set(Evas_Object *obj, Elm_Calendar_Select_Mode mode)
     Elm_Calendar_Select_Mode elm_calendar_select_mode_get(Evas_Object *obj)
-    #void                     elm_calendar_selected_time_set(Evas_Object *obj, struct tm *selected_time)
-    #Eina_Bool                elm_calendar_selected_time_get(Evas_Object *obj, struct tm *selected_time)
-    #void                     elm_calendar_format_function_set(Evas_Object *obj, Elm_Calendar_Format_Cb format_func)
-    #Elm_Calendar_Mark       *elm_calendar_mark_add(Evas_Object *obj, const_char_ptr mark_type, struct tm *mark_time, Elm_Calendar_Mark_Repeat_Type repeat)
-    #void                     elm_calendar_mark_del(Elm_Calendar_Mark *mark)
+    void                     elm_calendar_selected_time_set(Evas_Object *obj, tm *selected_time)
+    Eina_Bool                elm_calendar_selected_time_get(Evas_Object *obj, tm *selected_time)
+    void                     elm_calendar_format_function_set(Evas_Object *obj, Elm_Calendar_Format_Cb format_func)
+    Elm_Calendar_Mark       *elm_calendar_mark_add(Evas_Object *obj, const_char_ptr mark_type, tm *mark_time, Elm_Calendar_Mark_Repeat_Type repeat)
+    void                     elm_calendar_mark_del(Elm_Calendar_Mark *mark)
     void                     elm_calendar_marks_clear(Evas_Object *obj)
     const_Eina_List         *elm_calendar_marks_get(Evas_Object *obj)
     void                     elm_calendar_marks_draw(Evas_Object *obj)
@@ -1650,30 +1684,63 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_video_remember_position_get(Evas_Object *video)
     const_char_ptr           elm_video_title_get(Evas_Object *video)
 
-    # Web                   (XXX)
-    ctypedef struct Elm_Web_Frame_Load_Error:
-        int code
-        Eina_Bool is_cancellation
-        const_char_ptr domain
-        const_char_ptr description
-        const_char_ptr failing_url
-        Evas_Object *frame
+    # Web                   (api:TODO  cb:TODO  test:DONE  doc:TODO)
+    Evas_Object             *elm_web_add(Evas_Object *parent)
+    void                     elm_web_useragent_set(Evas_Object *obj, const_char_ptr user_agent)
+    const_char_ptr           elm_web_useragent_get(Evas_Object *obj)
+    Evas_Object             *elm_web_webkit_view_get(Evas_Object *obj)
 
-    ctypedef void (*Elm_Web_Console_Message)(void *data, Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id)
+    void                     elm_web_window_create_hook_set(Evas_Object *obj, Elm_Web_Window_Open func, void *data)
+    void                     elm_web_dialog_alert_hook_set(Evas_Object *obj, Elm_Web_Dialog_Alert func, void *data)
+    void                     elm_web_dialog_confirm_hook_set(Evas_Object *obj, Elm_Web_Dialog_Confirm func, void *data)
+    void                     elm_web_dialog_prompt_hook_set(Evas_Object *obj, Elm_Web_Dialog_Prompt func, void *data)
+    void                     elm_web_dialog_file_selector_hook_set(Evas_Object *obj, Elm_Web_Dialog_File_Selector func, void *data)
+    void                     elm_web_console_message_hook_set(Evas_Object *obj, Elm_Web_Console_Message func, void *data)
 
-    Eina_Bool elm_need_web()
-    Eina_Bool elm_web_history_enabled_get(Evas_Object *obj)
-    Evas_Object *elm_web_webkit_view_get(Evas_Object *obj)
-    Evas_Object *elm_web_add(Evas_Object *parent)
-    Eina_Bool elm_web_uri_set(Evas_Object *obj,char *uri)
-    const_char_ptr elm_web_uri_get(Evas_Object *obj)
-    const_char_ptr elm_web_useragent_get(Evas_Object *obj)
-    double elm_web_zoom_get(Evas_Object *obj)
-    Elm_Web_Zoom_Mode elm_web_zoom_mode_get(Evas_Object *obj)
+    Eina_Bool                elm_web_tab_propagate_get(Evas_Object *obj)
+    void                     elm_web_tab_propagate_set(Evas_Object *obj, Eina_Bool propagate)
+    Eina_Bool                elm_web_uri_set(Evas_Object *obj,char *uri)
+    const_char_ptr           elm_web_uri_get(Evas_Object *obj)
+    const_char_ptr           elm_web_title_get(Evas_Object *obj)
+    void                     elm_web_bg_color_set(Evas_Object *obj, int r, int g, int b, int a)
+    void                     elm_web_bg_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
 
-    Eina_Bool elm_web_back(Evas_Object *obj)
+    char                    *elm_web_selection_get(Evas_Object *obj)
+    void                     elm_web_popup_selected_set(Evas_Object *obj, int index)
+    Eina_Bool                elm_web_popup_destroy(Evas_Object *obj)
 
-    void elm_web_console_message_hook_set(Evas_Object *obj, Elm_Web_Console_Message func, void *data)
+    Eina_Bool                elm_web_text_search(Evas_Object *obj, const_char_ptr string, Eina_Bool case_sensitive, Eina_Bool forward, Eina_Bool wrap)
+    unsigned int             elm_web_text_matches_mark(Evas_Object *obj, const_char_ptr string, Eina_Bool case_sensitive, Eina_Bool highlight, unsigned int limit)
+    Eina_Bool                elm_web_text_matches_unmark_all(Evas_Object *obj)
+    Eina_Bool                elm_web_text_matches_highlight_set(Evas_Object *obj, Eina_Bool highlight)
+    Eina_Bool                elm_web_text_matches_highlight_get(Evas_Object *obj)
+
+    double                   elm_web_load_progress_get(Evas_Object *obj)
+    Eina_Bool                elm_web_stop(Evas_Object *obj)
+    Eina_Bool                elm_web_reload(Evas_Object *obj)
+    Eina_Bool                elm_web_reload_full(Evas_Object *obj)
+    Eina_Bool                elm_web_back(Evas_Object *obj)
+    Eina_Bool                elm_web_forward(Evas_Object *obj)
+    Eina_Bool                elm_web_navigate(Evas_Object *obj, int steps)
+
+    Eina_Bool                elm_web_back_possible_get(Evas_Object *obj)
+    Eina_Bool                elm_web_forward_possible_get(Evas_Object *obj)
+    Eina_Bool                elm_web_navigate_possible_get(Evas_Object *obj, int steps)
+    Eina_Bool                elm_web_history_enabled_get(Evas_Object *obj)
+    void                     elm_web_history_enabled_set(Evas_Object *obj, Eina_Bool enabled)
+
+    void                     elm_web_zoom_set(Evas_Object *obj, double zoom)
+    double                   elm_web_zoom_get(Evas_Object *obj)
+    void                     elm_web_zoom_mode_set(Evas_Object *obj, Elm_Web_Zoom_Mode mode)
+    Elm_Web_Zoom_Mode        elm_web_zoom_mode_get(Evas_Object *obj)
+
+    void                     elm_web_region_show(Evas_Object *obj, int x, int y, int w, int h)
+    void                     elm_web_region_bring_in(Evas_Object *obj, int x, int y, int w, int h)
+    void                     elm_web_inwin_mode_set(Evas_Object *obj, Eina_Bool value)
+    Eina_Bool                elm_web_inwin_mode_get(Evas_Object *obj)
+
+    Eina_Bool                elm_web_window_features_property_get(Elm_Web_Window_Features *wf, Elm_Web_Window_Feature_Flag flag)
+    void                     elm_web_window_features_region_get(Elm_Web_Window_Features *wf, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 
     # Window                (api:DONE  cb:DONE  test:TODO  doc:TODO)
     Evas_Object             *elm_win_add(Evas_Object *parent, char *name, Elm_Win_Type type)
