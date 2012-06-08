@@ -25,7 +25,7 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
     Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
-    GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem,
+    GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem, \
     Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
     Panes, Thumb, Diskselector, DiskselectorItem, \
     init, shutdown, run, exit, scale_get, scale_set, \
