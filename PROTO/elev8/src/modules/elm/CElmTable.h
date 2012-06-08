@@ -21,6 +21,9 @@ public:
 
    virtual void DidRealiseElement(Local<Value>);
 
+   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Unpack(Handle<Value>);
+
    void homogeneous_set(Handle<Value> val);
    Handle<Value> homogeneous_get() const;
 

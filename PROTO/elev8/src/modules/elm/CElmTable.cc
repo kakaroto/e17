@@ -41,6 +41,7 @@ void CElmTable::pack(Handle<Object> obj)
      return;
 
    element = Realise(obj->Get(String::NewSymbol("element")), jsObject);
+   obj->Set(String::NewSymbol("element"), element);
 
    x = obj->Get(String::NewSymbol("col"));
    y = obj->Get(String::NewSymbol("row"));
@@ -85,6 +86,36 @@ Handle<Value> CElmTable::pack(const Arguments &args)
    pack(obj);
 
    return Undefined();
+}
+
+Handle<Value> CElmTable::Pack(Handle<Value> obj)
+{
+   pack(obj->ToObject());
+   return obj;
+}
+
+Handle<Value> CElmTable::Unpack(Handle<Value> item)
+{
+   HandleScope scope;
+   Handle<Value> element = item->ToObject()->Get(String::New("element"));
+
+   if (element->IsUndefined())
+     return Undefined();
+
+   CElmObject *obj = GetObjectFromJavascript(element);
+
+   int col, row, colspan, rowspan;
+
+   elm_table_pack_get(obj->GetEvasObject(), &col, &row, &colspan, &rowspan);
+   Handle<Object> result = Object::New();
+   result->Set(String::NewSymbol("col"), Integer::New(col));
+   result->Set(String::NewSymbol("row"), Integer::New(row));
+   result->Set(String::NewSymbol("colspan"), Integer::New(colspan));
+   result->Set(String::NewSymbol("rowspan"), Integer::New(rowspan));
+   result->Set(String::NewSymbol("element"), item);
+   elm_table_unpack(eo, obj->GetEvasObject());
+
+   return scope.Close(result);
 }
 
 Handle<Value> CElmTable::unpack(const Arguments&)
