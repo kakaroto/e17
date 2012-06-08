@@ -57,6 +57,28 @@ protected:
    static void Delete(Persistent<Value>, void *parameter);
 
 public:
+
+   template <class T>
+   static Handle<Value> ElementSet(T item, Local<Value> value, const AccessorInfo& info)
+     {
+        HandleScope scope;
+        Local<Object> obj = info.This()->ToObject();
+        Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
+        Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
+        Handle<Value> realised = Realise(value, parent);
+        items->ToObject()->Set(item, realised);
+        return scope.Close(realised);
+     }
+
+   template <class T>
+   static Handle<Value> ElementGet(T item, const AccessorInfo& info)
+     {
+        HandleScope scope;
+        Local<Object> obj = info.This()->ToObject();
+        Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
+        return scope.Close(items->ToObject()->Get(item));
+     }
+
    static void Initialize(Handle<Object> target);
 
    Handle<Object> GetJSObject() const { return jsObject; }
@@ -158,14 +180,6 @@ public:
 
    Handle<Value> elements_get() const;
    void elements_set(Handle<Value> val);
-
-   static Handle<Value> ElementGet(uint32_t index, const AccessorInfo& info);
-   static Handle<Value> ElementSet(uint32_t index, Local<Value> value,
-                                   const AccessorInfo& info);
-
-   static Handle<Value> ElementGet(Local<String> name, const AccessorInfo& info);
-   static Handle<Value> ElementSet(Local<String> name, Local<Value> value,
-                                   const AccessorInfo& info);
 
    static Handle<Value> Realise(const Arguments& args);
 

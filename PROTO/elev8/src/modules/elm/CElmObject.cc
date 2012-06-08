@@ -61,52 +61,15 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
      }
 
    Local<ObjectTemplate> tmpl = ObjectTemplate::New();
-   tmpl->SetNamedPropertyHandler(CElmObject::ElementGet, CElmObject::ElementSet);
-   tmpl->SetIndexedPropertyHandler(CElmObject::ElementGet, CElmObject::ElementSet);
+   tmpl->SetNamedPropertyHandler(CElmObject::ElementGet< Local<String> >,
+                                 CElmObject::ElementSet< Local<String> >);
+   tmpl->SetIndexedPropertyHandler(CElmObject::ElementGet<uint32_t>,
+                                   CElmObject::ElementSet<uint32_t>);
 
    Handle<Object> elements = tmpl->NewInstance();
    elements->SetHiddenValue(String::NewSymbol("elm::items"), items);
    elements->SetHiddenValue(String::NewSymbol("elm::parent"), info.This());
    info.This()->SetHiddenValue(String::NewSymbol("elm::elements"), elements);
-}
-
-Handle<Value> CElmObject::ElementSet(Local<String> name, Local<Value> value,
-                                 const AccessorInfo& info)
-{
-   HandleScope scope;
-   Local<Object> obj = info.This()->ToObject();
-   Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
-   Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
-   Handle<Value> realised = Realise(value, parent);
-   items->ToObject()->Set(name, realised);
-   return scope.Close(realised);
-}
-Handle<Value> CElmObject::ElementSet(uint32_t index, Local< Value > value,
-                                     const AccessorInfo &info)
-{
-   HandleScope scope;
-   Local<Object> obj = info.This()->ToObject();
-   Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
-   Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
-   Handle<Value> realised = Realise(value, parent);
-   items->ToObject()->Set(index, realised);
-   return scope.Close(realised);
-}
-
-Handle<Value> CElmObject::ElementGet(Local<String> name, const AccessorInfo& info)
-{
-   HandleScope scope;
-   Local<Object> obj = info.This()->ToObject();
-   Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
-   return scope.Close(items->ToObject()->Get(name));
-}
-
-Handle<Value> CElmObject::ElementGet(uint32_t index, const AccessorInfo &info)
-{
-   HandleScope scope;
-   Local<Object> obj = info.This()->ToObject();
-   Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
-   return scope.Close(items->ToObject()->Get(index));
 }
 
 void CElmObject::Delete(Persistent<Value>, void *parameter)
