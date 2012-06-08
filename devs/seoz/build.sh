@@ -11,7 +11,7 @@
 set -e
 #set -x
 
-export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra" # -Wshadow"
+export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra -std=gnu99" # -Wshadow"
 export CC="ccache gcc"
 export MAKEFLAGS="make -j6"
 alias make='make -j6'
