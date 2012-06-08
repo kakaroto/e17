@@ -70,17 +70,24 @@ public:
         Local<Object> obj = info.This()->ToObject();
         Local<Object> items = obj->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
         Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
-        Local<Value> element = items->Get(item);
+        Handle<Value> element = items->Get(item);
         CElmObject *packer = GetObjectFromJavascript(parent);
+
+        items->Delete(item);
+        if (value->IsNull() || value->IsUndefined())
+          return value;
 
         if (!element->IsUndefined())
           {
-             packer->Unpack(element);
-             items->Delete(item);
+             element = packer->Unpack(element);
+             Local<Array> props = element->ToObject()->GetOwnPropertyNames();
+             for (unsigned int i = 0; i < props->Length(); i++)
+               {
+                  Local<String> key = props->Get(i)->ToString();
+                  if (!value->ToObject()->Has(key))
+                    value->ToObject()->Set(key, element->ToObject()->Get(key));
+               }
           }
-
-        if (value->IsNull() || value->IsUndefined())
-          return value;
 
         if (tmpl->HasInstance(value))
           packer->Pack(value);
@@ -112,8 +119,21 @@ public:
         if (self->IsUndefined())
           return scope.Close(Boolean::New(false));
 
+        Local<Object> selfObj = self->ToObject();
+
         items->Delete(item);
-        delete GetObjectFromJavascript(self);
+        if (tmpl->HasInstance(self))
+          delete GetObjectFromJavascript(selfObj);
+        else
+          {
+             Local<Array> props = selfObj->GetOwnPropertyNames();
+             for (unsigned int i = 0; i < props->Length(); i++)
+               {
+                  Local<String> key = props->Get(i)->ToString();
+                  if (tmpl->HasInstance(selfObj->Get(key)))
+                    delete GetObjectFromJavascript(selfObj->Get(key));
+               }
+          }
         return scope.Close(Boolean::New(true));
      }
 
