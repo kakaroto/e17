@@ -81,6 +81,7 @@ examples_files = \
 	tests/test_check.py \
 	tests/test_clock.py \
 	tests/test_config.py \
+	tests/test_ctxpopup.py \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \

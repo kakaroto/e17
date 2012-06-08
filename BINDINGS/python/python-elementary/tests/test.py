@@ -14,6 +14,7 @@ from test_button import buttons_clicked
 from test_check import check_clicked
 from test_clock import clock_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
+from test_ctxpopup import ctxpopup_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
 from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
 from test_flip import flip_clicked, flip_interactive_clicked
@@ -100,6 +101,7 @@ items = [("Booleans", [
             ("Hover 2", hover2_clicked),
             ("Notify", notify_clicked),
             ("Tooltip", tooltip_clicked),
+            ("Ctxpopup", ctxpopup_clicked),
         ]),
          ("Range Values", [
             ("Spinner", spinner_clicked),
