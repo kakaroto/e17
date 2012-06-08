@@ -15,6 +15,7 @@ from test_check import check_clicked
 from test_clock import clock_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
 from test_ctxpopup import ctxpopup_clicked
+from test_dayselector import dayselector_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
 from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
 from test_flip import flip_clicked, flip_interactive_clicked
@@ -118,6 +119,7 @@ items = [("Booleans", [
             ("Menu", menu_clicked),
             ("Radios", radio_clicked),
             ("Actionslider", actionslider_clicked),
+            ("Dayselector", dayselector_clicked),
         ]),
          ("Times & Dates", [
             ("Clock", clock_clicked),

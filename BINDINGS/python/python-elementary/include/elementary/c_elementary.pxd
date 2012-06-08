@@ -1037,7 +1037,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_datetime_field_visible_get(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype)
     void                     elm_datetime_field_visible_set(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, Eina_Bool visible)
 
-    # Dayselector           (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Dayselector           (api:DONE  cb:DONE  test:BUG  doc:DONE)
     Evas_Object             *elm_dayselector_add(Evas_Object *parent)
     void                     elm_dayselector_day_selected_set(Evas_Object *obj, Elm_Dayselector_Day day, Eina_Bool selected)
     Eina_Bool                elm_dayselector_day_selected_get(Evas_Object *obj, Elm_Dayselector_Day day)
