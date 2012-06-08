@@ -363,6 +363,12 @@ cdef extern from "Elementary.h":
         ELM_TEXT_FORMAT_PLAIN_UTF8
         ELM_TEXT_FORMAT_MARKUP_UTF8
 
+    ctypedef enum Elm_Thumb_Animation_Setting:
+        ELM_THUMB_ANIMATION_START
+        ELM_THUMB_ANIMATION_LOOP
+        ELM_THUMB_ANIMATION_STOP
+        ELM_THUMB_ANIMATION_LAST
+
     ctypedef enum Elm_Toolbar_Shrink_Mode:
         ELM_TOOLBAR_SHRINK_NONE
         ELM_TOOLBAR_SHRINK_HIDE
@@ -370,6 +376,26 @@ cdef extern from "Elementary.h":
         ELM_TOOLBAR_SHRINK_MENU
         ELM_TOOLBAR_SHRINK_EXPAND
         ELM_TOOLBAR_SHRINK_LAST
+
+    ctypedef enum Elm_Transit_Effect_Flip_Axis:
+        ELM_TRANSIT_EFFECT_FLIP_AXIS_X
+        ELM_TRANSIT_EFFECT_FLIP_AXIS_Y
+
+    ctypedef enum Elm_Transit_Effect_Wipe_Dir:
+        ELM_TRANSIT_EFFECT_WIPE_DIR_LEFT
+        ELM_TRANSIT_EFFECT_WIPE_DIR_RIGHT
+        ELM_TRANSIT_EFFECT_WIPE_DIR_UP
+        ELM_TRANSIT_EFFECT_WIPE_DIR_DOWN
+
+    ctypedef enum Elm_Transit_Effect_Wipe_Type:
+        ELM_TRANSIT_EFFECT_WIPE_TYPE_HIDE
+        ELM_TRANSIT_EFFECT_WIPE_TYPE_SHOW
+
+    ctypedef enum Elm_Transit_Tween_Mode:
+        ELM_TRANSIT_TWEEN_MODE_LINEAR
+        ELM_TRANSIT_TWEEN_MODE_SINUSOIDAL
+        ELM_TRANSIT_TWEEN_MODE_DECELERATE
+        ELM_TRANSIT_TWEEN_MODE_ACCELERATE
 
     ctypedef enum Elm_Web_Window_Feature_Flag:
         ELM_WEB_WINDOW_FEATURE_TOOLBAR
@@ -439,6 +465,7 @@ cdef extern from "Elementary.h":
 
     # types & structs
 
+    #calendar
     ctypedef char           *(*Elm_Calendar_Format_Cb)     (tm *stime)
 
     ctypedef struct Elm_Calendar_Mark:
@@ -448,6 +475,7 @@ cdef extern from "Elementary.h":
         const_char_ptr mark_type
         Elm_Calendar_Mark_Repeat_Type repeat
 
+    #colors
     ctypedef struct Elm_Color_RGBA:
         unsigned int r
         unsigned int g
@@ -458,6 +486,7 @@ cdef extern from "Elementary.h":
         const_char_ptr palette_name
         Eina_List *color_list
 
+    #entry
     ctypedef struct Elm_Entry_Anchor_Info:
         char *name
         int   button
@@ -475,13 +504,16 @@ cdef extern from "Elementary.h":
         Eina_Bool hover_top
         Eina_Bool hover_bottom
 
+    #event
     ctypedef Eina_Bool       (*Elm_Event_Cb)                (void *data, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type t, void *event_info)
 
+    #font
     ctypedef struct Elm_Font_Overlay:
         const_char_ptr text_class
         const_char_ptr font
         Evas_Font_Size size
 
+    #genlist
     ctypedef char           *(*GenlistItemLabelGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Evas_Object    *(*GenlistItemIconGetFunc)      (void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Eina_Bool       (*GenlistItemStateGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
@@ -497,6 +529,7 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Genlist_Item_Class_Func func
 
+    #gengrid
     ctypedef char           *(*GengridItemLabelGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Evas_Object    *(*GengridItemIconGetFunc)      (void *data, Evas_Object *obj, const_char_ptr part)
     ctypedef Eina_Bool       (*GengridItemStateGetFunc)     (void *data, Evas_Object *obj, const_char_ptr part)
@@ -512,24 +545,38 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Gengrid_Item_Class_Func func
 
+    #object item
     ctypedef struct Elm_Object_Item
     ctypedef Elm_Object_Item const_Elm_Object_Item "const Elm_Object_Item"
 
+    #text
     ctypedef struct Elm_Text_Class:
         const_char_ptr name
         const_char_ptr desc
 
+    #theme
     ctypedef struct Elm_Theme
 
+    #toolbar
     ctypedef struct Elm_Toolbar_Item_State:
         char *icon
         char *label
         Evas_Smart_Cb func
         void *data
 
+    #tooltip
     ctypedef Evas_Object    *(*Elm_Tooltip_Content_Cb)      (void *data, Evas_Object *obj, Evas_Object *tooltip)
     ctypedef Evas_Object    *(*Elm_Tooltip_Item_Content_Cb) (void *data, Evas_Object *obj, Evas_Object *tooltip, void *item)
 
+    #transit
+    ctypedef struct Elm_Transit
+    ctypedef struct Elm_Transit_Effect
+
+    ctypedef void            (*Elm_Transit_Effect_Transition_Cb)(Elm_Transit_Effect *effect, Elm_Transit *transit, double progress)
+    ctypedef void            (*Elm_Transit_Effect_End_Cb)   (Elm_Transit_Effect *effect, Elm_Transit *transit)
+    ctypedef void            (*Elm_Transit_Del_Cb)          (void *data, Elm_Transit *transit)
+
+    #web
     ctypedef struct Elm_Web_Frame_Load_Error:
         int code
         Eina_Bool is_cancellation
@@ -806,6 +853,46 @@ cdef extern from "Elementary.h":
     void                     elm_object_item_cursor_engine_only_set(Elm_Object_Item *it, Eina_Bool engine_only)
     Eina_Bool                elm_object_item_cursor_engine_only_get(Elm_Object_Item *it)
 
+    # Transit               (XXX)
+    Elm_Transit             *elm_transit_add()
+    void                     elm_transit_del(Elm_Transit *transit)
+    void                     elm_transit_effect_add(Elm_Transit *transit, Elm_Transit_Effect_Transition_Cb transition_cb, Elm_Transit_Effect *effect, Elm_Transit_Effect_End_Cb end_cb)
+    void                     elm_transit_effect_del(Elm_Transit *transit, Elm_Transit_Effect_Transition_Cb transition_cb, Elm_Transit_Effect *effect)
+    void                     elm_transit_object_add(Elm_Transit *transit, Evas_Object *obj)
+    void                     elm_transit_object_remove(Elm_Transit *transit, Evas_Object *obj)
+    const_Eina_List         *elm_transit_objects_get(Elm_Transit *transit)
+    void                     elm_transit_objects_final_state_keep_set(Elm_Transit *transit, Eina_Bool state_keep)
+    Eina_Bool                elm_transit_objects_final_state_keep_get(Elm_Transit *transit)
+    void                     elm_transit_event_enabled_set(Elm_Transit *transit, Eina_Bool enabled)
+    Eina_Bool                elm_transit_event_enabled_get(Elm_Transit *transit)
+    void                     elm_transit_del_cb_set(Elm_Transit *transit, Elm_Transit_Del_Cb cb, void *data)
+    void                     elm_transit_auto_reverse_set(Elm_Transit *transit, Eina_Bool reverse)
+    Eina_Bool                elm_transit_auto_reverse_get(Elm_Transit *transit)
+    void                     elm_transit_repeat_times_set(Elm_Transit *transit, int repeat)
+    int                      elm_transit_repeat_times_get(Elm_Transit *transit)
+    void                     elm_transit_tween_mode_set(Elm_Transit *transit, Elm_Transit_Tween_Mode tween_mode)
+    Elm_Transit_Tween_Mode   elm_transit_tween_mode_get(Elm_Transit *transit)
+    void                     elm_transit_duration_set(Elm_Transit *transit, double duration)
+    double                   elm_transit_duration_get(Elm_Transit *transit)
+    void                     elm_transit_go(Elm_Transit *transit)
+    void                     elm_transit_paused_set(Elm_Transit *transit, Eina_Bool paused)
+    Eina_Bool                elm_transit_paused_get(Elm_Transit *transit)
+    double                   elm_transit_progress_value_get(Elm_Transit *transit)
+    void                     elm_transit_chain_transit_add(Elm_Transit *transit, Elm_Transit *chain_transit)
+    void                     elm_transit_chain_transit_del(Elm_Transit *transit, Elm_Transit *chain_transit)
+    Eina_List               *elm_transit_chain_transits_get(Elm_Transit *transit)
+    Elm_Transit_Effect      *elm_transit_effect_resizing_add(Elm_Transit *transit, Evas_Coord from_w, Evas_Coord from_h, Evas_Coord to_w, Evas_Coord to_h)
+    Elm_Transit_Effect      *elm_transit_effect_translation_add(Elm_Transit *transit, Evas_Coord from_dx, Evas_Coord from_dy, Evas_Coord to_dx, Evas_Coord to_dy)
+    Elm_Transit_Effect      *elm_transit_effect_zoom_add(Elm_Transit *transit, float from_rate, float to_rate)
+    Elm_Transit_Effect      *elm_transit_effect_flip_add(Elm_Transit *transit, Elm_Transit_Effect_Flip_Axis axis, Eina_Bool cw)
+    Elm_Transit_Effect      *elm_transit_effect_resizable_flip_add(Elm_Transit *transit, Elm_Transit_Effect_Flip_Axis axis, Eina_Bool cw)
+    Elm_Transit_Effect      *elm_transit_effect_wipe_add(Elm_Transit *transit, Elm_Transit_Effect_Wipe_Type type, Elm_Transit_Effect_Wipe_Dir dir)
+    Elm_Transit_Effect      *elm_transit_effect_color_add(Elm_Transit *transit, unsigned int from_r, unsigned int from_g, unsigned int from_b, unsigned int from_a, unsigned int to_r, unsigned int to_g, unsigned int to_b, unsigned int to_a)
+    Elm_Transit_Effect      *elm_transit_effect_fade_add(Elm_Transit *transit)
+    Elm_Transit_Effect      *elm_transit_effect_blend_add(Elm_Transit *transit)
+    Elm_Transit_Effect      *elm_transit_effect_rotation_add(Elm_Transit *transit, float from_degree, float to_degree)
+    Elm_Transit_Effect      *elm_transit_effect_image_animation_add(Elm_Transit *transit, Eina_List *images)
+
     # Widgets
 
     # Actionslider          (api:DONE  cb:DONE  test:DONE  doc:DONE)
@@ -961,7 +1048,28 @@ cdef extern from "Elementary.h":
     void                     elm_dayselector_weekend_length_set(Evas_Object *obj, unsigned int length)
     unsigned int             elm_dayselector_weekend_length_get(Evas_Object *obj)
 
-    # Diskselector          (XXX)
+    # Diskselector          (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    Evas_Object             *elm_diskselector_add(Evas_Object *parent)
+    void                     elm_diskselector_round_enabled_set(Evas_Object *obj, Eina_Bool enabled)
+    Eina_Bool                elm_diskselector_round_enabled_get(Evas_Object *obj)
+    int                      elm_diskselector_side_text_max_length_get(Evas_Object *obj)
+    void                     elm_diskselector_side_text_max_length_set(Evas_Object *obj, int len)
+    void                     elm_diskselector_display_item_num_set(Evas_Object *obj, int num)
+    int                      elm_diskselector_display_item_num_get(Evas_Object *obj)
+    void                     elm_diskselector_bounce_set(Evas_Object *obj, Eina_Bool h_bounce, Eina_Bool v_bounce)
+    void                     elm_diskselector_bounce_get(Evas_Object *obj, Eina_Bool *h_bounce, Eina_Bool *v_bounce)
+    void                     elm_diskselector_scroller_policy_get(Evas_Object *obj, Elm_Scroller_Policy *policy_h, Elm_Scroller_Policy *policy_v)
+    void                     elm_diskselector_scroller_policy_set(Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
+    void                     elm_diskselector_clear(Evas_Object *obj)
+    const_Eina_List         *elm_diskselector_items_get(Evas_Object *obj)
+    Elm_Object_Item         *elm_diskselector_item_append(Evas_Object *obj, const_char_ptr label, Evas_Object *icon, Evas_Smart_Cb func, void *data)
+    Elm_Object_Item         *elm_diskselector_selected_item_get(Evas_Object *obj)
+    void                     elm_diskselector_item_selected_set(Elm_Object_Item *it, Eina_Bool selected)
+    Eina_Bool                elm_diskselector_item_selected_get(Elm_Object_Item *it)
+    Elm_Object_Item         *elm_diskselector_first_item_get(Evas_Object *obj)
+    Elm_Object_Item         *elm_diskselector_last_item_get(Evas_Object *obj)
+    Elm_Object_Item         *elm_diskselector_item_prev_get(Elm_Object_Item *it)
+    Elm_Object_Item         *elm_diskselector_item_next_get(Elm_Object_Item *it)
 
     # Entry                 (api:TODO  cb:DONE  test:TODO  doc:TODO)
     Evas_Object             *elm_entry_add(Evas_Object *parent)
@@ -1534,7 +1642,16 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_panel_hidden_get(Evas_Object *obj)
     void                     elm_panel_toggle(Evas_Object *obj)
 
-    # Panes                 (XXX)
+    # Panes                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    Evas_Object             *elm_panes_add(Evas_Object *parent)
+    void                     elm_panes_fixed_set(Evas_Object *obj, Eina_Bool fixed)
+    Eina_Bool                elm_panes_fixed_get(Evas_Object *obj)
+    double                   elm_panes_content_left_size_get(Evas_Object *obj)
+    void                     elm_panes_content_left_size_set(Evas_Object *obj, double size)
+    double                   elm_panes_content_right_size_get(Evas_Object *obj)
+    void                     elm_panes_content_right_size_set(Evas_Object *obj, double size)
+    void                     elm_panes_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
+    Eina_Bool                elm_panes_horizontal_get(Evas_Object *obj)
 
     # Photo                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_photo_add(Evas_Object *parent)
@@ -1667,7 +1784,18 @@ cdef extern from "Elementary.h":
     void                     elm_table_pack_set(Evas_Object *subobj, int x, int y, int w, int h)
     void                     elm_table_pack_get(Evas_Object *subobj, int *x, int *y, int *w, int *h)
 
-    # Thumb                 (XXX)
+    # Thumb                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    Evas_Object             *elm_thumb_add(Evas_Object *parent)
+    void                     elm_thumb_reload(Evas_Object *obj)
+    void                     elm_thumb_file_set(Evas_Object *obj, const_char_ptr file, const_char_ptr key)
+    void                     elm_thumb_file_get(Evas_Object *obj, const_char_ptr *file, const_char_ptr *key)
+    void                     elm_thumb_path_get(Evas_Object *obj, const_char_ptr *file, const_char_ptr *key)
+    void                     elm_thumb_animate_set(Evas_Object *obj, Elm_Thumb_Animation_Setting s)
+    Elm_Thumb_Animation_Setting elm_thumb_animate_get(Evas_Object *obj)
+    void                    *elm_thumb_ethumb_client_get()
+    Eina_Bool                elm_thumb_ethumb_client_connected_get()
+    Eina_Bool                elm_thumb_editable_set(Evas_Object *obj, Eina_Bool edit)
+    Eina_Bool                elm_thumb_editable_get(Evas_Object *obj)
 
     # Toolbar               (api:TODO  cb:DONE  test:DONE  doc:TODO)
     Evas_Object             *elm_toolbar_add(Evas_Object *parent)
@@ -1722,8 +1850,6 @@ cdef extern from "Elementary.h":
     unsigned int             elm_toolbar_items_max_get(Evas_Object *obj)
     void                     elm_toolbar_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_toolbar_select_mode_get(Evas_Object *obj)
-
-    # Transit               (XXX)
 
     # Video                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_player_add(Evas_Object *parent)

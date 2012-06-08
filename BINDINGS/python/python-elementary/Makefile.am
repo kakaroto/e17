@@ -28,6 +28,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_conformant.pxi \
 	elementary/elementary.c_elementary_ctxpopup.pxi \
 	elementary/elementary.c_elementary_dayselector.pxi \
+	elementary/elementary.c_elementary_diskselector.pxi \
 	elementary/elementary.c_elementary_entry.pxi \
 	elementary/elementary.c_elementary_fileselector.pxi \
 	elementary/elementary.c_elementary_fileselector_entry.pxi \
@@ -53,6 +54,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_object_item.pxi \
 	elementary/elementary.c_elementary_naviframe.pxi \
 	elementary/elementary.c_elementary_panel.pxi \
+	elementary/elementary.c_elementary_panes.pxi \
 	elementary/elementary.c_elementary_photo.pxi \
 	elementary/elementary.c_elementary_progressbar.pxi \
 	elementary/elementary.c_elementary_radio.pxi \
@@ -61,6 +63,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_slider.pxi \
 	elementary/elementary.c_elementary_spinner.pxi \
 	elementary/elementary.c_elementary_table.pxi \
+	elementary/elementary.c_elementary_thumb.pxi \
 	elementary/elementary.c_elementary_toolbar.pxi \
 	elementary/elementary.c_elementary_video.pxi \
 	elementary/elementary.c_elementary_web.pxi \
