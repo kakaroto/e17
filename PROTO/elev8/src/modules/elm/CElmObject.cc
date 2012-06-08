@@ -62,9 +62,14 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
 
    Local<ObjectTemplate> tmpl = ObjectTemplate::New();
    tmpl->SetNamedPropertyHandler(CElmObject::ElementGet< Local<String> >,
-                                 CElmObject::ElementSet< Local<String> >);
+                                 CElmObject::ElementSet< Local<String> >,
+                                 NULL, CElmObject::ElementDel< Local<String> >,
+                                 CElmObject::ElementEnum);
+
    tmpl->SetIndexedPropertyHandler(CElmObject::ElementGet<uint32_t>,
-                                   CElmObject::ElementSet<uint32_t>);
+                                   CElmObject::ElementSet<uint32_t>,
+                                   NULL, CElmObject::ElementDel<uint32_t>,
+                                   CElmObject::ElementEnum);
 
    Handle<Object> elements = tmpl->NewInstance();
    elements->SetHiddenValue(String::NewSymbol("elm::items"), items);
@@ -90,6 +95,13 @@ CElmObject::~CElmObject()
    on_animate_set(Undefined());
    on_click_set(Undefined());
    on_key_down_set(Undefined());
+
+   Local<Value> packer = jsObject->GetHiddenValue(String::NewSymbol("elm::packer"));
+
+   if (!packer.IsEmpty())
+     GetObjectFromJavascript(packer)->Unpack(jsObject);
+
+   evas_object_del(eo);
 
    jsObject.Dispose();
    jsObject.Clear();
@@ -752,8 +764,8 @@ Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 
    if (!parent->IsUndefined())
      {
-        static_cast<CElmObject*>(parent->ToObject()->GetPointerFromInternalField(0))
-           ->DidRealiseElement(realised);
+        realised->SetHiddenValue(String::NewSymbol("elm::packer"), parent);
+        GetObjectFromJavascript(parent)->DidRealiseElement(realised);
      }
 
    return scope.Close(realised);

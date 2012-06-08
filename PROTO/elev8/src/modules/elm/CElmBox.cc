@@ -41,7 +41,19 @@ Handle<Value> CElmBox::homogeneous_get() const
 
 void CElmBox::DidRealiseElement(Local<Value> obj)
 {
+   Pack(obj);
+}
+
+Handle<Value> CElmBox::Pack(Handle<Value> obj)
+{
    elm_box_pack_end(eo, GetEvasObjectFromJavascript(obj));
+   return obj;
+}
+
+Handle<Value> CElmBox::Unpack(Handle<Value> obj)
+{
+   elm_box_unpack(eo, GetEvasObjectFromJavascript(obj));
+   return obj;
 }
 
 void CElmBox::Initialize(Handle<Object> target)

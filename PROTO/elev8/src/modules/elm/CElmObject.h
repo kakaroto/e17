@@ -46,12 +46,17 @@ protected:
           }
 
         CElmObject *parent = (args[1] == Undefined()) ? NULL :
-           static_cast<CElmObject *>(args[1]->ToObject()->GetPointerFromInternalField(0));
+           GetObjectFromJavascript(args[1]);
 
         T *obj = new T(args.This(), parent);
         obj->jsObject.MakeWeak(obj, T::Delete);
 
         return Undefined();
+     }
+
+   static CElmObject *GetObjectFromJavascript(Handle<Value> obj)
+     {
+        return static_cast<CElmObject*>(obj->ToObject()->GetPointerFromInternalField(0));
      }
 
    static void Delete(Persistent<Value>, void *parameter);
@@ -63,11 +68,27 @@ public:
      {
         HandleScope scope;
         Local<Object> obj = info.This()->ToObject();
-        Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
+        Local<Object> items = obj->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
         Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
-        Handle<Value> realised = Realise(value, parent);
-        items->ToObject()->Set(item, realised);
-        return scope.Close(realised);
+        Local<Value> element = items->Get(item);
+        CElmObject *packer = GetObjectFromJavascript(parent);
+
+        if (!element->IsUndefined())
+          {
+             packer->Unpack(element);
+             items->Delete(item);
+          }
+
+        if (value->IsNull() || value->IsUndefined())
+          return value;
+
+        if (tmpl->HasInstance(value))
+          packer->Pack(value);
+        else
+          value = Realise(value, parent);
+
+        items->Set(item, value);
+        return scope.Close(value);
      }
 
    template <class T>
@@ -79,11 +100,38 @@ public:
         return scope.Close(items->ToObject()->Get(item));
      }
 
+   template <class T>
+   static Handle<Boolean> ElementDel(T item, const AccessorInfo& info)
+     {
+        HandleScope scope;
+
+        Local<Object> obj = info.This()->ToObject();
+        Local<Object> items = obj->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
+        Local<Value> self = items->Get(item);
+
+        if (self->IsUndefined())
+          return scope.Close(Boolean::New(false));
+
+        items->Delete(item);
+        delete GetObjectFromJavascript(self);
+        return scope.Close(Boolean::New(true));
+     }
+
+   static Handle<Array> ElementEnum(const AccessorInfo& info)
+     {
+        HandleScope scope;
+        Local<Object> obj = info.This()->ToObject();
+        Local<Value> items = obj->GetHiddenValue(String::NewSymbol("elm::items"));
+        return scope.Close(items->ToObject()->GetOwnPropertyNames());
+     }
+
    static void Initialize(Handle<Object> target);
 
    Handle<Object> GetJSObject() const { return jsObject; }
    Evas_Object *GetEvasObject() const { return eo; }
    virtual void DidRealiseElement(Local<Value>) {}
+   virtual Handle<Value> Pack(Handle<Value>) { return Undefined(); }
+   virtual Handle<Value> Unpack(Handle<Value>) { return Undefined(); }
 
    Handle<Value> x_get() const;
    void x_set(Handle<Value> value);
