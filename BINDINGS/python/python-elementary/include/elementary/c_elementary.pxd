@@ -957,8 +957,8 @@ cdef extern from "Elementary.h":
 
     # Calendar              (api:TODO  cb:DONE  test:TODO  doc:DONE)
     Evas_Object             *elm_calendar_add(Evas_Object *parent)
-    #const_char_ptr          *elm_calendar_weekdays_names_get(Evas_Object *obj)
-    #void                     elm_calendar_weekdays_names_set(Evas_Object *obj, const_char_ptr weekdays[])
+    const_char_ptr          *elm_calendar_weekdays_names_get(Evas_Object *obj)
+    void                     elm_calendar_weekdays_names_set(Evas_Object *obj, const_char_ptr weekdays[])
     void                     elm_calendar_min_max_year_set(Evas_Object *obj, int min, int max)
     void                     elm_calendar_min_max_year_get(Evas_Object *obj, int *min, int *max)
     void                     elm_calendar_select_mode_set(Evas_Object *obj, Elm_Calendar_Select_Mode mode)

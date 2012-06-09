@@ -61,24 +61,8 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         Object.__init__(self, parent.evas)
         self._set_obj(elm_calendar_add(parent.obj))
 
-    #def weekdays_names_get(self):
-        """Get weekdays names displayed by the calendar.
-
-        By default, weekdays abbreviations get from system are displayed:
-        E.g. for an en_US locale: "Sun, Mon, Tue, Wed, Thu, Fri, Sat"
-        The first string is related to Sunday, the second to Monday...
-
-        @see: L{weekdays_name_set()}
-
-        @return: Array of seven strings to be used as weekday names.
-        @rtype: tuple of strings
-
-        """
-        #cdef const_char_ptr *weekdays = elm_calendar_weekdays_names_get(self.obj)
-        #return weekdays
-
-    #def weekdays_names_set(self, weekdays):
-        """Set weekdays names to be displayed by the calendar.
+    property weekdays_names:
+        """The weekdays' names to be displayed by the calendar.
 
         By default, weekdays abbreviations get from system are displayed:
         E.g. for an en_US locale: "Sun, Mon, Tue, Wed, Thu, Fri, Sat"
@@ -91,19 +75,36 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
               "Sunday", "Monday", "Tuesday", "Wednesday",
               "Thursday", "Friday", "Saturday"
             )
-            calendar.weekdays_names_set(weekdays)
+            calendar.weekdays_names = weekdays
 
-        @see: L{weekdays_name_get()}
-
-        @param weekdays: A tuple of seven strings to be used as weekday names.
-        @type weekdays: tuple of strings
+        @type: tuple of strings
         @warning: It must have 7 elements, or it will access invalid memory.
 
         """
-        #elm_calendar_weekdays_names_set(self.obj, weekdays)
+        def __get__(self):
+            cdef const_char_ptr *lst
+            cdef const_char_ptr weekday
+            ret = []
+            lst = elm_calendar_weekdays_names_get(self.obj)
+            for i from 0 <= i < 7:
+                weekday = lst[i]
+                if weekday != NULL:
+                    ret.append(weekday)
+            return ret
 
-    def min_max_year_set(self, min, max):
-        """Set the minimum and maximum values for the year
+        def __set__(self, weekdays):
+            cdef int i, day_len
+            cdef const_char_ptr *days, weekday
+            days = <const_char_ptr *>PyMem_Malloc(7 * sizeof(const_char_ptr))
+            for i from 0 <= i < 7:
+                weekday = weekdays[i]
+                day_len = len(weekday)
+                days[i] = <const_char_ptr>PyMem_Malloc(day_len + 1)
+                memcpy(days[i], weekday, day_len + 1)
+            elm_calendar_weekdays_names_set(self.obj, days)
+
+    property min_max_year:
+        """The minimum and maximum values for the year
 
         Maximum must be greater than minimum, except if you don't want to set
         maximum year.
@@ -120,78 +121,68 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         @type max: int
 
         """
-        elm_calendar_min_max_year_set(self.obj, min, max)
+        def __get__(self):
+            cdef int min, max
+            elm_calendar_min_max_year_get(self.obj, &min, &max)
+            return (min, max)
+        def __set__(self, value):
+            cdef int min, max
+            min, max = value
+            elm_calendar_min_max_year_set(self.obj, min, max)
 
-    def min_max_year_get(self):
-        """Get the minimum and maximum values for the year
+    property selected_mode:
+        """The day selection mode used.
 
-        Default values are 1902 and -1.
-
-        @see: L{min_max_year_get()} for more details.
-
-        @return: The minimum and maximum year.
-        @rtype: tuple of ints
-
-        """
-        cdef int min, max
-        elm_calendar_min_max_year_get(self.obj, &min, &max)
-        return (min, max)
-
-    def selected_mode_set(self, mode):
-        """Set the day selection mode used.
-
-        @param mode: The select mode to use.
-        @type mode: Elm_Calendar_Select_Mode
+        @type: Elm_Calendar_Select_Mode
 
         """
-        elm_calendar_select_mode_set(self.obj, mode)
+        def __get__(self):
+            return elm_calendar_select_mode_get(self.obj)
+        def __set__(self, mode):
+            elm_calendar_select_mode_set(self.obj, mode)
 
-    def selected_mode_get(self):
-        """Get the day selection mode used.
+    property selected_time:
+        """Selected date on the calendar.
 
-        @see: L{select_mode_set()} for more details
-
-        @return: the selected mode
-        @rtype: Elm_Calendar_Select_Mode
-
-        """
-        return elm_calendar_select_mode_get(self.obj)
-
-    #def selected_time_set(self, selected_time):
-        """Set selected date to be highlighted on calendar.
-
-        Set the selected date, changing the displayed month if needed.
+        Setting this changes the displayed month if needed.
         Selected date changes when the user goes to next/previous month or
         select a day pressing over it on calendar.
 
-        @see: L{selected_time_get()}
-
-        @param selected_time: A B{tm} struct to represent the selected date.
-        @type selected_time: tm struct
+        @type: tm struct
 
         """
-        #elm_calendar_selected_time_set(self.obj, selected_time)
+        def __get__(self):
+            cdef tm time
+            elm_calendar_selected_time_get(self.obj, &time)
+            sec = time.tm_sec
+            tm_min = time.tm_min
+            hour = time.tm_hour
+            mday = time.tm_mday
+            mon = time.tm_mon
+            year = time.tm_year
+            wday = time.tm_wday
+            yday = time.tm_yday
+            isdst = time.tm_isdst
+            gmtoff = time.tm_gmtoff
+            zone = time.tm_zone
+            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone)
+        def __set__(self, selected_time):
+            cdef tm time
+            sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = selected_time
+            time.tm_sec = sec
+            time.tm_min = tm_min
+            time.tm_hour = hour
+            time.tm_mday = mday
+            time.tm_mon = mon
+            time.tm_year = year
+            time.tm_wday = wday
+            time.tm_yday = yday
+            time.tm_isdst = isdst
+            time.tm_gmtoff = gmtoff
+            time.tm_zone = zone
+            elm_calendar_selected_time_set(self.obj, &time)
 
-    #def selected_time_get(self):
-        """Get selected date.
-
-        Get date selected by the user or set by function L{selected_time_set()}.
-        Selected date changes when the user goes to next/previous month or
-        select a day pressing over it on calendar.
-
-        @see: L{selected_time_get()}
-
-        @return: A B{tm} struct to represent the selected date.
-        @rtype: tm struct
-
-        """
-        #cdef tm *selected_time
-        #ret = elm_calendar_selected_time_get(self.obj, &selected_time)
-        #if ret == EINA_FALSE:
-        #    raise ValueError
-        #return selected_time
-
-    #def format_function_set(self, format_func):
+    def format_function_set(self, format_func):
         """Set a function to format the string that will be used to display
         month and year.
 
@@ -216,6 +207,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         @type format_func: function
 
         """
+        pass
         #elm_calendar_format_function_set(self.obj, format_func)
 
     #def mark_add(self, mark_type, mark_time, repeat):
@@ -266,27 +258,17 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         """
         #return CalendarMark(mark_type, mark_time, repeat)
 
-    def marks_clear(self):
-        """Remove all calendar's marks
+    property marks:
+        """Calendar marks.
 
-        @see: L{mark_add()}
-        @see: L{mark_del()}
-
-        """
-        elm_calendar_marks_clear(self.obj)
-
-    #def marks_get(self):
-        """Get a list of all the calendar marks.
-
-        @see: L{mark_add()}
-        @see: L{mark_del()}
-        @see: L{marks_clear()}
-
-        @return: A tuple of calendar marks objects, or C{None} on failure.
-        @rtype: tuple of L{CalendarMark}s
+        @type: tuple of L{CalendarMark}s
 
         """
-        #const_Eina_List         *elm_calendar_marks_get(self.obj)
+        #def __get__(self):
+            #const_Eina_List         *elm_calendar_marks_get(self.obj)
+        #def __set__(self, value):
+        def __del__(self):
+            elm_calendar_marks_clear(self.obj)
 
     def marks_draw(self):
         """Draw calendar marks.
@@ -306,7 +288,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         """
         elm_calendar_marks_draw(self.obj)
 
-    def interval_set(self, interval):
+    property interval:
         """Set the interval on time updates for an user mouse button hold
         on calendar widgets' month selection.
 
@@ -324,47 +306,24 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         The default starting interval value for automatic changes is
         B{0.85} seconds.
 
-        @see: L{interval_get()}
-
-        @param interval: The (first) interval value in seconds
-        @type interval: float
+        @type: float
 
         """
-        elm_calendar_interval_set(self.obj, interval)
+        def __get__(self):
+            return elm_calendar_interval_get(self.obj)
+        def __set__(self, interval):
+            elm_calendar_interval_set(self.obj, interval)
 
-    def interval_get(self):
-        """Get the interval on time updates for an user mouse button hold
-        on calendar widgets' month selection.
+    property first_day_of_week:
+        """The first day of week to use on the calendar widget.
 
-        @see: L{interval_set()} for more details
-
-        @return: The (first) interval value, in seconds, set on it
-        @rtype: float
-
-        """
-        return elm_calendar_interval_get(self.obj)
-
-    def first_day_of_week_set(self, day):
-        """Set the first day of week to use on the calendar widget.
-
-        @param day: An int which correspond to the first day of the week
-            (Sunday = 0, monday = 1, ..., saturday = 6)
-        @type day: int
+        @type: int
 
         """
-        elm_calendar_first_day_of_week_set(self.obj, day)
-
-    def first_day_of_week_get(self):
-        """Get the first day of week to use on the calendar widget.
-
-        @see: L{first_day_of_week_set()} for more details
-
-        @return: An int which correspond to the first day of the week
-            (Sunday = 0, monday = 1, ..., saturday = 6)
-        @rtype: int
-
-        """
-        return elm_calendar_first_day_of_week_get(self.obj)
+        def __get__(self):
+            return elm_calendar_first_day_of_week_get(self.obj)
+        def __set__(self, day):
+            elm_calendar_first_day_of_week_set(self.obj, day)
 
     def callback_changed_add(self, func, *args, **kwargs):
         """Emitted when the date in the calendar is changed."""
