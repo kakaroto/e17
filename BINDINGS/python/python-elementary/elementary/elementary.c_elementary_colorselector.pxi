@@ -29,10 +29,19 @@ cdef class ColorselectorPaletteItem(ObjectItem):
         elm_colorselector_palette_item_color_set(self.item, r, g, b, a)
 
     property color:
+        """The palette item's color.
+
+        @type: tuple of ints
+
+        """
         def __get__(self):
-            return self.color_get()
+            cdef int r, g, b, a
+            elm_colorselector_palette_item_color_get(self.item, &r, &g, &b, &a)
+            return (r, g, b, a)
         def __set__(self, value):
-            self.color_set(value)
+            cdef int r, g, b, a
+            r, g, b, a = value
+            elm_colorselector_palette_item_color_set(self.item, r, g, b, a)
 
 def _colorselector_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
@@ -102,9 +111,13 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
 
         """
         def __get__(self):
-            return self.color_get()
+            cdef int r, g, b, a
+            elm_colorselector_color_get(self.obj, &r, &g, &b, &a)
+            return (r, g, b, a)
         def __set__(self, value):
-            self.color_set(value)
+            cdef int r, g, b, a
+            r, g, b, a = value
+            elm_colorselector_color_set(self.obj, r, g, b, a)
 
     def mode_set(self, mode):
         """Set Colorselector's mode.
@@ -135,9 +148,9 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
 
         """
         def __get__(self):
-            return self.mode_get()
+            return elm_colorselector_mode_get(self.obj)
         def __set__(self, mode):
-            self.mode_set(mode)
+            elm_colorselector_mode_set(self.obj, mode)
 
     def palette_color_add(self, r, g, b, a):
         """Add a new color item to palette.
@@ -196,9 +209,9 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
 
         """
         def __get__(self):
-            return self.palette_name_get()
+            return elm_colorselector_palette_name_get(self.obj)
         def __set__(self, palette_name):
-            self.palette_name_set(palette_name)
+            elm_colorselector_palette_name_set(self.obj, palette_name)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """When the color value changes on selector"""

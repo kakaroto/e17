@@ -110,10 +110,14 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
         """
         def __get__(self):
-            return self.time_get()
+            cdef int hrs, min, sec
+            elm_clock_time_get(self.obj, &hrs, &min, &sec)
+            return (hrs, min, sec)
 
         def __set__(self, value):
-            self.time_set(*value)
+            cdef int hrs, min, sec
+            hrs, min, sec = value
+            elm_clock_time_set(self.obj, hrs, min, sec)
 
     def edit_set(self, edit):
         """Set whether a given clock widget is under B{edition mode} or
@@ -149,7 +153,7 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
         @rtype: bool
 
         """
-        return elm_clock_edit_get(self.obj)
+        return bool(elm_clock_edit_get(self.obj))
 
     property edit:
         """Whether a given clock widget is under B{edition mode} or under
@@ -167,10 +171,10 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
         """
         def __get__(self):
-            return self.edit_get()
+            return bool(elm_clock_edit_get(self.obj))
 
-        def __set__(self, value):
-            self.edit_set(value)
+        def __set__(self, edit):
+            elm_clock_edit_set(self.obj, edit)
 
     def edit_mode_set(self, mode):
         """Set what digits of the given clock widget should be editable
@@ -204,10 +208,10 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
         """
         def __get__(self):
-            return self.edit_mode_get()
+            return elm_clock_edit_mode_get(self.obj)
 
-        def __set__(self, value):
-            self.edit_mode_set(value)
+        def __set__(self, mode):
+            elm_clock_edit_mode_set(self.obj, mode)
 
     def show_am_pm_set(self, am_pm):
         """Set if the given clock widget must show hours in military or
@@ -253,10 +257,10 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
         """
         def __get__(self):
-            return self.show_am_pm_get()
+            return elm_clock_show_am_pm_get(self.obj)
 
-        def __set__(self, value):
-            self.show_am_pm_set(value)
+        def __set__(self, am_pm):
+            elm_clock_show_am_pm_set(self.obj, am_pm)
 
     def show_seconds_set(self, seconds):
         """Set if the given clock widget must show time with seconds or not
@@ -293,10 +297,10 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
         """
         def __get__(self):
-            return self.show_seconds_get()
+            return elm_clock_show_seconds_get(self.obj)
 
-        def __set__(self, value):
-            self.show_seconds_set(value)
+        def __set__(self, seconds):
+            elm_clock_show_seconds_set(self.obj, seconds)
 
     def first_interval_set(self, interval):
         """Set the first interval on time updates for a user mouse button hold
@@ -360,10 +364,10 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
         """
         def __get__(self):
-            return self.first_interval_get()
+            return elm_clock_first_interval_get(self.obj)
 
-        def __set__(self, value):
-            self.first_interval_set(value)
+        def __set__(self, interval):
+            elm_clock_first_interval_set(self.obj, interval)
 
     def callback_changed_add(self, func, *args, **kwargs):
         """The clock's user changed the time"""

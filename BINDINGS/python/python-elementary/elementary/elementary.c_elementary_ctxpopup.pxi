@@ -99,6 +99,18 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         cdef Evas_Object *obj = elm_ctxpopup_hover_parent_get(self.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
+    property parent:
+        """Ctxpopup's parent
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            cdef Evas_Object *obj = elm_ctxpopup_hover_parent_get(self.obj)
+            return evas.c_evas._Object_from_instance(<long> obj)
+        def __set__(self, c_evas.Object parent):
+            elm_ctxpopup_hover_parent_set(self.obj, parent.obj)
+
     def clear(self):
         """Clear all items in the given ctxpopup object."""
         elm_ctxpopup_clear(self.obj)
@@ -130,9 +142,9 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
 
         """
         def __get__(self):
-            return self.horizontal_get()
+            return bool(elm_ctxpopup_horizontal_get(self.obj))
         def __set__(self, horizontal):
-            self.horizontal_set(horizontal)
+            elm_ctxpopup_horizontal_set(self.obj, horizontal)
 
     def item_append(self, label, c_evas.Object icon, func, *args, **kwargs):
         """Add a new item to a ctxpopup object.
@@ -187,6 +199,25 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         elm_ctxpopup_direction_priority_get(self.obj, &first, &second, &third, &fourth)
         return (first, second, third, fourth)
 
+    property direction_priority:
+        """The direction priority order of a ctxpopup.
+
+        This functions gives a chance to user to set the priority of ctxpopup
+        showing direction. This doesn't guarantee the ctxpopup will appear
+        in the requested direction.
+
+        @type: tuple of Elm_Ctxpopup_Direction
+
+        """
+        def __get__(self):
+            cdef Elm_Ctxpopup_Direction first, second, third, fourth
+            elm_ctxpopup_direction_priority_get(self.obj, &first, &second, &third, &fourth)
+            return (first, second, third, fourth)
+        def __set__(self, priority):
+            cdef Elm_Ctxpopup_Direction first, second, third, fourth
+            first, second, third, fourth = priority
+            elm_ctxpopup_direction_priority_set(self.obj, first, second, third, fourth)
+
     def direction_get(self):
         """Get the current direction of a ctxpopup.
 
@@ -198,6 +229,19 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
 
         """
         return elm_ctxpopup_direction_get(self.obj)
+
+    property direction:
+        """Get the current direction of a ctxpopup.
+
+        @warning: Only once the ctxpopup is shown can the direction be
+            determined
+
+        @return: current direction of a ctxpopup
+        @rtype: Elm_Ctxpopup_Direction
+
+        """
+        def __get__(self):
+            return elm_ctxpopup_direction_get(self.obj)
 
     def dismiss(self):
         """Dismiss a ctxpopup object

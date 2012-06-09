@@ -83,10 +83,10 @@ cdef public class Check(LayoutClass) [object PyElementaryCheck, type PyElementar
 
         """
         def __get__(self):
-            return self.state_get()
+            return bool(elm_check_state_get(self.obj))
 
         def __set__(self, value):
-            self.state_set(value)
+            elm_check_state_set(self.obj, value)
 
     def callback_changed_add(self, func, *args, **kwargs):
         """This is called whenever the user changes the state of the check

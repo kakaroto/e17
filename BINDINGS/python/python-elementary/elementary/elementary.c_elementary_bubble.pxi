@@ -101,10 +101,10 @@ cdef public class Bubble(LayoutClass) [object PyElementaryBubble, type PyElement
 
         """
         def __get__(self):
-            return self.pos_get()
+            return elm_bubble_pos_get(self.obj)
 
         def __set__(self, value):
-            self.pos_set(value)
+            elm_bubble_pos_set(self.obj, value)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         """This is called when a user has clicked the bubble."""
