@@ -62,14 +62,14 @@ cdef class DiskselectorItem(ObjectItem):
         elm_object_item_del_cb_set(self.item, _diskselector_item_del_cb)
 
     property selected:
-        """Set the selected state of an item.
+        """The selected state of an item.
 
         This sets the selected state of the given item.
         C{True} for selected, C{False} for not selected.
 
         If a new item is selected the previously selected will be unselected.
-        Previously selected item can be get with function
-        elm_diskselector_selected_item_get().
+        Previously selected item can be fetched from the property
+        L{Diskselector.selected_item}.
 
         If the item is unselected, the first item of diskselector will
         be selected.
@@ -96,7 +96,7 @@ cdef class DiskselectorItem(ObjectItem):
         just before C{item} and that wasn't deleted.
 
         If it is the first item, C{None} will be returned.
-        First item can be get by L{Diskselector.first_item).
+        First item can be get by L{Diskselector.first_item}.
 
         @see: L{Diskselector.item_append()}
         @see: L{Diskselector.items}
@@ -121,8 +121,6 @@ cdef class DiskselectorItem(ObjectItem):
 
     property next:
         """Get the item after C{item} in diskselector.
-
-        @return: The item after C{item}, or C{None} if none or on failure.
 
         The list of items follows append order. So it will return item appended
         just after C{item} and that wasn't deleted.

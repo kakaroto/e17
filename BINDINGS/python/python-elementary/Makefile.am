@@ -105,6 +105,7 @@ examples_files = \
 	tests/test_separator.py \
 	tests/test_spinner.py \
 	tests/test_table.py \
+	tests/test_thumb.py \
 	tests/test_toolbar.py \
 	tests/test_tooltip.py \
 	tests/test_web.py \
@@ -125,6 +126,8 @@ examples_images_files = \
 	tests/images/sky_04.jpg \
 	tests/images/wood_01.jpg \
 	tests/images/icon_right_arrow.png
+	tests/images/mystrale.jpg
+	tests/images/mystrale_2.jpg
 
 tests_files =
 

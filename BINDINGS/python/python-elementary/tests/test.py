@@ -38,6 +38,7 @@ from test_scroller import scroller_clicked
 from test_separator import separator_clicked
 from test_spinner import spinner_clicked
 from test_table import table_clicked
+from test_thumb import thumb_clicked
 from test_toolbar import toolbar_clicked
 from test_tooltip import tooltip_clicked
 from test_web import web_clicked
@@ -77,13 +78,13 @@ items = [("Booleans", [
             ("Flip Interactive", flip_interactive_clicked),
         ]),
          ("Entries", [
-            ("Label", label_clicked),
             ("Entry", entry_clicked),
             ("Entry Scrolled", entry_scrolled_clicked),
         ]),
          ("Images", [
             ("Icon", icon_clicked),
             ("Icon Transparent", icon_transparent_clicked),
+            ("Thumb", thumb_clicked),
         ]),
          ("Lists", [
             ("List", list_clicked),
@@ -120,6 +121,9 @@ items = [("Booleans", [
             ("Radios", radio_clicked),
             ("Actionslider", actionslider_clicked),
             ("Dayselector", dayselector_clicked),
+        ]),
+         ("Text", [
+            ("Label", label_clicked),
         ]),
          ("Times & Dates", [
             ("Clock", clock_clicked),

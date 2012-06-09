@@ -699,6 +699,9 @@ cdef extern from "Elementary.h":
     void                     elm_coords_finger_size_adjust(int times_w, Evas_Coord *w, int times_h, Evas_Coord *h)
 
     # Need
+    Eina_Bool                elm_need_efreet()
+    Eina_Bool                elm_need_e_dbus()
+    Eina_Bool                elm_need_ethumb()
     Eina_Bool                elm_need_web()
 
     # Theme

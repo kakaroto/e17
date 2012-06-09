@@ -54,9 +54,9 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
     """
 
     def __init__(self, c_evas.Object parent):
+        elm_need_ethumb()
         Object.__init__(self, parent.evas)
         self._set_obj(elm_thumb_add(parent.obj))
-
 
     def reload(self):
         """Reload thumbnail if it was generated before.
@@ -83,11 +83,15 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
         @see: L{reload()}
         @see: L{animate()}
 
-        @type: (string file, string eet_key)
+        @type: (string file, optional string eet_key)
 
         """
         def __set__(self, value):
-            file, key = value
+            if isinstance(value, tuple) or isinstance(value, list):
+                file, key = value
+            else:
+                file = value
+                key = ""
             elm_thumb_file_set(self.obj, file, key)
         def __get__(self):
             cdef const_char_ptr file, key
