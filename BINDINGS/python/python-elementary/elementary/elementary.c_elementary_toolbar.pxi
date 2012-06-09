@@ -879,31 +879,20 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         """
         return elm_toolbar_items_count(self.obj)
 
-    def items_max_set(self, max):
-        """Set the max number of visible items in a toolbar
+    property standard_priority:
+        """The standard priority of visible items in a toolbar
 
-        When it is the ELM_TOOLBAR_SHRINK_EXPAND mode, the items are shown
-        only up to max number. The other items are located in more panel.
-        The more panel can be shown when the more item is clicked.
+        If the priority of the item is up to standard priority, it is shown
+        in basic panel. The other items are located in more menu or panel.
+        The more menu or panel can be shown when the more item is clicked.
 
-        @see: L{items_max_get()}
-
-        @param max: The max number of visible items
-        @type max: int
+        @type: int
 
         """
-        elm_toolbar_items_max_set(self.obj, max)
-
-    def items_max_get(self):
-        """Get the max number of visible items in a toolbar
-
-        @see: L{items_max_set()}
-
-        @return: The max number of items in toolbar
-        @rtype: int
-
-        """
-        return elm_toolbar_items_max_get(self.obj)
+        def __set__(self, priority):
+            elm_toolbar_standard_priority_set(self.obj, priority)
+        def __get__(self):
+            return elm_toolbar_standard_priority_get(self.obj)
 
     def select_mode_set(self, mode):
         """Set the toolbar select mode.

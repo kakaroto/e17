@@ -1787,7 +1787,7 @@ cdef extern from "Elementary.h":
     void                     elm_table_pack_set(Evas_Object *subobj, int x, int y, int w, int h)
     void                     elm_table_pack_get(Evas_Object *subobj, int *x, int *y, int *w, int *h)
 
-    # Thumb                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Thumb                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_thumb_add(Evas_Object *parent)
     void                     elm_thumb_reload(Evas_Object *obj)
     void                     elm_thumb_file_set(Evas_Object *obj, const_char_ptr file, const_char_ptr key)
@@ -1849,8 +1849,8 @@ cdef extern from "Elementary.h":
     void                     elm_toolbar_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_toolbar_horizontal_get(Evas_Object *obj)
     unsigned int             elm_toolbar_items_count(Evas_Object *obj)
-    void                     elm_toolbar_items_max_set(Evas_Object *obj, unsigned int max)
-    unsigned int             elm_toolbar_items_max_get(Evas_Object *obj)
+    void                     elm_toolbar_standard_priority_set(Evas_Object *obj, int priority)
+    int                      elm_toolbar_standard_priority_get(Evas_Object *obj)
     void                     elm_toolbar_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_toolbar_select_mode_get(Evas_Object *obj)
 
