@@ -1,8 +1,13 @@
-#include "EWeather_Plugins.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <Ecore_Con.h>
-#include <Ecore.h>
 #include <stdio.h>
+
+#include <Ecore.h>
+#include <Ecore_Con.h>
+
+#include "EWeather_Plugins.h"
 
 typedef struct Instance Instance;
 
@@ -25,7 +30,7 @@ struct _Id_Type
    int id;
    EWeather_Type type;
 };
- 
+
 static struct _Id_Type _tab[] =
 {
      {0, EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, //tornado
@@ -98,7 +103,7 @@ struct Instance
 
 EAPI EWeather_Plugin _plugin_class =
 {
-   "Yahoo", 
+   "Yahoo",
    "http://weather.yahoo.com/",
    PACKAGE_DATA_DIR"/yahoo_logo.jpg",
    _init,
@@ -115,7 +120,7 @@ static void _init(EWeather *eweather)
    inst->host = eina_stringshare_add("weather.yahooapis.com");
 
    ecore_con_init();
-   
+
    inst->add_handler =
       ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
 	    _server_add, inst);
@@ -317,7 +322,7 @@ _parse(Instance *inst)
 
    needle = strstr(needle, "<pubDate>");
    if (!needle) goto error;
-   needle += 9; 
+   needle += 9;
    sscanf(needle, "%[^<]<", e_data->date);
 
 
@@ -372,7 +377,7 @@ _parse(Instance *inst)
    if (!needle) goto error;
    needle+=24;
    sscanf(needle, "%[^\"]\"", day);
- 
+
    needle = strstr(needle, "date=\"");
    if (!needle) goto error;
    needle+=6;
@@ -424,4 +429,3 @@ static EWeather_Type _weather_type_get(int id)
 
    return EWEATHER_TYPE_UNKNOWN;
 }
-

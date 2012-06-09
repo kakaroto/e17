@@ -676,4 +676,3 @@ _smart_clip_unset(Evas_Object * obj)
    if (!sd) return;
    evas_object_clip_unset(sd->obj);
 }
-

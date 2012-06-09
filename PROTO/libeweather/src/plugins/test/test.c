@@ -1,8 +1,13 @@
-#include "EWeather_Plugins.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <Ecore_Con.h>
-#include <Ecore.h>
 #include <stdio.h>
+
+#include <Ecore.h>
+#include <Ecore_Con.h>
+
+#include "EWeather_Plugins.h"
 
 typedef struct Instance Instance;
 
@@ -220,5 +225,3 @@ static void _populate(EWeather_Data *e_data, int id)
         default : ;
     }
 }
-
-

@@ -1,8 +1,13 @@
-#include "EWeather_Plugins.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <Ecore_Con.h>
-#include <Ecore.h>
 #include <stdio.h>
+
+#include <Ecore.h>
+#include <Ecore_Con.h>
+
+#include "EWeather_Plugins.h"
 
 typedef struct Instance Instance;
 
@@ -25,7 +30,7 @@ struct _Id_Type
    const char * id;
    EWeather_Type type;
 };
- 
+
 static struct _Id_Type _tab[] =
 {
      {"Chance of Ice", EWEATHER_TYPE_SNOW},
@@ -86,7 +91,7 @@ struct Instance
 
 EAPI EWeather_Plugin _plugin_class =
 {
-   "Google", 
+   "Google",
    "http://www.google.fr/",
    PACKAGE_DATA_DIR"/google_logo.jpg",
    _init,
@@ -328,7 +333,7 @@ _parse(Instance *inst)
 
    needle = strstr(needle, "<day_of_week data=\"");
    if (!needle) goto error;
-   needle += 19; 
+   needle += 19;
    sscanf(needle, "%[^\"]\"", day);
 
    snprintf(e_data->date, 256, "%s %s", day, date);
@@ -345,7 +350,7 @@ _parse(Instance *inst)
    sscanf(needle, "%lf\"", &(e_data->temp_max));
 
    e_data_current = e_data;
-   
+
    for(i=1; i<4; i++)
      {
 	e_data = eweather_data_get(inst->weather, i);
@@ -400,4 +405,3 @@ static EWeather_Type _weather_type_get(const char *id)
 
    return EWEATHER_TYPE_UNKNOWN;
 }
-

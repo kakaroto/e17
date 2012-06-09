@@ -7,6 +7,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DPLUGINS_DIR=\"$(pkglibdir)/plugins\" \
+@EFL_EWEATHER_BUILD@ \
 @EWEATHER_CFLAGS@
 
 include_HEADERS = \

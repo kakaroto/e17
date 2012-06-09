@@ -7,13 +7,14 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/plugins/google \
 -I$(top_srcdir)/src/lib \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EFL_EWEATHER_BUILD@ \
 @EWEATHER_CFLAGS@
 
 pkgdir = $(pkglibdir)/plugins
 pkg_LTLIBRARIES = google.la
 
 google_la_SOURCES = google.c
-google_la_LIBADD = @EWEATHER_LIBS@
+google_la_LIBADD = $(top_builddir)/src/lib/libeweather.la @EWEATHER_LIBS@
 google_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -module -avoid-version
 google_la_LIBTOOLFLAGS = --tag=disable-static
 

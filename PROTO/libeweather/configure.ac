@@ -49,6 +49,14 @@ esac
 AC_SUBST([MODULE_ARCH])
 AC_DEFINE_UNQUOTED([MODULE_ARCH], ["${MODULE_ARCH}"], ["Module architecture"])
 
+EFL_EWEATHER_BUILD=""
+case "$host_os" in
+   mingw*)
+      EFL_EWEATHER_BUILD="-DEFL_EWEATHER_BUILD"
+   ;;
+esac
+AC_SUBST([EFL_EWEATHER_BUILD])
+
 
 ### Default options with respect to host
 

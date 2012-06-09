@@ -13,5 +13,5 @@ bin_PROGRAMS = eweather_test
 
 eweather_test_SOURCES = eweather_test.c
 
-eweather_test_LDADD = @EWEATHER_LIBS@ $(top_builddir)/src/lib/libeweather.la
+eweather_test_LDADD = $(top_builddir)/src/lib/libeweather.la @EWEATHER_LIBS@
 
