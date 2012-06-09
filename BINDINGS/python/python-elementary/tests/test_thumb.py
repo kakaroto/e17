@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-import os
 import elementary
-import edje
-import ecore
 import evas
 
 def thumb_clicked(obj):
@@ -31,7 +28,7 @@ def thumb_clicked(obj):
         for i in range(12):
             th = elementary.Thumb(win)
             n = (n + 1) % 11
-            th.file = ("images/%s" % (images[n]), "")
+            th.file = "images/%s" % (images[n])
             th.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
             th.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
             tb.pack(th, i, j, 1, 1)
