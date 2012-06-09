@@ -290,7 +290,6 @@ _obj_del(Efx_Pan_Data *epd, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, voi
    if (epd->anim) ecore_animator_del(epd->anim);
    if (epd->pan)
      {
-        _smart_del(epd->pan);
         evas_object_del(epd->pan);
         epd->pan = NULL;
      }
