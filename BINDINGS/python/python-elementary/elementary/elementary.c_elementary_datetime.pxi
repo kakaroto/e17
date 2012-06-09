@@ -178,6 +178,9 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
             signal is sent.
 
     """
+    def __init__(self, c_evas.Object parent):
+        Object.__init__(self, parent.evas)
+        self._set_obj(elm_datetime_add(parent.obj))
 
     property format:
         """The datetime format. Format is a combination of allowed Libc date format

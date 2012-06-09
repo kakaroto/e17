@@ -27,7 +27,7 @@ from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
     GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem, \
     Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
-    Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, \
+    Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \

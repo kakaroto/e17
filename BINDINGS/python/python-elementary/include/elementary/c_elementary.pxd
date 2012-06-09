@@ -27,7 +27,7 @@ cdef extern from "string.h":
     char *strdup(char *str)
 
 cdef extern from "time.h":
-    ctypedef struct tm:
+    struct tm:
         int tm_sec
         int tm_min
         int tm_hour
