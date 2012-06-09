@@ -351,10 +351,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.single_line_get()
+            return bool(elm_entry_single_line_get(self.obj))
 
-        def __set__(self, value):
-            self.single_line_set(value)
+        def __set__(self, single_line):
+            elm_entry_single_line_set(self.obj, single_line)
 
     def password_set(self, password):
         """Sets the entry to password mode.
@@ -390,10 +390,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.password_get()
+            return bool(elm_entry_password_get(self.obj))
 
-        def __set__(self, value):
-            self.password_set(value)
+        def __set__(self, password):
+            elm_entry_password_set(self.obj, password)
 
     def entry_set(self, entry):
         """This sets the text displayed within the entry to C{entry}.
@@ -426,10 +426,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.entry_get()
+            return elm_entry_entry_get(self.obj)
 
-        def __set__(self, value):
-            self.entry_set(value)
+        def __set__(self, entry):
+            elm_entry_entry_set(self.obj, entry)
 
     def entry_append(self, text):
         """Appends C{entry} to the text of the entry.
@@ -481,6 +481,28 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
             return ""
         return s
 
+    property selection:
+        """Gets any selected text within the entry.
+
+        If there's any selected text in the entry, this function returns it as
+        a string in markup format. None is returned if no selection exists or
+        if an error occurred.
+
+        The returned value points to an internal string and should not be freed
+        or modified in any way. If the C{entry} object is deleted or its
+        contents are changed, the returned pointer should be considered invalid.
+
+        @return: The selected text within the entry or None on failure
+        @rtype: string
+
+        """
+        def __get__(self):
+            cdef const_char_ptr s
+            s = elm_entry_selection_get(self.obj)
+            if s == NULL:
+                return ""
+            return s
+
     def textblock_get(self):
         """Returns the actual textblock object of the entry.
 
@@ -512,6 +534,39 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         cdef c_evas.Evas_Object *o
         o = elm_entry_textblock_get(self.obj)
         return evas.c_evas._Object_from_instance(<long>o)
+
+    property textblock:
+        """Returns the actual textblock object of the entry.
+
+        This function exposes the internal textblock object that actually
+        contains and draws the text. This should be used for low-level
+        manipulations that are otherwise not possible.
+
+        Changing the textblock directly from here will not notify edje/elm to
+        recalculate the textblock size automatically, so any modifications
+        done to the textblock returned by this function should be followed by
+        a call to L{calc_force()}.
+
+        The return value is marked as const as an additional warning.
+        One should not use the returned object with any of the generic evas
+        functions (geometry_get/resize/move and etc), but only with the textblock
+        functions; The former will either not work at all, or break the correct
+        functionality.
+
+        IMPORTANT: Many functions may change (i.e delete and create a new one)
+        the internal textblock object. Do NOT cache the returned object, and try
+        not to mix calls on this object with regular elm_entry calls (which may
+        change the internal textblock object). This applies to all cursors
+        returned from textblock calls, and all the other derivative values.
+
+        @return: The textblock object.
+        @rtype: Evas_Object
+
+        """
+        def __get__(self):
+            cdef c_evas.Evas_Object *o
+            o = elm_entry_textblock_get(self.obj)
+            return evas.c_evas._Object_from_instance(<long>o)
 
     def calc_force(self):
         """Forces calculation of the entry size and text layouting.
@@ -586,10 +641,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.line_wrap_get()
+            return elm_entry_line_wrap_get(self.obj)
 
-        def __set__(self, value):
-            self.line_wrap_set(value)
+        def __set__(self, wrap):
+            elm_entry_line_wrap_set(self.obj, wrap)
 
     def editable_set(self, editable):
         """Sets if the entry is to be editable or not.
@@ -637,10 +692,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.editable_get()
+            return bool(elm_entry_editable_get(self.obj))
 
-        def __set__(self, value):
-            self.editable_set(value)
+        def __set__(self, editable):
+            elm_entry_editable_set(self.obj, editable)
 
     def select_none(self):
         """This drops any existing text selection within the entry."""
@@ -803,10 +858,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.cursor_pos_get()
+            return elm_entry_cursor_pos_get(self.obj)
 
-        def __set__(self, value):
-            self.cursor_pos_set(value)
+        def __set__(self, pos):
+            elm_entry_cursor_pos_set(self.obj, pos)
 
     def selection_cut(self):
         """This executes a "cut" action on the selected text in the entry."""
@@ -879,10 +934,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.context_menu_disabled_get()
+            return elm_entry_context_menu_disabled_get(self.obj)
 
-        def __set__(self, value):
-            self.context_menu_disabled_set(value)
+        def __set__(self, disabled):
+            elm_entry_context_menu_disabled_set(self.obj, disabled)
 
 
     # elm_entry_item_provider_append() # TODO XXX
@@ -951,10 +1006,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.file_get()
+            cdef const_char_ptr file
+            cdef Elm_Text_Format format
+            elm_entry_file_get(self.obj, &file, &format)
+            return (file, format)
 
         def __set__(self, value):
-            self.file_set(value)
+            file, format = value
+            elm_entry_file_set(self.obj, file, format)
 
     def file_save(self):
         """This function writes any changes made to the file set with
@@ -992,10 +1051,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.autosave_get()
+            return elm_entry_autosave_get(self.obj)
 
-        def __set__(self, value):
-            self.autosave_set(value)
+        def __set__(self, autosave):
+            elm_entry_autosave_set(self.obj, autosave)
 
     def scrollable_set(self, scrollable):
         """Enable or disable scrolling in entry
@@ -1031,10 +1090,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.scrollable_get()
+            return bool(elm_entry_scrollable_get(self.obj))
 
-        def __set__(self, value):
-            self.scrollable_set(value)
+        def __set__(self, scrollable):
+            elm_entry_scrollable_set(self.obj, scrollable)
 
     def icon_visible_set(self, visible):
         """Sets the visibility of the end widget of the entry, set by
@@ -1053,8 +1112,8 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         @type: bool
 
         """
-        def __set__(self, value):
-            self.icon_visible_set(value)
+        def __set__(self, visible):
+            elm_entry_icon_visible_set(self.obj, visible)
 
     def scrollbar_policy_set(self, Elm_Scroller_Policy h, Elm_Scroller_Policy v):
         """This sets the entry's scrollbar policy (i.e. enabling/disabling
@@ -1084,7 +1143,9 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __set__(self, value):
-            self.scrollbar_policy_set(value)
+            cdef Elm_Scroller_Policy h, v
+            h, v = value
+            elm_entry_scrollbar_policy_set(self.obj, h, v)
 
     def bounce_set(self, h_bounce, v_bounce):
         """This enables/disables bouncing within the entry.
@@ -1120,10 +1181,14 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.bounce_get()
+            cdef c_evas.Eina_Bool h_bounce, v_bounce
+            elm_entry_bounce_get(self.obj, &h_bounce, &v_bounce)
+            return (h_bounce, v_bounce)
 
         def __set__(self, value):
-            self.bounce_set(*value)
+            cdef c_evas.Eina_Bool h_bounce, v_bounce
+            h_bounce, v_bounce = value
+            elm_entry_bounce_set(self.obj, h_bounce, v_bounce)
 
     def input_panel_layout_set(self, layout):
         """Set the input panel layout of the entry
@@ -1152,10 +1217,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.input_panel_layout_get()
+            return elm_entry_input_panel_layout_get(self.obj)
 
-        def __set__(self, value):
-            self.input_panel_layout_set(value)
+        def __set__(self, layout):
+            elm_entry_input_panel_layout_set(self.obj, layout)
 
     def input_panel_enabled_set(self, enabled):
         """Sets the attribute to show the input panel automatically.
@@ -1184,10 +1249,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.input_panel_enabled_get()
+            return bool(elm_entry_input_panel_enabled_get(self.obj))
 
-        def __set__(self, value):
-            self.input_panel_enabled_set(value)
+        def __set__(self, enabled):
+            elm_entry_input_panel_enabled_set(self.obj, enabled)
 
     def input_panel_show(self):
         """Show the input panel (virtual keyboard) based on the input panel
@@ -1243,10 +1308,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.input_panel_language_get()
+            return elm_entry_input_panel_language_get(self.obj)
 
-        def __set__(self, value):
-            self.input_panel_language_set(value)
+        def __set__(self, lang):
+            elm_entry_input_panel_language_set(self.obj, lang)
 
     # TODO XXX elm_entry_input_panel_imdata_set() ??
 
@@ -1285,10 +1350,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.input_panel_return_key_type_get()
+            return elm_entry_input_panel_return_key_type_get(self.obj)
 
-        def __set__(self, value):
-            self.input_panel_return_key_type_set(value)
+        def __set__(self, return_key_type):
+            elm_entry_input_panel_return_key_type_set(self.obj, return_key_type)
 
     def input_panel_return_key_disabled_set(self, disabled):
         """Set the return key on the input panel to be disabled.
@@ -1316,10 +1381,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.input_panel_return_key_disabled_get()
+            return elm_entry_input_panel_return_key_disabled_get(self.obj)
 
-        def __set__(self, value):
-            self.input_panel_return_key_disabled_set(value)
+        def __set__(self, disabled):
+            elm_entry_input_panel_return_key_disabled_set(self.obj, disabled)
 
     def input_panel_return_key_autoenabled_set(self, enabled):
         """Set whether the return key on the input panel is disabled automatically when entry has no text.
@@ -1334,6 +1399,19 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         elm_entry_input_panel_return_key_autoenabled_set(self.obj, enabled)
+
+    property input_panel_return_key_autoenabled:
+        """Set whether the return key on the input panel is disabled automatically when entry has no text.
+
+        If C{enabled} is True, The return key on input panel is disabled when the entry has no text.
+        The return key on the input panel is automatically enabled when the entry has text.
+        The default value is False.
+
+        @type: bool
+
+        """
+        def __set__(self, enabled):
+            elm_entry_input_panel_return_key_autoenabled_set(self.obj, enabled)
 
     def imf_context_reset(self):
         """Reset the input method context of the entry if needed.
@@ -1369,10 +1447,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.prediction_allow_get()
+            return elm_entry_prediction_allow_get(self.obj)
 
-        def __set__(self, value):
-            self.prediction_allow_set(value)
+        def __set__(self, allow):
+            elm_entry_prediction_allow_set(self.obj, allow)
 
     # TODO XXX elm_entry_filter_accept_set()
     # TODO XXX elm_entry_imf_context_get() ??
@@ -1417,10 +1495,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.cnp_mode_get()
+            return elm_entry_cnp_mode_get(self.obj)
 
-        def __set__(self, value):
-            self.cnp_mode_set(value)
+        def __set__(self, mode):
+            elm_entry_cnp_mode_set(self.obj, mode)
 
     def anchor_hover_parent_set(self, c_evas.Object anchor_hover_parent):
         """Set the parent of the hover popup
@@ -1459,10 +1537,12 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.anchor_hover_parent_get()
+            cdef c_evas.Evas_Object *anchor_hover_parent
+            anchor_hover_parent = elm_entry_anchor_hover_parent_get(self.obj)
+            return evas.c_evas._Object_from_instance(<long> anchor_hover_parent)
 
-        def __set__(self, value):
-            self.anchor_hover_parent_set(value)
+        def __set__(self, c_evas.Object anchor_hover_parent):
+            elm_entry_anchor_hover_parent_set(self.obj, anchor_hover_parent.obj)
 
     def anchor_hover_style_set(self, style):
         """Set the style that the hover should use
@@ -1504,10 +1584,10 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            return self.anchor_hover_style_get()
+            return elm_entry_anchor_hover_style_get(self.obj)
 
-        def __set__(self, value):
-            self.anchor_hover_style_set(value)
+        def __set__(self, style):
+            elm_entry_anchor_hover_style_set(self.obj, style)
 
     def anchor_hover_end(self):
         """Ends the hover popup in the entry
