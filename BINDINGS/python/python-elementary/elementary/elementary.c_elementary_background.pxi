@@ -97,7 +97,7 @@ cdef public class Background(LayoutClass) [object PyElementaryBackground, type P
         comes from a traditional image file, it will by default be centered
         in this widget's are (thus retaining its aspect), what could lead to
         some parts being not visible. You may change the mode of exhibition
-        for a real image file with L{option_set()}.
+        for a real image file with L{option}.
 
         @note: Once the image is set, a previously set one will be deleted,
             even if B{file} is C{None}.
@@ -107,14 +107,25 @@ cdef public class Background(LayoutClass) [object PyElementaryBackground, type P
             achieve the L{Layout}'s file setting behavior, you'll have to call
             that method on this object.
 
-        @type: (string file, string group)
+        @type: string file, optional string group
 
         """
         def __get__(self):
-            return self.file_get()
+            cdef const_char_ptr filename, group
+            elm_bg_file_get(self.obj, &filename, &group)
+            if filename == NULL:
+                filename = ""
+            if group == NULL:
+                group = ""
+            return (filename, group)
 
         def __set__(self, value):
-            self.file_set(value)
+            if isinstance(value, tuple) or isinstance(value, list):
+                filename, group = value
+            else:
+                filename = value
+                group = ""
+            elm_bg_file_set(self.obj, filename, group)
 
     def option_set(self, option):
         """Set the mode of display for a given background widget's image.
@@ -152,10 +163,10 @@ cdef public class Background(LayoutClass) [object PyElementaryBackground, type P
 
         """
         def __get__(self):
-            return self.option_get()
+            return elm_bg_option_get(self.obj)
 
         def __set__(self, value):
-            self.option_set(value)
+            elm_bg_option_set(self.obj, value)
 
     def color_set(self, r, g, b):
         """Set the color on a given background widget.
@@ -203,10 +214,14 @@ cdef public class Background(LayoutClass) [object PyElementaryBackground, type P
 
         """
         def __get__(self):
-            return self.color_get()
+            cdef int r, g, b
+            elm_bg_color_get(self.obj, &r, &g, &b)
+            return (r, g, b)
 
         def __set__(self, value):
-            self.color_set(*value)
+            cdef int r, g, b
+            r, g, b = value
+            elm_bg_color_set(self.obj, r, g, b)
 
     def load_size_set(self, w, h):
         """Set the size of the pixmap representation of the image set on a given
@@ -254,7 +269,9 @@ cdef public class Background(LayoutClass) [object PyElementaryBackground, type P
 
         """
         def __set__(self, value):
-            self.load_size_set(*value)
+            cdef Evas_Coord w, h
+            w, h = value
+            elm_bg_load_size_set(self.obj, w, h)
 
 _elm_widget_type_register("bg", Background)
 

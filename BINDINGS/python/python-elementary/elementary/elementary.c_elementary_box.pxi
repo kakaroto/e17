@@ -160,9 +160,9 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         """
         def __get__(self):
-            return self.horizontal_get()
+            return elm_box_horizontal_get(self.obj)
         def __set__(self, value):
-            self.horizontal_set(value)
+            elm_box_horizontal_set(self.obj, value)
 
     def homogeneous_set(self, homogeneous):
         """Set the box to arrange its children homogeneously
@@ -199,10 +199,10 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         """
         def __get__(self):
-            return self.homogeneous_get()
+            return bool(elm_box_homogeneous_get(self.obj))
 
         def __set__(self, value):
-            self.homogeneous_set(value)
+            elm_box_homogeneous_set(self.obj, value)
 
     def pack_start(self, c_evas.Object obj):
         """Add an object to the beginning of the pack list.
@@ -369,7 +369,22 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         """
         def __get__(self):
-            return self.children_get()
+            cdef c_evas.Evas_Object *o
+            cdef Object obj
+            cdef evas.c_evas.const_Eina_List *lst
+
+            ret = []
+            lst = elm_box_children_get(self.obj)
+            while lst:
+                o = <c_evas.Evas_Object *> lst.data
+                obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+                ret.append(obj)
+                lst = lst.next
+            return ret
+        #def __set__(self, value):
+            #TODO: unpack_all() and then get the objects from value and pack_end() them.
+        def __del__(self):
+            elm_box_clear(self.obj)
 
     def padding_set(self, horizontal, vertical):
         """Set the space (padding) between the box's elements.
@@ -413,10 +428,14 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         """
         def __get__(self):
-            return self.padding_get()
+            cdef int horizontal, vertical
+            elm_box_padding_get(self.obj, &horizontal, &vertical)
+            return (horizontal, vertical)
 
         def __set__(self, value):
-            self.padding_set(*value)
+            cdef int horizontal, vertical
+            horizontal, vertical = value
+            elm_box_padding_set(self.obj, horizontal, vertical)
 
     def align_set(self, horizontal, vertical):
         """Set the alignment of the whole bounding box of contents.
@@ -458,10 +477,14 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         """
         def __get__(self):
-            return self.align_get()
+            cdef double horizontal, vertical
+            elm_box_align_get(self.obj, &horizontal, &vertical)
+            return (horizontal, vertical)
 
         def __set__(self, value):
-            self.align_set(*value)
+            cdef double horizontal, vertical
+            horizontal, vertical = value
+            elm_box_align_set(self.obj, horizontal, vertical)
 
     def recalculate(self):
         """Force the box to recalculate its children packing.
@@ -500,7 +523,34 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         cdef Evas_Object_Box_Layout ly
 
         ly = _py_elm_box_layout_resolv(layout)
-        elm_box_layout_set(self.obj, ly, NULL, NULL);
+        elm_box_layout_set(self.obj, ly, NULL, NULL)
+
+    property layout:
+        """Set the layout function for the box.
+
+        A box layout function affects how a box object displays child
+        elements within its area. The list of pre-defined box layouts
+        available in Evas is:
+            - elementary.ELM_BOX_LAYOUT_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_HOMOGENEOUS_MAX_SIZE_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_FLOW_HORIZONTAL
+            - elementary.ELM_BOX_LAYOUT_FLOW_VERTICAL
+            - elementary.ELM_BOX_LAYOUT_STACK
+
+        Note that you cannot set a custom layout function.
+
+        @param layout: the new layout to set
+        @type layout: Evas_Object_Box_Layout
+
+        """
+        def __set__(self, layout):
+            cdef Evas_Object_Box_Layout ly
+            ly = _py_elm_box_layout_resolv(layout)
+            elm_box_layout_set(self.obj, ly, NULL, NULL)
 
     def layout_transition(self, duration, from_layout, to_layout):
         """Perform an animatation between two given different layout.

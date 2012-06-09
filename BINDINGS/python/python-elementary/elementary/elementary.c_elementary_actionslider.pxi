@@ -79,7 +79,7 @@ cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, ty
 
         """
         def __get__(self):
-            return self.selected_label_get()
+            return elm_actionslider_selected_label_get(self.obj)
 
     def indicator_pos_set(self, pos):
         """Set actionslider indicator position.
@@ -106,9 +106,9 @@ cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, ty
 
         """
         def __get__(self):
-            return self.indicator_pos_get()
+            return elm_actionslider_indicator_pos_get(self.obj)
         def __set__(self, pos):
-            self.indicator_pos_set(pos)
+            elm_actionslider_indicator_pos_set(self.obj, pos)
 
     def magnet_pos_set(self, pos):
         """Set actionslider magnet position. To make multiple positions
@@ -176,9 +176,9 @@ cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, ty
 
         """
         def __get__(self):
-            return self.enabled_pos_get()
+            return elm_actionslider_enabled_pos_get(self.obj)
         def __set__(self, pos):
-            self.enabled_pos_set(pos)
+            elm_actionslider_enabled_pos_set(self.obj, pos)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """Called when user selects an enabled position. The label is passed
