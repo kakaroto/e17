@@ -617,10 +617,10 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_policy_set(unsigned int policy, int value)
     int                      elm_policy_get(unsigned int policy)
 
-    # General - Language
+    # General - Language    (py3: TODO)
     void                     elm_language_set(const_char_ptr lang)
 
-    # Config
+    # Config                (py3: TODO)
     Eina_Bool                elm_config_save()
     void                     elm_config_reload()
     void                     elm_config_all_flush()
@@ -727,7 +727,7 @@ cdef extern from "Elementary.h":
     void                     elm_theme_name_available_list_free(Eina_List *list)
     char                    *elm_theme_data_get(Elm_Theme *th, char *key)
 
-    # Object handling
+    # Object handling       (py3: TODO)
     void                     elm_object_part_text_set(Evas_Object *obj, const_char_ptr part, const_char_ptr label)
     void                     elm_object_text_set(Evas_Object *obj, const_char_ptr label)
     char*                    elm_object_part_text_get(Evas_Object *obj, const_char_ptr part)
@@ -754,7 +754,7 @@ cdef extern from "Elementary.h":
     void                     elm_object_event_callback_add(Evas_Object *obj, Elm_Event_Cb func, const_void *data)
     void                    *elm_object_event_callback_del(Evas_Object *obj, Elm_Event_Cb func, const_void *data)
 
-    # Object - Cursors (elm_cursor.h)
+    # Object - Cursors (elm_cursor.h) (py3: TODO)
     void                     elm_object_cursor_set(Evas_Object *obj, char *cursor)
     char                    *elm_object_cursor_get(Evas_Object *obj)
     void                     elm_object_cursor_unset(Evas_Object *obj)
@@ -801,7 +801,7 @@ cdef extern from "Elementary.h":
     void                     elm_object_theme_set(Evas_Object *obj, Elm_Theme *th)
     Elm_Theme               *elm_object_theme_get(Evas_Object *obj)
 
-    # Object - Tooltips (elm_tooltip.h)
+    # Object - Tooltips (elm_tooltip.h) (py3: TODO)
     void                     elm_object_tooltip_show(Evas_Object *obj)
     void                     elm_object_tooltip_hide(Evas_Object *obj)
     void                     elm_object_tooltip_text_set(Evas_Object *obj, char *text)
@@ -814,14 +814,14 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_object_tooltip_window_mode_set(Evas_Object *obj, Eina_Bool disable)
     Eina_Bool                elm_object_tooltip_window_mode_get(Evas_Object *obj)
 
-    # Object - Translatable text (elm_general.h)
+    # Object - Translatable text (elm_general.h) (py3: TODO)
     void                     elm_object_domain_translatable_text_part_set(Evas_Object *obj, char *part, char *domain, char *text)
     void                     elm_object_domain_translatable_text_set(Evas_Object *obj, char *domain, char *text)
     void                     elm_object_translatable_text_set(Evas_Object *obj, char *text)
     char                    *elm_object_translatable_text_part_get(Evas_Object *obj, char *part)
     char                    *elm_object_translatable_text_get(Evas_Object *obj)
 
-    # Object Item
+    # Object Item           (py3: TODO)
     Evas_Object             *elm_object_item_widget_get(Elm_Object_Item *it)
     void                     elm_object_item_part_content_set(Elm_Object_Item *it, const_char_ptr part, Evas_Object* content)
     void                     elm_object_item_content_set(Elm_Object_Item *it, Evas_Object* content)
@@ -856,7 +856,7 @@ cdef extern from "Elementary.h":
     void                     elm_object_item_cursor_engine_only_set(Elm_Object_Item *it, Eina_Bool engine_only)
     Eina_Bool                elm_object_item_cursor_engine_only_get(Elm_Object_Item *it)
 
-    # Transit               (XXX)
+    # Transit               (api:TODO  cb:TODO  test:TODO  doc:TODO  py3: TODO)
     Elm_Transit             *elm_transit_add()
     void                     elm_transit_del(Elm_Transit *transit)
     void                     elm_transit_effect_add(Elm_Transit *transit, Elm_Transit_Effect_Transition_Cb transition_cb, Elm_Transit_Effect *effect, Elm_Transit_Effect_End_Cb end_cb)
@@ -908,7 +908,7 @@ cdef extern from "Elementary.h":
     void                     elm_actionslider_enabled_pos_set(Evas_Object *obj, Elm_Actionslider_Pos pos)
     Elm_Actionslider_Pos     elm_actionslider_enabled_pos_get(Evas_Object *obj)
 
-    # Background            (api:DONE  cb:N/A   test:DONE  doc:DONE)
+    # Background            (api:DONE  cb:N/A   test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_bg_add(Evas_Object *parent)
     Eina_Bool                elm_bg_file_set(Evas_Object *obj, char *file, char *group)
     void                     elm_bg_file_get(Evas_Object *obj, char **file, char **group)
@@ -955,7 +955,7 @@ cdef extern from "Elementary.h":
     void                     elm_button_autorepeat_gap_timeout_set(Evas_Object *obj, double t)
     double                   elm_button_autorepeat_gap_timeout_get(Evas_Object *obj)
 
-    # Calendar              (api:TODO  cb:DONE  test:TODO  doc:DONE)
+    # Calendar              (api:TODO  cb:DONE  test:TODO  doc:DONE  py3:TODO)
     Evas_Object             *elm_calendar_add(Evas_Object *parent)
     const_char_ptr          *elm_calendar_weekdays_names_get(Evas_Object *obj)
     void                     elm_calendar_weekdays_names_set(Evas_Object *obj, const_char_ptr weekdays[])
@@ -996,7 +996,7 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(Evas_Object *obj)
 
-    # Colorselector         (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Colorselector         (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:TODO)
     Evas_Object             *elm_colorselector_add(Evas_Object *parent)
     void                     elm_colorselector_color_set(Evas_Object *obj, int r, int g, int b, int a)
     void                     elm_colorselector_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
@@ -1012,7 +1012,7 @@ cdef extern from "Elementary.h":
     # Conformant            (api:DONE  cb:N/A   test:TODO  doc:DONE)
     Evas_Object             *elm_conformant_add(Evas_Object *parent)
 
-    # Ctxpopup              (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Ctxpopup              (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_ctxpopup_add(Evas_Object *parent)
     void                     elm_ctxpopup_hover_parent_set(Evas_Object *obj, Evas_Object *parent)
     Evas_Object             *elm_ctxpopup_hover_parent_get(Evas_Object *obj)
@@ -1051,7 +1051,7 @@ cdef extern from "Elementary.h":
     void                     elm_dayselector_weekend_length_set(Evas_Object *obj, unsigned int length)
     unsigned int             elm_dayselector_weekend_length_get(Evas_Object *obj)
 
-    # Diskselector          (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Diskselector          (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:TODO)
     Evas_Object             *elm_diskselector_add(Evas_Object *parent)
     void                     elm_diskselector_round_enabled_set(Evas_Object *obj, Eina_Bool enabled)
     Eina_Bool                elm_diskselector_round_enabled_get(Evas_Object *obj)
@@ -1074,7 +1074,7 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_diskselector_item_prev_get(Elm_Object_Item *it)
     Elm_Object_Item         *elm_diskselector_item_next_get(Elm_Object_Item *it)
 
-    # Entry                 (api:TODO  cb:DONE  test:TODO  doc:TODO)
+    # Entry                 (api:TODO  cb:DONE  test:TODO  doc:TODO  py3:TODO)
     Evas_Object             *elm_entry_add(Evas_Object *parent)
     void                     elm_entry_single_line_set(Evas_Object *obj, Eina_Bool single_line)
     Eina_Bool                elm_entry_single_line_get(Evas_Object *obj)
@@ -1153,7 +1153,7 @@ cdef extern from "Elementary.h":
     char                    *elm_entry_anchor_hover_style_get(Evas_Object *obj)
     void                     elm_entry_anchor_hover_end(Evas_Object *obj)
 
-    # Fileselector          (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Fileselector          (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_fileselector_add(Evas_Object *parent)
     void                     elm_fileselector_is_save_set(Evas_Object *obj, Eina_Bool is_save)
     Eina_Bool                elm_fileselector_is_save_get(Evas_Object *obj)
@@ -1170,7 +1170,7 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_mode_set(Evas_Object *obj, Elm_Fileselector_Mode mode)
     Elm_Fileselector_Mode    elm_fileselector_mode_get(Evas_Object *obj)
 
-    # Fileselector Button   (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Fileselector Button   (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_fileselector_button_add(Evas_Object *parent)
     void                     elm_fileselector_button_window_title_set(Evas_Object *obj, char *title)
     char                    *elm_fileselector_button_window_title_get(Evas_Object *obj)
@@ -1187,7 +1187,7 @@ cdef extern from "Elementary.h":
     void                     elm_fileselector_button_expandable_set(Evas_Object *obj, Eina_Bool value)
     Eina_Bool                elm_fileselector_button_expandable_get(Evas_Object *obj)
 
-    # Fileselector Entry    (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Fileselector Entry    (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_fileselector_entry_add(Evas_Object *parent)
     void                     elm_fileselector_entry_window_title_set(Evas_Object *obj, char *title)
     char                    *elm_fileselector_entry_window_title_get(Evas_Object *obj)
@@ -1228,7 +1228,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_frame_collapse_get(Evas_Object *obj)
     void                     elm_frame_collapse_go(Evas_Object *obj, Eina_Bool collapse)
 
-    # Generic Grid          (api:TODO  cb:TODO  test:DONE  doc:TODO)
+    # Generic Grid          (api:TODO  cb:TODO  test:DONE  doc:TODO  py3:TODO)
     Evas_Object             *elm_gengrid_add(Evas_Object *parent)
     void                     elm_gengrid_clear(Evas_Object *obj)
     void                     elm_gengrid_multi_select_set(Evas_Object *obj, Eina_Bool multi)
@@ -1301,7 +1301,7 @@ cdef extern from "Elementary.h":
     void                     elm_gengrid_item_cursor_engine_only_set(Elm_Object_Item *item, Eina_Bool engine_only)
     Eina_Bool                elm_gengrid_item_cursor_engine_only_get(Elm_Object_Item *item)
 
-    # Generic List          (api:TODO  cb:DONE  test:DONE  doc:TODO)
+    # Generic List          (api:TODO  cb:DONE  test:DONE  doc:TODO  py3:TODO)
     Evas_Object             *elm_genlist_add(Evas_Object *parent)
     void                     elm_genlist_clear(Evas_Object *obj)
     void                     elm_genlist_multi_select_set(Evas_Object *obj, Eina_Bool multi)
@@ -1406,7 +1406,7 @@ cdef extern from "Elementary.h":
     char                    *elm_hover_best_content_location_get(Evas_Object *obj, Elm_Hover_Axis pref_axis)
     void                     elm_hover_dismiss(Evas_Object *obj)
 
-    # Hoversel              (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Hoversel              (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_hoversel_add(Evas_Object *parent)
     void                     elm_hoversel_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_hoversel_horizontal_get(Evas_Object *obj)
@@ -1421,7 +1421,7 @@ cdef extern from "Elementary.h":
     void                     elm_hoversel_item_icon_set(Elm_Object_Item *it, char *icon_file, char *icon_group, Elm_Icon_Type icon_type)
     void                     elm_hoversel_item_icon_get(Elm_Object_Item *it, char **icon_file, char **icon_group, Elm_Icon_Type *icon_type)
 
-    # Icon                  (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Icon                  (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_icon_add(Evas_Object *parent)
     void                     elm_icon_thumb_set(Evas_Object *obj, char *file, char *group)
     Eina_Bool                elm_icon_standard_set(Evas_Object *obj, char* name)
@@ -1429,7 +1429,7 @@ cdef extern from "Elementary.h":
     void                     elm_icon_order_lookup_set(Evas_Object *obj, Elm_Icon_Lookup_Order order)
     Elm_Icon_Lookup_Order    elm_icon_order_lookup_get(Evas_Object *obj)
 
-    # Image                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Image                 (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_image_add(Evas_Object *parent)
     Eina_Bool                elm_image_memfile_set(Evas_Object *obj, const_void *img, size_t size, const_char_ptr format, const_char_ptr key)
     Eina_Bool                elm_image_file_set(Evas_Object *obj, char *file, char *group)
@@ -1459,7 +1459,7 @@ cdef extern from "Elementary.h":
     void                     elm_image_animated_play_set(Evas_Object *obj, Eina_Bool play)
     Eina_Bool                elm_image_animated_play_get(Evas_Object *obj)
 
-    # Index                 (api:TODO  cb:DONE  test:TODO  doc:DONE)
+    # Index                 (api:TODO  cb:DONE  test:TODO  doc:DONE  py3:TODO)
     Evas_Object             *elm_index_add(Evas_Object *parent)
     void                     elm_index_autohide_disabled_set(Evas_Object *obj, Eina_Bool disabled)
     Eina_Bool                elm_index_autohide_disabled_get(Evas_Object *obj)
@@ -1501,7 +1501,7 @@ cdef extern from "Elementary.h":
     void                     elm_label_slide_duration_set(Evas_Object *obj, double duration)
     double                   elm_label_slide_duration_get(Evas_Object *obj)
 
-    # Layout                (api:TODO  cb:DONE  test:DONE  doc:DONE)
+    # Layout                (api:TODO  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_layout_add(Evas_Object *parent)
     Eina_Bool                elm_layout_file_set(Evas_Object *obj, char *file, char *group)
     Eina_Bool                elm_layout_theme_set(Evas_Object *obj, char *clas, char *group, char *style)
@@ -1537,7 +1537,7 @@ cdef extern from "Elementary.h":
     void                     elm_layout_end_set(Evas_Object *obj, Evas_Object *end)
     Evas_Object             *elm_layout_end_get(Evas_Object *obj)
 
-    # List                  (api:TODO  cb:DONE  test:DONE  doc:DONE)
+    # List                  (api:TODO  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_list_add(Evas_Object *parent)
     void                     elm_list_go(Evas_Object *obj)
     void                     elm_list_multi_select_set(Evas_Object *obj, Eina_Bool multi)
@@ -1577,7 +1577,7 @@ cdef extern from "Elementary.h":
 
     # Mapbuf                (XXX)
 
-    # Menu                  (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Menu                  (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_menu_add(Evas_Object *parent)
     void                     elm_menu_parent_set(Evas_Object *obj, Evas_Object *parent)
     Evas_Object             *elm_menu_parent_get(Evas_Object *obj)
@@ -1602,7 +1602,7 @@ cdef extern from "Elementary.h":
 
     # Multibuttonentry      (XXX)
 
-    # Naviframe             (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Naviframe             (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_naviframe_add(Evas_Object *parent)
     Elm_Object_Item         *elm_naviframe_item_push(Evas_Object *obj, char *title_label, Evas_Object *prev_btn, Evas_Object *next_btn, Evas_Object *content, char *item_style)
     Elm_Object_Item         *elm_naviframe_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, const_char_ptr title_label, Evas_Object *prev_btn, Evas_Object *next_btn, Evas_Object *content, const_char_ptr item_style)
@@ -1656,7 +1656,7 @@ cdef extern from "Elementary.h":
     void                     elm_panes_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_panes_horizontal_get(Evas_Object *obj)
 
-    # Photo                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Photo                 (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:TODO)
     Evas_Object             *elm_photo_add(Evas_Object *parent)
     Eina_Bool                elm_photo_file_set(Evas_Object *obj, char *file)
     void                     elm_photo_thumb_set(Evas_Object *obj, char *file, char *group)
@@ -1672,7 +1672,7 @@ cdef extern from "Elementary.h":
 
     # Popup                 (XXX)
 
-    # Progressbar           (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Progressbar           (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_progressbar_add(Evas_Object *parent)
     void                     elm_progressbar_pulse_set(Evas_Object *obj, Eina_Bool pulse)
     Eina_Bool                elm_progressbar_pulse_get(Evas_Object *obj)
@@ -1700,7 +1700,7 @@ cdef extern from "Elementary.h":
 
     # Route                 (XXX)
 
-    # Scroller              (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Scroller              (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_scroller_add(Evas_Object *parent)
     void                     elm_scroller_custom_widget_base_theme_set(Evas_Object *obj, char *widget, char *base)
     void                     elm_scroller_content_min_limit(Evas_Object *obj, Eina_Bool w, Eina_Bool h)
@@ -1730,7 +1730,7 @@ cdef extern from "Elementary.h":
     void                     elm_separator_horizontal_set(Evas_Object *obj, Eina_Bool)
     Eina_Bool                elm_separator_horizontal_get(Evas_Object *obj)
 
-    # Slider                (api:TODO  cb:DONE  test:DONE  doc:DONE)
+    # Slider                (api:TODO  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_slider_add(Evas_Object *parent)
     void                     elm_slider_span_size_set(Evas_Object *obj, Evas_Coord size)
     Evas_Coord               elm_slider_span_size_get(Evas_Object *obj)
@@ -1753,7 +1753,7 @@ cdef extern from "Elementary.h":
 
     # Slideshow             (XXX)
 
-    # Spinner               (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Spinner               (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_spinner_add(Evas_Object *parent)
     void                     elm_spinner_label_format_set(Evas_Object *obj, char *format)
     char                    *elm_spinner_label_format_get(Evas_Object *obj)
@@ -1787,7 +1787,7 @@ cdef extern from "Elementary.h":
     void                     elm_table_pack_set(Evas_Object *subobj, int x, int y, int w, int h)
     void                     elm_table_pack_get(Evas_Object *subobj, int *x, int *y, int *w, int *h)
 
-    # Thumb                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
+    # Thumb                 (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:TODO)
     Evas_Object             *elm_thumb_add(Evas_Object *parent)
     void                     elm_thumb_reload(Evas_Object *obj)
     void                     elm_thumb_file_set(Evas_Object *obj, const_char_ptr file, const_char_ptr key)
@@ -1800,7 +1800,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_thumb_editable_set(Evas_Object *obj, Eina_Bool edit)
     Eina_Bool                elm_thumb_editable_get(Evas_Object *obj)
 
-    # Toolbar               (api:TODO  cb:DONE  test:DONE  doc:TODO)
+    # Toolbar               (api:TODO  cb:DONE  test:DONE  doc:TODO  py3:TODO)
     Evas_Object             *elm_toolbar_add(Evas_Object *parent)
     void                     elm_toolbar_icon_size_set(Evas_Object *obj, int icon_size)
     int                      elm_toolbar_icon_size_get(Evas_Object *obj)
@@ -1854,7 +1854,7 @@ cdef extern from "Elementary.h":
     void                     elm_toolbar_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_toolbar_select_mode_get(Evas_Object *obj)
 
-    # Video                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Video                 (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:TODO)
     Evas_Object             *elm_player_add(Evas_Object *parent)
     Evas_Object             *elm_video_add(Evas_Object *parent)
     Eina_Bool                elm_video_file_set(Evas_Object *video, const_char_ptr filename)
@@ -1875,7 +1875,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_video_remember_position_get(Evas_Object *video)
     const_char_ptr           elm_video_title_get(Evas_Object *video)
 
-    # Web                   (api:TODO  cb:TODO  test:DONE  doc:TODO)
+    # Web                   (api:TODO  cb:TODO  test:DONE  doc:TODO  py3:TODO)
     Evas_Object             *elm_web_add(Evas_Object *parent)
     void                     elm_web_useragent_set(Evas_Object *obj, const_char_ptr user_agent)
     const_char_ptr           elm_web_useragent_get(Evas_Object *obj)
@@ -1933,7 +1933,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_web_window_features_property_get(Elm_Web_Window_Features *wf, Elm_Web_Window_Feature_Flag flag)
     void                     elm_web_window_features_region_get(Elm_Web_Window_Features *wf, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 
-    # Window                (api:DONE  cb:DONE  test:TODO  doc:TODO)
+    # Window                (api:DONE  cb:DONE  test:TODO  doc:TODO  py3:TODO)
     Evas_Object             *elm_win_add(Evas_Object *parent, char *name, Elm_Win_Type type)
     Evas_Object             *elm_win_util_standard_add(char* name, char* title)
     void                     elm_win_resize_object_add(Evas_Object *obj, Evas_Object* subobj)
