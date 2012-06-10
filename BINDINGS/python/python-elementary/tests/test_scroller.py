@@ -19,13 +19,13 @@ def my_scroller_go_900_900(obj, sc):
     sc.region_bring_in(900, 900, 318, 318)
 
 def cb_edges(obj, border):
-    print("Border callback:", border)
+    print(("Border callback:", border))
 
 def cb_drags(obj, action):
-    print("Drag callback:", action)
+    print(("Drag callback:", action))
 
 def cb_anims(obj, action):
-    print("Anim callback:", action)
+    print(("Anim callback:", action))
 
 def scroller_clicked(obj):
     win = elementary.Window("scroller", elementary.ELM_WIN_BASIC)

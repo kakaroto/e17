@@ -30,7 +30,7 @@ def clock_clicked(obj):
     bx.pack_end(ck)
     ck.show()
 
-    print ck.time_get()
+    print((ck.time_get()))
 
     ck = elementary.Clock(win)
     ck.show_seconds_set(True)

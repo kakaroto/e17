@@ -20,7 +20,7 @@ def cb_rot(bt, win, ck, rot):
         win.rotation = rot
 
 def cb_win_moved(win):
-    print "MOVE - win geom:", win.geometry
+    print(("MOVE - win geom:", win.geometry))
 
 def window_states_clicked(obj):
     win = elementary.Window("window-states", elementary.ELM_WIN_BASIC)

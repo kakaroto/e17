@@ -6,7 +6,7 @@ def config_clicked(obj):
     c = elementary.Configuration()
     for i in (c.engine, c.finger_size, c.mirrored, c.profile_list, c.font_overlay_list, c.text_classes_list):
         print(i)
-    print(elementary.config_finger_size_get())
+    print((elementary.config_finger_size_get()))
 
 if __name__ == "__main__":
     elementary.init()

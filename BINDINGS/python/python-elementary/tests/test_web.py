@@ -31,7 +31,7 @@ def web_clicked(obj):
 
     # Debug:
     def dbg(*args):
-        print "DEBUG: %s" % args[-1], " ".join(repr(x) for x in args[1:-1])
+        print(("DEBUG: %s" % args[-1], " ".join(repr(x) for x in args[1:-1])))
     web.callback_link_hover_in_add(dbg, "link in")
     web.callback_link_hover_out_add(dbg, "link out")
 
@@ -45,7 +45,7 @@ def web_clicked(obj):
 
     # JS debug to console:
     def console_msg(obj, msg, line, src):
-        print "CONSOLE: %s:%d %r" % (src, line, msg)
+        print(("CONSOLE: %s:%d %r" % (src, line, msg)))
     web.console_message_hook_set(console_msg)
 
     # navigation bar:

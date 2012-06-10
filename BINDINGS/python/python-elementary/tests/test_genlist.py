@@ -19,7 +19,7 @@ def gl_state_get(obj, part, item_data):
     return False
 
 def gl_sel(gli, gl, *args, **kwargs):
-    print "sel item %s on genlist %s" % (gli, gl)
+    print(("sel item %s on genlist %s" % (gli, gl)))
 
 def glg_text_get(obj, part, item_data):
     return "Group # %i" % (item_data,)
@@ -49,13 +49,13 @@ def genlist_clicked(obj, item=None):
 
     gl = elementary.Genlist(win)
     def _gl_selected(gl, gli, *args, **kwargs):
-        print "selected"
+        print("selected")
     gl.callback_selected_add(_gl_selected)
     def _gl_clicked_double(gl, gli):
-        print "double clicked"
+        print("double clicked")
     gl.callback_clicked_double_add(_gl_clicked_double)
     def _gl_longpressed(gl, gli, *args, **kwargs):
-        print "longpressed"
+        print("longpressed")
     gl.callback_longpressed_add(_gl_longpressed)
     gl.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     gl.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
@@ -68,9 +68,9 @@ def genlist_clicked(obj, item=None):
     def _gl_move(evas, evt, gl):
         gli = gl.at_xy_item_get(evt.position.canvas.x, evt.position.canvas.y)
         if gli:
-            print "over %s", gli
+            print(("over %s", gli))
         else:
-            print "over none"
+            print("over none")
 
     over.event_callback_add(evas.EVAS_CALLBACK_MOUSE_DOWN, _gl_move, gl)
     over.repeat_events_set(True)
@@ -93,7 +93,7 @@ def genlist_clicked(obj, item=None):
     bt_1500.show()
     bx.pack_end(bt_1500)
 
-    for i in xrange(0, 2000):
+    for i in range(0, 2000):
         gli = gl.item_append(itc1, i, func=gl_sel)
         if i == 50:
             def _bt50_cb(button, gli):
@@ -190,7 +190,7 @@ def genlist2_clicked(obj, item=None):
             gli.selected = False
             gli.update()
         else:
-            print "no item selected"
+            print("no item selected")
 
     bt = elementary.Button(win)
     bt.text_set("#")
@@ -206,7 +206,7 @@ def genlist2_clicked(obj, item=None):
         i = 0
         while gli:
             gli.update()
-            print i
+            print(i)
             i = i + 1
             gli = gli.next_get()
 
@@ -261,7 +261,7 @@ def genlist2_clicked(obj, item=None):
         if gli:
             gli.delete()
         else:
-            print "no item selected"
+            print("no item selected")
 
     bt = elementary.Button(win)
     bt.text_set("-")
@@ -289,7 +289,7 @@ def genlist2_clicked(obj, item=None):
             gl.item_insert_before(itc1, MyGlInsertBefore.i, gli, func=gl_sel)
             MyGlInsertBefore.i = MyGlInsertBefore.i + 1
         else:
-            print "no item selected"
+            print("no item selected")
 
     bt = elementary.Button(win)
     bt.text_set("+ before")
@@ -308,7 +308,7 @@ def genlist2_clicked(obj, item=None):
             gl.item_insert_after(itc1, MyGlInsertAfter.i, gli, func=gl_sel)
             MyGlInsertAfter.i = MyGlInsertAfter.i + 1
         else:
-            print "no item selected"
+            print("no item selected")
 
     bt = elementary.Button(win)
     bt.text_set("+ after")

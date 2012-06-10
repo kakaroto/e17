@@ -11,11 +11,11 @@ def my_entry_bt_1(bt, en):
 
 def my_entry_bt_2(bt, en):
     str = en.entry_get()
-    print "ENTRY: %s" % str
+    print(("ENTRY: %s" % str))
 
 def my_entry_bt_3(bt, en):
     str = en.selection_get()
-    print "SELECTION: %s" % str
+    print(("SELECTION: %s" % str))
 
 def my_entry_bt_4(bt, en):
     en.entry_insert("Insert some <b>BOLD</> text")

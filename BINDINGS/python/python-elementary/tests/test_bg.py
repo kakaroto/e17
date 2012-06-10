@@ -39,8 +39,8 @@ def bg_image_clicked(obj, item=None):
     win.show()
 
     (filename, group) = bg.file_get()
-    print("Background image: '%s'  group: '%s'" % (filename, group))
-    print("Option: %d" % (bg.option_get()))
+    print(("Background image: '%s'  group: '%s'" % (filename, group)))
+    print(("Option: %d" % (bg.option_get())))
 # }}}
 
 #----- Main -{{{-

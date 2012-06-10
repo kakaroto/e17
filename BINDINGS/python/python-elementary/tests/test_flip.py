@@ -144,7 +144,7 @@ def flip_clicked(obj, item=None):
 
 #----- Flip Interactive -{{{-
 def my_cb_radios (rd, fl):
-    print rd.value_get()
+    print((rd.value_get()))
     fl.interaction_set(rd.value_get())
 
 def flip_interactive_clicked(obj, item=None):

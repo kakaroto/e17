@@ -7,7 +7,7 @@ import evas
 
 #----- Layout -{{{-
 def _event(*args, **kargs):
-    print args, kargs
+    print((args, kargs))
 
 def layout_clicked(obj):
     win = elementary.Window("layout", elementary.ELM_WIN_BASIC)

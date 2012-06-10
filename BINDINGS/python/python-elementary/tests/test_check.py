@@ -7,19 +7,19 @@ import evas
 
 #----- Check -{{{-
 def ck_1(obj):
-    print "test check 1 state:", obj.state
+    print(("test check 1 state:", obj.state))
 
 def ck_2(obj):
-    print "test check 2 state:", obj.state
+    print(("test check 2 state:", obj.state))
 
 def ck_never(obj):
-    print "disabled check changed (should never happen unless you enable or set it)"
+    print("disabled check changed (should never happen unless you enable or set it)")
 
 def ck_3(obj):
-    print "test check 3 state:", obj.state
+    print(("test check 3 state:", obj.state))
 
 def ck_4(obj):
-    print "test check 4 state:", obj.state
+    print(("test check 4 state:", obj.state))
 
 def check_clicked(obj):
     win = elementary.Window("check", elementary.ELM_WIN_BASIC)

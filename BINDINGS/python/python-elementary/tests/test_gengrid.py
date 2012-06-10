@@ -32,13 +32,13 @@ def gg_del(obj, item_data):
 
 def gg_sel(gg, ggi, *args, **kwargs):
     (x, y) = ggi.pos_get()
-    print "[item selected] # %d  at pos %d %d" % (ggi.data, x, y)
+    print(("[item selected] # %d  at pos %d %d" % (ggi.data, x, y)))
 
 def gg_unsel(gg, ggi, *args, **kwargs):
-    print "[item unselected] # %d" % (ggi.data)
+    print(("[item unselected] # %d" % (ggi.data)))
 
 def gg_clicked_double(gg, ggi, *args, **kwargs):
-    print "[item double clicked] # %d" % (ggi.data)
+    print(("[item double clicked] # %d" % (ggi.data)))
 # -}}}-
 
 #----- Gengrid -{{{-
@@ -92,7 +92,7 @@ def gengrid_clicked(obj):
     # multi select
     def multi_select_changed(bt, gg):
         gg.multi_select_set(bt.state)
-        print gg.multi_select_get()
+        print((gg.multi_select_get()))
 
     bt = elementary.Check(win)
     bt.text = "MultiSelect"
@@ -115,7 +115,7 @@ def gengrid_clicked(obj):
     def bounce_h_changed(bt, gg):
         (h_bounce, v_bounce) = gg.bounce_get()
         gg.bounce_set(bt.state, v_bounce)
-        print gg.bounce_get()
+        print((gg.bounce_get()))
 
     bt = elementary.Check(win)
     bt.text_set("BounceH")
@@ -129,7 +129,7 @@ def gengrid_clicked(obj):
     def bounce_v_changed(bt, gg):
         (h_bounce, v_bounce) = gg.bounce_get()
         gg.bounce_set(h_bounce, bt.state)
-        print gg.bounce_get()
+        print((gg.bounce_get()))
 
     bt = elementary.Check(win)
     bt.text_set("BounceV")
@@ -143,12 +143,12 @@ def gengrid_clicked(obj):
     def item_size_w_changed(sl, gg):
         (w, h) = gg.item_size_get()
         gg.item_size_set(sl.value, h)
-        print gg.item_size_get()
+        print((gg.item_size_get()))
 
     def item_size_h_changed(sl, gg):
         (w, h) = gg.item_size_get()
         gg.item_size_set(w, sl.value)
-        print gg.item_size_get()
+        print((gg.item_size_get()))
 
     sl = elementary.Slider(win)
     sl.text_set("ItemSizeW")
@@ -178,12 +178,12 @@ def gengrid_clicked(obj):
     def alignx_changed(sl, gg):
         (ax, ay) = gg.align_get()
         gg.align_set(sl.value, ay)
-        print gg.align_get()
+        print((gg.align_get()))
 
     def aligny_changed(sl, gg):
         (ax, ay) = gg.align_get()
         gg.align_set(ax, sl.value)
-        print gg.align_get()
+        print((gg.align_get()))
 
     sl = elementary.Slider(win)
     sl.text_set("AlignX")

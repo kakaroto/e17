@@ -174,9 +174,9 @@ def menu_create(search, win):
             frame.delete()
 
 def destroy(obj, str1, str2, str3, str4):
-    print "DEBUG: window destroy callback called!"
-    print "DEBUG: str1='%s', str2='%s', str3='%s', str4='%s'" %(str1, str2,
-                                                                str3, str4)
+    print("DEBUG: window destroy callback called!")
+    print(("DEBUG: str1='%s', str2='%s', str3='%s', str4='%s'" %(str1, str2,
+                                                                str3, str4)))
     elementary.exit()
 
 def cb_mirroring(toggle):

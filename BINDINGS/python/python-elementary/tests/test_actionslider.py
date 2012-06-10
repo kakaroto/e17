@@ -6,52 +6,52 @@ import ecore
 import evas
 
 def _pos_selected_cb(obj, event_info):
-    print("Selection: %s" % event_info)
-    print("Label selected: %s" % obj.selected_label_get())
+    print(("Selection: %s" % (event_info)))
+    print(("Label selected: %s" % (obj.selected_label_get())))
 
     ipos = obj.indicator_pos_get()
-    print("actionslider indicator pos: "),
+    print("actionslider indicator pos: ")
     if ipos == elementary.ELM_ACTIONSLIDER_NONE:
         print("none!")
     elif ipos == elementary.ELM_ACTIONSLIDER_ALL:
         print("all!")
     else:
         if (ipos & elementary.ELM_ACTIONSLIDER_LEFT):
-            print("left "),
+            print("left ")
         if (ipos & elementary.ELM_ACTIONSLIDER_CENTER):
-            print("center "),
+            print("center ")
         if (ipos & elementary.ELM_ACTIONSLIDER_RIGHT):
-            print("right "),
+            print("right ")
         print("")
 
     mpos = obj.magnet_pos_get()
-    print("actionslider magnet pos: "),
+    print("actionslider magnet pos: ")
     if mpos == elementary.ELM_ACTIONSLIDER_NONE:
         print("none!")
     elif mpos == elementary.ELM_ACTIONSLIDER_ALL:
         print("all!")
     else:
         if (mpos & elementary.ELM_ACTIONSLIDER_LEFT):
-            print("left "),
+            print("left ")
         if (mpos & elementary.ELM_ACTIONSLIDER_CENTER):
-            print("center "),
+            print("center ")
         if (mpos & elementary.ELM_ACTIONSLIDER_RIGHT):
-            print("right "),
+            print("right ")
         print("")
 
     epos = obj.enabled_pos_get()
-    print("actionslider enabled pos: "),
+    print("actionslider enabled pos: ")
     if epos == elementary.ELM_ACTIONSLIDER_NONE:
         print("none!")
     elif epos == elementary.ELM_ACTIONSLIDER_ALL:
         print("all!")
     else:
         if (epos & elementary.ELM_ACTIONSLIDER_LEFT):
-            print("left "),
+            print("left ")
         if (epos & elementary.ELM_ACTIONSLIDER_CENTER):
-            print("center "),
+            print("center ")
         if (epos & elementary.ELM_ACTIONSLIDER_RIGHT):
-            print("right "),
+            print("right ")
         print("")
 
 def _position_change_magnetic_cb(obj, event_info):

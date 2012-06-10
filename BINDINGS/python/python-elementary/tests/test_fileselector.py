@@ -10,33 +10,33 @@ def fs_cb_done(fs, selected, win):
     win.delete()
 
 def fs_cb_selected(fs, selected, win):
-    print "Selected file:", selected
-    print "           or:", fs.selected_get()
+    print(("Selected file:", selected))
+    print(("           or:", fs.selected_get()))
 
 def fs_cb_directory_open(fs, folder, win):
-    print "Folder open:", folder
+    print(("Folder open:", folder))
 
 def ck_cb_is_save(bt, fs):
-    print "Toggle is save"
+    print("Toggle is save")
     fs.is_save = not fs.is_save
 
 def ck_cb_folder_only(bt, fs):
-    print "Toggle folder_only"
+    print("Toggle folder_only")
     fs.folder_only = not fs.folder_only
 
 def ck_cb_expandable(bt, fs):
-    print "Toggle expandable"
+    print("Toggle expandable")
     fs.expandable = not fs.expandable
 
 def ck_cb_buttons(bt, fs):
-    print "Toggle buttons_ok_cancel"
+    print("Toggle buttons_ok_cancel")
     fs.buttons_ok_cancel = not fs.buttons_ok_cancel
 
 def bt_cb_sel_get(bt, fs):
-    print "Get Selected:", fs.selected_get()
+    print(("Get Selected:", fs.selected_get()))
 
 def bt_cb_path_get(bt, fs):
-    print "Get Path:", fs.path_get()
+    print(("Get Path:", fs.path_get()))
 
 def bt_cb_mode_cycle(bt, fs):
     mode = fs.mode + 1
@@ -204,19 +204,19 @@ def fileselector_button_clicked(obj, item=None):
 
 #----- FileSelector Entry-{{{-
 def ck_entry_cb_is_save(bt, fse):
-    print "Toggle is save"
+    print("Toggle is save")
     fse.is_save = not fse.is_save
     
 def ck_entry_cb_inwin(bt, fse):
-    print "Toggle inwin mode"
+    print("Toggle inwin mode")
     fse.inwin_mode = not fse.inwin_mode
 
 def ck_entry_cb_folder_only(bt, fse):
-    print "Toggle folder_only"
+    print("Toggle folder_only")
     fse.folder_only = not fse.folder_only
 
 def ck_entry_cb_expandable(bt, fse):
-    print "Toggle expandable"
+    print("Toggle expandable")
     fse.expandable = not fse.expandable
     
 def fileselector_entry_clicked(obj, item=None):

@@ -39,13 +39,13 @@ class Test(Window):
         self.show()
         
     def anchor_clicked(self, obj, event_info):
-        print("Entry object is %s" % (obj))
-        print("We should have EntryAnchorInfo here: %s" % (str(event_info)))
-        print("EntryAnchorInfo has the following properties and methods: %s" % (dir(event_info)))
+        print(("Entry object is %s" % (obj)))
+        print(("We should have EntryAnchorInfo here: %s" % (str(event_info))))
+        print(("EntryAnchorInfo has the following properties and methods: %s" % (dir(event_info))))
         
     def anchor_hover_opened(self, obj, event_info):
-        print("We should have EntryAnchorHoverInfo here: %s" % (event_info))
-        print("EntryAnchorHoverInfo has the following properties and methods: %s" % (dir(event_info)))
+        print(("We should have EntryAnchorHoverInfo here: %s" % (event_info)))
+        print(("EntryAnchorHoverInfo has the following properties and methods: %s" % (dir(event_info))))
         btn = Button(obj)
         btn.text_set("Testing entry anchor")
         event_info.hover.content_set("middle", btn)

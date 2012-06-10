@@ -8,13 +8,13 @@ import evas
 #----- Dayselector -{{{-
 def cb_changed(ds):
     print("\nSelected Days:")
-    print("Sun:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_SUN))
-    print("Mon:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_MON))
-    print("Tue:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_TUE))
-    print("Wed:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_WED))
-    print("Thu:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_THU))
-    print("Fri:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_FRI))
-    print("Sat:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_SAT))
+    print(("Sun:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_SUN)))
+    print(("Mon:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_MON)))
+    print(("Tue:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_TUE)))
+    print(("Wed:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_WED)))
+    print(("Thu:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_THU)))
+    print(("Fri:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_FRI)))
+    print(("Sat:", ds.day_selected_get(elementary.ELM_DAYSELECTOR_SAT)))
 
 def dayselector_clicked(obj):
     win = elementary.Window("dayselector", elementary.ELM_WIN_BASIC)

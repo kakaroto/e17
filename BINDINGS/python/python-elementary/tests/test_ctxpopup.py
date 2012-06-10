@@ -8,7 +8,7 @@ import evas
 #----- Ctxpopup -{{{-
 
 def cb_items(cp, item):
-    print("ctxpopup item selected: %s" % (item.text))
+    print(("ctxpopup item selected: %s" % (item.text)))
 
 def item_new(cp, label, icon = None):
     if icon:
