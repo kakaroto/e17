@@ -33,8 +33,22 @@ cdef int PY_REFCOUNT(object o):
 cdef unicode _touni(char* s):
     return s.decode('UTF-8', 'strict')
 
+cdef unicode _ctouni(const_char_ptr s):
+    return s.decode('UTF-8', 'strict')
+
 cdef char* _fruni(s):
     cdef char* c_string
+    if isinstance(s, unicode):
+        string = s.encode('UTF-8')
+        c_string = string
+    elif isinstance(s, str):
+        c_string = s
+    else:
+        raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
+    return c_string
+
+cdef const_char_ptr _cfruni(s):
+    cdef const_char_ptr c_string
     if isinstance(s, unicode):
         string = s.encode('UTF-8')
         c_string = string
