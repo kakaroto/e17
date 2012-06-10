@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThumb_Type]:
+cdef class Thumb(Object):
 
     """A thumbnail object is used for displaying the thumbnail of an image
     or video. You must have compiled Elementary with C{Ethumb_Client}
@@ -258,7 +258,3 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
         self._callback_del("load,error", func)
 
 _elm_widget_type_register("thumb", Thumb)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryThumb_Type # hack to install metaclass
-_install_metaclass(&PyElementaryThumb_Type, ElementaryObjectMeta)

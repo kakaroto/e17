@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementaryLabel_Type]:
+cdef class Label(LayoutClass):
 
     """Widget to display text, with simple html-like markup.
 
@@ -255,7 +255,3 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
         self._callback_del("language,changed", func)
 
 _elm_widget_type_register("label", Label)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryLabel_Type # hack to install metaclass
-_install_metaclass(&PyElementaryLabel_Type, ElementaryObjectMeta)

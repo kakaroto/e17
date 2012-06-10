@@ -23,7 +23,7 @@ def _fs_callback_conv(long addr):
     else:
         return s
 
-cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, type PyElementaryFileselector_Type]:
+cdef class Fileselector(LayoutClass):
 
     """
     A file selector is a widget that allows a user to navigate
@@ -450,7 +450,3 @@ cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, ty
         self._callback_del_full("done", _fs_callback_conv, func)
 
 _elm_widget_type_register("fileselector", Fileselector)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryFileselector_Type # hack to install metaclass
-_install_metaclass(&PyElementaryFileselector_Type, ElementaryObjectMeta)

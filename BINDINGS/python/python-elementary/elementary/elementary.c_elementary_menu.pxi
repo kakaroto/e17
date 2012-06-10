@@ -243,7 +243,7 @@ cdef class MenuItemSeparator(ObjectItem):
         """
         return True
 
-cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_Type]:
+cdef class Menu(Object):
 
     """A menu is a list of items displayed above its parent.
 
@@ -451,7 +451,3 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         self._callback_del("clicked", func)
 
 _elm_widget_type_register("menu", Menu)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryMenu_Type # hack to install metaclass
-_install_metaclass(&PyElementaryMenu_Type, ElementaryObjectMeta)

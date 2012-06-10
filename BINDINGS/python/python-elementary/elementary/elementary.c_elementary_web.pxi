@@ -96,7 +96,7 @@ cdef void _web_console_message_hook(void *data, evas.c_evas.Evas_Object *obj, co
     except Exception, e:
         traceback.print_exc()
 
-cdef public class Web(Object) [object PyElementaryWeb, type PyElementaryWeb_Type]:
+cdef class Web(Object):
     cdef object _console_message_hook
 
     def __init__(self,c_evas.Object parent):
@@ -216,7 +216,3 @@ cdef public class Web(Object) [object PyElementaryWeb, type PyElementaryWeb_Type
             elm_web_console_message_hook_set(self.obj, NULL, NULL)
 
 _elm_widget_type_register("web", Web)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryWeb_Type # hack to install metaclass
-_install_metaclass(&PyElementaryWeb_Type, ElementaryObjectMeta)

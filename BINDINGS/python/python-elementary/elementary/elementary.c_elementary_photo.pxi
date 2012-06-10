@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhoto_Type]:
+cdef class Photo(Object):
 
     """An Elementary photo widget is intended for displaying a photo, for
     ex., a person's image (contact).
@@ -165,7 +165,3 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
         self._callback_del("drag,end", func)
 
 _elm_widget_type_register("photo", Photo)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryPhoto_Type # hack to install metaclass
-_install_metaclass(&PyElementaryPhoto_Type, ElementaryObjectMeta)

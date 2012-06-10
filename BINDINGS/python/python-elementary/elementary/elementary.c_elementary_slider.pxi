@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElementarySlider_Type]:
+cdef class Slider(LayoutClass):
 
     """The slider adds a draggable "slider" widget for selecting the value of
     something within a range.
@@ -570,7 +570,3 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
         self._callback_del("delay,changed", func)
 
 _elm_widget_type_register("slider", Slider)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementarySlider_Type # hack to install metaclass
-_install_metaclass(&PyElementarySlider_Type, ElementaryObjectMeta)

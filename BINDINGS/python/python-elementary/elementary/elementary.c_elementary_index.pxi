@@ -88,7 +88,7 @@ cdef Elm_Object_Item *_elm_index_item_from_python(IndexItem item):
     else:
         return item.item
 
-cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementaryIndex_Type]:
+cdef class Index(LayoutClass):
 
     """An index widget gives you an index for fast access to whichever
     group of other UI items one might have.
@@ -519,7 +519,3 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
         self._callback_del("level,down", func)
 
 _elm_widget_type_register("index", Index)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryIndex_Type # hack to install metaclass
-_install_metaclass(&PyElementaryIndex_Type, ElementaryObjectMeta)

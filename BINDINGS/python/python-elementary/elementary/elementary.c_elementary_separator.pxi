@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Separator(LayoutClass) [object PyElementarySeparator, type PyElementarySeparator_Type]:
+cdef class Separator(LayoutClass):
 
     """Separator is a very thin object used to separate other objects.
 
@@ -62,7 +62,3 @@ cdef public class Separator(LayoutClass) [object PyElementarySeparator, type PyE
             self.horizontal_set(value)
 
 _elm_widget_type_register("separator", Separator)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementarySeparator_Type # hack to install metaclass
-_install_metaclass(&PyElementarySeparator_Type, ElementaryObjectMeta)

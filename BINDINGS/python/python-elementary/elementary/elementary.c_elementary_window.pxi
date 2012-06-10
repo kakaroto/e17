@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWindow_Type]:
+cdef class Window(Object):
 
     """The window class of Elementary.
 
@@ -1317,11 +1317,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
 
 _elm_widget_type_register("win", Window)
 
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryWindow_Type # hack to install metaclass
-_install_metaclass(&PyElementaryWindow_Type, ElementaryObjectMeta)
-
-cdef public class StandardWindow(Window) [object PyElementaryStandardWindow, type PyElementaryStandardWindow_Type]:
+cdef class StandardWindow(Window):
 
     """A L{Window} with standard setup."""
 
@@ -1334,7 +1330,3 @@ cdef public class StandardWindow(Window) [object PyElementaryStandardWindow, typ
         c_evas.Object.__init__(self, canvas)
 
 _elm_widget_type_register("standardwin", StandardWindow)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryStandardWindow_Type # hack to install metaclass
-_install_metaclass(&PyElementaryStandardWindow_Type, ElementaryObjectMeta)

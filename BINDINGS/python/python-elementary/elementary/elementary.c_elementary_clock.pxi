@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementaryClock_Type]:
+cdef class Clock(LayoutClass):
 
     """This is a digital clock widget.
 
@@ -377,7 +377,3 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
         self._callback_del("changed", func)
 
 _elm_widget_type_register("clock", Clock)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryClock_Type # hack to install metaclass
-_install_metaclass(&PyElementaryClock_Type, ElementaryObjectMeta)

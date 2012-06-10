@@ -389,7 +389,7 @@ cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementaryToolbar_Type]:
+cdef class Toolbar(Object):
 
     """A toolbar is a widget that displays a list of items inside a box. It
     can be scrollable, show a menu with items that don't fit to toolbar size
@@ -956,7 +956,3 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         self._callback_del("language,changed", func)
 
 _elm_widget_type_register("toolbar", Toolbar)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryToolbar_Type # hack to install metaclass
-_install_metaclass(&PyElementaryToolbar_Type, ElementaryObjectMeta)

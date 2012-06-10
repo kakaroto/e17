@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Bubble(LayoutClass) [object PyElementaryBubble, type PyElementaryBubble_Type]:
+cdef class Bubble(LayoutClass):
 
     """The Bubble is a widget to show text similar to how speech is
     represented in comics.
@@ -114,7 +114,3 @@ cdef public class Bubble(LayoutClass) [object PyElementaryBubble, type PyElement
         self._callback_del("clicked", func)
 
 _elm_widget_type_register("bubble", Bubble)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryBubble_Type # hack to install metaclass
-_install_metaclass(&PyElementaryBubble_Type, ElementaryObjectMeta)

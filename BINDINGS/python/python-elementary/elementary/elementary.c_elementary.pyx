@@ -127,14 +127,6 @@ cdef _elm_widget_type_register(char *name, cls):
 cdef _elm_widget_type_unregister(char *name):
     _elm_widget_type_mapping.pop(name)
 
-cdef extern from "Python.h":
-    ctypedef struct PyTypeObject:
-        PyTypeObject *ob_type
-
-cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
-    Py_INCREF(metaclass)
-    ctype.ob_type = <PyTypeObject*>metaclass
-
 class ElementaryObjectMeta(type):
     def __init__(cls, name, bases, dict_):
         type.__init__(cls, name, bases, dict_)

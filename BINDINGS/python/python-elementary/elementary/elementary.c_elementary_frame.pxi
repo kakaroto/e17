@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Frame(LayoutClass) [object PyElementaryFrame, type PyElementaryFrame_Type]:
+cdef class Frame(LayoutClass):
 
     """Frame is a widget that holds some content and has a title.
 
@@ -144,7 +144,3 @@ cdef public class Frame(LayoutClass) [object PyElementaryFrame, type PyElementar
         self._callback_del("clicked", func)
 
 _elm_widget_type_register("frame", Frame)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryFrame_Type # hack to install metaclass
-_install_metaclass(&PyElementaryFrame_Type, ElementaryObjectMeta)

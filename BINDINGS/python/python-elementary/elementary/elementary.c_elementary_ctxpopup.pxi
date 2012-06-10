@@ -43,7 +43,7 @@ cdef class CtxpopupItem(ObjectItem):
         cbdata = <void*>self.cbt
         self.item = elm_ctxpopup_item_append(ctxpopup.obj, label, icon_obj, cb, cbdata)
 
-cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementaryCtxpopup_Type]:
+cdef class Ctxpopup(Object):
 
     """Context popup widget.
 
@@ -261,7 +261,3 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         self._callback_del("dismissed", func)
 
 _elm_widget_type_register("ctxpopup", Ctxpopup)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryCtxpopup_Type # hack to install metaclass
-_install_metaclass(&PyElementaryCtxpopup_Type, ElementaryObjectMeta)

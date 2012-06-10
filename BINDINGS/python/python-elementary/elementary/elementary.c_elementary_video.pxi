@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementaryVideo_Type]:
+cdef class Video(LayoutClass):
 
     """Display a video by using Emotion.
 
@@ -313,11 +313,7 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
 
 _elm_widget_type_register("video", Video)
 
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryVideo_Type # hack to install metaclass
-_install_metaclass(&PyElementaryVideo_Type, ElementaryObjectMeta)
-
-cdef public class Player(LayoutClass) [object PyElementaryPlayer, type PyElementaryPlayer_Type]:
+cdef class Player(LayoutClass):
 
     """Player is a video player that need to be linked with a L{Video}.
 
@@ -403,7 +399,3 @@ cdef public class Player(LayoutClass) [object PyElementaryPlayer, type PyElement
         self._callback_del_full("stop,clicked", func)
 
 _elm_widget_type_register("player", Player)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryPlayer_Type # hack to install metaclass
-_install_metaclass(&PyElementaryPlayer_Type, ElementaryObjectMeta)

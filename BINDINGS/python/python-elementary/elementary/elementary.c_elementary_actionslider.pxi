@@ -23,7 +23,7 @@ def _actionslider_callback_conv(long addr):
     else:
         return s
 
-cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, type PyElementaryActionslider_Type]:
+cdef class Actionslider(LayoutClass):
 
     """An actionslider is a switcher for two or three labels with
     customizable magnet properties.
@@ -197,7 +197,3 @@ cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, ty
         self._callback_del_full("pos_changed", _actionslider_callback_conv, func)
 
 _elm_widget_type_register("actionslider", Actionslider)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryActionslider_Type # hack to install metaclass
-_install_metaclass(&PyElementaryActionslider_Type, ElementaryObjectMeta)

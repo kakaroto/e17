@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTable_Type]:
+cdef class Table(Object):
 
     """A container widget to arrange other widgets in a table where items can
     span multiple columns or rows - even overlap (and then be raised or
@@ -195,7 +195,3 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         return (x, y, w, h)
 
 _elm_widget_type_register("table", Table)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryTable_Type # hack to install metaclass
-_install_metaclass(&PyElementaryTable_Type, ElementaryObjectMeta)

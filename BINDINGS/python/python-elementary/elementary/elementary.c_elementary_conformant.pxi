@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Conformant(LayoutClass) [object PyElementaryConformant, type PyElementaryConformant_Type]:
+cdef class Conformant(LayoutClass):
 
     """The aim is to provide a widget that can be used in elementary apps to
     account for space taken up by the indicator, virtual keypad & softkey
@@ -41,7 +41,3 @@ cdef public class Conformant(LayoutClass) [object PyElementaryConformant, type P
         self._set_obj(elm_conformant_add(parent.obj))
 
 _elm_widget_type_register("conformant", Conformant)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryConformant_Type # hack to install metaclass
-_install_metaclass(&PyElementaryConformant_Type, ElementaryObjectMeta)

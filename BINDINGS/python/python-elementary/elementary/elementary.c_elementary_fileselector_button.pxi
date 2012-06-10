@@ -23,7 +23,7 @@ def _fs_button_callback_conv(long addr):
     else:
         return s
 
-cdef public class FileselectorButton(Button) [object PyElementaryFileselectorButton, type PyElementaryFileselectorButton_Type]:
+cdef class FileselectorButton(Button):
 
     """This is a button that, when clicked, creates an Elementary window (or
     inner window) with a L{Fileselector} "file selector widget" within.
@@ -446,7 +446,3 @@ cdef public class FileselectorButton(Button) [object PyElementaryFileselectorBut
         self._callback_del_full("file,chosen", _fs_button_callback_conv, func)
 
 _elm_widget_type_register("fileselector_button", FileselectorButton)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryFileselectorButton_Type # hack to install metaclass
-_install_metaclass(&PyElementaryFileselectorButton_Type, ElementaryObjectMeta)

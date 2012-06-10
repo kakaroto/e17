@@ -86,7 +86,7 @@ cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
         pass
 
-cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type PyElementaryObject_Type]:
+cdef class Object(evas.c_evas.Object):
     """An abstract class to manage object and callback handling.
 
     All widgets are based on this class.
@@ -122,6 +122,9 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     @group Callbacks: callback_*
 
     """
+
+    __metaclass__ = ElementaryObjectMeta
+
     cdef object _elmcallbacks
     cdef object _elm_event_cbs
 
@@ -331,7 +334,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.style_get()
         def __set__(self, value):
             self.style_set(value)
-    
+
     def disabled_set(self, disabled):
         """Set the disabled state of an Elementary object.
 
@@ -419,7 +422,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         def __get__(self):
             return self.parent_widget_get()
-    
+
     def top_widget_get(self):
         """Get the top level parent of an Elementary widget.
 
@@ -632,7 +635,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.cursor_style_get()
         def __set__(self, value):
             self.cursor_style_set(value)
-    
+
     def cursor_theme_search_enabled_set(self, engine_only):
         """ Sets cursor engine only usage for this object.
 
@@ -651,7 +654,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.cursor_theme_search_enabled_get()
         def __set__(self, value):
             self.cursor_theme_search_enabled_set(value)
-    
+
     # Focus
     def focus_get(self):
         """Get the whether an Elementary object has the focus or not.
@@ -723,7 +726,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.focus_allow_get()
         def __set__(self, value):
             self.focus_allow_set(value)
-    
+
     def focus_custom_chain_set(self, lst):
         """Set custom focus chain.
 
@@ -782,7 +785,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             self.focus_custom_chain_set(value)
         def __del__(self):
             self.focus_custom_chain_unset()
-    
+
     def focus_custom_chain_append(self, Object obj, Object relative=None):
         """Append object to custom focus chain.
 
@@ -879,7 +882,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.tree_focus_allow_get()
         def __set__(self, value):
             self.tree_focus_allow_set(value)
-    
+
     # Mirroring
     def mirrored_get(self):
         """Get the widget's mirrored mode.
@@ -909,7 +912,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.mirrored_get()
         def __set__(self, value):
             self.mirrored_set(value)
-    
+
     def mirrored_automatic_get(self):
         """Returns the widget's mirrored mode setting.
 
@@ -939,7 +942,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.mirrored_automatic_get()
         def __set__(self, value):
             self.mirrored_automatic_set(value)
-    
+
     # Scaling
     def scale_set(self, scale):
         """Set the scaling factor for a given Elementary object
@@ -1134,7 +1137,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.tooltip_style_get()
         def __set__(self, value):
             self.tooltip_style_set(value)
-    
+
     def tooltip_window_mode_set(self, disable):
         return bool(elm_object_tooltip_window_mode_set(self.obj, disable))
 
@@ -1146,7 +1149,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
             return self.tooltip_window_mode_get()
         def __set__(self, value):
             self.tooltip_window_mode_set(value)
-    
+
     #Translatable text
     def domain_translatable_text_part_set(self, part, domain, text):
         """Set the text for an objects' part, marking it as translatable.
@@ -1328,7 +1331,3 @@ evas.c_evas._extended_object_mapping_register("elm_widget",
 #       in elm will be ported to the new hierarchical pattern.
 evas.c_evas._extended_object_mapping_register("elm_widget_compat",
                                               __elm_widget_cls_resolver)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryObject_Type # hack to install metaclass
-_install_metaclass(&PyElementaryObject_Type, ElementaryObjectMeta)

@@ -23,7 +23,7 @@ def _fs_entry_callback_conv(long addr):
     else:
         return s
 
-cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntry, type PyElementaryFileselectorEntry_Type]:
+cdef class FileselectorEntry(Object):
 
     """This is an entry made to be filled with or display a file
     system path string.
@@ -601,7 +601,3 @@ cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntr
         self._callback_del_full("file,chosen", _fs_entry_callback_conv, func)
 
 _elm_widget_type_register("fileselector_entry", FileselectorEntry)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryFileselectorEntry_Type # hack to install metaclass
-_install_metaclass(&PyElementaryFileselectorEntry_Type, ElementaryObjectMeta)

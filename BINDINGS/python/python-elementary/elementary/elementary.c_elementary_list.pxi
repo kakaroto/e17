@@ -333,7 +333,7 @@ cdef class ListItem(ObjectItem):
         def __get__(self):
             return self.next_get()
 
-cdef public class List(Object) [object PyElementaryList, type PyElementaryList_Type]:
+cdef class List(Object):
 
     """A list widget is a container whose children are displayed vertically or
     horizontally, in order, and can be selected.
@@ -1048,7 +1048,3 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         self._callback_del("language,changed",  func)
 
 _elm_widget_type_register("list", List)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryList_Type # hack to install metaclass
-_install_metaclass(&PyElementaryList_Type, ElementaryObjectMeta)

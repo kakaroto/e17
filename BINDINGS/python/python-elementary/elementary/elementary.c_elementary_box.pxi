@@ -49,7 +49,7 @@ cdef Evas_Object_Box_Layout _py_elm_box_layout_resolv(int layout) with gil:
     return evas_object_box_layout_vertical
 
 
-cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type]:
+cdef class Box(Object):
 
     """A box arranges objects in a linear fashion, governed by a layout function
     that defines the details of this arrangement.
@@ -583,7 +583,3 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
 
 _elm_widget_type_register("box", Box)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryBox_Type # hack to install metaclass
-_install_metaclass(&PyElementaryBox_Type, ElementaryObjectMeta)

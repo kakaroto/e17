@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementaryHover_Type]:
+cdef class Hover(LayoutClass):
 
     """A Hover object will hover over its C{parent} object at the C{target}
     location.
@@ -202,7 +202,3 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         self._callback_del("smart,changed", func)
 
 _elm_widget_type_register("hover", Hover)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryHover_Type # hack to install metaclass
-_install_metaclass(&PyElementaryHover_Type, ElementaryObjectMeta)

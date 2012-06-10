@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Button(LayoutClass) [object PyElementaryButton, type PyElementaryButton_Type]:
+cdef class Button(LayoutClass):
 
     """This is a push-button. Press it and run some function. It can contain
     a simple label and icon object and it also has an autorepeat feature.
@@ -218,7 +218,3 @@ cdef public class Button(LayoutClass) [object PyElementaryButton, type PyElement
         self._callback_del("unpressed", func)
 
 _elm_widget_type_register("button", Button)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryButton_Type # hack to install metaclass
-_install_metaclass(&PyElementaryButton_Type, ElementaryObjectMeta)

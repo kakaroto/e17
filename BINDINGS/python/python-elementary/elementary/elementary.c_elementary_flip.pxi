@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_Type]:
+cdef class Flip(Object):
 
     """This widget holds two content objects L{Object}: one on the front and one
     on the back. It allows you to flip from front to back and vice-versa using
@@ -274,7 +274,3 @@ cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_T
         self._callback_del("animate,done", func)
 
 _elm_widget_type_register("flip", Flip)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryFlip_Type # hack to install metaclass
-_install_metaclass(&PyElementaryFlip_Type, ElementaryObjectMeta)

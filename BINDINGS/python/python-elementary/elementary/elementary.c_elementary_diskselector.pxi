@@ -161,7 +161,7 @@ cdef _elm_diskselector_item_to_python(Elm_Object_Item *it):
     return prm[2]
 
 
-cdef public class Diskselector(Object) [object PyElementaryDiskselector, type PyElementaryDiskselector_Type]:
+cdef class Diskselector(Object):
 
     """A diskselector is a kind of list widget. It scrolls horizontally,
     and can contain label and icon objects. Three items are displayed
@@ -493,7 +493,3 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
 
 
 _elm_widget_type_register("diskselector", Diskselector)
-
-cdef extern from "Elementary.h": # hack to force type to be known
-    cdef PyTypeObject PyElementaryDiskselector_Type # hack to install metaclass
-_install_metaclass(&PyElementaryDiskselector_Type, ElementaryObjectMeta)
