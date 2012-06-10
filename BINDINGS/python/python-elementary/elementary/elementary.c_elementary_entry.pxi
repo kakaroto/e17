@@ -404,7 +404,7 @@ cdef class Entry(Object):
         @type entry: string
 
         """
-        elm_entry_entry_set(self.obj, entry)
+        elm_entry_entry_set(self.obj, _cfruni(entry))
 
     def entry_get(self):
         """This returns the text currently shown in object C{entry}.
@@ -415,7 +415,7 @@ cdef class Entry(Object):
         @rtype: string
 
         """
-        return elm_entry_entry_get(self.obj)
+        return _ctouni(elm_entry_entry_get(self.obj))
 
     property entry:
         """The text displayed within the entry to C{entry}.
@@ -426,10 +426,10 @@ cdef class Entry(Object):
 
         """
         def __get__(self):
-            return elm_entry_entry_get(self.obj)
+            return _ctouni(elm_entry_entry_get(self.obj))
 
         def __set__(self, entry):
-            elm_entry_entry_set(self.obj, entry)
+            elm_entry_entry_set(self.obj, _cfruni(entry))
 
     def entry_append(self, text):
         """Appends C{entry} to the text of the entry.
@@ -445,7 +445,7 @@ cdef class Entry(Object):
         @type entry: string
 
         """
-        elm_entry_entry_append(self.obj, text)
+        elm_entry_entry_append(self.obj, _cfruni(text))
 
     def is_empty(self):
         """Gets whether the entry is empty.
@@ -475,11 +475,7 @@ cdef class Entry(Object):
         @rtype: string
 
         """
-        cdef const_char_ptr s
-        s = elm_entry_selection_get(self.obj)
-        if s == NULL:
-            return ""
-        return s
+        return _ctouni(elm_entry_selection_get(self.obj))
 
     property selection:
         """Gets any selected text within the entry.
@@ -497,11 +493,7 @@ cdef class Entry(Object):
 
         """
         def __get__(self):
-            cdef const_char_ptr s
-            s = elm_entry_selection_get(self.obj)
-            if s == NULL:
-                return ""
-            return s
+            return _ctouni(elm_entry_selection_get(self.obj))
 
     def textblock_get(self):
         """Returns the actual textblock object of the entry.
@@ -597,7 +589,7 @@ cdef class Entry(Object):
         @type entry: string
 
         """
-        elm_entry_entry_insert(self.obj, entry)
+        elm_entry_entry_insert(self.obj, _cfruni(entry))
 
     def line_wrap_set(self, wrap):
         """Set the line wrap type to use on multi-line entries.
@@ -970,11 +962,11 @@ cdef class Entry(Object):
         @param file: The path to the file to load and save
         @type file: string
         @param format: The file format
-        @type format: string
+        @type format: Elm_Text_Format
         @return: C{True} on success, C{False} otherwise
 
         """
-        return bool(elm_entry_file_set(self.obj, file, format))
+        return bool(elm_entry_file_set(self.obj, _cfruni(file), format))
 
     def file_get(self):
         """Gets the file being edited by the entry.
@@ -990,7 +982,7 @@ cdef class Entry(Object):
         cdef Elm_Text_Format format
 
         elm_entry_file_get(self.obj, &file, &format)
-        return (file, format)
+        return (_ctouni(file), format)
 
     property file:
         """The file for the text to display and then edit.
@@ -1009,11 +1001,11 @@ cdef class Entry(Object):
             cdef const_char_ptr file
             cdef Elm_Text_Format format
             elm_entry_file_get(self.obj, &file, &format)
-            return (file, format)
+            return (_ctouni(file), format)
 
         def __set__(self, value):
             file, format = value
-            elm_entry_file_set(self.obj, file, format)
+            elm_entry_file_set(self.obj, _cfruni(file), format)
 
     def file_save(self):
         """This function writes any changes made to the file set with
@@ -1558,7 +1550,7 @@ cdef class Entry(Object):
         @type style: string
 
         """
-        elm_entry_anchor_hover_style_set(self.obj, style)
+        elm_entry_anchor_hover_style_set(self.obj, _cfruni(style))
 
     def anchor_hover_style_get(self):
         """Get the style that the hover created by entry will use.
@@ -1568,7 +1560,7 @@ cdef class Entry(Object):
         @see: L{Object.style_set()}
 
         """
-        return elm_entry_anchor_hover_style_get(self.obj)
+        return _ctouni(elm_entry_anchor_hover_style_get(self.obj))
 
     property anchor_hover_style:
         """The style that the hover should use
@@ -1584,10 +1576,10 @@ cdef class Entry(Object):
 
         """
         def __get__(self):
-            return elm_entry_anchor_hover_style_get(self.obj)
+            return _ctouni(elm_entry_anchor_hover_style_get(self.obj))
 
         def __set__(self, style):
-            elm_entry_anchor_hover_style_set(self.obj, style)
+            elm_entry_anchor_hover_style_set(self.obj, _cfruni(style))
 
     def anchor_hover_end(self):
         """Ends the hover popup in the entry

@@ -21,7 +21,7 @@ cdef class CalendarMark(object):
 
     def __init__(self, mark_type, mark_time, repeat):
         """@see: L{Calendar.mark_add()}"""
-        #self.obj = elm_calendar_mark_add(self.obj, const_char_ptr mark_type, struct tm *mark_time, Elm_Calendar_Mark_Repeat_Type repeat)
+        #self.obj = elm_calendar_mark_add(self.obj, _cfruni(mark_type), struct tm *mark_time, Elm_Calendar_Mark_Repeat_Type repeat)
         pass
 
     #def delete(self, mark):
@@ -89,7 +89,7 @@ cdef class Calendar(LayoutClass):
             for i from 0 <= i < 7:
                 weekday = lst[i]
                 if weekday != NULL:
-                    ret.append(weekday)
+                    ret.append(_ctouni(weekday))
             return ret
 
         def __set__(self, weekdays):
@@ -97,7 +97,7 @@ cdef class Calendar(LayoutClass):
             cdef const_char_ptr *days, weekday
             days = <const_char_ptr *>PyMem_Malloc(7 * sizeof(const_char_ptr))
             for i from 0 <= i < 7:
-                weekday = weekdays[i]
+                weekday = _cfruni(weekdays[i])
                 day_len = len(weekday)
                 days[i] = <const_char_ptr>PyMem_Malloc(day_len + 1)
                 memcpy(days[i], weekday, day_len + 1)
