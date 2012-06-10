@@ -339,7 +339,7 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
         @rtype: str
         """
         if self.obj:
-            return _ctoni(evas_object_type_get(self.obj))
+            return _ctouni(evas_object_type_get(self.obj))
 
     property type:
         def __get__(self):
