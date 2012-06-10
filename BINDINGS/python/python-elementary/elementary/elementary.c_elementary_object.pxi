@@ -1213,7 +1213,7 @@ cdef class Object(evas.c_evas.Object):
         if self._elmcallbacks is None:
             self._elmcallbacks = {}
 
-        e = sys.intern(event)
+        e = intern(event)
         lst = self._elmcallbacks.setdefault(e, [])
         if not lst:
             c_evas.evas_object_smart_callback_add(self.obj, _fruni(event),
