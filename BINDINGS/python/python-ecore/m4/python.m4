@@ -47,8 +47,8 @@ if test -x "$PYTHON_INCLUDES"; then
 PYTHON_INCLUDES="-I$PYTHON_INCLUDES"
 else
 dnl deduce PYTHON_INCLUDES
-py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
-py_exec_prefix=`$PYTHON -c "import sys; print sys.exec_prefix"`
+py_prefix=`$PYTHON -c "import sys; print(sys.prefix)"`
+py_exec_prefix=`$PYTHON -c "import sys; print(sys.exec_prefix)"`
 if test -x "$PYTHON-config"; then
 PYTHON_INCLUDES=`$PYTHON-config --includes 2>/dev/null`
 else

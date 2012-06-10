@@ -17,9 +17,9 @@
 
 #!/usr/bin/env python2
 
-import c_ecore
+import ecore.c_ecore
 
-from c_ecore import shutdown, time_get, loop_time_get, timer_add, \
+from ecore.c_ecore import shutdown, time_get, loop_time_get, timer_add, \
      main_loop_begin, main_loop_quit, main_loop_iterate, \
      main_loop_glib_integrate, event_handler_add, event_type_new, \
      animator_add, animator_frametime_set, animator_frametime_get, \

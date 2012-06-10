@@ -113,7 +113,7 @@ def engine_type_supported_get(method):
 
     if isinstance(method, (int, long)):
         method_id = method
-    elif isinstance(method, basestring):
+    elif isinstance(method, str):
         method_id = engine_type_from_name(method)
         if method_id < 0:
             raise ValueError("unknown method name %r" % method)

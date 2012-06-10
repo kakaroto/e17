@@ -842,7 +842,7 @@ cdef class EventExeData(Event):
         self.exe = _ecore_exe_event_mapping.get(<long>obj.exe)
         if self.exe is None:
             return -1
-        self.data = PyString_FromStringAndSize(<char*>obj.data, obj.size)
+        self.data = PyUnicode_FromStringAndSize(<char*>obj.data, obj.size)
         self.size = obj.size
         self.lines = []
 
@@ -850,7 +850,7 @@ cdef class EventExeData(Event):
         if obj.lines:
             i = 0
             while obj.lines[i].line != NULL:
-                line_append(PyString_FromStringAndSize(
+                line_append(PyUnicode_FromStringAndSize(
                         obj.lines[i].line, obj.lines[i].size))
                 i += 1
 

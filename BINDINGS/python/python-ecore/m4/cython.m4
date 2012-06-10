@@ -8,7 +8,7 @@ ifelse([$1], [], [_msg=""], [_msg=" >= $1"])
 AC_MSG_CHECKING(for Cython$_msg)
 AC_CACHE_VAL(py_cv_cython, [
 
-prog="import Cython.Compiler.Version; print Cython.Compiler.Version.version"
+prog="import Cython.Compiler.Version; print(Cython.Compiler.Version.version)"
 CYTHON_VERSION=`$PYTHON -c "$prog" 2>&AC_FD_CC`
 
 py_cv_cython=no
