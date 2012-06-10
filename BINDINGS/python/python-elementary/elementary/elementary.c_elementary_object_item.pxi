@@ -70,7 +70,7 @@ cdef class ObjectItem(object):
         cdef c_evas.const_Evas_Object *obj = elm_object_item_widget_get(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
-    def part_content_set(self, char *part, Object obj):
+    def part_content_set(self, part, Object obj):
         """Set a content of an object item
 
         This sets a new object to an item as a content object. If any object
@@ -84,12 +84,12 @@ cdef class ObjectItem(object):
         @param content: The new content of the object item
 
         """
-        elm_object_item_part_content_set(self.item, part, obj.obj)
+        elm_object_item_part_content_set(self.item, _cfruni(part), obj.obj)
 
     def content_set(self, Object obj):
         elm_object_item_part_content_set(self.item, NULL, obj.obj)
 
-    def part_content_get(self, char *part):
+    def part_content_get(self, part):
         """Get a content of an object item
 
         @note: Elementary object items may have many contents
@@ -101,14 +101,14 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_get(self.item, part)
+        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_get(self.item, _cfruni(part))
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_get(self):
         cdef c_evas.Evas_Object *obj = elm_object_item_content_get(self.item)
         return evas.c_evas._Object_from_instance(<long> obj)
 
-    def part_content_unset(self, char *part):
+    def part_content_unset(self, part):
         """Unset a content of an object item
 
         @note: Elementary object items may have many contents
@@ -118,7 +118,7 @@ cdef class ObjectItem(object):
         @type part: string
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_unset(self.item, part)
+        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_unset(self.item, _cfruni(part))
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_unset(self):
@@ -137,7 +137,7 @@ cdef class ObjectItem(object):
         @type text: string
 
         """
-        elm_object_item_part_text_set(self.item, part, text)
+        elm_object_item_part_text_set(self.item, _cfruni(part), _cfruni(text))
 
     def text_set(self, text):
         """Sets the main text for this object.
@@ -148,7 +148,7 @@ cdef class ObjectItem(object):
         @type text: string
 
         """
-        elm_object_item_text_set(self.item, text)
+        elm_object_item_text_set(self.item, _cfruni(text))
 
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
@@ -161,11 +161,7 @@ cdef class ObjectItem(object):
         @rtype: string
 
         """
-        cdef const_char_ptr l
-        l = elm_object_item_part_text_get(self.item, part)
-        if l == NULL:
-            return None
-        return l
+        return _ctouni(elm_object_item_part_text_get(self.item, _cfruni(part)))
 
     def text_get(self):
         """Gets the main text for this object.
@@ -176,11 +172,7 @@ cdef class ObjectItem(object):
         @rtype: string
 
         """
-        cdef const_char_ptr l
-        l = elm_object_item_text_get(self.item)
-        if l == NULL:
-            return None
-        return l
+        return _ctouni(elm_object_item_text_get(self.item))
 
     property text:
         """The main text for this object.
@@ -202,7 +194,7 @@ cdef class ObjectItem(object):
         @type txt: string
 
         """
-        elm_object_item_access_info_set(self.item, txt)
+        elm_object_item_access_info_set(self.item, _cfruni(txt))
 
     def data_get(self):
         """Returns the callback data given at creation time.
@@ -241,7 +233,7 @@ cdef class ObjectItem(object):
         @type source: string
 
         """
-        elm_object_item_signal_emit(self.item, emission, source)
+        elm_object_item_signal_emit(self.item, _cfruni(emission), _cfruni(source))
 
     def disabled_set(self, disabled):
         """Set the disabled state of an widget item.
@@ -307,7 +299,7 @@ cdef class ObjectItem(object):
         method calls L{tooltip_content_cb_set}
 
         """
-        elm_object_item_tooltip_text_set(self.item, text)
+        elm_object_item_tooltip_text_set(self.item, _cfruni(text))
 
     def tooltip_window_mode_set(self, disable):
         return bool(elm_object_item_tooltip_window_mode_set(self.item, disable))
@@ -359,17 +351,13 @@ cdef class ObjectItem(object):
 
         """
         if style:
-            elm_object_item_tooltip_style_set(self.item, style)
+            elm_object_item_tooltip_style_set(self.item, _cfruni(style))
         else:
             elm_object_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """Get the style for this object tooltip."""
-        cdef const_char_ptr style
-        style = elm_object_item_tooltip_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_object_item_tooltip_style_get(self.item))
 
     def cursor_set(self, char *cursor):
         """Set the cursor to be shown when mouse is over the object
@@ -379,10 +367,10 @@ cdef class ObjectItem(object):
         is called twice for an object, the previous set will be unset.
 
         """
-        elm_object_item_cursor_set(self.item, cursor)
+        elm_object_item_cursor_set(self.item, _cfruni(cursor))
 
     def cursor_get(self):
-        return elm_object_item_cursor_get(self.item)
+        return _ctouni(elm_object_item_cursor_get(self.item))
 
     def cursor_unset(self):
         """Unset cursor for object
@@ -401,17 +389,13 @@ cdef class ObjectItem(object):
 
         """
         if style:
-            elm_object_item_cursor_style_set(self.item, style)
+            elm_object_item_cursor_style_set(self.item, _cfruni(style))
         else:
             elm_object_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """Get the style for this object cursor."""
-        cdef const_char_ptr style
-        style = elm_object_item_cursor_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_object_item_cursor_style_get(self.item))
 
     def cursor_engine_only_set(self, engine_only):
         """Sets cursor engine only usage for this object.
