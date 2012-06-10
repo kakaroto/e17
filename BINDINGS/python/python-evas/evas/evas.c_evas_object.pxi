@@ -338,11 +338,8 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
 
         @rtype: str
         """
-        cdef const_char_ptr s
         if self.obj:
-            s = evas_object_type_get(self.obj)
-            if s != NULL:
-                return s
+            return _ctoni(evas_object_type_get(self.obj))
 
     property type:
         def __get__(self):
@@ -1248,12 +1245,9 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
 
     def name_get(self):
         """@rtype: str"""
-        cdef const_char_ptr s
-        s = evas_object_name_get(self.obj)
-        if s != NULL:
-            return s
+        return _ctouni(evas_object_name_get(self.obj))
 
-    def name_set(self, const_char_ptr value):
+    def name_set(self, value):
         """Set the name of one object.
 
         Names have no great utility, you can use them to help debug or even
@@ -1262,14 +1256,14 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
         @param value:
         @type value: string
         """
-        evas_object_name_set(self.obj, value)
+        evas_object_name_set(self.obj, _cfruni(value))
 
     property name:
         def __get__(self):
-            return self.name_get()
+            return _ctouni(evas_object_name_get(self.obj))
 
-        def __set__(self, const_char_ptr value):
-            self.name_set(value)
+        def __set__(self, value):
+            evas_object_name_set(self.obj, _cfruni(value))
 
     def focus_get(self):
         """Returns if this object currently have the focus.

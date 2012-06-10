@@ -41,7 +41,7 @@ def __get_callback(observer, name):
         attr = getattr(observer, "cb_on_%s" % name)
         if callable(attr):
             return attr
-    except AttributeError, e:
+    except AttributeError as e:
         return None
 
 
@@ -83,7 +83,7 @@ def connect_callbacks_by_name(evas, mapping):
     for name, func in mapping:
         try:
             setter = getattr(evas, "on_%s_add" % name)
-        except AttributeError, e:
+        except AttributeError as e:
             raise ValueError("invalid callback name: %s" % name)
         setter(func)
 
@@ -94,6 +94,6 @@ def disconnect_callbacks_by_name(evas, mapping):
     for name, func in mapping:
         try:
             unsetter = getattr(evas, "on_%s_del" % name)
-        except AttributeError, e:
+        except AttributeError as e:
             raise ValueError("invalid callback name: %s" % name)
         unsetter(func)

@@ -17,9 +17,9 @@
 
 #!/usr/bin/env python2
 
-import c_evas
+import evas.c_evas
 
-from c_evas import Canvas, SmartObject, ClippedSmartObject, Rectangle, Line, \
+from evas.c_evas import Canvas, SmartObject, ClippedSmartObject, Rectangle, Line, \
      Image, FilledImage, Polygon, Text, Textblock, Rect, \
      Box, EvasLoadError, \
      shutdown, render_method_lookup, render_method_list, \

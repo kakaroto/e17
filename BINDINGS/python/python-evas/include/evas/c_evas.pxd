@@ -502,7 +502,7 @@ cdef extern from "Evas.h":
     const_char_ptr eina_error_msg_get(Eina_Error error)
 
     ####################################################################
-    # Canvas
+    # Canvas (py3:TODO)
     #
     Evas *evas_new()
     void evas_free(Evas *e)
@@ -594,7 +594,7 @@ cdef extern from "Evas.h":
 
 
     ####################################################################
-    # Base Object
+    # Base Object (py3:TODO)
     #
     void evas_object_del(Evas_Object *obj)
     Evas *evas_object_evas_get(const_Evas_Object *obj)
@@ -690,7 +690,7 @@ cdef extern from "Evas.h":
 
 
     ####################################################################
-    # Smart Object
+    # Smart Object (py3:TODO)
     #
     void evas_smart_free(Evas_Smart *s)
     Evas_Smart *evas_smart_class_new(Evas_Smart_Class *sc)
@@ -733,7 +733,7 @@ cdef extern from "Evas.h":
 
 
     ####################################################################
-    # Image Object
+    # Image Object (py3:TODO)
     #
     Evas_Object *evas_object_image_add(Evas *e)
     void evas_object_image_file_set(Evas_Object *obj, const_char_ptr file, const_char_ptr key)
@@ -785,7 +785,7 @@ cdef extern from "Evas.h":
 
 
     ####################################################################
-    # Text Object
+    # Text Object (py3:TODO)
     #
     Evas_Object *evas_object_text_add(Evas *e)
     void evas_object_text_font_source_set(Evas_Object *obj, const_char_ptr font)
@@ -817,7 +817,7 @@ cdef extern from "Evas.h":
 
 
     ####################################################################
-    # Textblock Object
+    # Textblock Object (py3:TODO)
     #
     Evas_Object *evas_object_textblock_add(Evas *e)
     Evas_Textblock_Style *evas_textblock_style_new()
