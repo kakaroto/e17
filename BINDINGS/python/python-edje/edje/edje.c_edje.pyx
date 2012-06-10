@@ -38,6 +38,8 @@ cdef unicode _ctouni(const_char_ptr s):
 
 cdef char* _fruni(s):
     cdef char* c_string
+    if not s:
+        return NULL
     if isinstance(s, unicode):
         string = s.encode('UTF-8')
         c_string = string
@@ -49,6 +51,8 @@ cdef char* _fruni(s):
 
 cdef const_char_ptr _cfruni(s):
     cdef const_char_ptr c_string
+    if not s:
+        return NULL
     if isinstance(s, unicode):
         string = s.encode('UTF-8')
         c_string = string
