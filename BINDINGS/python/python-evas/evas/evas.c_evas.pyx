@@ -30,6 +30,19 @@ cdef int PY_REFCOUNT(object o):
     cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
 
+cdef unicode _touni(char* s):
+    return s.decode('UTF-8', 'strict')
+
+cdef char* _fruni(s):
+    cdef char* c_string
+    if isinstance(s, unicode):
+        string = s.encode('UTF-8')
+        c_string = string
+    elif isinstance(s, str):
+        c_string = s
+    else:
+        raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
+    return c_string
 
 def init():
     # when changing these, also change __init__.py!
@@ -153,13 +166,13 @@ object_mapping = {
     }
 
 
-def _object_mapping_register(char *name, cls):
+def _object_mapping_register(name, cls):
     if name in object_mapping:
         raise ValueError("object type name '%s' already registered." % name)
     object_mapping[name] = cls
 
 
-def _object_mapping_unregister(char *name):
+def _object_mapping_unregister(name):
     object_mapping.pop(name)
 
 
@@ -167,13 +180,13 @@ cdef object extended_object_mapping
 
 extended_object_mapping = {}
 
-def _extended_object_mapping_register(char *name, cls_resolver):
+def _extended_object_mapping_register(name, cls_resolver):
     if name in extended_object_mapping:
         raise ValueError("object type name '%s' already registered." % name)
     extended_object_mapping[name] = cls_resolver
 
 
-def _extended_object_mapping_unregister(char *name):
+def _extended_object_mapping_unregister(name):
     extended_object_mapping.pop(name)
 
 

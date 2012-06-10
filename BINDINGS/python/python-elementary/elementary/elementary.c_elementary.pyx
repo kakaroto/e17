@@ -49,6 +49,19 @@ cdef _METHOD_DEPRECATED(self, replacement=None, message=None):
         msg += " " + message
     logging.warn(msg)
 
+cdef unicode _touni(char* s):
+    return s.decode('UTF-8', 'strict')
+
+cdef char* _fruni(s):
+    cdef char* c_string
+    if isinstance(s, unicode):
+        string = s.encode('UTF-8')
+        c_string = string
+    elif isinstance(s, str):
+        c_string = s
+    else:
+        raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
+    return c_string
 
 def init():
     cdef int argc, i, arg_len
@@ -56,7 +69,7 @@ def init():
     argc_orig = argc = len(sys.argv)
     argv = <char **>PyMem_Malloc(argc * sizeof(char *))
     for i from 0 <= i < argc:
-        arg = sys.argv[i]
+        arg = _fruni(sys.argv[i])
         arg_len = len(sys.argv[i])
         argv[i] = <char *>PyMem_Malloc(arg_len + 1)
         memcpy(argv[i], arg, arg_len + 1)

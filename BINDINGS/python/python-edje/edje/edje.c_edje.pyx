@@ -30,6 +30,20 @@ cdef int PY_REFCOUNT(object o):
     cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
 
+cdef unicode _touni(char* s):
+    return s.decode('UTF-8', 'strict')
+
+cdef char* _fruni(s):
+    cdef char* c_string
+    if isinstance(s, unicode):
+        string = s.encode('UTF-8')
+        c_string = string
+    elif isinstance(s, str):
+        c_string = s
+    else:
+        raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
+    return c_string
+
 def init():
     cdef int r = edje_init()
 
