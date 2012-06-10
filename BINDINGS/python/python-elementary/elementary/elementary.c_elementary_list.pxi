@@ -73,22 +73,22 @@ cdef class ListItem(ObjectItem):
         cbdata = <void*>self.cbt
 
         if kind == ELM_LIST_ITEM_INSERT_APPEND:
-            self.item = elm_list_item_append(list.obj, label, icon_obj, end_obj,
+            self.item = elm_list_item_append(list.obj, _cfruni(label), icon_obj, end_obj,
                                              cb, cbdata)
         elif kind == ELM_LIST_ITEM_INSERT_PREPEND:
-            self.item = elm_list_item_prepend(list.obj, label, icon_obj, end_obj,
+            self.item = elm_list_item_prepend(list.obj, _cfruni(label), icon_obj, end_obj,
                                               cb, cbdata)
         #elif kind == ELM_LIST_ITEM_INSERT_SORTED:
-            #self.item = elm_list_item_sorted_insert(list.obj, label, icon_obj, end_obj, cb, cbdata, cmp_f)
+            #self.item = elm_list_item_sorted_insert(list.obj, _cfruni(label), icon_obj, end_obj, cb, cbdata, cmp_f)
         else:
             if before_after == None:
                 raise ValueError("need a valid after object to add an item before/after another item")
             if kind == ELM_LIST_ITEM_INSERT_BEFORE:
-                self.item = elm_list_item_insert_before(list.obj, before_after.item, label,
+                self.item = elm_list_item_insert_before(list.obj, before_after.item, _cfruni(label),
                                                         icon_obj, end_obj,
                                                         cb, cbdata)
             else:
-                self.item = elm_list_item_insert_after(list.obj, before_after.item, label,
+                self.item = elm_list_item_insert_after(list.obj, before_after.item, _cfruni(label),
                                                         icon_obj, end_obj,
                                                         cb, cbdata)
 

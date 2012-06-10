@@ -70,7 +70,7 @@ cdef class Background(LayoutClass):
         @rtype: bool
 
         """
-        return bool(elm_bg_file_set(self.obj, filename, group))
+        return bool(elm_bg_file_set(self.obj, _cfruni(filename), _cfruni(group)))
 
     def file_get(self):
         """Get the file (image or edje) used for the background
@@ -86,7 +86,7 @@ cdef class Background(LayoutClass):
             filename = ""
         if group == NULL:
             group = ""
-        return (filename, group)
+        return (_ctouni(filename), _ctouni(group))
 
     property file:
         """The file (image or edje collection) giving life for the background.
@@ -117,7 +117,7 @@ cdef class Background(LayoutClass):
                 filename = ""
             if group == NULL:
                 group = ""
-            return (filename, group)
+            return (_ctouni(filename), _ctouni(group))
 
         def __set__(self, value):
             if isinstance(value, tuple) or isinstance(value, list):
@@ -125,7 +125,7 @@ cdef class Background(LayoutClass):
             else:
                 filename = value
                 group = ""
-            elm_bg_file_set(self.obj, filename, group)
+            elm_bg_file_set(self.obj, _cfruni(filename), _cfruni(group))
 
     def option_set(self, option):
         """Set the mode of display for a given background widget's image.

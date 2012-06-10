@@ -171,7 +171,7 @@ cdef class Layout(LayoutClass):
             o = content.obj
         else:
             o = NULL
-        elm_layout_content_set(self.obj, swallow, o)
+        elm_layout_content_set(self.obj, _cfruni(swallow), o)
 
     def content_get(self, swallow):
         """Get the child object in the given content part.
@@ -182,7 +182,7 @@ cdef class Layout(LayoutClass):
         @return: The swallowed object or None if none or an error occurred
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_layout_content_get(self.obj, swallow)
+        cdef c_evas.const_Evas_Object *obj = elm_layout_content_get(self.obj, _cfruni(swallow))
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_unset(self, swallow):
@@ -196,7 +196,7 @@ cdef class Layout(LayoutClass):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_content_unset(self.obj, swallow)
+        cdef c_evas.Evas_Object *obj = elm_layout_content_unset(self.obj, _cfruni(swallow))
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def text_set(self, part, text):
@@ -209,7 +209,7 @@ cdef class Layout(LayoutClass):
         @return: C{True} on success, C{False} otherwise
 
         """
-        elm_layout_text_set(self.obj, part, text)
+        elm_layout_text_set(self.obj, _cfruni(part), _cfruni(text))
 
     def text_get(self, part):
         """Get the text set in the given part
@@ -221,6 +221,6 @@ cdef class Layout(LayoutClass):
         @rtype: string
 
         """
-        return elm_layout_text_get(self.obj, part)
+        return _ctouni(elm_layout_text_get(self.obj, _cfruni(part)))
 
 _elm_widget_type_register("layout", Layout)

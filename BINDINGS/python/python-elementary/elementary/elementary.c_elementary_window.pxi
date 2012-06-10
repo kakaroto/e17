@@ -100,7 +100,7 @@ cdef class Window(Object):
     """
 
     def __init__(self, name, type):
-        self._set_obj(elm_win_add(NULL, name, type))
+        self._set_obj(elm_win_add(NULL, _cfruni(name), type))
 
         cdef c_evas.Evas *e
         e = c_evas.evas_object_evas_get(self.obj)
@@ -157,7 +157,7 @@ cdef class Window(Object):
         @type title: string
 
         """
-        elm_win_title_set(self.obj, title)
+        elm_win_title_set(self.obj, _cfruni(title))
 
     def title_get(self):
         """Get the title of the window
@@ -170,13 +170,13 @@ cdef class Window(Object):
         @rtype: string
 
         """
-        return elm_win_title_get(self.obj)
+        return _ctouni(elm_win_title_get(self.obj))
 
     property title:
         def __get__(self):
-            return self.title_get()
+            return _ctouni(elm_win_title_get(self.obj))
         def __set__(self, title):
-            self.title_set(title)
+            elm_win_title_set(self.obj, _cfruni(title))
 
     def icon_name_set(self, icon_name):
         """Set the icon name of the window.
@@ -185,7 +185,7 @@ cdef class Window(Object):
         @type icon_name: string
 
         """
-        elm_win_icon_name_set(self.obj, icon_name)
+        elm_win_icon_name_set(self.obj, _cfruni(icon_name))
 
     def icon_name_get(self):
         """Get the icon name of the window
@@ -198,13 +198,13 @@ cdef class Window(Object):
         @rtype: string
 
         """
-        return elm_win_icon_name_get(self.obj)
+        return _ctouni(elm_win_icon_name_get(self.obj))
 
     property icon_name:
         def __get__(self):
-            return self.icon_name_get()
+            return _ctouni(elm_win_icon_name_get(self.obj))
         def __set__(self, icon_name):
-            self.icon_name_set(icon_name)
+            elm_win_icon_name_set(self.obj, _cfruni(icon_name))
 
     def role_set(self, role):
         """Set the role of the window.
@@ -213,7 +213,7 @@ cdef class Window(Object):
         @type role: string
 
         """
-        elm_win_role_set(self.obj, role)
+        elm_win_role_set(self.obj, _cfruni(role))
 
     def role_get(self):
         """Get the role of the window
@@ -226,7 +226,7 @@ cdef class Window(Object):
         @rtype: string
 
         """
-        return elm_win_role_get(self.obj)
+        return _ctouni(elm_win_role_get(self.obj))
 
     property role:
         def __get__(self):
@@ -1061,7 +1061,7 @@ cdef class Window(Object):
         @type style: string
 
         """
-        elm_win_focus_highlight_style_set(self.obj, style)
+        elm_win_focus_highlight_style_set(self.obj, _cfruni(style))
 
     def focus_highlight_style_get(self):
         """Get the style set for the focus highlight object
@@ -1074,7 +1074,7 @@ cdef class Window(Object):
         @rtype: string
 
         """
-        return elm_win_focus_highlight_style_get(self.obj)
+        return _ctouni(elm_win_focus_highlight_style_get(self.obj))
 
     property focus_highlight_style:
         def __get__(self):
@@ -1200,7 +1200,7 @@ cdef class Window(Object):
         @type svcsys: bool
 
         """
-        return bool(elm_win_socket_listen(self.obj, svcname, svcnum, svcsys))
+        return bool(elm_win_socket_listen(self.obj, _cfruni(svcname), svcnum, svcsys))
 
     def xwindow_xid_get(self):
         """Returns the X Window id.

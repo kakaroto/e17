@@ -110,9 +110,9 @@ cdef class Icon(Image):
 
         """
         if group == None:
-            elm_icon_thumb_set(self.obj, filename, NULL)
+            elm_icon_thumb_set(self.obj, _cfruni(filename), NULL)
         else:
-            elm_icon_thumb_set(self.obj, filename, group)
+            elm_icon_thumb_set(self.obj, _cfruni(filename), _cfruni(group))
 
     def standard_set(self, name):
         """Set the icon by icon standards names.
@@ -138,7 +138,7 @@ cdef class Icon(Image):
         @rtype: bool
 
         """
-        return bool(elm_icon_standard_set(self.obj, name))
+        return bool(elm_icon_standard_set(self.obj, _cfruni(name)))
 
     def standard_get(self):
         """Get the icon name set by icon standard names.
@@ -152,7 +152,7 @@ cdef class Icon(Image):
         @rtype: string
 
         """
-        return elm_icon_standard_get(self.obj)
+        return _ctouni(elm_icon_standard_get(self.obj))
 
     property standard:
         """The icon standards name.

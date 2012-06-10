@@ -55,7 +55,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_file_set(self.obj, filename, group))
+        return bool(elm_layout_file_set(self.obj, _cfruni(filename), _cfruni(group)))
 
     def theme_set(self, clas, group, style):
         """Set the edje group from the elementary theme that will be used as layout
@@ -74,7 +74,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_theme_set(self.obj, clas, group, style))
+        return bool(elm_layout_theme_set(self.obj, _cfruni(clas), _cfruni(group), _cfruni(style)))
 
     def signal_emit(self, emission, source):
         """Send a (Edje) signal to a given layout widget's underlying Edje
@@ -90,7 +90,7 @@ cdef class LayoutClass(Object):
         @type source: string
 
         """
-        elm_layout_signal_emit(self.obj, emission, source)
+        elm_layout_signal_emit(self.obj, _cfruni(emission), _cfruni(source))
 
     #def signal_callback_add(self, emission, source, func, data):
         """Add a callback for a (Edje) signal emitted by a layout widget's
@@ -110,7 +110,7 @@ cdef class LayoutClass(Object):
         @type func: function
 
         """
-        #elm_layout_signal_callback_add(self.obj, emission, source, Edje_Signal_Cb func, voiddata)
+        #elm_layout_signal_callback_add(self.obj, _cfruni(emission), _cfruni(source), Edje_Signal_Cb func, voiddata)
 
     #def signal_callback_del(self, emission, source, func):
         """Remove a signal-triggered callback from a given layout widget.
@@ -130,7 +130,7 @@ cdef class LayoutClass(Object):
         @type func: function
 
         """
-        #elm_layout_signal_callback_del(self.obj, emission, source, Edje_Signal_Cb func)
+        #elm_layout_signal_callback_del(self.obj, _cfruni(emission), _cfruni(source), Edje_Signal_Cb func)
 
     def box_append(self, part, c_evas.Object child):
         """Append child to layout box part.
@@ -153,7 +153,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_box_append(self.obj, part, child.obj))
+        return bool(elm_layout_box_append(self.obj, _cfruni(part), child.obj))
 
     def box_prepend(self, part, c_evas.Object child):
         """Prepend child to layout box part.
@@ -176,7 +176,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_box_prepend(self.obj, part, child.obj))
+        return bool(elm_layout_box_prepend(self.obj, _cfruni(part), child.obj))
 
     def box_insert_before(self, part, c_evas.Object child, c_evas.Object reference):
         """Insert child to layout box part before a reference object.
@@ -201,7 +201,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_box_insert_before(self.obj, part, child.obj, reference.obj))
+        return bool(elm_layout_box_insert_before(self.obj, _cfruni(part), child.obj, reference.obj))
 
     def box_insert_at(self, part, c_evas.Object child, pos):
         """Insert child to layout box part at a given position.
@@ -226,7 +226,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_box_insert_at(self.obj, part, child.obj, pos))
+        return bool(elm_layout_box_insert_at(self.obj, _cfruni(part), child.obj, pos))
 
     def box_remove(self, part, c_evas.Object child):
         """Remove a child of the given part box.
@@ -246,7 +246,7 @@ cdef class LayoutClass(Object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_box_remove(self.obj, part, child.obj)
+        cdef c_evas.Evas_Object *obj = elm_layout_box_remove(self.obj, _cfruni(part), child.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def box_remove_all(self, part, clear):
@@ -269,7 +269,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_box_remove_all(self.obj, part, clear))
+        return bool(elm_layout_box_remove_all(self.obj, _cfruni(part), clear))
 
     def table_pack(self, part, c_evas.Object child_obj, col, row, colspan, rowspan):
         """Insert child to layout table part.
@@ -302,7 +302,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_table_pack(self.obj, part, child_obj.obj, col, row, colspan, rowspan))
+        return bool(elm_layout_table_pack(self.obj, _cfruni(part), child_obj.obj, col, row, colspan, rowspan))
 
     def table_unpack(self, part, c_evas.Object child_obj):
         """Unpack (remove) a child of the given part table.
@@ -322,7 +322,7 @@ cdef class LayoutClass(Object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_table_unpack(self.obj, part, child_obj.obj)
+        cdef c_evas.Evas_Object *obj = elm_layout_table_unpack(self.obj, _cfruni(part), child_obj.obj)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def table_clear(self, part, clear):
@@ -345,7 +345,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_table_clear(self.obj, part, clear))
+        return bool(elm_layout_table_clear(self.obj, _cfruni(part), clear))
 
     def edje_get(self):
         """Get the edje layout
@@ -406,7 +406,7 @@ cdef class LayoutClass(Object):
         @rtype: string
 
         """
-        return elm_layout_data_get(self.obj, key)
+        return _ctouni(elm_layout_data_get(self.obj, _cfruni(key)))
 
     def sizing_eval(self):
         """Eval sizing
@@ -441,7 +441,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_part_cursor_set(self.obj, part_name, cursor))
+        return bool(elm_layout_part_cursor_set(self.obj, _cfruni(part_name), _cfruni(cursor)))
 
     def part_cursor_get(self, part_name):
         """Get the cursor to be shown when mouse is over an edje part
@@ -452,7 +452,7 @@ cdef class LayoutClass(Object):
         @rtype: string
 
         """
-        return elm_layout_part_cursor_get(self.obj, part_name)
+        return _ctouni(elm_layout_part_cursor_get(self.obj, _cfruni(part_name)))
 
     def part_cursor_unset(self, part_name):
         """Unsets a cursor previously set with L{part_cursor_set()}.
@@ -464,7 +464,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_part_cursor_unset(self.obj, part_name))
+        return bool(elm_layout_part_cursor_unset(self.obj, _cfruni(part_name)))
 
     def part_cursor_style_set(self, part_name, style):
         """Sets a specific cursor style for an edje part.
@@ -479,7 +479,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_part_cursor_style_set(self.obj, part_name, style))
+        return bool(elm_layout_part_cursor_style_set(self.obj, _cfruni(part_name), _cfruni(style)))
 
     def part_cursor_style_get(self, part_name):
         """Gets a specific cursor style for an edje part.
@@ -492,7 +492,7 @@ cdef class LayoutClass(Object):
         @rtype: string
 
         """
-        return elm_layout_part_cursor_style_get(self.obj, part_name)
+        return _ctouni(elm_layout_part_cursor_style_get(self.obj, _cfruni(part_name)))
 
     def part_cursor_engine_only_set(self, part_name, engine_only):
         """Sets if the cursor set should be searched on the theme or should use
@@ -513,7 +513,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_part_cursor_engine_only_set(self.obj, part_name, engine_only))
+        return bool(elm_layout_part_cursor_engine_only_set(self.obj, _cfruni(part_name), engine_only))
 
     def part_cursor_engine_only_get(self, part_name):
         """Gets a specific cursor engine_only for an edje part.
@@ -525,7 +525,7 @@ cdef class LayoutClass(Object):
         @rtype: bool
 
         """
-        return bool(elm_layout_part_cursor_engine_only_get(self.obj, part_name))
+        return bool(elm_layout_part_cursor_engine_only_get(self.obj, _cfruni(part_name)))
 
     def icon_set(self, c_evas.Object icon):
         """Convenience macro to set the icon object in a layout that follows the

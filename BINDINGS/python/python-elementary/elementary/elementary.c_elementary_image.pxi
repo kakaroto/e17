@@ -55,7 +55,7 @@ cdef class Image(Object):
         self._set_obj(elm_image_add(parent.obj))
 
     #def memfile_set(self, img, size, format, key):
-        #return bool(elm_image_memfile_set(self.obj, img, size, format, key))
+        #return bool(elm_image_memfile_set(self.obj, img, size, _cfruni(format), _cfruni(key)))
 
     def file_set(self, filename, group = None):
         """Set the file that will be used as the image's source.
@@ -77,9 +77,9 @@ cdef class Image(Object):
 
         """
         if group == None:
-            elm_image_file_set(self.obj, filename, NULL)
+            elm_image_file_set(self.obj, _cfruni(filename), NULL)
         else:
-            elm_image_file_set(self.obj, filename, group)
+            elm_image_file_set(self.obj, _cfruni(filename), _cfruni(group))
 
     def file_get(self):
         """Get the file that will be used as image.
@@ -92,7 +92,7 @@ cdef class Image(Object):
         """
         cdef const_char_ptr filename, group
         elm_image_file_get(self.obj, &filename, &group)
-        return (filename, group)
+        return (_ctouni(filename), _ctouni(group))
 
     def smooth_set(self, smooth):
         """Set the smooth effect for an image.
