@@ -47,7 +47,7 @@ cdef class NaviframeItem(ObjectItem):
         @type item_style: string
 
         """
-        elm_naviframe_item_style_set(self.item, style)
+        elm_naviframe_item_style_set(self.item, _cfruni(style))
 
     def style_get(self):
         """Get an item style
@@ -58,7 +58,7 @@ cdef class NaviframeItem(ObjectItem):
         @rtype: string
 
         """
-        return elm_naviframe_item_style_get(self.item)
+        return _ctouni(elm_naviframe_item_style_get(self.item))
 
     property style:
         """Set the item style
@@ -226,11 +226,11 @@ cdef class Naviframe(LayoutClass):
         cdef NaviframeItem ret = NaviframeItem()
         cdef Elm_Object_Item *item
 
-        item = elm_naviframe_item_push(self.obj, title_label,
+        item = elm_naviframe_item_push(self.obj, _cfruni(title_label),
                                        prev_btn.obj if prev_btn else NULL,
                                        next_btn.obj if next_btn else NULL,
                                        content.obj if content else NULL,
-                                       item_style if item_style else NULL)
+                                       _cfruni(item_style) if item_style else NULL)
         if item != NULL:
             ret.item = item
             return ret
@@ -275,7 +275,7 @@ cdef class Naviframe(LayoutClass):
         cdef NaviframeItem ret = NaviframeItem()
         cdef Elm_Object_Item *item
 
-        item = elm_naviframe_item_insert_before(self.obj, before.item, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
+        item = elm_naviframe_item_insert_before(self.obj, before.item, _cfruni(title_label), prev_btn.obj, next_btn.obj, content.obj, _cfruni(item_style))
         if item != NULL:
             ret.item = item
             return ret
@@ -320,7 +320,7 @@ cdef class Naviframe(LayoutClass):
         cdef NaviframeItem ret = NaviframeItem()
         cdef Elm_Object_Item *item
 
-        item = elm_naviframe_item_insert_after(self.obj, after.item, title_label, prev_btn.obj, next_btn.obj, content.obj, item_style)
+        item = elm_naviframe_item_insert_after(self.obj, after.item, _cfruni(title_label), prev_btn.obj, next_btn.obj, content.obj, _cfruni(item_style))
         if item != NULL:
             ret.item = item
             return ret

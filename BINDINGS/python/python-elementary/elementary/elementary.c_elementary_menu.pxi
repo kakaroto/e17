@@ -45,7 +45,7 @@ cdef class MenuItem(ObjectItem):
 
         self.cbt = (menu, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.item = elm_menu_item_add(menu.obj, parent_obj, icon, label,
+        self.item = elm_menu_item_add(menu.obj, parent_obj, _cfruni(icon), _cfruni(label),
                                           cb, cbdata)
 
         Py_INCREF(self)
@@ -70,7 +70,7 @@ cdef class MenuItem(ObjectItem):
         @type icon: string
 
         """
-        elm_menu_item_icon_name_set(self.item, icon)
+        elm_menu_item_icon_name_set(self.item, _cfruni(icon))
 
     def icon_name_get(self):
         """Get the string representation from the icon of a menu item
@@ -81,7 +81,7 @@ cdef class MenuItem(ObjectItem):
         @rtype: string
 
         """
-        return elm_menu_item_icon_name_get(self.item)
+        return _ctouni(elm_menu_item_icon_name_get(self.item))
 
     property icon_name:
         """The standard icon name of a menu item

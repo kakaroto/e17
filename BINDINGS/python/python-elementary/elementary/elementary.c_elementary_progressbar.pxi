@@ -232,7 +232,7 @@ cdef class Progressbar(LayoutClass):
         if format is None:
             elm_progressbar_unit_format_set(self.obj, NULL)
         else:
-            elm_progressbar_unit_format_set(self.obj, format)
+            elm_progressbar_unit_format_set(self.obj, _cfruni(format))
 
     def unit_format_get(self):
         """Retrieve the format string set for a given progress bar widget's
@@ -245,7 +245,7 @@ cdef class Progressbar(LayoutClass):
         @rtype: string
 
         """
-        return elm_progressbar_unit_format_get(self.obj)
+        return _ctouni(elm_progressbar_unit_format_get(self.obj))
 
     property unit_format:
         """The format string for a given progress bar widget's units label.

@@ -146,7 +146,7 @@ cdef class Slider(LayoutClass):
         @type format: string
 
         """
-        elm_slider_unit_format_set(self.obj, format)
+        elm_slider_unit_format_set(self.obj, _cfruni(format))
 
     def unit_format_get(self):
         """Get the unit label format of the slider.
@@ -160,7 +160,7 @@ cdef class Slider(LayoutClass):
         @rtype: string
 
         """
-        return elm_slider_unit_format_get(self.obj)
+        return _ctouni(elm_slider_unit_format_get(self.obj))
 
     property unit_format:
         """The format string for the unit label.
@@ -210,7 +210,7 @@ cdef class Slider(LayoutClass):
         @type indicator: string
 
         """
-        elm_slider_indicator_format_set(self.obj, format)
+        elm_slider_indicator_format_set(self.obj, _cfruni(format))
 
     def indicator_format_get(self):
         """Get the indicator label format of the slider.
@@ -225,7 +225,7 @@ cdef class Slider(LayoutClass):
         @rtype: string
 
         """
-        return elm_slider_indicator_format_get(self.obj)
+        return _ctouni(elm_slider_indicator_format_get(self.obj))
 
     property indicator_format:
         """The format string for the indicator label.

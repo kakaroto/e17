@@ -42,13 +42,9 @@ cdef class HoverselItem(ObjectItem):
 
     def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type,
                  callback, *args, **kargs):
-        cdef char *i_f = NULL
         cdef void* cbdata = NULL
         cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
         cb = NULL
-
-        if icon_file:
-           i_f = icon_file
 
         if callback:
             if not callable(callback):
@@ -57,7 +53,7 @@ cdef class HoverselItem(ObjectItem):
 
         self.cbt = (hoversel, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.item = elm_hoversel_item_add(hoversel.obj, label, i_f, icon_type,
+        self.item = elm_hoversel_item_add(hoversel.obj, _cfruni(label), _cfruni(icon_file), icon_type,
                                           cb, cbdata)
 
         Py_INCREF(self)
@@ -85,7 +81,7 @@ cdef class HoverselItem(ObjectItem):
         @param icon_type: The icon type
 
         """
-        elm_hoversel_item_icon_set(self.item, icon_file, icon_group, icon_type)
+        elm_hoversel_item_icon_set(self.item, _cfruni(icon_file), _cfruni(icon_group), icon_type)
 
     def icon_get(self):
         """Get the icon object of the hoversel item
@@ -100,14 +96,8 @@ cdef class HoverselItem(ObjectItem):
         cdef const_char_ptr cicon_file
         cdef const_char_ptr cicon_group
         cdef Elm_Icon_Type cicon_type
-        icon_file = None
-        icon_group = None
         elm_hoversel_item_icon_get(self.item, &cicon_file, &cicon_group, &cicon_type)
-        if cicon_file != NULL:
-            icon_file = cicon_file
-        if cicon_group != NULL:
-            icon_group = cicon_group
-        return (icon_file, icon_group, cicon_type)
+        return (_ctouni(cicon_file), _ctouni(cicon_group), cicon_type)
 
 cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
     cdef void *data

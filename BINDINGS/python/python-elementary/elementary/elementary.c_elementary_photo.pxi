@@ -50,7 +50,7 @@ cdef class Photo(Object):
 
         """
         if filename:
-           return bool(elm_photo_file_set(self.obj, filename))
+           return bool(elm_photo_file_set(self.obj, _cfruni(filename)))
         else:
            return bool(elm_photo_file_set(self.obj, NULL))
 
@@ -63,7 +63,7 @@ cdef class Photo(Object):
         @type group: string
 
         """
-        elm_photo_thumb_set(self.obj, filename, group)
+        elm_photo_thumb_set(self.obj, _cfruni(filename), _cfruni(group))
 
     def size_set(self, size):
         """Set the size that will be used on the photo

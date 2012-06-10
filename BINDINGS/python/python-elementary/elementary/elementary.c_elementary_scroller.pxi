@@ -65,7 +65,7 @@ cdef class Scroller(Object):
         @type base: string
 
         """
-        elm_scroller_custom_widget_base_theme_set(self.obj, widget, base)
+        elm_scroller_custom_widget_base_theme_set(self.obj, _cfruni(widget), _cfruni(base))
 
     def content_min_limit(self, w, h):
         """Make the scroller minimum size limited to the minimum size of the

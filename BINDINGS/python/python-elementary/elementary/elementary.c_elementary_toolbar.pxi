@@ -45,7 +45,7 @@ cdef class ToolbarItem(ObjectItem):
 
         self.cbt = (toolbar, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.item = elm_toolbar_item_append(toolbar.obj, icon, label, cb, cbdata)
+        self.item = elm_toolbar_item_append(toolbar.obj, icon, _cfruni(label), cb, cbdata)
 
         Py_INCREF(self)
         elm_object_item_del_cb_set(self.item, _toolbar_item_del_cb)
@@ -179,7 +179,7 @@ cdef class ToolbarItem(ObjectItem):
         @type icon: string
 
         """
-        elm_toolbar_item_icon_set(self.item, ic)
+        elm_toolbar_item_icon_set(self.item, _cfruni(ic))
 
     def icon_get(self):
         """Get the string used to set the icon of item.
@@ -190,11 +190,7 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: string
 
         """
-        cdef const_char_ptr i
-        i = elm_toolbar_item_icon_get(self.item)
-        if i == NULL:
-            return None
-        return i
+        return _ctouni(elm_toolbar_item_icon_get(self.item))
 
     property icon:
         def __get__(self):
@@ -263,7 +259,7 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: bool
 
         """
-        return bool(elm_toolbar_item_icon_file_set(self.item, file, key))
+        return bool(elm_toolbar_item_icon_file_set(self.item, _cfruni(file), _cfruni(key)))
 
     def separator_set(self, separator):
         """Set or unset item as a separator.
@@ -663,7 +659,7 @@ cdef class Toolbar(Object):
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it = elm_toolbar_item_find_by_label(self.obj, label)
+        cdef Elm_Object_Item *it = elm_toolbar_item_find_by_label(self.obj, _cfruni(label))
         return _elm_toolbar_item_to_python(it)
 
     def selected_item_get(self):

@@ -68,7 +68,7 @@ cdef class Spinner(LayoutClass):
         @type fmt: string
 
         """
-        elm_spinner_label_format_set(self.obj, format)
+        elm_spinner_label_format_set(self.obj, _cfruni(format))
 
     def label_format_get(self):
         """Get the label format of the spinner.
@@ -79,11 +79,7 @@ cdef class Spinner(LayoutClass):
         @rtype: string
 
         """
-        cdef const_char_ptr s
-        s = elm_spinner_label_format_get(self.obj)
-        if s == NULL:
-            return ""
-        return s
+        return _ctouni(elm_spinner_label_format_get(self.obj))
 
     property label_format:
         """The format string of the displayed label.
@@ -422,7 +418,7 @@ cdef class Spinner(LayoutClass):
         @type label: string
 
         """
-        elm_spinner_special_value_add(self.obj, value, label)
+        elm_spinner_special_value_add(self.obj, value, _cfruni(label))
 
     def interval_set(self, interval):
         """Set the interval on time updates for an user mouse button hold

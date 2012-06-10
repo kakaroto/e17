@@ -44,7 +44,7 @@ cdef enum Elm_Index_Item_Insert_Kind:
     ELM_INDEX_ITEM_INSERT_SORTED
 
 cdef class IndexItem(ObjectItem):
-    def __init__(self, kind, c_evas.Object index, const_char_ptr letter, IndexItem before_after = None,
+    def __init__(self, kind, c_evas.Object index, letter, IndexItem before_after = None,
                  callback = None, *args, **kargs):
         cdef void* cbdata
         cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
@@ -60,27 +60,50 @@ cdef class IndexItem(ObjectItem):
         cbdata = <void*>self.cbt
 
         if kind == ELM_INDEX_ITEM_INSERT_APPEND:
-            self.item = elm_index_item_append(index.obj, letter, cb, cbdata)
+            self.item = elm_index_item_append(index.obj, _cfruni(letter), cb, cbdata)
         elif kind == ELM_INDEX_ITEM_INSERT_PREPEND:
-            self.item = elm_index_item_prepend(index.obj, letter, cb, cbdata)
+            self.item = elm_index_item_prepend(index.obj, _cfruni(letter), cb, cbdata)
         #elif kind == ELM_INDEX_ITEM_INSERT_SORTED:
-            #self.item = elm_index_item_sorted_insert(index.obj, letter, cb, cbdata, cmp_f, cmp_data_f)
+            #self.item = elm_index_item_sorted_insert(index.obj, _cfruni(letter), cb, cbdata, cmp_f, cmp_data_f)
         else:
             if before_after == None:
                 raise ValueError("need a valid after object to add an item before/after another item")
             if kind == ELM_INDEX_ITEM_INSERT_BEFORE:
-                self.item = elm_index_item_insert_before(index.obj, before_after.item, letter, cb, cbdata)
+                self.item = elm_index_item_insert_before(index.obj, before_after.item, _cfruni(letter), cb, cbdata)
             else:
-                self.item = elm_index_item_insert_after(index.obj, before_after.item, letter, cb, cbdata)
+                self.item = elm_index_item_insert_after(index.obj, before_after.item, _cfruni(letter), cb, cbdata)
 
         Py_INCREF(self)
         elm_object_item_del_cb_set(self.item, _index_item_del_cb)
 
     def selected_set(self, selected):
+        """Set the selected state of an item.
+
+        This sets the selected state of the given item.
+        C{True} for selected, C{False} for not selected.
+
+        If a new item is selected the previously selected will be unselected.
+        Previously selected item can be get with function
+        L{Index.selected_item_get()}.
+
+        Selected items will be highlighted.
+
+        @see: L{Index.selected_item_get()}
+
+        @param selected: The selected state
+        @type selected: bool
+
+        """
         elm_index_item_selected_set(self.item, selected)
 
     def letter_get(self):
-        return elm_index_item_letter_get(self.item)
+        """Get the letter (string) set on a given index widget item.
+
+        @return: The letter string set on the item
+        @rtype: string
+
+        """
+        return _ctouni(elm_index_item_letter_get(self.item))
 
 cdef Elm_Object_Item *_elm_index_item_from_python(IndexItem item):
     if item is None:

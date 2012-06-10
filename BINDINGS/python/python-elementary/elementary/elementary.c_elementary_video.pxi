@@ -47,7 +47,7 @@ cdef class Video(LayoutClass):
         @rtype: bool
 
         """
-        return bool(elm_video_file_set(self.obj, filename))
+        return bool(elm_video_file_set(self.obj, _cfruni(filename)))
 
     property video_file:
         """Define the file or URI that will be the video source.
@@ -296,7 +296,7 @@ cdef class Video(LayoutClass):
         @rtype: string
 
         """
-        return elm_video_title_get(self.obj)
+        return _ctouni(elm_video_title_get(self.obj))
 
     property title:
         """The title (for instance DVD title) from this emotion object.
