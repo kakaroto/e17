@@ -41,7 +41,7 @@ cdef class CtxpopupItem(ObjectItem):
 
         self.cbt = (ctxpopup, callback, self, args, kargs)
         cbdata = <void*>self.cbt
-        self.item = elm_ctxpopup_item_append(ctxpopup.obj, label, icon_obj, cb, cbdata)
+        self.item = elm_ctxpopup_item_append(ctxpopup.obj, _cfruni(label), icon_obj, cb, cbdata)
 
 cdef class Ctxpopup(Object):
 

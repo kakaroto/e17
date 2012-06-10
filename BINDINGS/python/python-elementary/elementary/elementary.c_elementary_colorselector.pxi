@@ -184,7 +184,7 @@ cdef class Colorselector(LayoutClass):
         @type palette_name: string
 
         """
-        elm_colorselector_palette_name_set(self.obj, palette_name)
+        elm_colorselector_palette_name_set(self.obj, _cfruni(palette_name))
 
     def palette_name_get(self):
         """Get current palette's name
@@ -196,7 +196,7 @@ cdef class Colorselector(LayoutClass):
         @rtype: string
 
         """
-        return elm_colorselector_palette_name_get(self.obj)
+        return _ctouni(elm_colorselector_palette_name_get(self.obj))
 
     property palette_name:
         """The current palette's name
@@ -209,9 +209,9 @@ cdef class Colorselector(LayoutClass):
 
         """
         def __get__(self):
-            return elm_colorselector_palette_name_get(self.obj)
+            return _ctouni(elm_colorselector_palette_name_get(self.obj))
         def __set__(self, palette_name):
-            elm_colorselector_palette_name_set(self.obj, palette_name)
+            elm_colorselector_palette_name_set(self.obj, _cfruni(palette_name))
 
     def callback_selected_add(self, func, *args, **kwargs):
         """When the color value changes on selector"""

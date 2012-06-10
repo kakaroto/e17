@@ -280,7 +280,7 @@ cdef class Fileselector(LayoutClass):
         @type path: string
 
         """
-        elm_fileselector_path_set(self.obj, path)
+        elm_fileselector_path_set(self.obj, _cfruni(path))
 
     def path_get(self):
         """Get the parent directory's path that a given file selector
@@ -293,9 +293,7 @@ cdef class Fileselector(LayoutClass):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_path_get(self.obj)
-        return p if p != NULL else None
+        return _ctouni(elm_fileselector_path_get(self.obj))
 
     property path:
         """The B{directory} that a given file selector widget will display
@@ -327,7 +325,7 @@ cdef class Fileselector(LayoutClass):
         @rtype: bool
 
         """
-        return elm_fileselector_selected_set(self.obj, path)
+        return elm_fileselector_selected_set(self.obj, _cfruni(path))
 
     def selected_get(self):
         """Get the currently selected item's (full) path, in the given file
@@ -342,9 +340,7 @@ cdef class Fileselector(LayoutClass):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_selected_get(self.obj)
-        return p if p != NULL else None
+        return _ctouni(elm_fileselector_selected_get(self.obj))
 
     property selected:
         """The currently selected file/directory in the given file selector

@@ -104,7 +104,7 @@ cdef class FileselectorEntry(Object):
         @type title: string
 
         """
-        elm_fileselector_entry_window_title_set(self.obj, title)
+        elm_fileselector_entry_window_title_set(self.obj, _cfruni(title))
 
     def window_title_get(self):
         """Get the title set for a given file selector entry widget's window
@@ -115,11 +115,7 @@ cdef class FileselectorEntry(Object):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_entry_window_title_get(self.obj)
-        if p == NULL:
-            return None
-        return p
+        return _ctouni(elm_fileselector_entry_window_title_get(self.obj))
 
     property window_title:
         """The title for a given file selector entry widget's window
@@ -204,7 +200,7 @@ cdef class FileselectorEntry(Object):
         @type path: string
 
         """
-        elm_fileselector_entry_path_set(self.obj, path)
+        elm_fileselector_entry_path_set(self.obj, _cfruni(path))
 
     def path_get(self):
         """Get the entry's path string for a given file selector entry
@@ -216,11 +212,7 @@ cdef class FileselectorEntry(Object):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_entry_path_get(self.obj)
-        if p == NULL:
-            return None
-        return p
+        return _ctouni(elm_fileselector_entry_path_get(self.obj))
 
     property path:
         """The initial file system path and the entry's path string for
@@ -469,7 +461,7 @@ cdef class FileselectorEntry(Object):
         @type path: string
 
         """
-        elm_fileselector_entry_selected_set(self.obj, path)
+        elm_fileselector_entry_selected_set(self.obj, _cfruni(path))
 
     def selected_get(self):
         """Get the parent directory's path to the latest file selection on
@@ -482,11 +474,7 @@ cdef class FileselectorEntry(Object):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_entry_selected_get(self.obj)
-        if p == NULL:
-            return None
-        return p
+        return _ctouni(elm_fileselector_entry_selected_get(self.obj))
 
     property selected:
         """The initial file system path for a given file selector entry

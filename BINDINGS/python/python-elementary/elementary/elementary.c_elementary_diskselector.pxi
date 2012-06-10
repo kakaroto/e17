@@ -56,7 +56,7 @@ cdef class DiskselectorItem(ObjectItem):
         self.cbt = (list, callback, self, args, kargs)
         cbdata = <void*>self.cbt
 
-        self.item = elm_diskselector_item_append(diskselector.obj, label, icon_obj, cb, cbdata)
+        self.item = elm_diskselector_item_append(diskselector.obj, _cfruni(label), icon_obj, cb, cbdata)
 
         Py_INCREF(self)
         elm_object_item_del_cb_set(self.item, _diskselector_item_del_cb)

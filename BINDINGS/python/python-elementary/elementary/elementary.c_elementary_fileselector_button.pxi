@@ -88,7 +88,7 @@ cdef class FileselectorButton(Button):
         @type title: string
 
         """
-        elm_fileselector_button_window_title_set(self.obj, title)
+        elm_fileselector_button_window_title_set(self.obj, _cfruni(title))
 
     def window_title_get(self):
         """Get the title for a given file selector button widget's window
@@ -99,11 +99,7 @@ cdef class FileselectorButton(Button):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_button_window_title_get(self.obj)
-        if p == NULL:
-            return None
-        return p
+        return _ctouni(elm_fileselector_button_window_title_get(self.obj))
 
     property window_title:
         """The title for a given file selector button widget's window
@@ -187,7 +183,7 @@ cdef class FileselectorButton(Button):
         @type path: string
 
         """
-        elm_fileselector_button_path_set(self.obj, path)
+        elm_fileselector_button_path_set(self.obj, _cfruni(path))
 
     def path_get(self):
         """Get the initial file system path set for a given file selector
@@ -199,11 +195,7 @@ cdef class FileselectorButton(Button):
         @rtype: string
 
         """
-        cdef const_char_ptr p
-        p = elm_fileselector_button_path_get(self.obj)
-        if p == NULL:
-            return None
-        return p
+        return _ctouni(elm_fileselector_button_path_get(self.obj))
 
     property path:
         """The initial file system path for a given file selector

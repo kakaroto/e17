@@ -257,9 +257,9 @@ cdef class Datetime(Object):
 
         """
         def __get__(self):
-            return elm_datetime_format_get(self.obj)
+            return _ctouni(elm_datetime_format_get(self.obj))
         def __set__(self, fmt):
-            elm_datetime_format_set(self.obj, fmt)
+            elm_datetime_format_set(self.obj, _cfruni(fmt))
 
     property value_max:
         """The upper boundary of a field.
@@ -292,7 +292,7 @@ cdef class Datetime(Object):
             isdst = time.tm_isdst
             gmtoff = time.tm_gmtoff
             zone = time.tm_zone
-            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone)
+            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, _ctouni(zone))
         def __set__(self, maxtime):
             cdef tm time
             sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = maxtime
@@ -306,7 +306,7 @@ cdef class Datetime(Object):
             time.tm_yday = yday
             time.tm_isdst = isdst
             time.tm_gmtoff = gmtoff
-            time.tm_zone = zone
+            time.tm_zone = _cfruni(zone)
             elm_datetime_value_max_set(self.obj, &time)
 
     property value_min:
@@ -327,9 +327,20 @@ cdef class Datetime(Object):
 
         """
         def __get__(self):
-            cdef tm mintime
-            elm_datetime_value_min_get(self.obj, &mintime)
-            return mintime
+            cdef tm time
+            elm_datetime_value_min_get(self.obj, &time)
+            sec = time.tm_sec
+            tm_min = time.tm_min
+            hour = time.tm_hour
+            mday = time.tm_mday
+            mon = time.tm_mon
+            year = time.tm_year
+            wday = time.tm_wday
+            yday = time.tm_yday
+            isdst = time.tm_isdst
+            gmtoff = time.tm_gmtoff
+            zone = time.tm_zone
+            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, _ctouni(zone))
         def __set__(self, newtime):
             cdef tm time
             sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = newtime
@@ -343,7 +354,7 @@ cdef class Datetime(Object):
             time.tm_yday = yday
             time.tm_isdst = isdst
             time.tm_gmtoff = gmtoff
-            time.tm_zone = zone
+            time.tm_zone = _cfruni(zone)
             elm_datetime_value_min_set(self.obj, &time)
 
     property field_limit:
@@ -393,9 +404,20 @@ cdef class Datetime(Object):
 
         """
         def __get__(self):
-            cdef tm currtime
-            elm_datetime_value_get(self.obj, &currtime)
-            return currtime
+            cdef tm time
+            elm_datetime_value_get(self.obj, &time)
+            sec = time.tm_sec
+            tm_min = time.tm_min
+            hour = time.tm_hour
+            mday = time.tm_mday
+            mon = time.tm_mon
+            year = time.tm_year
+            wday = time.tm_wday
+            yday = time.tm_yday
+            isdst = time.tm_isdst
+            gmtoff = time.tm_gmtoff
+            zone = time.tm_zone
+            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, _ctouni(zone))
         def __set__(self, newtime):
             cdef tm time
             sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = newtime
@@ -446,5 +468,19 @@ cdef class Datetime(Object):
 
         """
         elm_datetime_field_visible_set(self.obj, fieldtype, visible)
+
+    def callback_changed_add(self, func, *args, **kwargs):
+        """Whenever Datetime field value is changed, this signal is sent."""
+        self._callback_add("changed", func, *args, **kwargs)
+
+    def callback_changed_del(self, func):
+        self._callback_del("changed", func)
+
+    def callback_languge_changed_add(self, func, *args, **kwargs):
+        """Whenever system locale changes, this signal is sent."""
+        self._callback_add("language,changed", func, *args, **kwargs)
+
+    def callback_language_changed_del(self, func):
+        self._callback_del("language,changed", func)
 
 _elm_widget_type_register("datetime", Datetime)
