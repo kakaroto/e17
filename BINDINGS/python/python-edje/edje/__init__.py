@@ -17,9 +17,9 @@
 
 #!/usr/bin/env python
 
-import c_edje
+import edje.c_edje
 
-from c_edje import Edje, shutdown, frametime_set, frametime_get, \
+from edje.c_edje import Edje, shutdown, frametime_set, frametime_get, \
      freeze, thaw, fontset_append_get, fontset_append_set, \
      file_collection_list, file_group_exists, \
      file_data_get, file_cache_set, file_cache_get, file_cache_flush, \

@@ -564,7 +564,7 @@ cdef class State:
             return self.external_param_int_set(param, value)
         elif isinstance(value, float):
             return self.external_param_double_set(param, value)
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             t = edje_object_part_external_param_type_get(
                 self.edje.obj, self.part, param)
             if t == edje.c_edje.EDJE_EXTERNAL_PARAM_TYPE_STRING:

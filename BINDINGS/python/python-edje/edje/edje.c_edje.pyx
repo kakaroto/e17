@@ -269,14 +269,35 @@ def available_modules_get():
 def module_load(char *name):
     return bool(edje_module_load(name))
 
-cdef extern from "Python.h":
-    ctypedef struct PyTypeObject:
-        PyTypeObject *ob_type
+class EdjeObjectMeta(evas.c_evas.EvasObjectMeta):
+    def __init__(cls, name, bases, dict_):
+        evas.c_evas.EvasObjectMeta.__init__(cls, name, bases, dict_)
+        cls._fetch_callbacks()
 
-cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
-    Py_INCREF(metaclass)
-    ctype.ob_type = <PyTypeObject*>metaclass
+    def _fetch_callbacks(cls):
+        if "__edje_signal_callbacks__" in cls.__dict__:
+            return
 
+        cls.__edje_signal_callbacks__ = []
+        cls.__edje_message_callbacks__ = []
+        cls.__edje_text_callbacks__ = []
+
+        sig_append = cls.__edje_signal_callbacks__.append
+        msg_append = cls.__edje_message_callbacks__.append
+        txt_append = cls.__edje_text_callbacks__.append
+
+        for name in dir(cls):
+            val = getattr(cls, name)
+            if not callable(val):
+                continue
+
+            if hasattr(val, "edje_signal_callback"):
+                sig_data = getattr(val, "edje_signal_callback")
+                sig_append((name, sig_data))
+            elif hasattr(val, "edje_message_handler"):
+                msg_append(name)
+            elif hasattr(val, "edje_text_change_callback"):
+                txt_append(name)
 
 include "edje.c_edje_message.pxi"
 include "edje.c_edje_external.pxi"
