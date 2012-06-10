@@ -139,7 +139,7 @@ cdef class Object(evas.c_evas.Object):
         @type text: string
 
         """
-        elm_object_part_text_set(self.obj, part, text)
+        elm_object_part_text_set(self.obj, _cfruni(part), _cfruni(text))
 
     def text_set(self, text):
         """Sets the main text for this object.
@@ -150,7 +150,7 @@ cdef class Object(evas.c_evas.Object):
         @type text: string
 
         """
-        elm_object_text_set(self.obj, text)
+        elm_object_text_set(self.obj, _cfruni(text))
 
     def part_text_get(self, part):
         """Gets the text of a given part of this object.
@@ -163,11 +163,7 @@ cdef class Object(evas.c_evas.Object):
         @rtype: string
 
         """
-        cdef const_char_ptr l
-        l = elm_object_part_text_get(self.obj, part)
-        if l == NULL:
-            return None
-        return l
+        return _ctouni(elm_object_part_text_get(self.obj, _cfruni(part)))
 
     def text_get(self):
         """Gets the main text for this object.
@@ -178,11 +174,7 @@ cdef class Object(evas.c_evas.Object):
         @rtype: string
 
         """
-        cdef const_char_ptr l
-        l = elm_object_text_get(self.obj)
-        if l == NULL:
-            return None
-        return l
+        return _ctouni(elm_object_text_get(self.obj))
 
     property text:
         def __get__(self):
@@ -206,7 +198,7 @@ cdef class Object(evas.c_evas.Object):
         @type content: L{Object}
 
         """
-        elm_object_part_content_set(self.obj, part, obj.obj)
+        elm_object_part_content_set(self.obj, _cfruni(part), obj.obj)
 
     def content_set(self, c_evas.Object obj):
         elm_object_part_content_set(self.obj, NULL, obj.obj)
@@ -222,7 +214,7 @@ cdef class Object(evas.c_evas.Object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_part_content_get(self.obj, part)
+        cdef c_evas.Evas_Object *obj = elm_object_part_content_get(self.obj, _cfruni(part))
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_get(self):
@@ -239,7 +231,7 @@ cdef class Object(evas.c_evas.Object):
         @type part: string
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, part)
+        cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, _cfruni(part))
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_unset(self):
@@ -261,7 +253,7 @@ cdef class Object(evas.c_evas.Object):
         @type txt: string
 
         """
-        elm_object_access_info_set(self.obj, txt)
+        elm_object_access_info_set(self.obj, _cfruni(txt))
 
     def name_find(self, name, recurse):
         """Get a named object from the children
@@ -284,7 +276,7 @@ cdef class Object(evas.c_evas.Object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_name_find(self.obj, name, recurse)
+        cdef c_evas.Evas_Object *obj = elm_object_name_find(self.obj, _cfruni(name), recurse)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def style_set(self, style):
@@ -305,7 +297,7 @@ cdef class Object(evas.c_evas.Object):
         @rtype: bool
 
         """
-        elm_object_style_set(self.obj, style)
+        elm_object_style_set(self.obj, _cfruni(style))
 
     def style_get(self):
         """Get the style used by the widget
@@ -320,9 +312,7 @@ cdef class Object(evas.c_evas.Object):
         @rtype: string
 
         """
-        cdef const_char_ptr style
-        style = elm_object_style_get(self.obj)
-        return style
+        return _ctouni(elm_object_style_get(self.obj))
 
     property style:
         """The style to be used by the widget
@@ -483,7 +473,7 @@ cdef class Object(evas.c_evas.Object):
         @type source: string
 
         """
-        elm_object_signal_emit(self.obj, emission, source)
+        elm_object_signal_emit(self.obj, _cfruni(emission), _cfruni(source))
 
     #def signal_callback_add(self, emission, source, func, data):
         #elm_object_signal_callback_add(self.obj, emission, source, func, data)
@@ -574,7 +564,7 @@ cdef class Object(evas.c_evas.Object):
             elm_object_event_callback_del(self.obj, _event_callback, NULL)
 
     # Cursors
-    def cursor_set(self, char *cursor):
+    def cursor_set(self, cursor):
         """Set the cursor to be shown when mouse is over the object
 
         Set the cursor that will be displayed when mouse is over the object.
@@ -582,10 +572,10 @@ cdef class Object(evas.c_evas.Object):
         is called twice for an object, the previous set will be unset.
 
         """
-        elm_object_cursor_set(self.obj, cursor)
+        elm_object_cursor_set(self.obj, _cfruni(cursor))
 
     def cursor_get(self):
-        return elm_object_cursor_get(self.obj)
+        return _ctouni(elm_object_cursor_get(self.obj))
 
     def cursor_unset(self):
         """Unset cursor for object
@@ -617,17 +607,13 @@ cdef class Object(evas.c_evas.Object):
 
         """
         if style:
-            elm_object_cursor_style_set(self.obj, style)
+            elm_object_cursor_style_set(self.obj, _cfruni(style))
         else:
             elm_object_cursor_style_set(self.obj, NULL)
 
     def cursor_style_get(self):
         """Get the style for this object cursor."""
-        cdef const_char_ptr style
-        style = elm_object_cursor_style_get(self.obj)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_object_cursor_style_get(self.obj))
 
     property cursor_style:
         """The style for this object cursor."""
@@ -1060,20 +1046,20 @@ cdef class Object(evas.c_evas.Object):
         """
         elm_object_tooltip_hide(self.obj)
 
-    def tooltip_text_set(self, char *text):
+    def tooltip_text_set(self, text):
         """Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed. Internally, this
         method calls L{tooltip_content_cb_set}
         """
-        elm_object_tooltip_text_set(self.obj, text)
+        elm_object_tooltip_text_set(self.obj, _cfruni(text))
 
     def tooltip_domain_translatable_text_set(self, domain, text):
-        elm_object_tooltip_domain_translatable_text_set(self.obj, domain, text)
+        elm_object_tooltip_domain_translatable_text_set(self.obj, _cfruni(domain), _cfruni(text))
 
     def tooltip_translatable_text_set(self, text):
-        elm_object_tooltip_translatable_text_set(self.obj, text)
+        elm_object_tooltip_translatable_text_set(self.obj, _cfruni(text))
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """Set the content to be shown in the tooltip object
@@ -1115,17 +1101,13 @@ cdef class Object(evas.c_evas.Object):
             L{tooltip_content_cb_set()} or L{tooltip_text_set()}
         """
         if style:
-            elm_object_tooltip_style_set(self.obj, style)
+            elm_object_tooltip_style_set(self.obj, _cfruni(style))
         else:
             elm_object_tooltip_style_set(self.obj, NULL)
 
     def tooltip_style_get(self):
         """Get the style for this object tooltip."""
-        cdef const_char_ptr style
-        style = elm_object_tooltip_style_get(self.obj)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_object_tooltip_style_get(self.obj))
 
     property tooltip_style:
         """The style for this object tooltip.
@@ -1175,13 +1157,13 @@ cdef class Object(evas.c_evas.Object):
         @type text: string
 
         """
-        elm_object_domain_translatable_text_part_set(self.obj, part, domain, text)
+        elm_object_domain_translatable_text_part_set(self.obj, _cfruni(part), _cfruni(domain), _cfruni(text))
 
     def domain_translatable_text_set(self, domain, text):
-        elm_object_domain_translatable_text_set(self.obj, domain, text)
+        elm_object_domain_translatable_text_set(self.obj, _cfruni(domain), _cfruni(text))
 
     def translatable_text_set(self, text):
-        elm_object_translatable_text_set(self.obj, text)
+        elm_object_translatable_text_set(self.obj, _cfruni(text))
 
     def translatable_text_part_get(self, part):
         """Gets the original string set as translatable for an object
@@ -1197,10 +1179,10 @@ cdef class Object(evas.c_evas.Object):
         @rtype: string
 
         """
-        return elm_object_translatable_text_part_get(self.obj, part)
+        return _ctouni(elm_object_translatable_text_part_get(self.obj, _cfruni(part)))
 
     def translatable_text_get(self):
-        return elm_object_translatable_text_get(self.obj)
+        return _ctouni(elm_object_translatable_text_get(self.obj))
 
     property translatable_text:
         def __get__(self):
@@ -1209,7 +1191,7 @@ cdef class Object(evas.c_evas.Object):
             self.translatable_text_set(value)
 
     # Callbacks
-    def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
+    def _callback_add_full(self, event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 
         @param event: event name
@@ -1231,14 +1213,14 @@ cdef class Object(evas.c_evas.Object):
         if self._elmcallbacks is None:
             self._elmcallbacks = {}
 
-        e = intern(event)
+        e = sys.intern(event)
         lst = self._elmcallbacks.setdefault(e, [])
         if not lst:
-            c_evas.evas_object_smart_callback_add(self.obj, event,
+            c_evas.evas_object_smart_callback_add(self.obj, _fruni(event),
                                                   _object_callback, <void *>e)
         lst.append((event_conv, func, args, kargs))
 
-    def _callback_del_full(self, char *event, event_conv, func):
+    def _callback_del_full(self, event, event_conv, func):
         """Remove a smart callback.
 
         Removes a callback that was added by L{_callback_add_full()}.
@@ -1253,7 +1235,7 @@ cdef class Object(evas.c_evas.Object):
         """
         try:
             lst = self._elmcallbacks[event]
-        except KeyError, e:
+        except KeyError as e:
             raise ValueError("Unknown event %r" % event)
 
         i = -1
@@ -1271,9 +1253,9 @@ cdef class Object(evas.c_evas.Object):
         if lst:
             return
         self._elmcallbacks.pop(event)
-        c_evas.evas_object_smart_callback_del(self.obj, event, _object_callback)
+        c_evas.evas_object_smart_callback_del(self.obj, _fruni(event), _object_callback)
 
-    def _callback_add(self, char *event, func, *args, **kargs):
+    def _callback_add(self, event, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 
         @param event: event name
@@ -1283,7 +1265,7 @@ cdef class Object(evas.c_evas.Object):
         """
         return self._callback_add_full(event, None, func, *args, **kargs)
 
-    def _callback_del(self, char *event, func):
+    def _callback_del(self, event, func):
         """Remove a smart callback.
 
         Removes a callback that was added by L{_callback_add()}.
@@ -1296,16 +1278,6 @@ cdef class Object(evas.c_evas.Object):
         @raise ValueError: if there was no B{func} connected with this event.
         """
         return self._callback_del_full(event, None, func)
-
-    def _callback_remove(self, event, func=None, *args, **kwargs):
-        import warnings
-        warnings.warn("use _callback_del_full() instead.", DeprecationWarning)
-        if func is not None:
-            return self._callback_del(event, func)
-        else:
-            self._elmcallbacks.pop(event)
-            c_evas.evas_object_smart_callback_del(self.obj, event,
-                                                  _object_callback)
 
     def _get_obj_addr(self):
         """

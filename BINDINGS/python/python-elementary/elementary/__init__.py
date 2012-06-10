@@ -16,9 +16,9 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import c_elementary
+import elementary.c_elementary
 
-from c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
+from elementary.c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
     Scroller, Label, Frame, Flip, Table, Clock, Layout, Hover, Entry, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, Radio, \
     Check, Naviframe, NaviframeItem, InnerWindow, Image, Spinner, \
