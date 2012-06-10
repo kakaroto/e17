@@ -24,6 +24,9 @@ cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
     Straight line.
 
     """
+
+    __metaclass__ = EvasObjectMeta
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -138,8 +141,3 @@ cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
             cdef int x2, y2
             evas_object_line_xy_get(self.obj, NULL, NULL, &x2, &y2)
             return (x2, y2)
-
-
-cdef extern from "Evas.h": # hack to force type to be known
-    cdef PyTypeObject PyEvasLine_Type # hack to install metaclass
-_install_metaclass(&PyEvasLine_Type, EvasObjectMeta)

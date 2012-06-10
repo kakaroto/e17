@@ -134,6 +134,9 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
        pixels_dirty, image_data_set, image_data_update_add
 
     """
+
+    __metaclass__ = EvasObjectMeta
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -142,7 +145,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
 
     def _set_common_params(self, file=None, **kargs):
         if file:
-            if isinstance(file, basestring):
+            if isinstance(file, str):
                 file = (file, None)
             self.file_set(*file)
         Object._set_common_params(self, **kargs)
@@ -184,7 +187,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
             return self.file_get()
 
         def __set__(self, value):
-            if isinstance(value, basestring):
+            if isinstance(value, str):
                 value = (value, None)
             self.file_set(*value)
 
@@ -611,11 +614,6 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         self.event_callback_del(EVAS_CALLBACK_IMAGE_UNLOADED, func)
 
 
-cdef extern from "Evas.h": # hack to force type to be known
-    cdef PyTypeObject PyEvasImage_Type # hack to install metaclass
-_install_metaclass(&PyEvasImage_Type, EvasObjectMeta)
-
-
 cdef void _cb_on_filled_image_resize(void *data, Evas *e,
                                      Evas_Object *obj,
                                      void *event_info) with gil:
@@ -630,6 +628,9 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
     This L{Image} subclass already calls L{Image.fill_set()} on resize so
     it will match and so be scaled to fill the whole area.
     """
+
+    __metaclass__ = EvasObjectMeta
+
     def __init__(self, Canvas canvas not None, **kargs):
         Image.__init__(self, canvas, **kargs)
         w, h = self.size_get()
@@ -640,8 +641,3 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
     def fill_set(self, int x, int y, int w, int h):
         "Not available for this class."
         raise NotImplementedError("FilledImage doesn't support fill_set()")
-
-
-cdef extern from "Evas.h": # hack to force type to be known
-    cdef PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
-_install_metaclass(&PyEvasFilledImage_Type, EvasObjectMeta)

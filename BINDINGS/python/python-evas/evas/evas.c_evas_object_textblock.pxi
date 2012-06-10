@@ -22,6 +22,9 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
                  text_markup=None, style=None) -> Textblock instance
 
     """
+
+    __metaclass__ = EvasObjectMeta
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -151,7 +154,3 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
     property style_insets:
         def __get__(self):
             return self.style_insets_get()
-
-cdef extern from "Evas.h": # hack to force type to be known
-    cdef PyTypeObject PyEvasTextblock_Type # hack to install metaclass
-_install_metaclass(&PyEvasTextblock_Type, EvasObjectMeta)

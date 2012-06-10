@@ -241,7 +241,7 @@ def color_parse(desc, is_premul=None):
     b = 0
     a = 0
 
-    if isinstance(desc, basestring):
+    if isinstance(desc, str):
         if not desc or desc[0] != "#":
             raise ValueError("Invalid color description")
         desc_len = len(desc)
@@ -369,16 +369,6 @@ class EvasLoadError(Exception):
         self.key = key
         Exception.__init__(self, "%s (file=%s, key=%s)" % (msg, filename, key))
 
-
-cdef extern from "Python.h":
-    ctypedef struct PyTypeObject:
-        PyTypeObject *ob_type
-
-cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
-    Py_INCREF(metaclass)
-    ctype.ob_type = <PyTypeObject*>metaclass
-
-
 class EvasObjectMeta(type):
     def __init__(cls, name, bases, dict_):
         type.__init__(cls, name, bases, dict_)
@@ -397,7 +387,6 @@ class EvasObjectMeta(type):
                 continue
             evt = getattr(val, "evas_event_callback")
             append((name, evt))
-
 
 include "evas.c_evas_rect.pxi"
 include "evas.c_evas_canvas_callbacks.pxi"

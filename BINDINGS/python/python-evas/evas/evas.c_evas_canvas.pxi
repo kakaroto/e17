@@ -184,7 +184,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
         if isinstance(method, (int, long)):
             engine_id = method
-        elif isinstance(method, basestring):
+        elif isinstance(method, str):
             engine_id = evas_render_method_lookup(method)
         else:
             raise TypeError("method must be integer or string")

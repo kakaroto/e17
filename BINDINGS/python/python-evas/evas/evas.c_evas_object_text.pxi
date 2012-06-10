@@ -36,6 +36,9 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
        char_pos_get, char_coords_get
 
     """
+
+    __metaclass__ = EvasObjectMeta
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -350,8 +353,3 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     property style_pad:
         def __get__(self):
             return self.style_pad_get()
-
-
-cdef extern from "Evas.h": # hack to force type to be known
-    cdef PyTypeObject PyEvasText_Type # hack to install metaclass
-_install_metaclass(&PyEvasText_Type, EvasObjectMeta)
