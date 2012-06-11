@@ -7,10 +7,12 @@ using namespace v8;
 
 GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, always_select);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, no_select);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
-                  PROPERTY(always_select);
+                  PROPERTY(always_select),
+                  PROPERTY(no_select);
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -75,6 +77,17 @@ void CElmToolbar::always_select_set(Handle<Value> value)
 Handle<Value> CElmToolbar::always_select_get() const
 {
    return Boolean::New(elm_toolbar_always_select_mode_get(eo));
+}
+
+void CElmToolbar::no_select_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+      elm_toolbar_no_select_mode_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmToolbar::no_select_get() const
+{
+   return Boolean::New(elm_toolbar_no_select_mode_get(eo));
 }
 
 }
