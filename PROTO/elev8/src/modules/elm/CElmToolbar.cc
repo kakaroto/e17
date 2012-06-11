@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_priority);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_separator);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, align);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
@@ -20,7 +21,8 @@ GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(icon_size),
                   PROPERTY(item_priority),
                   PROPERTY(item_separator),
-                  PROPERTY(homogeneous));
+                  PROPERTY(homogeneous),
+                  PROPERTY(align));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -140,6 +142,17 @@ void CElmToolbar::homogeneous_set(Handle<Value> value)
 Handle<Value> CElmToolbar::homogeneous_get() const
 {
    return Boolean::New(elm_toolbar_homogeneous_get(eo));
+}
+
+void CElmToolbar::align_set(Handle<Value> value)
+{
+   if (value->IsNumber())
+      elm_toolbar_align_set(eo, value->NumberValue());
+}
+
+Handle<Value> CElmToolbar::align_get() const
+{
+   return double::New(elm_toolbar_align_get(eo));
 }
 
 }

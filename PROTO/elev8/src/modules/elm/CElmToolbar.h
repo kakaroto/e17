@@ -60,6 +60,9 @@ public:
    void homogeneous_set(Handle<Value> value);
    Handle<Value> homogeneous_get() const;
 
+   void align_set(Handle<Value> value);
+   Handle<Value> align_get() const;
+
    static void OnSelect(void *data, Evas_Object *, void *);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
