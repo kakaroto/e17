@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, no_select);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_priority);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_separator);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
@@ -18,7 +19,8 @@ GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(no_select),
                   PROPERTY(icon_size),
                   PROPERTY(item_priority),
-                  PROPERTY(item_separator);
+                  PROPERTY(item_separator),
+                  PROPERTY(homogeneous));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -127,6 +129,17 @@ void CElmToolbar::item_separator_set(Handle<Value> value)
 Handle<Value> CElmToolbar::item_separator_get() const
 {
    return Boolean::New(elm_toolbar_item_separator_get(it));
+}
+
+void CElmToolbar::homogeneous_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+      elm_toolbar_homogeneous_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmToolbar::homogeneous_get() const
+{
+   return Boolean::New(elm_toolbar_homogeneous_get(eo));
 }
 
 }

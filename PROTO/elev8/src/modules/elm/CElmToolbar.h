@@ -57,6 +57,9 @@ public:
    void item_separator_set(Handle<Value> value);
    Handle<Value> item_separator_get() const;
 
+   void homogeneous_set(Handle<Value> value);
+   Handle<Value> homogeneous_get() const;
+
    static void OnSelect(void *data, Evas_Object *, void *);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
