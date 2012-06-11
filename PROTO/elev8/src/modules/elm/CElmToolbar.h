@@ -54,6 +54,9 @@ public:
    void item_priority_set(Handle<Value> value);
    Handle<Value> item_priority_get() const;
 
+   void item_separator_set(Handle<Value> value);
+   Handle<Value> item_separator_get() const;
+
    static void OnSelect(void *data, Evas_Object *, void *);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
