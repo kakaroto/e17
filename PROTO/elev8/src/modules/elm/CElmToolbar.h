@@ -51,6 +51,9 @@ public:
    void icon_size_set(Handle<Value> value);
    Handle<Value> icon_size_get() const;
 
+   void item_priority_set(Handle<Value> value);
+   Handle<Value> item_priority_get() const;
+
    static void OnSelect(void *data, Evas_Object *, void *);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);

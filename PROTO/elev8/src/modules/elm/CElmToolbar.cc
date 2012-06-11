@@ -9,12 +9,14 @@ GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, always_select);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, no_select);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_priority);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
                   PROPERTY(always_select),
                   PROPERTY(no_select),
-                  PROPERTY(icon_size);
+                  PROPERTY(icon_size),
+                  PROPERTY(item_priority);
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -101,6 +103,17 @@ void CElmToolbar::icon_size_set(Handle<Value> value)
 Handle<Value> CElmToolbar::icon_size_get() const
 {
    return int::New(elm_toolbar_icon_size_get(eo));
+}
+
+void CElmToolbar::item_priority_set(Handle<Value> value)
+{
+   if (value->IsInt32())
+      elm_toolbar_item_priority_set(eo, value->Int32Value());
+}
+
+Handle<Value> CElmToolbar::item_priority_get() const
+{
+   return int::New(elm_toolbar_item_priority_get(eo));
 }
 
 }
