@@ -48,6 +48,9 @@ public:
    void no_select_set(Handle<Value> value);
    Handle<Value> no_select_get() const;
 
+   void icon_size_set(Handle<Value> value);
+   Handle<Value> icon_size_get() const;
+
    static void OnSelect(void *data, Evas_Object *, void *);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);

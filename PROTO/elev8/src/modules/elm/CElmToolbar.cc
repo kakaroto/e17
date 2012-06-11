@@ -8,11 +8,13 @@ using namespace v8;
 GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, always_select);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, no_select);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
                   PROPERTY(always_select),
-                  PROPERTY(no_select);
+                  PROPERTY(no_select),
+                  PROPERTY(icon_size);
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -88,6 +90,17 @@ void CElmToolbar::no_select_set(Handle<Value> value)
 Handle<Value> CElmToolbar::no_select_get() const
 {
    return Boolean::New(elm_toolbar_no_select_mode_get(eo));
+}
+
+void CElmToolbar::icon_size_set(Handle<Value> value)
+{
+   if (value->IsInt32())
+      elm_toolbar_icon_size_set(eo, value->Int32Value());
+}
+
+Handle<Value> CElmToolbar::icon_size_get() const
+{
+   return int::New(elm_toolbar_icon_size_get(eo));
 }
 
 }
