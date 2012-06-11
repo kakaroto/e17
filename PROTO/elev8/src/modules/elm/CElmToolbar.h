@@ -36,11 +36,17 @@ protected:
 
 public:
    static void Initialize(Handle<Object> target);
+
    virtual void DidRealiseElement(Local<Value> val);
    Handle<Value> append(const Arguments& args);
    void append(Local<Value> icon, Local<Value> label, Local<Value> data,
                Local<Value> callback);
+
+   void always_select_set(Handle<Value> value);
+   Handle<Value> always_select_get() const;
+
    static void OnSelect(void *data, Evas_Object *, void *);
+
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 

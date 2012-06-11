@@ -6,7 +6,11 @@ namespace elm {
 using namespace v8;
 
 GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
-GENERATE_TEMPLATE(CElmToolbar, METHOD(append));
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, always_select);
+
+GENERATE_TEMPLATE(CElmToolbar,
+                  METHOD(append),
+                  PROPERTY(always_select);
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -60,6 +64,17 @@ void CElmToolbar::OnSelect(void *data, Evas_Object *, void *)
 void CElmToolbar::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Toolbar"), GetTemplate()->GetFunction());
+}
+
+void CElmToolbar::always_select_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+      elm_toolbar_always_select_mode_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmToolbar::always_select_get() const
+{
+   return Boolean::New(elm_toolbar_always_select_mode_get(eo));
 }
 
 }
