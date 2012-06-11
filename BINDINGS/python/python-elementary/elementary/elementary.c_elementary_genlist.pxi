@@ -18,16 +18,11 @@
 
 import traceback
 
-cdef _py_elm_genlist_item_call(func, c_evas.Evas_Object *obj, const_char_ptr part, data) with gil:
-    if part != NULL:
-        p = part
-    else:
-        p = None # is it possible?
-
+cdef _py_elm_genlist_item_call(func, c_evas.Evas_Object *obj, part, data) with gil:
     try:
         o = evas.c_evas._Object_from_instance(<long>obj)
-        return func(o, p, data)
-    except Exception, e:
+        return func(o, _ctouni(part), data)
+    except Exception as e:
         traceback.print_exc()
         return None
 
@@ -41,7 +36,7 @@ cdef char *_py_elm_genlist_item_text_get(void *data, c_evas.Evas_Object *obj, co
 
     ret = _py_elm_genlist_item_call(func, obj, part, prm[1])
     if ret is not None:
-        return strdup(ret)
+        return strdup(_fruni(ret))
     else:
         return NULL
 
@@ -59,7 +54,7 @@ cdef c_evas.Evas_Object *_py_elm_genlist_item_content_get(void *data, c_evas.Eva
         try:
             icon = ret
             return icon.obj
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
             return NULL
     else:
@@ -89,7 +84,7 @@ cdef void _py_elm_genlist_object_item_del(void *data, c_evas.Evas_Object *obj) w
         try:
             o = evas.c_evas._Object_from_instance(<long>obj)
             func(o, prm[1])
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
 
     item._unset_obj()
@@ -103,7 +98,7 @@ cdef void _py_elm_genlist_item_func(void *data, c_evas.Evas_Object *obj, void *e
         try:
             o = evas.c_evas._Object_from_instance(<long>obj)
             func(item, o, prm[1])
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
 
 
@@ -179,7 +174,7 @@ cdef class GenlistItemClass:
             methods, it should represent your row model as you want.
         """
         if item_style:
-            self._item_style = str(item_style)
+            self._item_style = item_style
 
         if text_get_func and not callable(text_get_func):
             raise TypeError("text_get_func is not callable!")
@@ -212,7 +207,7 @@ cdef class GenlistItemClass:
             except AttributeError:
                 pass
 
-        self.obj.item_style = self._item_style
+        self.obj.item_style = _fruni(self._item_style)
 
     def __str__(self):
         return ("%s(item_style=%r, text_get_func=%s, content_get_func=%s, "
@@ -242,7 +237,7 @@ cdef class GenlistItemClass:
         def __get__(self):
             return self._item_style
 
-    def text_get(self, c_evas.Object obj, char *part, item_data):
+    def text_get(self, c_evas.Object obj, part, item_data):
         """To be called by Genlist for each row to get its label.
 
         @param obj: the Genlist instance
@@ -254,7 +249,7 @@ cdef class GenlistItemClass:
         """
         return None
 
-    def content_get(self, c_evas.Object obj, char *part, item_data):
+    def content_get(self, c_evas.Object obj, part, item_data):
         """To be called by Genlist for each row to get its icon.
 
         @param obj: the Genlist instance
@@ -266,7 +261,7 @@ cdef class GenlistItemClass:
         """
         return None
 
-    def state_get(self, c_evas.Object obj, char *part, item_data):
+    def state_get(self, c_evas.Object obj, part, item_data):
         """To be called by Genlist for each row to get its state.
 
         @param obj: the Genlist instance
@@ -386,7 +381,7 @@ cdef class GenlistItem(ObjectItem):
         tooltip, so any previous tooltip data is removed.
         Internally, this method calls L{tooltip_content_cb_set}
         """
-        elm_genlist_item_tooltip_text_set(self.item, text)
+        elm_genlist_item_tooltip_text_set(self.item, _cfruni(text))
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
         """ Set the content to be shown in the tooltip object
@@ -430,18 +425,14 @@ cdef class GenlistItem(ObjectItem):
             elm_genlist_item_tooltip_text_set()
         """
         if style:
-            elm_genlist_item_tooltip_style_set(self.item, style)
+            elm_genlist_item_tooltip_style_set(self.item, _cfruni(style))
         else:
             elm_genlist_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
-        cdef const_char_ptr style
-        style = elm_genlist_item_tooltip_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_genlist_item_tooltip_style_get(self.item))
 
     def tooltip_window_mode_set(self, disable):
         return bool(elm_genlist_item_tooltip_window_mode_set(self.item, disable))
@@ -449,7 +440,7 @@ cdef class GenlistItem(ObjectItem):
     def tooltip_window_mode_get(self):
         return bool(elm_genlist_item_tooltip_window_mode_get(self.item))
 
-    def cursor_set(self, char *cursor):
+    def cursor_set(self, cursor):
         """ Set the cursor to be shown when mouse is over the genlist item
 
         Set the cursor that will be displayed when mouse is over the
@@ -457,10 +448,10 @@ cdef class GenlistItem(ObjectItem):
         this function is called twice for an item, the previous set
         will be unset.
         """
-        elm_genlist_item_cursor_set(self.item, cursor)
+        elm_genlist_item_cursor_set(self.item, _cfruni(cursor))
 
     def cursor_get(self):
-        return elm_genlist_item_cursor_get(self.item)
+        return _ctouni(elm_genlist_item_cursor_get(self.item))
 
     def cursor_unset(self):
         """  Unset the cursor to be shown when mouse is over the genlist item
@@ -474,18 +465,14 @@ cdef class GenlistItem(ObjectItem):
             elm_genlist_item_cursor_set()
         """
         if style:
-            elm_genlist_item_cursor_style_set(self.item, style)
+            elm_genlist_item_cursor_style_set(self.item, _cfruni(style))
         else:
             elm_genlist_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """ Get the style for this object cursor.
         """
-        cdef const_char_ptr style
-        style = elm_genlist_item_cursor_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_genlist_item_cursor_style_get(self.item))
 
     def cursor_engine_only_set(self, engine_only):
         """ Sets cursor engine only usage for this object.
@@ -550,13 +537,13 @@ cdef class GenlistItem(ObjectItem):
         elm_genlist_item_demote(self.item)
 
     def fields_update(self, parts, itf):
-        elm_genlist_item_fields_update(self.item, parts, itf)
+        elm_genlist_item_fields_update(self.item, _cfruni(parts), itf)
 
     def decorate_mode_set(self, decorate_it_type, decorate_it_set):
-        elm_genlist_item_decorate_mode_set(self.item, decorate_it_type, decorate_it_set)
+        elm_genlist_item_decorate_mode_set(self.item, _cfruni(decorate_it_type), decorate_it_set)
 
     def decorate_mode_get(self):
-        return elm_genlist_item_decorate_mode_get(self.item)
+        return _ctouni(elm_genlist_item_decorate_mode_get(self.item))
 
     def type_get(self):
         cdef Elm_Genlist_Item_Type ittype = elm_genlist_item_type_get(self.item)

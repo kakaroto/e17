@@ -18,16 +18,11 @@
 
 import traceback
 
-cdef _py_elm_gengrid_item_call(func, c_evas.Evas_Object *obj, const_char_ptr part, data) with gil:
-    if part != NULL:
-        p = part
-    else:
-        p = None # is it possible?
-
+cdef _py_elm_gengrid_item_call(func, c_evas.Evas_Object *obj, part, data) with gil:
     try:
         o = evas.c_evas._Object_from_instance(<long>obj)
-        return func(o, p, data)
-    except Exception, e:
+        return func(o, _ctouni(part), data)
+    except Exception as e:
         traceback.print_exc()
         return None
 
@@ -59,7 +54,7 @@ cdef c_evas.Evas_Object *_py_elm_gengrid_item_content_get(void *data, c_evas.Eva
         try:
             icon = ret
             return icon.obj
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
             return NULL
     else:
@@ -89,7 +84,7 @@ cdef void _py_elm_gengrid_object_item_del(void *data, c_evas.Evas_Object *obj) w
         try:
             o = evas.c_evas._Object_from_instance(<long>obj)
             func(o, prm[1])
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
 
     item._unset_obj()
@@ -103,7 +98,7 @@ cdef void _py_elm_gengrid_item_func(void *data, c_evas.Evas_Object *obj, void *e
         try:
             o = evas.c_evas._Object_from_instance(<long>obj)
             func(item, o, prm[1])
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
 
 
@@ -179,7 +174,7 @@ cdef class GengridItemClass:
             methods, it should represent your item model as you want.
         """
         if item_style:
-            self._item_style = str(item_style)
+            self._item_style = item_style
 
         if text_get_func and not callable(text_get_func):
             raise TypeError("text_get_func is not callable!")
@@ -212,7 +207,7 @@ cdef class GengridItemClass:
             except AttributeError:
                 pass
 
-        self.obj.item_style = self._item_style
+        self.obj.item_style = _fruni(self._item_style)
 
     def __str__(self):
         return ("%s(item_style=%r, text_get_func=%s, content_get_func=%s, "
@@ -242,7 +237,7 @@ cdef class GengridItemClass:
         def __get__(self):
             return self._item_style
 
-    def text_get(self, c_evas.Object obj, char *part, item_data):
+    def text_get(self, c_evas.Object obj, part, item_data):
         """To be called by Gengrid for each item to get its label.
 
         @param obj: the Gengrid instance
@@ -254,7 +249,7 @@ cdef class GengridItemClass:
         """
         return None
 
-    def content_get(self, c_evas.Object obj, char *part, item_data):
+    def content_get(self, c_evas.Object obj, part, item_data):
         """To be called by Gengrid for each item to get its icon.
 
         @param obj: the Gengrid instance
@@ -266,7 +261,7 @@ cdef class GengridItemClass:
         """
         return None
 
-    def state_get(self, c_evas.Object obj, char *part, item_data):
+    def state_get(self, c_evas.Object obj, part, item_data):
         """To be called by Gengrid for each item to get its state.
 
         @param obj: the Gengrid instance
@@ -398,14 +393,14 @@ cdef class GengridItem(ObjectItem):
 
     # XXX TODO elm_gengrid_item_item_class_get
 
-    def tooltip_text_set(self, char *text):
+    def tooltip_text_set(self, text):
         """Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed.
         Internaly, this method call L{tooltip_content_cb_set}
         """
-        elm_gengrid_item_tooltip_text_set(self.item, text)
+        elm_gengrid_item_tooltip_text_set(self.item, _cfruni(text))
 
     property tooltip_text:
         def __get__(self):
@@ -453,18 +448,14 @@ cdef class GengridItem(ObjectItem):
             elm_gengrid_item_tooltip_text_set()
         """
         if style:
-            elm_gengrid_item_tooltip_style_set(self.item, style)
+            elm_gengrid_item_tooltip_style_set(self.item, _cfruni(style))
         else:
             elm_gengrid_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
         """ Get the style for this object tooltip.
         """
-        cdef const_char_ptr style
-        style = elm_gengrid_item_tooltip_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_gengrid_item_tooltip_style_get(self.item))
 
     property tooltip_style:
         def __get__(self):
@@ -494,10 +485,10 @@ cdef class GengridItem(ObjectItem):
         this function is called twice for an item, the previous set
         will be unset.
         """
-        elm_gengrid_item_cursor_set(self.item, cursor)
+        elm_gengrid_item_cursor_set(self.item, _cfruni(cursor))
 
     def cursor_get(self):
-        return elm_gengrid_item_cursor_get(self.item)
+        return _ctouni(elm_gengrid_item_cursor_get(self.item))
 
     property cursor:
         def __get__(self):
@@ -517,17 +508,13 @@ cdef class GengridItem(ObjectItem):
             L{cursor_set()}
         """
         if style:
-            elm_gengrid_item_cursor_style_set(self.item, style)
+            elm_gengrid_item_cursor_style_set(self.item, _cfruni(style))
         else:
             elm_gengrid_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
         """Get the style for this object cursor."""
-        cdef const_char_ptr style
-        style = elm_gengrid_item_cursor_style_get(self.item)
-        if style == NULL:
-            return None
-        return style
+        return _ctouni(elm_gengrid_item_cursor_style_get(self.item))
 
     property cursor_style:
         def __get__(self):
