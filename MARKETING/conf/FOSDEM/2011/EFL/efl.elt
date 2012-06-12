@@ -2,7 +2,7 @@ layout: 2_columns_left;
 foot_text :"Cedric BAIL, cedric.bail@free.fr";
 foot_image: ""; // FIXME
 header_image: "logo.png"; // FIXME
-title: " Enlightenment Foundation Library";
+title: " Enlightenment Foundation Libraries";
 subtitle: " When geek meets beauty";
 
 transition: fade_content;
@@ -86,8 +86,8 @@ slide
 		name: center;
 		items
 		{
-			text: " <b>E</b>nlightenment <b>F</b>oundation <b>L</b>ibrary";
-			text: " Created to provide a clean base for a beautifull, fast and ligth windows manager";
+			text: " <b>E</b>nlightenment <b>F</b>oundation <b>L</b>ibraries";
+			text: " Created to provide a clean base for a beautiful, fast and light windows manager";
 			text: " Targetting the embedded world since the beginning";
 			text: " Because the desktop war, was lost, not just for us, but for all linux based desktop";
 			text: " 10 years later, it's still true";
@@ -443,7 +443,7 @@ slide
 	area {
 		name : "center";
 		items {
-			text: " Releasing the Enlightenment Foundation Library !";
+			text: " Releasing the Enlightenment Foundation Libraries !";
 			text: " EFL libraries will receive a lot improvements in the near futur and still be API and ABI compatible with 1.0";
 			text: " Focus will move on releasing E17, Elementary, Ethumb, Eio and Emotion";
 			text: " We have a list of items that should be finished before any of this component switch to alpha";
