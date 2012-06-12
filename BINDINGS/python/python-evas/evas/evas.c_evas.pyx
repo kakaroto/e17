@@ -129,7 +129,6 @@ def async_events_process():
     """
     return evas_async_events_process()
 
-
 cdef object canvas_mapping
 
 canvas_mapping = dict()
@@ -157,7 +156,6 @@ cdef int Canvas_remember(long ptr, Canvas c) except 0:
     canvas_mapping[ptr] = c
     return 1
 
-
 cdef int Canvas_forget(long ptr) except 0:
     try:
         canvas_mapping.pop(ptr)
@@ -171,8 +169,10 @@ cdef int Canvas_forget(long ptr) except 0:
 def _Canvas_from_instance(long ptr):
     return Canvas_from_instance(<Evas *>ptr)
 
-
 cdef object object_mapping
+"""Object mapping is a dictionary into which object type names can be
+registered. These can be used to find a bindings class for an object using
+the Object_from_instance function."""
 
 object_mapping = {
     "image": Image,
@@ -183,18 +183,18 @@ object_mapping = {
     "polygon": Polygon,
     }
 
-
 def _object_mapping_register(name, cls):
     if name in object_mapping:
         raise ValueError("object type name '%s' already registered." % name)
     object_mapping[name] = cls
 
-
 def _object_mapping_unregister(name):
     object_mapping.pop(name)
 
-
 cdef object extended_object_mapping
+"""Extended object mapping is a dictionary into which class resolver
+functions can be registered. These can be used to find a bindings class for
+an object using the Object_from_instance function."""
 
 extended_object_mapping = {}
 
@@ -203,12 +203,11 @@ def _extended_object_mapping_register(name, cls_resolver):
         raise ValueError("object type name '%s' already registered." % name)
     extended_object_mapping[name] = cls_resolver
 
-
 def _extended_object_mapping_unregister(name):
     extended_object_mapping.pop(name)
 
-
 cdef Object Object_from_instance(Evas_Object *obj):
+    """Create a python object from a C Evas object."""
     cdef void *data
     cdef Object o
     cdef const_char_ptr t
@@ -217,7 +216,7 @@ cdef Object Object_from_instance(Evas_Object *obj):
     if obj == NULL:
         return None
 
-    data = evas_object_data_get(obj, "python-evas")
+    data = evas_object_data_get(obj, _cfruni("python-evas"))
     if data != NULL:
         o = <Object>data
     else:
@@ -225,15 +224,16 @@ cdef Object Object_from_instance(Evas_Object *obj):
         if t == NULL:
             raise ValueError("Evas object %#x does not have a type!" %
                              <long>obj)
+        ot = _ctouni(t)
         c = Canvas_from_instance(evas_object_evas_get(obj))
-        cls = object_mapping.get(t, None)
+        cls = object_mapping.get(ot, None)
         if cls is None:
-            cls_resolver = extended_object_mapping.get(t, None)
+            cls_resolver = extended_object_mapping.get(ot, None)
             if cls_resolver is None:
                 warnings.warn(
                     ("Evas_Object %#x of type %s has no direct or "
                      "extended mapping! Using generic wrapper.") %
-                    (<unsigned long>obj, t))
+                    (<unsigned long>obj, ot))
                 cls = Object
             else:
                 cls = cls_resolver(<unsigned long>obj)
@@ -242,7 +242,6 @@ cdef Object Object_from_instance(Evas_Object *obj):
         o._set_obj(obj)
 
     return o
-
 
 # XXX: this should be C-only, but it would require edje
 # XXX: being able to use it.

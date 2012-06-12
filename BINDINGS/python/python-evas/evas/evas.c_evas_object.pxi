@@ -259,7 +259,7 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
         assert self.obj != NULL, "Object must wrap something"
         _object_unregister_callbacks(self)
         _object_free_wrapper_resources(self)
-        assert evas_object_data_del(self.obj, "python-evas") == <void*>self, \
+        assert evas_object_data_del(self.obj, _cfruni("python-evas")) == <void*>self, \
                "Evas_Object has incorrect python-evas data"
         self.obj = NULL
         self.evas = <Canvas>None
@@ -268,11 +268,11 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
 
     cdef int _set_obj(self, Evas_Object *obj) except 0:
         assert self.obj == NULL, "Object must be clean"
-        assert evas_object_data_get(obj, "python-evas") == NULL, \
+        assert evas_object_data_get(obj, _cfruni("python-evas")) == NULL, \
                "Evas_Object must not wrapped by something else!"
         self.obj = obj
         Py_INCREF(self)
-        evas_object_data_set(obj, "python-evas", <void *>self)
+        evas_object_data_set(obj, _cfruni("python-evas"), <void *>self)
         evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, obj_free_cb,
                                        <void *>self)
         _object_register_decorated_callbacks(self)
@@ -295,7 +295,7 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
         self.obj = NULL
         self.evas = <Canvas>None
 
-        data = evas_object_data_get(obj, "python-evas")
+        data = evas_object_data_get(obj, _cfruni("python-evas"))
         assert data == NULL, "Object must not be wrapped!"
         evas_object_del(obj)
 
@@ -1650,8 +1650,3 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
     property parent:
         def __get__(self):
             return self.parent_get()
-
-
-#cdef extern from "Evas.h": # hack to force type to be known
-    #cdef PyTypeObject PyEvasObject_Type # hack to install metaclass
-#_install_metaclass(&PyEvasObject_Type, EvasObjectMeta)
