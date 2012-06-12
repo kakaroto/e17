@@ -120,9 +120,6 @@ taskbar - A taskbar module.  (Will be replaced by something better.)
 tclock - A module to display a digital clock on the desktop.  (Will be replaced by something better.)
 // should be merged with clock, also afaik the code is not so good but works.
 
-tiling - ion-like tiling for e17
-// functionality replaced by illume2, no maintainer afaik
-
 uptime - A module to monitor computer uptime.
 // works. but maintainer??
 
