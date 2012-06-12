@@ -150,13 +150,19 @@ cdef object _elm_widget_type_mapping
 
 _elm_widget_type_mapping = {}
 
-cdef _elm_widget_type_register(char *name, cls):
+cdef _elm_widget_type_register(name, cls):
     if name in _elm_widget_type_mapping:
         raise ValueError("object type name '%s' already registered." % name)
     _elm_widget_type_mapping[name] = cls
+    # TODO: Widget types become evas object types as they are being ported
+    # to the new model. The class resolver can be removed when it's done.
+    evas.c_evas._object_mapping_register("elm_"+name, cls)
 
-cdef _elm_widget_type_unregister(char *name):
+cdef _elm_widget_type_unregister(name):
     _elm_widget_type_mapping.pop(name)
+    # TODO: Widget types become evas object types as they are being ported
+    # to the new model. The class resolver can be removed when it's done.
+    evas.c_evas._object_mapping_unregister("elm_"+name)
 
 class ElementaryObjectMeta(type):
     def __init__(cls, name, bases, dict_):
