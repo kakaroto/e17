@@ -42,27 +42,6 @@ public:
    void append(Local<Value> icon, Local<Value> label, Local<Value> data,
                Local<Value> callback);
 
-   void always_select_set(Handle<Value> value);
-   Handle<Value> always_select_get() const;
-
-   void no_select_set(Handle<Value> value);
-   Handle<Value> no_select_get() const;
-
-   void icon_size_set(Handle<Value> value);
-   Handle<Value> icon_size_get() const;
-
-   void item_priority_set(Handle<Value> value);
-   Handle<Value> item_priority_get() const;
-
-   void item_separator_set(Handle<Value> value);
-   Handle<Value> item_separator_get() const;
-
-   void homogeneous_set(Handle<Value> value);
-   Handle<Value> homogeneous_get() const;
-
-   void align_set(Handle<Value> value);
-   Handle<Value> align_get() const;
-
    static void OnSelect(void *data, Evas_Object *, void *);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
