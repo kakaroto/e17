@@ -579,7 +579,6 @@ FAST_CALL_PARAMS_SPEC(evas_object_smart_parent_get, elixir_object_evas_object_pa
 FAST_CALL_PARAMS_SPEC(evas_object_above_get, elixir_object_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_below_get, elixir_object_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_clip_get, elixir_object_evas_object_params, _evas_object_params);
-FAST_CALL_PARAMS_SPEC(evas_object_map_source_get, elixir_object_evas_object_params, _evas_object_params);
 
 /* No enum in JS. */
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_text_style_get, elixir_int_evas_object_params, _evas_object_text_params);
@@ -656,7 +655,6 @@ static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_above_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_below_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_clip_get, 1, JSPROP_ENUMERATE, 0 ),
-  ELIXIR_FN(evas_object_map_source_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_layer_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_render_op_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_visible_get, 1, JSPROP_ENUMERATE, 0 ),
