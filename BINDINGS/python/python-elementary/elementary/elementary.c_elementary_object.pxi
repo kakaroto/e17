@@ -1294,7 +1294,7 @@ def __elm_widget_cls_resolver(long ptr):
 
     t = elm_object_widget_type_get(obj)
     assert t != NULL
-    return _elm_widget_type_mapping.get(t, None)
+    return _elm_widget_type_mapping.get(_ctouni(t), None)
 
 evas.c_evas._extended_object_mapping_register("elm_widget",
                                               __elm_widget_cls_resolver)
