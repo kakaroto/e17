@@ -576,7 +576,7 @@ _connect_to_daemon(gui_elements *g)
    if (p_colon)
      *p_colon = ':';
 
-   if ((!svr) || (!ecore_ipc_server_connected_get(svr)))
+   if (!svr)
      {
         printf("could not connect to the server: %s\n", g->address);
         return NULL;
