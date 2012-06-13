@@ -1,0 +1,697 @@
+layout: 1_line_2_columns;
+foot_text :"Enlightenment Foundation Libraries";
+foot_image: "";
+header_image: "logo.png";
+title: " Enlightenment Foundation Libraries";
+subtitle: "Features &amp; Strengths";
+
+transition: fade_content;
+
+slide {
+	// do not display the area 'top'. This area is defined in the layout 'title'
+	ignore_area: "header_image";
+	layout: title;
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+
+	area {
+		name: "top";
+		image {
+			image: "logo.png";
+		}
+	}
+	area {
+		name: bottom;
+		text: " Daniel Juyung Seo";
+	 }
+}
+
+slide {
+	layout: 2_columns_left;
+	title: " Presenter";
+	subtitle: " Who am I to speak about this stuff.";
+	header_image: "logo-s.png";
+	transition_next: "fade";
+
+	area {
+		name: left;
+		text: " <outline><big>Daniel Juyung Seo (SeoZ)</big></outline>";
+		items {
+			text: " seojuyung2@samsung.com";
+			text: " Mostly working for elementary widget set.";
+			text: " EFL Opensource Committer";
+		}
+	}
+	area {
+		name: "right";
+		image {
+			image: "seoz_w.jpg";
+		}
+	}
+}
+
+slide {
+	layout: summary;
+	title: " Index";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_previous: "fade";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			numbering: normal;
+
+			text: " <big>What is EFL?</big>";
+			text: " <big>Demo &amp; Video</big>";
+			text: " <big>Features &amp; Strengths</big>";
+			text: " <big>Demo &amp; Video</big>";
+			text: " <big>Summary</big>";
+		}
+	}
+}
+
+//--------------------------------------------------------------------
+slide {
+	layout: "title";
+	title: " What is EFL?";
+	subtitle: "";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	ignore_area: "header_image";
+	header_image: "";
+	transition_previous: "horizontal";
+
+	area {
+		name: "top";
+		image {
+			image: "logo.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " What is EFL?";
+	subtitle: "";
+	header_image: "logo-s.png";
+	custom_area: "center" 0.11 0.25 0.9 0.45;
+	custom_area: "bottom" 0.25 0.45 0.75 0.85;
+
+	area {
+		name: "center";
+		items {
+			text: " <b>E</b>nlightenment <b>F</b>oundation <b>L</b>ibraries";
+			text: " Founded by Carsten Haitzler (Rasterman)";
+		}
+	}
+	area {
+		name: "bottom";
+		image {
+			image: "rasterman.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " What is EFL?";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			text: " Created to provide a clean base for a beautiful, fast and light windows manager.";
+			text: " Fine-grained split into distinct libraries for specific purposes.";
+			text: " The core of Tizen platform is based on EFL.";
+			text: " An open source.";
+			text: " Enlightenment started in 1996.";
+			text: " EFL started in 2001 with first Evas implementation.";
+		}
+	}
+}
+
+//--------------------------------------------------------------------
+slide {
+	layout: "title";
+	title: " Demo &amp; Video";
+	subtitle: "";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	ignore_area: "header_image";
+	header_image: "";
+	transition_previous: "horizontal";
+
+	area {
+		name: "top";
+		image {
+			image: "logo.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Demo &amp; Video";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: " <big>Video</big>";
+			items {
+				text: "Freebox HD";
+				items {
+					text: "Set-top Box";
+					text: "4 million sold. 1 million used now.";
+				}
+				text: "I-Kitchen Refrigerator";
+				text: "Calaos";
+				items {
+					text: "Home automation.";
+					text: "C++ with normal EFL C API.";
+					text: "1 programmer + 1 designer(6months)";
+				}
+			}
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Demo &amp; Video";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			text: " <big>Demo</big>";
+			items {
+				text: "Enlightenment 17";
+				text: "Rage";
+				items {
+					text: "A media center designed mostly for use on a television hooked up to your pc via a remote control.";
+				}
+				text: "Ello";
+				text: "Elementary";
+				text: "Edje Watch";
+			}
+		}
+	}
+}
+
+//--------------------------------------------------------------------
+slide {
+	layout: "title";
+	title: " Features &amp; Strengths";
+	subtitle: "";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	ignore_area: "header_image";
+	header_image: "";
+	transition_previous: "horizontal";
+
+	area {
+		name: "top";
+		image {
+			image: "logo.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Philosophy";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: " <shadow><small>Optimize</small></shadow>";
+			text: " <shadow>Optimize</shadow>";
+			text: " <shadow><big>Optimize</big></shadow>";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Philosophy";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: " Optimized for run-time";
+			items {
+				text: "EFL built from the ground up for efficiency, not as an afterthought of 'let's optimize it!'";
+				text: "EFL can optimize transparently for apps.";
+				text: "Apps do not need to be updated to gain an optimization.";
+				text: "Fast! Light weight!";
+				text: "Performance is the king in EFL.";
+				text: "Easy to use and well maintained API to help app developers.";
+			}
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Mobile Device Focus";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "Focused on embedded and finger-driven touch screen as well as desktop since 2001.";
+			text: "Considered also";
+			items {
+				text: "Devices with low processing power";
+				text: "Small screens";
+			}
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Mobile Device Focus";
+	subtitle: "";
+	header_image: "logo-s.png";
+	custom_area: "center" 0.05 0.25 0.9 0.45;
+	custom_area: "bottom" 0.25 0.45 0.75 0.85;
+
+	area {
+		name: "center";
+		text: "Bodhi Linux System Requirement";
+		items {
+			text: "300 MHz i386 Processor";
+			text: "128 Mb of RAM";
+			text: "1.5G HD space";
+		}
+	}
+	area {
+		name: "bottom";
+		image {
+			image: "bodhi.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Canvas Model";
+	subtitle: "from the ground up";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "abstraction.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Canvas Model";
+	subtitle: "from the ground up";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "The abstraction is much cleaner and more efficient.";
+			text: "Everything renders the same way with the same infra/engine out of the box.";
+			text: "EFL can layer widgets with alpha blending on top of each other.";
+			text: "Actually EFL can layer any Evas_Object.";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Retained Mode";
+	subtitle: "with Scene Graph";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "retained_1.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Retained Mode";
+	subtitle: "with Scene Graph";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "retained_2.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Retained Mode";
+	subtitle: "with Scene Graph";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "retained_3.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Retained Mode";
+	subtitle: "with Scene Graph";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "retained_4.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Retained Mode";
+	subtitle: "with Scene Graph";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "retained_5.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Various Back-end Engines";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "EFL abstracts rendering to many engines.";
+			text: "EFL can change back-end very trivially for rendering.";
+			text: "Back-end Engines:";
+			items {
+				text: "GL";
+				text: "X11";
+				text: "Frame Buffer";
+				text: "Wayland";
+				text: "...";
+			}
+		}
+	}
+}
+
+
+slide {
+	layout: 1_area;
+	title: " Small Memory Footprint";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "Memory (Ubuntu 11.04) beyond base X11 'fail-safe' session.";
+			items {
+				text: "Unity - 168 Mb";
+				text: "Enlightenment 0.17 - 65 Mb";
+			}
+			text: "Very abstracted and aggressive at being able to remove resources from memory.";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " GUI and Logic Separation";
+	subtitle: "";
+	header_image: "logo-s.png";
+	custom_area: "center" 0.11 0.25 0.9 0.4;
+	custom_area: "bottom" 0.25 0.35 0.75 0.85;
+
+	area {
+		name: "center";
+		items {
+			text: "Clear line of separation between GUI and logic.";
+			text: "EDJE";
+		}
+	}
+	area {
+		name: "bottom";
+		image {
+			image: "separation.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " GUI and Logic Separation";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "Theme-able";
+			text: "Reusable.";
+			text: "Easy customization of GUI.";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Scalable";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "From small embedded processor to multi core one.";
+			text: "Various device output size.";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Animation";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "EFL can easily animate efficiently everywhere.";
+			text: "Edje, Elementary(transit), EFX";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Bindings";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "Bindings";
+			items {
+				text: "C++, Javascript, Perl, Python, Vala, Ruby";
+			}
+			text: "Elev8";
+			items {
+				text: "V8 Javascript based run-time";
+			}
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Etc.";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		items {
+			text: "API is all in C, thus easily usable from both C and C++";
+			text: "Platform support";
+			items {
+				text: "Linux, FreeBSD, other BSDs, Solaris, MacOS X, Windows(XP, Vista, 7 etc), Windows CE, PS3";
+			}
+			text: "H/W Acceleration";
+			items {
+				text: "Rendering with OpenGL and OpenGL-ES2.0 for many years.";
+			}
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Community";
+	subtitle: "";
+	header_image: "logo-s.png";
+
+	area {
+		name: "center";
+		image {
+			image: "world_map.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Community";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			text: "Active";
+			text: "Developer community support via vibrant IRC and mailing lists.";
+			text: "Even with a very small team, EFL community can produce major features and improvements very quickly.";
+			text: "Easier to get changes into upstream";
+			text: "Rapidly evolving";
+			text: "Governance";
+			items {
+				text: "Open source project with control distributed, though Samsung is the major contributor over the past few years.";
+				text: "No vested interests beyond 'get it out there'";
+			}
+		}
+	}
+}
+
+//--------------------------------------------------------------------
+slide {
+	layout: "title";
+	title: " Demo &amp; Video";
+	subtitle: "";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	ignore_area: "header_image";
+	header_image: "";
+	transition_previous: "horizontal";
+
+	area {
+		name: "top";
+		image {
+			image: "logo.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Demo &amp; Video";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			text: " <big>Video</big>";
+			items {
+				text: "Nouveau Coyote";
+				text: "PS3";
+				text: "aMSN2";
+			}
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Demo &amp; Video";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			text: " <big>Demo</big>";
+			items {
+				text: "Efx";
+				text: "Shotgun";
+				text: "expedite";
+				text: "Elev8";
+				text: "ePeriodique";
+				text: "Games";
+				text: "Terminology";
+			}
+		}
+	}
+}
+
+//--------------------------------------------------------------------
+slide {
+	layout: "title";
+	title: " Summary";
+	subtitle: "";
+	ignore_area: "header_image";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+	transition_previous: "horizontal";
+
+	area {
+		name: "top";
+		image {
+			image: "logo.png";
+		}
+	}
+}
+
+slide {
+	layout: 1_area;
+	title: " Summary";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "horizontal";
+
+	area {
+		name: "center";
+		items {
+			text: " Promising/Good";
+			text: " Optimized/Performance";
+			text: " Little marketing compared to coding.";
+			text: " Even this presentation is done by EFL.";
+		}
+	}
+}
