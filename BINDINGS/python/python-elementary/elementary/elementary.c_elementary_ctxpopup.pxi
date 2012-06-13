@@ -146,7 +146,7 @@ cdef class Ctxpopup(Object):
         def __set__(self, horizontal):
             elm_ctxpopup_horizontal_set(self.obj, horizontal)
 
-    def item_append(self, label, c_evas.Object icon, func, *args, **kwargs):
+    def item_append(self, label, c_evas.Object icon = None, func = None, *args, **kwargs):
         """Add a new item to a ctxpopup object.
 
         @warning: Ctxpopup can't hold both an item list and a content at the
