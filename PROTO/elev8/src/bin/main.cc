@@ -268,7 +268,5 @@ end:
    context.Dispose();
    module_cache.Dispose();
    global.Dispose();
-   V8::Dispose();
-
    return 0;
 }
