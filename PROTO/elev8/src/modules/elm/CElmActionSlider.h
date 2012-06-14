@@ -15,7 +15,13 @@ private:
    bool position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos);
 protected:
    CElmActionSlider(Local<Object> _jsObject, CElmObject *parent);
+   ~CElmActionSlider();
+
    static Handle<FunctionTemplate> GetTemplate();
+
+   struct {
+      Persistent<Value> select;
+   } cb;
 
 public:
    static void Initialize(Handle<Object> target);
@@ -28,6 +34,12 @@ public:
 
    void magnet_set(Handle<Value> val);
    Handle<Value> magnet_get() const;
+
+   void OnSelect(void *event_info);
+   static void OnSelectWrapper(void *data, Evas_Object *, void *event_info);
+
+   Handle<Value> on_select_get() const;
+   void on_select_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmActionSlider>(const Arguments& args);
 };

@@ -3,6 +3,14 @@ var elm = require('elm');
 var EXPAND_BOTH = { x: 1.0, y: 1.0 };
 var FILL_BOTH = { x: -1.0, y: -1.0 };
 
+function select_cb(widget, label) {
+    print(label);
+    if (!label) // undefined
+        widget.label = "Go";
+    else
+        widget.label = label;
+}
+
 var w = elm.Window({
     title: "ActionSlider example",
     width: 320,
@@ -41,6 +49,7 @@ var w = elm.Window({
                     align: { x: -1.0, y: 0.0 },
                     label: "Go",
                     labels: { center: "Accept", right: "Reject" },
+                    on_select: select_cb,
                 }),
                 left_right_center: elm.ActionSlider({
                     weight: { x: 1.0, y: 0.0 },

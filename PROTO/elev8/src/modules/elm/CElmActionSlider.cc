@@ -8,15 +8,23 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, labels);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, slider);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, magnet);
+GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, on_select);
+
 
 GENERATE_TEMPLATE(CElmActionSlider,
                   PROPERTY(labels),
                   PROPERTY(slider),
-                  PROPERTY(magnet));
+                  PROPERTY(magnet),
+                  PROPERTY(on_select));
 
 CElmActionSlider::CElmActionSlider(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_actionslider_add(parent->GetEvasObject()))
 {
+}
+
+CElmActionSlider::~CElmActionSlider()
+{
+   on_select_set(Undefined());
 }
 
 void CElmActionSlider::Initialize(Handle<Object> target)
@@ -96,6 +104,44 @@ void CElmActionSlider::magnet_set(Handle<Value> val)
 Handle<Value> CElmActionSlider::magnet_get() const
 {
    return Integer::New(elm_actionslider_magnet_pos_get(eo));
+}
+
+void CElmActionSlider::OnSelect(void *event_info)
+{
+   Handle<Function> callback(Function::Cast(*cb.select));
+   char *label = (char *)event_info;
+   Handle<Value> args[2] = { jsObject, Undefined()};
+
+   if (label)
+     args[1] = String::New(label);
+
+   callback->Call(jsObject, 2, args);
+}
+
+void CElmActionSlider::OnSelectWrapper(void *data, Evas_Object *, void *event_info)
+{
+   static_cast<CElmActionSlider*>(data)->OnSelect(event_info);
+}
+
+Handle<Value> CElmActionSlider::on_select_get() const
+{
+   return cb.select;
+}
+
+void CElmActionSlider::on_select_set(Handle<Value> val)
+{
+   if (!cb.select.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "selected", &OnSelectWrapper);
+        cb.select.Dispose();
+        cb.select.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.select = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "selected", &OnSelectWrapper, this);
 }
 
 }
