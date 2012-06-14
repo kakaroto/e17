@@ -84,11 +84,13 @@ cdef const_char_ptr _cfruni(s):
 def init():
     cdef int argc, i, arg_len
     cdef char **argv, *arg
-    argc_orig = argc = len(sys.argv)
+    argc = len(sys.argv)
     argv = <char **>PyMem_Malloc(argc * sizeof(char *))
     for i from 0 <= i < argc:
+        if not sys.argv[i]:
+            continue
         arg = _fruni(sys.argv[i])
-        arg_len = len(sys.argv[i])
+        arg_len = len(arg)
         argv[i] = <char *>PyMem_Malloc(arg_len + 1)
         memcpy(argv[i], arg, arg_len + 1)
 
