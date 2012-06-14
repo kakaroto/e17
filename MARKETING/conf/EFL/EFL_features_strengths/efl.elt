@@ -294,6 +294,7 @@ slide {
 			text: "300 MHz i386 Processor";
 			text: "128 Mb of RAM";
 			text: "1.5G HD space";
+			text: "(from http://www.bodhilinux.com/system.php)";
 		}
 	}
 	area {
