@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Flip(Object):
+cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_Type]:
 
     """This widget holds two content objects L{Object}: one on the front and one
     on the back. It allows you to flip from front to back and vice-versa using
@@ -66,7 +66,7 @@ cdef class Flip(Object):
 
         """
         def __get__(self):
-            return self.front_visible_get()
+            return elm_flip_front_visible_get(self.obj)
 
     def perspective_set(self, foc, x, y):
         """Set flip perspective
@@ -190,10 +190,10 @@ cdef class Flip(Object):
 
         """
         def __get__(self):
-            return self.interactione_get()
+            return elm_flip_interaction_get(self.obj)
 
-        def __set__(self, value):
-            self.interaction_set(value)
+        def __set__(self, mode):
+            elm_flip_interaction_set(self.obj, mode)
 
     def interaction_direction_enabled_set(self, direction, enable):
         """Set which directions of the flip respond to interactive flip
@@ -274,3 +274,7 @@ cdef class Flip(Object):
         self._callback_del("animate,done", func)
 
 _elm_widget_type_register("flip", Flip)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFlip_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFlip_Type, ElementaryObjectMeta)

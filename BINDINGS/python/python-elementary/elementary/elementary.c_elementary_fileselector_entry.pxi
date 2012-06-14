@@ -23,7 +23,7 @@ def _fs_entry_callback_conv(long addr):
     else:
         return s
 
-cdef class FileselectorEntry(Object):
+cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntry, type PyElementaryFileselectorEntry_Type]:
 
     """This is an entry made to be filled with or display a file
     system path string.
@@ -131,10 +131,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.window_title_get()
+            return _ctouni(elm_fileselector_entry_window_title_get(self.obj))
 
-        def __set__(self, value):
-            self.window_title_set(value)
+        def __set__(self, title):
+            elm_fileselector_entry_window_title_set(self.obj, _cfruni(title))
 
     def window_size_set(self, width, height):
         """Set the size of a given file selector entry widget's window,
@@ -181,10 +181,14 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.window_size_get()
+            cdef c_evas.Evas_Coord w, h
+            elm_fileselector_entry_window_size_get(self.obj, &w, &h)
+            return (w, h)
 
         def __set__(self, value):
-            self.window_size_set(*value)
+            cdef c_evas.Evas_Coord w, h
+            w, h = value
+            elm_fileselector_entry_window_size_set(self.obj, w, h)
 
     def path_set(self, path):
         """Set the initial file system path and the entry's path string for
@@ -226,10 +230,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.path_get()
+            return _ctouni(elm_fileselector_entry_path_get(self.obj))
 
-        def __set__(self, value):
-            self.path_set(value)
+        def __set__(self, path):
+            elm_fileselector_entry_path_set(self.obj, _cfruni(path))
 
     def expandable_set(self, expand):
         """Enable/disable a tree view in the given file selector entry
@@ -262,11 +266,7 @@ cdef class FileselectorEntry(Object):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_entry_expandable_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_entry_expandable_get(self.obj))
 
     property expandable:
         """Enable/disable a tree view in the given file selector entry
@@ -284,10 +284,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.expandable_get()
+            return bool(elm_fileselector_entry_expandable_get(self.obj))
 
-        def __set__(self, value):
-            self.expandable_set(value)
+        def __set__(self, expand):
+            elm_fileselector_entry_expandable_set(self.obj, expand)
 
     def folder_only_set(self, folder_only):
         """Set whether a given file selector entry widget's internal file
@@ -321,11 +321,7 @@ cdef class FileselectorEntry(Object):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_entry_folder_only_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_entry_folder_only_get(self.obj))
 
     property folder_only:
         """Whether a given file selector entry widget's internal file
@@ -340,10 +336,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.folder_only_get()
+            return bool(elm_fileselector_entry_folder_only_get(self.obj))
 
-        def __set__(self, value):
-            self.folder_only_set(value)
+        def __set__(self, folder_only):
+            elm_fileselector_entry_folder_only_set(self.obj, folder_only)
 
     def is_save_set(self, is_save):
         """Enable/disable the file name entry box where the user can type
@@ -374,11 +370,7 @@ cdef class FileselectorEntry(Object):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_entry_is_save_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_entry_is_save_get(self.obj))
 
     property is_save:
         """Enable/disable the file name entry box where the user can type
@@ -393,10 +385,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.is_save_get()
+            return bool(elm_fileselector_entry_is_save_get(self.obj))
 
-        def __set__(self, value):
-            self.is_save_set(value)
+        def __set__(self, is_save):
+            elm_fileselector_entry_is_save_set(self.obj, is_save)
 
     def inwin_mode_set(self, inwin_mode):
         """Set whether a given file selector entry widget's internal file
@@ -425,11 +417,7 @@ cdef class FileselectorEntry(Object):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_entry_inwin_mode_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_entry_inwin_mode_get(self.obj))
 
     property inwin_mode:
         """Whether a given file selector entry widget's internal file
@@ -442,10 +430,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.inwin_mode_get()
+            return bool(elm_fileselector_entry_inwin_mode_get(self.obj))
 
-        def __set__(self, value):
-            self.inwin_mode_set(value)
+        def __set__(self, inwin_mode):
+            elm_fileselector_entry_inwin_mode_set(self.obj, inwin_mode)
 
     def selected_set(self, path):
         """Set the initial file system path for a given file selector entry
@@ -488,10 +476,10 @@ cdef class FileselectorEntry(Object):
 
         """
         def __get__(self):
-            return self.selected_get()
+            return _ctouni(elm_fileselector_entry_selected_get(self.obj))
 
-        def __set__(self, value):
-            self.selected_set(value)
+        def __set__(self, path):
+            elm_fileselector_entry_selected_set(self.obj, _cfruni(path))
 
     def callback_changed_add(self, func, *args, **kwargs):
         """The text within the entry was changed."""
@@ -589,3 +577,7 @@ cdef class FileselectorEntry(Object):
         self._callback_del_full("file,chosen", _fs_entry_callback_conv, func)
 
 _elm_widget_type_register("fileselector_entry", FileselectorEntry)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFileselectorEntry_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFileselectorEntry_Type, ElementaryObjectMeta)

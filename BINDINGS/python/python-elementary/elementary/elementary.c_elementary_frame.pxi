@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Frame(LayoutClass):
+cdef public class Frame(LayoutClass) [object PyElementaryFrame, type PyElementaryFrame_Type]:
 
     """Frame is a widget that holds some content and has a title.
 
@@ -85,10 +85,10 @@ cdef class Frame(LayoutClass):
 
         """
         def __get__(self):
-            return self.autocollapse_get()
+            return elm_frame_autocollapse_get(self.obj)
 
-        def __set__(self, value):
-            self.autocollapse_set(value)
+        def __set__(self, autocollapse):
+            elm_frame_autocollapse_set(self.obj, autocollapse)
 
     def collapse_set(self, autocollapse):
         """Manually collapse a frame without animations
@@ -113,16 +113,16 @@ cdef class Frame(LayoutClass):
         return elm_frame_collapse_get(self.obj)
 
     property collapse:
-        """Collapse state of a frame, bypassing animations
+        """The collapse state of a frame, bypassing animations
 
         @type: bool
 
         """
         def __get__(self):
-            return self.collapse_get()
+            return elm_frame_collapse_get(self.obj)
 
-        def __set__(self, value):
-            self.collapse_set(value)
+        def __set__(self, autocollapse):
+            elm_frame_collapse_set(self.obj, autocollapse)
 
     def collapse_go(self, collapse):
         """Manually collapse a frame with animations
@@ -144,3 +144,7 @@ cdef class Frame(LayoutClass):
         self._callback_del("clicked", func)
 
 _elm_widget_type_register("frame", Frame)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFrame_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFrame_Type, ElementaryObjectMeta)

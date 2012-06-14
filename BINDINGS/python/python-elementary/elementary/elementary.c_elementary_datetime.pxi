@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Datetime(Object):
+cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementaryDatetime_Type]:
 
     """Datetime widget is used to display and input date & time values.
 

@@ -399,6 +399,18 @@ class EvasLoadError(Exception):
         self.key = key
         Exception.__init__(self, "%s (file=%s, key=%s)" % (msg, filename, key))
 
+
+cdef extern from "Python.h":
+    ctypedef struct PyTypeObject:
+        PyTypeObject *ob_type
+
+cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
+    """Installs the metaclass to the object, which is otherwise not
+    supported for cdef classes by cython."""
+    Py_INCREF(metaclass)
+    ctype.ob_type = <PyTypeObject*>metaclass
+
+
 class EvasObjectMeta(type):
     def __init__(cls, name, bases, dict_):
         type.__init__(cls, name, bases, dict_)
@@ -417,6 +429,7 @@ class EvasObjectMeta(type):
                 continue
             evt = getattr(val, "evas_event_callback")
             append((name, evt))
+
 
 include "evas.c_evas_rect.pxi"
 include "evas.c_evas_canvas_callbacks.pxi"

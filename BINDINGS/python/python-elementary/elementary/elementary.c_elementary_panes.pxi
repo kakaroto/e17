@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Panes(LayoutClass):
+cdef public class Panes(LayoutClass) [object PyElementaryPanes, type PyElementaryPanes_Type]:
 
     """The panes widget adds a draggable bar between two contents. When
     dragged this bar will resize contents' size.
@@ -153,3 +153,7 @@ cdef class Panes(LayoutClass):
         self._callback_del("clicked,double", func)
 
 _elm_widget_type_register("panes", Panes)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryPanes_Type # hack to install metaclass
+_install_metaclass(&PyElementaryPanes_Type, ElementaryObjectMeta)

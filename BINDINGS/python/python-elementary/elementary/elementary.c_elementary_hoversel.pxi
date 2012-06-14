@@ -110,7 +110,7 @@ cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-cdef class Hoversel(Button):
+cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementaryHoversel_Type]:
 
     """A hoversel is a button that pops up a list of items (automatically
     choosing the direction to display) that have a label and, optionally, an
@@ -297,3 +297,7 @@ cdef class Hoversel(Button):
         self._callback_del("dismissed", func)
 
 _elm_widget_type_register("hoversel", Hoversel)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryHoversel_Type # hack to install metaclass
+_install_metaclass(&PyElementaryHoversel_Type, ElementaryObjectMeta)

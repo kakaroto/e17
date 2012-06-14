@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Progressbar(LayoutClass):
+cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type PyElementaryProgressbar_Type]:
 
     """
     The progress bar is a widget for visually representing the progress
@@ -362,3 +362,7 @@ cdef class Progressbar(LayoutClass):
             self.inverted_set(inverted)
 
 _elm_widget_type_register("progressbar", Progressbar)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryProgressbar_Type # hack to install metaclass
+_install_metaclass(&PyElementaryProgressbar_Type, ElementaryObjectMeta)

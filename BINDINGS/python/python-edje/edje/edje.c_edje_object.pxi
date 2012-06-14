@@ -139,9 +139,6 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         ...
         >>> my_edje.message_handler_set(msg_dbg)
     """
-
-    __metaclass__ = EdjeObjectMeta
-
     def __cinit__(self, *a, **ka):
         self._signal_callbacks = {}
 
@@ -1009,5 +1006,10 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
     def signal_emit(self, char *emission, char *source):
         "Emit signal with B{emission} and B{source}"
         edje_object_signal_emit(self.obj, emission, source)
+
+cdef extern from "Edje.h": # hack to force type to be known
+    cdef PyTypeObject PyEdje_Type # hack to install metaclass
+_install_metaclass(&PyEdje_Type, EdjeObjectMeta)
+
 
 evas.c_evas._object_mapping_register("edje", Edje)

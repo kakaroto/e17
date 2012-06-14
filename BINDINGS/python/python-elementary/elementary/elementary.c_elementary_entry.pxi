@@ -73,7 +73,7 @@ def _entryanchorhover_conv(long addr):
     eahi.hover_bottom = ehi.hover_bottom
     return eahi
 
-cdef class Entry(Object):
+cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntry_Type]:
 
     """An entry is a convenience widget which shows a box that the user can
     enter text into.
@@ -1793,3 +1793,7 @@ cdef class Entry(Object):
         self._callback_del("language,changed", func)
 
 _elm_widget_type_register("entry", Entry)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryEntry_Type # hack to install metaclass
+_install_metaclass(&PyElementaryEntry_Type, ElementaryObjectMeta)

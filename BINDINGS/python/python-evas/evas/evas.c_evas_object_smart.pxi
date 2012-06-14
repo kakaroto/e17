@@ -363,9 +363,6 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
     @see: L{ClippedSmartObject}
 
     """
-
-    __metaclass__ = EvasSmartObjectMeta
-
     def __cinit__(self, *a, **ka):
         self._smart_callbacks = dict()
         cls = self.__class__
@@ -689,6 +686,11 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         self.member_add(obj)
         return obj
 
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasSmartObject_Type # hack to install metaclass
+_install_metaclass(&PyEvasSmartObject_Type, EvasSmartObjectMeta)
+
+
 cdef public class ClippedSmartObject(SmartObject) \
          [object PyEvasClippedSmartObject, type PyEvasClippedSmartObject_Type]:
     """ClippedSmartObject(canvas, size=None, pos=None, geometry=None,
@@ -716,9 +718,6 @@ cdef public class ClippedSmartObject(SmartObject) \
     @todo: remove current code and wrap C version (now it's in evas).
 
     """
-
-    __metaclass__ = EvasSmartObjectMeta
-
     def __init__(self, Canvas canvas not None, **kargs):
         if type(self) is ClippedSmartObject:
             raise TypeError("Must not instantiate ClippedSmartObject, but "
@@ -768,3 +767,8 @@ cdef public class ClippedSmartObject(SmartObject) \
     def clip_unset(self):
         "Default implementation that acts on the the clipper."
         evas_object_clip_unset(self.clipper.obj)
+
+
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasClippedSmartObject_Type # hack to install metaclass
+_install_metaclass(&PyEvasClippedSmartObject_Type, EvasSmartObjectMeta)

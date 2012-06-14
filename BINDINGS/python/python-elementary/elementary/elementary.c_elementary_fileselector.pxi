@@ -23,7 +23,7 @@ def _fs_callback_conv(long addr):
     else:
         return s
 
-cdef class Fileselector(LayoutClass):
+cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, type PyElementaryFileselector_Type]:
 
     """
     A file selector is a widget that allows a user to navigate
@@ -124,10 +124,10 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.is_save_get()
+            return elm_fileselector_is_save_get(self.obj)
 
-        def __set__(self, value):
-            self.is_save_set(value)
+        def __set__(self, is_save):
+            elm_fileselector_is_save_set(self.obj, is_save)
 
     def folder_only_set(self, folder_only):
         """Enable/disable folder-only view for a given file selector widget
@@ -167,10 +167,10 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.folder_only_get()
+            return elm_fileselector_folder_only_get(self.obj)
 
-        def __set__(self, value):
-            self.folder_only_set(value)
+        def __set__(self, folder_only):
+            elm_fileselector_folder_only_set(self.obj, folder_only)
 
     def buttons_ok_cancel_set(self, buttons):
         """Enable/disable the "ok" and "cancel" buttons on a given file
@@ -213,10 +213,10 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.buttons_ok_cancel_get()
+            return elm_fileselector_buttons_ok_cancel_get(self.obj)
 
-        def __set__(self, value):
-            self.buttons_ok_cancel_set(value)
+        def __set__(self, buttons):
+            elm_fileselector_buttons_ok_cancel_set(self.obj, buttons)
 
     def expandable_set(self, expand):
         """Enable/disable a tree view in the given file selector widget,
@@ -261,10 +261,10 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.expandable_get()
+            return elm_fileselector_expandable_get(self.obj)
 
-        def __set__(self, value):
-            self.expandable_set(value)
+        def __set__(self, expand):
+            elm_fileselector_expandable_set(self.obj, expand)
 
     def path_set(self, path):
         """Set, programmatically, the B{directory} that a given file
@@ -307,10 +307,10 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.path_get()
+            return _ctouni(elm_fileselector_path_get(self.obj))
 
-        def __set__(self, value):
-            self.path_set(value)
+        def __set__(self, path):
+            elm_fileselector_path_set(self.obj, _cfruni(path))
 
     def selected_set(self, path):
         """Set, programmatically, the currently selected file/directory in
@@ -350,11 +350,11 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.selected_get()
+            return _ctouni(elm_fileselector_selected_get(self.obj))
 
-        def __set__(self, value):
+        def __set__(self, path):
             #TODO: Check return value for success
-            self.selected_set(value)
+            elm_fileselector_selected_set(self.obj, _cfruni(path))
 
     def mode_set(self, mode):
         """Set the mode in which a given file selector widget will display
@@ -412,10 +412,10 @@ cdef class Fileselector(LayoutClass):
 
         """
         def __get__(self):
-            return self.mode_get()
+            return elm_fileselector_mode_get(self.obj)
 
-        def __set__(self, value):
-            self.mode_set(value)
+        def __set__(self, mode):
+            elm_fileselector_mode_set(self.obj, mode)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """The user has clicked on a file (when not in folders-only mode) or
@@ -446,3 +446,7 @@ cdef class Fileselector(LayoutClass):
         self._callback_del_full("done", _fs_callback_conv, func)
 
 _elm_widget_type_register("fileselector", Fileselector)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFileselector_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFileselector_Type, ElementaryObjectMeta)

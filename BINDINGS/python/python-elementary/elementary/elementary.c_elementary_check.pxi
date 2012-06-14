@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Check(LayoutClass):
+cdef public class Check(LayoutClass) [object PyElementaryCheck, type PyElementaryCheck_Type]:
 
     """The check widget allows for toggling a value between true and false.
 
@@ -97,3 +97,7 @@ cdef class Check(LayoutClass):
         self._callback_del("changed", func)
 
 _elm_widget_type_register("check", Check)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryCheck_Type # hack to install metaclass
+_install_metaclass(&PyElementaryCheck_Type, ElementaryObjectMeta)

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Dayselector(LayoutClass):
+cdef public class Dayselector(LayoutClass) [object PyElementaryDayselector, type PyElementaryDayselector_Type]:
 
     """Dayselector displays all seven days of the week and allows the user to
     select multiple days.
@@ -151,3 +151,7 @@ cdef class Dayselector(LayoutClass):
 
 
 _elm_widget_type_register("dayselector", Dayselector)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryDayselector_Type # hack to install metaclass
+_install_metaclass(&PyElementaryDayselector_Type, ElementaryObjectMeta)

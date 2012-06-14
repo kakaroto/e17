@@ -109,7 +109,7 @@ cdef _object_del_callback_from_list(Object obj, int type, func):
         return False
 
 
-cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
+cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     """Basic Graphical Object (or actor).
 
     Objects are managed by L{Canvas} in a non-immediate way, that is,
@@ -217,9 +217,6 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
        anti_alias_set, anti_alias_get, anti_alias, pointer_mode_set,
        pointer_mode_get, pointer_mode
     """
-
-    __metaclass__ = EvasObjectMeta
-
     def __cinit__(self, *a, **ka):
         self.obj = NULL
         self.evas = None
@@ -1650,3 +1647,8 @@ cdef public class Object (object) [object PyEvasObject, type PyEvasObject_Type]:
     property parent:
         def __get__(self):
             return self.parent_get()
+
+
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasObject_Type # hack to install metaclass
+_install_metaclass(&PyEvasObject_Type, EvasObjectMeta)

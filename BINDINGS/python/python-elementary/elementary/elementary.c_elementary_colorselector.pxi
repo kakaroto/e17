@@ -52,7 +52,7 @@ def _colorselector_item_conv(long addr):
         prm = <object>data
         return prm[2]
 
-cdef class Colorselector(LayoutClass):
+cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, type PyElementaryColorselector_Type]:
 
     """A Colorselector is a color selection widget.
 
@@ -237,3 +237,7 @@ cdef class Colorselector(LayoutClass):
         self._callback_del_full("color,item,longpressed", _colorselector_item_conv, func)
 
 _elm_widget_type_register("colorselector", Colorselector)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryColorselector_Type # hack to install metaclass
+_install_metaclass(&PyElementaryColorselector_Type, ElementaryObjectMeta)

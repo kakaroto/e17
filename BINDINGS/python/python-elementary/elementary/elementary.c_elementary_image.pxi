@@ -23,7 +23,7 @@ def _image_callback_conv(long addr):
     else:
         return s
 
-cdef class Image(Object):
+cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImage_Type]:
 
     """An Elementary image object allows one to load and display an image
     file on it, be it from a disk file or from a memory region.
@@ -688,3 +688,7 @@ cdef class Image(Object):
         self._callback_del_full("drop", _image_callback_conv, func)
 
 _elm_widget_type_register("image", Image)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryImage_Type # hack to install metaclass
+_install_metaclass(&PyElementaryImage_Type, ElementaryObjectMeta)

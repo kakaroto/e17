@@ -331,6 +331,15 @@ class EdjeObjectMeta(evas.c_evas.EvasObjectMeta):
             elif hasattr(val, "edje_text_change_callback"):
                 txt_append(name)
 
+cdef extern from "Python.h":
+    ctypedef struct PyTypeObject:
+        PyTypeObject *ob_type
+
+cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
+    Py_INCREF(metaclass)
+    ctype.ob_type = <PyTypeObject*>metaclass
+
+
 include "edje.c_edje_message.pxi"
 include "edje.c_edje_external.pxi"
 include "edje.c_edje_object.pxi"

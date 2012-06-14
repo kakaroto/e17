@@ -38,7 +38,7 @@ cdef class CalendarMark(object):
         """
         #elm_calendar_mark_del(mark)
 
-cdef class Calendar(LayoutClass):
+cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyElementaryCalendar_Type]:
 
     """This is a calendar widget.
 
@@ -333,3 +333,7 @@ cdef class Calendar(LayoutClass):
         self._callback_del("changed", func)
 
 _elm_widget_type_register("calendar", Calendar)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryCalendar_Type # hack to install metaclass
+_install_metaclass(&PyElementaryCalendar_Type, ElementaryObjectMeta)

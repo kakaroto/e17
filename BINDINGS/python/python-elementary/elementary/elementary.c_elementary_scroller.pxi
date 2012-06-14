@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Scroller(Object):
+cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementaryScroller_Type]:
 
     """A scroller holds a single object and "scrolls it around".
 
@@ -550,3 +550,7 @@ cdef class Scroller(Object):
         self._callback_del("scroll,drag,stop", func)
 
 _elm_widget_type_register("scroller", Scroller)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryScroller_Type # hack to install metaclass
+_install_metaclass(&PyElementaryScroller_Type, ElementaryObjectMeta)

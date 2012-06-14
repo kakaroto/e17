@@ -22,11 +22,13 @@ cdef public class Rectangle(Object) [object PyEvasRectangle,
     """Rectangle(canvas, size=None, pos=None, geometry=None, color=None, name=None) -> Rectangle instance
 
     """
-
-    __metaclass__ = EvasObjectMeta
-
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_rectangle_add(self.evas.obj))
         self._set_common_params(**kargs)
+
+
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasRectangle_Type # hack to install metaclass
+_install_metaclass(&PyEvasRectangle_Type, EvasObjectMeta)

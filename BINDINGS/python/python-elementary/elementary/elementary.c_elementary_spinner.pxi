@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Spinner(LayoutClass):
+cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyElementarySpinner_Type]:
 
     """A spinner is a widget which allows the user to increase or decrease
     numeric values using arrow buttons, or edit values directly, clicking
@@ -619,3 +619,7 @@ cdef class Spinner(LayoutClass):
         self._callback_del("delay,changed", func)
 
 _elm_widget_type_register("spinner", Spinner)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementarySpinner_Type # hack to install metaclass
+_install_metaclass(&PyElementarySpinner_Type, ElementaryObjectMeta)

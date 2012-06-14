@@ -17,7 +17,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Panel(Object):
+cdef public class Panel(Object) [object PyElementaryPanel, type PyElementaryPanel_Type]:
 
     """A panel is a type of animated container that contains subobjects.
 
@@ -105,3 +105,7 @@ cdef class Panel(Object):
         elm_panel_toggle(self.obj)
 
 _elm_widget_type_register("panel", Panel)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryPanel_Type # hack to install metaclass
+_install_metaclass(&PyElementaryPanel_Type, ElementaryObjectMeta)

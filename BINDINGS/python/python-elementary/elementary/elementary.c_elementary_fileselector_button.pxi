@@ -23,7 +23,7 @@ def _fs_button_callback_conv(long addr):
     else:
         return s
 
-cdef class FileselectorButton(Button):
+cdef public class FileselectorButton(Button) [object PyElementaryFileselectorButton, type PyElementaryFileselectorButton_Type]:
 
     """This is a button that, when clicked, creates an Elementary window (or
     inner window) with a L{Fileselector} "file selector widget" within.
@@ -115,10 +115,10 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.window_title_get()
+            return _ctouni(elm_fileselector_button_window_title_get(self.obj))
 
-        def __set__(self, value):
-            self.window_title_set(value)
+        def __set__(self, title):
+            elm_fileselector_button_window_title_set(self.obj, _cfruni(title))
 
     def window_size_set(self, width, height):
         """Set the size of a given file selector button widget's window,
@@ -164,10 +164,14 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.window_size_get()
+            cdef c_evas.Evas_Coord w, h
+            elm_fileselector_button_window_size_get(self.obj, &w, &h)
+            return (w, h)
 
         def __set__(self, value):
-            self.window_size_set(*value)
+            cdef c_evas.Evas_Coord w, h
+            w, h = value
+            elm_fileselector_button_window_size_set(self.obj, w, h)
 
     def path_set(self, path):
         """Set the initial file system path for a given file selector
@@ -209,10 +213,10 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.path_get()
+            return _ctouni(elm_fileselector_button_path_get(self.obj))
 
-        def __set__(self, value):
-            self.path_set(value)
+        def __set__(self, path):
+            elm_fileselector_button_path_set(self.obj, _cfruni(path))
 
     def expandable_set(self, expand):
         """Enable/disable a tree view in the given file selector button
@@ -245,11 +249,7 @@ cdef class FileselectorButton(Button):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_button_expandable_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_button_expandable_get(self.obj))
 
     property expandable:
         """Enable/disable a tree view in the given file selector button
@@ -267,10 +267,10 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.expandable_get()
+            return bool(elm_fileselector_button_expandable_get(self.obj))
 
-        def __set__(self, value):
-            self.expandable_set(value)
+        def __set__(self, expand):
+            elm_fileselector_button_expandable_set(self.obj, expand)
 
     def folder_only_set(self, folder_only):
         """Set whether a given file selector button widget's internal file
@@ -304,11 +304,7 @@ cdef class FileselectorButton(Button):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_button_folder_only_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_button_folder_only_get(self.obj))
 
     property folder_only:
         """Whether a given file selector button widget's internal file
@@ -323,10 +319,10 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.folder_only_get()
+            return bool(elm_fileselector_button_folder_only_get(self.obj))
 
-        def __set__(self, value):
-            self.folder_only_set(value)
+        def __set__(self, folder_only):
+            elm_fileselector_button_folder_only_set(self.obj, folder_only)
 
     def is_save_set(self, is_save):
         """Enable/disable the file name entry box where the user can type
@@ -357,11 +353,7 @@ cdef class FileselectorButton(Button):
         @rtype: bool
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_button_is_save_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_button_is_save_get(self.obj))
 
     property is_save:
         """Enable/disable the file name entry box where the user can type
@@ -376,10 +368,10 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.is_save_get()
+            return bool(elm_fileselector_button_is_save_get(self.obj))
 
-        def __set__(self, value):
-            self.is_save_set(value)
+        def __set__(self, is_save):
+            elm_fileselector_button_is_save_set(self.obj, is_save)
 
     def inwin_mode_set(self, inwin_mode):
         """Set whether a given file selector button widget's internal file
@@ -407,11 +399,7 @@ cdef class FileselectorButton(Button):
         if it will use a dedicated window
 
         """
-        cdef unsigned char r
-        r = elm_fileselector_button_inwin_mode_get(self.obj)
-        if r == 0:
-            return False
-        return True
+        return bool(elm_fileselector_button_inwin_mode_get(self.obj))
 
     property inwin_mode:
         """Whether a given file selector button widget's internal file
@@ -424,10 +412,10 @@ cdef class FileselectorButton(Button):
 
         """
         def __get__(self):
-            return self.inwin_mode_get()
+            return bool(elm_fileselector_button_inwin_mode_get(self.obj))
 
-        def __set__(self, value):
-            self.inwin_mode_set(value)
+        def __set__(self, inwin_mode):
+            elm_fileselector_button_inwin_mode_set(self.obj, inwin_mode)
 
     def callback_file_chosen_add(self, func, *args, **kwargs):
         """The user has selected a path which comes as the C{event_info} data."""
@@ -438,3 +426,7 @@ cdef class FileselectorButton(Button):
         self._callback_del_full("file,chosen", _fs_button_callback_conv, func)
 
 _elm_widget_type_register("fileselector_button", FileselectorButton)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryFileselectorButton_Type # hack to install metaclass
+_install_metaclass(&PyElementaryFileselectorButton_Type, ElementaryObjectMeta)

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Radio(LayoutClass):
+cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementaryRadio_Type]:
 
     """Radio is a widget that allows for one or more options to be displayed
     and have the user choose only one of them.
@@ -191,3 +191,7 @@ cdef class Radio(LayoutClass):
         self._callback_del("changed", func)
 
 _elm_widget_type_register("radio", Radio)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryRadio_Type # hack to install metaclass
+_install_metaclass(&PyElementaryRadio_Type, ElementaryObjectMeta)

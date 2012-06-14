@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class InnerWindow(LayoutClass):
+cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type PyElementaryInnerWindow_Type]:
 
     """An inwin is a window inside a window that is useful for a quick popup.
     It does not hover.
@@ -126,3 +126,7 @@ cdef class InnerWindow(LayoutClass):
             self.content_unset()
 
 _elm_widget_type_register("inwin", InnerWindow)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryInnerWindow_Type # hack to install metaclass
+_install_metaclass(&PyElementaryInnerWindow_Type, ElementaryObjectMeta)

@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Layout(LayoutClass):
+cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElementaryLayout_Type]:
 
     """This is a container widget that takes a standard Edje design file and
     wraps it very thinly in a widget.
@@ -224,3 +224,7 @@ cdef class Layout(LayoutClass):
         return _ctouni(elm_layout_text_get(self.obj, _cfruni(part)))
 
 _elm_widget_type_register("layout", Layout)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryLayout_Type # hack to install metaclass
+_install_metaclass(&PyElementaryLayout_Type, ElementaryObjectMeta)

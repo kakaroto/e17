@@ -23,9 +23,6 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
     """Box(canvas, size=None, pos=None, geometry=None, color=None, name=None) -> Box instance
 
     """
-
-    __metaclass__ = EvasObjectMeta
-
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -87,3 +84,7 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
 
     def remove_all(self, Eina_Bool clear):
         return evas_object_box_remove_all(self.obj, clear)
+
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasBox_Type # hack to install metaclass
+_install_metaclass(&PyEvasBox_Type, EvasObjectMeta)

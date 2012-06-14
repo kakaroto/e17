@@ -23,9 +23,6 @@ cdef public class Polygon(Object) [object PyEvasPolygon,
                points=None) -> Polygon instance
 
     """
-
-    __metaclass__ = EvasObjectMeta
-
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -47,3 +44,8 @@ cdef public class Polygon(Object) [object PyEvasPolygon,
 
     def points_clear(self):
         evas_object_polygon_points_clear(self.obj)
+
+
+cdef extern from "Evas.h": # hack to force type to be known
+    cdef PyTypeObject PyEvasPolygon_Type # hack to install metaclass
+_install_metaclass(&PyEvasPolygon_Type, EvasObjectMeta)

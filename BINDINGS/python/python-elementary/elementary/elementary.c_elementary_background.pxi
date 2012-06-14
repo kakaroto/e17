@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Background(LayoutClass):
+cdef public class Background(LayoutClass) [object PyElementaryBackground, type PyElementaryBackground_Type]:
 
     """Background widget object
 
@@ -274,3 +274,7 @@ cdef class Background(LayoutClass):
             elm_bg_load_size_set(self.obj, w, h)
 
 _elm_widget_type_register("bg", Background)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryBackground_Type # hack to install metaclass
+_install_metaclass(&PyElementaryBackground_Type, ElementaryObjectMeta)

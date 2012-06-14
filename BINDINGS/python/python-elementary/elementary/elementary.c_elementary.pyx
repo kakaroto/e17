@@ -166,6 +166,14 @@ cdef _elm_widget_type_unregister(name):
     # to the new model. The class resolver can be removed when it's done.
     evas.c_evas._object_mapping_unregister("elm_"+name)
 
+cdef extern from "Python.h":
+    ctypedef struct PyTypeObject:
+        PyTypeObject *ob_type
+
+cdef void _install_metaclass(PyTypeObject *ctype, object metaclass):
+    Py_INCREF(metaclass)
+    ctype.ob_type = <PyTypeObject*>metaclass
+
 class ElementaryObjectMeta(type):
     def __init__(cls, name, bases, dict_):
         type.__init__(cls, name, bases, dict_)

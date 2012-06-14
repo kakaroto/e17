@@ -207,7 +207,7 @@ cdef class GengridItemClass:
             except AttributeError:
                 pass
 
-        self.obj.item_style = _fruni(self._item_style)
+        self.obj.item_style = _cfruni(self._item_style)
 
     def __str__(self):
         return ("%s(item_style=%r, text_get_func=%s, content_get_func=%s, "
@@ -582,7 +582,7 @@ cdef _elm_gengrid_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
-cdef class Gengrid(Object):
+cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementaryGengrid_Type]:
     """Creates a generic, scalable and extensible grid widget.
 
     Like L{Genlist}, this widget allows more items while keeping
@@ -1067,3 +1067,7 @@ cdef class Gengrid(Object):
         self._callback_del_full("unselected", _gengrid_item_conv, func)
 
 _elm_widget_type_register("gengrid", Gengrid)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryGengrid_Type # hack to install metaclass
+_install_metaclass(&PyElementaryGengrid_Type, ElementaryObjectMeta)

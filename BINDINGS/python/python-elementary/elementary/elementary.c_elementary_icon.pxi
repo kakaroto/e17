@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef class Icon(Image):
+cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Type]:
 
     """An icon object is used to display standard icon images ("delete",
     "edit", "arrows", etc.) or images coming from a custom file (PNG, JPG,
@@ -228,3 +228,7 @@ cdef class Icon(Image):
         self._callback_del("thumb,error", func)
 
 _elm_widget_type_register("icon", Icon)
+
+cdef extern from "Elementary.h": # hack to force type to be known
+    cdef PyTypeObject PyElementaryIcon_Type # hack to install metaclass
+_install_metaclass(&PyElementaryIcon_Type, ElementaryObjectMeta)
