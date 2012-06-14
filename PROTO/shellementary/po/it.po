@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Shellementary\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-02-01 18:47+0400\n"
+"POT-Creation-Date: 2012-06-14 17:49+0900\n"
 "PO-Revision-Date: 2010-02-02 13:37+0400\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,11 +38,11 @@ msgid ""
 "PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> "
 "and C programming language.<br><b>License:</> MIT"
 msgstr ""
-"<b>Visualizza finestre di dialogo da script di shell</><br>"
-"Concepito come alternativa per Zenity, supporta gli stessi argomenti<br>"
-"<b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>"
-"Basato sul grandioso toolkit Elementary di <b>raster</> e il linguaggio di "
-"programmation C.<br><b>Licenza :</> MIT"
+"<b>Visualizza finestre di dialogo da script di shell</><br>Concepito come "
+"alternativa per Zenity, supporta gli stessi argomenti<br><b>http://svn."
+"enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basato sul grandioso "
+"toolkit Elementary di <b>raster</> e il linguaggio di programmation C."
+"<br><b>Licenza :</> MIT"
 
 #: src/bin/shelm_about.c:43
 msgid ""
@@ -64,13 +65,13 @@ msgid "Enter something here"
 msgstr "Inserire qualcosa qui"
 
 #: src/bin/shelm_dlg_entry.c:47 src/bin/shelm_dlg_list.c:56
-#: src/bin/shelm_dlg_scale.c:43 src/bin/shelm_dlg_textinfo.c:82
+#: src/bin/shelm_dlg_scale.c:43 src/bin/shelm_dlg_textinfo.c:80
 msgid "Cancel"
 msgstr "Annulla"
 
 #: src/bin/shelm_dlg_entry.c:53 src/bin/shelm_dlg_simpleicon.c:44
 #: src/bin/shelm_dlg_list.c:62 src/bin/shelm_dlg_scale.c:49
-#: src/bin/shelm_dlg_textinfo.c:88
+#: src/bin/shelm_dlg_textinfo.c:86
 msgid "OK"
 msgstr "OK"
 
@@ -98,10 +99,10 @@ msgstr "Modifica il valore"
 msgid "Text Information"
 msgstr "Testo informativo"
 
-#: src/bin/shelm_callbacks.c:77
+#: src/bin/shelm_callbacks.c:76
 msgid "fd error, exit."
 msgstr "Errore di fd, uscita."
 
-#: src/bin/shelm_callbacks.c:82
+#: src/bin/shelm_callbacks.c:81
 msgid "nothing to read?"
 msgstr "nulla da leggere?"

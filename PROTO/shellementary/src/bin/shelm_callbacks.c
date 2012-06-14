@@ -124,7 +124,7 @@ SH_API int _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler)
    return 0;
 }
 
-SH_API int _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
+SH_API Eina_Bool _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler)
 {
    char **splitted;
    char *buffer;

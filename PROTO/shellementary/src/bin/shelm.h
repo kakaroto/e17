@@ -109,7 +109,7 @@ SH_API void            entry_callback(void *data, Evas_Object *obj, void *event_
 SH_API void            slider_callback(void *data, Evas_Object *obj, void *event_info); // print slider value when clicked OK
 SH_API void            clock_callback(void *data, Evas_Object *obj, void *event_info); // print clock info
 SH_API int             _read_stdin_entry(void *data, Ecore_Fd_Handler *fd_handler);
-SH_API int             _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler);
+SH_API Eina_Bool       _read_stdin_list(void *data, Ecore_Fd_Handler *fd_handler);
 
 // dialog prototypes
 void                   shelm_about_dialog(); // when no arguments entered

@@ -63,10 +63,10 @@ create_button(Evas_Object *parent, const char *button_icon, const char *label)
       Evas_Object *icon;
       icon = elm_icon_add(parent);
 
-      elm_icon_file_set(icon, button_icon, NULL);
+      elm_image_file_set(icon, button_icon, NULL);
       evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
       evas_object_show(icon);
-      elm_object_part_content_set(button, icon);
+      elm_object_part_content_set(button, NULL, icon);
     }
 
   elm_object_text_set(button, label);
@@ -139,8 +139,8 @@ create_icon(Evas_Object *parent, const char *iconfile)
 
   icon = elm_icon_add(parent);
 
-  elm_icon_file_set(icon, iconfile, NULL);
-  elm_icon_resizable_set(icon, 0, 0);
+  elm_image_file_set(icon, iconfile, NULL);
+  elm_image_resizable_set(icon, 0, 0);
 
   return icon;
 }
@@ -224,10 +224,10 @@ create_slider(Evas_Object *parent, double slider_value, double slider_min_value,
       Evas_Object *icon;
       icon = elm_icon_add(parent);
 
-      elm_icon_file_set(icon, slider_icon, NULL);
+      elm_image_file_set(icon, slider_icon, NULL);
       evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
       evas_object_show(icon);
-      elm_object_part_content_set(slider, icon);
+      elm_object_part_content_set(slider, NULL, icon);
     }
   if (slider_vertical) elm_slider_horizontal_set(slider, 0);
   if (slider_value) elm_slider_value_set(slider, slider_value);
