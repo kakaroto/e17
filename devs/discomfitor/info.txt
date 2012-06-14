@@ -2,8 +2,8 @@ Login:		discomfitor
 IRC Nick:	discomfitor/zmike
 Cloak:          developer/discomfitor
 Name:		Mike Blumenkrantz
-Location:	CT, USA
+Location:	Staines, UK
 E-Mail:		michael.blumenkrantz@gmail.com
 Managing:	eeze, e_ukit, esskyuehl, azy, ecore_con, ecore_con_ssl, ecore_con_ares, darkness, shotgun, email, efm backend, 23oz
 Contributing:	e_dbus, gentoo ebuilds, e device backends, elm, notification module
-Platform:	Gentoo (Linux)
+Platform:	Gentoo, ubuntu (Linux)
