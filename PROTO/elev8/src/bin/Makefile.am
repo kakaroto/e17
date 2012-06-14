@@ -11,7 +11,8 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DPACKAGE_TMP_DIR=\"/tmp\" \
 @EINA_CFLAGS@ \
-@ECORE_CFLAGS@
+@ECORE_CFLAGS@ \
+@EET_CFLAGS@
 
 bin_PROGRAMS = elev8
 
@@ -20,8 +21,9 @@ elev8lib_SCRIPTS = init.js
 
 elev8_SOURCES = \
 	main.cc \
+	storage.cc \
 	timer.cc \
 	elev8_utils.cc
 
-elev8_LDADD = @EINA_LIBS@ @ECORE_LIBS@ @V8_LIBS@
+elev8_LDADD = @EINA_LIBS@ @ECORE_LIBS@ @V8_LIBS@ @EET_LIBS@
 

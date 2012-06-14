@@ -104,6 +104,7 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([EINA], [eina >= 1.0.999])
 PKG_CHECK_MODULES([ECORE], [ecore >= 1.0.999])
+PKG_CHECK_MODULES([EET], [eet >= 1.4.0])
 PKG_CHECK_MODULES([ELEMENTARY], [
 	elementary >= 0.7.0
 	edje >= 1.0.999
@@ -151,7 +152,6 @@ src/modules/Makefile
 src/modules/dbus/Makefile
 src/modules/http/Makefile
 src/modules/elm/Makefile
-src/modules/storage/Makefile
 data/Makefile
 data/images/Makefile
 data/desktop/Makefile

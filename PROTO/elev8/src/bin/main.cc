@@ -10,6 +10,7 @@
 #include <Ecore.h>
 #include <elev8_common.h>
 #include <elev8_utils.h>
+#include "storage.h"
 #include "timer.h"
 
 using namespace v8;
@@ -30,6 +31,7 @@ add_symbols_to_context_global(Handle<ObjectTemplate> global)
    global->Set(String::NewSymbol("require"), FunctionTemplate::New(require));
    global->Set(String::NewSymbol("modules"), FunctionTemplate::New(modules));
    global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
+   storage::RegisterModule(global);
    timer::RegisterModule(global);
 }
 

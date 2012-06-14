@@ -29,3 +29,5 @@ Array.prototype.contains = function(obj) {
       return true;
   return false;
 }
+
+localStorage = new localStorage();
