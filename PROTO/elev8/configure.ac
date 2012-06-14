@@ -151,6 +151,7 @@ src/modules/Makefile
 src/modules/dbus/Makefile
 src/modules/http/Makefile
 src/modules/elm/Makefile
+src/modules/storage/Makefile
 data/Makefile
 data/images/Makefile
 data/desktop/Makefile

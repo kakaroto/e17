@@ -20,6 +20,7 @@ elev8lib_SCRIPTS = init.js
 
 elev8_SOURCES = \
 	main.cc \
+	timer.cc \
 	elev8_utils.cc
 
 elev8_LDADD = @EINA_LIBS@ @ECORE_LIBS@ @V8_LIBS@
