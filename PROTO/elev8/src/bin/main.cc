@@ -20,20 +20,7 @@ int elev8_log_domain = -1;
 #define MODLOAD_ENV_DEFAULT_DIRS ".:" PACKAGE_LIB_DIR
 
 static Persistent<Object> module_cache;
-
-static Handle<Value> require(const Arguments& args);
-static Handle<Value> modules(const Arguments& args);
-static Handle<Value> print(const Arguments& args);
-
-static void
-add_symbols_to_context_global(Handle<ObjectTemplate> global)
-{
-   global->Set(String::NewSymbol("require"), FunctionTemplate::New(require));
-   global->Set(String::NewSymbol("modules"), FunctionTemplate::New(modules));
-   global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
-   storage::RegisterModule(global);
-   timer::RegisterModule(global);
-}
+static Persistent<ObjectTemplate> global;
 
 static Handle<Value>
 print(const Arguments& args)
@@ -166,13 +153,13 @@ module_js_load(Handle<String> module_name, Handle<Object> name_space)
      }
 
    HandleScope handle_scope;
-   Handle<ObjectTemplate> mod_global = ObjectTemplate::New();
 
-   mod_global->Set(String::NewSymbol("exports"), name_space);
-   add_symbols_to_context_global(mod_global);
+   global->Set(String::NewSymbol("exports"), name_space);
 
-   Persistent<Context> mod_context = Context::New(NULL, mod_global);
+   Persistent<Context> mod_context = Context::New(NULL, global);
    Context::Scope mod_context_scope(mod_context);
+
+   run_script(PACKAGE_LIB_DIR "/../init.js");
 
    TryCatch try_catch;
    Local<Script> mod_script = Script::Compile(mod_source->ToString(), String::New(file_name));
@@ -257,9 +244,13 @@ main(int argc, char **argv)
    V8::SetFlagsFromCommandLine(&argc, argv, true);
 
    HandleScope handle_scope;
-   Handle<ObjectTemplate> global = ObjectTemplate::New();
+   global = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
 
-   add_symbols_to_context_global(global);
+   global->Set(String::NewSymbol("require"), FunctionTemplate::New(require));
+   global->Set(String::NewSymbol("modules"), FunctionTemplate::New(modules));
+   global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
+   storage::RegisterModule(global);
+   timer::RegisterModule(global);
 
    Persistent<Context> context = Context::New(NULL, global);
    Context::Scope context_scope(context);
@@ -276,6 +267,7 @@ main(int argc, char **argv)
 end:
    context.Dispose();
    module_cache.Dispose();
+   global.Dispose();
    V8::Dispose();
 
    return 0;
