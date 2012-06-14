@@ -84,9 +84,9 @@ cdef class Configuration(object):
 
         """
         def __get__(self):
-            elm_config_profile_get()
+            return _ctouni(elm_config_profile_get())
         def __set__(self, profile):
-            elm_config_profile_set(profile)
+            elm_config_profile_set(_cfruni(profile))
 
     def profile_dir_get(self, profile, is_user):
         """Get an Elementary's profile directory path in the filesystem. One
@@ -102,7 +102,7 @@ cdef class Configuration(object):
         @rtype: string
 
         """
-        return elm_config_profile_dir_get(profile, is_user)
+        return _ctouni(elm_config_profile_dir_get(_cfruni(profile), is_user))
 
     property profile_list:
         """Get Elementary's list of available profiles.
@@ -118,7 +118,7 @@ cdef class Configuration(object):
             while lst:
                 data = lst.data
                 if data != NULL:
-                    ret.append(<char *>data)
+                    ret.append(_ctouni(<const_char_ptr>data))
                 lst = lst.next
             return ret
 
@@ -391,9 +391,9 @@ cdef class Configuration(object):
 
         """
         def __get__(self):
-            return elm_config_engine_get()
+            return _ctouni(elm_config_engine_get())
         def __set__(self, engine):
-            elm_config_engine_set(engine)
+            elm_config_engine_set(_cfruni(engine))
 
     property preferred_engine:
         """Get Elementary's preferred engine to use.
@@ -409,14 +409,14 @@ cdef class Configuration(object):
 
         """
         def __get__(self):
-            return elm_config_preferred_engine_get()
+            return _ctouni(elm_config_preferred_engine_get())
         def __set__(self, engine):
-            elm_config_preferred_engine_set(engine)
+            elm_config_preferred_engine_set(_cfruni(engine))
 
     property text_classes_list:
         """Get Elementary's list of supported text classes.
 
-        @type: tuple of Elm_Text_Class
+        @type: Elm_Text_Class
 
         """
         def __get__(self):
@@ -430,7 +430,7 @@ cdef class Configuration(object):
                 if data != NULL:
                     name = data.name
                     desc = data.desc
-                    ret.append((name, desc))
+                    ret.append((_ctouni(name), _ctouni(desc)))
                 lst = lst.next
             return ret
 
@@ -442,7 +442,7 @@ cdef class Configuration(object):
         the default font properties for that class coming from the theme in
         use. There is no need to free this list.
 
-        @type: tuple of Elm_Font_Overlay
+        @type: Elm_Font_Overlay
 
         """
         def __get__(self):
@@ -458,7 +458,7 @@ cdef class Configuration(object):
                     text_class = data.text_class
                     font = data.font
                     size = data.size
-                    ret.append((text_class, font, size))
+                    ret.append((_ctouni(text_class), _ctouni(font), size))
                 lst = lst.next
             return ret
 
@@ -479,7 +479,7 @@ cdef class Configuration(object):
         @type size: Evas_Font_Size
 
         """
-        elm_config_font_overlay_set(text_class, font, size)
+        elm_config_font_overlay_set(_cfruni(text_class), _cfruni(font), size)
 
     def font_overlay_unset(self, text_class):
         """Unset a font overlay for a given Elementary text class.
@@ -491,7 +491,7 @@ cdef class Configuration(object):
         @type text_class: string
 
         """
-        elm_config_font_overlay_unset(text_class)
+        elm_config_font_overlay_unset(_cfruni(text_class))
 
     def font_overlay_apply(self):
         """Apply the changes made with L{font_overlay_set()} and
@@ -672,20 +672,16 @@ def focus_highlight_animate_set(animate):
     elm_config_focus_highlight_animate_set(animate)
 
 def preferred_engine_get():
-    cdef const_char_ptr l
-    l = elm_config_preferred_engine_get()
-    return l if l != NULL else None
+    return _ctouni(elm_config_preferred_engine_get())
 
 def preferred_engine_set(engine):
     elm_config_preferred_engine_set(engine)
 
 def engine_get():
-    cdef const_char_ptr l
-    l = elm_config_engine_get()
-    return l if l != NULL else None
+    return _ctouni(elm_config_engine_get())
 
 def engine_set(engine):
-    elm_config_engine_set(engine)
+    elm_config_engine_set(_cfruni(engine))
 
 def scale_get():
     return elm_config_scale_get()

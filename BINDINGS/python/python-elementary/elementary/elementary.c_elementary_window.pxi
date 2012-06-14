@@ -1322,7 +1322,7 @@ cdef class StandardWindow(Window):
     """A L{Window} with standard setup."""
 
     def __init__(self, name, title):
-        self._set_obj(elm_win_util_standard_add(name, title))
+        self._set_obj(elm_win_util_standard_add(_cfruni(name), _cfruni(title)))
 
         cdef c_evas.Evas *e
         e = c_evas.evas_object_evas_get(self.obj)
