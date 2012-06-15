@@ -33,12 +33,6 @@ if test -z "$SSH_AGENT_PID" -a "$sshagent" -a "x$sshagent" != "xno"; then
   kill_sshagent=1
 fi
 
-# If we find XFCE, then we use it to load the GTK2 theme for the gtk apps
-# You can change the theme later by using 'xfce4-appearance-settings'.
-if [ -f /usr/bin/xfsettingsd ]; then
-  /usr/bin/xfsettingsd
-fi
-
 # Start the window manager:
 if [ -z "$DESKTOP_SESSION" -a -x /usr/bin/ck-launch-session ]; then
   exec ck-launch-session /usr/bin/enlightenment_start
