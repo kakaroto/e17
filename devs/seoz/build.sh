@@ -15,18 +15,18 @@ export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra" # -Wshadow"
 export CC="ccache gcc"
 alias make='make -j6'
 
-export BUILD_E_DEPENDS="eeze"
-export BUILD_ETHUMB_DEPENDS="PROTO/epdf"
-export BUILD_ELM_DEPENDS="PROTO/emap"
+export BUILD_E_OPTION="eeze"
+export BUILD_ETHUMB_OPTION="PROTO/epdf"
+export BUILD_ELM_OPTION="PROTO/emap"
 export BUILD_BASIC1="eina eet"
-export BUILD_BASIC2="ecore embryo eio edje e_dbus efreet expedite "$BUILD_E_DEPENDS" e "$BUILD_ETHUMB_DEPENDS" emotion ethumb "$BUILD_ELM_DEPENDS" elementary"
+export BUILD_BASIC2="ecore embryo eio edje e_dbus efreet expedite "$BUILD_E_OPTION" e "$BUILD_ETHUMB_OPTION" emotion ethumb "$BUILD_ELM_OPTION" elementary"
 export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python-ecore BINDINGS/python/python-elementary BINDINGS/python/python-edje BINDINGS/python/python-emotion BINDINGS/python/python-e_dbus"
 export BUILD_CPP_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/edjexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage E-MODULES-EXTRA/everything-shotgun"
 export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
 export BUILD_ETC="exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/efx terminology"
-export BUILD_ETC2="excessive enki ecrire espionnage"
+export BUILD_ETC2="excessive enki ecrire espionnage evas_generic_loaders"
 
 PWD=`pwd`
 LOG_WARN_FILE=$PWD"/warnings.txt"
