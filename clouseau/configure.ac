@@ -9,6 +9,7 @@ AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_CONFIG_HEADER(config.h)
 
+AC_GNU_SOURCE
 AC_PROG_LIBTOOL
 
 dnl Checking for __attribute__ support

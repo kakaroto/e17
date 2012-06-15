@@ -1,22 +1,10 @@
-#define _GNU_SOURCE 1
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
+#include "libclouseau.h"
 #include <dlfcn.h>
 #include <execinfo.h>
-#include <sys/socket.h>
 
-#include <Eina.h>
-#include <Ecore.h>
 #include <Ecore_Ipc.h>
-#include <Edje.h>
-#include <Evas.h>
-#include <Elementary.h>
 
 #include "eet_data.h"
-#include "libclouseau.h"
 
 static Eina_Bool _elm_is_init = EINA_FALSE;
 static const char *_my_app_name = NULL;

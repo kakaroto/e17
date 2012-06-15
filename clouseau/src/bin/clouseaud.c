@@ -1,9 +1,9 @@
-#include <stdio.h>
-#include <unistd.h>           /*  misc. UNIX functions      */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <fcntl.h>
-#include <Ecore.h>
 #include <Ecore_Ipc.h>
-#include <stdint.h>
 
 #include "eet_data.h"
 

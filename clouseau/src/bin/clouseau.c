@@ -1,18 +1,7 @@
-#include <stdio.h>
-#include <Ecore.h>
-#include <Ecore_Ipc.h>
-#include <Eina.h>
-#include <Edje.h>
-#include <Evas.h>
-#include <Elementary.h>
-#include <stdint.h>
-
 #include "libclouseau.h"
-#include "eet_data.h"
+#include <Ecore_Ipc.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include "eet_data.h"
 
 #define CLIENT_NAME         "Clouseau Client"
 

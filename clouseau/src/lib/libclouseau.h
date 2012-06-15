@@ -1,8 +1,10 @@
 #ifndef _LIBCLOUSEAU_H
 #define _LIBCLOUSEAU_H
-#include <Eina.h>
-#include <Evas.h>
-#include <Ecore_Evas.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Elementary.h>
 
 #define ELM_INTERNAL_API_ARGESFSDFEFC
