@@ -31,3 +31,10 @@ src/lib/route.lo
 src/lib/route_gpx.lo
 src/lib/route_node.lo
 stamp-h1
+compile
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+

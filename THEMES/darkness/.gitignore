@@ -1,3 +1,9 @@
 darkness.edj
 elm/darkness-elm-desktop.edj
 elm/darkness-elm.edj
+elm/config/darkness-default/base.cfg
+elm/config/darkness-desktop/base.cfg
+elm/config/darkness-illume/base.cfg
+elm/config/darkness.cfg
+elm/darkness-desktop.edj
+
