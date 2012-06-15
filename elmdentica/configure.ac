@@ -29,6 +29,10 @@ PKG_CHECK_MODULES(CURL, libcurl, [],
 		[AC_MSG_FAILURE([libcurl not found])]
 		)
 
+PKG_CHECK_MODULES(ECORE_X, ecore-x, [],
+		[AC_MSG_FAILURE([ecore-x not found])]
+		)
+
 PKG_CHECK_MODULES(ELEMENTARY, elementary, [],
 		[AC_MSG_FAILURE([elementary not found])]
 		)

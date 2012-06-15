@@ -7,6 +7,7 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" \
 		@SQLITE_CFLAGS@		\
 		@AZY_CFLAGS@	\
 		`curl-config --cflags`	\
+		@ECORE_X_CFLAGS@	\
 		@ELEMENTARY_CFLAGS@	\
 		-DLOCALEDIR=\"$(localedir)\" \
 		-Wall
@@ -17,6 +18,7 @@ AM_LDFLAGS =	@PTHREAD_LIBS@		\
 		@SQLITE_LIBS@		\
 		@AZY_LIBS@		\
 		`curl-config --libs`	\
+		@ECORE_X_LIBS@ \
 		@ELEMENTARY_LIBS@
 
 BUILT_SOURCES = statusnet_Common.h statusnet_Common.c statusnet_Common_Azy.h statusnet_Common_Azy.c
