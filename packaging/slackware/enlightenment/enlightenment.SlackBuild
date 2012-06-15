@@ -43,7 +43,6 @@ cd ../../../e
 VERSION=r`svn info | grep Revision | cut -d ' ' -f2`
 
 # Correct ownership
-chown -R root:root .
 find . \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \;
 find . \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
@@ -97,6 +96,7 @@ find ${PKG} | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xar
 
 # Build the package
 cd ${PKG}
+chown -R root:root .
 mkdir install
 install -m644 ${CWD}/slack-desc install/
 makepkg -l y -c n ${TMP}/${NAME}-${VERSION}-${ARCH}-${BUILD}.txz
