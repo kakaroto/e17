@@ -19,7 +19,7 @@ libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
    Tree_Item *treeit;
    char buf[1024];
 
-   treeit = calloc(1, sizeof(*treeit));
+   treeit = calloc(1, sizeof(Tree_Item));
    treeit->ptr = o;
    treeit->is_obj = EINA_TRUE;
    snprintf(buf, sizeof(buf), "%s", evas_object_type_get(o));
@@ -62,7 +62,7 @@ _load_list(void)
         e = ecore_evas_get(ee);
         evas_output_size_get(e, &w, &h);
 
-        treeit = calloc(1, sizeof(*treeit));
+        treeit = calloc(1, sizeof(Tree_Item));
         treeit->name = eina_stringshare_add(ecore_evas_title_get(ee));
         treeit->ptr = ee;
 

@@ -252,7 +252,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    gui = _add_client(gui, t, ev->client);
                    EINA_LIST_FOREACH(app, l, st)
                      {  /* Add all registered apps to newly open GUI */
-                        p = packet_compose(APP_ADD, st, sizeof(*st), &size);
+                        p = packet_compose(APP_ADD, st, sizeof(app_info_st), &size);
                         if (p)
                           {
                              ecore_ipc_client_send(ev->client,

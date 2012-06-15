@@ -488,7 +488,7 @@ obj_information_get(Tree_Item *treeit)
 
    Obj_Information *oinfo;
    Evas_Object *obj = treeit->ptr;
-   oinfo = calloc(1, sizeof(*oinfo));
+   oinfo = calloc(1, sizeof(Obj_Information));
 
    oinfo->evas_props.pass_events = evas_object_pass_events_get(obj);
    oinfo->evas_props.has_focus = evas_object_focus_get(obj);
@@ -623,7 +623,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
    Obj_Information *oinfo = treeit->info;
 
    /* Populate evas properties list */
-   main_tit = calloc(1, sizeof(*main_tit));
+   main_tit = calloc(1, sizeof(Inf_Tree_Item));
    main_tit->string = eina_stringshare_add("Evas");
    information_tree = eina_list_append(information_tree, main_tit);
 
@@ -633,36 +633,36 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
 
         snprintf(buf, sizeof(buf), "Visibility: %d",
               (int) oinfo->evas_props.is_visible);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         if (oinfo->evas_props.name)
           {
              snprintf(buf, sizeof(buf), "Name: %s", oinfo->evas_props.name);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
 
         snprintf(buf, sizeof(buf), "Layer: %hd", oinfo->evas_props.layer);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Position: %d %d", oinfo->evas_props.x,
               oinfo->evas_props.y);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
         snprintf(buf, sizeof(buf), "Size: %d %d", oinfo->evas_props.w,
               oinfo->evas_props.h);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Scale: %.6lg", oinfo->evas_props.scale);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
@@ -673,11 +673,11 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
              evas_object_geometry_get(
                    evas_object_clip_get(obj), &x, &y, &w, &h);
              snprintf(buf, sizeof(buf), "Clipper position: %d %d", x, y);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
              snprintf(buf, sizeof(buf), "Clipper size: %d %d", w, h);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -685,38 +685,38 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
 
         snprintf(buf, sizeof(buf), "Min size: %d %d", oinfo->evas_props.min_w,
               oinfo->evas_props.min_h);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Max size: %d %d", oinfo->evas_props.max_w,
               oinfo->evas_props.max_h);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Request size: %d %d",
               oinfo->evas_props.req_w, oinfo->evas_props.req_h);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Align: %.6lg %.6lg",
               oinfo->evas_props.align_x, oinfo->evas_props.align_y);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Weight: %.6lg %.6lg",
               oinfo->evas_props.weight_x, oinfo->evas_props.weight_y);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
 #if 0
         evas_object_size_hint_aspect_get(obj, &w, &h);
         snprintf(buf, sizeof(buf), "Aspect: %d %d", w, h);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 #endif
@@ -724,20 +724,20 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         snprintf(buf, sizeof(buf), "Color: %d %d %d %d",
               oinfo->evas_props.r, oinfo->evas_props.g, oinfo->evas_props.b,
               oinfo->evas_props.a);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Has focus: %d",
               (int) oinfo->evas_props.has_focus);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
 	for (i = 0; i < sizeof (pointer_mode) / sizeof (pointer_mode[0]); ++i)
 	  if (pointer_mode[i].mode == oinfo->evas_props.mode)
 	    {
-               tit = calloc(1, sizeof(*tit));
+               tit = calloc(1, sizeof(Inf_Tree_Item));
                tit->string = eina_stringshare_add(pointer_mode[i].text);
                main_tit->children = eina_list_append(main_tit->children, tit);
                break;
@@ -745,14 +745,14 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
 
         snprintf(buf, sizeof(buf), "Pass events: %d",
               (int) oinfo->evas_props.pass_events);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         if (oinfo->evas_props.is_clipper)
           {
              snprintf(buf, sizeof(buf), "Has clipees");
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -763,56 +763,56 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         Inf_Tree_Item *tit;
         char buf[1024];
 
-        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit = calloc(1, sizeof(Inf_Tree_Item));
         main_tit->string = eina_stringshare_add("Elementary");
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "Wid-Type: %s", oinfo->extra_props.u.elm.type);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
 #if 0
         /* Extract actual data from theme? */
         snprintf(buf, sizeof(buf), "Theme: %s", elm_widget_theme_get(obj));
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 #endif
 
         snprintf(buf, sizeof(buf), "Style: %s",
               oinfo->extra_props.u.elm.style);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Scale: %.6lg",
               oinfo->extra_props.u.elm.scale);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Disabled: %d",
               oinfo->extra_props.u.elm.is_disabled);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Has focus: %d",
               oinfo->extra_props.u.elm.has_focus);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Mirrored: %d",
               oinfo->extra_props.u.elm.is_mirrored);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Automatic mirroring: %d",
               oinfo->extra_props.u.elm.is_mirrored_automatic);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
      }
@@ -823,17 +823,17 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         const char *font;
         const char *text;
 
-        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit = calloc(1, sizeof(Inf_Tree_Item));
         main_tit->string = eina_stringshare_add("Text");
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "Font: %s", oinfo->extra_props.u.text.font);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Size: %d", oinfo->extra_props.u.text.size);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
@@ -841,7 +841,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         if (font)
           {
              snprintf(buf, sizeof(buf), "Source: %s", font);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -850,7 +850,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         if (text)
           {
              snprintf(buf, sizeof(buf), "Text: %s", text);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -860,13 +860,13 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         Inf_Tree_Item *tit;
         char buf[1024];
 
-        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit = calloc(1, sizeof(Inf_Tree_Item));
         main_tit->string = eina_stringshare_add("Image");
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "File name: %s",
               oinfo->extra_props.u.image.file);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
@@ -874,7 +874,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
           {
              snprintf(buf, sizeof(buf), "File key: %s",
                    oinfo->extra_props.u.image.key);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -883,7 +883,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
           {
              snprintf(buf, sizeof(buf), "Source: %p",
                    oinfo->extra_props.u.image.source);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -892,7 +892,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
           {
              snprintf(buf, sizeof(buf), "Load error: %s",
                    oinfo->extra_props.u.image.load_err);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -902,17 +902,17 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         Inf_Tree_Item *tit;
         char buf[1024];
 
-        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit = calloc(1, sizeof(Inf_Tree_Item));
         main_tit->string = eina_stringshare_add("Edje");
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "File: %s", oinfo->extra_props.u.edje.file);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Group: %s", oinfo->extra_props.u.edje.group);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
@@ -920,7 +920,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
           {
              snprintf(buf, sizeof(buf), "Load error: %s",
                    oinfo->extra_props.u.edje.load_err);
-             tit = calloc(1, sizeof(*tit));
+             tit = calloc(1, sizeof(Inf_Tree_Item));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
@@ -930,19 +930,19 @@ clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb)
         Inf_Tree_Item *tit;
         char buf[1024];
 
-        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit = calloc(1, sizeof(Inf_Tree_Item));
         main_tit->string = eina_stringshare_add("Textblock");
         information_tree = eina_list_append(information_tree, main_tit);
 
         snprintf(buf, sizeof(buf), "Style: '%s'",
               oinfo->extra_props.u.textblock.style);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
         snprintf(buf, sizeof(buf), "Text: '%s'",
                  oinfo->extra_props.u.textblock.text);
-        tit = calloc(1, sizeof(*tit));
+        tit = calloc(1, sizeof(Inf_Tree_Item));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
      }
