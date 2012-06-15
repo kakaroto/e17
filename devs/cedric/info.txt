@@ -9,4 +9,4 @@ Managing:	eina, eet, evas, edje, ecore, eio, emotion
 Contributing:	expedite, e, ephoto, eyelight, efreet
 Group:		Core, Libraries, Applications
 Platform:	Ubuntu (Linux), Buildroot (Linux)
-GeoData:	48.834519 2.290574
+GeoData:	37.261707, 127.040264
