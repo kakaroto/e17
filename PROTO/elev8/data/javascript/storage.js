@@ -1,17 +1,17 @@
-print("Setting... firt = 1")
-localStorage.setItem("fist", 1);
-print("Getting... fist = ", localStorage.getItem("fist"));
-print("Lenght: ", localStorage.length);
+print("Setting... first = 1")
+localStorage.setItem("first", 1);
+print("Getting... first = ", localStorage.getItem("first"));
+print("Length: ", localStorage.length);
 
 print("Setting... second = 2")
 localStorage.setItem("second", 2);
 print("Getting... second = ", localStorage.getItem("second"));
-print("Lenght: ", localStorage.length);
+print("Length: ", localStorage.length);
 
 print("Setting... third = 3")
 localStorage.setItem("third", 3);
 print("Getting... third = ", localStorage.getItem("third"));
-print("Lenght: ", localStorage.length);
+print("Length: ", localStorage.length);
 
 print("Remove... second")
 localStorage.removeItem("second");
@@ -22,10 +22,10 @@ for (var i = 0; i < localStorage.length; i++) {
    print(key, ' = ', localStorage.getItem(key));
 }
 
-print("Lenght: ", localStorage.length);
+print("Length: ", localStorage.length);
 
-print("== Cleanig ==");
+print("== Cleaning ==");
 localStorage.clear();
-print("Lenght: ", localStorage.length);
+print("Length: ", localStorage.length);
 
 elm.exit();
