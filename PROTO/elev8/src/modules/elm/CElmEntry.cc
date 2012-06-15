@@ -10,23 +10,63 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, editable);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, line_wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, scrollable);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, single_line);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, on_change);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
                   PROPERTY(editable),
                   PROPERTY(line_wrap),
                   PROPERTY(scrollable),
-                  PROPERTY(single_line));
+                  PROPERTY(single_line),
+                  PROPERTY(on_change));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
 {
 }
 
+CElmEntry::~CElmEntry()
+{
+   on_change_set(Undefined());
+}
+
 void CElmEntry::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Entry"),
                GetTemplate()->GetFunction());
+}
+
+void CElmEntry::on_change_set(Handle<Value> val)
+{
+   if (!cb.on_change.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "changed", &OnChangeWrapper);
+        cb.on_change.Dispose();
+        cb.on_change.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.on_change = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "changed", &OnChangeWrapper, this);
+}
+
+Handle<Value> CElmEntry::on_change_get() const
+{
+   return cb.on_change;
+}
+
+void CElmEntry::OnChangeWrapper(void *data, Evas_Object *, void *)
+{
+   static_cast<CElmEntry *>(data)->OnChange();
+}
+
+void CElmEntry::OnChange()
+{
+   Handle<Function> callback(Function::Cast(*cb.on_change));
+   Handle<Value> args[1] = jsObject;
+   callback->Call(jsObject, 1, args);
 }
 
 Handle<Value> CElmEntry::password_get() const

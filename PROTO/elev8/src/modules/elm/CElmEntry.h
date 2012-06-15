@@ -12,11 +12,21 @@ private:
 
 protected:
    CElmEntry(Local<Object> _jsObject, CElmObject *parent);
+   ~CElmEntry();
 
    static Handle<FunctionTemplate> GetTemplate();
 
+   struct {
+      Persistent<Value> on_change;
+   } cb;
+
 public:
    static void Initialize(Handle<Object> val);
+
+   Handle<Value> on_change_get() const;
+   void on_change_set(Handle<Value> value);
+   static void OnChangeWrapper(void *data, Evas_Object *, void *);
+   void OnChange();
 
    Handle<Value> password_get() const;
    void password_set(Handle<Value> value);

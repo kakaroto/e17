@@ -57,6 +57,9 @@ var w = elm.Window({
                     line_wrap: 3,
                     single_line: 1,
                     editable: true,
+                    on_change: function() {
+                        print("changed");
+                    }
                 }),
                 the_pass: elm.Entry({
                     text: "Password",
