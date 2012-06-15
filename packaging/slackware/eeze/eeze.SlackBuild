@@ -56,6 +56,9 @@ CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
   ./autogen.sh \
     --prefix=/usr \
     --libdir=${LIBDIR} \
+    --with-mount=/bin/mount \
+    --with-umount=/bin/umount \
+    --with-eject=/usr/bin/eject \
     --build=${ARCH}-slackware-linux
 
 # Build
