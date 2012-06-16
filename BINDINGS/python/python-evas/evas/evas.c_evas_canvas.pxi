@@ -178,7 +178,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def output_method_set(self, method):
         """Set canvas render method, can be either a name or id.
 
-        @parm: method
+        @param method:
         """
         cdef int engine_id
 
@@ -247,8 +247,8 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def size_set(self, int w, int h):
         """Set canvas size.
 
-        @parm: w
-        @parm: h
+        @param w:
+        @param h:
         """
         evas_output_size_set(self.obj, w, h)
 
@@ -370,10 +370,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
                       include_hidden_objects=False):
         """Get the topmost object at (x, y).
 
-        @parm: B{x}
-        @parm: B{y}
-        @parm: B{include_pass_events_objects} if to include objects passing events.
-        @parm: B{include_hidden_objects} if to include hidden objects.
+        @param x:
+        @param y:
+        @param include_pass_events_objects: if to include objects passing events.
+        @param include_hidden_objects: if to include hidden objects.
 
         @return: child object.
         @rtype: L{Object}
@@ -400,12 +400,12 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
                              include_hidden_objects=False):
         """Get the topmost object at given geometry.
 
-        @parm: B{x}
-        @parm: B{y}
-        @parm: B{w}
-        @parm: B{h}
-        @parm: B{include_pass_events_objects} if to include objects passing events.
-        @parm: B{include_hidden_objects} if to include hidden objects.
+        @param x:
+        @param y:
+        @param w:
+        @param h:
+        @param include_pass_events_objects: if to include objects passing events.
+        @param include_hidden_objects: if to include hidden objects.
 
         @return: child object.
         @rtype: L{Object}
@@ -422,10 +422,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
                           include_hidden_objects=False):
         """Get all children at (x, y).
 
-        @parm: B{x}
-        @parm: B{y}
-        @parm: B{include_pass_events_objects} if to include objects passing events.
-        @parm: B{include_hidden_objects} if to include hidden objects.
+        @param x:
+        @param y:
+        @param include_pass_events_objects: if to include objects passing events.
+        @param include_hidden_objects: if to include hidden objects.
 
         @return: children objects.
         @rtype: list of L{Object}
@@ -450,12 +450,12 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
                                  include_hidden_objects=False):
         """Get all children at given geometry.
 
-        @parm: B{x}
-        @parm: B{y}
-        @parm: B{w}
-        @parm: B{h}
-        @parm: B{include_pass_events_objects} if to include objects passing events.
-        @parm: B{include_hidden_objects} if to include hidden objects.
+        @param x:
+        @param y:
+        @param w:
+        @param h:
+        @param include_pass_events_objects: if to include objects passing events.
+        @param include_hidden_objects: if to include hidden objects.
 
         @return: children objects.
         @rtype: list of L{Object}
@@ -529,7 +529,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def object_name_find(self, char *name):
         """Find object by name.
-        @parm: name
+        @param name:
         @rtype: L{Object}
         """
         cdef Evas_Object *other
@@ -612,7 +612,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
                                                <Evas_Font_Hinting_Flags>flags))
 
     def font_hinting_set(self, int flags):
-        """@parm: B{flags} one of EVAS_FONT_HINTING_NONE,
+        """@param flags: one of EVAS_FONT_HINTING_NONE,
                 EVAS_FONT_HINTING_AUTO or EVAS_FONT_HINTING_BYTECODE
         """
         evas_font_hinting_set(self.obj, <Evas_Font_Hinting_Flags>flags)
@@ -648,11 +648,11 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def event_callback_add(self, int type, func, *args, **kargs):
         """Add a new callback for the given event.
 
-        @parm: B{type} an integer with event type code, like
+        @param type: an integer with event type code, like
                C{EVAS_CALLBACK_CANVAS_FOCUS_IN},
                C{EVAS_CALLBACK_RENDER_FLUSH_PRE} and other
                C{EVAS_CALLBACK_*} constants.
-        @parm: B{func} function to call back, this function will have one of
+        @param func: function to call back, this function will have one of
                the following signatures:
                 - C{function(object, event, *args, **kargs)}
                 - C{function(object, *args, **kargs)}
@@ -679,8 +679,8 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def event_callback_del(self, int type, func):
         """Remove callback for the given event.
 
-        @parm: B{type} an integer with event type code.
-        @parm: B{func} function used with L{event_callback_add()}.
+        @param type: an integer with event type code.
+        @param func: function used with L{event_callback_add()}.
         @precond: B{type} and B{func} must be used as parameter for
            L{event_callback_add()}.
 

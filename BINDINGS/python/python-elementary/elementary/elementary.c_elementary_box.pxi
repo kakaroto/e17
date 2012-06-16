@@ -543,8 +543,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         Note that you cannot set a custom layout function.
 
-        @param layout: the new layout to set
-        @type layout: Evas_Object_Box_Layout
+        @type: Evas_Object_Box_Layout
 
         """
         def __set__(self, layout):

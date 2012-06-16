@@ -18,10 +18,28 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextblock_Type]:
-    """Textblock(canvas, size=None, pos=None, geometry=None, color=None, name=None,
-                 text_markup=None, style=None) -> Textblock instance
+
+    """A Textblock.
+
+    @param canvas: Evas canvas for this object
+    @type canvas: Canvas
+    @keyword size: Width and height
+    @type size: tuple of ints
+    @keyword pos: X and Y
+    @type pos: tuple of ints
+    @keyword geometry: X, Y, width, height
+    @type geometry: tuple of ints
+    @keyword color: R, G, B, A
+    @type color: tuple of ints
+    @keyword name: Object name
+    @type name: string
+    @keyword text_markup: Markup text
+    @type text_markup: string
+    @keyword style: The style
+    @type style: string
 
     """
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -52,7 +70,7 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
     def style_set(self, const_char_ptr value):
         """set the textblock style information
 
-        @parm: B{value}
+        @param value:
         """
         cdef Evas_Textblock_Style *style = evas_textblock_style_new()
         evas_textblock_style_set(style, value)
@@ -79,7 +97,7 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
     def text_markup_set(self, const_char_ptr value):
         """set the textblock markup information
 
-        @parm: B{value}
+        @param value:
         """
         evas_object_textblock_text_markup_set(self.obj, value)
 
@@ -112,7 +130,7 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         This function is used to obtain the B{x}, B{y}, B{width} and B{height}
         of a the line located at B{index} within this object.
 
-        @parm: B{index} index of desired line
+        @param index: index of desired line
         @rtype: tuple of int
         """
         cdef int cx, cy, cw, ch, r

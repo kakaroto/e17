@@ -25,7 +25,6 @@ __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
     )
 
-
 cdef int PY_REFCOUNT(object o):
     cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
@@ -80,7 +79,7 @@ def shutdown():
 def render_method_lookup(char *name):
     """Lookup render method and return its id (> 0 if found).
 
-    @parm: name
+    @param name:
     @rtype: int
     """
     return evas_render_method_lookup(name)
@@ -257,8 +256,8 @@ def color_parse(desc, is_premul=None):
      - desc is integer: C{is_premul=False}
      - desc is tuple: C{is_premul=True}
 
-    @parm: B{desc} can be either a string, an integer or a tuple.
-    @parm: B{is_premul} specifies if the color is in pre-multiply form. This
+    @param desc: can be either a string, an integer or a tuple.
+    @param is_premul: specifies if the color is in pre-multiply form. This
            is the format expected by evas.
     @return: (r, g, b, a) in pre-multiply form.
     @rtype: tuple of int
@@ -325,10 +324,10 @@ def color_argb_premul(int r, int g, int b, int a):
     @note: Evas works with pre-multiplied colors internally, so every
            color that comes from or goes to it must be in this format.
 
-    @parm: r
-    @parm: g
-    @parm: b
-    @parm: a
+    @param r:
+    @param g:
+    @param b:
+    @param a:
     @return: pre-multiplied (r, g, b, a)
     @rtype: tuple of int
     """
@@ -341,10 +340,10 @@ def color_argb_unpremul(int r, int g, int b, int a):
     @note: Evas works with pre-multiplied colors internally, so every
            color that comes from or goes to it must be in this format.
 
-    @parm: r
-    @parm: g
-    @parm: b
-    @parm: a
+    @param r:
+    @param g:
+    @param b:
+    @param a:
     @return: (r, g, b, a)
     @rtype: tuple of int
     """
@@ -354,9 +353,9 @@ def color_argb_unpremul(int r, int g, int b, int a):
 def color_hsv_to_rgb(float h, float s, float v):
     """Convert color from HSV to RGB format.
 
-    @parm: h
-    @parm: s
-    @parm: v
+    @param h:
+    @param s:
+    @param v:
     @return: (r, g, b)
     @rtype: tuple of int
     """
@@ -367,9 +366,9 @@ def color_hsv_to_rgb(float h, float s, float v):
 def color_rgb_to_hsv(int r, int g, int b):
     """Convert color from RGB to HSV format.
 
-    @parm: r
-    @parm: g
-    @parm: b
+    @param r:
+    @param g:
+    @param b:
     @return: (h, s, v)
     @rtype: tuple of int
     """

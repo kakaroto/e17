@@ -18,10 +18,24 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
-    """Line(canvas, size=None, pos=None, geometry=None, color=None, name=None,
-            start=None, end=None) -> Line instance
+    """A straight line.
 
-    Straight line.
+    @param canvas: Evas canvas for this object
+    @type canvas: Canvas
+    @keyword size: Width and height
+    @type size: tuple of ints
+    @keyword pos: X and Y
+    @type pos: tuple of ints
+    @keyword geometry: X, Y, width, height
+    @type geometry: tuple of ints
+    @keyword color: R, G, B, A
+    @type color: tuple of ints
+    @keyword name: Object name
+    @type name: string
+    @keyword start: Start coordinates
+    @type file: tuple of ints
+    @keyword end: End coordinates
+    @type end: tuple of ints
 
     """
     def __init__(self, Canvas canvas not None, **kargs):
@@ -68,32 +82,44 @@ cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
                                   pos=pos, **kargs)
 
     def xy_set(self, int x1, int y1, int x2, int y2):
-        """@parm: B{x1}
-           @parm: B{y1}
-           @parm: B{x2}
-           @parm: B{y2}
+        """xy_set(x1, y1, x2, y2)
+
+        @param x1:
+        @param y1:
+        @param x2:
+        @param y2:
+
         """
         evas_object_line_xy_set(self.obj, x1, y1, x2, y2)
 
     def xy_get(self):
-        """@return: (x1, y1, x2, y2)
-           @rtype: tuple of int
+        """xy_get()
+
+        @return: (x1, y1, x2, y2)
+        @rtype: tuple of ints
+
         """
         cdef int x1, y1, x2, y2
         evas_object_line_xy_get(self.obj, &x1, &y1, &x2, &y2)
         return (x1, y1, x2, y2)
 
     def start_set(self, x1, y1):
-        """@parm: B{x1}
-           @parm: B{y1}
+        """start_set(x1, y1)
+
+        @param x1:
+        @param y1:
+
         """
         cdef int x2, y2
         evas_object_line_xy_get(self.obj, NULL, NULL, &x2, &y2)
         evas_object_line_xy_set(self.obj, x1, y1, x2, y2)
 
     def start_get(self):
-        """@return: (x1, y1)
-           @rtype: tuple of int
+        """start_get()
+
+        @return: (x1, y1)
+        @rtype: tuple of ints
+
         """
         cdef int x1, y1
         evas_object_line_xy_get(self.obj, &x1, &y1, NULL, NULL)
@@ -112,16 +138,22 @@ cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
             return (x1, y1)
 
     def end_set(self, x2, y2):
-        """@parm: B{x2}
-           @parm: B{y2}
+        """end_set(x2, y2)
+
+        @param x2:
+        @param y2:
+
         """
         cdef int x1, y1
         evas_object_line_xy_get(self.obj, &x1, &y1, NULL, NULL)
         evas_object_line_xy_set(self.obj, x1, y1, x2, y2)
 
     def end_get(self):
-        """@return: (x2, y2)
-           @rtype: tuple of int
+        """end_get()
+
+        @return: (x2, y2)
+        @rtype: tuple of ints
+
         """
         cdef int x2, y2
         evas_object_line_xy_get(self.obj, NULL, NULL, &x2, &y2)

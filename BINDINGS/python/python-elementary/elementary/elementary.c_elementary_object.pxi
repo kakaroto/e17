@@ -92,32 +92,17 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
     All widgets are based on this class.
 
     @group General: part_text_set, text_set, part_text_get, text_get, text,
-        part_content_set, content_set, part_content_get, content_get,
-        part_content_unset, content_unset, access_info_set, name_find,
-        signal_emit, event_callback_add, event_callback_del,
-        domain_translatable_text_part_set, domain_translatable_text_set,
-        translatable_text_set, translatable_text_part_get,
-        translatable_text_get
-    @group Styles: style_set, style_get, disabled_set, disabled_get, disabled
+        part_content_*, content_*, access_info_set, name_find, signal_emit,
+        elm_event_callback_*, domain_translatable_*, translatable_*
+    @group Styles: style_*, disabled_*, disabled
     @group Widget Tree Navigation: widget_check, parent_widget_get,
         top_widget_get, widget_type_get
-    @group Cursors: cursor_set, cursor_get, cursor_unset, cursor_style_set,
-        cursor_style_get, cursor_theme_search_enabled_set,
-        cursor_theme_search_enabled_get
-    @group Focus: focus_get, focus_set, focus_allow_set, focus_allow_get,
-        focus_custom_chain_set, focus_custom_chain_unset,
-        focus_custom_chain_get, focus_custom_chain_append,
-        focus_custom_chain_prepend, tree_focus_allow_set, tree_focus_allow_get
-    @group Mirroring: mirrored_get, mirrored_set, mirrored_automatic_get,
-        mirrored_automatic_set
-    @group Widget Scaling: scale_set, scale_get
-    @group Scrollhints: scroll_hold_push, scroll_hold_pop, scroll_freeze_push,
-        scroll_freeze_pop, scroll_lock_x_set, scroll_lock_y_set,
-        scroll_lock_x_get, scroll_lock_y_get
-    @group Tooltips: tooltip_show, tooltip_hide, tooltip_text_set,
-        tooltip_domain_translatable_text_set, tooltip_translatable_text_set,
-        tooltip_content_cb_set, tooltip_unset, tooltip_style_set,
-        tooltip_style_get, tooltip_window_mode_set, tooltip_window_mode_get
+    @group Cursors: cursor_*
+    @group Focus: focus_*
+    @group Mirroring: mirrored_*
+    @group Widget Scaling: scale_*
+    @group Scrollhints: scroll_*
+    @group Tooltips: tooltip_*
 
     @group Callbacks: callback_*
 

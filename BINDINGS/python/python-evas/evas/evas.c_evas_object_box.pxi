@@ -22,6 +22,19 @@
 cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
     """Box(canvas, size=None, pos=None, geometry=None, color=None, name=None) -> Box instance
 
+    @param canvas: The evas canvas for this object
+    @type canvas: L{Canvas}
+    @keyword size: Width and height
+    @type size: tuple of ints
+    @keyword pos: X and Y
+    @type pos: tuple of ints
+    @keyword geometry: X, Y, width, height
+    @type geometry: tuple of ints
+    @keyword color: R, G, B, A
+    @type color: tuple of ints
+    @keyword name: Object name
+    @type name: string
+
     """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)

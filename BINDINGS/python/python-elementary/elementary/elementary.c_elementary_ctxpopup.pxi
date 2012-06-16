@@ -236,8 +236,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         @warning: Only once the ctxpopup is shown can the direction be
             determined
 
-        @return: current direction of a ctxpopup
-        @rtype: Elm_Ctxpopup_Direction
+        @type: Elm_Ctxpopup_Direction
 
         """
         def __get__(self):

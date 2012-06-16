@@ -19,10 +19,26 @@
 
 cdef public class Polygon(Object) [object PyEvasPolygon,
                                    type PyEvasPolygon_Type]:
-    """Polygon(canvas, size=None, pos=None, geometry=None, color=None, name=None,
-               points=None) -> Polygon instance
+
+    """A polygon.
+
+    @param canvas: Evas canvas for this object
+    @type canvas: Canvas
+    @keyword size: Width and height
+    @type size: tuple of ints
+    @keyword pos: X and Y
+    @type pos: tuple of ints
+    @keyword geometry: X, Y, width, height
+    @type geometry: tuple of ints
+    @keyword color: R, G, B, A
+    @type color: tuple of ints
+    @keyword name: Object name
+    @type name: string
+    @keyword points: Points of the polygon
+    @type points: tuple of x, y int pairs
 
     """
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -37,8 +53,8 @@ cdef public class Polygon(Object) [object PyEvasPolygon,
 
     def point_add(self, int x, int y):
         """
-        @parm: B{x}
-        @parm: B{y}
+        @param x:
+        @param y:
         """
         evas_object_polygon_point_add(self.obj, x, y)
 

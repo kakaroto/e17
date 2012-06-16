@@ -18,13 +18,10 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
-    """Text(canvas, size=None, pos=None, geometry=None, color=None, name=None,
-            text=None, font=None, font_source=None, style=None,
-            shadow_color=None, glow_color=None, glow2_color=None,
-            outline_color=None) -> Text instance
 
-    @group Font settings: font_source_set, font_source_get, font_source,
-       font_set, font_get, font
+    """Text.
+
+    @group Font settings: font*
     @group Style settings: style_set, style_get, style, shadow_color_set,
        shadow_color_get, shadow_color, glow_color_set, glow_color_get,
        glow_color, glow2_color_set, glow2_color_get, glow2_color,
@@ -35,7 +32,37 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
        horiz_advance, vert_advance_get, vert_advance, inset_get, inset,
        char_pos_get, char_coords_get
 
+    @param canvas: Evas canvas for this object
+    @type canvas: Canvas
+    @keyword size: Width and height
+    @type size: tuple of ints
+    @keyword pos: X and Y
+    @type pos: tuple of ints
+    @keyword geometry: X, Y, width, height
+    @type geometry: tuple of ints
+    @keyword color: R, G, B, A
+    @type color: tuple of ints
+    @keyword name: Object name
+    @type name: string
+    @keyword text: The text
+    @type text: string
+    @keyword font: Font name
+    @type font: string
+    @keyword font_source: Where to find the font
+    @type font_source: string
+    @keyword style: Style
+    @type style: string
+    @keyword shadow_color: The shadow color
+    @type shadow_color: tuple of ints
+    @keyword glow_color: The primary glow color
+    @type glow_color: tuple of ints
+    @keyword glow2_color: The secondary glow color
+    @type glow2_color: tuple of ints
+    @keyword outline_color: The outline color
+    @type outline_color: tuple of ints
+
     """
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -66,14 +93,14 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.outline_color_set(*color_parse(outline_color))
 
     def font_source_get(self):
-        "@rtype: str"
+        """@rtype: str"""
         cdef const_char_ptr s
         s = evas_object_text_font_source_get(self.obj)
         if s != NULL:
             return s
 
     def font_source_set(self, const_char_ptr value):
-        "Set where to find the font (ie: EET/Edje)."
+        """Set where to find the font (ie: EET/Edje)."""
         evas_object_text_font_source_set(self.obj, value)
 
     property font_source:
@@ -84,7 +111,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.font_source_set(value)
 
     def font_get(self):
-        "@rtype: (str, int)"
+        """@rtype: (str, int)"""
         cdef const_char_ptr f
         cdef int size
         evas_object_text_font_get(self.obj, &f, &size)
@@ -97,8 +124,8 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     def font_set(self, const_char_ptr font, int size=10):
         """Set font to use.
 
-        @parm: B{font}.
-        @parm: B{size}.
+        @param font:.
+        @param size:.
         """
         evas_object_text_font_set(self.obj, font, size)
 
@@ -112,14 +139,14 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.font_set(*spec)
 
     def text_get(self):
-        "@rtype: str"
+        """@rtype: str"""
         cdef const_char_ptr s
         s = evas_object_text_text_get(self.obj)
         if s != NULL:
             return s
 
     def text_set(self, const_char_ptr value):
-        "Change text to be used"
+        """Change text to be used"""
         evas_object_text_text_set(self.obj, value)
 
     property text:
@@ -130,7 +157,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.text_set(value)
 
     def ascent_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_ascent_get(self.obj)
 
     property ascent:
@@ -138,7 +165,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.ascent_get()
 
     def descent_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_descent_get(self.obj)
 
     property descent:
@@ -146,7 +173,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.descent_get()
 
     def max_ascent_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_max_ascent_get(self.obj)
 
     property max_ascent:
@@ -154,7 +181,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.max_ascent_get()
 
     def max_descent_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_max_descent_get(self.obj)
 
     property max_descent:
@@ -162,7 +189,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.max_descent_get()
 
     def horiz_advance_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_horiz_advance_get(self.obj)
 
     property horiz_advance:
@@ -170,7 +197,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.horiz_advance_get()
 
     def vert_advance_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_vert_advance_get(self.obj)
 
     property vert_advance:
@@ -178,7 +205,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return self.vert_advance_get()
 
     def inset_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_inset_get(self.obj)
 
     property inset:
@@ -191,7 +218,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
         This function is used to obtain the B{x}, B{y}, B{width} and B{height}
         of a the character located at B{char_index} within this object.
 
-        @parm: B{char_index} index of desired character.
+        @param char_index: index of desired character.
         @rtype: tuple of int
         """
         cdef int x, y, w, h, r
@@ -209,8 +236,8 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
         Like L{char_pos_get()}, but instead of providing the character
         index one can give its position.
 
-        @parm: B{x}
-        @parm: B{y}
+        @param x:
+        @param y:
         @rtype: tuple of int
         """
         cdef int cx, cy, cw, ch, c
@@ -222,13 +249,13 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             return ("%c" % c, cx, cy, cw, ch)
 
     def style_get(self):
-        "@rtype: int"
+        """@rtype: int"""
         return evas_object_text_style_get(self.obj)
 
     def style_set(self, int value):
         """Set text drawing style.
 
-        @parm: B{value} can be one of:
+        @param value: can be one of:
          - EVAS_TEXT_STYLE_PLAIN
          - EVAS_TEXT_STYLE_SHADOW
          - EVAS_TEXT_STYLE_OUTLINE
@@ -250,7 +277,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.style_set(value)
 
     def shadow_color_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int r, g, b, a
         evas_object_text_shadow_color_get(self.obj, &r, &g, &b, &a)
         return (r, g, b, a)
@@ -258,10 +285,10 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     def shadow_color_set(self, int r, int g, int b, int a):
         """Set shadow color.
 
-        @parm: B{r}
-        @parm: B{g}
-        @parm: B{b}
-        @parm: B{a}
+        @param r:
+        @param g:
+        @param b:
+        @param a:
         """
         evas_object_text_shadow_color_set(self.obj, r, g, b, a)
 
@@ -273,7 +300,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.shadow_color_set(*spec)
 
     def glow_color_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int r, g, b, a
         evas_object_text_glow_color_get(self.obj, &r, &g, &b, &a)
         return (r, g, b, a)
@@ -281,10 +308,10 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     def glow_color_set(self, int r, int g, int b, int a):
         """Set glow color.
 
-        @parm: B{r}
-        @parm: B{g}
-        @parm: B{b}
-        @parm: B{a}
+        @param r:
+        @param g:
+        @param b:
+        @param a:
         """
         evas_object_text_glow_color_set(self.obj, r, g, b, a)
 
@@ -296,7 +323,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.glow_color_set(*spec)
 
     def glow2_color_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int r, g, b, a
         evas_object_text_glow2_color_get(self.obj, &r, &g, &b, &a)
         return (r, g, b, a)
@@ -304,10 +331,10 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     def glow2_color_set(self, int r, int g, int b, int a):
         """Set second level glow color.
 
-        @parm: B{r}
-        @parm: B{g}
-        @parm: B{b}
-        @parm: B{a}
+        @param r:
+        @param g:
+        @param b:
+        @param a:
         """
         evas_object_text_glow2_color_set(self.obj, r, g, b, a)
 
@@ -319,7 +346,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.glow2_color_set(*spec)
 
     def outline_color_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int r, g, b, a
         evas_object_text_outline_color_get(self.obj, &r, &g, &b, &a)
         return (r, g, b, a)
@@ -327,10 +354,10 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     def outline_color_set(self, int r, int g, int b, int a):
         """Set outline color.
 
-        @parm: B{r}
-        @parm: B{g}
-        @parm: B{b}
-        @parm: B{a}
+        @param r:
+        @param g:
+        @param b:
+        @param a:
         """
         evas_object_text_outline_color_set(self.obj, r, g, b, a)
 
@@ -342,7 +369,7 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
             self.outline_color_set(*spec)
 
     def style_pad_get(self):
-        "@rtype: tuple of int"
+        """@rtype: tuple of int"""
         cdef int l, r, t, b
         evas_object_text_style_pad_get(self.obj, &l, &r, &t, &b)
         return (l, r, t, b)

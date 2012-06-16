@@ -293,7 +293,7 @@ cdef object _smart_class_get_impl_method_cls(object cls, object parent_cls,
 cdef public class SmartObject(Object) [object PyEvasSmartObject,
                                        type PyEvasSmartObject_Type]:
     """SmartObject(canvas, size=None, pos=None, geometry=None, color=None,
-                   name=None) -> SmartObject instance
+    name=None) -> SmartObject instance
 
     Smart Evas Objects.
 
@@ -464,8 +464,8 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
     def callback_add(self, char *event, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
 
-        @parm: B{event} event name
-        @parm: B{func} what to callback. Should have the signature:
+        @param event: event name
+        @param func: what to callback. Should have the signature:
            C{function(object, event_info, *args, **kargs)}
 
         @raise TypeError: if B{func} is not callable.
@@ -487,8 +487,8 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 
         Removes a callback that was added by L{callback_add()}.
 
-        @parm: B{event} event name
-        @parm: B{func} what to callback, should have be previously registered.
+        @param event: event name
+        @param func: what to callback, should have be previously registered.
         @precond: B{event} and B{func} must be used as parameter for
            L{callback_add()}.
 
@@ -517,8 +517,8 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
     def callback_call(self, char *event, event_info=None):
         """Call any smart callbacks for event.
 
-        @parm: B{event} the event name
-        @parm: B{event_info} an event specific info to pass to the callback.
+        @param event: the event name
+        @param event_info: an event specific info to pass to the callback.
 
         This should be called internally in the smart object when some
         specific event has occurred. The documentation for the smart object
@@ -694,7 +694,7 @@ _install_metaclass(&PyEvasSmartObject_Type, EvasSmartObjectMeta)
 cdef public class ClippedSmartObject(SmartObject) \
          [object PyEvasClippedSmartObject, type PyEvasClippedSmartObject_Type]:
     """ClippedSmartObject(canvas, size=None, pos=None, geometry=None,
-                          color=None, name=None) -> ClippedSmartObject instance
+    color=None, name=None) -> ClippedSmartObject instance
 
     SmartObject subclass that automatically handles an internal clipper.
 

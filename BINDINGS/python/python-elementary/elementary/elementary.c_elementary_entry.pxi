@@ -488,8 +488,7 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         or modified in any way. If the C{entry} object is deleted or its
         contents are changed, the returned pointer should be considered invalid.
 
-        @return: The selected text within the entry or None on failure
-        @rtype: string
+        @type: string
 
         """
         def __get__(self):
@@ -551,8 +550,7 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         change the internal textblock object). This applies to all cursors
         returned from textblock calls, and all the other derivative values.
 
-        @return: The textblock object.
-        @rtype: Evas_Object
+        @type: Evas_Object
 
         """
         def __get__(self):

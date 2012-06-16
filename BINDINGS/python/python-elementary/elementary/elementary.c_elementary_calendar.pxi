@@ -115,10 +115,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
 
         @see: L{min_max_year_get()}
 
-        @param min: The minimum year, greater than 1901
-        @type min: int
-        @param max: The maximum year
-        @type max: int
+        @type: tuple of ints
 
         """
         def __get__(self):
