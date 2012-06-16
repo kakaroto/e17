@@ -110,6 +110,7 @@ cdef _object_del_callback_from_list(Object obj, int type, func):
 
 
 cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
+
     """Basic Graphical Object (or actor).
 
     Objects are managed by L{Canvas} in a non-immediate way, that is,
@@ -177,6 +178,7 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
     @type evas: L{Canvas}
 
     """
+
     def __cinit__(self, *a, **ka):
         self.obj = NULL
         self.evas = None
@@ -2003,11 +2005,18 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_del(EVAS_CALLBACK_CHANGED_SIZE_HINTS, func)
 
     def pass_events_get(self):
-        """@rtype: bool"""
+        """pass_events_get()
+
+        @return: Whether event processing is enabled for this object.
+        @rtype: bool
+
+        """
         return bool(evas_object_pass_events_get(self.obj))
 
-    def pass_events_set(self, int value):
-        """Enable or disable event processing by this object.
+    def pass_events_set(self, value):
+        """pass_events_set(value)
+
+        Enable or disable event processing by this object.
 
         If True, this will cause events on it to be ignored. They will be
         triggered on the next lower object (that is not set to pass events)
@@ -2017,6 +2026,10 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
         unless explicitly required, like L{Canvas.top_at_xy_get()},
         L{Canvas.top_in_rectangle_get()}, L{Canvas.objects_at_xy_get()},
         L{Canvas.objects_in_rectangle_get()}.
+
+        @param value: Whether event processing is enabled for this object.
+        @type value: bool
+
         """
         evas_object_pass_events_set(self.obj, value)
 
@@ -2033,15 +2046,27 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
             self.pass_events_set(value)
 
     def repeat_events_get(self):
-        """@rtype: bool"""
+        """repeat_events_get()
+
+        @return: Whether events continue propagation after being processed.
+        @rtype: bool
+
+        """
         return bool(evas_object_repeat_events_get(self.obj))
 
-    def repeat_events_set(self, int value):
-        """Enable or disable events to continue propagation after processed.
+    def repeat_events_set(self, value):
+        """repeat_events_set(value)
+
+        Enable or disable events to continue propagation after being processed.
 
         If True, this will cause events on it to be processed but then
         they will be triggered on the next lower object (that is not set to
         pass events).
+
+        @param value: Whether events continue propagation after being
+            processed.
+        @type value: bool
+
         """
         evas_object_repeat_events_set(self.obj, value)
 
@@ -2058,14 +2083,25 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
             self.repeat_events_set(value)
 
     def propagate_events_get(self):
-        """@rtype: bool"""
+        """propagate_events_get()
+
+        @return: Propagation of events to the objects parent.
+        @rtype: bool
+
+        """
         return bool(evas_object_propagate_events_get(self.obj))
 
-    def propagate_events_set(self, int value):
-        """Enable or disable propagation of events to parent.
+    def propagate_events_set(self, value):
+        """propagate_events_set(value)
+
+        Enable or disable propagation of events to the objects parent.
 
         If True, this will cause events on this object to propagate to its
         L{SmartObject} parent, if it's a member of one.
+
+        @param value: Propagation of events to the objects parent.
+        @type value: bool
+
         """
         evas_object_propagate_events_set(self.obj, value)
 
@@ -2082,11 +2118,18 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
             self.propagate_events_set(value)
 
     def pointer_mode_get(self):
-        """@rtype: int"""
+        """pointer_mode_get()
+
+        @return: How to deal with pointer events.
+        @rtype: int
+
+        """
         return <int>evas_object_pointer_mode_get(self.obj)
 
     def pointer_mode_set(self, int value):
-        """How to deal with pointer events.
+        """pointer_mode_set(value)
+
+        How to deal with pointer events.
 
         This function has direct effect on event callbacks related to mouse.
 
@@ -2101,6 +2144,8 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
 
         @param value: EVAS_OBJECT_POINTER_MODE_AUTOGRAB or
            EVAS_OBJECT_POINTER_MODE_NOGRAB
+        @type value: Evas_Object_Pointer_Mode
+
         """
         evas_object_pointer_mode_set(self.obj, <Evas_Object_Pointer_Mode>value)
 
@@ -2117,9 +2162,11 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
             self.pointer_mode_set(value)
 
     def parent_get(self):
-        """Get object's parent, in the case it was added to some SmartObject.
+        """parent_get()
 
+        @return: Object's parent, in the case it was added to some SmartObject.
         @rtype: L{Object}
+
         """
         cdef Evas_Object *obj
         obj = evas_object_smart_parent_get(self.obj)

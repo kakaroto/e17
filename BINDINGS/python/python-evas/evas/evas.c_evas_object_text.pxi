@@ -23,14 +23,14 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
 
     @group Font settings: font*
     @group Style settings: style_set, style_get, style, shadow_color_set,
-       shadow_color_get, shadow_color, glow_color_set, glow_color_get,
-       glow_color, glow2_color_set, glow2_color_get, glow2_color,
-       outline_color_set, outline_color_get, outline_color, style_pad_get,
-       style_pad
+        shadow_color_get, shadow_color, glow_color_set, glow_color_get,
+        glow_color, glow2_color_set, glow2_color_get, glow2_color,
+        outline_color_set, outline_color_get, outline_color, style_pad_get,
+        style_pad
     @group Metrics:  ascent_get, ascent, descent_get, descent, max_ascent_get,
-       max_ascent, max_descent_get, max_descent, horiz_advance_get,
-       horiz_advance, vert_advance_get, vert_advance, inset_get, inset,
-       char_pos_get, char_coords_get
+        max_ascent, max_descent_get, max_descent, horiz_advance_get,
+        horiz_advance, vert_advance_get, vert_advance, inset_get, inset,
+        char_pos_get, char_coords_get
 
     @param canvas: Evas canvas for this object
     @type canvas: Canvas

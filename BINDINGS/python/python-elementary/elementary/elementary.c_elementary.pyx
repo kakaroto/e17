@@ -16,6 +16,164 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""
+What is Elementary?
+===================
+
+This is a VERY SIMPLE toolkit. It is not meant for writing extensive desktop
+applications (yet). Small simple ones with simple needs.
+
+It is meant to make the programmers work almost brainless but give them lots
+of flexibility.
+
+To write an Elementary app, you can get started with the following::
+
+    from elementary import *
+
+    # create window(s) here and do any application init
+    run() # run main loop
+    shutdown() # after mainloop finishes running, shutdown
+
+
+There is a more advanced way of making use of the quicklaunch infrastructure
+in Elementary (which will not be covered here due to its more advanced
+nature).
+
+Now let's actually create an interactive "Hello World" gui that you can
+click the ok button to exit. It's more code because this now does something
+much more significant, but it's still very simple::
+
+    from elementary import *
+
+    def on_done(obj):
+        # quit the mainloop
+        exit()
+
+    class Spam:
+        def __init__(self):
+            # new window - do the usual and give it a name (hello) and title (Hello)
+            win = StandardWindow("hello", "Hello")
+            # when the user clicks "close" on a window there is a request to delete
+            win.callback_delete_request_add(on_done)
+
+            # add a box object - default is vertical. a box holds children in a row,
+            # either horizontally or vertically. nothing more.
+            box = Box(win)
+            # make the box horizontal
+            box.horizontal = True
+            # add object as a resize object for the window (controls window minimum
+            # size as well as gets resized if window is resized)
+            win.resize_object_add(box)
+            box.show()
+
+            # add a label widget, set the text and put it in the pad frame
+            lab = Label(win)
+            # set default text of the label
+            lab.text_set("Hello out there world!")
+            # pack the label at the end of the box
+            box.pack_end(lab)
+            lab.show()
+
+            # add an ok button
+            btn = Button(win)
+            # set default text of button to "OK"
+            btn.text_set("OK")
+            # pack the button at the end of the box
+            box.pack_end(btn)
+            btn.show()
+            # call on_done when button is clicked
+            btn.callback_clicked_add(on_done)
+
+            # now we are done, show the window
+            win.show()
+
+    if __name__ == "__main__":
+        food = Spam()
+        # run the mainloop and process events and callbacks
+        run()
+        shutdown()
+
+
+License
+=======
+
+Bindings are LGPL v3, Elementary itself is LGPL v2 (see COPYING in the base
+of Elementary's source). This applies to all files in the source tree.
+
+Acknowledgements
+================
+
+There is a lot that goes into making a widget set, and they don't happen out
+of nothing. It's like trying to make everyone everywhere happy, regardless
+of age, gender, race or nationality - and that is really tough. So thanks to
+people and organizations behind this, as listed here:
+
+@author: U{Carsten Haitzler<mailto:raster@rasterman.com>}
+@author: U{Gustavo Sverzut Barbieri<mailto:barbieri@profusion.mobi>}
+@author: U{Cedric Bail<mailto:cedric.bail@free.fr>}
+@author: U{Vincent Torri<mailto:vtorri@univ-evry.fr>}
+@author: U{Daniel Kolesa<mailto:quaker66@gmail.com>}
+@author: U{Jaime Thomas<mailto:avi.thomas@gmail.com>}
+@author: U{Swisscom<http://www.swisscom.ch/>}
+@author: U{Christopher Michael<mailto:devilhorns@comcast.net>}
+@author: U{Marco Trevisan (Treviño)<mailto:mail@3v1n0.net>}
+@author: U{Michael Bouchaud<mailto:michael.bouchaud@gmail.com>}
+@author: U{Jonathan Atton (Watchwolf)<mailto:jonathan.atton@gmail.com>}
+@author: U{Brian Wang<mailto:brian.wang.0721@gmail.com>}
+@author: U{Mike Blumenkrantz (discomfitor/zmike)<mailto:michael.blumenkrantz@gmail.com>}
+@author: Samsung Electronics tbd
+@author: Samsung SAIT tbd
+@author: U{Brett Nash<mailto:nash@nash.id.au>}
+@author: U{Bruno Dilly<mailto:bdilly@profusion.mobi>}
+@author: U{Rafael Fonseca<mailto:rfonseca@profusion.mobi>}
+@author: U{Chuneon Park<mailto:hermet@hermet.pe.kr>}
+@author: U{Woohyun Jung<mailto:wh0705.jung@samsung.com>}
+@author: U{Jaehwan Kim<mailto:jae.hwan.kim@samsung.com>}
+@author: U{Wonguk Jeong<mailto:wonguk.jeong@samsung.com>}
+@author: U{Leandro A. F. Pereira<mailto:leandro@profusion.mobi>}
+@author: U{Helen Fornazier<mailto:helen.fornazier@profusion.mobi>}
+@author: U{Gustavo Lima Chaves<mailto:glima@profusion.mobi>}
+@author: U{Fabiano Fidêncio<mailto:fidencio@profusion.mobi>}
+@author: U{Tiago Falcão<mailto:tiago@profusion.mobi>}
+@author: U{Otavio Pontes<mailto:otavio@profusion.mobi>}
+@author: U{Viktor Kojouharov<mailto:vkojouharov@gmail.com>}
+@author: U{Daniel Juyung Seo (SeoZ)<mailto:juyung.seo@samsung.com>} U{alt<mailto:seojuyung2@gmail.com>}
+@author: U{Sangho Park <sangho.g.park@samsung.com><mailto:gouache95@gmail.com>}
+@author: U{Rajeev Ranjan (Rajeev) <rajeev.r@samsung.com><mailto:rajeev.jnnce@gmail.com>}
+@author: U{Seunggyun Kim <sgyun.kim@samsung.com><mailto:tmdrbs@gmail.com>}
+@author: U{Sohyun Kim <anna1014.kim@samsung.com><mailto:sohyun.anna@gmail.com>}
+@author: U{Jihoon Kim<mailto:jihoon48.kim@samsung.com>}
+@author: U{Jeonghyun Yun (arosis)<mailto:jh0506.yun@samsung.com>}
+@author: U{Tom Hacohen<mailto:tom@stosb.com>}
+@author: U{Aharon Hillel<mailto:a.hillel@samsung.com>}
+@author: U{Jonathan Atton (Watchwolf)<mailto:jonathan.atton@gmail.com>}
+@author: U{Shinwoo Kim<mailto:kimcinoo@gmail.com>}
+@author: U{Govindaraju SM <govi.sm@samsung.com><mailto:govism@gmail.com>}
+@author: U{Prince Kumar Dubey <prince.dubey@samsung.com><mailto:prince.dubey@gmail.com>}
+@author: U{Sung W. Park<mailto:sungwoo@gmail.com>}
+@author: U{Thierry el Borgi<mailto:thierry@substantiel.fr>}
+@author: U{Shilpa Singh <shilpa.singh@samsung.com><mailto:shilpasingh.o@gmail.com>}
+@author: U{Chanwook Jung<mailto:joey.jung@samsung.com>}
+@author: U{Hyoyoung Chang<mailto:hyoyoung.chang@samsung.com>}
+@author: U{Guillaume "Kuri" Friloux<mailto:guillaume.friloux@asp64.com>}
+@author: U{Kim Yunhan<mailto:spbear@gmail.com>}
+@author: U{Bluezery<mailto:ohpowel@gmail.com>}
+@author: U{Nicolas Aguirre<mailto:aguirre.nicolas@gmail.com>}
+@author: U{Sanjeev BA<mailto:iamsanjeev@gmail.com>}
+@author: U{Hyunsil Park<mailto:hyunsil.park@samsung.com>}
+@author: U{Goun Lee<mailto:gouni.lee@samsung.com>}
+@author: U{Mikael Sans<mailto:sans.mikael@gmail.com>}
+@author: U{Doyoun Kang<mailto:doyoun.kang@samsung.com>}
+@author: U{M.V.K. Sumanth <sumanth.m@samsung.com><mailto:mvksumanth@gmail.com>}
+@author: U{Jérôme Pinot<mailto:ngc891@gmail.com>}
+@author: U{Davide Andreoli (davemds)<mailto:dave@gurumeditation.it>}
+@author: U{Michal Pakula vel Rutka<mailto:m.pakula@samsung.com>}
+
+@contact: U{Enlightenment developer mailing list<mailto:enlightenment-devel@lists.sourceforge.net>}
+
+"""
+
+
 import sys
 import evas.c_evas
 cimport evas.c_evas as c_evas
@@ -109,19 +267,20 @@ def exit():
 def policy_set(policy, value):
     """Set new policy value.
 
-   This will emit the ecore event ELM_EVENT_POLICY_CHANGED in the main
-   loop giving the event information Elm_Event_Policy_Changed with
-   policy identifier, new and old values.
+    This will emit the ecore event ELM_EVENT_POLICY_CHANGED in the main
+    loop giving the event information Elm_Event_Policy_Changed with
+    policy identifier, new and old values.
 
-   @param policy: policy identifier as in Elm_Policy.
-   @param value: policy value, depends on identifiers, usually there is
-          an enumeration with the same prefix as the policy name, for
-          example: ELM_POLICY_QUIT and Elm_Policy_Quit
-          (ELM_POLICY_QUIT_NONE, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED).
+    @param policy: policy identifier as in Elm_Policy.
+    @param value: policy value, depends on identifiers, usually there is
+        an enumeration with the same prefix as the policy name, for
+        example: ELM_POLICY_QUIT and Elm_Policy_Quit
+        (ELM_POLICY_QUIT_NONE, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED).
 
-   @return: True on success or False on error (right
-           now just invalid policy identifier, but in future policy
-           value might be enforced).
+    @return: True on success or False on error (right
+        now just invalid policy identifier, but in future policy
+        value might be enforced).
+
     """
     return elm_policy_set(policy, value)
 
@@ -131,6 +290,7 @@ def policy_get(policy):
     @param policy: policy identifier as in Elm_Policy.
 
     @return: policy value. Will be 0 if policy identifier is invalid.
+
     """
     return elm_policy_get(policy)
 

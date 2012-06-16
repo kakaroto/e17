@@ -20,7 +20,14 @@
 
 
 cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
-    """Box(canvas, size=None, pos=None, geometry=None, color=None, name=None) -> Box instance
+
+    """A box is a convenience smart object that packs children inside it in
+    B{sequence}, using a layouting function specified by the user.
+
+    There are a couple of pre-made layouting functions B{built-in in Evas},
+    all of them using children size hints to define their size and alignment
+    inside their cell space.
+
 
     @param canvas: The evas canvas for this object
     @type canvas: L{Canvas}
@@ -36,6 +43,7 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
     @type name: string
 
     """
+
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
