@@ -106,6 +106,11 @@ pushd THEMES/23oz
 	./build.sh -i
 popd
 
+echo ""
+echo "=========== TAGS ============"
 rm tags -f
 ctags -h ".h.x.cpp.c" --exclude="*.js" --exclude="*.pxi" -R
+
+echo ""
+echo "=========== ENLIGHTENMENT RESTART ============"
 enlightenment_remote -restart
