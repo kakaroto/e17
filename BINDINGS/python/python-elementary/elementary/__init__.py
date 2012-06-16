@@ -28,7 +28,7 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, Butto
     GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem, \
     Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
     Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
-    Transit, \
+    Transit, Map, MapOverlay, MapOverlayClass, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
@@ -214,6 +214,36 @@ ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND = 7
 ELM_LIST_COMPRESS = 0
 ELM_LIST_SCROLL = 1
 ELM_LIST_LIMIT = 2
+
+ELM_MAP_OVERLAY_TYPE_NONE = 0
+ELM_MAP_OVERLAY_TYPE_DEFAULT = 1
+ELM_MAP_OVERLAY_TYPE_CLASS = 2
+ELM_MAP_OVERLAY_TYPE_GROUP = 3
+ELM_MAP_OVERLAY_TYPE_BUBBLE = 4
+ELM_MAP_OVERLAY_TYPE_ROUTE = 5
+ELM_MAP_OVERLAY_TYPE_LINE = 6
+ELM_MAP_OVERLAY_TYPE_POLYGON = 7
+ELM_MAP_OVERLAY_TYPE_CIRCLE = 8
+ELM_MAP_OVERLAY_TYPE_SCALE = 9
+
+ELM_MAP_ROUTE_METHOD_FASTEST = 0
+ELM_MAP_ROUTE_METHOD_SHORTEST = 1
+ELM_MAP_ROUTE_METHOD_LAST = 2
+
+ELM_MAP_ROUTE_TYPE_MOTOCAR = 0
+ELM_MAP_ROUTE_TYPE_BICYCLE = 1
+ELM_MAP_ROUTE_TYPE_FOOT = 2
+ELM_MAP_ROUTE_TYPE_LAST = 3
+
+ELM_MAP_SOURCE_TYPE_TILE = 0
+ELM_MAP_SOURCE_TYPE_ROUTE = 1
+ELM_MAP_SOURCE_TYPE_NAME = 2
+ELM_MAP_SOURCE_TYPE_LAST = 3
+
+ELM_MAP_ZOOM_MODE_MANUAL = 0
+ELM_MAP_ZOOM_MODE_AUTO_FIT = 1
+ELM_MAP_ZOOM_MODE_AUTO_FILL = 2
+ELM_MAP_ZOOM_MODE_LAST = 3
 
 ELM_NOTIFY_ORIENT_TOP = 0
 ELM_NOTIFY_ORIENT_CENTER = 1

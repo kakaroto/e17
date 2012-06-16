@@ -49,6 +49,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_layout.pxi \
 	elementary/elementary.c_elementary_layout_class.pxi \
 	elementary/elementary.c_elementary_list.pxi \
+	elementary/elementary.c_elementary_map.pxi \
 	elementary/elementary.c_elementary_menu.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
@@ -97,6 +98,9 @@ examples_files = \
 	tests/test_label.py \
 	tests/test_layout.py \
 	tests/test_list.py \
+	tests/test_map.py \
+	tests/test_map2.py \
+	tests/test_map3.py \
 	tests/test_menu.py \
 	tests/test_naviframe.py \
 	tests/test_notify.py \
