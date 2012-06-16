@@ -94,19 +94,17 @@ much more significant, but it's still very simple::
         shutdown()
 
 
-License
-=======
-
-Bindings are LGPL v3, Elementary itself is LGPL v2 (see COPYING in the base
-of Elementary's source). This applies to all files in the source tree.
-
 Acknowledgements
 ================
 
 There is a lot that goes into making a widget set, and they don't happen out
 of nothing. It's like trying to make everyone everywhere happy, regardless
 of age, gender, race or nationality - and that is really tough. So thanks to
-people and organizations behind this, as listed here:
+people and organizations behind this, as listed below:
+
+@copyright: Elementary is Copyright (C) 2008-2012 Carsten Haitzler and various contributors (see AUTHORS)
+
+@license: Elementary is licensed LGPL-2.1 (see its COPYING file), the python bindings LGPL-3
 
 @author: U{Carsten Haitzler<mailto:raster@rasterman.com>}
 @author: U{Gustavo Sverzut Barbieri<mailto:barbieri@profusion.mobi>}
@@ -137,22 +135,22 @@ people and organizations behind this, as listed here:
 @author: U{Tiago Falcão<mailto:tiago@profusion.mobi>}
 @author: U{Otavio Pontes<mailto:otavio@profusion.mobi>}
 @author: U{Viktor Kojouharov<mailto:vkojouharov@gmail.com>}
-@author: U{Daniel Juyung Seo (SeoZ)<mailto:juyung.seo@samsung.com>} U{alt<mailto:seojuyung2@gmail.com>}
-@author: U{Sangho Park <sangho.g.park@samsung.com><mailto:gouache95@gmail.com>}
-@author: U{Rajeev Ranjan (Rajeev) <rajeev.r@samsung.com><mailto:rajeev.jnnce@gmail.com>}
-@author: U{Seunggyun Kim <sgyun.kim@samsung.com><mailto:tmdrbs@gmail.com>}
-@author: U{Sohyun Kim <anna1014.kim@samsung.com><mailto:sohyun.anna@gmail.com>}
+@author: U{Daniel Juyung Seo (SeoZ)<mailto:juyung.seo@samsung.com>} (U{alt<mailto:seojuyung2@gmail.com>})
+@author: U{Sangho Park <mailto:sangho.g.park@samsung.com>} (U{alt<mailto:gouache95@gmail.com>})
+@author: U{Rajeev Ranjan (Rajeev) <mailto:rajeev.r@samsung.com>} (U{alt<mailto:rajeev.jnnce@gmail.com>})
+@author: U{Seunggyun Kim <mailto:sgyun.kim@samsung.com>} (U{alt<mailto:tmdrbs@gmail.com>})
+@author: U{Sohyun Kim <mailto:anna1014.kim@samsung.com>} (U{alt<mailto:sohyun.anna@gmail.com>})
 @author: U{Jihoon Kim<mailto:jihoon48.kim@samsung.com>}
 @author: U{Jeonghyun Yun (arosis)<mailto:jh0506.yun@samsung.com>}
 @author: U{Tom Hacohen<mailto:tom@stosb.com>}
 @author: U{Aharon Hillel<mailto:a.hillel@samsung.com>}
 @author: U{Jonathan Atton (Watchwolf)<mailto:jonathan.atton@gmail.com>}
 @author: U{Shinwoo Kim<mailto:kimcinoo@gmail.com>}
-@author: U{Govindaraju SM <govi.sm@samsung.com><mailto:govism@gmail.com>}
-@author: U{Prince Kumar Dubey <prince.dubey@samsung.com><mailto:prince.dubey@gmail.com>}
+@author: U{Govindaraju SM <mailto:govi.sm@samsung.com>} (U{alt<mailto:govism@gmail.com>})
+@author: U{Prince Kumar Dubey <mailto:prince.dubey@samsung.com>} (U{alt<mailto:prince.dubey@gmail.com>})
 @author: U{Sung W. Park<mailto:sungwoo@gmail.com>}
 @author: U{Thierry el Borgi<mailto:thierry@substantiel.fr>}
-@author: U{Shilpa Singh <shilpa.singh@samsung.com><mailto:shilpasingh.o@gmail.com>}
+@author: U{Shilpa Singh <mailto:shilpa.singh@samsung.com>} (U{alt<mailto:shilpasingh.o@gmail.com>})
 @author: U{Chanwook Jung<mailto:joey.jung@samsung.com>}
 @author: U{Hyoyoung Chang<mailto:hyoyoung.chang@samsung.com>}
 @author: U{Guillaume "Kuri" Friloux<mailto:guillaume.friloux@asp64.com>}
@@ -164,7 +162,7 @@ people and organizations behind this, as listed here:
 @author: U{Goun Lee<mailto:gouni.lee@samsung.com>}
 @author: U{Mikael Sans<mailto:sans.mikael@gmail.com>}
 @author: U{Doyoun Kang<mailto:doyoun.kang@samsung.com>}
-@author: U{M.V.K. Sumanth <sumanth.m@samsung.com><mailto:mvksumanth@gmail.com>}
+@author: U{M.V.K. Sumanth <mailto:sumanth.m@samsung.com>} (U{alt<mailto:mvksumanth@gmail.com>})
 @author: U{Jérôme Pinot<mailto:ngc891@gmail.com>}
 @author: U{Davide Andreoli (davemds)<mailto:dave@gurumeditation.it>}
 @author: U{Michal Pakula vel Rutka<mailto:m.pakula@samsung.com>}

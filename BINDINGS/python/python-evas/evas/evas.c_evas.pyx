@@ -209,6 +209,9 @@ Recommended reading:
         intelligence (thus the name) to Evas objects -- like a button or
         check box, for example.
 
+@copyright: Evas is Copyright (C) 2000-2012 Carsten Haitzler and various contributors (see AUTHORS)
+
+@license: Evas is licensed as-is (see its COPYING file), the python bindings LGPL-2.1
 
 @author: U{Carsten Haitzler<mailto:raster@rasterman.com>}
 @author: U{Till Adam<mailto:till@adam-lilienthal.de>}
@@ -234,9 +237,9 @@ Recommended reading:
 @author: Samsung SAIT
 @author: U{Sung W. Park<mailto:sungwoo@gmail.com>}
 @author: U{Jiyoun Park<mailto:jy0703.park@samsung.com>}
-@author: U{Myoungwoon Roy Kim(roy_kim) <mailto:myoungwoon.kim@samsung.com>} U{alt<mailto:myoungwoon@gmail.com>}
+@author: U{Myoungwoon Roy Kim(roy_kim) <mailto:myoungwoon.kim@samsung.com>} (U{alt<mailto:myoungwoon@gmail.com>})
 @author: U{Thierry el Borgi<mailto:thierry@substantiel.fr>}
-@author: U{Shilpa Singh<mailto:shilpa.singh@samsung.com>} U{alt<mailto:shilpasingh.o@gmail.com>}
+@author: U{Shilpa Singh<mailto:shilpa.singh@samsung.com>} (U{alt<mailto:shilpasingh.o@gmail.com>})
 @author: U{ChunEon Park<mailto:hermet@hermet.pe.kr>}
 @author: U{Christopher 'devilhorns' Michael<mailto:cpmichael1@comcast.net>}
 @author: U{Seungsoo Woo<mailto:om101.woo@samsung.com>}
