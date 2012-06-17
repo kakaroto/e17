@@ -50,6 +50,18 @@ cdef _object_item_to_python(Elm_Object_Item *it):
     prm = <object>data
     return prm[2]
 
+cdef _object_item_list_to_python(const_Eina_List *lst):
+    cdef Elm_Object_Item *it
+    ret = []
+    ret_append = ret.append
+    while lst:
+        it = <Elm_Object_Item *>lst.data
+        lst = lst.next
+        o = _object_item_to_python(it)
+        if o is not None:
+            ret_append(o)
+    return ret
+
 cdef class ObjectItem(object):
 
     """A generic item for the widgets.

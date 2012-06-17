@@ -90,6 +90,16 @@ cdef Eina_Bool _event_callback(void *data, Evas_Object *o, Evas_Object *src, Eva
 cdef void _event_data_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     Py_DECREF(<object>data)
 
+cdef _strings_to_python(const_Eina_List *lst):
+    cdef const_char_ptr s
+    ret = []
+    while lst:
+        s = <const_char_ptr>lst.data
+        if s != NULL:
+            ret.append(_ctouni(s))
+        lst = lst.next
+    return ret
+
 def _cb_string_conv(long addr):
     cdef const_char_ptr s = <const_char_ptr>addr
     if s == NULL:
