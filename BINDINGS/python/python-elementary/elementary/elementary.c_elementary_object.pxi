@@ -102,6 +102,7 @@ cdef class Canvas(evas.c_evas.Canvas):
         pass
 
 cdef public class Object(evasObject) [object PyElementaryObject, type PyElementaryObject_Type]:
+
     """An abstract class to manage object and callback handling.
 
     All widgets are based on this class.
@@ -122,11 +123,14 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
     @group Callbacks: callback_*
 
     """
+
     cdef object _elmcallbacks
     cdef object _elm_event_cbs
 
     def part_text_set(self, part, text):
-        """Sets the text of a given part of this object.
+        """part_text_set(part, text)
+
+        Sets the text of a given part of this object.
 
         @see: L{text_set()} and L{part_text_get()}
 
@@ -139,7 +143,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_part_text_set(self.obj, _cfruni(part), _cfruni(text))
 
     def text_set(self, text):
-        """Sets the main text for this object.
+        """text_set(text)
+
+        Sets the main text for this object.
 
         @see: L{text_get()} and L{part_text_set()}
 
@@ -150,7 +156,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_text_set(self.obj, _cfruni(text))
 
     def part_text_get(self, part):
-        """Gets the text of a given part of this object.
+        """part_text_get(part)
+
+        Gets the text of a given part of this object.
 
         @see: L{text_get()} and L{part_text_set()}
 
@@ -163,7 +171,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return _ctouni(elm_object_part_text_get(self.obj, _cfruni(part)))
 
     def text_get(self):
-        """Gets the main text for this object.
+        """text_get()
+
+        Gets the main text for this object.
 
         @see: L{text_set()} and L{part_text_get()}
 
@@ -181,7 +191,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.text_set(value)
 
     def part_content_set(self, part, evasObject obj):
-        """Set a content of an object
+        """part_content_set(part, obj)
+
+        Set a content of an object
 
         This sets a new object to a widget as a content object. If any
         object was already set as a content object in the same part,
@@ -201,7 +213,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_part_content_set(self.obj, NULL, obj.obj)
 
     def part_content_get(self, part):
-        """Get a content of an object
+        """part_content_get(part)
+
+        Get a content of an object
 
         @note: Elementary objects may have many contents
 
@@ -219,7 +233,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return Object_from_instance(obj)
 
     def part_content_unset(self, part):
-        """Unset a content of an object
+        """part_content_unset(part)
+
+        Unset a content of an object
 
         @note: Elementary objects may have many contents
 
@@ -244,7 +260,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.content_unset()
 
     def access_info_set(self, txt):
-        """Set the text to read out when in accessibility mode
+        """access_info_set(txt)
+
+        Set the text to read out when in accessibility mode
 
         @param txt: The text that describes the widget to people with poor or no vision
         @type txt: string
@@ -253,7 +271,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_access_info_set(self.obj, _cfruni(txt))
 
     def name_find(self, name, recurse):
-        """Get a named object from the children
+        """name_find(name, recurse)
+
+        Get a named object from the children
 
         This function searches the children (or recursively children of
         children and so on) of the given object looking for a child with the
@@ -277,7 +297,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return Object_from_instance(obj)
 
     def style_set(self, style):
-        """Set the style to used by a given widget
+        """style_set(style)
+
+        Set the style to used by a given widget
 
         This sets the style (by name) that will define the appearance of a
         widget. Styles vary from widget to widget and may also be defined
@@ -297,7 +319,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_style_set(self.obj, _cfruni(style))
 
     def style_get(self):
-        """Get the style used by the widget
+        """style_get()
+
+        Get the style used by the widget
 
         This gets the style being used for that widget. Note that the string
         pointer is only valid as long as the object is valid and the style doesn't
@@ -323,7 +347,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.style_set(value)
 
     def disabled_set(self, disabled):
-        """Set the disabled state of an Elementary object.
+        """disabled_set(disabled)
+
+        Set the disabled state of an Elementary object.
 
         Elementary objects can be B{disabled}, in which state they won't
         receive input and, in general, will be themed differently from
@@ -342,7 +368,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_disabled_set(self.obj, disabled)
 
     def disabled_get(self):
-        """Get the disabled state of an Elementary object.
+        """disabled_get()
+
+        Get the disabled state of an Elementary object.
 
         This gets the state of the widget, which might be enabled or disabled.
 
@@ -371,7 +399,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.disabled_set(disabled)
 
     def widget_check(self):
-        """Check if the given Evas Object is an Elementary widget.
+        """widget_check()
+
+        Check if the given Evas Object is an Elementary widget.
 
         @return: C{True} if it is an elementary widget variant, C{False}
             otherwise
@@ -381,8 +411,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return bool(elm_object_widget_check(self.obj))
 
     def parent_widget_get(self):
-        """Get the first parent of the given object that is an Elementary
-        widget.
+        """parent_widget_get()
+
+        Get the first parent of the given object that is an Elementary widget.
 
         Use this to query for an object's parent widget.
 
@@ -411,10 +442,12 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             return self.parent_widget_get()
 
     def top_widget_get(self):
-        """Get the top level parent of an Elementary widget.
+        """top_widget_get()
 
-        @return: The top level Elementary widget, or C{None} if parent cannot be
-            found.
+        Get the top level parent of an Elementary widget.
+
+        @return: The top level Elementary widget, or C{None} if parent
+            cannot be found.
         @rtype: L{Object}
 
         """
@@ -432,7 +465,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             return self.top_widget_get()
 
     def widget_type_get(self):
-        """Get the string that represents this Elementary widget.
+        """widget_type_get()
+
+        Get the string that represents this Elementary widget.
 
         @note: Elementary is weird and exposes itself as a single
             Evas_Object_Smart_Class of type "elm_widget", so
@@ -458,7 +493,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             return elm_object_widget_type_get(self.obj)
 
     def signal_emit(self, emission, source):
-        """Send a signal to the widget edje object.
+        """signal_emit(emission, source)
+
+        Send a signal to the widget edje object.
 
         This function sends a signal to the edje object of the obj. An edje
         program can respond to a signal by specifying matching 'signal' and
@@ -480,7 +517,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # XXX: Clashes badly with evas event_callback_*
     def elm_event_callback_add(self, func, *args, **kargs):
-        """Add a callback for input events (key up, key down, mouse wheel)
+        """elm_event_callback_add(func, *args, **kwargs)
+
+        Add a callback for input events (key up, key down, mouse wheel)
         on a given Elementary widget
 
         Every widget in an Elementary interface set to receive focus, with
@@ -540,7 +579,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         self._elm_event_cbs.append(data)
 
     def elm_event_callback_del(self, func, *args, **kargs):
-        """Remove an event callback from a widget.
+        """elm_event_callback_del(func, *args, **kwargs)
+
+        Remove an event callback from a widget.
 
         This function removes a callback, previously attached to event emission.
         The parameters func and args, kwargs must match exactly those passed to
@@ -562,7 +603,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Cursors
     def cursor_set(self, cursor):
-        """Set the cursor to be shown when mouse is over the object
+        """cursor_set(cursor)
+
+        Set the cursor to be shown when mouse is over the object
 
         Set the cursor that will be displayed when mouse is over the object.
         The object can have only one cursor set to it, so if this function
@@ -575,7 +618,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return _ctouni(elm_object_cursor_get(self.obj))
 
     def cursor_unset(self):
-        """Unset cursor for object
+        """cursor_unset()
+
+        Unset cursor for object
 
         Unset cursor for object, and set the cursor to default if the mouse
         was over this object.
@@ -597,7 +642,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.cursor_unset()
 
     def cursor_style_set(self, style=None):
-        """Sets a different style for this object cursor.
+        """cursor_style_set(style)
+
+        Sets a different style for this object cursor.
 
         @note: before you set a style you should define a cursor with
             elm_object_cursor_set()
@@ -609,7 +656,11 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             elm_object_cursor_style_set(self.obj, NULL)
 
     def cursor_style_get(self):
-        """Get the style for this object cursor."""
+        """cursor_style_get()
+
+        Get the style for this object cursor.
+
+        """
         return _ctouni(elm_object_cursor_style_get(self.obj))
 
     property cursor_style:
@@ -620,7 +671,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.cursor_style_set(value)
 
     def cursor_theme_search_enabled_set(self, engine_only):
-        """ Sets cursor engine only usage for this object.
+        """cursor_theme_search_enabled_set(engine_only)
+
+        Sets cursor engine only usage for this object.
 
         @note: before you set engine only usage you should define a cursor with
             elm_object_cursor_set()
@@ -629,7 +682,11 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_cursor_theme_search_enabled_set(self.obj, bool(engine_only))
 
     def cursor_theme_search_enabled_get(self):
-        """ Get the engine only usage for this object."""
+        """cursor_theme_search_enabled_get()
+
+        Get the engine only usage for this object.
+
+        """
         return elm_object_cursor_theme_search_enabled_get(self.obj)
 
     property cursor_theme_search_enabled:
@@ -640,7 +697,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Focus
     def focus_get(self):
-        """Get the whether an Elementary object has the focus or not.
+        """focus_get()
+
+        Get the whether an Elementary object has the focus or not.
 
         @see: L{focus_set()}
         @return: C{True}, if the object is focused, C{False} if
@@ -651,7 +710,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return bool(elm_object_focus_get(self.obj))
 
     def focus_set(self, focus):
-        """Set/unset focus to a given Elementary object.
+        """focus_set(focus)
+
+        Set/unset focus to a given Elementary object.
 
         @note: When you set focus to this object, if it can handle focus, will
             take the focus away from the one who had it previously and will, for
@@ -670,7 +731,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_focus_set(self.obj, focus)
 
     def focus_allow_set(self, allow):
-        """Set the ability for an Elementary object to be focused
+        """focus_allow_set(allow)
+
+        Set the ability for an Elementary object to be focused
 
         This sets whether the object is able to take focus or not.
         Unfocusable objects do nothing when programmatically focused, being
@@ -686,7 +749,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_focus_allow_set(self.obj, allow)
 
     def focus_allow_get(self):
-        """Get whether an Elementary object is focusable or not
+        """focus_allow_get()
+
+        Get whether an Elementary object is focusable or not
 
         @note: Objects which are meant to be interacted with by input
             events are created able to be focused, by default. All the
@@ -711,7 +776,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.focus_allow_set(value)
 
     def focus_custom_chain_set(self, lst):
-        """Set custom focus chain.
+        """focus_custom_chain_set(lst)
+
+        Set custom focus chain.
 
         This function overwrites any previous custom focus chain within
         the list of objects. The previous list will be deleted and this list
@@ -729,7 +796,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             elm_object_focus_custom_chain_append(self.obj, obj.obj, NULL)
 
     def focus_custom_chain_unset(self):
-        """Unset a custom focus chain on a given Elementary widget
+        """focus_custom_chain_unset()
+
+        Unset a custom focus chain on a given Elementary widget
 
         Any focus chain previously set on the object (for its child objects)
         is removed entirely after this call.
@@ -738,7 +807,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_focus_custom_chain_unset(self.obj)
 
     def focus_custom_chain_get(self):
-        """Get custom focus chain
+        """focus_custom_chain_get()
+
+        Get custom focus chain
 
         @return: Chain of objects
         @rtype: list of L{Object}s
@@ -770,7 +841,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.focus_custom_chain_unset()
 
     def focus_custom_chain_append(self, Object obj, Object relative=None):
-        """Append object to custom focus chain.
+        """focus_custom_chain_append(obj, relative=None)
+
+        Append object to custom focus chain.
 
         @note: If relative_child equal to None or not in custom chain, the
             object will be added in end.
@@ -790,7 +863,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
 
     def focus_custom_chain_prepend(self, Object obj, Object relative=None):
-        """Prepend object to custom focus chain.
+        """focus_custom_chain_prepend(obj, relative=None)
+
+        Prepend object to custom focus chain.
 
         @note: If relative_child equal to None or not in custom chain, the
             object will be added in begin.
@@ -810,7 +885,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
 
     #def focus_next(self, direction):
-        """Give focus to next object in object tree.
+        """focus_next(direction)
+
+        Give focus to next object in object tree.
 
         Give focus to next object in focus chain of one object sub-tree. If
         the last object of chain already have focus, the focus will go to the
@@ -823,7 +900,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         #elm_object_focus_next(self.obj, direction)
 
     def tree_focus_allow_set(self, focusable):
-        """Make the elementary object and its children to be focusable
+        """tree_focus_allow_set(focusable)
+
+        Make the elementary object and its children to be focusable
         (or unfocusable).
 
         This sets whether the object and its children objects are able to
@@ -843,7 +922,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_tree_focus_allow_set(self.obj, focusable)
 
     def tree_focus_allow_get(self):
-        """Get whether an Elementary object and its children are focusable
+        """tree_focus_allow_get()
+
+        Get whether an Elementary object and its children are focusable
         or not.
 
         @see: L{tree_focus_allow_set()}
@@ -868,7 +949,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Mirroring
     def mirrored_get(self):
-        """Get the widget's mirrored mode.
+        """mirrored_get()
+
+        Get the widget's mirrored mode.
 
         @return: True if mirrored is set, False otherwise
         @rtype: bool
@@ -877,7 +960,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return bool(elm_object_mirrored_get(self.obj))
 
     def mirrored_set(self, mirrored):
-        """Set the widget's mirrored mode.
+        """mirrored_set(mirrored)
+
+        Set the widget's mirrored mode.
 
         @param mirrored: True to set mirrored mode, False to unset it.
         @type mirrored: bool
@@ -897,7 +982,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.mirrored_set(value)
 
     def mirrored_automatic_get(self):
-        """Returns the widget's mirrored mode setting.
+        """mirrored_automatic_get()
+
+        Returns the widget's mirrored mode setting.
 
         @return: mode setting of the object.
         @rtype: bool
@@ -906,7 +993,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         return bool(elm_object_mirrored_automatic_get(self.obj))
 
     def mirrored_automatic_set(self, automatic):
-        """Sets the widget's mirrored mode setting. When widget in automatic
+        """mirrored_automatic_set(automatic)
+
+        Sets the widget's mirrored mode setting. When widget in automatic
         mode, it follows the system mirrored mode set by elm_mirrored_set().
 
         @param automatic: True for auto mirrored mode, False for manual.
@@ -928,7 +1017,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Scaling
     def scale_set(self, scale):
-        """Set the scaling factor for a given Elementary object
+        """scale_set(scale)
+
+        Set the scaling factor for a given Elementary object
 
         @param scale: Scale factor (from C{0.0} up, with C{1.0} meaning
             no scaling)
@@ -938,7 +1029,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_scale_set(self.obj, scale)
 
     def scale_get(self):
-        """Get the scaling factor for a given Elementary object
+        """scale_get()
+
+        Get the scaling factor for a given Elementary object
 
         @return: The scaling factor set by L{scale_set()}
         @rtype: double
@@ -961,35 +1054,47 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Scrollhints
     def scroll_hold_push(self):
-        """Push the scroll hold by 1
+        """scroll_hold_push()
+
+        Push the scroll hold by 1
 
         This increments the scroll hold count by one. If it is more
         than 0 it will take effect on the parents of the indicated
         object.
+
         """
         elm_object_scroll_hold_push(self.obj)
 
     def scroll_hold_pop(self):
-        """Pop the scroll hold by 1
+        """scroll_hold_pop()
+
+        Pop the scroll hold by 1
 
         This decrements the scroll hold count by one. If it is more than 0
         it will take effect on the parents of the indicated object.
+
         """
         elm_object_scroll_hold_pop(self.obj)
 
     def scroll_freeze_push(self):
-        """Push the scroll freeze by 1
+        """scroll_freeze_push()
+
+        Push the scroll freeze by 1
 
         This increments the scroll freeze count by one. If it is more than 0
         it will take effect on the parents of the indicated object.
+
         """
         elm_object_scroll_freeze_push(self.obj)
 
     def scroll_freeze_pop(self):
-        """Pop the scroll freeze by 1
+        """scroll_freeze_pop()
+
+        Pop the scroll freeze by 1
 
         This decrements the scroll freeze count by one. If it is more than 0
         it will take effect on the parents of the indicated object.
+
         """
         elm_object_scroll_freeze_pop(self.obj)
 
@@ -1026,29 +1131,38 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Tooltips
     def tooltip_show(self):
-        """Force show tooltip of object
+        """tooltip_show()
+
+        Force show tooltip of object
 
         Force show the tooltip and disable hide on mouse_out If another
         content is set as tooltip, the visible tooltip will hidden and
         showed again with new content.
 
         This can force show more than one tooltip at a time.
+
         """
         elm_object_tooltip_show(self.obj)
 
     def tooltip_hide(self):
-        """Force hide tooltip of the object
+        """tooltip_hide()
+
+        Force hide tooltip of the object
 
         Force hide tooltip of object and (re)enable future mouse interations.
+
         """
         elm_object_tooltip_hide(self.obj)
 
     def tooltip_text_set(self, text):
-        """Set the text to be shown in the tooltip object
+        """tooltip_text_set(text)
+
+        Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed. Internally, this
         method calls L{tooltip_content_cb_set}
+
         """
         elm_object_tooltip_text_set(self.obj, _cfruni(text))
 
@@ -1059,7 +1173,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_tooltip_translatable_text_set(self.obj, _cfruni(text))
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
-        """Set the content to be shown in the tooltip object
+        """tooltip_content_cb_set(func, *args, **kwargs)
+
+        Set the content to be shown in the tooltip object
 
         Setup the tooltip to object. The object can have only one tooltip,
         so any previews tooltip data is removed. C{func(owner, tooltip,
@@ -1070,6 +1186,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
         @param func: Function to be create tooltip content, called when
             need show tooltip.
+
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -1083,19 +1200,25 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
                                           cbdata, _tooltip_data_del_cb)
 
     def tooltip_unset(self):
-        """Unset tooltip from object
+        """tooltip_unset()
+
+        Unset tooltip from object
 
         Remove tooltip from object. If used the L{tooltip_text_set} the
         internal copy of label will be removed correctly. If used
         L{tooltip_content_cb_set}, the data will be unreferred but no freed.
+
         """
         elm_object_tooltip_unset(self.obj)
 
     def tooltip_style_set(self, style=None):
-        """ Sets a different style for this object tooltip.
+        """tooltip_style_set(style=None)
+
+        Sets a different style for this object tooltip.
 
         @note: before you set a style you should define a tooltip with
             L{tooltip_content_cb_set()} or L{tooltip_text_set()}
+
         """
         if style:
             elm_object_tooltip_style_set(self.obj, _cfruni(style))
@@ -1103,7 +1226,11 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             elm_object_tooltip_style_set(self.obj, NULL)
 
     def tooltip_style_get(self):
-        """Get the style for this object tooltip."""
+        """tooltip_style_get()
+
+        Get the style for this object tooltip.
+
+        """
         return _ctouni(elm_object_tooltip_style_get(self.obj))
 
     property tooltip_style:
@@ -1131,7 +1258,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     #Translatable text
     def domain_translatable_text_part_set(self, part, domain, text):
-        """Set the text for an objects' part, marking it as translatable.
+        """domain_translatable_text_part_set(part, domain, text)
+
+        Set the text for an objects' part, marking it as translatable.
 
         The string to set as C{text} must be the original one. Do not pass the
         return of @C{gettext()} here. Elementary will translate the string
@@ -1163,7 +1292,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         elm_object_translatable_text_set(self.obj, _cfruni(text))
 
     def translatable_text_part_get(self, part):
-        """Gets the original string set as translatable for an object
+        """translatable_text_part_get(part)
+
+        Gets the original string set as translatable for an object
 
         When setting translated strings, the function L{part_text_get()}
         will return the translation returned by C{gettext()}. To get the
@@ -1189,18 +1320,25 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # Callbacks
     def _callback_add_full(self, event, event_conv, func, *args, **kargs):
-        """Add a callback for the smart event specified by event.
+        """_callback_add_full(event, event_conv, func, *args, **kargs)
+
+        Add a callback for the smart event specified by event.
 
         @param event: event name
+        @type event: string
         @param event_conv: Conversion function to get the
             pointer (as a long) to the object to be given to the
             function as the second parameter. If None, then no
             parameter will be given to the callback.
+        @type event_conv: function
         @param func: what to callback. Should have the signature:
             C{function(object, event_info, *args, **kargs)}
             C{function(object, *args, **kargs)} (if no event_conv is provided)
+        @type func: function
+
         @raise TypeError: if B{func} is not callable.
         @raise TypeError: if B{event_conv} is not callable or None.
+
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -1218,17 +1356,24 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         lst.append((event_conv, func, args, kargs))
 
     def _callback_del_full(self, event, event_conv, func):
-        """Remove a smart callback.
+        """_callback_del_full(event, event_conv, func)
+
+        Remove a smart callback.
 
         Removes a callback that was added by L{_callback_add_full()}.
 
         @param event: event name
+        @type event: string
         @param event_conv: same as registered with L{_callback_add_full()}
+        @type event_conv: function
         @param func: what to callback, should have be previously registered.
+        @type func: function
+
         @precond: B{event}, B{event_conv} and B{func} must be used as
            parameter for L{_callback_add_full()}.
 
         @raise ValueError: if there was no B{func} connected with this event.
+
         """
         try:
             lst = self._elmcallbacks[event]
@@ -1253,34 +1398,48 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         evas_object_smart_callback_del(self.obj, _fruni(event), _object_callback)
 
     def _callback_add(self, event, func, *args, **kargs):
-        """Add a callback for the smart event specified by event.
+        """_callback_add(event, func, *args, **kargs)
+
+        Add a callback for the smart event specified by event.
 
         @param event: event name
+        @type event: string
         @param func: what to callback. Should have the signature:
-           C{function(object, *args, **kargs)}
+            C{function(object, *args, **kargs)}
+        @type func: function
+
         @raise TypeError: if B{func} is not callable.
+
         """
         return self._callback_add_full(event, None, func, *args, **kargs)
 
     def _callback_del(self, event, func):
-        """Remove a smart callback.
+        """_callback_del(event, func)
+
+        Remove a smart callback.
 
         Removes a callback that was added by L{_callback_add()}.
 
         @param event: event name
+        @type event: string
         @param func: what to callback, should have be previously registered.
+        @type func: function
+
         @precond: B{event} and B{func} must be used as parameter for
             L{_callback_add_full()}.
 
         @raise ValueError: if there was no B{func} connected with this event.
+
         """
         return self._callback_del_full(event, None, func)
 
     def _get_obj_addr(self):
-        """
+        """_get_obj_addr()
+
         Return the address of the internal save Evas_Object
 
         @return: Address of saved Evas_Object
+
         """
         return <long>self.obj
 

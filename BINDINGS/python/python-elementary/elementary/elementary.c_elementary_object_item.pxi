@@ -78,7 +78,9 @@ cdef class ObjectItem(object):
         Py_DECREF(self)
 
     def widget_get(self):
-        """Get the widget object's handle which contains a given item
+        """widget_get()
+
+        Get the widget object's handle which contains a given item
 
         @note: This returns the widget object itself that an item belongs to.
         @note: Every elm_object_item supports this API
@@ -91,7 +93,9 @@ cdef class ObjectItem(object):
         return Object_from_instance(obj)
 
     def part_content_set(self, part, Object obj):
-        """Set a content of an object item
+        """part_content_set(part, obj)
+
+        Set a content of an object item
 
         This sets a new object to an item as a content object. If any object
         was already set as a content object in the same part, previous
@@ -110,7 +114,9 @@ cdef class ObjectItem(object):
         elm_object_item_part_content_set(self.item, NULL, obj.obj)
 
     def part_content_get(self, part):
-        """Get a content of an object item
+        """part_content_get(part)
+
+        Get a content of an object item
 
         @note: Elementary object items may have many contents
 
@@ -129,7 +135,9 @@ cdef class ObjectItem(object):
         return Object_from_instance(obj)
 
     def part_content_unset(self, part):
-        """Unset a content of an object item
+        """part_content_unset(part)
+
+        Unset a content of an object item
 
         @note: Elementary object items may have many contents
 
@@ -147,7 +155,9 @@ cdef class ObjectItem(object):
 
 
     def part_text_set(self, part, text):
-        """Sets the text of a given part of this object.
+        """part_text_set(part, text)
+
+        Sets the text of a given part of this object.
 
         @see: L{text_set()} and L{part_text_get()}
 
@@ -160,7 +170,9 @@ cdef class ObjectItem(object):
         elm_object_item_part_text_set(self.item, _cfruni(part), _cfruni(text))
 
     def text_set(self, text):
-        """Sets the main text for this object.
+        """text_set(text)
+
+        Sets the main text for this object.
 
         @see: L{text_get()} and L{part_text_set()}
 
@@ -171,7 +183,9 @@ cdef class ObjectItem(object):
         elm_object_item_text_set(self.item, _cfruni(text))
 
     def part_text_get(self, part):
-        """Gets the text of a given part of this object.
+        """part_text_get(part)
+
+        Gets the text of a given part of this object.
 
         @see: L{text_get()} and L{part_text_set()}
 
@@ -184,7 +198,9 @@ cdef class ObjectItem(object):
         return _ctouni(elm_object_item_part_text_get(self.item, _cfruni(part)))
 
     def text_get(self):
-        """Gets the main text for this object.
+        """text_get()
+
+        Gets the main text for this object.
 
         @see: L{text_set()} and L{part_text_get()}
 
@@ -207,7 +223,9 @@ cdef class ObjectItem(object):
             self.text_set(value)
 
     def access_info_set(self, txt):
-        """Set the text to read out when in accessibility mode
+        """access_info_set(txt)
+
+        Set the text to read out when in accessibility mode
 
         @param txt: The text that describes the widget to people with poor
             or no vision
@@ -217,7 +235,9 @@ cdef class ObjectItem(object):
         elm_object_item_access_info_set(self.item, _cfruni(txt))
 
     def data_get(self):
-        """Returns the callback data given at creation time.
+        """data_get()
+
+        Returns the callback data given at creation time.
 
         @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
 
@@ -241,7 +261,9 @@ cdef class ObjectItem(object):
             #self.data_set(data)
 
     def signal_emit(self, emission, source):
-        """Send a signal to the edje object of the widget item.
+        """signal_emit(emission, source)
+
+        Send a signal to the edje object of the widget item.
 
         This function sends a signal to the edje object of the obj item. An
         edje program can respond to a signal by specifying matching
@@ -256,7 +278,9 @@ cdef class ObjectItem(object):
         elm_object_item_signal_emit(self.item, _cfruni(emission), _cfruni(source))
 
     def disabled_set(self, disabled):
-        """Set the disabled state of an widget item.
+        """disabled_set(disabled)
+
+        Set the disabled state of an widget item.
 
         Elementary object item can be B{disabled}, in which state they won't
         receive input and, in general, will be themed differently from
@@ -275,7 +299,9 @@ cdef class ObjectItem(object):
         elm_object_item_disabled_set(self.item, disabled)
 
     def disabled_get(self):
-        """Get the disabled state of an widget item.
+        """disabled_get()
+
+        Get the disabled state of an widget item.
 
         This gets the state of the widget, which might be enabled or disabled.
 
@@ -312,7 +338,9 @@ cdef class ObjectItem(object):
         elm_object_item_del(self.item)
 
     def tooltip_text_set(self, char *text):
-        """Set the text to be shown in the tooltip object
+        """tooltip_text_set(text)
+
+        Set the text to be shown in the tooltip object
 
         Setup the text as tooltip object. The object can have only one
         tooltip, so any previous tooltip data is removed. Internally, this
@@ -328,7 +356,9 @@ cdef class ObjectItem(object):
         return bool(elm_object_item_tooltip_window_mode_get(self.item))
 
     def tooltip_content_cb_set(self, func, *args, **kargs):
-        """Set the content to be shown in the tooltip object
+        """tooltip_content_cb_set(func, *args, **kargs)
+
+        Set the content to be shown in the tooltip object
 
         Setup the tooltip to object. The object can have only one tooltip,
         so any previews tooltip data is removed. C{func(owner, tooltip,
@@ -354,7 +384,9 @@ cdef class ObjectItem(object):
                                           cbdata, _tooltip_item_data_del_cb)
 
     def tooltip_unset(self):
-        """Unset tooltip from object
+        """tooltip_unset()
+
+        Unset tooltip from object
 
         Remove tooltip from object. If used the L{tooltip_text_set} the
         internal copy of label will be removed correctly. If used
@@ -364,7 +396,9 @@ cdef class ObjectItem(object):
         elm_object_item_tooltip_unset(self.item)
 
     def tooltip_style_set(self, style=None):
-        """Sets a different style for this object tooltip.
+        """tooltip_style_set(style=None)
+
+        Sets a different style for this object tooltip.
 
         @note: before you set a style you should define a tooltip with
             L{tooltip_content_cb_set()} or L{tooltip_text_set()}
@@ -376,11 +410,17 @@ cdef class ObjectItem(object):
             elm_object_item_tooltip_style_set(self.item, NULL)
 
     def tooltip_style_get(self):
-        """Get the style for this object tooltip."""
+        """tooltip_style_get()
+
+        Get the style for this object tooltip.
+
+        """
         return _ctouni(elm_object_item_tooltip_style_get(self.item))
 
     def cursor_set(self, char *cursor):
-        """Set the cursor to be shown when mouse is over the object
+        """cursor_set(cursor)
+
+        Set the cursor to be shown when mouse is over the object
 
         Set the cursor that will be displayed when mouse is over the object.
         The object can have only one cursor set to it, so if this function
@@ -393,7 +433,9 @@ cdef class ObjectItem(object):
         return _ctouni(elm_object_item_cursor_get(self.item))
 
     def cursor_unset(self):
-        """Unset cursor for object
+        """cursor_unset()
+
+        Unset cursor for object
 
         Unset cursor for object, and set the cursor to default if the mouse
         was over this object.
@@ -402,7 +444,9 @@ cdef class ObjectItem(object):
         elm_object_item_cursor_unset(self.item)
 
     def cursor_style_set(self, style=None):
-        """Sets a different style for this object cursor.
+        """cusor_style_set(style=None)
+
+        Sets a different style for this object cursor.
 
         @note: before you set a style you should define a cursor with
             L{cursor_set()}
@@ -414,11 +458,17 @@ cdef class ObjectItem(object):
             elm_object_item_cursor_style_set(self.item, NULL)
 
     def cursor_style_get(self):
-        """Get the style for this object cursor."""
+        """cursor_style_get()
+
+        Get the style for this object cursor.
+
+        """
         return _ctouni(elm_object_item_cursor_style_get(self.item))
 
     def cursor_engine_only_set(self, engine_only):
-        """Sets cursor engine only usage for this object.
+        """cursor_engine_only_set(engine_only)
+
+        Sets cursor engine only usage for this object.
 
         @note: before you set engine only usage you should define a cursor with
             L{cursor_set()}
@@ -427,7 +477,11 @@ cdef class ObjectItem(object):
         elm_object_item_cursor_engine_only_set(self.item, bool(engine_only))
 
     def cursor_engine_only_get(self):
-        """Get the engine only usage for this object."""
+        """cursor_engine_only_get()
+
+        Get the engine only usage for this object.
+
+        """
         return elm_object_item_cursor_engine_only_get(self.item)
 
 cdef Elm_Object_Item * _object_item_from_python(ObjectItem item):

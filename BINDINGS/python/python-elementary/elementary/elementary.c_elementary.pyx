@@ -169,6 +169,20 @@ people and organizations behind this, as listed below:
 
 @contact: U{Enlightenment developer mailing list<mailto:enlightenment-devel@lists.sourceforge.net>}
 
+@group Infrastructure: Canvas, Configuration, ElementaryObjectMeta,
+    EntryAnchor*, Object
+
+@group Widgets: Actionslider, Background, Box, Bubble, Button, Calendar,
+    Check, Clock, Colorselector, Conformant, Ctxpopup, Dayselector,
+    Diskselector, Entry, Fileselector*, Flip, Frame, Gengrid, Genlist, Grid,
+    Hover, Hoversel, Icon, Image, Index, InnerWindow, Label, Layout, List,
+    Map, Mapbuf Menu, Naviframe, Notify, Panel, Panes, Photo, Player,
+    Progressbar, Radio, Scroller, Separator, Slider, Spinner,
+    StandardWindow, Table, Thumb, Toolbar, Transit, Video, Web, Window
+
+@group Widgets' items: *Item, *ItemClass, CalendarMark, MapName,
+    MapOverlay*, MapRoute
+
 """
 
 from cpython cimport PyObject, Py_INCREF, Py_DECREF
