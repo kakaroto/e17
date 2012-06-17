@@ -27,7 +27,7 @@ entry_value_get(Evas_Object *obj, char *part_name)
 {
    Evas_Object *entry_text;
    entry_text = edje_object_part_external_object_get(obj, part_name);
-   return elm_scrolled_entry_entry_get(entry_text);
+   return elm_entry_entry_get(entry_text);
 }
 
 void
@@ -35,7 +35,7 @@ entry_value_set(Evas_Object *obj, char *part_name, const char *value)
 {
    Evas_Object *entry_text;
    entry_text = edje_object_part_external_object_get(obj, part_name);
-   elm_scrolled_entry_entry_set(entry_text, value);
+   elm_entry_entry_set(entry_text, value);
 }
 
 int

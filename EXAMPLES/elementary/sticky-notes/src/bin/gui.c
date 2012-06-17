@@ -47,8 +47,8 @@ _edit_note_cb_delete_request(void *data, Evas_Object *obj, void *event_info)
 {
    Db_Entry *entry;
    Edit_Note_Window *gui = (Edit_Note_Window *)data;
-   const char *gui_text = elm_scrolled_entry_entry_get(gui->entry);
-   const char *gui_title = elm_scrolled_entry_entry_get(gui->title);
+   const char *gui_text = elm_entry_entry_get(gui->entry);
+   const char *gui_title = elm_entry_entry_get(gui->title);
 
    entry = elm_object_item_data_get(gui->selection);
 
@@ -94,8 +94,8 @@ _edit_note_load_entry_data(Edit_Note_Window *gui)
    if (!entry)
      return;
 
-   elm_scrolled_entry_entry_set(gui->entry, entry->text);
-   elm_scrolled_entry_entry_set(gui->title, entry->title);
+   elm_entry_entry_set(gui->entry, entry->text);
+   elm_entry_entry_set(gui->title, entry->title);
 }
 
 void
