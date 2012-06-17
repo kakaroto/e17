@@ -52,6 +52,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_map.pxi \
 	elementary/elementary.c_elementary_mapbuf.pxi \
 	elementary/elementary.c_elementary_menu.pxi \
+	elementary/elementary.c_elementary_multibuttonentry.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
 	elementary/elementary.c_elementary_object_item.pxi \
@@ -104,6 +105,7 @@ examples_files = \
 	tests/test_map2.py \
 	tests/test_map3.py \
 	tests/test_menu.py \
+	tests/test_multibuttonentry.py \
 	tests/test_naviframe.py \
 	tests/test_notify.py \
 	tests/test_panel.py \

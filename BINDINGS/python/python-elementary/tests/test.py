@@ -33,6 +33,7 @@ from test_map import map_clicked
 from test_map2 import map_overlays_clicked
 from test_map3 import map_route_clicked
 from test_menu import menu_clicked
+from test_multibuttonentry import multibuttonentry_clicked
 from test_naviframe import naviframe_clicked
 from test_notify import notify_clicked
 from test_panel import panel_clicked
@@ -84,6 +85,7 @@ items = [("Booleans", [
          ("Entries", [
             ("Entry", entry_clicked),
             ("Entry Scrolled", entry_scrolled_clicked),
+            ("MultiButtonEntry", multibuttonentry_clicked),
         ]),
          ("Geographic", [
             ("Map", map_clicked),
