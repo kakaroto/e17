@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Begin e17mod-execwatch.SlackBuild
+
+NAME=e17mod-execwatch
+BUILD=1jp
+CWD=$(pwd)
+
+# Get functions
+. ../functions
+set_env
+
+# Go to source code
+cd ../../../E-MODULES-EXTRA/${NAME}
+prepare_src
+
+# Configure
+CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
+  ./autogen.sh \
+    --prefix=/usr \
+    --libdir=${LIBDIR} \
+    --build=${ARCH}-slackware-linux
+
+# Install
+make_install
+install_doc AUTHORS COPYING* INSTALL
+
+# Build the package
+post_clean
+pack_slack
+
+# End e17mod-execwatch.SlackBuild

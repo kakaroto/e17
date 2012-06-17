@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+                |-----handy-ruler------------------------------------------------------|
+e17mod-execwatch: E17 module
+e17mod-execwatch: 
+e17mod-execwatch: Shows the last state of a periodic executed cmd. Useful as an update
+e17mod-execwatch: checker or for checking if a remote host is available (through ping).
+e17mod-execwatch: 
+e17mod-execwatch: 
+e17mod-execwatch: 
+e17mod-execwatch: 
+e17mod-execwatch: 
+e17mod-execwatch: 
+e17mod-execwatch: 
