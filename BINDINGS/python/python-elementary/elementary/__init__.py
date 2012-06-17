@@ -18,18 +18,18 @@
 
 import elementary.c_elementary
 
-from elementary.c_elementary import Object, Window, Background, Icon, Box, Button, Web, \
-    Scroller, Label, Frame, Flip, Table, Clock, Layout, Hover, Entry, Bubble, \
-    Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, Radio, \
-    Check, Naviframe, NaviframeItem, InnerWindow, Image, Spinner, \
-    Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
-    Progressbar, Menu, MenuItem, MenuSeparatorItem, Panel, Genlist, \
-    GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
-    GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem, \
-    Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
+from elementary.c_elementary import Object, Window, Background, Icon, Box, \
+    Button, Web, Scroller, Label, Frame, Flip, Table, Clock, Layout, Hover, \
+    Entry, Bubble, Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, \
+    Slider, Radio, Check, Naviframe, NaviframeItem, InnerWindow, Image, \
+    Spinner, Fileselector, FileselectorEntry, FileselectorButton, Notify, \
+    Separator, Progressbar, Menu, MenuItem, MenuSeparatorItem, Panel, Genlist \
+    , GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
+    GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem \
+    , Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
     Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
     Transit, Map, MapOverlay, MapOverlayClass, Mapbuf, MultiButtonEntry, \
-    MultiButtonEntryItem, \
+    MultiButtonEntryItem, Slideshow, SlideshowItem, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
