@@ -2,54 +2,17 @@
 #
 # Begin elementary.SlackBuild
 
-# Set some variables
 NAME=elementary
 BUILD=1jp
 CWD=$(pwd)
-TMP=${TMP:-/tmp}
-PKG=${TMP}/package-${NAME}
-LC_ALL=POSIX
 
-# Detecting arch
-if [ -z "${ARCH}" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i486 ;;
-    arm*) ARCH=arm ;;
-    *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
-# Set C flags, ECFLAGS could be used for extra optimization
-SCFLAGS="-O2 -fomit-frame-pointer -pipe"
-if [ "${ARCH}" = "i486" ]; then
-  SCFLAGS="${SCFLAGS} -march=i486 -mtune=i686 ${ECFLAGS}"
-  LIBDIR="/usr/lib"
-  MFLAGS="-j2"
-elif [ "${ARCH}" = "x86_64" ]; then
-  SCFLAGS="${SCFLAGS} -fPIC ${ECFLAGS}"
-  LIBDIR="/usr/lib64"
-  MFLAGS="-j3"
-fi
-
-# Create temporary folders
-if [ ! -d ${TMP} ]; then
-  mkdir -p ${TMP}
-fi
-rm -rf ${PKG}
-mkdir -p ${PKG}
+# Get functions
+. ../functions
+set_env
 
 # Go to source code
 cd ../../../${NAME}
-VERSION=r`svn info | grep Revision | cut -d ' ' -f2`
-
-# Correct ownership
-find . \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \;
-find . \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-# Better to clean before if possible
-if [ -f Makefile ]; then
-  make maintainer-clean
-fi
+prepare_src
 
 # Configure
 CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
@@ -59,39 +22,15 @@ CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
     --enable-install-examples \
     --build=${ARCH}-slackware-linux
 
-# Build
-make ${MFLAGS}
-
 # Install
-make DESTDIR=${PKG} install
-
-mkdir -p ${PKG}/usr/doc/${NAME}-${VERSION}
-install -m644 AUTHORS COPYING INSTALL README \
-  ${PKG}/usr/doc/${NAME}-${VERSION}/
+make_install
+install_doc AUTHORS COPYING INSTALL README
 
 # Add API doc
-make doc
-mkdir -p ${PKG}/usr/doc/EFL/api
-cp -r doc/html ${PKG}/usr/doc/EFL/api/${NAME}
-ln -s /usr/doc/EFL/api/${NAME} ${PKG}/usr/doc/${NAME}-${VERSION}/html
-
-# Install examples
-mkdir -p ${PKG}/usr/doc/EFL/examples
-mv ${PKG}/usr/share/${NAME}/examples ${PKG}/usr/doc/EFL/examples/${NAME}
-ln -s /usr/doc/EFL/examples/${NAME} ${PKG}/usr/doc/${NAME}-${VERSION}/examples
-
-# Clean
-make maintainer-clean
-find ${PKG}/usr/doc/EFL -type f -exec chmod 644 {} \;
-find ${PKG} | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
-find ${PKG} | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+api_doc
 
 # Build the package
-cd ${PKG}
-chown -R root:root .
-mkdir install
-install -m644 ${CWD}/slack-desc install/
-makepkg -l y -c n ${TMP}/${NAME}-${VERSION}-${ARCH}-${BUILD}.txz
-rm -rf ${PKG}
+post_clean
+pack_slack
 
 # End elementary.SlackBuild

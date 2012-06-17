@@ -9,6 +9,8 @@ TMP=${TMP:-/tmp}
 E17=${TMP}/slacke17-svn/
 LOG=${E17}/logs
 
+RELEASE=${RELEASE:-0}
+
 # check if we are in the right folder
 if [ ! -f ${CWD}/slacke17-svn-build.sh ]; then
   echo "**Error: I can't find the build script. Are you in the right folder?"
