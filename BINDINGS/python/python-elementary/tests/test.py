@@ -28,6 +28,7 @@ from test_inwin import inner_window_clicked
 from test_label import label_clicked
 from test_layout import layout_clicked
 from test_list import list_clicked, list2_clicked, list3_clicked
+from test_mapbuf import mapbuf_clicked
 from test_map import map_clicked
 from test_map2 import map_overlays_clicked
 from test_map3 import map_route_clicked
@@ -129,6 +130,9 @@ items = [("Booleans", [
             ("Radios", radio_clicked),
             ("Actionslider", actionslider_clicked),
             ("Dayselector", dayselector_clicked),
+        ]),
+         ("Stored Surface Buffer", [
+            ("Launcher", mapbuf_clicked),
         ]),
          ("Text", [
             ("Label", label_clicked),

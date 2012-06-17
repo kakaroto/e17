@@ -50,6 +50,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_layout_class.pxi \
 	elementary/elementary.c_elementary_list.pxi \
 	elementary/elementary.c_elementary_map.pxi \
+	elementary/elementary.c_elementary_mapbuf.pxi \
 	elementary/elementary.c_elementary_menu.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
@@ -98,6 +99,7 @@ examples_files = \
 	tests/test_label.py \
 	tests/test_layout.py \
 	tests/test_list.py \
+	tests/test_mapbuf.py \
 	tests/test_map.py \
 	tests/test_map2.py \
 	tests/test_map3.py \
@@ -119,6 +121,29 @@ examples_files = \
 
 examples_images_files = \
 	tests/images/icon_00.png \
+	tests/images/icon_01.png \
+	tests/images/icon_02.png \
+	tests/images/icon_03.png \
+	tests/images/icon_04.png \
+	tests/images/icon_05.png \
+	tests/images/icon_06.png \
+	tests/images/icon_07.png \
+	tests/images/icon_08.png \
+	tests/images/icon_09.png \
+	tests/images/icon_10.png \
+	tests/images/icon_11.png \
+	tests/images/icon_12.png \
+	tests/images/icon_13.png \
+	tests/images/icon_14.png \
+	tests/images/icon_15.png \
+	tests/images/icon_16.png \
+	tests/images/icon_17.png \
+	tests/images/icon_18.png \
+	tests/images/icon_19.png \
+	tests/images/icon_20.png \
+	tests/images/icon_21.png \
+	tests/images/icon_22.png \
+	tests/images/icon_23.png \
 	tests/images/insanely_huge_test_image.jpg \
 	tests/images/logo.png \
 	tests/images/logo_small.png \

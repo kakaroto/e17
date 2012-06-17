@@ -1678,7 +1678,14 @@ cdef extern from "Elementary.h":
     const_char_ptr           elm_map_name_address_get(Elm_Map_Name *name)
     void                     elm_map_name_region_get(Elm_Map_Name *name, double *lon, double *lat)
 
-    # Mapbuf                (XXX)
+    # Mapbuf                (api:DONE  cb:N/A  test:DONE  doc:DONE  py3:N/A)
+    Evas_Object             *elm_mapbuf_add(Evas_Object *parent)
+    void                     elm_mapbuf_enabled_set(Evas_Object *obj, Eina_Bool enabled)
+    Eina_Bool                elm_mapbuf_enabled_get(const_Evas_Object *obj)
+    void                     elm_mapbuf_smooth_set(Evas_Object *obj, Eina_Bool smooth)
+    Eina_Bool                elm_mapbuf_smooth_get(const_Evas_Object *obj)
+    void                     elm_mapbuf_alpha_set(Evas_Object *obj, Eina_Bool alpha)
+    Eina_Bool                elm_mapbuf_alpha_get(const_Evas_Object *obj)
 
     # Menu                  (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_menu_add(Evas_Object *parent)
