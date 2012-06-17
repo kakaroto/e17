@@ -29,7 +29,6 @@ cdef public class Map(object) [object PyEvasMap, type PyEvasMap_Type]:
         self.map = evas_map_new(count)
 
     def delete(self):
-        print "FREE WILLY"
         evas_map_free(self.map)
         self.map = NULL
 
