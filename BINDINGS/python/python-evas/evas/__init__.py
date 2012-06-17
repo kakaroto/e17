@@ -21,7 +21,7 @@ import evas.c_evas
 
 from evas.c_evas import Canvas, SmartObject, ClippedSmartObject, Rectangle, Line, \
      Image, FilledImage, Polygon, Text, Textblock, Rect, \
-     Box, EvasLoadError, \
+     Box, EvasLoadError, Map, \
      shutdown, render_method_lookup, render_method_list, \
      async_events_fd_get, async_events_process, \
      color_argb_premul, color_argb_unpremul, color_parse, \

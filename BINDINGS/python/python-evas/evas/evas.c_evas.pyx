@@ -699,6 +699,7 @@ class EvasObjectMeta(type):
 
 
 include "evas.c_evas_rect.pxi"
+include "evas.c_evas_map.pxi"
 include "evas.c_evas_canvas_callbacks.pxi"
 include "evas.c_evas_canvas.pxi"
 include "evas.c_evas_object_events.pxi"

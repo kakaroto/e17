@@ -2181,6 +2181,33 @@ cdef public class Object(object) [object PyEvasObject, type PyEvasObject_Type]:
         def __get__(self):
             return self.parent_get()
 
+    def map_enabled_set(self, enabled):
+        evas_object_map_enable_set(self.obj, bool(enabled))
+    
+    def map_enabled_get(self):
+        return bool(evas_object_map_enable_get(self.obj))
+
+    property map_enabled:
+        def __get__(self):
+            return bool(evas_object_map_enable_get(self.obj))
+        def __set__(self, value):
+            evas_object_map_enable_set(self.obj, bool(value))
+    
+    def map_set(self, Map map):
+        evas_object_map_set(self.obj, map.map)
+
+    def map_get(self):
+        # TODO dunno how to do this in a sane way
+        #return evas_object_map_get(self.obj)
+        return None
+
+    property map:
+        def __get__(self):
+            return None # TODO
+        def __set__(self, Map map):
+            evas_object_map_set(self.obj, map.map)
+    
+    
 
 cdef extern from "Evas.h": # hack to force type to be known
     cdef PyTypeObject PyEvasObject_Type # hack to install metaclass

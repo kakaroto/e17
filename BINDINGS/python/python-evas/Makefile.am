@@ -28,6 +28,7 @@ c_evas_deps = \
 	evas/evas.c_evas_object_textblock.pxi \
 	evas/evas.c_evas_object_text.pxi \
 	evas/evas.c_evas_rect.pxi \
+	evas/evas.c_evas_map.pxi \
 	include/evas/evas_object_image_python_extras.h
 
 examples_files = \
