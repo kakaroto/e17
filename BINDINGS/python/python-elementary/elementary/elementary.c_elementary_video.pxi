@@ -26,7 +26,7 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_video_add(parent.obj))
 
@@ -73,8 +73,8 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
         @rtype: emotion.Object
 
         """
-        cdef evas.c_evas.Evas_Object *o = elm_video_emotion_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
+        cdef Evas_Object *o = elm_video_emotion_get(self.obj)
+        return Object_from_instance(o)
 
     property emotion:
         """The underlying Emotion object.
@@ -342,7 +342,7 @@ cdef public class Player(LayoutClass) [object PyElementaryPlayer, type PyElement
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_player_add(parent.obj))
 

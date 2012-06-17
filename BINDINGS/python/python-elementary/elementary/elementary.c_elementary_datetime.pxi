@@ -178,7 +178,7 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
             signal is sent.
 
     """
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_datetime_add(parent.obj))
 

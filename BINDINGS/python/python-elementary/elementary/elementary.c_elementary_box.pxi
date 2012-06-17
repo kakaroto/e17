@@ -107,7 +107,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """Add a new box to the parent
 
         By default, the box will be in vertical mode and non-homogeneous.
@@ -204,7 +204,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         def __set__(self, value):
             elm_box_homogeneous_set(self.obj, value)
 
-    def pack_start(self, c_evas.Object obj):
+    def pack_start(self, evasObject obj):
         """Add an object to the beginning of the pack list.
 
         Pack C{subobj} into the box, placing it first in the list of
@@ -226,7 +226,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         """
         elm_box_pack_start(self.obj, obj.obj)
 
-    def pack_end(self, c_evas.Object obj):
+    def pack_end(self, evasObject obj):
         """Add an object at the end of the pack list.
 
         Pack C{subobj} into the box, placing it last in the list of
@@ -248,7 +248,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         """
         elm_box_pack_end(self.obj, obj.obj)
 
-    def pack_before(self, c_evas.Object obj, c_evas.Object before):
+    def pack_before(self, evasObject obj, evasObject before):
         """Adds an object to the box before the indicated object.
 
         This will add the C{subobj} to the box indicated before the object
@@ -271,7 +271,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         """
         elm_box_pack_before(self.obj, obj.obj, before.obj)
 
-    def pack_after(self, c_evas.Object obj, c_evas.Object after):
+    def pack_after(self, evasObject obj, evasObject after):
         """Adds an object to the box after the indicated object.
 
         This will add the C{subobj} to the box indicated after the object
@@ -306,7 +306,7 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         """
         elm_box_clear(self.obj)
 
-    def unpack(self, c_evas.Object obj):
+    def unpack(self, evasObject obj):
         """Unpack a box item.
 
         Remove the object given by C{subobj} from the box without
@@ -346,15 +346,15 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
         @rtype: tuple of L{Object}s
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         cdef Object obj
-        cdef evas.c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
 
         ret = []
         lst = elm_box_children_get(self.obj)
         while lst:
-            o = <c_evas.Evas_Object *> lst.data
-            obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+            o = <Evas_Object *> lst.data
+            obj = <Object>evas_object_data_get(o, "python-evas")
             ret.append(obj)
             lst = lst.next
         return ret
@@ -369,15 +369,15 @@ cdef public class Box(Object) [object PyElementaryBox, type PyElementaryBox_Type
 
         """
         def __get__(self):
-            cdef c_evas.Evas_Object *o
+            cdef Evas_Object *o
             cdef Object obj
-            cdef evas.c_evas.const_Eina_List *lst
+            cdef const_Eina_List *lst
 
             ret = []
             lst = elm_box_children_get(self.obj)
             while lst:
-                o = <c_evas.Evas_Object *> lst.data
-                obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+                o = <Evas_Object *> lst.data
+                obj = <Object>evas_object_data_get(o, "python-evas")
                 ret.append(obj)
                 lst = lst.next
             return ret

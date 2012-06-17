@@ -16,34 +16,25 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _diskselector_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _diskselector_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
     try:
         (hoversel, callback, it, a, ka) = <object>cbt
         callback(hoversel, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
-cdef void _diskselector_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _diskselector_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
-
-def _diskselector_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        cbt = <object>data
-        return cbt[2]
 
 cdef class DiskselectorItem(ObjectItem):
 
     """An item for the Diskselector widget."""
 
-    def __init__(self, c_evas.Object diskselector, label, c_evas.Object icon=None, callback=None, *args, **kargs):
-        cdef c_evas.Evas_Object* icon_obj
+    def __init__(self, evasObject diskselector, label, evasObject icon=None, callback=None, *args, **kargs):
+        cdef Evas_Object* icon_obj
         cdef void* cbdata = NULL
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
         cb = NULL
 
         if icon is not None:
@@ -105,19 +96,8 @@ cdef class DiskselectorItem(ObjectItem):
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *item
-            cdef void *data
-
-            item = elm_diskselector_item_prev_get(self.item)
-            if item == NULL:
-                return None
-
-            data = elm_object_item_data_get(item)
-            if data == NULL:
-                return None
-
-            (obj, callback, it, a, ka) = <object>data
-            return it
+            cdef Elm_Object_Item *it = elm_diskselector_item_prev_get(self.item)
+            return _object_item_to_python(it)
 
     property next:
         """Get the item after C{item} in diskselector.
@@ -135,31 +115,8 @@ cdef class DiskselectorItem(ObjectItem):
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *item
-            cdef void *data
-
-            item = elm_diskselector_item_next_get(self.item)
-            if item == NULL:
-                return None
-
-            data = elm_object_item_data_get(item)
-            if data == NULL:
-                return None
-
-            (obj, callback, it, a, ka) = <object>data
-            return it
-
-cdef _elm_diskselector_item_to_python(Elm_Object_Item *it):
-    cdef void *data
-    cdef object prm
-    if it == NULL:
-        return None
-    data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    prm = <object>data
-    return prm[2]
-
+            cdef Elm_Object_Item *it = elm_diskselector_item_next_get(self.item)
+            return _object_item_to_python(it)
 
 cdef public class Diskselector(Object) [object PyElementaryDiskselector, type PyElementaryDiskselector_Type]:
 
@@ -191,7 +148,7 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_diskselector_add(parent.obj))
 
@@ -322,7 +279,7 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
         """
         def __get__(self):
             cdef Elm_Object_Item *it
-            cdef c_evas.const_Eina_List *lst
+            cdef const_Eina_List *lst
 
             lst = elm_diskselector_items_get(self.obj)
             ret = []
@@ -330,12 +287,12 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
             while lst:
                 it = <Elm_Object_Item *>lst.data
                 lst = lst.next
-                o = _elm_diskselector_item_to_python(it)
+                o = _object_item_to_python(it)
                 if o is not None:
                     ret_append(o)
             return ret
 
-    def item_append(self, label, c_evas.Object icon = None, callback = None, *args, **kwargs):
+    def item_append(self, label, evasObject icon = None, callback = None, *args, **kwargs):
         """Appends a new item to the diskselector object.
 
         A new item will be created and appended to the diskselector, i.e.,
@@ -368,7 +325,7 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
         @type label: string
         @param icon: The icon object to use at left side of the item. An
             icon can be any Evas object, but usually it is an L{Icon}.
-        @type icon: L{c_evas.Object}
+        @type icon: L{evasObject}
         @param func: The function to call when the item is selected.
         @type func: function
 
@@ -394,17 +351,8 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *obj
-            cdef void *data
-            obj = elm_diskselector_selected_item_get(self.obj)
-            if obj == NULL:
-                return None
-            data = elm_object_item_data_get(obj)
-            if data == NULL:
-                return None
-            else:
-                (o, callback, it, a, ka) = <object>data
-                return it
+            cdef Elm_Object_Item *it = elm_diskselector_selected_item_get(self.obj)
+            return _object_item_to_python(it)
 
     property first_item:
         """Get the first item of the diskselector.
@@ -419,17 +367,8 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *obj
-            cdef void *data
-            obj = elm_diskselector_first_item_get(self.obj)
-            if obj == NULL:
-                return None
-            data = elm_object_item_data_get(obj)
-            if data == NULL:
-                return None
-            else:
-                (o, callback, it, a, ka) = <object>data
-                return it
+            cdef Elm_Object_Item *it = elm_diskselector_first_item_get(self.obj)
+            return _object_item_to_python(it)
 
     property last_item:
         """Get the last item of the diskselector.
@@ -444,24 +383,15 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *obj
-            cdef void *data
-            obj = elm_diskselector_last_item_get(self.obj)
-            if obj == NULL:
-                return None
-            data = elm_object_item_data_get(obj)
-            if data == NULL:
-                return None
-            else:
-                (o, callback, it, a, ka) = <object>data
-                return it
+            cdef Elm_Object_Item *it = elm_diskselector_last_item_get(self.obj)
+            return _object_item_to_python(it)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """When item is selected, i.e. scroller stops."""
-        self._callback_add_full("selected", _diskselector_item_conv, func, *args, **kwargs)
+        self._callback_add_full("selected", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected", _diskselector_item_conv, func)
+        self._callback_del_full("selected", _cb_object_item_conv, func)
 
     def callback_scroll_anim_start_add(self, func, *args, **kwargs):
         """Scrolling animation has started."""

@@ -38,7 +38,7 @@ cdef public class Flip(Object) [object PyElementaryFlip, type PyElementaryFlip_T
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """Add a new flip to the parent
 
         @param parent: The parent object

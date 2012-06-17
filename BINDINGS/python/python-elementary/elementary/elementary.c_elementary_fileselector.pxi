@@ -16,13 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def _fs_callback_conv(long addr):
-    cdef const_char_ptr s = <const_char_ptr>addr
-    if s == NULL:
-        return None
-    else:
-        return s
-
 cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, type PyElementaryFileselector_Type]:
 
     """
@@ -65,7 +58,7 @@ cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, ty
 
     cdef object _cbs
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """Add a new file selector widget to the given parent Elementary
         (container) object
 
@@ -421,29 +414,29 @@ cdef public class Fileselector(LayoutClass) [object PyElementaryFileselector, ty
         """The user has clicked on a file (when not in folders-only mode) or
         directory (when in folders-only mode). Parameter C{event_info}
         contains the selected file or directory."""
-        self._callback_add_full("selected", _fs_callback_conv,
+        self._callback_add_full("selected", _cb_string_conv,
                                 func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected", _fs_callback_conv, func)
+        self._callback_del_full("selected", _cb_string_conv, func)
 
     def callback_directory_open_add(self, func, *args, **kwargs):
         """The list has been populated with new content (C{event_info} is
         the directory's path)."""
-        self._callback_add_full("directory,open", _fs_callback_conv,
+        self._callback_add_full("directory,open", _cb_string_conv,
                                 func, *args, **kwargs)
 
     def callback_directory_open_del(self, func):
-        self._callback_del_full("directory,open", _fs_callback_conv, func)
+        self._callback_del_full("directory,open", _cb_string_conv, func)
 
     def callback_done_add(self, func, *args, **kwargs):
         """The user has clicked on the "ok" or "cancel" buttons
         (C{event_info} is a pointer to the selection's path)."""
-        self._callback_add_full("done", _fs_callback_conv,
+        self._callback_add_full("done", _cb_string_conv,
                                 func, *args, **kwargs)
 
     def callback_done_del(self, func):
-        self._callback_del_full("done", _fs_callback_conv, func)
+        self._callback_del_full("done", _cb_string_conv, func)
 
 _elm_widget_type_register("fileselector", Fileselector)
 

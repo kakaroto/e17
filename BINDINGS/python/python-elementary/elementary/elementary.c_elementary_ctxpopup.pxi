@@ -16,7 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _ctxpopup_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _ctxpopup_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
     try:
         (ctxpopup, callback, it, a, ka) = <object>cbt
         callback(ctxpopup, it, *a, **ka)
@@ -24,10 +24,10 @@ cdef void _ctxpopup_callback(void *cbt, c_evas.Evas_Object *obj, void *event_inf
         traceback.print_exc()
 
 cdef class CtxpopupItem(ObjectItem):
-    def __init__(self, c_evas.Object ctxpopup, label, c_evas.Object icon = None, callback = None, *args, **kargs):
-        cdef c_evas.Evas_Object* icon_obj
+    def __init__(self, evasObject ctxpopup, label, evasObject icon = None, callback = None, *args, **kargs):
+        cdef Evas_Object* icon_obj
         cdef void* cbdata = NULL
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
         icon_obj = NULL
         cb = NULL
 
@@ -70,11 +70,11 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_ctxpopup_add(parent.obj))
 
-    def hover_parent_set(self, c_evas.Object parent):
+    def hover_parent_set(self, evasObject parent):
         """Set the Ctxpopup's parent
 
         Set the parent object.
@@ -97,7 +97,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
 
         """
         cdef Evas_Object *obj = elm_ctxpopup_hover_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        return Object_from_instance(obj)
 
     property parent:
         """Ctxpopup's parent
@@ -107,8 +107,8 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         """
         def __get__(self):
             cdef Evas_Object *obj = elm_ctxpopup_hover_parent_get(self.obj)
-            return evas.c_evas._Object_from_instance(<long> obj)
-        def __set__(self, c_evas.Object parent):
+            return Object_from_instance(obj)
+        def __set__(self, evasObject parent):
             elm_ctxpopup_hover_parent_set(self.obj, parent.obj)
 
     def clear(self):
@@ -146,7 +146,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         def __set__(self, horizontal):
             elm_ctxpopup_horizontal_set(self.obj, horizontal)
 
-    def item_append(self, label, c_evas.Object icon = None, func = None, *args, **kwargs):
+    def item_append(self, label, evasObject icon = None, func = None, *args, **kwargs):
         """Add a new item to a ctxpopup object.
 
         @warning: Ctxpopup can't hold both an item list and a content at the

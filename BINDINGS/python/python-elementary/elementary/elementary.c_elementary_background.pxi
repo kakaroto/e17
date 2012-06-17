@@ -33,7 +33,7 @@ cdef public class Background(LayoutClass) [object PyElementaryBackground, type P
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """Initialize the background
 
         @param parent: Parent window

@@ -16,6 +16,10 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from evas.c_evas cimport Evas
+from evas.c_evas cimport evas_object_evas_get
+from evas.c_evas cimport Canvas_from_instance
+
 cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWindow_Type]:
 
     """The window class of Elementary.
@@ -102,12 +106,12 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def __init__(self, name, type):
         self._set_obj(elm_win_add(NULL, _cfruni(name), type))
 
-        cdef c_evas.Evas *e
-        e = c_evas.evas_object_evas_get(self.obj)
-        canvas = evas.c_evas._Canvas_from_instance(<long>e)
-        c_evas.Object.__init__(self, canvas)
+        cdef Evas *e
+        e = evas_object_evas_get(self.obj)
+        canvas = Canvas_from_instance(e)
+        evasObject.__init__(self, canvas)
 
-    def resize_object_add(self, c_evas.Object subobj):
+    def resize_object_add(self, evasObject subobj):
         """Add C{subobj} as a resize object of the window.
 
         Setting an object as a resize object of the window means that the
@@ -136,7 +140,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         """
         elm_win_resize_object_add(self.obj, subobj.obj)
 
-    def resize_object_del(self, c_evas.Object subobj):
+    def resize_object_del(self, evasObject subobj):
         """Delete C{subobj} as a resize object of the window.
 
         This function removes the object C{subobj} from the resize objects of
@@ -234,7 +238,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         def __set__(self, role):
             self.role_set(role)
 
-    def icon_object_set(self, c_evas.Object icon):
+    def icon_object_set(self, evasObject icon):
         """Set the object to represent the window icon
 
         This sets an object that will be used as the icon for the window. The exact
@@ -260,8 +264,8 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         @rtype: L{Image}
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_win_icon_object_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = <Evas_Object *>elm_win_icon_object_get(self.obj)
+        return Object_from_instance(obj)
 
     property icon_object:
         def __get__(self):
@@ -963,7 +967,7 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         data, save the image to a file, etc.
 
         @return: The inlined image object, or None if none exists
-        @rtype: c_evas.Object
+        @rtype: evasObject
 
         """
         cdef Object o
@@ -1328,10 +1332,10 @@ cdef public class StandardWindow(Window) [object PyElementaryStandardWindow, typ
     def __init__(self, name, title):
         self._set_obj(elm_win_util_standard_add(_cfruni(name), _cfruni(title)))
 
-        cdef c_evas.Evas *e
-        e = c_evas.evas_object_evas_get(self.obj)
-        canvas = evas.c_evas._Canvas_from_instance(<long>e)
-        c_evas.Object.__init__(self, canvas)
+        cdef Evas *e
+        e = evas_object_evas_get(self.obj)
+        canvas = Canvas_from_instance(e)
+        evasObject.__init__(self, canvas)
 
 _elm_widget_type_register("standardwin", StandardWindow)
 

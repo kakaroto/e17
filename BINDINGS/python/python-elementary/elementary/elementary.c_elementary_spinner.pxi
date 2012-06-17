@@ -45,7 +45,7 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_spinner_add(parent.obj))
 

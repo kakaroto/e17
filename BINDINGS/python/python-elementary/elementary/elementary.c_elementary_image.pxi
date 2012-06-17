@@ -16,13 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def _image_callback_conv(long addr):
-    cdef const_char_ptr s = <const_char_ptr>addr
-    if s == NULL:
-        return None
-    else:
-        return s
-
 cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImage_Type]:
 
     """An Elementary image object allows one to load and display an image
@@ -50,7 +43,7 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_image_add(parent.obj))
 
@@ -243,7 +236,7 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         @rtype: tuple of bools
 
         """
-        cdef evas.c_evas.Eina_Bool size_up, size_down
+        cdef Eina_Bool size_up, size_down
         elm_image_resizable_get(self.obj, &size_up, &size_down)
         return (size_up, size_down)
 
@@ -472,9 +465,11 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         @rtype: evas.Image
 
         """
-        cdef c_evas.Evas_Object *o
-        o = elm_image_object_get(self.obj)
-        return <Object>o
+        pass
+        # XXX: This is not right at all.
+        #cdef Evas_Object *o
+        #o = elm_image_object_get(self.obj)
+        #return <Object>o
 
     def aspect_fixed_set(self, fixed):
         """Set whether the original aspect ratio of the image should be kept on resize.
@@ -679,13 +674,11 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
     def callback_drop_add(self, func, *args, **kwargs):
         """This is called when a user has dropped an image typed object onto
         the object in question -- the event info argument is the path to that
-        image file.
-
-        """
-        self._callback_add_full("drop", _image_callback_conv, func, *args, **kwargs)
+        image file."""
+        self._callback_add_full("drop", _cb_string_conv, func, *args, **kwargs)
 
     def callback_drop_del(self, func):
-        self._callback_del_full("drop", _image_callback_conv, func)
+        self._callback_del_full("drop", _cb_string_conv, func)
 
 _elm_widget_type_register("image", Image)
 

@@ -16,14 +16,14 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _toolbar_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _toolbar_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
     try:
         (toolbar, callback, it, a, ka) = <object>cbt
         callback(toolbar, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
-cdef void _toolbar_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _toolbar_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
@@ -31,11 +31,11 @@ cdef class ToolbarItem(ObjectItem):
 
     """An item for the toolbar."""
 
-    def __init__(self, c_evas.Object toolbar, icon, label,
+    def __init__(self, evasObject toolbar, icon, label,
                  callback, *args, **kargs):
-        cdef c_evas.Evas_Object *ic = NULL
+        cdef Evas_Object *ic = NULL
         cdef void* cbdata = NULL
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
         cb = NULL
 
         if callback:
@@ -63,7 +63,7 @@ cdef class ToolbarItem(ObjectItem):
         """
         cdef Elm_Object_Item *it
         it = elm_toolbar_item_next_get(self.item)
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     property next:
         def __get__(self):
@@ -82,7 +82,7 @@ cdef class ToolbarItem(ObjectItem):
         """
         cdef Elm_Object_Item *it
         it = elm_toolbar_item_prev_get(self.item)
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     property prev:
         def __get__(self):
@@ -206,8 +206,8 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_toolbar_item_object_get(self.item)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_toolbar_item_object_get(self.item)
+        return Object_from_instance(obj)
 
     def icon_object_get(self):
         """Get the icon object of item.
@@ -219,8 +219,8 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: L{Icon}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_toolbar_item_icon_object_get(self.item)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_toolbar_item_icon_object_get(self.item)
+        return Object_from_instance(obj)
 
     #TODO def icon_memfile_set(self, img, size, format, key):
         """Set the icon associated with item to an image in a binary buffer.
@@ -338,7 +338,7 @@ cdef class ToolbarItem(ObjectItem):
         @return: Item's menu object or C{None} on failure.
 
         """
-        cdef c_evas.Evas_Object *menu
+        cdef Evas_Object *menu
         menu = elm_toolbar_item_menu_get(self.item)
         if menu == NULL:
             return None
@@ -374,17 +374,6 @@ cdef class ToolbarItem(ObjectItem):
     #TODO def state_prev(self):
         #return elm_toolbar_item_state_prev(self.item)
 
-cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
-    cdef void *data
-    cdef object prm
-    if it == NULL:
-        return None
-    data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    prm = <object>data
-    return prm[2]
-
 cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementaryToolbar_Type]:
 
     """A toolbar is a widget that displays a list of items inside a box. It
@@ -409,7 +398,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_toolbar_add(parent.obj))
 
@@ -626,7 +615,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         """
         cdef Elm_Object_Item *it
         it = elm_toolbar_first_item_get(self.obj)
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     property first_item:
         def __get__(self):
@@ -644,7 +633,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         """
         cdef Elm_Object_Item *it
         it = elm_toolbar_last_item_get(self.obj)
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     property last_item:
         def __get__(self):
@@ -660,7 +649,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
 
         """
         cdef Elm_Object_Item *it = elm_toolbar_item_find_by_label(self.obj, _cfruni(label))
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     def selected_item_get(self):
         """Get the selected item.
@@ -678,7 +667,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         """
         cdef Elm_Object_Item *it
         it = elm_toolbar_selected_item_get(self.obj)
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     property selected_item:
         def __get__(self):
@@ -696,7 +685,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         """
         cdef Elm_Object_Item *it
         it = elm_toolbar_more_item_get(self.obj)
-        return _elm_toolbar_item_to_python(it)
+        return _object_item_to_python(it)
 
     def shrink_mode_set(self, mode):
         """Set the shrink state of toolbar.
@@ -764,7 +753,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         def __get__(self):
             return elm_toolbar_homogeneous_get(self.obj)
 
-    def menu_parent_set(self, c_evas.Object parent):
+    def menu_parent_set(self, evasObject parent):
         """Set the parent object of the toolbar items' menus.
 
         Each item can be set as item menu, with L{ToolbarItem.menu_set()}.
@@ -790,8 +779,8 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *parent = elm_toolbar_menu_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> parent)
+        cdef Evas_Object *parent = elm_toolbar_menu_parent_get(self.obj)
+        return Object_from_instance(parent)
 
     property menu_parent:
         def __get__(self):

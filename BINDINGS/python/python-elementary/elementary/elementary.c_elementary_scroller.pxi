@@ -52,7 +52,7 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_scroller_add(parent.obj))
 
@@ -167,7 +167,7 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         @rtype: tuple of Evas_Coord (int)
 
         """
-        cdef c_evas.Evas_Coord x, y, w, h
+        cdef Evas_Coord x, y, w, h
         elm_scroller_region_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
 
@@ -180,7 +180,7 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         @rtype: tuple of Evas_Coord (int)
 
         """
-        cdef c_evas.Evas_Coord w, h
+        cdef Evas_Coord w, h
         elm_scroller_child_size_get(self.obj, &w, &h)
         return (w, h)
 
@@ -215,7 +215,7 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         @rtype: (bool, bool)
 
         """
-        cdef c_evas.Eina_Bool h, v
+        cdef Eina_Bool h, v
         elm_scroller_bounce_get(self.obj, &h, &v)
         return (h, v)
 

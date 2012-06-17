@@ -36,7 +36,7 @@ cdef public class Conformant(LayoutClass) [object PyElementaryConformant, type P
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_conformant_add(parent.obj))
 

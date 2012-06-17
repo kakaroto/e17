@@ -31,7 +31,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_grid_add(parent.obj))
 
@@ -57,7 +57,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_size_get(self.obj, &w, &h)
         return (w, h)
 
-    def pack(self, c_evas.Object subobj, x, y, w, h):
+    def pack(self, evasObject subobj, x, y, w, h):
         """
         Pack child at given position and size
 
@@ -75,7 +75,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         elm_grid_pack(self.obj, subobj.obj, x, y, w, h)
 
-    def unpack(self, c_evas.Object subobj):
+    def unpack(self, evasObject subobj):
         """Unpack a child from a grid object
 
         @param subobj: The child to unpack
@@ -94,7 +94,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         elm_grid_clear(self.obj, clear)
 
-    def pack_set(c_evas.Object subobj, x, y, w, h):
+    def pack_set(evasObject subobj, x, y, w, h):
         """Set packing of an existing child at to position and size
 
         @param subobj: The child to set packing of
@@ -111,7 +111,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         elm_grid_pack_set(subobj.obj, x, y, w, h)
 
-    def pack_get(c_evas.Object subobj):
+    def pack_get(evasObject subobj):
         """Get packing of a child
 
         @param subobj: The child to query
@@ -137,15 +137,15 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         @rtype: tuple of L{Object}s
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         cdef Object obj
-        cdef evas.c_evas.Eina_List *lst
+        cdef Eina_List *lst
 
         ret = []
         lst = elm_box_children_get(self.obj)
         while lst:
-            o = <c_evas.Evas_Object *> lst.data
-            obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+            o = <Evas_Object *> lst.data
+            obj = <Object>evas_object_data_get(o, "python-evas")
             ret.append(obj)
             lst = lst.next
         return ret

@@ -16,6 +16,7 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from evas.c_evas cimport eina_list_free, eina_list_append
 
 cdef _elm_map_overlay_to_python(Elm_Map_Overlay *ov):
     cdef void *data
@@ -30,7 +31,7 @@ cdef _elm_map_overlay_to_python(Elm_Map_Overlay *ov):
 cdef void _map_overlay_get_callback(void *data, Evas_Object *map, Elm_Map_Overlay *overlay) with gil:
     cdef Object obj
 
-    obj = <Object>c_evas.evas_object_data_get(map, "python-evas")
+    obj = <Object>evas_object_data_get(map, "python-evas")
     try:
         (func, args, kwargs) = <object>data
         func(obj, _elm_map_overlay_to_python(overlay), *args, **kwargs)
@@ -44,7 +45,7 @@ cdef void _map_overlay_del_cb(void *data, Evas_Object *map, Elm_Map_Overlay *ove
 cdef void _map_route_callback(void *data, Evas_Object *map, Elm_Map_Route *route) with gil:
     cdef Object obj
 
-    obj = <Object>c_evas.evas_object_data_get(map, "python-evas")
+    obj = <Object>evas_object_data_get(map, "python-evas")
     (proute, func, args, kwargs) = <object>data
     try:
         func(obj, proute, *args, **kwargs)
@@ -56,7 +57,7 @@ cdef void _map_route_callback(void *data, Evas_Object *map, Elm_Map_Route *route
 cdef void _map_name_callback(void *data, Evas_Object *map, Elm_Map_Name *name) with gil:
     cdef Object obj
 
-    obj = <Object>c_evas.evas_object_data_get(map, "python-evas")
+    obj = <Object>evas_object_data_get(map, "python-evas")
     (pname, func, args, kwargs) = <object>data
     try:
         func(obj, pname, *args, **kwargs)
@@ -72,14 +73,14 @@ cdef class MapRoute(object):
     def __cinit__(self):
         self.route = NULL
 
-    def __init__(self, c_evas.Object map,
+    def __init__(self, evasObject map,
                        Elm_Map_Route_Type type, Elm_Map_Route_Method method,
                        double flon, double flat, double tlon, double tlat,
                        func, *args, **kwargs):
 
         if not callable(func):
             raise TypeError("func must be callable")
-        
+
         data = (self, func, args, kwargs)
         self.route = elm_map_route_add(map.obj, type, method,
                                        flon, flat, tlon, tlat,
@@ -120,11 +121,11 @@ cdef class MapName(object):
     def __cinit__(self):
         self.name = NULL
 
-    def __init__(self, c_evas.Object map, address, double lon, double lat,
+    def __init__(self, evasObject map, address, double lon, double lat,
                        func, *args, **kwargs):
         if not callable(func):
             raise TypeError("func must be callable")
-        
+
         data = (self, func, args, kwargs)
         if address:
             self.name = elm_map_name_add(map.obj, address, lon, lat,
@@ -166,7 +167,7 @@ cdef class MapOverlay(object):
         self.overlay = NULL
         self.cb_get_data = NULL
 
-    def __init__(self, c_evas.Object Map, double lon, double lat):
+    def __init__(self, evasObject Map, double lon, double lat):
         self.overlay = elm_map_overlay_add(Map.obj, lon, lat)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -223,7 +224,7 @@ cdef class MapOverlay(object):
             return self.paused_get()
         def __set__(self, value):
             self.paused_set(value)
-    
+
     def visible_get(self):
         return bool(elm_map_overlay_visible_get(self.overlay))
 
@@ -235,8 +236,8 @@ cdef class MapOverlay(object):
         elm_map_overlay_content_set(self.overlay, content.obj)
 
     def content_get(self):
-        cdef c_evas.const_Evas_Object *obj = elm_map_overlay_content_get(self.overlay)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = <Evas_Object *>elm_map_overlay_content_get(self.overlay)
+        return Object_from_instance(obj)
 
     property content:
         def __get__(self):
@@ -248,8 +249,8 @@ cdef class MapOverlay(object):
         elm_map_overlay_icon_set(self.overlay, icon.obj)
 
     def icon_get(self):
-        cdef c_evas.const_Evas_Object *obj = elm_map_overlay_icon_get(self.overlay)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = <Evas_Object *>elm_map_overlay_icon_get(self.overlay)
+        return Object_from_instance(obj)
 
     property icon:
         def __get__(self):
@@ -284,10 +285,10 @@ cdef class MapOverlay(object):
             return self.color_get()
         def __set__(self, value):
             self.color_set(*value)
-    
+
     def show(self):
         elm_map_overlay_show(self.overlay)
-    
+
     def callback_clicked_set(self, func, *args, **kwargs):
         if not callable(func):
             raise TypeError("func must be callable")
@@ -306,7 +307,7 @@ cdef class MapOverlay(object):
 
 cdef class MapOverlayClass(MapOverlay):
 
-    def __init__(self, c_evas.Object Map):
+    def __init__(self, evasObject Map):
         self.overlay = elm_map_overlay_class_add(Map.obj)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -351,8 +352,8 @@ cdef class MapOverlayClass(MapOverlay):
 
 
 cdef class MapOverlayBubble(MapOverlay):
-    
-    def __init__(self, c_evas.Object Map):
+
+    def __init__(self, evasObject Map):
         self.overlay = elm_map_overlay_bubble_add(Map.obj)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -361,7 +362,7 @@ cdef class MapOverlayBubble(MapOverlay):
     def follow(self, MapOverlay overlay):
         elm_map_overlay_bubble_follow(self.overlay, overlay.overlay)
 
-    def content_append(self, c_evas.Object content):
+    def content_append(self, evasObject content):
         elm_map_overlay_bubble_content_append(self.overlay, content.obj)
 
     def content_clear(self):
@@ -370,7 +371,7 @@ cdef class MapOverlayBubble(MapOverlay):
 
 cdef class MapOverlayLine(MapOverlay):
 
-    def __init__(self, c_evas.Object Map, flon, flat, tlot, tlat):
+    def __init__(self, evasObject Map, flon, flat, tlot, tlat):
         self.overlay = elm_map_overlay_line_add(Map.obj, flon, flat, tlot, tlat)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -379,7 +380,7 @@ cdef class MapOverlayLine(MapOverlay):
 
 cdef class MapOverlayPolygon(MapOverlay):
 
-    def __init__(self, c_evas.Object Map):
+    def __init__(self, evasObject Map):
         self.overlay = elm_map_overlay_polygon_add(Map.obj)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -391,7 +392,7 @@ cdef class MapOverlayPolygon(MapOverlay):
 
 cdef class MapOverlayCircle(MapOverlay):
 
-    def __init__(self, c_evas.Object Map, lon, lat, radius):
+    def __init__(self, evasObject Map, lon, lat, radius):
         self.overlay = elm_map_overlay_circle_add(Map.obj, lon, lat, radius)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -400,7 +401,7 @@ cdef class MapOverlayCircle(MapOverlay):
 
 cdef class MapOverlayScale(MapOverlay):
 
-    def __init__(self, c_evas.Object Map, x, y):
+    def __init__(self, evasObject Map, x, y):
         self.overlay = elm_map_overlay_scale_add(Map.obj, x, y)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -409,7 +410,7 @@ cdef class MapOverlayScale(MapOverlay):
 
 cdef class MapOverlayRoute(MapOverlay):
 
-    def __init__(self, c_evas.Object Map, MapRoute route):
+    def __init__(self, evasObject Map, MapRoute route):
         self.overlay = elm_map_overlay_route_add(Map.obj, route.route)
         elm_map_overlay_data_set(self.overlay, <void *>self)
         elm_map_overlay_del_cb_set(self.overlay, _map_overlay_del_cb, <void *>self)
@@ -418,7 +419,7 @@ cdef class MapOverlayRoute(MapOverlay):
 
 cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]:
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_map_add(parent.obj))
 
@@ -433,7 +434,7 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
             return self.zoom_get()
         def __set__(self, value):
             self.zoom_set(value)
-    
+
     def zoom_mode_set(self, mode):
         elm_map_zoom_mode_set(self.obj, mode)
 
@@ -445,7 +446,7 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
             return self.zoom_mode_get()
         def __set__(self, value):
             self.zoom_mode_set(value)
-    
+
     def zoom_min_set(self, zoom):
         elm_map_zoom_min_set(self.obj, zoom)
 
@@ -457,7 +458,7 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
             return self.zoom_min_get()
         def __set__(self, value):
             self.zoom_min_set(value)
-    
+
     def zoom_max_set(self, zoom):
         elm_map_zoom_max_set(self.obj, zoom)
 
@@ -506,7 +507,7 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
             return self.paused_get()
         def __set__(self, value):
             self.paused_set(value)
-    
+
     def rotate_set(self, degree, cx, cy):
         elm_map_rotate_set(self.obj, degree, cx, cy)
 
@@ -574,9 +575,9 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
         lst = NULL
         for overlay in overlays:
             ov = <MapOverlay>overlay
-            lst = c_evas.eina_list_append(lst, ov.overlay)
+            lst = eina_list_append(lst, ov.overlay)
         elm_map_overlays_show(lst)
-        c_evas.eina_list_free(lst)
+        eina_list_free(lst)
 
     def overlay_bubble_add(self):
         return MapOverlayBubble(self)
@@ -649,19 +650,19 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
 
     def callback_clicked_double_add(self, func, *args, **kwargs):
         self._callback_add("clicked,double", func, *args, **kwargs)
-    
+
     def callback_clicked_double_del(self, func):
         self._callback_del("clicked,double", func)
 
     def callback_press_add(self, func, *args, **kwargs):
         self._callback_add("press", func, *args, **kwargs)
-    
+
     def callback_press_del(self, func):
         self._callback_del("press", func)
 
     def callback_longpressed_add(self, func, *args, **kwargs):
         self._callback_add("longpressed", func, *args, **kwargs)
-    
+
     def callback_longpressed_del(self, func):
         self._callback_del("longpressed", func)
 
@@ -673,115 +674,115 @@ cdef public class Map(Object)[object PyElementaryMap, type PyElementaryMap_Type]
 
     def callback_scroll_drag_start_add(self, func, *args, **kwargs):
         self._callback_add("scroll,drag,start", func, *args, **kwargs)
-    
+
     def callback_scroll_drag_start_del(self, func):
         self._callback_del("scroll,drag,start", func)
 
     def callback_scroll_drag_stop_add(self, func, *args, **kwargs):
         self._callback_add("scroll,drag,stop", func, *args, **kwargs)
-    
+
     def callback_scroll_drag_stop_del(self, func):
         self._callback_del("scroll,drag,stop", func)
 
     def callback_scroll_anim_start_add(self, func, *args, **kwargs):
         self._callback_add("scroll,anim,start", func, *args, **kwargs)
-    
+
     def callback_scroll_anim_start_del(self, func):
         self._callback_del("scroll,anim,start", func)
 
     def callback_scroll_anim_stop_add(self, func, *args, **kwargs):
         self._callback_add("scroll,anim,stop", func, *args, **kwargs)
-    
+
     def callback_scroll_anim_stop_del(self, func):
         self._callback_del("scroll,anim,stop", func)
 
     def callback_zoom_start_add(self, func, *args, **kwargs):
         self._callback_add("zoom,start", func, *args, **kwargs)
-    
+
     def callback_zoom_start_del(self, func):
         self._callback_del("zoom,start", func)
 
     def callback_zoom_stop_add(self, func, *args, **kwargs):
         self._callback_add("zoom,stop", func, *args, **kwargs)
-    
+
     def callback_zoom_stop_del(self, func):
         self._callback_del("zoom,stop", func)
 
     def callback_zoom_change_add(self, func, *args, **kwargs):
         self._callback_add("zoom,change", func, *args, **kwargs)
-    
+
     def callback_zoom_change_del(self, func):
         self._callback_del("zoom,change", func)
 
     def callback_tile_load_add(self, func, *args, **kwargs):
         self._callback_add("tile,load", func, *args, **kwargs)
-    
+
     def callback_tile_load_del(self, func):
         self._callback_del("tile,load", func)
 
     def callback_tile_loaded_add(self, func, *args, **kwargs):
         self._callback_add("tile,loaded", func, *args, **kwargs)
-    
+
     def callback_tile_loaded_del(self, func):
         self._callback_del("tile,loaded", func)
 
     def callback_tile_loaded_fail_add(self, func, *args, **kwargs):
         self._callback_add("tile,loaded,fail", func, *args, **kwargs)
-    
+
     def callback_tile_loaded_fail_del(self, func):
         self._callback_del("tile,loaded,fail", func)
 
     def callback_route_load_add(self, func, *args, **kwargs):
         self._callback_add("route,load", func, *args, **kwargs)
-    
+
     def callback_route_load_del(self, func):
         self._callback_del("route,load", func)
 
     def callback_route_loaded_add(self, func, *args, **kwargs):
         self._callback_add("route,loaded", func, *args, **kwargs)
-    
+
     def callback_route_loaded_del(self, func):
         self._callback_del("route,loaded", func)
 
     def callback_route_loaded_fail_add(self, func, *args, **kwargs):
         self._callback_add("route,loaded,fail", func, *args, **kwargs)
-    
+
     def callback_route_loaded_fail_del(self, func):
         self._callback_del("route,loaded,fail", func)
 
     def callback_name_load_add(self, func, *args, **kwargs):
         self._callback_add("name,load", func, *args, **kwargs)
-    
+
     def callback_name_load_del(self, func):
         self._callback_del("name,load", func)
 
     def callback_name_loaded_add(self, func, *args, **kwargs):
         self._callback_add("name,loaded", func, *args, **kwargs)
-    
+
     def callback_name_loaded_del(self, func):
         self._callback_del("name,loaded", func)
 
     def callback_name_loaded_fail_add(self, func, *args, **kwargs):
         self._callback_add("name,loaded,fail", func, *args, **kwargs)
-    
+
     def callback_name_loaded_fail_del(self, func):
         self._callback_del("name,loaded,fail", func)
 
     def callback_overlay_clicked_add(self, func, *args, **kwargs):
         self._callback_add("overlay,clicked", func, *args, **kwargs)
-    
+
     def callback_overlay_clicked_del(self, func):
         self._callback_del("overlay,clicked", func)
 
     def callback_overlay_del_add(self, func, *args, **kwargs):
         self._callback_add("overlay,del", func, *args, **kwargs)
-    
+
     def callback_overlay_del_del(self, func):
         self._callback_del("overlay,del", func)
 
     def callback_loaded_add(self, func, *args, **kwargs):
         self._callback_add("loaded", func, *args, **kwargs)
-    
+
     def callback_loaded_del(self, func):
         self._callback_del("loaded", func)
 

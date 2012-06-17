@@ -16,25 +16,16 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _list_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _list_callback(void *cbt, Evas_Object *o, void *event_info) with gil:
     try:
         (obj, callback, it, a, ka) = <object>cbt
         callback(obj, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
-cdef void _list_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _list_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
-
-def _list_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        cbt = <object>data
-        return cbt[2]
 
 cdef enum Elm_List_Item_Insert_Kind:
     ELM_LIST_ITEM_INSERT_APPEND
@@ -47,13 +38,13 @@ cdef class ListItem(ObjectItem):
 
     """An item for the list widget."""
 
-    def __init__(self, kind, c_evas.Object list, label, c_evas.Object icon = None,
-                 c_evas.Object end = None, ListItem before_after = None,
+    def __init__(self, kind, evasObject list, label, evasObject icon = None,
+                 evasObject end = None, ListItem before_after = None,
                  callback = None, *args, **kargs):
-        cdef c_evas.Evas_Object* icon_obj
-        cdef c_evas.Evas_Object* end_obj
+        cdef Evas_Object* icon_obj
+        cdef Evas_Object* end_obj
         cdef void* cbdata
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
 
         icon_obj = NULL
         end_obj = NULL
@@ -245,13 +236,13 @@ cdef class ListItem(ObjectItem):
 
         @rtype: edje.Edje
         """
-        cdef c_evas.Evas_Object *obj
+        cdef Evas_Object *obj
         cdef void *data
 
         obj = elm_list_item_object_get(self.item)
         if obj == NULL:
             return None
-        return evas.c_evas._Object_from_instance(<long>obj)
+        return Object_from_instance(obj)
 
     def prev_get(self):
         """Get the item before this item in the list.
@@ -370,7 +361,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_list_add(parent.obj))
 
@@ -566,7 +557,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: tuple of bools
 
         """
-        cdef c_evas.Eina_Bool h, v
+        cdef Eina_Bool h, v
         elm_list_bounce_get(self.obj, &h, &v)
         return (h, v)
 
@@ -601,8 +592,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         elm_list_scroller_policy_get(self.obj, &policy_h, &policy_v)
         return (policy_h, policy_v)
 
-    def item_append(self, label, c_evas.Object icon = None,
-                    c_evas.Object end = None, callback = None, *args, **kargs):
+    def item_append(self, label, evasObject icon = None,
+                    evasObject end = None, callback = None, *args, **kargs):
         """Append a new item to the list object.
 
         A new item will be created and appended to the list, i.e., will
@@ -649,8 +640,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         return ListItem(ELM_LIST_ITEM_INSERT_APPEND, self, label, icon, end,
                         None, callback, *args, **kargs)
 
-    def item_prepend(self, label, c_evas.Object icon = None,
-                    c_evas.Object end = None, callback = None, *args, **kargs):
+    def item_prepend(self, label, evasObject icon = None,
+                    evasObject end = None, callback = None, *args, **kargs):
         """Prepend a new item to the list object.
 
         A new item will be created and prepended to the list, i.e., will
@@ -689,8 +680,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         return ListItem(ELM_LIST_ITEM_INSERT_PREPEND, self, label, icon, end,
                         None, callback, *args, **kargs)
 
-    def item_insert_before(self, ListItem before, label, c_evas.Object icon = None,
-                    c_evas.Object end = None, callback = None, *args, **kargs):
+    def item_insert_before(self, ListItem before, label, evasObject icon = None,
+                    evasObject end = None, callback = None, *args, **kargs):
         """Insert a new item into the list object before item C{before}.
 
         A new item will be created and added to the list. Its position in
@@ -731,8 +722,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         return ListItem(ELM_LIST_ITEM_INSERT_BEFORE, self, label, icon, end,
                         before, callback, *args, **kargs)
 
-    def item_insert_after(self, ListItem after, label, c_evas.Object icon = None,
-                    c_evas.Object end = None, callback = None, *args, **kargs):
+    def item_insert_after(self, ListItem after, label, evasObject icon = None,
+                    evasObject end = None, callback = None, *args, **kargs):
         """Insert a new item into the list object after item C{after}.
 
         A new item will be created and added to the list. Its position in
@@ -773,8 +764,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         return ListItem(ELM_LIST_ITEM_INSERT_AFTER, self, label, icon, end,
                         after, callback, *args, **kargs)
 
-    #def item_sorted_insert(self, label, c_evas.Object icon = None,
-                    #c_evas.Object end = None, callback = None, cmp_func=None, *args, **kargs):
+    #def item_sorted_insert(self, label, evasObject icon = None,
+                    #evasObject end = None, callback = None, cmp_func=None, *args, **kargs):
         """Insert a new item into the sorted list object.
 
         A new item will be created and added to the list. Its position in
@@ -845,7 +836,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: tuple of L{ListItem}s
 
         """
-        cdef evas.c_evas.const_Eina_List *lst, *itr
+        cdef const_Eina_List *lst, *itr
         cdef void *data
         ret = []
         lst = elm_list_items_get(self.obj)
@@ -897,7 +888,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: tuple of L{ListItem}s
 
         """
-        cdef evas.c_evas.const_Eina_List *lst, *itr
+        cdef const_Eina_List *lst, *itr
         cdef void *data
         ret = []
         lst = elm_list_selected_items_get(self.obj)
@@ -973,44 +964,44 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
     def callback_activated_add(self, func, *args, **kwargs):
         """The user has double-clicked or pressed (enter|return|spacebar) on
         an item. The C{event_info} parameter is the item that was activated."""
-        self._callback_add_full("activated", _list_item_conv,
+        self._callback_add_full("activated", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_activated_del(self, func):
-        self._callback_del_full("activated",  _list_item_conv, func)
+        self._callback_del_full("activated",  _cb_object_item_conv, func)
 
     def callback_clicked_double_add(self, func, *args, **kwargs):
         """The user has double-clicked an item. The C{event_info} parameter
         is the item that was double-clicked."""
-        self._callback_add_full("clicked,double", _list_item_conv,
+        self._callback_add_full("clicked,double", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_clicked_double_del(self, func):
-        self._callback_del_full("clicked,double",  _list_item_conv, func)
+        self._callback_del_full("clicked,double",  _cb_object_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """When the user selected an item."""
-        self._callback_add_full("selected", _list_item_conv,
+        self._callback_add_full("selected", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected", _list_item_conv, func)
+        self._callback_del_full("selected", _cb_object_item_conv, func)
 
     def callback_unselected_add(self, func, *args, **kwargs):
         """When the user unselected an item."""
-        self._callback_add_full("unselected", _list_item_conv,
+        self._callback_add_full("unselected", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_unselected_del(self, func):
-        self._callback_del_full("unselected", _list_item_conv, func)
+        self._callback_del_full("unselected", _cb_object_item_conv, func)
 
     def callback_longpressed_add(self, func, *args, **kwargs):
         """An item in the list is long-pressed."""
-        self._callback_add_full("longpressed", _list_item_conv,
+        self._callback_add_full("longpressed", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_longpressed_del(self, func):
-        self._callback_del_full("longpressed", _list_item_conv, func)
+        self._callback_del_full("longpressed", _cb_object_item_conv, func)
 
     def callback_edge_top_add(self, func, *args, **kwargs):
         """The list is scrolled until the top edge."""

@@ -138,11 +138,11 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
     """
 
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_layout_add(parent.obj))
 
-    def content_set(self, swallow, c_evas.Object content):
+    def content_set(self, swallow, evasObject content):
         """Set the layout content.
 
         Once the content object is set, a previously set one will be deleted.
@@ -166,7 +166,7 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         @rtype: bool
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         if content is not None:
             o = content.obj
         else:
@@ -182,8 +182,8 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         @return: The swallowed object or None if none or an error occurred
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_layout_content_get(self.obj, _cfruni(swallow))
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_content_get(self.obj, _cfruni(swallow))
+        return Object_from_instance(obj)
 
     def content_unset(self, swallow):
         """Unset the layout content.
@@ -196,8 +196,8 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_content_unset(self.obj, _cfruni(swallow))
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_content_unset(self.obj, _cfruni(swallow))
+        return Object_from_instance(obj)
 
     def text_set(self, part, text):
         """Set the text of the given part

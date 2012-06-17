@@ -16,7 +16,13 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cimport evas.c_evas
+from evas.c_evas cimport Eina_List, Eina_Bool, const_Eina_List
+from evas.c_evas cimport Eina_Rectangle, Eina_Compare_Cb
+from evas.c_evas cimport Evas_Object, const_Evas_Object
+from evas.c_evas cimport Evas_Coord
+from evas.c_evas cimport Evas_Callback_Type
+from evas.c_evas cimport Evas_Smart_Cb
+from evas.c_evas cimport Evas_Font_Size
 
 cdef extern from *:
     ctypedef char* const_char_ptr "const char *"
@@ -49,13 +55,6 @@ cdef extern from "Ecore_X.h":
     ctypedef Ecore_X_ID Ecore_X_Window
 
 cdef extern from "Evas.h":
-    ctypedef struct Evas_Object
-    ctypedef Evas_Object const_Evas_Object "const Evas_Object"
-    ctypedef int Evas_Coord
-    ctypedef int Evas_Callback_Type
-    ctypedef void (*Evas_Smart_Cb)(void *data, Evas_Object *obj, void *event_info)
-    ctypedef int Evas_Font_Size
-
     ctypedef void *Evas_Object_Box_Data
     ctypedef void *Elm_Box_Transition
     ctypedef void (*Evas_Object_Box_Layout)(Evas_Object *o, Evas_Object_Box_Data *priv, void *user_data)
@@ -69,21 +68,6 @@ cdef extern from "Evas.h":
     void evas_object_box_layout_flow_vertical(Evas_Object *o, Evas_Object_Box_Data *priv, void *data)
     void evas_object_box_layout_stack(Evas_Object *o, Evas_Object_Box_Data *priv, void *data)
     void elm_box_layout_transition(Evas_Object *o, Evas_Object_Box_Data *priv, void *data)
-
-cdef extern from "Eina.h":
-    ctypedef struct Eina_List:
-        void      *data
-        Eina_List *next
-        Eina_List *prev
-        void      *accounting
-    ctypedef Eina_List const_Eina_List "const Eina_List"
-    ctypedef unsigned char Eina_Bool
-    ctypedef struct Eina_Rectangle:
-        int x
-        int y
-        int w
-        int h
-    ctypedef int (*Eina_Compare_Cb)(void *data1, void *data2)
 
 cdef extern from "Edje.h":
     ctypedef void (*Edje_Signal_Cb)(void *data, Evas_Object *obj, const_char_ptr emission, const_char_ptr source)
@@ -1604,7 +1588,7 @@ cdef extern from "Elementary.h":
         ELM_MAP_ROUTE_TYPE_BICYCLE
         ELM_MAP_ROUTE_TYPE_FOOT
         ELM_MAP_ROUTE_TYPE_LAST
-    
+
     ctypedef enum Elm_Map_Source_Type:
         ELM_MAP_SOURCE_TYPE_TILE
         ELM_MAP_SOURCE_TYPE_ROUTE
@@ -1637,7 +1621,7 @@ cdef extern from "Elementary.h":
     void                     elm_map_rotate_get(const_Evas_Object *obj, double *degree, Evas_Coord *cx, Evas_Coord *cy)
     void                     elm_map_wheel_disabled_set(Evas_Object *obj, Eina_Bool disabled)
     Eina_Bool                elm_map_wheel_disabled_get(const_Evas_Object *obj)
-    void                     elm_map_user_agent_set(Evas_Object *obj, char *user_agent)  
+    void                     elm_map_user_agent_set(Evas_Object *obj, char *user_agent)
     char                    *elm_map_user_agent_get(const_Evas_Object *obj)
     Eina_List               *elm_map_overlays_get(Evas_Object *obj)
     Elm_Map_Overlay         *elm_map_overlay_add(Evas_Object *obj, double lon, double lat)

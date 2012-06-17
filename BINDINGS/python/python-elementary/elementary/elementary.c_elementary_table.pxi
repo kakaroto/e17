@@ -35,7 +35,7 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_table_add(parent.obj))
 
@@ -91,7 +91,7 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         @rtype: tuple of Evas_Coords (int)
 
         """
-        cdef c_evas.Evas_Coord horizontal, vertical
+        cdef Evas_Coord horizontal, vertical
         elm_table_padding_get(self.obj, &horizontal, &vertical)
         return (horizontal, vertical)
 
@@ -109,7 +109,7 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         def __set__(self, value):
             self.padding_set(*value)
 
-    def pack(self, c_evas.Object subobj, x, y, w, h):
+    def pack(self, evasObject subobj, x, y, w, h):
         """Add a subobject on the table with the coordinates passed
 
         @note: All positioning inside the table is relative to rows and
@@ -131,7 +131,7 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         """
         elm_table_pack(self.obj, subobj.obj, x, y, w, h)
 
-    def unpack(self, c_evas.Object subobj):
+    def unpack(self, evasObject subobj):
         """Remove child from table.
 
         @param subobj: The subobject
@@ -149,7 +149,7 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         """
         elm_table_clear(self.obj, clear)
 
-    def pack_set(c_evas.Object subobj, x, y, w, h):
+    def pack_set(evasObject subobj, x, y, w, h):
         """Set the packing location of an existing child of the table
 
         Modifies the position of an object already in the table.
@@ -173,7 +173,7 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         """
         elm_table_pack_set(subobj.obj, x, y, w, h)
 
-    def pack_get(c_evas.Object subobj):
+    def pack_get(evasObject subobj):
         """Get the packing location of an existing child of the table
 
         @see: L{pack_set()}

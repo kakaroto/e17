@@ -18,15 +18,15 @@
 
 import traceback
 
-cdef _py_elm_gengrid_item_call(func, c_evas.Evas_Object *obj, part, data) with gil:
+cdef _py_elm_gengrid_item_call(func, Evas_Object *obj, part, data) with gil:
     try:
-        o = evas.c_evas._Object_from_instance(<long>obj)
+        o = Object_from_instance(obj)
         return func(o, _ctouni(part), data)
     except Exception as e:
         traceback.print_exc()
         return None
 
-cdef char *_py_elm_gengrid_item_text_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
+cdef char *_py_elm_gengrid_item_text_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef GengridItemClass itc = prm[0]
 
@@ -40,9 +40,9 @@ cdef char *_py_elm_gengrid_item_text_get(void *data, c_evas.Evas_Object *obj, co
     else:
         return NULL
 
-cdef c_evas.Evas_Object *_py_elm_gengrid_item_content_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
+cdef Evas_Object *_py_elm_gengrid_item_content_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
-    cdef c_evas.Object icon
+    cdef evasObject icon
     cdef GengridItemClass itc = prm[0]
 
     func = itc._content_get_func
@@ -60,7 +60,7 @@ cdef c_evas.Evas_Object *_py_elm_gengrid_item_content_get(void *data, c_evas.Eva
     else:
         return NULL
 
-cdef c_evas.Eina_Bool _py_elm_gengrid_item_state_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
+cdef Eina_Bool _py_elm_gengrid_item_state_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef GengridItemClass itc = prm[0]
 
@@ -74,7 +74,7 @@ cdef c_evas.Eina_Bool _py_elm_gengrid_item_state_get(void *data, c_evas.Evas_Obj
     else:
         return False
 
-cdef void _py_elm_gengrid_object_item_del(void *data, c_evas.Evas_Object *obj) with gil:
+cdef void _py_elm_gengrid_object_item_del(void *data, Evas_Object *obj) with gil:
     cdef object prm = <object>data
     cdef GengridItemClass itc = prm[0]
     cdef GengridItem item = prm[2]
@@ -82,21 +82,21 @@ cdef void _py_elm_gengrid_object_item_del(void *data, c_evas.Evas_Object *obj) w
     func = itc._del_func
     if func is not None:
         try:
-            o = evas.c_evas._Object_from_instance(<long>obj)
+            o = Object_from_instance(obj)
             func(o, prm[1])
         except Exception as e:
             traceback.print_exc()
 
     item._unset_obj()
 
-cdef void _py_elm_gengrid_item_func(void *data, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _py_elm_gengrid_item_func(void *data, Evas_Object *obj, void *event_info) with gil:
     cdef object prm = <object>data
     cdef object func = prm[3]
     cdef GengridItem item = prm[2]
 
     if func is not None:
         try:
-            o = evas.c_evas._Object_from_instance(<long>obj)
+            o = Object_from_instance(obj)
             func(item, o, prm[1])
         except Exception as e:
             traceback.print_exc()
@@ -237,7 +237,7 @@ cdef class GengridItemClass:
         def __get__(self):
             return self._item_style
 
-    def text_get(self, c_evas.Object obj, part, item_data):
+    def text_get(self, evasObject obj, part, item_data):
         """To be called by Gengrid for each item to get its label.
 
         @param obj: the Gengrid instance
@@ -249,7 +249,7 @@ cdef class GengridItemClass:
         """
         return None
 
-    def content_get(self, c_evas.Object obj, part, item_data):
+    def content_get(self, evasObject obj, part, item_data):
         """To be called by Gengrid for each item to get its icon.
 
         @param obj: the Gengrid instance
@@ -261,7 +261,7 @@ cdef class GengridItemClass:
         """
         return None
 
-    def state_get(self, c_evas.Object obj, part, item_data):
+    def state_get(self, evasObject obj, part, item_data):
         """To be called by Gengrid for each item to get its state.
 
         @param obj: the Gengrid instance
@@ -315,7 +315,7 @@ cdef class GengridItem(ObjectItem):
     def next_get(self):
         cdef Elm_Object_Item *it
         it = elm_gengrid_item_next_get(self.item)
-        return _elm_gengrid_item_to_python(it)
+        return _object_item_to_python(it)
 
     property next:
         def __get__(self):
@@ -324,16 +324,16 @@ cdef class GengridItem(ObjectItem):
     def prev_get(self):
         cdef Elm_Object_Item *it
         it = elm_gengrid_item_prev_get(self.item)
-        return _elm_gengrid_item_to_python(it)
+        return _object_item_to_python(it)
 
     property prev:
         def __get__(self):
             return self.prev_get()
 
     def gengrid_get(self):
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         o = elm_object_item_widget_get(self.item)
-        return evas.c_evas._Object_from_instance(<long>o)
+        return Object_from_instance(o)
 
     property gengrid:
         def __get__(self):
@@ -555,33 +555,6 @@ cdef class GengridItem(ObjectItem):
         def __set__(self, value):
             self.select_mode_set(value)
 
-
-def _gengrid_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        prm = <object>data
-        return prm[2]
-
-cdef Elm_Object_Item *_elm_gengrid_item_from_python(GengridItem item):
-    if item is None:
-        return NULL
-    else:
-        return item.item
-
-cdef _elm_gengrid_item_to_python(Elm_Object_Item *it):
-    cdef void *data
-    cdef object prm
-    if it == NULL:
-        return None
-    data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    prm = <object>data
-    return prm[2]
-
 cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementaryGengrid_Type]:
     """Creates a generic, scalable and extensible grid widget.
 
@@ -590,7 +563,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
     not being restricted only to icon and label.
 
     """
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_gengrid_add(parent.obj))
 
@@ -627,7 +600,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         elm_gengrid_bounce_set(self.obj, bool(h_bounce), bool(v_bounce))
 
     def bounce_get(self):
-        cdef evas.c_evas.Eina_Bool h_bounce, v_bounce
+        cdef Eina_Bool h_bounce, v_bounce
         elm_gengrid_bounce_get(self.obj, &h_bounce, &v_bounce)
         return (h_bounce, v_bounce)
 
@@ -659,7 +632,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         """
         cdef GengridItem ret = GengridItem()
         cdef Elm_Object_Item *item
-        cdef c_evas.Evas_Smart_Cb cb
+        cdef Evas_Smart_Cb cb
 
         if func is None:
             cb = NULL
@@ -699,7 +672,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         """
         cdef GengridItem ret = GengridItem()
         cdef Elm_Object_Item *item
-        cdef c_evas.Evas_Smart_Cb cb
+        cdef Evas_Smart_Cb cb
 
         if func is None:
             cb = NULL
@@ -742,9 +715,9 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         """
         cdef GengridItem ret = GengridItem()
         cdef Elm_Object_Item *item, *before
-        cdef c_evas.Evas_Smart_Cb cb
+        cdef Evas_Smart_Cb cb
 
-        before = _elm_gengrid_item_from_python(before_item)
+        before = _object_item_from_python(before_item)
 
         if func is None:
             cb = NULL
@@ -788,9 +761,9 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         """
         cdef GengridItem ret = GengridItem()
         cdef Elm_Object_Item *item, *after
-        cdef c_evas.Evas_Smart_Cb cb
+        cdef Evas_Smart_Cb cb
 
-        after = _elm_gengrid_item_from_python(after_item)
+        after = _object_item_from_python(after_item)
 
         if func is None:
             cb = NULL
@@ -815,7 +788,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
     def selected_item_get(self):
         cdef Elm_Object_Item *it
         it = elm_gengrid_selected_item_get(self.obj)
-        return _elm_gengrid_item_to_python(it)
+        return _object_item_to_python(it)
 
     property selected_item:
         def __get__(self):
@@ -823,7 +796,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
 
     def selected_items_get(self):
         cdef Elm_Object_Item *it
-        cdef c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
 
         lst = elm_gengrid_selected_items_get(self.obj)
         ret = []
@@ -831,7 +804,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         while lst:
             it = <Elm_Object_Item *>lst.data
             lst = lst.next
-            o = _elm_gengrid_item_to_python(it)
+            o = _object_item_to_python(it)
             if o is not None:
                 ret_append(o)
         return ret
@@ -842,7 +815,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
 
     def realized_items_get(self):
         cdef Elm_Object_Item *it
-        cdef c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
 
         lst = elm_gengrid_realized_items_get(self.obj)
         ret = []
@@ -850,7 +823,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         while lst:
             it = <Elm_Object_Item *>lst.data
             lst = lst.next
-            o = _elm_gengrid_item_to_python(it)
+            o = _object_item_to_python(it)
             if o is not None:
                 ret_append(o)
         return ret
@@ -865,7 +838,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
     def first_item_get(self):
         cdef Elm_Object_Item *it
         it = elm_gengrid_first_item_get(self.obj)
-        return _elm_gengrid_item_to_python(it)
+        return _object_item_to_python(it)
 
     property first_item:
         def __get__(self):
@@ -874,7 +847,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
     def last_item_get(self):
         cdef Elm_Object_Item *it
         it = elm_gengrid_last_item_get(self.obj)
-        return _elm_gengrid_item_to_python(it)
+        return _object_item_to_python(it)
 
     property last_item:
         def __get__(self):
@@ -900,7 +873,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         elm_gengrid_item_size_set(self.obj, w, h)
 
     def item_size_get(self):
-        cdef c_evas.Evas_Coord x, y
+        cdef Evas_Coord x, y
         elm_gengrid_item_size_get(self.obj, &x, &y)
         return (x, y)
 
@@ -918,7 +891,7 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         elm_gengrid_group_item_size_set(self.obj, w, h)
 
     def group_item_size_get(self):
-        cdef evas.c_evas.Evas_Coord w, h
+        cdef Evas_Coord w, h
         elm_gengrid_group_item_size_get(self.obj, &w, &h)
         return (w, h)
 
@@ -1039,32 +1012,32 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
             self.highlight_mode_set(value)
 
     def callback_clicked_double_add(self, func, *args, **kwargs):
-        self._callback_add_full("clicked,double", _gengrid_item_conv,
+        self._callback_add_full("clicked,double", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_clicked_double_del(self, func):
-        self._callback_del_full("clicked,double", _gengrid_item_conv, func)
+        self._callback_del_full("clicked,double", _cb_object_item_conv, func)
 
     def callback_clicked_add(self, func, *args, **kwargs):
-        self._callback_add_full("clicked", _gengrid_item_conv,
+        self._callback_add_full("clicked", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_clicked_del(self, func):
-        self._callback_del_full("clicked", _gengrid_item_conv, func)
+        self._callback_del_full("clicked", _cb_object_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
-        self._callback_add_full("selected", _gengrid_item_conv,
+        self._callback_add_full("selected", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected",  _gengrid_item_conv, func)
+        self._callback_del_full("selected",  _cb_object_item_conv, func)
 
     def callback_unselected_add(self, func, *args, **kwargs):
-        self._callback_add_full("unselected", _gengrid_item_conv,
+        self._callback_add_full("unselected", _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_unselected_del(self, func):
-        self._callback_del_full("unselected", _gengrid_item_conv, func)
+        self._callback_del_full("unselected", _cb_object_item_conv, func)
 
 _elm_widget_type_register("gengrid", Gengrid)
 

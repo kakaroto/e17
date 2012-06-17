@@ -48,7 +48,7 @@ cdef public class Button(LayoutClass) [object PyElementaryButton, type PyElement
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_button_add(parent.obj))
 

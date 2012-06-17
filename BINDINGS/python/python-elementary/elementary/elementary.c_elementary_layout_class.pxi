@@ -132,7 +132,7 @@ cdef class LayoutClass(Object):
         """
         #elm_layout_signal_callback_del(self.obj, _cfruni(emission), _cfruni(source), Edje_Signal_Cb func)
 
-    def box_append(self, part, c_evas.Object child):
+    def box_append(self, part, evasObject child):
         """Append child to layout box part.
 
         Once the object is appended, it will become child of the layout. Its
@@ -155,7 +155,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_box_append(self.obj, _cfruni(part), child.obj))
 
-    def box_prepend(self, part, c_evas.Object child):
+    def box_prepend(self, part, evasObject child):
         """Prepend child to layout box part.
 
         Once the object is prepended, it will become child of the layout. Its
@@ -178,7 +178,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_box_prepend(self.obj, _cfruni(part), child.obj))
 
-    def box_insert_before(self, part, c_evas.Object child, c_evas.Object reference):
+    def box_insert_before(self, part, evasObject child, evasObject reference):
         """Insert child to layout box part before a reference object.
 
         Once the object is inserted, it will become child of the layout. Its
@@ -203,7 +203,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_box_insert_before(self.obj, _cfruni(part), child.obj, reference.obj))
 
-    def box_insert_at(self, part, c_evas.Object child, pos):
+    def box_insert_at(self, part, evasObject child, pos):
         """Insert child to layout box part at a given position.
 
         Once the object is inserted, it will become child of the layout. Its
@@ -228,7 +228,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_box_insert_at(self.obj, _cfruni(part), child.obj, pos))
 
-    def box_remove(self, part, c_evas.Object child):
+    def box_remove(self, part, evasObject child):
         """Remove a child of the given part box.
 
         The object will be removed from the box part and its lifetime will
@@ -246,8 +246,8 @@ cdef class LayoutClass(Object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_box_remove(self.obj, _cfruni(part), child.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_box_remove(self.obj, _cfruni(part), child.obj)
+        return Object_from_instance(obj)
 
     def box_remove_all(self, part, clear):
         """Remove all children of the given part box.
@@ -271,7 +271,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_box_remove_all(self.obj, _cfruni(part), clear))
 
-    def table_pack(self, part, c_evas.Object child_obj, col, row, colspan, rowspan):
+    def table_pack(self, part, evasObject child_obj, col, row, colspan, rowspan):
         """Insert child to layout table part.
 
         Once the object is inserted, it will become child of the table. Its
@@ -304,7 +304,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_table_pack(self.obj, _cfruni(part), child_obj.obj, col, row, colspan, rowspan))
 
-    def table_unpack(self, part, c_evas.Object child_obj):
+    def table_unpack(self, part, evasObject child_obj):
         """Unpack (remove) a child of the given part table.
 
         The object will be unpacked from the table part and its lifetime
@@ -322,8 +322,8 @@ cdef class LayoutClass(Object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_table_unpack(self.obj, _cfruni(part), child_obj.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_table_unpack(self.obj, _cfruni(part), child_obj.obj)
+        return Object_from_instance(obj)
 
     def table_clear(self, part, clear):
         """Remove all the child objects of the given part table.
@@ -373,8 +373,8 @@ cdef class LayoutClass(Object):
         @rtype: Evas_Object
 
         """
-        cdef c_evas.Evas_Object *obj = elm_layout_edje_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_edje_get(self.obj)
+        return Object_from_instance(obj)
 
     property edje:
         def __get__(self):
@@ -527,7 +527,7 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_part_cursor_engine_only_get(self.obj, _cfruni(part_name)))
 
-    def icon_set(self, c_evas.Object icon):
+    def icon_set(self, evasObject icon):
         """Convenience macro to set the icon object in a layout that follows the
         Elementary naming convention for its parts.
 
@@ -539,8 +539,8 @@ cdef class LayoutClass(Object):
         Elementary naming convention for its parts.
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_layout_icon_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_icon_get(self.obj)
+        return Object_from_instance(obj)
 
     property icon:
         def __get__(self):
@@ -548,7 +548,7 @@ cdef class LayoutClass(Object):
         def __set__(self, value):
             self.icon_set(value)
 
-    def end_set(self, c_evas.Object end):
+    def end_set(self, evasObject end):
         """Convenience macro to set the end object in a layout that follows the
         Elementary naming convention for its parts.
 
@@ -560,8 +560,8 @@ cdef class LayoutClass(Object):
         Elementary naming convention for its parts.
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_layout_end_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_layout_end_get(self.obj)
+        return Object_from_instance(obj)
 
     property end:
         def __get__(self):

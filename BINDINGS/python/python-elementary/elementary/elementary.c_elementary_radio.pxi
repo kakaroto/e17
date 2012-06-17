@@ -56,14 +56,14 @@ cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent, obj=None):
+    def __init__(self, evasObject parent, obj=None):
         if obj is None:
             Object.__init__(self, parent.evas)
             self._set_obj(elm_radio_add(parent.obj))
         else:
-            self._set_obj(<c_evas.Evas_Object*>obj)
+            self._set_obj(<Evas_Object*>obj)
 
-    def group_add(self, c_evas.Object group):
+    def group_add(self, evasObject group):
         """Add this radio to a group of other radio objects
 
         Radio objects work in groups. Each member should have a different integer
@@ -173,7 +173,7 @@ cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementar
         @rtype: L{Radio}
 
         """
-        cdef c_evas.Evas_Object *selected
+        cdef Evas_Object *selected
         selected = elm_radio_selected_object_get(self.obj)
         if selected == NULL:
             return None

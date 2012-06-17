@@ -52,7 +52,7 @@ cdef public class Bubble(LayoutClass) [object PyElementaryBubble, type PyElement
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """Add a new bubble to the parent
 
         This function adds a text bubble to the given parent evas object.

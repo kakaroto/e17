@@ -16,12 +16,20 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from evas.c_evas cimport Object as evasObject
+from evas.c_evas cimport EventKeyDown, EventKeyUp
+from evas.c_evas cimport evas_object_data_get
+from evas.c_evas cimport evas_object_smart_callback_add
+from evas.c_evas cimport evas_object_smart_callback_del
+from evas.c_evas cimport EVAS_CALLBACK_KEY_DOWN
+from evas.c_evas cimport EVAS_CALLBACK_KEY_UP
+from evas.c_evas import _extended_object_mapping_register
 
 cdef void _object_callback(void *data,
-                           c_evas.Evas_Object *o, void *event_info) with gil:
+                           Evas_Object *o, void *event_info) with gil:
     cdef Object obj
     cdef object event, ei
-    obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+    obj = <Object>evas_object_data_get(o, "python-evas")
     event = <object>data
     lst = tuple(obj._elmcallbacks[event])
     for event_conv, func, args, kargs in lst:
@@ -34,21 +42,21 @@ cdef void _object_callback(void *data,
         except Exception, e:
             traceback.print_exc()
 
-cdef c_evas.Evas_Object *_tooltip_content_create(void *data, c_evas.Evas_Object *o, c_evas.Evas_Object *t) with gil:
+cdef Evas_Object *_tooltip_content_create(void *data, Evas_Object *o, Evas_Object *t) with gil:
     cdef Object ret, obj, tooltip
 
-    obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
-    tooltip = evas.c_evas._Object_from_instance(<long> t)
+    obj = <Object>evas_object_data_get(o, "python-evas")
+    tooltip = Object_from_instance(t)
     (func, args, kargs) = <object>data
-    ret = func(obj, tooltip *args, **kargs)
+    ret = func(obj, tooltip, *args, **kargs)
     if not ret:
         return NULL
     return ret.obj
 
-cdef void _tooltip_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _tooltip_data_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     Py_DECREF(<object>data)
 
-cdef evas.c_evas.Eina_Bool _event_dispatcher(o, src, c_evas.Evas_Callback_Type t, event_info):
+cdef Eina_Bool _event_dispatcher(o, src, Evas_Callback_Type t, event_info):
     cdef Object obj = o
     cdef object ret
     for func, args, kargs in obj._elm_event_cbs:
@@ -61,32 +69,39 @@ cdef evas.c_evas.Eina_Bool _event_dispatcher(o, src, c_evas.Evas_Callback_Type t
                 return True
     return False
 
-cdef evas.c_evas.Eina_Bool _event_callback(void *data, c_evas.Evas_Object *o, c_evas.Evas_Object *src, c_evas.Evas_Callback_Type t, void *event_info) with gil:
-    cdef Object obj = <Object>evas.c_evas._Object_from_instance(<long>o)
-    cdef Object src_obj = <Object>evas.c_evas._Object_from_instance(<long>src)
-    cdef evas.c_evas.Eina_Bool ret = False
-    cdef evas.c_evas.EventKeyDown down_event
-    cdef evas.c_evas.EventKeyUp up_event
-    if t == evas.c_evas.EVAS_CALLBACK_KEY_DOWN:
-        down_event = evas.c_evas.EventKeyDown()
+cdef Eina_Bool _event_callback(void *data, Evas_Object *o, Evas_Object *src, Evas_Callback_Type t, void *event_info) with gil:
+    cdef Object obj = <Object>Object_from_instance(o)
+    cdef Object src_obj = <Object>Object_from_instance(src)
+    cdef Eina_Bool ret = False
+    cdef EventKeyDown down_event
+    cdef EventKeyUp up_event
+    if t == EVAS_CALLBACK_KEY_DOWN:
+        down_event = EventKeyDown()
         down_event._set_obj(event_info)
         ret = _event_dispatcher(obj, src_obj, t, down_event)
         down_event._unset_obj()
-    elif t == evas.c_evas.EVAS_CALLBACK_KEY_UP:
-        up_event = evas.c_evas.EventKeyUp()
+    elif t == EVAS_CALLBACK_KEY_UP:
+        up_event = EventKeyUp()
         up_event._set_obj(event_info)
         ret = _event_dispatcher(obj, src_obj, t, up_event)
         up_event._unset_obj()
 
 
-cdef void _event_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _event_data_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     Py_DECREF(<object>data)
+
+def _cb_string_conv(long addr):
+    cdef const_char_ptr s = <const_char_ptr>addr
+    if s == NULL:
+        return None
+    else:
+        return s
 
 cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
         pass
 
-cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type PyElementaryObject_Type]:
+cdef public class Object(evasObject) [object PyElementaryObject, type PyElementaryObject_Type]:
     """An abstract class to manage object and callback handling.
 
     All widgets are based on this class.
@@ -165,7 +180,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         def __set__(self, value):
             self.text_set(value)
 
-    def part_content_set(self, part, c_evas.Object obj):
+    def part_content_set(self, part, evasObject obj):
         """Set a content of an object
 
         This sets a new object to a widget as a content object. If any
@@ -182,7 +197,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         """
         elm_object_part_content_set(self.obj, _cfruni(part), obj.obj)
 
-    def content_set(self, c_evas.Object obj):
+    def content_set(self, evasObject obj):
         elm_object_part_content_set(self.obj, NULL, obj.obj)
 
     def part_content_get(self, part):
@@ -196,12 +211,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_part_content_get(self.obj, _cfruni(part))
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_part_content_get(self.obj, _cfruni(part))
+        return Object_from_instance(obj)
 
     def content_get(self):
-        cdef c_evas.Evas_Object *obj = elm_object_content_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_content_get(self.obj)
+        return Object_from_instance(obj)
 
     def part_content_unset(self, part):
         """Unset a content of an object
@@ -213,12 +228,12 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @type part: string
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, _cfruni(part))
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_part_content_unset(self.obj, _cfruni(part))
+        return Object_from_instance(obj)
 
     def content_unset(self):
-        cdef c_evas.Evas_Object *obj = elm_object_content_unset(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_content_unset(self.obj)
+        return Object_from_instance(obj)
 
     property content:
         def __get__(self):
@@ -258,8 +273,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_name_find(self.obj, _cfruni(name), recurse)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_name_find(self.obj, _cfruni(name), recurse)
+        return Object_from_instance(obj)
 
     def style_set(self, style):
         """Set the style to used by a given widget
@@ -382,8 +397,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_parent_widget_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_parent_widget_get(self.obj)
+        return Object_from_instance(obj)
 
     property parent_widget:
         """The first parent of the given object that is an Elementary
@@ -403,8 +418,8 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_top_widget_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_top_widget_get(self.obj)
+        return Object_from_instance(obj)
 
     property top_widget:
         """The top level parent of an Elementary widget.
@@ -729,14 +744,14 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @rtype: list of L{Object}s
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         cdef Object obj
-        cdef evas.c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
         ret = []
         lst = elm_object_focus_custom_chain_get(self.obj)
         while lst:
-            o = <c_evas.Evas_Object *> lst.data
-            obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+            o = <Evas_Object *> lst.data
+            obj = <Object>evas_object_data_get(o, "python-evas")
             ret.append(obj)
             lst = lst.next
         return ret
@@ -769,7 +784,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @type relative_child: L{Object}
 
         """
-        cdef c_evas.Evas_Object *rel = NULL
+        cdef Evas_Object *rel = NULL
         if relative:
             rel = relative.obj
         elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
@@ -789,7 +804,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         @type relative_child: L{Object}
 
         """
-        cdef c_evas.Evas_Object *rel = NULL
+        cdef Evas_Object *rel = NULL
         if relative:
             rel = relative.obj
         elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
@@ -1198,7 +1213,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         e = intern(event)
         lst = self._elmcallbacks.setdefault(e, [])
         if not lst:
-            c_evas.evas_object_smart_callback_add(self.obj, _fruni(event),
+            evas_object_smart_callback_add(self.obj, _fruni(event),
                                                   _object_callback, <void *>e)
         lst.append((event_conv, func, args, kargs))
 
@@ -1235,7 +1250,7 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
         if lst:
             return
         self._elmcallbacks.pop(event)
-        c_evas.evas_object_smart_callback_del(self.obj, _fruni(event), _object_callback)
+        evas_object_smart_callback_del(self.obj, _fruni(event), _object_callback)
 
     def _callback_add(self, event, func, *args, **kargs):
         """Add a callback for the smart event specified by event.
@@ -1271,19 +1286,19 @@ cdef public class Object(evas.c_evas.Object) [object PyElementaryObject, type Py
 
 
 def __elm_widget_cls_resolver(unsigned long ptr):
-    cdef c_evas.Evas_Object *obj = <c_evas.Evas_Object *>ptr
+    cdef Evas_Object *obj = <Evas_Object *>ptr
     cdef const_char_ptr t
 
     t = elm_object_widget_type_get(obj)
     assert t != NULL
     return _elm_widget_type_mapping.get(_ctouni(t), None)
 
-evas.c_evas._extended_object_mapping_register("elm_widget",
+_extended_object_mapping_register("elm_widget",
                                               __elm_widget_cls_resolver)
 
 # NOTE: this is just transitional, need to be removed after all the widgets
 #       in elm will be ported to the new hierarchical pattern.
-evas.c_evas._extended_object_mapping_register("elm_widget_compat",
+_extended_object_mapping_register("elm_widget_compat",
                                               __elm_widget_cls_resolver)
 
 cdef extern from "Elementary.h": # hack to force type to be known

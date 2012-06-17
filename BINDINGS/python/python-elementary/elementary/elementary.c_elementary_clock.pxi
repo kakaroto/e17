@@ -49,7 +49,7 @@ cdef public class Clock(LayoutClass) [object PyElementaryClock, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_clock_add(parent.obj))
 

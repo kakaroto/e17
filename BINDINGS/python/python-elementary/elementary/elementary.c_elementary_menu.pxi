@@ -16,23 +16,23 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _menu_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _menu_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
     try:
         (menu, callback, it, a, ka) = <object>cbt
         callback(menu, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
-cdef void _menu_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _menu_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
 
 cdef class MenuItem(ObjectItem):
-    def __init__(self, c_evas.Object menu, MenuItem parent, label, icon,
+    def __init__(self, evasObject menu, MenuItem parent, label, icon,
                  callback, *args, **kargs):
         cdef Elm_Object_Item *parent_obj = NULL
         cdef void* cbdata = NULL
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
         cb = NULL
 
         if parent:
@@ -145,7 +145,7 @@ cdef class MenuItem(ObjectItem):
         @rtype: tuple of L{MenuItem}s
 
         """
-        cdef evas.c_evas.const_Eina_List *lst, *itr
+        cdef const_Eina_List *lst, *itr
         cdef void *data
         ret = []
         lst = elm_menu_item_subitems_get(self.item)
@@ -190,7 +190,7 @@ cdef class MenuItem(ObjectItem):
         """
         cdef Elm_Object_Item *it
         it = elm_menu_item_next_get(self.item)
-        return _elm_menu_item_to_python(it)
+        return _object_item_to_python(it)
 
     def prev_get(self):
         """Get the previous item in the menu.
@@ -201,25 +201,14 @@ cdef class MenuItem(ObjectItem):
         """
         cdef Elm_Object_Item *it
         it = elm_menu_item_prev_get(self.item)
-        return _elm_menu_item_to_python(it)
+        return _object_item_to_python(it)
 
-cdef _elm_menu_item_to_python(Elm_Object_Item *it):
-    cdef void *data
-    cdef object prm
-    if it == NULL:
-        return None
-    data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    prm = <object>data
-    return prm[2]
-
-cdef void _menu_item_separator_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _menu_item_separator_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     it = <object>data
     it.__del_cb()
 
 cdef class MenuItemSeparator(ObjectItem):
-    def __init__(self, c_evas.Object menu, MenuItem parent):
+    def __init__(self, evasObject menu, MenuItem parent):
         cdef Elm_Object_Item *parent_obj = NULL
 
         if parent:
@@ -262,14 +251,14 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
     """
 
-    def __init__(self, c_evas.Object parent, obj = None):
+    def __init__(self, evasObject parent, obj = None):
         if obj is None:
             Object.__init__(self, parent.evas)
             self._set_obj(elm_menu_add(parent.obj))
         else:
-            self._set_obj(<c_evas.Evas_Object*>obj)
+            self._set_obj(<Evas_Object*>obj)
 
-    def parent_set(self, c_evas.Object parent):
+    def parent_set(self, evasObject parent):
         """Set the parent for the given menu widget
 
         @param parent: The new parent.
@@ -287,9 +276,9 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         o = elm_menu_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
+        return Object_from_instance(o)
 
     property parent:
         """The parent for the given menu widget.
@@ -333,7 +322,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
         """
         cdef Elm_Object_Item *it
-        cdef c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
         cdef void *data
         cdef object prm
 
@@ -343,7 +332,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         while lst:
             it = <Elm_Object_Item *>lst.data
             lst = lst.next
-            o = _elm_menu_item_to_python(it)
+            o = _object_item_to_python(it)
             if o is not None:
                 ret_append(o)
         return ret
@@ -390,7 +379,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         """
         cdef Elm_Object_Item *it
         it = elm_menu_selected_item_get(self.obj)
-        return _elm_menu_item_to_python(it)
+        return _object_item_to_python(it)
 
     property selected_item:
         """The selected item in the menu
@@ -412,7 +401,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         """
         cdef Elm_Object_Item *it
         it = elm_menu_last_item_get(self.obj)
-        return _elm_menu_item_to_python(it)
+        return _object_item_to_python(it)
 
     property last_item:
         """The last item in the menu
@@ -432,7 +421,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         """
         cdef Elm_Object_Item *it
         it = elm_menu_first_item_get(self.obj)
-        return _elm_menu_item_to_python(it)
+        return _object_item_to_python(it)
 
     property first_item:
         """The first item in the menu

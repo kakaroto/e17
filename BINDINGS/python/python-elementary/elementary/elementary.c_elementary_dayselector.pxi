@@ -62,7 +62,7 @@ cdef public class Dayselector(LayoutClass) [object PyElementaryDayselector, type
         - default
 
     """
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_dayselector_add(parent.obj))
 

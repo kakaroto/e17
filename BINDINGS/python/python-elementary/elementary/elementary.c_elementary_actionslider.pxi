@@ -16,13 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def _actionslider_callback_conv(long addr):
-    cdef const_char_ptr s = <const_char_ptr>addr
-    if s == NULL:
-        return None
-    else:
-        return s
-
 cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, type PyElementaryActionslider_Type]:
 
     """An actionslider is a switcher for two or three labels with
@@ -59,7 +52,7 @@ cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, ty
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_actionslider_add(parent.obj))
 
@@ -183,18 +176,18 @@ cdef public class Actionslider(LayoutClass) [object PyElementaryActionslider, ty
     def callback_selected_add(self, func, *args, **kwargs):
         """Called when user selects an enabled position. The label is passed
         as event info."""
-        self._callback_add_full("selected", _actionslider_callback_conv, func, *args, **kwargs)
+        self._callback_add_full("selected", _cb_string_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected", _actionslider_callback_conv, func)
+        self._callback_del_full("selected", _cb_string_conv, func)
 
     def callback_pos_changed_add(self, func, *args, **kwargs):
         """Called when the indicator reaches any of the positions B{left},
         B{right} or B{center}. The label is passed as event info."""
-        self._callback_add_full("pos_changed", _actionslider_callback_conv, func, *args, **kwargs)
+        self._callback_add_full("pos_changed", _cb_string_conv, func, *args, **kwargs)
 
     def callback_pos_changed_del(self, func):
-        self._callback_del_full("pos_changed", _actionslider_callback_conv, func)
+        self._callback_del_full("pos_changed", _cb_string_conv, func)
 
 _elm_widget_type_register("actionslider", Actionslider)
 

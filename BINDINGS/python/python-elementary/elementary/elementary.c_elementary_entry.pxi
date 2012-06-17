@@ -288,7 +288,7 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """This adds an entry to @p parent object.
 
         By default, entries are:
@@ -522,9 +522,9 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         @rtype: Evas_Object
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         o = elm_entry_textblock_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
+        return Object_from_instance(o)
 
     property textblock:
         """Returns the actual textblock object of the entry.
@@ -554,9 +554,9 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            cdef c_evas.Evas_Object *o
+            cdef Evas_Object *o
             o = elm_entry_textblock_get(self.obj)
-            return evas.c_evas._Object_from_instance(<long>o)
+            return Object_from_instance(o)
 
     def calc_force(self):
         """Forces calculation of the entry size and text layouting.
@@ -812,7 +812,7 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         @rtype: tuple of Evas_Coords (int)
 
         """
-        cdef c_evas.Evas_Coord x, y, w, h
+        cdef Evas_Coord x, y, w, h
         #TODO: Check return status for success
         elm_entry_cursor_geometry_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
@@ -1158,7 +1158,7 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         @rtype: tuple of bools
 
         """
-        cdef c_evas.Eina_Bool h_bounce, v_bounce
+        cdef Eina_Bool h_bounce, v_bounce
 
         elm_entry_bounce_get(self.obj, &h_bounce, &v_bounce)
         return (h_bounce, v_bounce)
@@ -1171,12 +1171,12 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            cdef c_evas.Eina_Bool h_bounce, v_bounce
+            cdef Eina_Bool h_bounce, v_bounce
             elm_entry_bounce_get(self.obj, &h_bounce, &v_bounce)
             return (h_bounce, v_bounce)
 
         def __set__(self, value):
-            cdef c_evas.Eina_Bool h_bounce, v_bounce
+            cdef Eina_Bool h_bounce, v_bounce
             h_bounce, v_bounce = value
             elm_entry_bounce_set(self.obj, h_bounce, v_bounce)
 
@@ -1490,7 +1490,7 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         def __set__(self, mode):
             elm_entry_cnp_mode_set(self.obj, mode)
 
-    def anchor_hover_parent_set(self, c_evas.Object anchor_hover_parent):
+    def anchor_hover_parent_set(self, evasObject anchor_hover_parent):
         """Set the parent of the hover popup
 
         Sets the parent object to use by the hover created by the entry
@@ -1513,9 +1513,9 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *anchor_hover_parent
+        cdef Evas_Object *anchor_hover_parent
         anchor_hover_parent = elm_entry_anchor_hover_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> anchor_hover_parent)
+        return Object_from_instance(anchor_hover_parent)
 
     property anchor_hover_parent:
         """Parent of the hover popup
@@ -1527,11 +1527,11 @@ cdef public class Entry(Object) [object PyElementaryEntry, type PyElementaryEntr
 
         """
         def __get__(self):
-            cdef c_evas.Evas_Object *anchor_hover_parent
+            cdef Evas_Object *anchor_hover_parent
             anchor_hover_parent = elm_entry_anchor_hover_parent_get(self.obj)
-            return evas.c_evas._Object_from_instance(<long> anchor_hover_parent)
+            return Object_from_instance(anchor_hover_parent)
 
-        def __set__(self, c_evas.Object anchor_hover_parent):
+        def __set__(self, evasObject anchor_hover_parent):
             elm_entry_anchor_hover_parent_set(self.obj, anchor_hover_parent.obj)
 
     def anchor_hover_style_set(self, style):

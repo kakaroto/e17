@@ -26,7 +26,7 @@ cdef public class Separator(LayoutClass) [object PyElementarySeparator, type PyE
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         self._set_obj(elm_separator_add(parent.obj))
 
     def horizontal_set(self, b):

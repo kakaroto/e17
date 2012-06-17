@@ -16,19 +16,45 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef c_evas.Evas_Object *_tooltip_item_content_create(void *data, c_evas.Evas_Object *o, evas.c_evas.Evas_Object *t, void *it) with gil:
+cdef Evas_Object *_tooltip_item_content_create(void *data, Evas_Object *o, Evas_Object *t, void *it) with gil:
    cdef Object ret, obj, tooltip
 
-   obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
-   tooltip = evas.c_evas._Object_from_instance(<long> t)
+   obj = <Object>evas_object_data_get(o, "python-evas")
+   tooltip = Object_from_instance(t)
    (func, item, args, kargs) = <object>data
    ret = func(obj, item, *args, **kargs)
    if not ret:
        return NULL
    return ret.obj
 
-cdef void _tooltip_item_data_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _tooltip_item_data_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
    Py_DECREF(<object>data)
+
+def _cb_object_item_conv(long addr):
+    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
+    cdef void *data = elm_object_item_data_get(it)
+    if data == NULL:
+        return None
+    else:
+        prm = <object>data
+        return prm[2]
+
+cdef Elm_Object_Item * _object_item_from_python(GenlistItem item):
+    if item is None:
+        return NULL
+    else:
+        return item.item
+
+cdef _object_item_to_python(Elm_Object_Item *it):
+    cdef void *data
+    cdef object prm
+    if it == NULL:
+        return None
+    data = elm_object_item_data_get(it)
+    if data == NULL:
+        return None
+    prm = <object>data
+    return prm[2]
 
 cdef class ObjectItem(object):
 
@@ -67,8 +93,8 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.const_Evas_Object *obj = elm_object_item_widget_get(self.item)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_item_widget_get(self.item)
+        return Object_from_instance(obj)
 
     def part_content_set(self, part, Object obj):
         """Set a content of an object item
@@ -101,12 +127,12 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_get(self.item, _cfruni(part))
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_item_part_content_get(self.item, _cfruni(part))
+        return Object_from_instance(obj)
 
     def content_get(self):
-        cdef c_evas.Evas_Object *obj = elm_object_item_content_get(self.item)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_item_content_get(self.item)
+        return Object_from_instance(obj)
 
     def part_content_unset(self, part):
         """Unset a content of an object item
@@ -118,12 +144,12 @@ cdef class ObjectItem(object):
         @type part: string
 
         """
-        cdef c_evas.Evas_Object *obj = elm_object_item_part_content_unset(self.item, _cfruni(part))
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_item_part_content_unset(self.item, _cfruni(part))
+        return Object_from_instance(obj)
 
     def content_unset(self):
-        cdef c_evas.Evas_Object *obj = elm_object_item_content_unset(self.item)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_object_item_content_unset(self.item)
+        return Object_from_instance(obj)
 
 
     def part_text_set(self, part, text):

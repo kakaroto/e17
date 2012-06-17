@@ -17,7 +17,7 @@
 #
 
 cdef class ColorselectorPaletteItem(ObjectItem):
-    def __init__(self, c_evas.Object colorselector, r, g, b, a):
+    def __init__(self, evasObject colorselector, r, g, b, a):
         self.item = elm_colorselector_palette_color_add(colorselector.obj, r, g, b, a)
 
     def color_get(self):
@@ -43,15 +43,6 @@ cdef class ColorselectorPaletteItem(ObjectItem):
             r, g, b, a = value
             elm_colorselector_palette_item_color_set(self.item, r, g, b, a)
 
-def _colorselector_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        prm = <object>data
-        return prm[2]
-
 cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, type PyElementaryColorselector_Type]:
 
     """A Colorselector is a color selection widget.
@@ -74,7 +65,7 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_colorselector_add(parent.obj))
 
@@ -223,18 +214,18 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
     def callback_color_item_selected_add(self, func, *args, **kwargs):
         """When user clicks on color item. The event_info parameter of the
         callback will be the selected color item."""
-        self._callback_add_full("color,item,selected", _colorselector_item_conv, func, *args, **kwargs)
+        self._callback_add_full("color,item,selected", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_color_item_selected_del(self, func):
-        self._callback_del_full("color,item,selected", _colorselector_item_conv, func)
+        self._callback_del_full("color,item,selected", _cb_object_item_conv, func)
 
     def callback_color_item_longpressed_add(self, func, *args, **kwargs):
         """When user long presses on color item. The event_info parameter of
         the callback will be the selected color item."""
-        self._callback_add_full("color,item,longpressed", _colorselector_item_conv, func, *args, **kwargs)
+        self._callback_add_full("color,item,longpressed", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_color_item_longpressed_del(self, func):
-        self._callback_del_full("color,item,longpressed", _colorselector_item_conv, func)
+        self._callback_del_full("color,item,longpressed", _cb_object_item_conv, func)
 
 _elm_widget_type_register("colorselector", Colorselector)
 

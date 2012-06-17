@@ -17,13 +17,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def _web_str_conv(long addr):
-    cdef char *s = <char *>addr
-    if s == NULL:
-        return None
-    return s
-
-
 def _web_double_conv(long addr):
     cdef double *info = <double *>addr
     if info == NULL:
@@ -54,7 +47,7 @@ def _web_load_frame_error_conv(long addr):
         ret["failing_url"] = None
 
     if err.frame:
-        ret["frame"] = evas.c_evas._Object_from_instance(<long> err.frame)
+        ret["frame"] = Object_from_instance(err.frame)
     else:
         ret["frame"] = None
 
@@ -78,7 +71,7 @@ def _web_link_hover_in_conv(long addr):
     return (url, title)
 
 
-cdef void _web_console_message_hook(void *data, evas.c_evas.Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id) with gil:
+cdef void _web_console_message_hook(void *data, Evas_Object *obj, const_char_ptr message, unsigned int line_number, const_char_ptr source_id) with gil:
     cdef Web self = <Web>data
 
     if message == NULL:
@@ -99,25 +92,25 @@ cdef void _web_console_message_hook(void *data, evas.c_evas.Evas_Object *obj, co
 cdef public class Web(Object) [object PyElementaryWeb, type PyElementaryWeb_Type]:
     cdef object _console_message_hook
 
-    def __init__(self,c_evas.Object parent):
+    def __init__(self,evasObject parent):
         elm_need_web()
         Object.__init__(self, parent.evas)
         self._set_obj(elm_web_add(parent.obj))
 
     # XXX TODO: complete all callbacks from elm_web.h
     def callback_uri_changed_add(self, func, *args, **kwargs):
-        self._callback_add_full("uri,changed", _web_str_conv,
+        self._callback_add_full("uri,changed", _cb_string_conv,
                                 func, *args, **kwargs)
 
     def callback_uri_changed_del(self, func):
-        self._callback_del_full("uri,changed", _web_str_conv, func)
+        self._callback_del_full("uri,changed", _cb_string_conv, func)
 
     def callback_title_changed_add(self, func, *args, **kwargs):
-        self._callback_add_full("title,changed", _web_str_conv,
+        self._callback_add_full("title,changed", _cb_string_conv,
                                 func, *args, **kwargs)
 
     def callback_title_changed_del(self, func):
-        self._callback_del_full("title,changed", _web_str_conv, func)
+        self._callback_del_full("title,changed", _cb_string_conv, func)
 
     def callback_link_hover_in_add(self, func, *args, **kwargs):
         self._callback_add_full("link,hover,in", _web_link_hover_in_conv,
@@ -170,8 +163,8 @@ cdef public class Web(Object) [object PyElementaryWeb, type PyElementaryWeb_Type
         return bool(elm_web_history_enabled_get(self.obj))
 
     def webkit_view_get(self):
-        cdef c_evas.Evas_Object *obj = elm_web_webkit_view_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_web_webkit_view_get(self.obj)
+        return Object_from_instance(obj)
 
     def uri_set(self, uri):
         return bool(elm_web_uri_set(self.obj, uri))

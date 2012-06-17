@@ -16,13 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-def _fs_entry_callback_conv(long addr):
-    cdef const_char_ptr s = <const_char_ptr>addr
-    if s == NULL:
-        return None
-    else:
-        return s
-
 cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntry, type PyElementaryFileselectorEntry_Type]:
 
     """This is an entry made to be filled with or display a file
@@ -74,7 +67,7 @@ cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntr
 
     cdef object _cbs
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         """Add a new file selector entry widget to the given parent
         Elementary (container) object
 
@@ -164,8 +157,8 @@ cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntr
         @rtype: tuple of Evas_Coords (int)
 
         """
-        cdef c_evas.Evas_Coord w
-        cdef c_evas.Evas_Coord h
+        cdef Evas_Coord w
+        cdef Evas_Coord h
         elm_fileselector_entry_window_size_get(self.obj, &w, &h)
         return (w, h)
 
@@ -181,12 +174,12 @@ cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntr
 
         """
         def __get__(self):
-            cdef c_evas.Evas_Coord w, h
+            cdef Evas_Coord w, h
             elm_fileselector_entry_window_size_get(self.obj, &w, &h)
             return (w, h)
 
         def __set__(self, value):
-            cdef c_evas.Evas_Coord w, h
+            cdef Evas_Coord w, h
             w, h = value
             elm_fileselector_entry_window_size_set(self.obj, w, h)
 
@@ -570,11 +563,11 @@ cdef public class FileselectorEntry(Object) [object PyElementaryFileselectorEntr
         file selector, whose string comes as the C{event_info} data.
 
         """
-        self._callback_add_full("file,chosen", _fs_entry_callback_conv,
+        self._callback_add_full("file,chosen", _cb_string_conv,
                                 func, *args, **kwargs)
 
     def callback_file_chosen_del(self, func):
-        self._callback_del_full("file,chosen", _fs_entry_callback_conv, func)
+        self._callback_del_full("file,chosen", _cb_string_conv, func)
 
 _elm_widget_type_register("fileselector_entry", FileselectorEntry)
 

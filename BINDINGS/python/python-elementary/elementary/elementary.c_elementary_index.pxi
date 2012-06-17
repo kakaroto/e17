@@ -16,25 +16,16 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _index_callback(void *cbt, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _index_callback(void *cbt, Evas_Object *o, void *event_info) with gil:
     try:
         (obj, callback, it, a, ka) = <object>cbt
         callback(obj, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
-cdef void _index_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _index_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
-
-def _index_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        cbt = <object>data
-        return cbt[2]
 
 cdef enum Elm_Index_Item_Insert_Kind:
     ELM_INDEX_ITEM_INSERT_APPEND
@@ -44,10 +35,10 @@ cdef enum Elm_Index_Item_Insert_Kind:
     ELM_INDEX_ITEM_INSERT_SORTED
 
 cdef class IndexItem(ObjectItem):
-    def __init__(self, kind, c_evas.Object index, letter, IndexItem before_after = None,
+    def __init__(self, kind, evasObject index, letter, IndexItem before_after = None,
                  callback = None, *args, **kargs):
         cdef void* cbdata
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
 
         cbdata = NULL
         cb = NULL
@@ -152,7 +143,7 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_index_add(parent.obj))
 
@@ -504,26 +495,26 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
     def callback_changed_add(self, func, *args, **kwargs):
         """When the selected index item changes. C{event_info} is the selected
         item's data."""
-        self._callback_add_full("changed", _index_item_conv, func, *args, **kwargs)
+        self._callback_add_full("changed", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_changed_del(self, func):
-        self._callback_del_full("changed",  _index_item_conv, func)
+        self._callback_del_full("changed",  _cb_object_item_conv, func)
 
     def callback_changed_delay_add(self, func, *args, **kwargs):
         """When the selected index item changes, but after a small idling
         period. C{event_info} is the selected item's data."""
-        self._callback_add_full("changed,delay", _index_item_conv, func, *args, **kwargs)
+        self._callback_add_full("changed,delay", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_changed_delay_del(self, func):
-        self._callback_del_full("changed,delay",  _index_item_conv, func)
+        self._callback_del_full("changed,delay",  _cb_object_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """When the user releases a mouse button and selects an item.
         C{event_info} is the selected item's data ."""
-        self._callback_add_full("selected", _index_item_conv, func, *args, **kwargs)
+        self._callback_add_full("selected", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected",  _index_item_conv, func)
+        self._callback_del_full("selected",  _cb_object_item_conv, func)
 
     def callback_level_up_add(self, func, *args, **kwargs):
         """When the user moves a finger from the first level to the second

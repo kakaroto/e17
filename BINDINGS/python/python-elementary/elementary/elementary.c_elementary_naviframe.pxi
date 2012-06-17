@@ -186,11 +186,11 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_naviframe_add(parent.obj))
 
-    def item_push(self, title_label, c_evas.Object prev_btn, c_evas.Object next_btn, c_evas.Object content, const_char_ptr item_style):
+    def item_push(self, title_label, evasObject prev_btn, evasObject next_btn, evasObject content, const_char_ptr item_style):
         """Push a new item to the top of the naviframe stack (and show it).
 
         The item pushed becomes one page of the naviframe, this item will be
@@ -237,7 +237,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         else:
             return None
 
-    def item_insert_before(self, NaviframeItem before, title_label, c_evas.Object prev_btn, c_evas.Object next_btn, c_evas.Object content, const_char_ptr item_style):
+    def item_insert_before(self, NaviframeItem before, title_label, evasObject prev_btn, evasObject next_btn, evasObject content, const_char_ptr item_style):
         """Insert a new item into the naviframe before item C{before}.
 
         The item is inserted into the naviframe straight away without any
@@ -282,7 +282,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         else:
             return None
 
-    def item_insert_after(self, NaviframeItem after, title_label, c_evas.Object prev_btn, c_evas.Object next_btn, c_evas.Object content, const_char_ptr item_style):
+    def item_insert_after(self, NaviframeItem after, title_label, evasObject prev_btn, evasObject next_btn, evasObject content, const_char_ptr item_style):
         """Insert a new item into the naviframe after item C{after}.
 
         The item is inserted into the naviframe straight away without any
@@ -341,8 +341,8 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         @rtype: L{NaviframeItem}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_naviframe_item_pop(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_naviframe_item_pop(self.obj)
+        return Object_from_instance(obj)
 
     def content_preserve_on_pop_set(self, preserve):
         """Preserve the content objects when items are popped.
@@ -449,7 +449,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         """
         cdef Elm_Object_Item *it
-        cdef c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
 
         lst = elm_naviframe_items_get(self.obj)
         ret = []
@@ -474,7 +474,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
             while pushing/popping items.
 
         @see: L{event_enabled_get()}
-        @see: L{c_evas.Object.freeze_events_set()}
+        @see: L{evasObject.freeze_events_set()}
 
         @param enabled: Events are received when enabled is C{True}, and
             ignored otherwise.
@@ -504,7 +504,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
             L{freeze_events_set()} internally. So don't call the API
             while pushing/popping items.
 
-        @see: L{c_evas.Object.freeze_events_set()}
+        @see: L{evasObject.freeze_events_set()}
 
         @type: bool
 
@@ -514,7 +514,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         def __set__(self, enabled):
             self.event_enabled_set(enabled)
 
-    def item_simple_push(self, c_evas.Object content):
+    def item_simple_push(self, evasObject content):
         """Simple version of item_push.
 
         @see: L{item_push}
@@ -530,7 +530,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         else:
             return None
 
-    def item_simple_promote(self, c_evas.Object content):
+    def item_simple_promote(self, evasObject content):
         """Simple version of item_promote.
 
         @see: L{NaviframeItem.item_promote}

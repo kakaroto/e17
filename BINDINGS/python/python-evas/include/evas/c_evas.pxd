@@ -1122,3 +1122,7 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
 cdef public class ClippedSmartObject(SmartObject) \
          [object PyEvasClippedSmartObject, type PyEvasClippedSmartObject_Type]:
     cdef readonly Rectangle clipper
+
+
+cdef Canvas Canvas_from_instance(Evas *evas)
+cdef Object Object_from_instance(Evas_Object *obj)

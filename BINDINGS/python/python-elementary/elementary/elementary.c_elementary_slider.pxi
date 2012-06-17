@@ -63,7 +63,7 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_slider_add(parent.obj))
 

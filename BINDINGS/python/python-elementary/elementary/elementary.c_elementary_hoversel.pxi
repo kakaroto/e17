@@ -16,34 +16,25 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _hoversel_callback(void *cbt, c_evas.Evas_Object *obj, void *event_info) with gil:
+cdef void _hoversel_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
     try:
         (hoversel, callback, it, a, ka) = <object>cbt
         callback(hoversel, it, *a, **ka)
     except Exception, e:
         traceback.print_exc()
 
-cdef void _hoversel_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info) with gil:
+cdef void _hoversel_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     (obj, callback, it, a, ka) = <object>data
     it.__del_cb()
-
-def _hoversel_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        cbt = <object>data
-        return cbt[2]
 
 cdef class HoverselItem(ObjectItem):
 
     """An item for the Hoversel widget."""
 
-    def __init__(self, c_evas.Object hoversel, label, icon_file, icon_type,
+    def __init__(self, evasObject hoversel, label, icon_file, icon_type,
                  callback, *args, **kargs):
         cdef void* cbdata = NULL
-        cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
+        cdef void (*cb) (void *, Evas_Object *, void *)
         cb = NULL
 
         if callback:
@@ -136,7 +127,7 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_hoversel_add(parent.obj))
 
@@ -164,7 +155,7 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         """
         return bool(elm_hoversel_horizontal_get(self.obj))
 
-    def hover_parent_set(self, c_evas.Object parent):
+    def hover_parent_set(self, evasObject parent):
         """Set the Hover parent
 
         Sets the hover parent object, the area that will be darkened when the
@@ -188,8 +179,8 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_hoversel_hover_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_hoversel_hover_parent_get(self.obj)
+        return Object_from_instance(obj)
 
     def hover_begin(self):
         """This triggers the hoversel popup from code, the same as if the user
@@ -236,7 +227,7 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
 
         """
         cdef Elm_Object_Item *it
-        cdef c_evas.const_Eina_List *lst
+        cdef const_Eina_List *lst
 
         lst = elm_hoversel_items_get(self.obj)
         ret = []
@@ -284,10 +275,10 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
 
     def callback_selected_add(self, func, *args, **kwargs):
         """An item in the hoversel list is selected. event_info is the item."""
-        self._callback_add_full("selected", _hoversel_item_conv, func, *args, **kwargs)
+        self._callback_add_full("selected", _cb_object_item_conv, func, *args, **kwargs)
 
     def callback_selected_del(self, func):
-        self._callback_del_full("selected", _hoversel_item_conv, func)
+        self._callback_del_full("selected", _cb_object_item_conv, func)
 
     def callback_dismissed_add(self, func, *args, **kwargs):
         """The hover is dismissed."""

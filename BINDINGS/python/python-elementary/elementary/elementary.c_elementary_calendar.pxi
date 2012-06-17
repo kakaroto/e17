@@ -57,7 +57,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_calendar_add(parent.obj))
 
@@ -94,14 +94,14 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
 
         def __set__(self, weekdays):
             cdef int i, day_len
-            cdef const_char_ptr *days, weekday
-            days = <const_char_ptr *>PyMem_Malloc(7 * sizeof(const_char_ptr))
+            cdef char **days, *weekday
+            days = <char **>PyMem_Malloc(7 * sizeof(char*))
             for i from 0 <= i < 7:
-                weekday = _cfruni(weekdays[i])
+                weekday = _fruni(weekdays[i])
                 day_len = len(weekday)
-                days[i] = <const_char_ptr>PyMem_Malloc(day_len + 1)
+                days[i] = <char *>PyMem_Malloc(day_len + 1)
                 memcpy(days[i], weekday, day_len + 1)
-            elm_calendar_weekdays_names_set(self.obj, days)
+            elm_calendar_weekdays_names_set(self.obj, <const_char_ptr *>days)
 
     property min_max_year:
         """The minimum and maximum values for the year

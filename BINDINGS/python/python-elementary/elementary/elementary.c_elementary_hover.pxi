@@ -74,14 +74,14 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent, obj = None):
+    def __init__(self, evasObject parent, obj = None):
         if obj is None:
             Object.__init__(self, parent.evas)
             self._set_obj(elm_hover_add(parent.obj))
         else:
-            self._set_obj(<c_evas.Evas_Object*>obj)
+            self._set_obj(<Evas_Object*>obj)
 
-    def target_set(self, c_evas.Object target):
+    def target_set(self, evasObject target):
         """Sets the target object for the hover.
 
         This function will cause the hover to be centered on the target object.
@@ -101,8 +101,8 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_hover_target_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_hover_target_get(self.obj)
+        return Object_from_instance(obj)
 
     property target:
         """The target object for the hover.
@@ -117,7 +117,7 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         def __set__(self, target):
             self.target_set(target)
 
-    def parent_set(self, c_evas.Object parent):
+    def parent_set(self, evasObject parent):
         """Sets the parent object for the hover.
 
         This function will cause the hover to take up the entire space that the
@@ -138,8 +138,8 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *obj = elm_hover_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long> obj)
+        cdef Evas_Object *obj = elm_hover_parent_get(self.obj)
+        return Object_from_instance(obj)
 
     def best_content_location_get(self, axis):
         """Returns the best swallow location for content in the hover.

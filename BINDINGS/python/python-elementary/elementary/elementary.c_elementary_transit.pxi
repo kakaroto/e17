@@ -142,7 +142,7 @@ cdef class Transit(object):
         """
         #elm_transit_effect_del(self.obj, transition_cb, effect)
 
-    def object_add(self, c_evas.Object obj):
+    def object_add(self, evasObject obj):
         """Add new object to apply the effects.
 
         @note: After the first addition of an object to C{transit}, if its
@@ -164,7 +164,7 @@ cdef class Transit(object):
         """
         elm_transit_object_add(self.obj, obj.obj)
 
-    def object_remove(self, c_evas.Object obj):
+    def object_remove(self, evasObject obj):
         """Removes an added object from the transit.
 
         @note: If the C{obj} is not in the C{transit}, nothing is done.
@@ -188,11 +188,11 @@ cdef class Transit(object):
             cdef Eina_List *lst
             cdef Evas_Object *data
             ret = []
-            lst = elm_transit_objects_get(self.obj)
+            lst = <Eina_List *>elm_transit_objects_get(self.obj)
             while lst:
                 data = <Evas_Object *>lst.data
                 if data != NULL:
-                    o = evas.c_evas._Object_from_instance(<long> data)
+                    o = Object_from_instance(data)
                     ret.append(o)
                 lst = lst.next
             return ret
@@ -391,7 +391,7 @@ cdef class Transit(object):
             while lst:
                 data = <Evas_Object *>lst.data
                 if data != NULL:
-                    o = evas.c_evas._Object_from_instance(<long> data)
+                    o = Object_from_instance(data)
                     ret.append(o)
                 lst = lst.next
             return ret

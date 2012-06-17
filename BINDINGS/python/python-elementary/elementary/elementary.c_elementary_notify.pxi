@@ -32,11 +32,11 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_notify_add(parent.obj))
 
-    def parent_set(self, c_evas.Object parent):
+    def parent_set(self, evasObject parent):
         """Set the notify parent.
 
         Once the parent object is set, a previously set one will be disconnected
@@ -46,7 +46,7 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         @type parent: L{Object}
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         if parent is not None:
             o = parent.obj
         else:
@@ -62,9 +62,9 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         o = elm_notify_parent_get(self.obj)
-        return evas.c_evas._Object_from_instance(<long>o)
+        return Object_from_instance(o)
 
     property parent:
         """The notify parent.

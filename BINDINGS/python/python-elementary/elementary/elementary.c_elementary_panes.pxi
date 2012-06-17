@@ -42,7 +42,7 @@ cdef public class Panes(LayoutClass) [object PyElementaryPanes, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_panes_add(parent.obj))
 

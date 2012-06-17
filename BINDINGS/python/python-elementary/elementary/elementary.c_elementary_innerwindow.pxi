@@ -39,7 +39,7 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_win_inwin_add(parent.obj))
 
@@ -57,7 +57,7 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
         """
         elm_win_inwin_activate(self.obj)
 
-    def content_set(self, c_evas.Object content):
+    def content_set(self, evasObject content):
         """Set the content of an inwin object.
 
         Once the content object is set, a previously set one will be deleted.
@@ -68,7 +68,7 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
         @type content: L{Object}
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         if content is not None:
             o = content.obj
         else:
@@ -91,7 +91,7 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         o = elm_win_inwin_content_get(self.obj)
         return <Object>o
 
@@ -104,7 +104,7 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
         @rtype: L{Object}
 
         """
-        cdef c_evas.Evas_Object *o
+        cdef Evas_Object *o
         o = elm_win_inwin_content_unset(self.obj)
         return <Object>o
 

@@ -40,7 +40,7 @@ cdef public class Check(LayoutClass) [object PyElementaryCheck, type PyElementar
 
     """
 
-    def __init__(self, c_evas.Object parent):
+    def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_check_add(parent.obj))
 
@@ -66,7 +66,7 @@ cdef public class Check(LayoutClass) [object PyElementaryCheck, type PyElementar
         @rtype: bool
 
         """
-        cdef c_evas.Eina_Bool state
+        cdef Eina_Bool state
         state = elm_check_state_get(self.obj)
         if state == 0:
             return False

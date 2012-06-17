@@ -171,13 +171,16 @@ people and organizations behind this, as listed below:
 
 """
 
-
-import sys
-import evas.c_evas
-cimport evas.c_evas as c_evas
 from cpython cimport PyObject, Py_INCREF, Py_DECREF
 from cpython cimport PyMem_Malloc, PyMem_Free
 from cpython cimport bool
+#cimport evas.c_evas as c_evas
+from evas.c_evas cimport Object_from_instance
+
+import sys
+#import evas.c_evas
+from evas.c_evas import _object_mapping_register
+from evas.c_evas import _object_mapping_unregister
 import traceback
 import logging
 
@@ -293,8 +296,8 @@ def policy_get(policy):
     return elm_policy_get(policy)
 
 def coords_finger_size_adjust(times_w, w, times_h, h):
-    cdef c_evas.Evas_Coord width
-    cdef c_evas.Evas_Coord height
+    cdef Evas_Coord width
+    cdef Evas_Coord height
     width = w
     height = h
     elm_coords_finger_size_adjust(times_w, &width, times_h, &height)
@@ -316,13 +319,13 @@ cdef _elm_widget_type_register(name, cls):
     _elm_widget_type_mapping[name] = cls
     # TODO: Widget types become evas object types as they are being ported
     # to the new model. The class resolver can be removed when it's done.
-    evas.c_evas._object_mapping_register("elm_"+name, cls)
+    _object_mapping_register("elm_"+name, cls)
 
 cdef _elm_widget_type_unregister(name):
     _elm_widget_type_mapping.pop(name)
     # TODO: Widget types become evas object types as they are being ported
     # to the new model. The class resolver can be removed when it's done.
-    evas.c_evas._object_mapping_unregister("elm_"+name)
+    _object_mapping_unregister("elm_"+name)
 
 cdef extern from "Python.h":
     ctypedef struct PyTypeObject:
