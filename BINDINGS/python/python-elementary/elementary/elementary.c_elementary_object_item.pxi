@@ -39,12 +39,6 @@ def _cb_object_item_conv(long addr):
         prm = <object>data
         return prm[2]
 
-cdef Elm_Object_Item * _object_item_from_python(GenlistItem item):
-    if item is None:
-        return NULL
-    else:
-        return item.item
-
 cdef _object_item_to_python(Elm_Object_Item *it):
     cdef void *data
     cdef object prm
@@ -435,5 +429,11 @@ cdef class ObjectItem(object):
     def cursor_engine_only_get(self):
         """Get the engine only usage for this object."""
         return elm_object_item_cursor_engine_only_get(self.item)
+
+cdef Elm_Object_Item * _object_item_from_python(ObjectItem item):
+    if item is None:
+        return NULL
+    else:
+        return item.item
 
 _elm_widget_type_register("object_item", ObjectItem)
