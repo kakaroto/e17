@@ -207,7 +207,7 @@ cdef void _menu_item_separator_del_cb(void *data, Evas_Object *o, void *event_in
     it = <object>data
     it.__del_cb()
 
-cdef class MenuItemSeparator(ObjectItem):
+cdef class MenuSeparatorItem(ObjectItem):
     def __init__(self, evasObject menu, MenuItem parent):
         cdef Elm_Object_Item *parent_obj = NULL
 
@@ -362,10 +362,10 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @param parent: The item to add the separator under
         @type parent: L{Object}
         @return: The created item or None on failure
-        @rtype: L{MenuItemSeparator}
+        @rtype: L{MenuSeparatorItem}
 
         """
-        return MenuItemSeparator(self, item)
+        return MenuSeparatorItem(self, item)
 
     def selected_item_get(self):
         """Get the selected item in the menu

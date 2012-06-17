@@ -23,7 +23,7 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, Butto
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, Radio, \
     Check, Naviframe, NaviframeItem, InnerWindow, Image, Spinner, \
     Fileselector, FileselectorEntry, FileselectorButton, Notify, Separator, \
-    Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, Genlist, \
+    Progressbar, Menu, MenuItem, MenuSeparatorItem, Panel, Genlist, \
     GenlistItem, GenlistItemClass, ObjectItem, Gengrid, GengridItem, \
     GengridItemClass, Actionslider, Calendar, Colorselector, Index, IndexItem, \
     Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
