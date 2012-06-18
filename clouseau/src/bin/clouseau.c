@@ -681,6 +681,10 @@ _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
              bmp_req = eina_list_append(bmp_req, b_node);
           }
      }
+   else  /* Disable button if we lost server */
+     _set_button(gui->win, obj,
+           "/images/gtk-close.png",
+           "Screenshot not available", EINA_TRUE);
 }
 
 Eina_Bool
