@@ -1826,7 +1826,10 @@ cdef extern from "Elementary.h":
 
     # Photocam              (XXX)
 
-    # Plug                  (XXX)
+    # Plug                  (api:TODO  cb:N/A   test:TODO  doc:DONE  py3:DONE)
+    Evas_Object             *elm_plug_add(Evas_Object *parent)
+    Eina_Bool                elm_plug_connect(Evas_Object *obj, const_char_ptr svcname, int svcnum, Eina_Bool svcsys)
+    Evas_Object             *elm_plug_image_object_get(Evas_Object *obj)
 
     # Popup                 (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
     Evas_Object             *elm_popup_add(Evas_Object *parent)

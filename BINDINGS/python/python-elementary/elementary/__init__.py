@@ -30,7 +30,7 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, \
     Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
     Transit, Map, MapOverlay, MapOverlayClass, Mapbuf, MultiButtonEntry, \
     MultiButtonEntryItem, Slideshow, SlideshowItem, SegmentControl, \
-    SegmentControlItem, Popup, PopupItem, \
+    SegmentControlItem, Popup, PopupItem, Plug, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \

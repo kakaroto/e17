@@ -177,7 +177,7 @@ people and organizations behind this, as listed below:
     Diskselector, Entry, Fileselector*, Flip, Frame, Gengrid, Genlist, Grid,
     Hover, Hoversel, Icon, Image, Index, InnerWindow, Label, Layout, List,
     Map, Mapbuf, Menu, MultiButtonEntry, Naviframe, Notify, Panel, Panes,
-    Photo, Player, Popup, Progressbar, Radio, Scroller, SegmentControl,
+    Photo, Player, Plug, Popup, Progressbar, Radio, Scroller, SegmentControl,
     Separator, Slider, Slideshow, Spinner, StandardWindow, Table, Thumb,
     Toolbar, Transit, Video, Web, Window
 
@@ -430,3 +430,4 @@ include "elementary.c_elementary_transit.pxi"
 include "elementary.c_elementary_slideshow.pxi"
 include "elementary.c_elementary_segment_control.pxi"
 include "elementary.c_elementary_popup.pxi"
+include "elementary.c_elementary_plug.pxi"
