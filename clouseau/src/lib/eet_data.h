@@ -2,8 +2,11 @@
 #define EET_DATA_H
 #include "libclouseau.h"
 /*  Global constants  */
-#define APP_ADD_ENTRY   "add_add_entry"
-#define TREE_DATA_ENTRY "tree_data_entry"
+#define APP_ADD_ENTRY   "/clouseau/app"
+#define TREE_DATA_ENTRY "/clouseau/app/tree"
+#define BMP_LIST_ENTRY  "/clouseau/app/shot_list"
+#define BMP_DATA_ENTRY  "/clouseau/app/screenshot"
+#define BMP_FIELD "bmp"
 
 #define PORT           (22522)
 #define MAX_LINE       (1023)
@@ -136,12 +139,18 @@ struct _eet_message_type_mapping
 };
 typedef struct _eet_message_type_mapping eet_message_type_mapping;
 
+struct _shot_list_st
+{  /* This will be used to write a shot list to eet file */
+   Eina_List *view;       /* Screen views eahc is (bmp_info_st *) ptr */
+};
+typedef struct _shot_list_st shot_list_st;
 
 struct _data_desc
 {
    Eet_Data_Descriptor *bmp_data;
    Eet_Data_Descriptor *bmp_req;
    Eet_Data_Descriptor *bmp_info;
+   Eet_Data_Descriptor *shot_list;
    Eet_Data_Descriptor *connect;
    Eet_Data_Descriptor *app_add;
    Eet_Data_Descriptor *data_req;
@@ -162,6 +171,7 @@ Eet_Data_Descriptor *data_req_desc_make(void);
 Eet_Data_Descriptor *bmp_req_desc_make(void);
 Eet_Data_Descriptor *bmp_data_desc_make(void);
 Eet_Data_Descriptor *bmp_info_desc_make(void);
+Eet_Data_Descriptor *shot_list_desc_make(void);
 Eet_Data_Descriptor *tree_data_desc_make(void);
 Eet_Data_Descriptor *app_closed_desc_make(void);
 Eet_Data_Descriptor *highlight_desc_make(void);
@@ -180,7 +190,7 @@ message_type packet_mapping_type_get(const char *name);
 const char *packet_mapping_type_str_get(message_type t);
 void *packet_compose(message_type t, void *data, int data_size, int *size, void *blob, int blob_size);
 Variant_st *packet_info_get(void *data, int size);
-Eina_Bool eet_info_save(const char *filename, app_info_st *app, tree_data_st *ftd);
+Eina_Bool eet_info_save(const char *filename, app_info_st *a, tree_data_st *ftd, Eina_List *ck_list);
 Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
 
 /* Highlight code, we may choose to move this to other file later */

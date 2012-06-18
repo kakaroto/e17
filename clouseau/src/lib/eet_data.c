@@ -208,6 +208,21 @@ bmp_info_desc_make(void)
 }
 
 Eet_Data_Descriptor *
+shot_list_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, shot_list_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST  (d, shot_list_st,
+         "view", view, desc->bmp_info);  /* Carefull - init this first */
+
+   return d;
+}
+
+Eet_Data_Descriptor *
 tree_data_desc_make(void)
 {
    Eet_Data_Descriptor *d;
@@ -318,6 +333,7 @@ data_descriptors_init(void)
 
    desc->bmp_req    = bmp_req_desc_make();
    desc->bmp_info   = bmp_info_desc_make();
+   desc->shot_list   = shot_list_desc_make();
    desc->obj_info   = Obj_Information_desc_make();
    desc->tree       = tree_item_desc_make();
    desc->connect    = connect_desc_make();
@@ -388,6 +404,7 @@ data_descriptors_shutdown(void)
         eet_data_descriptor_free(desc->_variant_unified_descriptor);
         eet_data_descriptor_free(desc->bmp_req);
         eet_data_descriptor_free(desc->bmp_info);
+        eet_data_descriptor_free(desc->shot_list);
 
         free(desc);
         desc = NULL;
@@ -500,8 +517,9 @@ packet_info_get(void *data, int size)
      }
 }
 
-Eina_Bool eet_info_save(const char *filename,
-      app_info_st *a, tree_data_st *ftd)
+Eina_Bool
+eet_info_save(const char *filename,
+      app_info_st *a, tree_data_st *ftd, Eina_List *ck_list)
 {
    data_desc *d = data_descriptors_init();
    Eet_File *fp = eet_open(filename, EET_FILE_MODE_WRITE);
@@ -509,6 +527,31 @@ Eina_Bool eet_info_save(const char *filename,
      {
         eet_data_write(fp, d->app_add, APP_ADD_ENTRY, a, EINA_TRUE);
         eet_data_write(fp, d->tree_data, TREE_DATA_ENTRY, ftd, EINA_TRUE);
+
+        /* Build list of (bmp_info_st *) according to user selection    */
+        shot_list_st t;
+        Eina_List *l;
+        Evas_Object *ck;
+        t.view = NULL;
+        EINA_LIST_FOREACH(ck_list, l , ck)
+           if (elm_check_state_get(ck) && evas_object_data_get(ck, BMP_FIELD))
+             t.view = eina_list_append(t.view,
+                   evas_object_data_get(ck, BMP_FIELD));
+
+        if (t.view)
+          {  /* Write list and bitmaps */
+             char buf[1024];
+             bmp_info_st *st = NULL;
+             eet_data_write(fp, d->shot_list, BMP_LIST_ENTRY, &t, EINA_TRUE);
+             EINA_LIST_FOREACH(t.view, l , st)
+               {
+                  sprintf(buf, "%s/%llx", BMP_DATA_ENTRY, st->object);
+                  eet_data_image_write(fp, buf,
+                        st->bmp, st->w, st->h, 1, 0, 100, 0);
+               }
+
+             eina_list_free(t.view);
+          }
 
         eet_close(fp);
 
@@ -527,7 +570,33 @@ Eina_Bool eet_info_read(const char *filename,
      {
         *a = eet_data_read(fp, d->app_add, APP_ADD_ENTRY);
         *ftd = eet_data_read(fp, d->tree_data, TREE_DATA_ENTRY);
+        shot_list_st *t = eet_data_read(fp, d->shot_list, BMP_LIST_ENTRY);
+        if (t->view)
+          {
+             Eina_List *l;
+             bmp_info_st *st = NULL;
+             EINA_LIST_FOREACH(t->view, l , st)
+               {
+                  char buf[1024];
+                  int alpha;
+                  int compress;
+                  int quality;
+                  int lossy;
 
+                  sprintf(buf, "%s/%llx", BMP_DATA_ENTRY, st->object);
+                  st->bmp = eet_data_image_read(fp, buf,
+                        (unsigned int *) &st->w, (unsigned int *) &st->h,
+                        &alpha, &compress, &quality, &lossy);
+
+                  /* Add the bitmaps to the actuall app data struct */
+                  Variant_st *v = variant_alloc(BMP_DATA, sizeof(*st), st);
+                  (*a)->view = eina_list_append((*a)->view, v);
+               }
+
+             eina_list_free(t->view);
+          }
+
+        free(t);
         eet_close(fp);
 
         return EINA_TRUE;
