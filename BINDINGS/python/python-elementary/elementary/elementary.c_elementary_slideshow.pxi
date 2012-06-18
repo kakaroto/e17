@@ -362,6 +362,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
         """
         cdef SlideshowItem ret = SlideshowItem()
         cdef Elm_Object_Item *item
+        cdef Eina_Compare_Cb compare
 
         if callable(func):
             compare = _py_elm_slideshow_compare_func
@@ -371,7 +372,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
         item_data = (args, kwargs)
         # note: keep this positions sync'ed with the rest of the code:
         prm = (item_class, item_data, ret, func)
-        item = elm_slideshow_item_sorted_insert(self.obj, &item_class.obj, <void*>prm, <Eina_Compare_Cb>compare)
+        item = elm_slideshow_item_sorted_insert(self.obj, &item_class.obj, <void*>prm, compare)
         if item != NULL:
             ret._set_obj(item, prm)
             return ret
