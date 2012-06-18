@@ -23,6 +23,7 @@ from evas.c_evas cimport Evas_Coord
 from evas.c_evas cimport Evas_Callback_Type
 from evas.c_evas cimport Evas_Smart_Cb
 from evas.c_evas cimport Evas_Font_Size
+from evas.c_evas cimport Evas_Load_Error
 
 cdef extern from *:
     ctypedef char* const_char_ptr "const char *"
@@ -332,6 +333,13 @@ cdef extern from "Elementary.h":
         ELM_PANEL_ORIENT_BOTTOM
         ELM_PANEL_ORIENT_LEFT
         ELM_PANEL_ORIENT_RIGHT
+
+    ctypedef enum Elm_Photocam_Zoom_Mode:
+        ELM_PHOTOCAM_ZOOM_MODE_MANUAL
+        ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT
+        ELM_PHOTOCAM_ZOOM_MODE_AUTO_FILL
+        ELM_PHOTOCAM_ZOOM_MODE_AUTO_FIT_IN
+        ELM_PHOTOCAM_ZOOM_MODE_LAST
 
     ctypedef enum Elm_Policy:
         ELM_POLICY_QUIT
@@ -1824,9 +1832,27 @@ cdef extern from "Elementary.h":
     void                     elm_photo_aspect_fixed_set(Evas_Object *obj, Eina_Bool fixed)
     Eina_Bool                elm_photo_aspect_fixed_get(Evas_Object *obj)
 
-    # Photocam              (XXX)
+    # Photocam              (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    Evas_Object             *elm_photocam_add(Evas_Object *parent)
+    Evas_Load_Error          elm_photocam_file_set(Evas_Object *obj, const_char_ptr file)
+    const_char_ptr           elm_photocam_file_get(Evas_Object *obj)
+    void                     elm_photocam_zoom_set(Evas_Object *obj, double zoom)
+    double                   elm_photocam_zoom_get(Evas_Object *obj)
+    void                     elm_photocam_zoom_mode_set(Evas_Object *obj, Elm_Photocam_Zoom_Mode mode)
+    Elm_Photocam_Zoom_Mode   elm_photocam_zoom_mode_get(Evas_Object *obj)
+    void                     elm_photocam_image_size_get(Evas_Object *obj, int *w, int *h)
+    void                     elm_photocam_image_region_get(Evas_Object *obj, int *x, int *y, int *w, int *h)
+    void                     elm_photocam_image_region_show(Evas_Object *obj, int x, int y, int w, int h)
+    void                     elm_photocam_image_region_bring_in(Evas_Object *obj, int x, int y, int w, int h)
+    void                     elm_photocam_paused_set(Evas_Object *obj, Eina_Bool paused)
+    Eina_Bool                elm_photocam_paused_get(Evas_Object *obj)
+    Evas_Object             *elm_photocam_internal_image_get(Evas_Object *obj)
+    void                     elm_photocam_bounce_set(Evas_Object *obj, Eina_Bool h_bounce, Eina_Bool v_bounce)
+    void                     elm_photocam_bounce_get(Evas_Object *obj, Eina_Bool *h_bounce, Eina_Bool *v_bounce)
+    void                     elm_photocam_gesture_enabled_set(Evas_Object *obj, Eina_Bool gesture)
+    Eina_Bool                elm_photocam_gesture_enabled_get(Evas_Object *obj)
 
-    # Plug                  (api:TODO  cb:N/A   test:TODO  doc:DONE  py3:DONE)
+    # Plug                  (api:DONE  cb:N/A   test:TODO  doc:DONE  py3:DONE)
     Evas_Object             *elm_plug_add(Evas_Object *parent)
     Eina_Bool                elm_plug_connect(Evas_Object *obj, const_char_ptr svcname, int svcnum, Eina_Bool svcsys)
     Evas_Object             *elm_plug_image_object_get(Evas_Object *obj)
@@ -1868,8 +1894,6 @@ cdef extern from "Elementary.h":
     int                      elm_radio_value_get(Evas_Object *obj)
     void                     elm_radio_value_pointer_set(Evas_Object *obj, int *valuep)
     Evas_Object             *elm_radio_selected_object_get(Evas_Object *obj)
-
-    # Route                 (XXX)
 
     # Scroller              (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_scroller_add(Evas_Object *parent)
