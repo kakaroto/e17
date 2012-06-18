@@ -112,13 +112,6 @@ _variant_type_set(const char *type,
 } /* _variant_type_set */
 
 void
-bmp_info_free(Bmp_Data *bmp)
-{
-   free(bmp->bmp);
-   free(bmp);
-}
-
-void
 variant_free(Variant_st *v)
 {
    if (v->data)
@@ -190,25 +183,6 @@ data_req_desc_make(void)
 }
 
 Eet_Data_Descriptor *
-bmp_data_desc_make(void)
-{
-   Eet_Data_Descriptor *d;
-
-   Eet_Data_Descriptor_Class eddc;
-   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Bmp_Data);
-   d = eet_data_descriptor_stream_new(&eddc);
-
-   EET_DATA_DESCRIPTOR_ADD_BASIC_VAR_ARRAY(d, Bmp_Data,
-         "bmp", bmp, EET_T_UCHAR);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, Bmp_Data,
-         "w", w, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC (d, Bmp_Data,
-         "h", h, EET_T_INT);
-
-   return d;
-}
-
-Eet_Data_Descriptor *
 bmp_info_desc_make(void)
 {
    Eet_Data_Descriptor *d;
@@ -224,10 +198,11 @@ bmp_info_desc_make(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st,
          "object", object, EET_T_ULONG_LONG);
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st, "ctr",
-         ctr, EET_T_UINT);
-
-   EET_DATA_DESCRIPTOR_ADD_SUB(d, bmp_info_st, "bmp",
-         bmp, desc->bmp_data);  /* Carefull - init this first */
+         ctr, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st, "w",
+         w, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st, "h",
+         h, EET_T_ULONG_LONG);
 
    return d;
 }
@@ -341,7 +316,6 @@ data_descriptors_init(void)
 
    Eet_Data_Descriptor_Class eddc;
 
-   desc->bmp_data   = bmp_data_desc_make();
    desc->bmp_req    = bmp_req_desc_make();
    desc->bmp_info   = bmp_info_desc_make();
    desc->obj_info   = Obj_Information_desc_make();
@@ -412,7 +386,6 @@ data_descriptors_shutdown(void)
         eet_data_descriptor_free(desc->obj_info);
         eet_data_descriptor_free(desc->_variant_descriptor );
         eet_data_descriptor_free(desc->_variant_unified_descriptor);
-        eet_data_descriptor_free(desc->bmp_data);
         eet_data_descriptor_free(desc->bmp_req);
         eet_data_descriptor_free(desc->bmp_info);
 
@@ -421,34 +394,115 @@ data_descriptors_shutdown(void)
      }
 }
 
-void *
-packet_compose(message_type t, void *data, int data_size, int *size)
-{  /* Returns packet BLOB and size in size param, NULL on failure */
-   /* Packet is composed of message type + ptr to data            */
-   data_desc *d = data_descriptors_init();
-   Variant_st *v = variant_alloc(t, data_size, data);
-   void *p = eet_data_descriptor_encode(d->_variant_descriptor , v, size);
-   variant_free(v);
+enum _bmp_field_idx
+{  /* Index for bmp_info_st fields to be stored in BLOB */
+   gui = 0,
+   app,
+   object,
+   ctr,
+   w,
+   h,
+   top_idx  /* Used for allocation */
+};
+typedef enum _bmp_field_idx bmp_field_idx;
 
-/*   printf("%s size=<%d>\n", __func__, *size); */
-   return p;  /* User has to free(p) */
+void *
+packet_compose(message_type t, void *data,
+      int data_size, int *size,
+      void *blob, int blob_size)
+{  /* Returns packet BLOB and size in size param, NULL on failure */
+   /* Packet is composed of packet type BYTE + packet data.       */
+   void *p = NULL;
+   void *pb = NULL;
+   unsigned char p_type = VARIANT_PACKET;
+
+   switch (t)
+     {
+      case BMP_DATA:
+           {  /* Builed raw data without encoding */
+              /* Do NOT forget to update *size, allocate using p */
+              bmp_info_st *b = data;
+              *size = (top_idx * sizeof(unsigned long long)) + blob_size;
+              unsigned long long *longs = malloc(*size);
+
+              longs[gui] = b->gui;
+              longs[app] = b->app;
+              longs[object] = b->object;
+              longs[ctr] = b->ctr;
+              longs[w] = b->w;
+              longs[h] = b->h;
+
+              if (blob)
+                memcpy(&longs[top_idx], blob, blob_size); /* Copy BMP info */
+
+              p_type = BMP_RAW_DATA;
+              p = longs;
+           }
+         break;
+
+      default:
+           {  /* All others are variant packets with EET encoding  */
+              /* Variant is composed of message type + ptr to data */
+              data_desc *d = data_descriptors_init();
+              Variant_st *v = variant_alloc(t, data_size, data);
+              p = eet_data_descriptor_encode(
+                    d->_variant_descriptor , v, size);
+              variant_free(v);
+           }
+     }
+
+   pb = malloc((*size) + 1);
+   *((unsigned char *) pb) = p_type;
+   memcpy(((char *) pb) + 1, p, *size);
+   *size = (*size) + 1;  /* Add space for packet type */
+   free(p);
+
+   return pb;  /* User has to free(pb) */
 }
 
 Variant_st *
 packet_info_get(void *data, int size)
 {  /* user has to use variant_free() to free return struct */
-   data_desc *d = data_descriptors_init();
-   return eet_data_descriptor_decode(d->_variant_descriptor, data, size);
+   char *ch = data;
+   switch (*ch)
+     {
+      case BMP_RAW_DATA:
+           {
+              void *bmp = NULL;
+              unsigned long long *longs = (unsigned long long *) (ch + 1);
+              /* Allocate size minus longs array and ch size for bmp */
+              int blob_size = size - (((char *) (&longs[top_idx])) - ch);
+
+              if (blob_size)
+                {  /* Allocate BMP only if was included in packet */
+                   bmp = malloc(blob_size);
+                   memcpy(bmp, &longs[top_idx], blob_size);
+                }
+              bmp_info_st t = { longs[gui], longs[app], longs[object],
+                   longs[ctr], longs[w], longs[h], NULL, NULL, bmp };
+
+              /* User have to free both: variant_free(rt), free(t->bmp) */
+              return variant_alloc(BMP_DATA, sizeof(t), &t);
+           }
+         break;
+
+      default:
+           {
+              data_desc *d = data_descriptors_init();
+              return eet_data_descriptor_decode(d->_variant_descriptor,
+                    ch + 1, size - 1);
+           }
+     }
 }
 
 Eina_Bool eet_info_save(const char *filename,
-      app_info_st *app, tree_data_st *ftd)
+      app_info_st *a, tree_data_st *ftd)
 {
    data_desc *d = data_descriptors_init();
    Eet_File *fp = eet_open(filename, EET_FILE_MODE_WRITE);
    if (fp)
      {
-        eet_data_write(fp, d->app_add, APP_ADD_ENTRY, app, EINA_TRUE);
+        eet_data_write(fp, d->app_add, APP_ADD_ENTRY, a, EINA_TRUE);
         eet_data_write(fp, d->tree_data, TREE_DATA_ENTRY, ftd, EINA_TRUE);
 
         eet_close(fp);
@@ -460,13 +514,13 @@ Eina_Bool eet_info_save(const char *filename,
 }
 
 Eina_Bool eet_info_read(const char *filename,
-      app_info_st **app, tree_data_st **ftd)
+      app_info_st **a, tree_data_st **ftd)
 {
    data_desc *d = data_descriptors_init();
    Eet_File *fp = eet_open(filename, EET_FILE_MODE_READ);
    if (fp)
      {
-        *app = eet_data_read(fp, d->app_add, APP_ADD_ENTRY);
+        *a = eet_data_read(fp, d->app_add, APP_ADD_ENTRY);
         *ftd = eet_data_read(fp, d->tree_data, TREE_DATA_ENTRY);
 
         eet_close(fp);

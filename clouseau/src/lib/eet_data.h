@@ -10,6 +10,11 @@
 #define LOCALHOST      "127.0.0.1"
 #define LISTEN_IP      "0.0.0.0" /* Avail all, no mask */
 
+/* Define packet types, used by packet encode / decode */
+#define VARIANT_PACKET 0
+#define BMP_RAW_DATA   1
+
+
 #define DESC_ADD_BASIC(desc, type, member, eet_type) \
    EET_DATA_DESCRIPTOR_ADD_BASIC             \
    (desc, type, #member, member, eet_type)
@@ -35,7 +40,7 @@ enum _message_type
    APP_CLOSED,         /* APP client PTR from DAEMON to GUI */
    HIGHLIGHT,          /* APP client PTR, object PTR */
    BMP_REQ,            /* APP client PTR, object PTR */
-   BMP_DATA            /* APP client PTR, object PTR, Bmp_Data */
+   BMP_DATA            /* bmp_info_st header + BMP raw data */
 };
 typedef enum _message_type message_type;
 
@@ -109,14 +114,18 @@ struct _bmp_req_st
 typedef struct _bmp_req_st bmp_req_st;
 
 struct _bmp_info_st
-{  /* This will be used to send app window Bitmap */
-   unsigned long long gui;    /* (void *) client ptr of GUI  */
-   unsigned long long app;    /* (void *) client ptr of APP  */
-   unsigned long long object; /* (void *) object ptr of evas */
-   unsigned int ctr;          /* Reload counter to match     */
-   Evas_Object *win;          /* Window of view if open      */
-   Evas_Object *bt;           /* Button opening win */
-   Bmp_Data *bmp;
+{  /* This will be used to send app window Bitmap             */
+   /* We are using ULONGLONG because we send this as RAW data */
+   /* win, bt are NOT transferred.                            */
+   unsigned long long gui;     /* (void *) client ptr of GUI  */
+   unsigned long long app;     /* (void *) client ptr of APP  */
+   unsigned long long object;  /* (void *) object ptr of evas */
+   unsigned long long ctr;     /* Reload counter to match     */
+   unsigned long long w;       /* BMP width, make  Evas_Coord */
+   unsigned long long h;       /* BMP hight, make  Evas_Coord */
+   Evas_Object *win;           /* Window of view if open      */
+   Evas_Object *bt;            /* Button opening win          */
+   void *bmp;      /* Bitmap BLOB, size (w * h * sizeof(int)) */
 };
 typedef struct _bmp_info_st bmp_info_st;
 
@@ -165,12 +174,11 @@ void item_tree_free(Eina_List *tree);
 void _item_tree_item_string(Tree_Item *parent);
 data_desc *data_descriptors_init(void);
 void data_descriptors_shutdown(void);
-void bmp_info_free(Bmp_Data *bmp);
 void variant_free(Variant_st *v);
 Variant_st *variant_alloc(message_type t, size_t size, void *info);
 message_type packet_mapping_type_get(const char *name);
 const char *packet_mapping_type_str_get(message_type t);
-void *packet_compose(message_type t, void *data, int data_size, int *size);
+void *packet_compose(message_type t, void *data, int data_size, int *size, void *blob, int blob_size);
 Variant_st *packet_info_get(void *data, int size);
 Eina_Bool eet_info_save(const char *filename, app_info_st *app, tree_data_st *ftd);
 Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);

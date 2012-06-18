@@ -106,7 +106,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    if (svr)
      {
         connect_st t = { getpid(), __FILE__ };
-        p = packet_compose(GUI_CLIENT_CONNECT, &t, sizeof(t), &size);
+        p = packet_compose(GUI_CLIENT_CONNECT, &t, sizeof(t), &size, NULL, 0);
         if (p)
           {
              ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -259,7 +259,9 @@ _close_app_views(app_info_st *app, Eina_Bool clr)
         EINA_LIST_FREE(app->view, view)
           {  /* Free memory allocated to show any app screens */
              bmp_info_st *b = view->data;
-             bmp_info_free(b->bmp);
+             if (b->bmp)
+               free(b->bmp);
+
              variant_free(view);
           }
 
@@ -367,7 +369,9 @@ _remove_bmp(Eina_List *view, void *ptr)
         if (st->win)
           evas_object_del(st->win);
 
-        bmp_info_free(st->bmp);
+        if (st->bmp)
+          free(st->bmp);
+
         variant_free(v);
         return eina_list_remove(view, v);
      }
@@ -410,7 +414,9 @@ _free_app(app_data_st *st)
         if (b->win)
           evas_object_del(b->win);
 
-        bmp_info_free(b->bmp);
+        if (b->bmp)
+          free(b->bmp);
+
         variant_free(view);
      }
 
@@ -528,6 +534,20 @@ static void
 _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
 {  /* Remove bmp if exists (according to obj-ptr), then add the new one */
    bmp_info_st *st = v->data;
+
+   if (!st->bmp)
+     {  /* We consider a case out request will be answered with empty bmp
+           this may happen if we have a sub-window of app
+           (like checks in elementary test)
+           if the user closed it just as we send our BMP_REQ
+           this Evas is no longer valid and we get NULL ptr for BMP.
+           This code ignores this case. */
+        elm_progressbar_pulse(g->pb, EINA_FALSE);
+        evas_object_hide(g->pb);
+        variant_free(v);
+        return;
+     }
+
    app_data_st *app = (app_data_st *)
       eina_list_search_unsorted(apps, _app_ptr_cmp,
             (void *) (uintptr_t) st->app);
@@ -542,7 +562,7 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
 
         app_info_st *info = app->app->data;
         info->view = _remove_bmp(info->view,
-              (void *) (uintptr_t) (((bmp_info_st *) v->data)->object));
+              (void *) (uintptr_t) (st->object));
         info->view = eina_list_append(info->view, v);
 
         /* Now we need to update refresh button, make it open-window */
@@ -562,7 +582,9 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
    else
      {  /* Dispose bmp info if app no longer in the list of apps */
         /* or the bmp_info is no longer relevant */
-        bmp_info_free(((bmp_info_st *) v->data)->bmp);
+        if (st->bmp)
+          free(st->bmp);
+
         variant_free(v);
      }
 }
@@ -588,15 +610,15 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
    elm_object_disabled_set(bt, EINA_TRUE);
    evas_object_image_colorspace_set(o, EVAS_COLORSPACE_ARGB8888);
    evas_object_image_alpha_set(o, EINA_FALSE);
-   evas_object_image_size_set(o, st->bmp->w, st->bmp->h);
-   evas_object_image_data_copy_set(o, st->bmp->bmp);
-   evas_object_image_data_update_add(o, 0, 0, st->bmp->w, st->bmp->h);
+   evas_object_image_size_set(o, st->w, st->h);
+   evas_object_image_data_copy_set(o, st->bmp);
+   evas_object_image_data_update_add(o, 0, 0, st->w, st->h);
    evas_object_show(o);
    evas_object_smart_callback_add(st->win,
          "delete,request", _app_win_del, st);
 
-   evas_object_resize(o, st->bmp->w, st->bmp->h);
-   evas_object_resize(st->win, st->bmp->w, st->bmp->h);
+   evas_object_resize(o, st->w, st->h);
+   evas_object_resize(st->win, st->w, st->h);
 
    elm_win_autodel_set(st->win, EINA_TRUE);
    evas_object_show(st->win);
@@ -623,7 +645,7 @@ _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
              (unsigned long long) (uintptr_t) st->ptr,
              (unsigned long long) (uintptr_t) treeit->ptr, st->refresh_ctr };
 
-        void *p = packet_compose(BMP_REQ, &t, sizeof(t), &size);
+        void *p = packet_compose(BMP_REQ, &t, sizeof(t), &size, NULL, 0);
         if (p)
           {
              ecore_ipc_server_send(svr,
@@ -923,7 +945,7 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
 
    if (svr)
      {
-        void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size);
+        void *p = packet_compose(HIGHLIGHT, &st, sizeof(st), &size, NULL, 0);
         if (p)
           {
              ecore_ipc_server_send(svr,
@@ -969,7 +991,8 @@ _load_list(gui_elements *g)
                   data_req_st t = { (unsigned long long) (uintptr_t) NULL,
                        (unsigned long long) (uintptr_t) st->ptr };
 
-                  void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size);
+                  void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size,
+                        NULL, 0);
                   if (p)
                     {
                        elm_progressbar_pulse(g->pb, EINA_TRUE);

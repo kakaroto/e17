@@ -44,10 +44,9 @@ libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
    eina_list_free(children);
 }
 
-static Bmp_Data *
-_canvas_bmp_get(Ecore_Evas *ee)
+static void *
+_canvas_bmp_get(Ecore_Evas *ee, Evas_Coord *w_out, Evas_Coord *h_out)
 {
-   Bmp_Data *rt = NULL;
    Ecore_X_Image *img;
    Ecore_X_Window_Attributes att;
    unsigned char *src;
@@ -59,7 +58,8 @@ _canvas_bmp_get(Ecore_Evas *ee)
    if (!xwin)
      {
         printf("Can't grab X window.\n");
-        return rt;
+        *w_out = *h_out = 0;
+        return NULL;
      }
 
    Evas *e = ecore_evas_get(ee);
@@ -84,14 +84,9 @@ _canvas_bmp_get(Ecore_Evas *ee)
 
    /* dst now holds window bitmap */
    ecore_x_image_free(img);
-
-   rt = malloc(sizeof(*rt));  /* Will be freed by the user */
-   rt->bmp = (unsigned char *) dst;
-   rt->bmp_count = (w * h * sizeof(int));
-   rt->w = w;
-   rt->h = h;
-
-   return rt;
+   *w_out = w;
+   *h_out = h;
+   return (void *) dst;
 }
 
 static Eina_List *
@@ -145,7 +140,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
    connect_st t = { getpid(), _my_app_name };
-   p = packet_compose(APP_CLIENT_CONNECT, &t, sizeof(t), &size);
+   p = packet_compose(APP_CLIENT_CONNECT, &t, sizeof(t), &size, NULL, 0);
    if (p)
      {
         ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -191,7 +186,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
               t.tree = _load_list();
               if (t.tree)
                 {  /* Reply with tree data to data request */
-                   void *p = packet_compose(TREE_DATA, &t, sizeof(t), &size);
+                   void *p = packet_compose(TREE_DATA, &t, sizeof(t), &size,
+                         NULL, 0);
                    if (p)
                      {
                         ecore_ipc_server_send(ev->server, 0,0,0,0,
@@ -215,27 +211,28 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
       case BMP_REQ:
            {  /* Bitmap req msg contains PTR of Ecore Evas */
               bmp_req_st *req = v->data;
-              Bmp_Data *bmp = _canvas_bmp_get((Ecore_Evas *) (uintptr_t)
-                    req->object);
+              Evas_Coord w, h;
+              int size = 0;
+              void *bmp = _canvas_bmp_get((Ecore_Evas *) (uintptr_t)
+                    req->object, &w, &h);
 
-              /* TODO: what if win closed (bmp not found), need to send NULL */
-              /* and handle bmp-NULL value in client */
-              if (bmp)
-                {  /* Send server packet with BMP info */
-                   int size = 0;
-                   bmp_info_st t = { req->gui,
-                        req->app, req->object , req->ctr, NULL, NULL, bmp };
-                   void *p = packet_compose(BMP_DATA, &t, sizeof(t), &size);
-                   if (p)
-                     {
-                        ecore_ipc_server_send(ev->server, 0,0,0,0,
-                              EINA_FALSE, p, size);
-                        ecore_ipc_server_flush(ev->server);
-                        free(p);
-                     }
+              bmp_info_st t = { req->gui,
+                   req->app, req->object , req->ctr, w, h,
+                   NULL, NULL, NULL };
 
-                   bmp_info_free(bmp);
+              void *p = packet_compose(BMP_DATA, &t, sizeof(t), &size,
+                    bmp, (w * h * sizeof(int)));
+
+              if (p)
+                {
+                   ecore_ipc_server_send(ev->server, 0,0,0,0,
+                         EINA_FALSE, p, size);
+                   ecore_ipc_server_flush(ev->server);
+                   free(p);
                 }
+
+              if (bmp)
+                free(bmp);
            }
          break;
 

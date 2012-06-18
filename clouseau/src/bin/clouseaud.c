@@ -172,7 +172,7 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
         app_closed_st t = { (unsigned long long) (uintptr_t) ev->client };
         Eina_List *l;
         int size;
-        void *p = packet_compose(APP_CLOSED, &t, sizeof(t), &size);
+        void *p = packet_compose(APP_CLOSED, &t, sizeof(t), &size, NULL, 0);
         if (p)
           {
              EINA_LIST_FOREACH(gui, l, i)
@@ -225,7 +225,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                         (unsigned long long) (uintptr_t) ev->client, NULL, 0 };
 
                    app = _add_client(app, t, ev->client);
-                   p = packet_compose(APP_ADD, &m, sizeof(m), &size);
+                   p = packet_compose(APP_ADD, &m, sizeof(m), &size, NULL, 0);
                    if (p)
                      {
                         EINA_LIST_FOREACH(gui, l, st)
@@ -250,7 +250,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    gui = _add_client(gui, t, ev->client);
                    EINA_LIST_FOREACH(app, l, st)
                      {  /* Add all registered apps to newly open GUI */
-                        p = packet_compose(APP_ADD, st, sizeof(app_info_st), &size);
+                        p = packet_compose(APP_ADD, st, sizeof(*st), &size,
+                              NULL, 0);
                         if (p)
                           {
                              ecore_ipc_client_send(ev->client,
@@ -277,7 +278,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                                   (unsigned long long) (uintptr_t) req->app };
 
                              p = packet_compose(DATA_REQ,
-                                   &t, sizeof(t), &size);
+                                   &t, sizeof(t), &size, NULL, 0);
                              if (p)
                                {
                                   ecore_ipc_client_send(
@@ -301,7 +302,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                           {
                              t.app = (unsigned long long) (uintptr_t) st->ptr;
                              p = packet_compose(DATA_REQ,
-                                   &t, sizeof(t), &size);
+                                   &t, sizeof(t), &size, NULL, 0);
                              if (p)
                                {
                                   ecore_ipc_client_send(
@@ -375,7 +376,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                              req->app, req->object, req->ctr };
 
                         p = packet_compose(BMP_REQ,
-                              &t, sizeof(t), &size);
+                              &t, sizeof(t), &size, NULL, 0);
                         if (p)
                           {  /* FWD req to app with client data */
                              ecore_ipc_client_send(
@@ -419,7 +420,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                           }
                      }
 
-                   bmp_info_free(st->bmp);
+                   if (st->bmp)
+                     free(st->bmp);
                 }
               break;
 
