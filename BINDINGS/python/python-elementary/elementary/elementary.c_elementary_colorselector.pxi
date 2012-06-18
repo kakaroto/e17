@@ -16,15 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-def _cb_colorselector_palette_item_conv(long addr):
-    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    else:
-        return <object>data
-
 cdef void _colorselector_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     csi = <object>data
     csi.__del_cb()
@@ -231,23 +222,23 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
         """When user clicks on color item. The event_info parameter of the
         callback will be the selected color item."""
         self._callback_add_full("color,item,selected",
-                                _cb_colorselector_palette_item_conv,
+                                _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_color_item_selected_del(self, func):
         self._callback_del_full("color,item,selected",
-                                _cb_colorselector_palette_item_conv, func)
+                                _cb_object_item_conv, func)
 
     def callback_color_item_longpressed_add(self, func, *args, **kwargs):
         """When user long presses on color item. The event_info parameter of
         the callback will be the selected color item."""
         self._callback_add_full("color,item,longpressed",
-                                _cb_colorselector_palette_item_conv,
+                                _cb_object_item_conv,
                                 func, *args, **kwargs)
 
     def callback_color_item_longpressed_del(self, func):
         self._callback_del_full("color,item,longpressed",
-                                _cb_colorselector_palette_item_conv, func)
+                                _cb_object_item_conv, func)
 
 _elm_widget_type_register("colorselector", Colorselector)
 
