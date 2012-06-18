@@ -577,16 +577,11 @@ _app_win_del(void *data,
 }
 
 static void
-_open_app_window(bmp_info_st *st, Evas_Object *bt)
+_open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
 {
-   app_data_st *app = (app_data_st *)
-      eina_list_search_unsorted(apps, _app_ptr_cmp,
-            (void *) (uintptr_t) st->app);
-
-
    st->bt = bt;
    st->win = elm_win_add(NULL, "win", ELM_WIN_BASIC);
-   elm_win_title_set(st->win, ((app_info_st *) app->app->data)->name);
+   elm_win_title_set(st->win, treeit->name);
    Evas_Object *o = evas_object_image_filled_add(
          evas_object_evas_get(st->win));
 
@@ -611,13 +606,14 @@ static void
 _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {  /* Open window with currnent bmp, or download it if missing   */
    app_info_st *st = gui->sel_app->app->data;
+   Tree_Item *treeit = data;
 
    /* First search app->view list if already have the window bmp */
    Variant_st *v = (Variant_st *)
-      eina_list_search_unsorted(st->view, _bmp_app_ptr_cmp,
-            (void *) (uintptr_t) st->ptr);
+      eina_list_search_unsorted(st->view, _bmp_object_ptr_cmp,
+            (void *) (uintptr_t) treeit->ptr);
    if (v)
-     return _open_app_window(v->data, obj);
+     return _open_app_window(v->data, obj, data);
 
    /* Need to issue BMP_REQ */
    if (svr)
@@ -625,7 +621,7 @@ _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
         int size = 0;
         bmp_req_st t = { (unsigned long long) (uintptr_t) NULL,
              (unsigned long long) (uintptr_t) st->ptr,
-             (unsigned long long) (uintptr_t) data, st->refresh_ctr };
+             (unsigned long long) (uintptr_t) treeit->ptr, st->refresh_ctr };
 
         void *p = packet_compose(BMP_REQ, &t, sizeof(t), &size);
         if (p)
@@ -641,7 +637,7 @@ _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 
              bmp_node *b_node = malloc(sizeof(*b_node));
              b_node->ctr = st->refresh_ctr;
-             b_node->object = (unsigned long long) (uintptr_t) data;
+             b_node->object = (unsigned long long) (uintptr_t) treeit->ptr;
              b_node->bt = obj;       /* Button of BMP_REQ */
              bmp_req = eina_list_append(bmp_req, b_node);
           }
@@ -770,7 +766,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              elm_icon_file_set(ic, buf, NULL);
              elm_object_part_content_set(bt, "icon", ic);
              evas_object_smart_callback_add(bt, "clicked",
-                   _show_app_window, treeit->ptr);
+                   _show_app_window, treeit);
 
              evas_object_show(bt);
              return bt;
