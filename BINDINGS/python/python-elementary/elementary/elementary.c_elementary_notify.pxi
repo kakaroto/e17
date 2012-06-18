@@ -62,9 +62,7 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *o
-        o = elm_notify_parent_get(self.obj)
-        return Object_from_instance(o)
+        return Object_from_instance(elm_notify_parent_get(self.obj))
 
     property parent:
         """The notify parent.
@@ -76,9 +74,14 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
 
         """
         def __get__(self):
-            return self.parent_get()
+            return Object_from_instance(elm_notify_parent_get(self.obj))
         def __set__(self, parent):
-            self.parent_set(parent)
+            cdef Evas_Object *o
+            if parent is not None:
+                o = parent.obj
+            else:
+                o = NULL
+            elm_notify_parent_set(self.obj, o)
 
     def orient_set(self, int orient):
         """Set the orientation.
@@ -109,9 +112,9 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
 
         """
         def __get__(self):
-            return self.orient_get()
+            return elm_notify_orient_get(self.obj)
         def __set__(self, orient):
-            self.orient_set(orient)
+            elm_notify_orient_set(self.obj, orient)
 
     def timeout_set(self, double timeout):
         """Set the time interval after which the notify window is going to be
@@ -161,9 +164,9 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
 
         """
         def __get__(self):
-            return self.timeout_get()
+            return elm_notify_timeout_get(self.obj)
         def __set__(self, timeout):
-            self.timeout_set(timeout)
+            elm_notify_timeout_set(self.obj, timeout)
 
     def allow_events_set(self, repeat):
         """Sets whether events should be passed to by a click outside its area.
@@ -199,9 +202,9 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
 
         """
         def __get__(self):
-            return self.allow_events_get()
+            return bool(elm_notify_allow_events_get(self.obj))
         def __set__(self, allow_events):
-            self.allow_events_set(allow_events)
+            elm_notify_allow_events_set(self.obj, repeat)
 
     def callback_timeout_add(self, func, *args, **kwargs):
         """When timeout happens on notify and it's hidden."""

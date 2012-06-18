@@ -26,7 +26,7 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
     children).
 
     """
-    
+
     def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_mapbuf_add(parent.obj))
@@ -38,7 +38,7 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
         @type enabled: bool
 
         """
-        elm_mapbuf_enabled_set(self.obj, bool(enabled))
+        elm_mapbuf_enabled_set(self.obj, enabled)
 
     def enabled_get(self):
         """Get the enabled state of the map.
@@ -56,16 +56,17 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
 
         """
         def __get__(self):
-            return self.enabled_get()
-        def __set__(self, value):
-            self.enabled_set(value)
+            return bool(elm_mapbuf_enabled_get(self.obj))
+        def __set__(self, enabled):
+            elm_mapbuf_enabled_set(self.obj, enabled)
 
     def smooth_set(self, smooth):
         """Enable or disable smooth map rendering.
+
         This sets smoothing for map rendering. If the object is a type that has
         its own smoothing settings, then both the smooth settings for this object
         and the map must be turned off.
-        
+
         By default smooth maps are enabled.
 
         @param smooth: A boolean to set if the map should me enabled.
@@ -86,13 +87,19 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
     property smooth:
         """Smooth map rendering.
 
+        This sets smoothing for map rendering. If the object is a type that has
+        its own smoothing settings, then both the smooth settings for this object
+        and the map must be turned off.
+
+        By default smooth maps are enabled.
+
         @type: bool
 
         """
         def __get__(self):
-            return self.smooth_get()
+            return bool(elm_mapbuf_smooth_get(self.obj))
         def __set__(self, value):
-            self.smooth_set(value)
+            elm_mapbuf_smooth_set(self.obj, bool(smooth))
 
     def alpha_set(self, alpha):
         """Set or unset alpha flag for map rendering.
@@ -119,9 +126,9 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
 
         """
         def __get__(self):
-            return self.alpha_get()
+            return bool(elm_mapbuf_alpha_get(self.obj))
         def __set__(self, value):
-            self.alpha_set(value)
+            elm_mapbuf_alpha_set(self.obj, bool(alpha))
 
 
 _elm_widget_type_register("mapbuf", Mapbuf)

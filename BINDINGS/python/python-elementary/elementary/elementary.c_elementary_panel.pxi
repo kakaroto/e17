@@ -101,7 +101,11 @@ cdef public class Panel(Object) [object PyElementaryPanel, type PyElementaryPane
             return elm_panel_hidden_get(self.obj)
 
     def toggle(self):
-        """Toggle the hidden state of the panel from code."""
+        """toggle()
+
+        Toggle the hidden state of the panel from code.
+
+        """
         elm_panel_toggle(self.obj)
 
 _elm_widget_type_register("panel", Panel)

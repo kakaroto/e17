@@ -28,6 +28,9 @@ cdef void _menu_item_del_cb(void *data, Evas_Object *o, void *event_info) with g
     it.__del_cb()
 
 cdef class MenuItem(ObjectItem):
+
+    """An item for the L{Menu} widget."""
+
     def __init__(self, evasObject menu, MenuItem parent, label, icon,
                  callback, *args, **kargs):
         cdef Elm_Object_Item *parent_obj = NULL
@@ -59,7 +62,9 @@ cdef class MenuItem(ObjectItem):
         @return: The edje object containing the swallowed content
 
         """
-        return <Object>elm_menu_item_object_get(self.item)
+        return None
+        # TODO: try Object_from_instance here
+        #return <Object>elm_menu_item_object_get(self.item)
 
     def icon_name_set(self, icon):
         """Set the icon of a menu item to the standard icon with name C{icon}
@@ -92,9 +97,9 @@ cdef class MenuItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.icon_name_get()
+            return _ctouni(elm_menu_item_icon_name_get(self.item))
         def __set__(self, icon):
-            self.icon_name_set(icon)
+            elm_menu_item_icon_name_set(self.item, _cfruni(icon))
 
     def selected_set(self, selected):
         """Set the selected state of the item.
@@ -123,12 +128,14 @@ cdef class MenuItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.selected_get()
+            return elm_menu_item_selected_get(self.item)
         def __set__(self, selected):
-            self.selected_set(selected)
+            elm_menu_item_selected_set(self.item, selected)
 
     def is_separator(self):
-        """Returns whether the item is a separator.
+        """is_separator()
+
+        Returns whether the item is a separator.
 
         @see: L{Menu.item_separator_add()}
 
@@ -165,7 +172,18 @@ cdef class MenuItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.subitems_get()
+            cdef const_Eina_List *lst, *itr
+            cdef void *data
+            ret = []
+            lst = elm_menu_item_subitems_get(self.item)
+            itr = lst
+            while itr:
+                data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
+                if data != NULL:
+                    (o, callback, it, a, ka) = <object>data
+                    ret.append(it)
+                itr = itr.next
+            return ret
 
     def index_get(self):
         """Get the position of a menu item
@@ -181,6 +199,21 @@ cdef class MenuItem(ObjectItem):
         """
         return elm_menu_item_index_get(self.item)
 
+    property index:
+        """Get the position of a menu item
+
+        This function returns the index position of a menu item in a menu.
+        For a sub-menu, this number is relative to the first item in the
+        sub-menu.
+
+        @note: Index values begin with 0
+
+        @type: int
+
+        """
+        def __get__(self):
+            return elm_menu_item_index_get(self.item)
+
     def next_get(self):
         """Get the next item in the menu.
 
@@ -188,9 +221,16 @@ cdef class MenuItem(ObjectItem):
         @rtype: L{MenuItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_menu_item_next_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_menu_item_next_get(self.item))
+
+    property next:
+        """Get the next item in the menu.
+
+        @type: L{MenuItem}
+
+        """
+        def __get__(self):
+            return _object_item_to_python(elm_menu_item_next_get(self.item))
 
     def prev_get(self):
         """Get the previous item in the menu.
@@ -199,9 +239,15 @@ cdef class MenuItem(ObjectItem):
         @rtype: L{MenuItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_menu_item_prev_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_menu_item_prev_get(self.item))
+
+    property prev:
+        """Get the previous item in the menu.
+
+        @type: L{MenuItem}
+
+        """
+        return _object_item_to_python(elm_menu_item_prev_get(self.item))
 
 cdef void _menu_item_separator_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     it = <object>data
@@ -276,9 +322,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *o
-        o = elm_menu_parent_get(self.obj)
-        return Object_from_instance(o)
+        return Object_from_instance(elm_menu_parent_get(self.obj))
 
     property parent:
         """The parent for the given menu widget.
@@ -287,12 +331,14 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
         """
         def __get__(self):
-            return self.parent_get()
+            return Object_from_instance(elm_menu_parent_get(self.obj))
         def __set__(self, parent):
-            self.parent_set(parent)
+            elm_menu_parent_set(self.obj, parent.obj)
 
     def move(self, x, y):
-        """Move the menu to a new position
+        """move(x, y)
+
+        Move the menu to a new position
 
         Sets the top-left position of the menu to (C{x},C{y}).
 
@@ -307,7 +353,9 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         elm_menu_move(self.obj, x, y)
 
     def close(self):
-        """Close a opened menu
+        """close()
+
+        Close a opened menu
 
         Hides the menu and all it's sub-menus.
 
@@ -337,8 +385,33 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
                 ret_append(o)
         return ret
 
+    property items:
+        """Returns a list of C{item}'s items.
+
+        @type: tuple of L{Object}s
+
+        """
+        def __get__(self):
+            cdef Elm_Object_Item *it
+            cdef const_Eina_List *lst
+            cdef void *data
+            cdef object prm
+
+            lst = elm_menu_items_get(self.obj)
+            ret = []
+            ret_append = ret.append
+            while lst:
+                it = <Elm_Object_Item *>lst.data
+                lst = lst.next
+                o = _object_item_to_python(it)
+                if o is not None:
+                    ret_append(o)
+            return ret
+
     def item_add(self, parent = None, label = None, icon = None, callback = None, *args, **kwargs):
-        """Add an item at the end of the given menu widget
+        """item_add(parent=None, label=None, icon=None, callback=None, *args, **kwargs)
+
+        Add an item at the end of the given menu widget
 
         @param parent: The parent menu item (optional)
         @type parent: L{Object}
@@ -348,6 +421,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @type label: string
         @param func: Function called when the user select the item.
         @type func: function
+
         @return: Returns the new item.
         @rtype: L{MenuItem}
 
@@ -355,9 +429,11 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         return MenuItem(self, parent, label, icon, callback, *args, **kwargs)
 
     def item_separator_add(self, item = None):
-        """Add a separator item to menu under C{parent}.
+        """item_separator_add(item=None)
 
-        This is item is a @ref Separator.
+        Add a separator item to menu under C{parent}.
+
+        This item is a L{Separator}.
 
         @param parent: The item to add the separator under
         @type parent: L{Object}
@@ -377,9 +453,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: L{MenuItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_menu_selected_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_menu_selected_item_get(self.obj))
 
     property selected_item:
         """The selected item in the menu
@@ -390,7 +464,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
         """
         def __get__(self):
-            return self.selected_item_get()
+            return _object_item_to_python(elm_menu_selected_item_get(self.obj))
 
     def last_item_get(self):
         """Get the last item in the menu
@@ -399,9 +473,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: L{MenuItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_menu_last_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_menu_last_item_get(self.obj))
 
     property last_item:
         """The last item in the menu
@@ -410,7 +482,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
         """
         def __get__(self):
-            return self.last_item_get()
+            return _object_item_to_python(elm_menu_last_item_get(self.obj))
 
     def first_item_get(self):
         """Get the first item in the menu
@@ -419,9 +491,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: MenuItem
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_menu_first_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_menu_first_item_get(self.obj))
 
     property first_item:
         """The first item in the menu
@@ -430,7 +500,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
         """
         def __get__(self):
-            return self.first_item_get()
+            return _object_item_to_python(elm_menu_first_item_get(self.obj))
 
     def callback_clicked_add(self, func, *args, **kwargs):
         """The user clicked the empty space in the menu to dismiss."""

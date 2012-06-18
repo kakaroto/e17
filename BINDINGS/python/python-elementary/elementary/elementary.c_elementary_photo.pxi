@@ -54,6 +54,19 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
         else:
            return bool(elm_photo_file_set(self.obj, NULL))
 
+    property file:
+        """Set the file that will be used as photo
+
+        @type: string
+
+        """
+        def __set__(self, filename):
+            # TODO: check return status
+            if filename:
+               elm_photo_file_set(self.obj, _cfruni(filename))
+            else:
+               elm_photo_file_set(self.obj, NULL)
+
     def thumb_set(self, filename, group):
         """Set the file that will be used as thumbnail in the photo.
 
@@ -65,14 +78,37 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
         """
         elm_photo_thumb_set(self.obj, _cfruni(filename), _cfruni(group))
 
+    property thumb:
+        """Set the file that will be used as thumbnail in the photo.
+
+        @type: string or tuple of strings
+
+        """
+        def __set__(self, value):
+            if isinstance(value, tuple):
+                filename, group = value
+            else:
+                filename = value
+                group = None
+            elm_photo_thumb_set(self.obj, _cfruni(filename), _cfruni(group))
+
     def size_set(self, size):
-        """Set the size that will be used on the photo
+        """Set the size that will be used on the photo.
 
         @param size: The size of the photo
         @type size: int
 
         """
         elm_photo_size_set(self.obj, size)
+
+    property size:
+        """Set the size that will be used on the photo.
+
+        @type: int
+
+        """
+        def __set__(self, size):
+            elm_photo_size_set(self.obj, size)
 
     def fill_inside_set(self, fill):
         """Set if the photo should be completely visible or not.
@@ -82,6 +118,15 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
 
         """
         elm_photo_fill_inside_set(self.obj, fill)
+
+    property fill_inside:
+        """Set if the photo should be completely visible or not.
+
+        @type: bool
+
+        """
+        def __set__(self, fill):
+            elm_photo_fill_inside_set(self.obj, fill)
 
     def editable_set(self, fill):
         """Set editability of the photo.
@@ -95,6 +140,19 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
 
         """
         elm_photo_editable_set(self.obj, fill)
+
+    property editable:
+        """Set editability of the photo.
+
+        An editable photo can be dragged to or from, and can be cut or
+        pasted too.  Note that pasting an image or dropping an item on
+        the image will delete the existing content.
+
+        @type: bool
+
+        """
+        def __set__(self, fill):
+            elm_photo_editable_set(self.obj, fill)
 
     def aspect_fixed_set(self, fixed):
         """Set whether the original aspect ratio of the photo should be kept on resize.
@@ -135,10 +193,10 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
 
         """
         def __get__(self):
-            return self.aspect_fixed_get()
+            return elm_photo_aspect_fixed_get(self.obj)
 
         def __set__(self, fixed):
-            self.aspect_fixed_set(fixed)
+            elm_photo_aspect_fixed_set(self.obj, fixed)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         """This is called when a user has clicked the photo."""
