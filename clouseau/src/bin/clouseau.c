@@ -121,6 +121,20 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
 }
 
 static void
+_set_button(Evas_Object *w, Evas_Object *bt,
+      char *ic_name, char *tip, Eina_Bool en)
+{  /* Update button icon and tooltip */
+   char buf[1024];
+   Evas_Object *ic = elm_icon_add(w);
+   snprintf(buf, sizeof(buf), "%s%s", PACKAGE_DATA_DIR, ic_name);
+   elm_icon_file_set(ic, buf, NULL);
+   elm_object_part_content_set(bt, "icon", ic);
+   elm_object_tooltip_text_set(bt, tip);
+   elm_object_disabled_set(bt, en);
+   evas_object_show(ic);
+}
+
+static void
 _work_offline_popup(void)
 {
    Evas_Object *bxx, *lb, *bt_bx, *bt_ofl, *bt_exit;
@@ -535,6 +549,13 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
 {  /* Remove bmp if exists (according to obj-ptr), then add the new one */
    bmp_info_st *st = v->data;
 
+   app_data_st *app = (app_data_st *)
+      eina_list_search_unsorted(apps, _app_ptr_cmp,
+            (void *) (uintptr_t) st->app);
+
+   /* Check for relevant bmp req in the bmp_req list */
+   bmp_node *nd = _get_bmp_node(st, app->app->data);
+
    if (!st->bmp)
      {  /* We consider a case out request will be answered with empty bmp
            this may happen if we have a sub-window of app
@@ -545,15 +566,14 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
         elm_progressbar_pulse(g->pb, EINA_FALSE);
         evas_object_hide(g->pb);
         variant_free(v);
+
+        /* Make refresh button display: screenshot NOT available */
+        if (nd)
+          _set_button(g->win, nd->bt,
+                "/images/gtk-close.png",
+                "Screenshot not available", EINA_TRUE);
         return;
      }
-
-   app_data_st *app = (app_data_st *)
-      eina_list_search_unsorted(apps, _app_ptr_cmp,
-            (void *) (uintptr_t) st->app);
-
-   /* Check for relevant bmp req in the bmp_req list */
-   bmp_node *nd = _get_bmp_node(st, app->app->data);
 
    if (app && nd)
      {  /* Remove app bmp data if exists, then update */
@@ -566,15 +586,9 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
         info->view = eina_list_append(info->view, v);
 
         /* Now we need to update refresh button, make it open-window */
-        char buf[1024];
-        Evas_Object *ic = elm_icon_add(g->win);
-        snprintf(buf, sizeof(buf), "%s/images/application-default-icon.png",
-              PACKAGE_DATA_DIR);
-        elm_icon_file_set(ic, buf, NULL);
-        elm_object_part_content_set(nd->bt, "icon", ic);
-        elm_object_tooltip_text_set(nd->bt, "Show App Screenshot");
-        elm_object_disabled_set(nd->bt, EINA_FALSE);
-        evas_object_show(ic);
+        _set_button(g->win, nd->bt,
+              "/images/application-default-icon.png",
+              "Show App Screenshot", EINA_FALSE);
 
         bmp_req = eina_list_remove(bmp_req, nd);
         free(nd);
@@ -752,14 +766,13 @@ static Evas_Object *
 item_icon_get(void *data, Evas_Object *parent, const char *part)
 {
    Tree_Item *treeit = data;
+   char buf[PATH_MAX];
 
    if (!treeit->is_obj)
      {  /* Add "Download" button for evas objects */
         if (!strcmp(part, "elm.swallow.end"))
           {
-             char buf[1024];
              Evas_Object *bt = elm_button_add(parent);
-             Evas_Object *ic = elm_icon_add(parent);
              app_info_st *app = NULL;
              if (gui->sel_app)
                app = gui->sel_app->app->data;
@@ -772,21 +785,18 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 
                   if (v)
                     {  /* Set to "show view" if view exists */
-                       snprintf(buf, sizeof(buf),
-                             "%s/images/application-default-icon.png",
-                             PACKAGE_DATA_DIR);
-                       elm_object_tooltip_text_set(bt, "Show App Screenshot");
+                       _set_button(parent, bt,
+                             "/images/application-default-icon.png",
+                             "Show App Screenshot", EINA_FALSE);
                     }
                   else
                     {  /* Set to Download */
-                       snprintf(buf, sizeof(buf), "%s/images/gtk-refresh.png",
-                             PACKAGE_DATA_DIR);
-                       elm_object_tooltip_text_set(bt, "Download Screenshot");
+                       _set_button(parent, bt,
+                             "/images/gtk-refresh.png",
+                             "Download Screenshot", EINA_FALSE);
                     }
                }
 
-             elm_icon_file_set(ic, buf, NULL);
-             elm_object_part_content_set(bt, "icon", ic);
              evas_object_smart_callback_add(bt, "clicked",
                    _show_app_window, treeit);
 
@@ -799,8 +809,6 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        char buf[PATH_MAX];
-
         if (treeit->is_clipper && !treeit->is_visible)
           {
              Evas_Object *ic;
