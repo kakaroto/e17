@@ -626,8 +626,8 @@ _mouse_move(void *data,
    if (((xx >= 0) && (xx < ((Evas_Coord) st->w))) &&
          ((yy >= 0) && (yy < ((Evas_Coord) st->h))))
      { /* Need to test borders, because image may be scrolled */
-        pt = st->bmp + (xx * yy * sizeof(int));
-        sprintf(s_bar, "rgba(%d,%d,%d,%d)", pt[0], pt[1], pt[2], pt[3]);
+        pt = st->bmp + (((yy * st->w) + xx) * sizeof(int));
+        sprintf(s_bar, "rgba(%d,%d,%d,%d)", pt[2], pt[1], pt[0], pt[3]);
         elm_object_text_set(st->lb_rgba, s_bar);
      }
    else
@@ -697,9 +697,9 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
 #define SBAR_PAD_X 4
 #define SBAR_PAD_Y 2
 
-   Evas_Object *bg, *lb_size, *hbx, *glayer;
+   Evas_Object *tb, *bg, *lb_size, *hbx, *glayer;
 
-   char s_bar[64];
+   char s_bar[128];
    char *win_name = malloc(strlen(treeit->name) + strlen(SHOT_HEADER) + 1);
    st->bt = bt;
    st->win = elm_win_add(NULL, "win", ELM_WIN_BASIC);
@@ -717,8 +717,27 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(bx);
 
-   st->scr = elm_scroller_add(bx);
-   elm_box_pack_end(bx, st->scr);
+   /* Table to holds bg and scr on top of it */
+   tb = elm_table_add(bx);
+   elm_box_pack_end(bx, tb);
+   evas_object_size_hint_weight_set(tb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(tb, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(tb);
+
+   /* Set background to scr in table cell */
+   bg = elm_bg_add(tb);
+   snprintf(s_bar, sizeof(s_bar), "%s/images/background.png",
+         PACKAGE_DATA_DIR);
+   elm_bg_file_set(bg, s_bar, NULL);
+   elm_bg_option_set(bg, ELM_BG_OPTION_TILE);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(bg);
+   elm_table_pack(tb, bg, 0, 0, 1, 1);
+
+   /* Then add the scroller in same cell */
+   st->scr = elm_scroller_add(tb);
+   elm_table_pack(tb, st->scr, 0, 0, 1, 1);
    evas_object_size_hint_weight_set(st->scr,
          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
