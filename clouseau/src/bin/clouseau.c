@@ -148,14 +148,14 @@ _work_offline_popup(void)
    evas_object_size_hint_weight_set(bxx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bxx);
 
-   lb = elm_label_add(gui->connect_inwin);
+   lb = elm_label_add(bxx);
    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(lb, EVAS_HINT_FILL, 0.0);
    elm_object_text_set(lb, "Connection to server failed.");
    elm_box_pack_end(bxx, lb);
    evas_object_show(lb);
 
-   bt_bx = elm_box_add(gui->connect_inwin);
+   bt_bx = elm_box_add(bxx);
    elm_box_horizontal_set(bt_bx, EINA_TRUE);
    elm_box_homogeneous_set(bt_bx, EINA_TRUE);
    evas_object_size_hint_align_set(bt_bx, 0.5, 0.5);
@@ -164,7 +164,7 @@ _work_offline_popup(void)
    elm_box_pack_end(bxx, bt_bx);
 
    /* Add the exit button */
-   bt_exit = elm_button_add(gui->connect_inwin);
+   bt_exit = elm_button_add(bt_bx);
    elm_object_text_set(bt_exit, "Exit");
    evas_object_smart_callback_add(bt_exit, "clicked",
          _cancel_bt_clicked, (void *) gui);
@@ -172,7 +172,7 @@ _work_offline_popup(void)
    elm_box_pack_end(bt_bx, bt_exit);
    evas_object_show(bt_exit);
 
-   bt_ofl = elm_button_add(gui->connect_inwin);
+   bt_ofl = elm_button_add(bt_bx);
    elm_object_text_set(bt_ofl, "Work Offline");
    evas_object_smart_callback_add(bt_ofl, "clicked",
          _ofl_bt_clicked, (void *) gui);
@@ -1181,7 +1181,7 @@ _save_file_dialog(void *data,
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bx);
 
-   lb = elm_label_add(g->save_inwin);
+   lb = elm_label_add(bx);
    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(lb, EVAS_HINT_FILL, 0.0);
    elm_object_text_set(lb, "Select Screeenshots to save:");
@@ -1205,7 +1205,7 @@ _save_file_dialog(void *data,
 
         bmp = (v) ? v->data : NULL;
 
-        ck = elm_check_add(g->save_inwin);
+        ck = elm_check_add(ck_bx);
         evas_object_size_hint_weight_set(ck, EVAS_HINT_EXPAND, 1.0);
         evas_object_size_hint_align_set(ck, EVAS_HINT_FILL, 0.0);
         elm_box_pack_end(ck_bx, ck);
@@ -1218,7 +1218,7 @@ _save_file_dialog(void *data,
      }
 
    evas_object_show(ck_bx);
-   scr = elm_scroller_add(g->save_inwin);
+   scr = elm_scroller_add(bx);
    elm_object_content_set(scr, ck_bx);
    evas_object_size_hint_align_set(scr, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(scr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1226,13 +1226,13 @@ _save_file_dialog(void *data,
    elm_box_pack_end(bx, scr);
 
    /* Add the save all checkbox */
-   ck = elm_check_add(g->save_inwin);
+   ck = elm_check_add(bx);
    elm_object_text_set(ck, "Save All");
    evas_object_smart_callback_add(ck, "changed", _save_all, ck_bx);
    evas_object_show(ck);
    elm_box_pack_end(bx, ck);
 
-   bt_bx = elm_box_add(g->save_inwin);
+   bt_bx = elm_box_add(bx);
    elm_box_horizontal_set(bt_bx, EINA_TRUE);
    elm_box_homogeneous_set(bt_bx, EINA_TRUE);
    evas_object_size_hint_align_set(bt_bx, 0.5, 1.0);
@@ -1241,7 +1241,7 @@ _save_file_dialog(void *data,
    elm_box_pack_end(bx, bt_bx);
 
    /* Add the cancel button */
-   bt_cancel = elm_button_add(g->save_inwin);
+   bt_cancel = elm_button_add(bt_bx);
    elm_object_text_set(bt_cancel, "Cancel");
    evas_object_smart_callback_add(bt_cancel, "clicked",
          _dismiss_save_dialog, g);
@@ -1250,9 +1250,8 @@ _save_file_dialog(void *data,
    evas_object_show(bt_cancel);
 
    /* Add the Save fileselector button */
-   bt_save = elm_fileselector_button_add(g->save_inwin);
+   bt_save = elm_fileselector_button_add(bt_bx);
    elm_fileselector_button_is_save_set(bt_save, EINA_TRUE);
-   elm_box_pack_end(bt_bx, bt_save);
    elm_object_text_set(bt_save, "Save File");
    elm_fileselector_button_path_set(bt_save, getenv("HOME"));
    evas_object_smart_callback_add(bt_save, "file,chosen",
@@ -1302,7 +1301,7 @@ _show_gui(gui_elements *g, Eina_Bool work_offline)
         /* We need this in case conneciton closed and no tree data */
         _remove_apps_with_no_tree_data(g);
 
-        g->bt_load = elm_fileselector_button_add(g->win);
+        g->bt_load = elm_fileselector_button_add(g->hbx);
         elm_box_pack_start(g->hbx, g->bt_load);
         elm_object_text_set(g->bt_load, "Load File");
         elm_fileselector_button_path_set(g->bt_load, getenv("HOME"));
@@ -1317,7 +1316,7 @@ _show_gui(gui_elements *g, Eina_Bool work_offline)
         evas_object_smart_callback_add(g->bt_load, "clicked", _bt_clicked, g);
 
         /* Add the Save button to open save dialog */
-        g->bt_save = elm_button_add(g->win);
+        g->bt_save = elm_button_add(g->hbx);
         elm_object_text_set(g->bt_save, "SAVE");
         evas_object_smart_callback_add(g->bt_save, "clicked",
               _save_file_dialog, (void *) gui);
@@ -1406,7 +1405,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         elm_box_pack_end(gui->hbx, gui->bt_load);
         evas_object_show(gui->bt_load);
 
-        gui->dd_list = elm_hoversel_add(win);
+        gui->dd_list = elm_hoversel_add(gui->hbx);
         elm_hoversel_hover_parent_set(gui->dd_list, win);
         elm_object_text_set(gui->dd_list, "SELECT APP");
 
@@ -1427,7 +1426,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         evas_object_show(show_clippers_check);
      }
 
-   panes = elm_panes_add(win);
+   panes = elm_panes_add(gui->bx);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(gui->bx, panes);
@@ -1525,7 +1524,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_size_hint_weight_set(bxx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bxx);
 
-   lb = elm_label_add(gui->connect_inwin);
+   lb = elm_label_add(bxx);
    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(lb, EVAS_HINT_FILL, 0.0);
    elm_object_text_set(lb, "Enter remote address[:port]");
@@ -1533,7 +1532,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_show(lb);
 
    /* Single line selected entry */
-   gui->en = elm_entry_add(gui->connect_inwin);
+   gui->en = elm_entry_add(bxx);
    elm_entry_scrollable_set(gui->en, EINA_TRUE);
    evas_object_size_hint_weight_set(gui->en,
          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1547,7 +1546,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_box_pack_end(bxx, gui->en);
    evas_object_show(gui->en);
 
-   bt_bx = elm_box_add(gui->connect_inwin);
+   bt_bx = elm_box_add(bxx);
    elm_box_horizontal_set(bt_bx, EINA_TRUE);
    elm_box_homogeneous_set(bt_bx, EINA_TRUE);
    evas_object_size_hint_align_set(bt_bx, 0.5, 0.5);
@@ -1556,7 +1555,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_box_pack_end(bxx, bt_bx);
 
    /* Add the cancel button */
-   bt_cancel = elm_button_add(gui->connect_inwin);
+   bt_cancel = elm_button_add(bt_bx);
    elm_object_text_set(bt_cancel, "Cancel");
    evas_object_smart_callback_add(bt_cancel, "clicked",
          _cancel_bt_clicked, (void *) gui);
@@ -1565,7 +1564,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    evas_object_show(bt_cancel);
 
    /* Add the OK button */
-   bt_ok = elm_button_add(gui->connect_inwin);
+   bt_ok = elm_button_add(bt_bx);
    elm_object_text_set(bt_ok, "OK");
    evas_object_smart_callback_add(bt_ok, "clicked",
          _ok_bt_clicked, (void *) gui);
@@ -1573,7 +1572,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    elm_box_pack_end(bt_bx, bt_ok);
    evas_object_show(bt_ok);
 
-   bt_ofl = elm_button_add(gui->connect_inwin);
+   bt_ofl = elm_button_add(bt_bx);
    elm_object_text_set(bt_ofl, "Work Offline");
    evas_object_smart_callback_add(bt_ofl, "clicked",
          _ofl_bt_clicked, (void *) gui);
