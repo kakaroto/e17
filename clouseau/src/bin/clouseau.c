@@ -76,25 +76,6 @@ _titlebar_string_set(gui_elements *g, Eina_Bool online)
      }
 }
 
-static void
-_titlebar_string_set(gui_elements *g, Eina_Bool online)
-{
-   if (online)
-     {
-        char *str = malloc(strlen(CLIENT_NAME) + strlen(g->address) + 32);
-        sprintf(str, "%s - %s", CLIENT_NAME, g->address);
-        elm_win_title_set(g->win, str);
-        free(str);
-     }
-   else
-     {
-        char *str = malloc(strlen(CLIENT_NAME) + 32);
-        sprintf(str, "%s - Offline", CLIENT_NAME);
-        elm_win_title_set(g->win, str);
-        free(str);
-     }
-}
-
 Eina_Bool
 _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
 {
