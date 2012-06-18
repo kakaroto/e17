@@ -17,7 +17,7 @@ function set_env {
   if [ "${RELEASE}" == 1 ]; then
     DEBUG=""
   else
-    DEBUG="-O0 -g"
+    DEBUG="-O0 -g -ggdb3"
   fi
 
   SCFLAGS="-O2 -fomit-frame-pointer -pipe"

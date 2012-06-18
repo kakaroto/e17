@@ -11,7 +11,7 @@ CWD=$(pwd)
 set_env
 
 # Go to source code
-cd ../../../E-MODULES-EXTRA/${NAME}
+cd ../../../E-MODULES-EXTRA/execwatch
 prepare_src
 
 # Configure
