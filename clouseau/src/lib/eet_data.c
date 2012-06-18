@@ -728,8 +728,8 @@ libclouseau_make_line(void *data,
       Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
       void *event_info)
 {
-   if (((Evas_Event_Mouse_Down *) event_info)->button != 1)
-     return; /* We only process left-click at the moment */
+   if (((Evas_Event_Mouse_Down *) event_info)->button == 1)
+     return; /* make line only if not left mouse button */
 
    bmp_info_st *st = data;
    Evas_Coord xx, yy, x_bmp, y_bmp, w_bmp, h_bmp;
