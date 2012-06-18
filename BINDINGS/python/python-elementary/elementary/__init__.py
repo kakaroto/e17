@@ -30,7 +30,7 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, \
     Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
     Transit, Map, MapOverlay, MapOverlayClass, Mapbuf, MultiButtonEntry, \
     MultiButtonEntryItem, Slideshow, SlideshowItem, SegmentControl, \
-    SegmentControlItem, \
+    SegmentControlItem, Popup, PopupItem, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
@@ -273,6 +273,16 @@ ELM_POLICY_LAST = 1
 
 ELM_POLICY_QUIT_NONE = 0
 ELM_POLICY_QUIT_LAST_WINDOW_CLOSED = 1
+
+ELM_POPUP_ORIENT_TOP = 0
+ELM_POPUP_ORIENT_CENTER = 1
+ELM_POPUP_ORIENT_BOTTOM = 2
+ELM_POPUP_ORIENT_LEFT = 3
+ELM_POPUP_ORIENT_RIGHT = 4
+ELM_POPUP_ORIENT_TOP_LEFT = 5
+ELM_POPUP_ORIENT_TOP_RIGHT = 6
+ELM_POPUP_ORIENT_BOTTOM_LEFT = 7
+ELM_POPUP_ORIENT_BOTTOM_RIGHT = 8
 
 ELM_SCROLLER_POLICY_AUTO = 0
 ELM_SCROLLER_POLICY_ON = 1

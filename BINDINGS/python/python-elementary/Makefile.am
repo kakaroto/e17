@@ -60,9 +60,11 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_panel.pxi \
 	elementary/elementary.c_elementary_panes.pxi \
 	elementary/elementary.c_elementary_photo.pxi \
+	elementary/elementary.c_elementary_popup.pxi \
 	elementary/elementary.c_elementary_progressbar.pxi \
 	elementary/elementary.c_elementary_radio.pxi \
 	elementary/elementary.c_elementary_scroller.pxi \
+	elementary/elementary.c_elementary_segment_control.pxi \
 	elementary/elementary.c_elementary_separator.pxi \
 	elementary/elementary.c_elementary_slider.pxi \
 	elementary/elementary.c_elementary_slideshow.pxi \

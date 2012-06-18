@@ -176,9 +176,10 @@ people and organizations behind this, as listed below:
     Check, Clock, Colorselector, Conformant, Ctxpopup, Dayselector,
     Diskselector, Entry, Fileselector*, Flip, Frame, Gengrid, Genlist, Grid,
     Hover, Hoversel, Icon, Image, Index, InnerWindow, Label, Layout, List,
-    Map, Mapbuf Menu, Naviframe, Notify, Panel, Panes, Photo, Player,
-    Progressbar, Radio, Scroller, Separator, Slider, Spinner,
-    StandardWindow, Table, Thumb, Toolbar, Transit, Video, Web, Window
+    Map, Mapbuf, Menu, MultiButtonEntry, Naviframe, Notify, Panel, Panes,
+    Photo, Player, Popup, Progressbar, Radio, Scroller, SegmentControl,
+    Separator, Slider, Slideshow, Spinner, StandardWindow, Table, Thumb,
+    Toolbar, Transit, Video, Web, Window
 
 @group Widgets' items: *Item, *ItemClass, CalendarMark, MapName,
     MapOverlay*, MapRoute
@@ -428,3 +429,4 @@ include "elementary.c_elementary_multibuttonentry.pxi"
 include "elementary.c_elementary_transit.pxi"
 include "elementary.c_elementary_slideshow.pxi"
 include "elementary.c_elementary_segment_control.pxi"
+include "elementary.c_elementary_popup.pxi"
