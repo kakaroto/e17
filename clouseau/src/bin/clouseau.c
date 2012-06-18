@@ -423,6 +423,9 @@ _free_app(app_data_st *st)
 {
    Variant_st *view;
    app_info_st *app = st->app->data;
+   if (app->file)
+     free(app->file);
+
    EINA_LIST_FREE(app->view, view)
      {  /* Free memory allocated to show any app screens */
         bmp_info_st *b = view->data;
@@ -1316,6 +1319,9 @@ _show_gui(gui_elements *g, Eina_Bool work_offline)
         evas_object_smart_callback_add(g->bt_load, "clicked", _bt_clicked, g);
 
         /* Add the Save button to open save dialog */
+        if (g->bt_save)
+          evas_object_del(g->bt_save);
+
         g->bt_save = elm_button_add(g->hbx);
         elm_object_text_set(g->bt_save, "SAVE");
         evas_object_smart_callback_add(g->bt_save, "clicked",
