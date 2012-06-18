@@ -394,18 +394,6 @@ data_descriptors_shutdown(void)
      }
 }
 
-enum _bmp_field_idx
-{  /* Index for bmp_info_st fields to be stored in BLOB */
-   gui = 0,
-   app,
-   object,
-   ctr,
-   w,
-   h,
-   top_idx  /* Used for allocation */
-};
-typedef enum _bmp_field_idx bmp_field_idx;
-
 void *
 packet_compose(message_type t, void *data,
       int data_size, int *size,
@@ -415,38 +403,50 @@ packet_compose(message_type t, void *data,
    void *p = NULL;
    void *pb = NULL;
    unsigned char p_type = VARIANT_PACKET;
+   data_desc *d = data_descriptors_init();
 
    switch (t)
      {
       case BMP_DATA:
-           {  /* Builed raw data without encoding */
-              /* Do NOT forget to update *size, allocate using p */
-              bmp_info_st *b = data;
-              *size = (top_idx * sizeof(unsigned long long)) + blob_size;
-              unsigned long long *longs = malloc(*size);
+           {  /* Builed Bitmap data as follows:
+                 First we have encoding size of bmp_info_st
+                 (Done Network Byte Order)
+                 The next to come will be the encoded bmp_info_st itself
+                 folloed by the Bitmap raw data.                          */
 
-              longs[gui] = b->gui;
-              longs[app] = b->app;
-              longs[object] = b->object;
-              longs[ctr] = b->ctr;
-              longs[w] = b->w;
-              longs[h] = b->h;
+              /* First, we like to encode bmp_info_st from data  */
+              int e_size;
+              Variant_st *v = variant_alloc(t, data_size, data);
+              p = eet_data_descriptor_encode(
+                    d->_variant_descriptor , v, &e_size);
+              variant_free(v);
 
-              if (blob)
-                memcpy(&longs[top_idx], blob, blob_size); /* Copy BMP info */
+              /* Save encoded size in network format */
+              uint32_t enc_size = htonl((uint32_t) e_size);
+
+              /* Update size to the buffer size we about to return */
+              *size = (e_size + blob_size + sizeof(enc_size));
+              char *b = malloc(*size);
+
+              /* Copy encoded-size first, followd by encoded data */
+              memcpy(b, &enc_size, sizeof(enc_size));
+              memcpy(b + sizeof(enc_size), p, e_size);
+              free(p);
+
+              if (blob)    /* Copy BMP info */
+                memcpy(b + sizeof(enc_size) + e_size, blob, blob_size);
 
               p_type = BMP_RAW_DATA;
-              p = longs;
+              p = b;
            }
          break;
 
       default:
            {  /* All others are variant packets with EET encoding  */
               /* Variant is composed of message type + ptr to data */
-              data_desc *d = data_descriptors_init();
               Variant_st *v = variant_alloc(t, data_size, data);
               p = eet_data_descriptor_encode(
-                    d->_variant_descriptor , v, size);
+                    d->_variant_descriptor ,v, size);
               variant_free(v);
            }
      }
@@ -464,31 +464,36 @@ Variant_st *
 packet_info_get(void *data, int size)
 {  /* user has to use variant_free() to free return struct */
    char *ch = data;
+   data_desc *d = data_descriptors_init();
+
    switch (*ch)
      {
       case BMP_RAW_DATA:
            {
               void *bmp = NULL;
-              unsigned long long *longs = (unsigned long long *) (ch + 1);
-              /* Allocate size minus longs array and ch size for bmp */
-              int blob_size = size - (((char *) (&longs[top_idx])) - ch);
+              char *b = (char *) (ch + 1);
+              uint32_t enc_size = ntohl(*(uint32_t *) b);
+              /* blob_size is total size minus 1st byte and enc_size size */
+              int blob_size = size - (enc_size + 1 + sizeof(enc_size));
 
               if (blob_size)
                 {  /* Allocate BMP only if was included in packet */
                    bmp = malloc(blob_size);
-                   memcpy(bmp, &longs[top_idx], blob_size);
+                   memcpy(bmp, b + sizeof(enc_size) + enc_size, blob_size);
                 }
-              bmp_info_st t = { longs[gui], longs[app], longs[object],
-                   longs[ctr], longs[w], longs[h], NULL, NULL, bmp };
 
               /* User have to free both: variant_free(rt), free(t->bmp) */
-              return variant_alloc(BMP_DATA, sizeof(t), &t);
+              Variant_st *v = eet_data_descriptor_decode(d->_variant_descriptor,
+                    b + sizeof(enc_size), enc_size);
+
+              bmp_info_st *st = v->data;
+              st->bmp = bmp;
+              return v;
            }
          break;
 
       default:
            {
-              data_desc *d = data_descriptors_init();
               return eet_data_descriptor_decode(d->_variant_descriptor,
                     ch + 1, size - 1);
            }
