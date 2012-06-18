@@ -111,16 +111,8 @@ cdef class Configuration(object):
 
         """
         def __get__(self):
-            cdef Eina_List *lst
-            cdef void *data
-            ret = []
-            lst = elm_config_profile_list_get()
-            while lst:
-                data = lst.data
-                if data != NULL:
-                    ret.append(_ctouni(<const_char_ptr>data))
-                lst = lst.next
-            return ret
+            cdef Eina_List *lst = elm_config_profile_list_get()
+            return tuple(_strings_to_python(lst))
 
     #}
 
