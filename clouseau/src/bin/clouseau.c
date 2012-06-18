@@ -607,6 +607,7 @@ static void
 _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
       void *event_info)
 {
+   clouseau_obj_information_list_clear();
    /* If not an object, return. */
    if (!elm_genlist_item_parent_get(event_info))
       return;
