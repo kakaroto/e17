@@ -117,6 +117,7 @@ _load_list(void)
 
         objs = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
               USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
+
         EINA_LIST_FOREACH(objs, objitr, obj)
           {
              libclouseau_item_add(obj, treeit);
@@ -203,7 +204,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
            {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
               Evas_Object *obj = (Evas_Object *) (uintptr_t) ht->object;
-              libclouseau_highlight(obj, evas_object_evas_get(obj), NULL);
+              libclouseau_highlight(obj, NULL);
            }
          break;
 

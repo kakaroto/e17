@@ -994,11 +994,7 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
          _bmp_object_ptr_cmp, t->ptr);
 
    if (v)
-     {
-        bmp_info_st *view = v->data;
-        libclouseau_highlight(treeit->ptr, evas_object_evas_get(view->win),
-              &treeit->info->evas_props);
-     }
+     libclouseau_highlight(treeit->ptr, &treeit->info->evas_props);
    /* END   - replacing libclouseau_highlight(obj); */
 
    clouseau_obj_information_list_populate(treeit, gui->lb);

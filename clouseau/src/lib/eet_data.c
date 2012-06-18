@@ -630,13 +630,57 @@ libclouseau_highlight_fade(void *_rect)
    return EINA_TRUE;
 }
 
+static Evas_Object *
+_verify_e_children(Evas_Object *obj, Evas_Object *ptr)
+{  /* Verify that obj still exists (can be found on evas canvas) */
+   if (ptr == obj)
+     return ptr;
+
+   Evas_Object *child, *p = NULL;
+   Eina_List *tmp, *children = evas_object_smart_members_get(obj);
+   EINA_LIST_FOREACH(children, tmp, child)
+     {
+        p = _verify_e_children(child, ptr);
+        if (p) break;
+     }
+
+   eina_list_free(children);
+   return p;
+}
+
+static Evas_Object *
+_verify_e_obj(Evas_Object *obj)
+{  /* Verify that obj still exists (can be found on evas canvas) */
+   Evas_Object *o;
+   Eina_List *eeitr ,*objitr, *ees = ecore_evas_ecore_evas_list_get();
+   Ecore_Evas *ee;
+   Evas_Object *rt = NULL;
+
+   EINA_LIST_FOREACH(ees, eeitr, ee)
+     {
+        Evas *e = ecore_evas_get(ee);
+        Eina_List *objs = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
+              USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
+
+        EINA_LIST_FOREACH(objs, objitr, o)
+          {
+             rt = _verify_e_children(o, obj);
+             if (rt) break;
+          }
+
+        eina_list_free(objs);
+        if (rt) break;
+     }
+
+   eina_list_free(ees);
+   return rt;
+}
+
 void
-libclouseau_highlight(Evas_Object *obj, Evas *e, st_evas_props *props)
+libclouseau_highlight(Evas_Object *obj, st_evas_props *props)
 {
    Evas_Object *r;
    int x, y, wd, ht;
-
-   if (!e) return;
 
    if (props)
      {  /* When working offline grab info from struct */
@@ -646,8 +690,21 @@ libclouseau_highlight(Evas_Object *obj, Evas *e, st_evas_props *props)
         ht = props->h;
      }
    else
-     evas_object_geometry_get(obj, &x, &y, &wd, &ht);
+     {
+        if (_verify_e_obj(obj))
+          evas_object_geometry_get(obj, &x, &y, &wd, &ht);
+        else
+          {
+             printf("<%s> Evas Object not found <%p> (probably deleted)\n",
+                   __func__, obj);
+             return;
+          }
+     }
 
+   Evas *e = evas_object_evas_get(obj);
+   if (!e) return;
+
+   /* Continue and do the Highlight */
    r = evas_object_rectangle_add(e);
    evas_object_move(r, x - PADDING, y - PADDING);
    evas_object_resize(r, wd + (2 * PADDING), ht + (2 * PADDING));
