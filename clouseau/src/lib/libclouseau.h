@@ -18,6 +18,18 @@
 #define CLOUSEAU_OBJ_TYPE_EDJE_STR      "CLOUSEAU_OBJ_TYPE_EDJE"
 #define CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR "CLOUSEAU_OBJ_TYPE_TEXTBLOCK"
 
+/* The color of the highlight */
+enum {
+	HIGHLIGHT_R = 255,
+	HIGHLIGHT_G = 128,
+	HIGHLIGHT_B = 128,
+	HIGHLIGHT_A = 255,
+
+	/* How much padding around the highlight box.
+         * Currently we don't want any. */
+	PADDING = 0,
+};
+
 enum _en_obj_type
 {
    CLOUSEAU_OBJ_TYPE_UNKNOWN,

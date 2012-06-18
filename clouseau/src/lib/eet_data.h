@@ -182,4 +182,7 @@ void *packet_compose(message_type t, void *data, int data_size, int *size, void 
 Variant_st *packet_info_get(void *data, int size);
 Eina_Bool eet_info_save(const char *filename, app_info_st *app, tree_data_st *ftd);
 Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
+
+/* Highlight code, we may choose to move this to other file later */
+void libclouseau_highlight(Evas_Object *obj, Evas *e, st_evas_props *props);
 #endif  /*  EET_DATA_H  */

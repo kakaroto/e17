@@ -524,7 +524,8 @@ _get_bmp_node(bmp_info_st *st, app_info_st *app)
    if (!app)
      return NULL;
 
-   do{ /* First find according to Evas ptr, then match ctr with refresh_ctr */
+   do
+     { /* First find according to Evas ptr, then match ctr with refresh_ctr */
         req_list = eina_list_search_unsorted_list(req_list, _bmp_node_cmp,
               (void *) (uintptr_t) st->object);
 
@@ -539,7 +540,8 @@ _get_bmp_node(bmp_info_st *st, app_info_st *app)
              /* ctr did not match, look further in list */
              req_list = eina_list_next(req_list);
           }
-     }while(req_list);
+     }
+   while(req_list);
 
    return NULL;
 }
@@ -942,7 +944,9 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
    clouseau_obj_information_list_clear();
    gui_elements *g = data;
    Tree_Item *treeit = elm_object_item_data_get(event_info);
-   if (!elm_genlist_item_parent_get(event_info))
+   const Elm_Object_Item *parent;
+   const Elm_Object_Item *prt = elm_genlist_item_parent_get(event_info);
+   if (!prt)
      return;
 
    /* START - replacing libclouseau_highlight(obj); */
@@ -961,6 +965,25 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
              ecore_ipc_server_flush(svr);
              free(p);
           }
+     }
+
+   /* We also like to HIGHLIGHT on any app views that open (for offline) */
+   do
+     {
+        parent = prt;
+        prt = elm_genlist_item_parent_get(prt);
+     }
+   while (prt);
+
+   Tree_Item *t = elm_object_item_data_get(parent);
+   Variant_st *v = eina_list_search_unsorted(app->view,
+         _bmp_object_ptr_cmp, t->ptr);
+
+   if (v)
+     {
+        bmp_info_st *view = v->data;
+        libclouseau_highlight(treeit->ptr, evas_object_evas_get(view->win),
+              &treeit->info->evas_props);
      }
    /* END   - replacing libclouseau_highlight(obj); */
 

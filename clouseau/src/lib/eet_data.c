@@ -530,3 +530,58 @@ Eina_Bool eet_info_read(const char *filename,
 
    return EINA_FALSE;
 }
+
+
+/* HIGHLIGHT code. */
+static Eina_Bool
+libclouseau_highlight_fade(void *_rect)
+{
+   Evas_Object *rect = _rect;
+   int r, g, b, a;
+   double na;
+
+   evas_object_color_get(rect, &r, &g, &b, &a);
+   if (a < 20)
+     {
+        evas_object_del(rect);
+        return EINA_FALSE;
+     }
+
+   na = a - 20;
+   r = na / a * r;
+   g = na / a * g;
+   b = na / a * b;
+   evas_object_color_set(rect, r, g, b, na);
+
+   return EINA_TRUE;
+}
+
+void
+libclouseau_highlight(Evas_Object *obj, Evas *e, st_evas_props *props)
+{
+   Evas_Object *r;
+   int x, y, wd, ht;
+
+   if (!e) return;
+
+   if (props)
+     {  /* When working offline grab info from struct */
+        x = props->x;
+        y = props->y;
+        wd = props->w;
+        ht = props->h;
+     }
+   else
+     evas_object_geometry_get(obj, &x, &y, &wd, &ht);
+
+   r = evas_object_rectangle_add(e);
+   evas_object_move(r, x - PADDING, y - PADDING);
+   evas_object_resize(r, wd + (2 * PADDING), ht + (2 * PADDING));
+   evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_show(r);
+   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
+/* Print backtrace info, saved for future ref
+   tmp = evas_object_data_get(obj, ".clouseau.bt");
+   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp); */
+}

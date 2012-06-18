@@ -13,8 +13,6 @@
 static Eina_Bool _elm_is_init = EINA_FALSE;
 static const char *_my_app_name = NULL;
 
-static void libclouseau_highlight(Evas_Object *obj);
-
 static void
 libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
 {
@@ -204,7 +202,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
       case HIGHLIGHT:
            {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
-              libclouseau_highlight((Evas_Object *) (uintptr_t) ht->object);
+              Evas_Object *obj = (Evas_Object *) (uintptr_t) ht->object;
+              libclouseau_highlight(obj, evas_object_evas_get(obj), NULL);
            }
          break;
 
@@ -368,64 +367,4 @@ evas_object_free(Evas_Object *obj, int clean_layer)
    eina_stringshare_del(tmp);
 
    _evas_object_free(obj, clean_layer);
-}
-
-/* HIGHLIGHT code. */
-/* The color of the highlight */
-enum {
-	HIGHLIGHT_R = 255,
-	HIGHLIGHT_G = 128,
-	HIGHLIGHT_B = 128,
-	HIGHLIGHT_A = 255,
-
-	/* How much padding around the highlight box.
-         * Currently we don't want any. */
-	PADDING = 0,
-};
-
-static Eina_Bool
-libclouseau_highlight_fade(void *_rect)
-{
-   Evas_Object *rect = _rect;
-   int r, g, b, a;
-   double na;
-
-   evas_object_color_get(rect, &r, &g, &b, &a);
-   if (a < 20)
-     {
-        evas_object_del(rect);
-        return EINA_FALSE;
-     }
-
-   na = a - 20;
-   r = na / a * r;
-   g = na / a * g;
-   b = na / a * b;
-   evas_object_color_set(rect, r, g, b, na);
-
-   return EINA_TRUE;
-}
-
-static void
-libclouseau_highlight(Evas_Object *obj)
-{
-   Evas *e;
-   Evas_Object *r;
-   int x, y, w, h;
-
-   e = evas_object_evas_get(obj);
-   if (!e) return;
-
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-
-   r = evas_object_rectangle_add(e);
-   evas_object_move(r, x - PADDING, y - PADDING);
-   evas_object_resize(r, w + (2 * PADDING), h + (2 * PADDING));
-   evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_show(r);
-   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
-/* Print backtrace info, saved for future ref
-   tmp = evas_object_data_get(obj, ".clouseau.bt");
-   fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp); */
 }
