@@ -630,7 +630,7 @@ _mouse_move(void *data,
    if (((xx >= 0) && (xx < ((Evas_Coord) st->w))) &&
          ((yy >= 0) && (yy < ((Evas_Coord) st->h))))
      { /* Need to test borders, because image may be scrolled */
-        pt = st->bmp + (((yy * st->w) + xx) * sizeof(int));
+        pt = ((unsigned char *) st->bmp) + (((yy * st->w) + xx) * sizeof(int));
         sprintf(s_bar, "rgba(%d,%d,%d,%d)", pt[2], pt[1], pt[0], pt[3]);
         elm_object_text_set(st->lb_rgba, s_bar);
      }
@@ -1306,8 +1306,7 @@ _bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    if (event_info)
      {
         /* FIXME: Handle failure. */
-        Eina_Bool s;
-        s = eet_info_save(event_info, app, ftd, data);
+        eet_info_save(event_info, app, ftd, data);
      }
 
    eina_list_free(data);
