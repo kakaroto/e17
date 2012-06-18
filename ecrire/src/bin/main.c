@@ -486,7 +486,7 @@ static void
 _font_settings(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Ecrire_Entry *ent = data;
-   ui_font_dialog_open(elm_object_top_widget_get(data), ent, _ent_cfg->font.name, _ent_cfg->font.size);
+   ui_font_dialog_open(elm_object_top_widget_get(ent->win), ent, _ent_cfg->font.name, _ent_cfg->font.size);
 }
 
 
