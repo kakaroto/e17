@@ -12,6 +12,14 @@ struct _app_data_st
 };
 typedef struct _app_data_st app_data_st;
 
+struct _bmp_node
+{
+   unsigned int ctr;           /* Current refresh_ctr */
+   unsigned long long object;  /* Evas ptr        */
+   Evas_Object *bt;            /* Button of BMP_REQ */
+};
+typedef struct _bmp_node bmp_node;
+
 struct _gui_elements
 {
    Evas_Object *win;
@@ -32,13 +40,15 @@ struct _gui_elements
 };
 typedef struct _gui_elements gui_elements;
 
-static int _load_list(gui_elements *gui);
+static int _load_list(gui_elements *g);
 static void _bt_load_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info);
 static void _show_gui(gui_elements *g, Eina_Bool work_offline);
 
 /* Globals */
 static gui_elements *gui = NULL;
-static Eina_List *apps= NULL;  /* List of (app_data_st *) */
+static Eina_List *apps = NULL;    /* List of (app_data_st *)  */
+static Eina_List *bmp_req = NULL; /* List of (bmp_node *)     */
+
 static Elm_Genlist_Item_Class itc;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 static Ecore_Ipc_Server *svr = NULL;
@@ -228,15 +238,51 @@ _app_name_get(app_info_st *app)
 }
 
 static void
+_close_app_views(app_info_st *app, Eina_Bool clr)
+{  /* Close any open-views if this app */
+   Eina_List *l;
+   Variant_st *view;
+   EINA_LIST_FOREACH(app->view, l, view)
+     {
+        bmp_info_st *b = view->data;
+        if (b->win)
+          evas_object_del(b->win);
+
+        if (b->bt)
+          elm_object_disabled_set(b->bt, EINA_FALSE);
+
+        b->win = b->bt = NULL;
+     }
+
+   if (clr)
+     {  /* These are cleared when app data is reloaded */
+        EINA_LIST_FREE(app->view, view)
+          {  /* Free memory allocated to show any app screens */
+             bmp_info_st *b = view->data;
+             bmp_info_free(b->bmp);
+             variant_free(view);
+          }
+
+        app->view = NULL;
+     }
+}
+
+static void
 _set_selected_app(void *data, Evas_Object *pobj,
       void *event_info EINA_UNUSED)
 {  /* Set hovel label */
    app_data_st *st = data;
+   elm_progressbar_pulse(gui->pb, EINA_FALSE);
+   evas_object_hide(gui->pb);
+
+   if (gui->sel_app)
+     _close_app_views(gui->sel_app->app->data, EINA_FALSE);
+
    if (st)
      {
         if (!svr)
           {  /* Got TREE_DATA from file, update this immidately */
-             gui->sel_app = st;
+              gui->sel_app = st;
              char *str = _app_name_get(st->app->data);
              elm_object_text_set(pobj, str);
              free(str);
@@ -290,6 +336,45 @@ _add_app_to_dd_list(Evas_Object *dd_list, app_data_st *st)
    free(str);
 }
 
+static int
+_bmp_object_ptr_cmp(const void *d1, const void *d2)
+{  /* Comparison according to Evas ptr of BMP struct */
+   const Variant_st *info = d1;
+   bmp_info_st *bmp = info->data;
+
+   return ((bmp->object) - (unsigned long long) (uintptr_t) d2);
+}
+
+static int
+_bmp_app_ptr_cmp(const void *d1, const void *d2)
+{  /* Comparison according to app ptr of BMP struct */
+   const Variant_st *info = d1;
+   bmp_info_st *bmp = info->data;
+
+   return ((bmp->app) - (unsigned long long) (uintptr_t) d2);
+}
+
+static Eina_List *
+_remove_bmp(Eina_List *view, void *ptr)
+{  /* Remove app bitmap from bitmaps list */
+   Variant_st *v = (Variant_st *)
+      eina_list_search_unsorted(view, _bmp_app_ptr_cmp,
+            (void *) (uintptr_t) ptr);
+
+   if (v)
+     {
+        bmp_info_st *st = v->data;
+        if (st->win)
+          evas_object_del(st->win);
+
+        bmp_info_free(st->bmp);
+        variant_free(v);
+        return eina_list_remove(view, v);
+     }
+
+   return view;
+}
+
 static app_data_st *
 _add_app(gui_elements *g, Variant_st *v)
 {
@@ -317,6 +402,18 @@ _free_app_tree_data(Variant_st *td)
 static void
 _free_app(app_data_st *st)
 {
+   Variant_st *view;
+   app_info_st *app = st->app->data;
+   EINA_LIST_FREE(app->view, view)
+     {  /* Free memory allocated to show any app screens */
+        bmp_info_st *b = view->data;
+        if (b->win)
+          evas_object_del(b->win);
+
+        bmp_info_free(b->bmp);
+        variant_free(view);
+     }
+
    variant_free(st->app);
    _free_app_tree_data(st->td);
    free(st);
@@ -389,6 +486,168 @@ _update_tree(gui_elements *g, Variant_st *v)
      }
 }
 
+static int
+_bmp_node_cmp(const void *d1, const void *d2)
+{  /* Compare accoring to Evas ptr */
+   const bmp_node *info = d1;
+
+   return ((info->object) - (unsigned long long) (uintptr_t) d2);
+}
+
+static bmp_node *
+_get_bmp_node(bmp_info_st *st, app_info_st *app)
+{  /* Find the request of this bmp info, in the req list         */
+   /* We would like to verify this bmp_info_st is still relevant */
+   Eina_List *req_list = bmp_req;
+   bmp_node *nd = NULL;
+
+   if (!app)
+     return NULL;
+
+   do{ /* First find according to Evas ptr, then match ctr with refresh_ctr */
+        req_list = eina_list_search_unsorted_list(req_list, _bmp_node_cmp,
+              (void *) (uintptr_t) st->object);
+
+        if (req_list)
+          nd = (bmp_node *) eina_list_data_get(req_list);
+
+        if (nd)
+          {  /* if found this object in list, compare ctr */
+             if (nd->ctr == app->refresh_ctr)
+               return nd;
+
+             /* ctr did not match, look further in list */
+             req_list = eina_list_next(req_list);
+          }
+     }while(req_list);
+
+   return NULL;
+}
+
+static void
+_add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
+{  /* Remove bmp if exists (according to obj-ptr), then add the new one */
+   bmp_info_st *st = v->data;
+   app_data_st *app = (app_data_st *)
+      eina_list_search_unsorted(apps, _app_ptr_cmp,
+            (void *) (uintptr_t) st->app);
+
+   /* Check for relevant bmp req in the bmp_req list */
+   bmp_node *nd = _get_bmp_node(st, app->app->data);
+
+   if (app && nd)
+     {  /* Remove app bmp data if exists, then update */
+        elm_progressbar_pulse(g->pb, EINA_FALSE);
+        evas_object_hide(g->pb);
+
+        app_info_st *info = app->app->data;
+        info->view = _remove_bmp(info->view,
+              (void *) (uintptr_t) (((bmp_info_st *) v->data)->object));
+        info->view = eina_list_append(info->view, v);
+
+        /* Now we need to update refresh button, make it open-window */
+        char buf[1024];
+        Evas_Object *ic = elm_icon_add(g->win);
+        snprintf(buf, sizeof(buf), "%s/images/application-default-icon.png",
+              PACKAGE_DATA_DIR);
+        elm_icon_file_set(ic, buf, NULL);
+        elm_object_part_content_set(nd->bt, "icon", ic);
+        elm_object_tooltip_text_set(nd->bt, "Show App Screenshot");
+        elm_object_disabled_set(nd->bt, EINA_FALSE);
+        evas_object_show(ic);
+
+        bmp_req = eina_list_remove(bmp_req, nd);
+        free(nd);
+     }
+   else
+     {  /* Dispose bmp info if app no longer in the list of apps */
+        /* or the bmp_info is no longer relevant */
+        bmp_info_free(((bmp_info_st *) v->data)->bmp);
+        variant_free(v);
+     }
+}
+
+static void
+_app_win_del(void *data,
+      Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{  /* when closeing view, set view ptr to NULL, and enable open button */
+   bmp_info_st *st = data;
+   elm_object_disabled_set(st->bt, EINA_FALSE);
+   st->win = st->bt = NULL;
+}
+
+static void
+_open_app_window(bmp_info_st *st, Evas_Object *bt)
+{
+   app_data_st *app = (app_data_st *)
+      eina_list_search_unsorted(apps, _app_ptr_cmp,
+            (void *) (uintptr_t) st->app);
+
+
+   st->bt = bt;
+   st->win = elm_win_add(NULL, "win", ELM_WIN_BASIC);
+   elm_win_title_set(st->win, ((app_info_st *) app->app->data)->name);
+   Evas_Object *o = evas_object_image_filled_add(
+         evas_object_evas_get(st->win));
+
+   elm_object_disabled_set(bt, EINA_TRUE);
+   evas_object_image_colorspace_set(o, EVAS_COLORSPACE_ARGB8888);
+   evas_object_image_alpha_set(o, EINA_FALSE);
+   evas_object_image_size_set(o, st->bmp->w, st->bmp->h);
+   evas_object_image_data_copy_set(o, st->bmp->bmp);
+   evas_object_image_data_update_add(o, 0, 0, st->bmp->w, st->bmp->h);
+   evas_object_show(o);
+   evas_object_smart_callback_add(st->win,
+         "delete,request", _app_win_del, st);
+
+   evas_object_resize(o, st->bmp->w, st->bmp->h);
+   evas_object_resize(st->win, st->bmp->w, st->bmp->h);
+
+   elm_win_autodel_set(st->win, EINA_TRUE);
+   evas_object_show(st->win);
+}
+
+static void
+_show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{  /* Open window with currnent bmp, or download it if missing   */
+   app_info_st *st = gui->sel_app->app->data;
+
+   /* First search app->view list if already have the window bmp */
+   Variant_st *v = (Variant_st *)
+      eina_list_search_unsorted(st->view, _bmp_app_ptr_cmp,
+            (void *) (uintptr_t) st->ptr);
+   if (v)
+     return _open_app_window(v->data, obj);
+
+   /* Need to issue BMP_REQ */
+   if (svr)
+     {
+        int size = 0;
+        bmp_req_st t = { (unsigned long long) (uintptr_t) NULL,
+             (unsigned long long) (uintptr_t) st->ptr,
+             (unsigned long long) (uintptr_t) data, st->refresh_ctr };
+
+        void *p = packet_compose(BMP_REQ, &t, sizeof(t), &size);
+        if (p)
+          {
+             ecore_ipc_server_send(svr,
+                   0,0,0,0,EINA_FALSE, p, size);
+             ecore_ipc_server_flush(svr);
+             free(p);
+
+             elm_object_disabled_set(obj, EINA_TRUE);
+             elm_progressbar_pulse(gui->pb, EINA_TRUE);
+             evas_object_show(gui->pb);
+
+             bmp_node *b_node = malloc(sizeof(*b_node));
+             b_node->ctr = st->refresh_ctr;
+             b_node->object = (unsigned long long) (uintptr_t) data;
+             b_node->bt = obj;       /* Button of BMP_REQ */
+             bmp_req = eina_list_append(bmp_req, b_node);
+          }
+     }
+}
+
 Eina_Bool
 _data(void *data, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
@@ -409,6 +668,12 @@ _data(void *data, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
            case TREE_DATA:           /* Update genlist with APP TREE info */
               _update_tree(data, v); /* data is the gui pointer */
               break;                 /* v->data is (tree_data_st *) */
+
+           case BMP_DATA:         /* Contains a snapshot of canvas window */
+                {                 /* v->data is (bmp_info_st *) */
+                   _add_bmp(data, v);  /* data is the gui pointer */
+                }
+              break;
 
            default:
               break;
@@ -471,7 +736,48 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
    Tree_Item *treeit = data;
 
    if (!treeit->is_obj)
-      return NULL;
+     {  /* Add "Download" button for evas objects */
+        if (!strcmp(part, "elm.swallow.end"))
+          {
+             char buf[1024];
+             Evas_Object *bt = elm_button_add(parent);
+             Evas_Object *ic = elm_icon_add(parent);
+             app_info_st *app = NULL;
+             if (gui->sel_app)
+               app = gui->sel_app->app->data;
+
+             if (app)
+               {  /* match ptr with bmp->object ptr to find view */
+                  Variant_st *v = (Variant_st *)
+                     eina_list_search_unsorted(app->view, _bmp_object_ptr_cmp,
+                           (void *) (uintptr_t) treeit->ptr);
+
+                  if (v)
+                    {  /* Set to "show view" if view exists */
+                       snprintf(buf, sizeof(buf),
+                             "%s/images/application-default-icon.png",
+                             PACKAGE_DATA_DIR);
+                       elm_object_tooltip_text_set(bt, "Show App Screenshot");
+                    }
+                  else
+                    {  /* Set to Download */
+                       snprintf(buf, sizeof(buf), "%s/images/gtk-refresh.png",
+                             PACKAGE_DATA_DIR);
+                       elm_object_tooltip_text_set(bt, "Download Screenshot");
+                    }
+               }
+
+             elm_icon_file_set(ic, buf, NULL);
+             elm_object_part_content_set(bt, "icon", ic);
+             evas_object_smart_callback_add(bt, "clicked",
+                   _show_app_window, treeit->ptr);
+
+             evas_object_show(bt);
+             return bt;
+          }
+
+        return NULL;
+     }
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
@@ -608,15 +914,13 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
       void *event_info)
 {
    clouseau_obj_information_list_clear();
-   /* If not an object, return. */
-   if (!elm_genlist_item_parent_get(event_info))
-      return;
-
+   gui_elements *g = data;
    Tree_Item *treeit = elm_object_item_data_get(event_info);
+   if (!elm_genlist_item_parent_get(event_info))
+     return;
 
    /* START - replacing libclouseau_highlight(obj); */
    int size;
-   gui_elements *g = data;
    app_info_st *app = g->sel_app->app->data;
    highlight_st st = { (unsigned long long) (uintptr_t) app->ptr,
         (unsigned long long) (uintptr_t)  treeit->ptr };
@@ -640,34 +944,45 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
 static int
 _load_list(gui_elements *g)
 {
+   elm_progressbar_pulse(g->pb, EINA_FALSE);
+   evas_object_hide(g->pb);
+
    if (g->sel_app)
      {
         elm_genlist_clear(g->gl);
         elm_genlist_clear(g->prop_list);
         app_info_st *st = g->sel_app->app->data;
+        tree_data_st *td = (g->sel_app->td) ? g->sel_app->td->data: NULL;
 
-        if (!svr)
-          {
-             _update_tree_offline(g, g->sel_app->td);
-             return 0;
+        if (td)
+          {  /* Just show currnet tree we got */
+             _load_gui_with_list(g, td->tree);
           }
-
-        if (eina_list_search_unsorted(apps, _app_ptr_cmp,
-                 (void *) (uintptr_t) st->ptr))
-          {  /* do it only if app selected AND found in apps list */
-             int size;
-             data_req_st t = { (unsigned long long) (uintptr_t) NULL,
-                  (unsigned long long) (uintptr_t) st->ptr };
-
-             void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size);
-             if (p)
+        else
+          {  /* Ask for app info only if was not fetched */
+             if (!svr)
                {
-                  elm_progressbar_pulse(g->pb, EINA_TRUE);
-                  evas_object_show(g->pb);
-                  ecore_ipc_server_send(svr,
-                        0,0,0,0,EINA_FALSE, p, size);
-                  ecore_ipc_server_flush(svr);
-                  free(p);
+                  _update_tree_offline(g, g->sel_app->td);
+                  return 0;
+               }
+
+             if (eina_list_search_unsorted(apps, _app_ptr_cmp,
+                      (void *) (uintptr_t) st->ptr))
+               {  /* do it only if app selected AND found in apps list */
+                  int size;
+                  data_req_st t = { (unsigned long long) (uintptr_t) NULL,
+                       (unsigned long long) (uintptr_t) st->ptr };
+
+                  void *p = packet_compose(DATA_REQ, &t, sizeof(t), &size);
+                  if (p)
+                    {
+                       elm_progressbar_pulse(g->pb, EINA_TRUE);
+                       evas_object_show(g->pb);
+                       ecore_ipc_server_send(svr,
+                             0,0,0,0,EINA_FALSE, p, size);
+                       ecore_ipc_server_flush(svr);
+                       free(p);
+                    }
                }
           }
      }
@@ -694,7 +1009,19 @@ _show_hidden_check_changed(void *data, Evas_Object *obj,
 static void
 _bt_clicked(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
+   gui_elements *g = data;
+
+   /* Close all app-bmp-view windows here and clear mem */
+   if (g->sel_app)
+     {
+        app_info_st *st = g->sel_app->app->data;
+        _close_app_views(st, EINA_TRUE);
+        st->refresh_ctr++;
+     }
+
    elm_object_text_set(obj, "Reload");
+   _free_app_tree_data(g->sel_app->td);
+   g->sel_app->td = NULL;
    _load_list(data);
 }
 
@@ -1063,18 +1390,23 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    /* END   - Popup to get IP, PORT from user */
 
    elm_run();
-   elm_shutdown();
 
    /* cleanup - free apps data */
    void *st;
    EINA_LIST_FREE(apps, st)
       _free_app(st);
 
+   EINA_LIST_FREE(bmp_req, st)
+      free(st);
+
    data_descriptors_shutdown();
    if (gui->address)
      free(gui->address);
 
    free(gui);
+
+   elm_shutdown();
+
    return 0;
 }
 ELM_MAIN()

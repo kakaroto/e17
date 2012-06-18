@@ -3,6 +3,10 @@
 #include <execinfo.h>
 
 #include <Ecore_Ipc.h>
+#include <Edje.h>
+#include <Evas.h>
+#include <Elementary.h>
+#include <Ecore_X.h>
 
 #include "eet_data.h"
 
@@ -38,6 +42,56 @@ libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
      }
 
    eina_list_free(children);
+}
+
+static Bmp_Data *
+_canvas_bmp_get(Ecore_Evas *ee)
+{
+   Bmp_Data *rt = NULL;
+   Ecore_X_Image *img;
+   Ecore_X_Window_Attributes att;
+   unsigned char *src;
+   unsigned int *dst;
+   int bpl = 0, rows = 0, bpp = 0;
+   Evas_Coord w, h;
+   Ecore_X_Window xwin = (Ecore_X_Window) ecore_evas_window_get(ee);
+
+   if (!xwin)
+     {
+        printf("Can't grab X window.\n");
+        return rt;
+     }
+
+   Evas *e = ecore_evas_get(ee);
+   evas_output_size_get(e, &w, &h);
+   memset(&att, 0, sizeof(Ecore_X_Window_Attributes));
+   ecore_x_window_attributes_get(xwin, &att);
+   img = ecore_x_image_new(w, h, att.visual, att.depth);
+   ecore_x_image_get(img, xwin, 0, 0, 0, 0, w, h);
+   src = ecore_x_image_data_get(img, &bpl, &rows, &bpp);
+   dst = malloc(w * h * sizeof(int));  /* Will be freed by the user */
+   if (!ecore_x_image_is_argb32_get(img))
+     {  /* Fill dst buffer with image convert */
+        ecore_x_image_to_argb_convert(src, bpp, bpl,
+              att.colormap, att.visual,
+              0, 0, w, h,
+              dst, (w * sizeof(int)), 0, 0);
+     }
+   else
+     {  /* Fill dst buffer by copy */
+        memcpy(dst, src, (w * h * sizeof(int)));
+     }
+
+   /* dst now holds window bitmap */
+   ecore_x_image_free(img);
+
+   rt = malloc(sizeof(*rt));  /* Will be freed by the user */
+   rt->bmp = (unsigned char *) dst;
+   rt->bmp_count = (w * h * sizeof(int));
+   rt->w = w;
+   rt->h = h;
+
+   return rt;
 }
 
 static Eina_List *
@@ -155,6 +209,33 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
            {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
               libclouseau_highlight((Evas_Object *) (uintptr_t) ht->object);
+           }
+         break;
+
+      case BMP_REQ:
+           {  /* Bitmap req msg contains PTR of Ecore Evas */
+              bmp_req_st *req = v->data;
+              Bmp_Data *bmp = _canvas_bmp_get((Ecore_Evas *) (uintptr_t)
+                    req->object);
+
+              /* TODO: what if win closed (bmp not found), need to send NULL */
+              /* and handle bmp-NULL value in client */
+              if (bmp)
+                {  /* Send server packet with BMP info */
+                   int size = 0;
+                   bmp_info_st t = { req->gui,
+                        req->app, req->object , req->ctr, NULL, NULL, bmp };
+                   void *p = packet_compose(BMP_DATA, &t, sizeof(t), &size);
+                   if (p)
+                     {
+                        ecore_ipc_server_send(ev->server, 0,0,0,0,
+                              EINA_FALSE, p, size);
+                        ecore_ipc_server_flush(ev->server);
+                        free(p);
+                     }
+
+                   bmp_info_free(bmp);
+                }
            }
          break;
 

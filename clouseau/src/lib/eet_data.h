@@ -21,6 +21,8 @@
 #define TREE_DATA_STR        "TREE_DATA"
 #define APP_CLOSED_STR       "APP_CLOSED"
 #define HIGHLIGHT_STR        "HIGHLIGHT"
+#define BMP_REQ_STR          "BMP_REQ"
+#define BMP_DATA_STR         "BMP_DATA"
 
 enum _message_type
 {  /*  Add any supported types of packets here */
@@ -31,7 +33,9 @@ enum _message_type
    DATA_REQ,  /* GUI client PTR (NULL for all),APP client PTR (NULL for all) */
    TREE_DATA, /* GUI client PTR (NULL for all),APP client PTR, Tree Data */
    APP_CLOSED,         /* APP client PTR from DAEMON to GUI */
-   HIGHLIGHT           /* APP client PTR, object PTR */
+   HIGHLIGHT,          /* APP client PTR, object PTR */
+   BMP_REQ,            /* APP client PTR, object PTR */
+   BMP_DATA            /* APP client PTR, object PTR, Bmp_Data */
 };
 typedef enum _message_type message_type;
 
@@ -60,8 +64,10 @@ struct _app_info_st
 {  /* This will be used to register new APP in GUI client */
    unsigned int pid;
    char *name;
-   char *file;  /* Valid only if was read from file in offline mode */
+   char *file;          /* Valid only if was read from file in offline mode */
    unsigned long long ptr; /* (void *) client ptr of app as saved by daemon */
+   Eina_List *view;       /* Screen views view->data is (bmp_info_st *) ptr */
+   unsigned int refresh_ctr;      /* Counter of how many times down refresh */
 };
 typedef struct _app_info_st app_info_st;
 
@@ -93,6 +99,27 @@ struct _highlight_st
 };
 typedef struct _highlight_st highlight_st;
 
+struct _bmp_req_st
+{  /* This will be used to send tree data to/from APP/DAEMON */
+   unsigned long long gui; /* (void *) client ptr of GUI */
+   unsigned long long app; /* (void *) client ptr APP    */
+   unsigned long long object; /* (void *) object ptr of Evas */
+   unsigned int ctr;       /* Reload counter to match    */
+};
+typedef struct _bmp_req_st bmp_req_st;
+
+struct _bmp_info_st
+{  /* This will be used to send app window Bitmap */
+   unsigned long long gui;    /* (void *) client ptr of GUI  */
+   unsigned long long app;    /* (void *) client ptr of APP  */
+   unsigned long long object; /* (void *) object ptr of evas */
+   unsigned int ctr;          /* Reload counter to match     */
+   Evas_Object *win;          /* Window of view if open      */
+   Evas_Object *bt;           /* Button opening win */
+   Bmp_Data *bmp;
+};
+typedef struct _bmp_info_st bmp_info_st;
+
 struct _eet_message_type_mapping
 {
    message_type t;
@@ -103,6 +130,9 @@ typedef struct _eet_message_type_mapping eet_message_type_mapping;
 
 struct _data_desc
 {
+   Eet_Data_Descriptor *bmp_data;
+   Eet_Data_Descriptor *bmp_req;
+   Eet_Data_Descriptor *bmp_info;
    Eet_Data_Descriptor *connect;
    Eet_Data_Descriptor *app_add;
    Eet_Data_Descriptor *data_req;
@@ -120,6 +150,9 @@ typedef struct _data_desc data_desc;
 Eet_Data_Descriptor *connect_desc_make(void);
 Eet_Data_Descriptor *app_add_desc_make(void);
 Eet_Data_Descriptor *data_req_desc_make(void);
+Eet_Data_Descriptor *bmp_req_desc_make(void);
+Eet_Data_Descriptor *bmp_data_desc_make(void);
+Eet_Data_Descriptor *bmp_info_desc_make(void);
 Eet_Data_Descriptor *tree_data_desc_make(void);
 Eet_Data_Descriptor *app_closed_desc_make(void);
 Eet_Data_Descriptor *highlight_desc_make(void);
@@ -132,6 +165,7 @@ void item_tree_free(Eina_List *tree);
 void _item_tree_item_string(Tree_Item *parent);
 data_desc *data_descriptors_init(void);
 void data_descriptors_shutdown(void);
+void bmp_info_free(Bmp_Data *bmp);
 void variant_free(Variant_st *v);
 Variant_st *variant_alloc(message_type t, size_t size, void *info);
 message_type packet_mapping_type_get(const char *name);

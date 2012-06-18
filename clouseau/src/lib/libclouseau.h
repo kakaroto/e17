@@ -123,6 +123,15 @@ struct _Obj_Information
 };
 typedef struct _Obj_Information Obj_Information;
 
+struct _Bmp_Data
+{
+   unsigned char  *bmp;
+   int bmp_count; /* is (w * h), for EET_DATA_DESCRIPTOR_ADD_BASIC_VAR_ARRAY */
+   Evas_Coord w;
+   Evas_Coord h;
+};
+typedef struct _Bmp_Data Bmp_Data;
+
 struct _Tree_Item
 {
    Eina_List *children;
@@ -135,7 +144,7 @@ struct _Tree_Item
 };
 typedef struct _Tree_Item Tree_Item;
 
-Obj_Information * _obj_information_get(Tree_Item *treeit);
+Obj_Information *_obj_information_get(Tree_Item *treeit);
 Eet_Data_Descriptor *Obj_Information_desc_make(void);
 void Obj_Information_desc_shutdown(void);
 Evas_Object *clouseau_obj_information_list_add(Evas_Object *parent);

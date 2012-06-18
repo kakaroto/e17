@@ -117,11 +117,9 @@ _add_client(Eina_List *clients, connect_st *t, void *client)
 {
    if(!eina_list_search_unsorted(clients, _client_ptr_cmp, client))
      {
-        app_info_st *st = malloc(sizeof(app_info_st));
+        app_info_st *st = calloc(1, sizeof(app_info_st));
         st->name = strdup(t->name);
-
         st->pid = t->pid;
-        st->file = NULL;
         st->ptr = (unsigned long long) (uintptr_t) client;
 
         return eina_list_append(clients, st);
@@ -224,7 +222,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                    Eina_List *l;
                    connect_st *t = v->data;
                    app_info_st m = { t->pid, (char *) t->name, NULL,
-                        (unsigned long long) (uintptr_t) ev->client};
+                        (unsigned long long) (uintptr_t) ev->client, NULL, 0 };
 
                    app = _add_client(app, t, ev->client);
                    p = packet_compose(APP_ADD, &m, sizeof(m), &size);
@@ -363,6 +361,65 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                               EINA_FALSE, ev->data, ev->size);
                         ecore_ipc_client_flush((void *) (uintptr_t) ht->app);
                      }
+                }
+              break;
+
+           case BMP_REQ:
+                {
+                   bmp_req_st *req = v->data;
+                   if(eina_list_search_unsorted(app,
+                            _client_ptr_cmp, (void *) (uintptr_t) req->app))
+                     {  /* Do the req only of APP connected to daemon */
+                        bmp_req_st t = {
+                             (unsigned long long) (uintptr_t) ev->client,
+                             req->app, req->object, req->ctr };
+
+                        p = packet_compose(BMP_REQ,
+                              &t, sizeof(t), &size);
+                        if (p)
+                          {  /* FWD req to app with client data */
+                             ecore_ipc_client_send(
+                                   (void *) (uintptr_t) req->app,
+                                   0,0,0,0, EINA_FALSE, p, size);
+                             ecore_ipc_client_flush(
+                                   (void *) (uintptr_t) req->app);
+                             free(p);
+                          }
+                     }
+                }
+              break;
+
+           case BMP_DATA:
+                {  /* Bmp Data comes from APP, GUI client specified in msg */
+                   bmp_info_st *st = v->data;
+                   if (st->gui)
+                     {  /* Sending BMP data to specific GUI client */
+                        if(eina_list_search_unsorted(gui,
+                                 _client_ptr_cmp,
+                                 (void *) (uintptr_t) st->gui))
+                          {  /* Do the req only of GUI connected to daemon */
+                             ecore_ipc_client_send(
+                                   (void *) (uintptr_t) st->gui, 0,0,0,0,
+                                   EINA_FALSE, ev->data, ev->size);
+                             ecore_ipc_client_flush(
+                                   (void *) (uintptr_t) st->gui);
+                          }
+                     }
+                   else
+                     {  /* Sending BMP data to all GUI clients */
+                        Eina_List *l;
+                        app_info_st *info;
+                        EINA_LIST_FOREACH(gui, l, info)
+                          {
+                             ecore_ipc_client_send(
+                                   (void *) (uintptr_t) info->ptr, 0,0,0,0,
+                                   EINA_FALSE, ev->data, ev->size);
+                             ecore_ipc_client_flush(
+                                   (void *) (uintptr_t) info->ptr);
+                          }
+                     }
+
+                   bmp_info_free(st->bmp);
                 }
               break;
 

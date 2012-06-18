@@ -49,13 +49,19 @@ static eet_message_type_mapping eet_mapping[] = {
        { DATA_REQ, DATA_REQ_STR },
        { TREE_DATA, TREE_DATA_STR },
        { APP_CLOSED, APP_CLOSED_STR },
-       { HIGHLIGHT, HIGHLIGHT_STR }
+       { HIGHLIGHT, HIGHLIGHT_STR },
+       { BMP_REQ, BMP_REQ_STR },
+       { BMP_DATA, BMP_DATA_STR },
+       { UNKNOWN, NULL }
 };
 
 message_type
 packet_mapping_type_get(const char *name)
 {
    int i;
+   if (!name)
+     return UNKNOWN;
+
    for (i = 0; eet_mapping[i].name != NULL; ++i)
      if (strcmp(name, eet_mapping[i].name) == 0)
        return eet_mapping[i].t;
@@ -106,6 +112,13 @@ _variant_type_set(const char *type,
 } /* _variant_type_set */
 
 void
+bmp_info_free(Bmp_Data *bmp)
+{
+   free(bmp->bmp);
+   free(bmp);
+}
+
+void
 variant_free(Variant_st *v)
 {
    if (v->data)
@@ -147,7 +160,7 @@ connect_desc_make(void)
 
 Eet_Data_Descriptor *
 app_add_desc_make(void)
-{
+{  /* view field not transferred, will be loaded on user request */
    Eet_Data_Descriptor *d;
 
    Eet_Data_Descriptor_Class eddc;
@@ -172,6 +185,49 @@ data_req_desc_make(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "gui", gui, EET_T_ULONG_LONG);
    EET_DATA_DESCRIPTOR_ADD_BASIC (d, data_req_st, "app", app, EET_T_ULONG_LONG);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+bmp_data_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Bmp_Data);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC_VAR_ARRAY(d, Bmp_Data,
+         "bmp", bmp, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, Bmp_Data,
+         "w", w, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, Bmp_Data,
+         "h", h, EET_T_INT);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
+bmp_info_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, bmp_info_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st,
+         "gui", gui, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st,
+         "app", app, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st,
+         "object", object, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_info_st, "ctr",
+         ctr, EET_T_UINT);
+
+   EET_DATA_DESCRIPTOR_ADD_SUB(d, bmp_info_st, "bmp",
+         bmp, desc->bmp_data);  /* Carefull - init this first */
 
    return d;
 }
@@ -228,6 +284,27 @@ highlight_desc_make(void)
 }
 
 Eet_Data_Descriptor *
+bmp_req_desc_make(void)
+{
+   Eet_Data_Descriptor *d;
+
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, bmp_req_st);
+   d = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_req_st, "gui",
+         gui, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_req_st, "app",
+         app, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_req_st,
+         "object", object, EET_T_ULONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC (d, bmp_req_st, "ctr",
+         ctr, EET_T_UINT);
+
+   return d;
+}
+
+Eet_Data_Descriptor *
 tree_item_desc_make(void)
 {
    Eet_Data_Descriptor *d;
@@ -264,6 +341,9 @@ data_descriptors_init(void)
 
    Eet_Data_Descriptor_Class eddc;
 
+   desc->bmp_data   = bmp_data_desc_make();
+   desc->bmp_req    = bmp_req_desc_make();
+   desc->bmp_info   = bmp_info_desc_make();
    desc->obj_info   = Obj_Information_desc_make();
    desc->tree       = tree_item_desc_make();
    desc->connect    = connect_desc_make();
@@ -303,6 +383,12 @@ data_descriptors_init(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
         HIGHLIGHT_STR, desc->highlight);
 
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        BMP_REQ_STR, desc->bmp_req);
+
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(desc->_variant_unified_descriptor,
+        BMP_DATA_STR, desc->bmp_info);
+
    EET_DATA_DESCRIPTOR_ADD_VARIANT(desc->_variant_descriptor,
          Variant_st, "data", data, t, desc->_variant_unified_descriptor);
 
@@ -326,6 +412,9 @@ data_descriptors_shutdown(void)
         eet_data_descriptor_free(desc->obj_info);
         eet_data_descriptor_free(desc->_variant_descriptor );
         eet_data_descriptor_free(desc->_variant_unified_descriptor);
+        eet_data_descriptor_free(desc->bmp_data);
+        eet_data_descriptor_free(desc->bmp_req);
+        eet_data_descriptor_free(desc->bmp_info);
 
         free(desc);
         desc = NULL;
