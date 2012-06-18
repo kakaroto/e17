@@ -605,17 +605,22 @@ _mouse_move(void *data,
    bmp_info_st *st = data;
    char s_bar[64];
    unsigned char *pt;
-   Evas_Coord x, y, xx, yy;
-   evas_object_geometry_get(st->o, &x, &y, NULL, NULL);
+   Evas_Coord x, y, w, h, xx, yy;
+   evas_object_geometry_get(st->o, &x, &y, &w, &h);
    xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x) - x;
    yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y) - y;
    sprintf(s_bar, "%dx%d", xx, yy);
 
    elm_object_text_set(st->lb_mouse, s_bar);
 
-   pt = st->bmp + (xx * yy * sizeof(int));
-   sprintf(s_bar, "argb(%d,%d,%d,%d)", pt[0], pt[1], pt[2], pt[3]);
-   elm_object_text_set(st->lb_argb, s_bar);
+   if (((xx >= 0) && (xx < w)) && ((yy >= 0) && (yy < h)))
+     { /* Need to test borders, because image may be scrolled */
+        pt = st->bmp + (xx * yy * sizeof(int));
+        sprintf(s_bar, "argb(%d,%d,%d,%d)", pt[0], pt[1], pt[2], pt[3]);
+        elm_object_text_set(st->lb_argb, s_bar);
+     }
+   else
+     elm_object_text_set(st->lb_argb, " ");
 }
 
 static void
