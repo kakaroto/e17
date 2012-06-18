@@ -126,10 +126,16 @@ struct _bmp_info_st
    unsigned long long ctr;     /* Reload counter to match     */
    unsigned long long w;       /* BMP width, make  Evas_Coord */
    unsigned long long h;       /* BMP hight, make  Evas_Coord */
+
+   /* All the following fields are NOT transferred in EET msg */
    Evas_Object *win;           /* Window of view if open      */
+   Evas_Object *scr;           /* Scroller holds view         */
    Evas_Object *o;             /* Actuall object displays BMP */
+   double zoom_val;            /* Current zoom value          */
+   Evas_Coord cw;              /* Current Width (after zoom)  */
+   Evas_Coord ch;              /* Current Hieght (after zoom) */
    Evas_Object *lb_mouse;      /* Label contains mouse cords  */
-   Evas_Object *lb_argb;       /* Current mouse pos argb val  */
+   Evas_Object *lb_rgba;       /* Current mouse pos rgba val  */
    Evas_Object *bt;            /* Button opening win          */
    Evas_Object *lx;            /* Line on X axis              */
    Evas_Object *ly;            /* Line on Y axis              */

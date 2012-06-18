@@ -766,18 +766,20 @@ libclouseau_make_lines(void *data,
      return; /* make line only if not left mouse button */
 
    bmp_info_st *st = data;
-   Evas_Coord xx, yy, x_bmp, y_bmp, w_bmp, h_bmp;
+   Evas_Coord xx, yy, x_rgn, y_rgn, w_rgn, h_rgn;
    lines_free(st);
 
-   evas_object_geometry_get(st->o, &x_bmp, &y_bmp, &w_bmp, &h_bmp);
+   elm_scroller_region_get(st->scr, &x_rgn, &y_rgn, &w_rgn, &h_rgn);
    xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x);
    yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y);
 
    st->lx = evas_object_line_add(evas_object_evas_get(st->o));
    st->ly = evas_object_line_add(evas_object_evas_get(st->o));
+   evas_object_repeat_events_set(st->lx, EINA_TRUE);
+   evas_object_repeat_events_set(st->ly, EINA_TRUE);
 
-   evas_object_line_xy_set(st->lx, 0, yy, w_bmp, yy);
-   evas_object_line_xy_set(st->ly, xx, 0, xx, h_bmp);
+   evas_object_line_xy_set(st->lx, 0, yy, w_rgn, yy);
+   evas_object_line_xy_set(st->ly, xx, 0, xx, h_rgn);
 
    evas_object_color_set(st->lx, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
          HIGHLIGHT_A);

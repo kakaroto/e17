@@ -594,7 +594,7 @@ _mouse_out(void *data,
 {
    bmp_info_st *st = data;
    elm_object_text_set(st->lb_mouse, " ");
-   elm_object_text_set(st->lb_argb, " ");
+   elm_object_text_set(st->lb_rgba, " ");
 }
 
 static void
@@ -603,24 +603,35 @@ _mouse_move(void *data,
       void *event_info)
 {  /* Event info is label getting mouse pointer cords */
    bmp_info_st *st = data;
-   char s_bar[64];
    unsigned char *pt;
-   Evas_Coord x, y, w, h, xx, yy;
+   char s_bar[64];
+   float dx, dy;
+   Evas_Coord mp_x, mp_y, xx, yy;
+   Evas_Coord x, y, w, h;
+
+   mp_x = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x);
+   mp_y = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y);
    evas_object_geometry_get(st->o, &x, &y, &w, &h);
-   xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x) - x;
-   yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y) - y;
+
+   dx = ((float) (mp_x - x)) / ((float) w);
+   dy = ((float) (mp_y - y)) / ((float) h);
+
+   xx = dx * st->w;
+   yy = dy * st->h;
+
    sprintf(s_bar, "%dx%d", xx, yy);
 
    elm_object_text_set(st->lb_mouse, s_bar);
 
-   if (((xx >= 0) && (xx < w)) && ((yy >= 0) && (yy < h)))
+   if (((xx >= 0) && (xx < ((Evas_Coord) st->w))) &&
+         ((yy >= 0) && (yy < ((Evas_Coord) st->h))))
      { /* Need to test borders, because image may be scrolled */
         pt = st->bmp + (xx * yy * sizeof(int));
-        sprintf(s_bar, "argb(%d,%d,%d,%d)", pt[0], pt[1], pt[2], pt[3]);
-        elm_object_text_set(st->lb_argb, s_bar);
+        sprintf(s_bar, "rgba(%d,%d,%d,%d)", pt[0], pt[1], pt[2], pt[3]);
+        elm_object_text_set(st->lb_rgba, s_bar);
      }
    else
-     elm_object_text_set(st->lb_argb, " ");
+     elm_object_text_set(st->lb_rgba, " ");
 }
 
 static void
@@ -638,6 +649,47 @@ _app_win_del(void *data,
    st->win = st->bt = st->lb_mouse = st->o = NULL;
 }
 
+/* START - Callbacks to handle zoom on app window (screenshot) */
+static Evas_Event_Flags
+reset_view(void *data , void *event_info EINA_UNUSED)
+{  /* Cancel ZOOM and remove LINES on double tap */
+   bmp_info_st *st = data;
+   st->zoom_val = 1.0;
+   lines_free(st);
+   evas_object_size_hint_min_set(st->o, st->w, st->h);
+   st->cw = st->w;
+   st->ch = st->h;
+
+   return EVAS_EVENT_FLAG_ON_HOLD;
+}
+
+static Evas_Event_Flags
+zoom_start(void *data , void *event_info EINA_UNUSED)
+{
+   bmp_info_st *st = data;
+   lines_free(st);
+   evas_object_size_hint_min_get(st->o, &st->cw, &st->ch);
+   return EVAS_EVENT_FLAG_ON_HOLD;
+}
+
+static Evas_Event_Flags
+zoom_move(void *data , void *event_info)
+{
+   bmp_info_st *st = data;
+   Elm_Gesture_Zoom_Info *p = (Elm_Gesture_Zoom_Info *) event_info;
+
+   if (p->zoom <= 0.1)  /* it's useless to go smaller then this */
+     return EVAS_EVENT_FLAG_ON_HOLD;
+
+   st->zoom_val = p->zoom;
+   evas_object_size_hint_min_set(st->o, st->cw * p->zoom, st->ch * p->zoom);
+   elm_scroller_region_show(st->scr,
+         p->x, p->y, st->w * p->zoom, st->h * p->zoom);
+
+   return EVAS_EVENT_FLAG_ON_HOLD;
+}
+/* END   - Callbacks to handle zoom on app window (screenshot) */
+
 static void
 _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
 {
@@ -645,7 +697,7 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
 #define SBAR_PAD_X 4
 #define SBAR_PAD_Y 2
 
-   Evas_Object *bg, *lb_size, *hbx, *scr;
+   Evas_Object *bg, *lb_size, *hbx, *glayer;
 
    char s_bar[64];
    char *win_name = malloc(strlen(treeit->name) + strlen(SHOT_HEADER) + 1);
@@ -665,19 +717,21 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(bx);
 
-   scr = elm_scroller_add(bx);
-   elm_box_pack_end(bx, scr);
-   evas_object_size_hint_weight_set(scr,
+   st->scr = elm_scroller_add(bx);
+   elm_box_pack_end(bx, st->scr);
+   evas_object_size_hint_weight_set(st->scr,
          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   evas_object_size_hint_align_set(scr, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(scr);
+   evas_object_size_hint_align_set(st->scr, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(st->scr);
 
    st->o = evas_object_image_filled_add(
          evas_object_evas_get(bx));
 
+   st->cw = st->w;  /* Init current width  */
+   st->ch = st->h;  /* Init current hieght */
    evas_object_size_hint_min_set(st->o, st->w, st->h);
-   elm_object_content_set(scr, st->o);
+   elm_object_content_set(st->scr, st->o);
 
    elm_object_disabled_set(bt, EINA_TRUE);
    evas_object_image_colorspace_set(st->o, EVAS_COLORSPACE_ARGB8888);
@@ -707,10 +761,10 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
    evas_object_show(st->lb_mouse);
    elm_box_pack_end(hbx, st->lb_mouse);
 
-   st->lb_argb = elm_label_add(hbx);
-   elm_object_text_set(st->lb_argb, s_bar);
-   evas_object_show(st->lb_argb);
-   elm_box_pack_end(hbx, st->lb_argb);
+   st->lb_rgba = elm_label_add(hbx);
+   elm_object_text_set(st->lb_rgba, s_bar);
+   evas_object_show(st->lb_rgba);
+   elm_box_pack_end(hbx, st->lb_rgba);
 
    evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_MOVE,
          _mouse_move, st);
@@ -721,12 +775,25 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
    evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_DOWN,
          libclouseau_make_lines, st);
 
-   evas_object_resize(scr, st->w, st->h);
+   evas_object_resize(st->scr, st->w, st->h);
    elm_win_resize_object_add(st->win, bx);
    evas_object_resize(st->win, st->w, st->h);
 
    elm_win_autodel_set(st->win, EINA_TRUE);
    evas_object_show(st->win);
+
+   /* Attach a gesture layer object to support ZOOM gesture */
+   glayer = elm_gesture_layer_add(st->scr);
+   elm_gesture_layer_attach(glayer, st->scr);
+
+   /* Reset zoom and remove lines on double click */
+   elm_gesture_layer_cb_set(glayer, ELM_GESTURE_N_DOUBLE_TAPS,
+         ELM_GESTURE_STATE_END, reset_view, st);
+
+   elm_gesture_layer_cb_set(glayer, ELM_GESTURE_ZOOM,
+         ELM_GESTURE_STATE_START, zoom_start, st);
+   elm_gesture_layer_cb_set(glayer, ELM_GESTURE_ZOOM,
+         ELM_GESTURE_STATE_MOVE, zoom_move, st);
 }
 
 static void
