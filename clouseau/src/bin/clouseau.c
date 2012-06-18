@@ -5,6 +5,10 @@
 
 #define CLIENT_NAME         "Clouseau Client"
 
+#define SHOW_SCREENSHOT     "/images/show-screenshot.png"
+#define TAKE_SCREENSHOT     "/images/take-screenshot.png"
+#define SCREENSHOT_MISSING  "/images/screenshot-missing.png"
+
 struct _app_data_st
 {
    Variant_st *app;  /* app->data is (app_info_st *)   */
@@ -554,7 +558,7 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
         /* Make refresh button display: screenshot NOT available */
         if (nd)
           _set_button(g->win, nd->bt,
-                "/images/gtk-close.png",
+                SCREENSHOT_MISSING,
                 "Screenshot not available", EINA_TRUE);
         return;
      }
@@ -571,7 +575,7 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
 
         /* Now we need to update refresh button, make it open-window */
         _set_button(g->win, nd->bt,
-              "/images/application-default-icon.png",
+              SHOW_SCREENSHOT,
               "Show App Screenshot", EINA_FALSE);
 
         bmp_req = eina_list_remove(bmp_req, nd);
@@ -857,7 +861,7 @@ _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
      }
    else  /* Disable button if we lost server */
      _set_button(gui->win, obj,
-           "/images/gtk-close.png",
+           SCREENSHOT_MISSING,
            "Screenshot not available", EINA_TRUE);
 }
 
@@ -967,7 +971,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
                   if (v)
                     {  /* Set to "show view" if view exists */
                        _set_button(parent, bt,
-                             "/images/application-default-icon.png",
+                             SHOW_SCREENSHOT,
                              "Show App Screenshot", EINA_FALSE);
                     }
                   else
@@ -975,13 +979,13 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
                        if (svr)
                          {
                             _set_button(parent, bt,
-                                  "/images/gtk-refresh.png",
+                                  TAKE_SCREENSHOT,
                                   "Download Screenshot", EINA_FALSE);
                          }
                        else
                          { /* Make button display: screenshot NOT available */
                             _set_button(parent, bt,
-                                  "/images/gtk-close.png",
+                                  SCREENSHOT_MISSING,
                                   "Screenshot not available", EINA_TRUE);
                          }
                     }
