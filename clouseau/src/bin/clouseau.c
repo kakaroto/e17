@@ -128,7 +128,7 @@ _set_button(Evas_Object *w, Evas_Object *bt,
    char buf[1024];
    Evas_Object *ic = elm_icon_add(w);
    snprintf(buf, sizeof(buf), "%s%s", PACKAGE_DATA_DIR, ic_name);
-   elm_icon_file_set(ic, buf, NULL);
+   elm_image_file_set(ic, buf, NULL);
    elm_object_part_content_set(bt, "icon", ic);
    elm_object_tooltip_text_set(bt, tip);
    elm_object_disabled_set(bt, en);
