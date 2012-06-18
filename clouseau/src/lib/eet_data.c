@@ -2,6 +2,27 @@
 static data_desc *desc = NULL;
 
 void
+lines_free(bmp_info_st *st)
+{  /* Free lines asociated with a bmp */
+   if (st->lx)
+     evas_object_del(st->lx);
+
+   if (st->ly)
+     evas_object_del(st->ly);
+
+   st->lx = st->ly = NULL;
+}
+
+void
+bmp_blob_free(bmp_info_st *st)
+{  /* We also free all lines drawn in this bmp canvas */
+   lines_free(st);
+
+   if (st->bmp)
+     free(st->bmp);
+}
+
+void
 item_tree_item_free(Tree_Item *parent)
 {
    Tree_Item *treeit;
@@ -676,6 +697,15 @@ _verify_e_obj(Evas_Object *obj)
    return rt;
 }
 
+static void
+libclouseau_highlight_del(void *data,
+      EINA_UNUSED Evas *e,
+      EINA_UNUSED  Evas_Object *obj,
+      EINA_UNUSED  void *event_info)
+{  /* Delete timer for this rect */
+   ecore_timer_del(data);
+}
+
 void
 libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view)
 {
@@ -717,39 +747,42 @@ libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view)
    evas_object_color_set(r, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
          HIGHLIGHT_A);
    evas_object_show(r);
-   ecore_timer_add(0.1, libclouseau_highlight_fade, r);
+
+   /* Add Timer for fade and a callback to delete timer on obj del */
+   evas_object_event_callback_add(r, EVAS_CALLBACK_DEL,
+         libclouseau_highlight_del,
+         ecore_timer_add(0.1, libclouseau_highlight_fade, r));
 /* Print backtrace info, saved for future ref
    tmp = evas_object_data_get(obj, ".clouseau.bt");
    fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp); */
 }
 
 void
-libclouseau_make_line(void *data,
+libclouseau_make_lines(void *data,
       Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
       void *event_info)
-{
+{  /* and no, we are NOT talking about WHITE lines */
    if (((Evas_Event_Mouse_Down *) event_info)->button == 1)
      return; /* make line only if not left mouse button */
 
    bmp_info_st *st = data;
    Evas_Coord xx, yy, x_bmp, y_bmp, w_bmp, h_bmp;
+   lines_free(st);
+
    evas_object_geometry_get(st->o, &x_bmp, &y_bmp, &w_bmp, &h_bmp);
    xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x);
    yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y);
 
-   Evas_Object *lx = evas_object_line_add(evas_object_evas_get(st->o));
-   evas_object_line_xy_set(lx, 0, yy, w_bmp, yy);
-   Evas_Object *ly = evas_object_line_add(evas_object_evas_get(st->o));
-   evas_object_line_xy_set(ly, xx, 0, xx, h_bmp);
+   st->lx = evas_object_line_add(evas_object_evas_get(st->o));
+   st->ly = evas_object_line_add(evas_object_evas_get(st->o));
 
-   evas_object_color_set(lx, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_color_set(ly, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_show(lx);
-   evas_object_show(ly);
+   evas_object_line_xy_set(st->lx, 0, yy, w_bmp, yy);
+   evas_object_line_xy_set(st->ly, xx, 0, xx, h_bmp);
 
-   ecore_timer_add(0.1, libclouseau_highlight_fade, lx);
-   ecore_timer_add(0.1, libclouseau_highlight_fade, ly);
+   evas_object_color_set(st->lx, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_color_set(st->ly, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_show(st->lx);
+   evas_object_show(st->ly);
 }
-

@@ -254,10 +254,7 @@ _close_app_views(app_info_st *app, Eina_Bool clr)
      {  /* These are cleared when app data is reloaded */
         EINA_LIST_FREE(app->view, view)
           {  /* Free memory allocated to show any app screens */
-             bmp_info_st *b = view->data;
-             if (b->bmp)
-               free(b->bmp);
-
+             bmp_blob_free(view->data);
              variant_free(view);
           }
 
@@ -632,7 +629,7 @@ _app_win_del(void *data,
    evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_OUT,
          _mouse_out);
    evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_DOWN,
-         libclouseau_make_line);
+         libclouseau_make_lines);
    st->win = st->bt = st->lb_mouse = st->o = NULL;
 }
 
@@ -717,7 +714,7 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
          _mouse_out, st);
 
    evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_DOWN,
-         libclouseau_make_line, st);
+         libclouseau_make_lines, st);
 
    evas_object_resize(scr, st->w, st->h);
    elm_win_resize_object_add(st->win, bx);

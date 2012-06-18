@@ -218,7 +218,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
 
               bmp_info_st t = { req->gui,
                    req->app, req->object , req->ctr, w, h,
-                   NULL, NULL, NULL, NULL, NULL, NULL };
+                   NULL,NULL,  NULL, NULL, NULL, NULL, NULL, NULL };
 
               void *p = packet_compose(BMP_DATA, &t, sizeof(t), &size,
                     bmp, (w * h * sizeof(int)));
