@@ -56,10 +56,10 @@ cdef public class Separator(LayoutClass) [object PyElementarySeparator, type PyE
 
         """
         def __get__(self):
-            return self.horizontal_get()
+            return elm_separator_horizontal_get(self.obj)
 
-        def __set__(self, value):
-            self.horizontal_set(value)
+        def __set__(self, b):
+            elm_separator_horizontal_set(self.obj, b)
 
 _elm_widget_type_register("separator", Separator)
 

@@ -154,10 +154,12 @@ cdef class SlideshowItemClass (object):
                 self._del_func)
 
     def get(self, evasObject obj, item_data):
-        """To be called by Slideshow for each item to get its icon.
+        """get(obj, item_data)
+
+        To be called by Slideshow for each item to get its icon.
 
         @param obj: the Slideshow instance
-        @param item_data: the value given to gengrid append/prepend.
+        @param item_data: the value given to slideshow append/prepend.
 
         @return: icon object to be used and swallowed.
         @rtype: evas Object or None
@@ -220,8 +222,7 @@ cdef class SlideshowItem(ObjectItem):
 
         """
         def __get__(self):
-            cdef Evas_Object *obj = elm_slideshow_item_object_get(self.item)
-            return Object_from_instance(obj)
+            return Object_from_instance(elm_slideshow_item_object_get(self.item))
 
     def show(self):
         """show()
@@ -283,7 +284,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
     item list.
 
     This widget emits the following signals, besides the ones sent from
-    L{Layout:}
+    L{Layout}:
         - C{"changed"} - when the slideshow switches its view to a new item.
             event_info parameter in callback contains the current visible item
         - C{"transition,end"} - when a slide transition ends. event_info
@@ -296,7 +297,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
         self._set_obj(elm_slideshow_add(parent.obj))
 
     def item_add(self, SlideshowItemClass item_class not None, *args, **kwargs):
-        """item_add(itc, *args, **kwargs)
+        """item_add(item_class, *args, **kwargs)
 
         Add (append) a new item in a given slideshow widget.
 
@@ -434,8 +435,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
 
         """
         def __get__(self):
-            cdef const_Eina_List *lst = elm_slideshow_transitions_get(self.obj)
-            return tuple(_strings_to_python(lst))
+            return tuple(_strings_to_python(elm_slideshow_transitions_get(self.obj)))
 
     property transition:
         """The slide transition/effect in use for a given slideshow widget
@@ -515,12 +515,11 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
             items list is changed. It should be fetched again with another
             call to this function when changes happen.
 
-        @return: tuple of L{SlideshowItem}s
+        @type: tuple of L{SlideshowItem}s
 
         """
         def __get__(self):
-            cdef const_Eina_List *lst = elm_slideshow_items_get(self.obj)
-            return tuple(_object_item_list_to_python(lst))
+            return tuple(_object_item_list_to_python(elm_slideshow_items_get(self.obj)))
 
     property current_item:
         """The currently displayed item, in a given slideshow widget
@@ -529,8 +528,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *it = elm_slideshow_item_current_get(self.obj)
-            return _object_item_to_python(it)
+            return _object_item_to_python(elm_slideshow_item_current_get(self.obj))
 
     def nth_item_get(self, nth):
         """nth_item_get(nth)
@@ -547,8 +545,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
         @rtype: L{SlideshowItem}
 
         """
-        cdef Elm_Object_Item *it = elm_slideshow_item_nth_get(self.obj, nth)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_slideshow_item_nth_get(self.obj, nth))
 
     property layout:
         """The current slide layout in use for a given slideshow widget
@@ -592,8 +589,7 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
 
         """
         def __get__(self):
-            cdef const_Eina_List *lst = elm_slideshow_layouts_get(self.obj)
-            return tuple(_strings_to_python(lst))
+            return tuple(_strings_to_python(elm_slideshow_layouts_get(self.obj)))
 
     property cache_before:
         """The number of items to cache, on a given slideshow widget,

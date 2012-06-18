@@ -23,6 +23,8 @@ from evas.c_evas cimport evas_object_smart_callback_add
 from evas.c_evas cimport evas_object_smart_callback_del
 from evas.c_evas cimport EVAS_CALLBACK_KEY_DOWN
 from evas.c_evas cimport EVAS_CALLBACK_KEY_UP
+from evas.c_evas cimport eina_list_append
+
 from evas.c_evas import _extended_object_mapping_register
 
 cdef void _object_callback(void *data,
@@ -99,6 +101,12 @@ cdef _strings_to_python(const_Eina_List *lst):
             ret.append(_ctouni(s))
         lst = lst.next
     return ret
+
+cdef Eina_List * _strings_from_python(strings):
+    cdef Eina_List *lst = NULL
+    for s in strings:
+        lst = eina_list_append(lst, _cfruni(s))
+    return lst
 
 def _cb_string_conv(long addr):
     cdef const_char_ptr s = <const_char_ptr>addr
@@ -200,8 +208,8 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         def __set__(self, value):
             self.text_set(value)
 
-    def part_content_set(self, part, evasObject obj):
-        """part_content_set(part, obj)
+    def part_content_set(self, part, evasObject content):
+        """part_content_set(part, content)
 
         Set a content of an object
 
@@ -217,7 +225,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @type content: L{Object}
 
         """
-        elm_object_part_content_set(self.obj, _cfruni(part), obj.obj)
+        elm_object_part_content_set(self.obj, _cfruni(part), content.obj)
 
     def content_set(self, evasObject obj):
         elm_object_part_content_set(self.obj, NULL, obj.obj)
@@ -527,7 +535,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
     # XXX: Clashes badly with evas event_callback_*
     def elm_event_callback_add(self, func, *args, **kargs):
-        """elm_event_callback_add(func, *args, **kwargs)
+        """elm_event_callback_add(func, *args, **kargs)
 
         Add a callback for input events (key up, key down, mouse wheel)
         on a given Elementary widget
@@ -571,8 +579,8 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @param func: The callback function to be executed when the event
             happens
         @type func: function
-        @param *args: Optional arguments containing data passed to C{func}
-        @param **kwargs: Optional keyword arguments containing data passed to
+        @param args: Optional arguments containing data passed to C{func}
+        @param kargs: Optional keyword arguments containing data passed to
             C{func}
 
         """
@@ -589,7 +597,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         self._elm_event_cbs.append(data)
 
     def elm_event_callback_del(self, func, *args, **kargs):
-        """elm_event_callback_del(func, *args, **kwargs)
+        """elm_event_callback_del(func, *args, **kargs)
 
         Remove an event callback from a widget.
 
@@ -600,8 +608,8 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @param func: The callback function to be executed when the event is
             emitted.
         @type func: function
-        @param *args: Optional arguments containing data passed to C{func}
-        @param **kwargs: Optional keyword arguments containing data passed to
+        @param args: Optional arguments containing data passed to C{func}
+        @param kargs: Optional keyword arguments containing data passed to
             C{func}
 
         """
@@ -751,9 +759,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         Also, when they receive mouse input, they will get the event, but
         not take away the focus from where it was previously.
 
-        @param enable: C{True} if the object can be focused,
+        @param allow: C{True} if the object can be focused,
             C{False} if not (and on errors)
-        @type enable: bool
+        @type allow: bool
 
         """
         elm_object_focus_allow_set(self.obj, allow)
@@ -785,8 +793,8 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         def __set__(self, value):
             self.focus_allow_set(value)
 
-    def focus_custom_chain_set(self, lst):
-        """focus_custom_chain_set(lst)
+    def focus_custom_chain_set(self, objs):
+        """focus_custom_chain_set(objs)
 
         Set custom focus chain.
 
@@ -802,7 +810,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         """
         elm_object_focus_custom_chain_unset(self.obj)
         cdef Object obj
-        for obj in lst:
+        for obj in objs:
             elm_object_focus_custom_chain_append(self.obj, obj.obj, NULL)
 
     def focus_custom_chain_unset(self):
@@ -850,8 +858,8 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         def __del__(self):
             self.focus_custom_chain_unset()
 
-    def focus_custom_chain_append(self, Object obj, Object relative=None):
-        """focus_custom_chain_append(obj, relative=None)
+    def focus_custom_chain_append(self, Object child, Object relative_child=None):
+        """focus_custom_chain_append(child, relative_child=None)
 
         Append object to custom focus chain.
 
@@ -868,12 +876,12 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
         """
         cdef Evas_Object *rel = NULL
-        if relative:
-            rel = relative.obj
-        elm_object_focus_custom_chain_append(self.obj, obj.obj, rel)
+        if relative_child:
+            rel = relative_child.obj
+        elm_object_focus_custom_chain_append(self.obj, child.obj, rel)
 
-    def focus_custom_chain_prepend(self, Object obj, Object relative=None):
-        """focus_custom_chain_prepend(obj, relative=None)
+    def focus_custom_chain_prepend(self, Object child, Object relative_child=None):
+        """focus_custom_chain_prepend(child, relative_child=None)
 
         Prepend object to custom focus chain.
 
@@ -890,9 +898,9 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
         """
         cdef Evas_Object *rel = NULL
-        if relative:
-            rel = relative.obj
-        elm_object_focus_custom_chain_prepend(self.obj, obj.obj, rel)
+        if relative_child:
+            rel = relative_child.obj
+        elm_object_focus_custom_chain_prepend(self.obj, child.obj, rel)
 
     #def focus_next(self, direction):
         """focus_next(direction)

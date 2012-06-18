@@ -61,13 +61,20 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_toolbar_item_next_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_item_next_get(self.item))
 
     property next:
+        """Get the item after C{item} in toolbar.
+
+        @note: If it is the last item, C{None} will be returned.
+
+        @see: L{Toolbar.item_append()}
+
+        @type: L{ToolbarItem}
+
+        """
         def __get__(self):
-            return self.next_get()
+            return _object_item_to_python(elm_toolbar_item_next_get(self.item))
 
     def prev_get(self):
         """Get the item before C{item} in toolbar.
@@ -80,13 +87,20 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_toolbar_item_prev_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_item_prev_get(self.item))
 
     property prev:
+        """Get the item before C{item} in toolbar.
+
+        @note: If it is the first item, C{None} will be returned.
+
+        @see: L{Toolbar.item_prepend()}
+
+        @type: L{ToolbarItem}
+
+        """
         def __get__(self):
-            return self.prev_get()
+            return _object_item_to_python(elm_toolbar_item_prev_get(self.item))
 
     def priority_set(self, priority):
         """Set the priority of a toolbar item.
@@ -118,11 +132,23 @@ cdef class ToolbarItem(ObjectItem):
         return elm_toolbar_item_priority_get(self.item)
 
     property priority:
+        """The priority of a toolbar item.
+
+        This is used only when the toolbar shrink mode is set to
+        ELM_TOOLBAR_SHRINK_MENU or ELM_TOOLBAR_SHRINK_HIDE. When space is
+        less than required, items with low priority will be removed from the
+        toolbar and added to a dynamically-created menu, while items with
+        higher priority will remain on the toolbar, with the same order they
+        were added.
+
+        @type: int
+
+        """
         def __get__(self):
-            return self.priority_get()
+            return elm_toolbar_item_priority_get(self.item)
 
         def __set__(self, priority):
-            self.priority_set(priority)
+            elm_toolbar_item_priority_set(self.item, priority)
 
     def selected_get(self):
         """Get whether the item is selected or not.
@@ -158,6 +184,22 @@ cdef class ToolbarItem(ObjectItem):
         elm_toolbar_item_selected_set(self.item, selected)
 
     property selected:
+        """The selected state of an item.
+
+        This reflects the selected state of the given item. C{True} for
+        selected, C{False} for not selected.
+
+        If a new item is selected the previously selected will be unselected.
+        Previously selected item can be get with function
+        L{Toolbar.selected_item_get()}.
+
+        Selected items will be highlighted.
+
+        @see: L{Toolbar.selected_item_get()}
+
+        @type: bool
+
+        """
         def __set__(self, selected):
             elm_toolbar_item_selected_set(self.item, selected)
 
@@ -193,11 +235,22 @@ cdef class ToolbarItem(ObjectItem):
         return _ctouni(elm_toolbar_item_icon_get(self.item))
 
     property icon:
+        """The icon associated with the item.
+
+        Toolbar will load icon image from fdo or current theme.
+        This behavior can be set by L{Toolbar.icon_order_lookup_set()} function.
+        If an absolute path is provided it will load it direct from a file.
+
+        @see: L{Toolbar.icon_order_lookup}
+
+        @type: string
+
+        """
         def __get__(self):
-            return self.icon_get()
+            return _ctouni(elm_toolbar_item_icon_get(self.item))
 
         def __set__(self, ic):
-            self.icon_set(ic)
+            elm_toolbar_item_icon_set(self.item, _cfruni(ic))
 
     def object_get(self):
         """Get the object of item.
@@ -206,23 +259,40 @@ cdef class ToolbarItem(ObjectItem):
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_toolbar_item_object_get(self.item)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_toolbar_item_object_get(self.item))
+
+    property object:
+        """Get the object of item.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return Object_from_instance(elm_toolbar_item_object_get(self.item))
 
     def icon_object_get(self):
         """Get the icon object of item.
 
-        @see: L{icon_set()}, L{icon_file_set()}, or L{icon_memfile_set()} for
-            details.
+        @see: L{icon}, L{icon_file}, or L{icon_memfile} for details.
 
         @return: The icon object
         @rtype: L{Icon}
 
         """
-        cdef Evas_Object *obj = elm_toolbar_item_icon_object_get(self.item)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_toolbar_item_icon_object_get(self.item))
 
-    #TODO def icon_memfile_set(self, img, size, format, key):
+    property icon_object:
+        """Get the icon object of item.
+
+        @see: L{icon}, L{icon_file}, or L{icon_memfile} for details.
+
+        @type: L{Icon}
+
+        """
+        def __get__(self):
+            return Object_from_instance(elm_toolbar_item_icon_object_get(self.item))
+
+    def icon_memfile_set(self, img, size, format, key):
         """Set the icon associated with item to an image in a binary buffer.
 
         @note: The icon image set by this function can be changed by
@@ -233,15 +303,16 @@ cdef class ToolbarItem(ObjectItem):
         @type size: int
         @param format: Optional format of C{img} to pass to the image loader
         @type format: string
-        @param key: Optional key of C{img to pass to the image loader (eg.
-            if C{img is an edje file)
+        @param key: Optional key of C{img} to pass to the image loader (eg.
+            if C{img} is an edje file)
         @type key: string
 
-        @return: (C{True = success, C{False = error)
+        @return: (C{True} = success, C{False} = error)
         @rtype: bool
 
         """
-        #return bool(elm_toolbar_item_icon_memfile_set(self.item, img, size, format, key))
+        return False
+        #TODO: return bool(elm_toolbar_item_icon_memfile_set(self.item, img, size, format, key))
 
     def icon_file_set(self, file, key):
         """Set the icon associated with item to an image in a binary buffer.
@@ -260,6 +331,24 @@ cdef class ToolbarItem(ObjectItem):
 
         """
         return bool(elm_toolbar_item_icon_file_set(self.item, _cfruni(file), _cfruni(key)))
+
+    property icon_file:
+        """Set the icon associated with item to an image in a binary buffer.
+
+        @note: The icon image set by this function can be changed by
+            L{icon_set()}.
+
+        @type: string or tuple of strings
+
+        """
+        def __set__(self, value):
+            if isinstance(value, tuple):
+                file, key = value
+            else:
+                file = value
+                key = None
+            # TODO: check return status
+            elm_toolbar_item_icon_file_set(self.item, _cfruni(file), _cfruni(key))
 
     def separator_set(self, separator):
         """Set or unset item as a separator.
@@ -291,6 +380,16 @@ cdef class ToolbarItem(ObjectItem):
         return elm_toolbar_item_separator_get(self.item)
 
     property separator:
+        """Whether item is a separator or not.
+
+        Items aren't set as separator by default.
+
+        If set as separator it will display separator theme, so won't display
+        icons or label.
+
+        @type: bool
+
+        """
         def __set__(self, separator):
             elm_toolbar_item_separator_set(self.item, separator)
 
@@ -346,11 +445,41 @@ cdef class ToolbarItem(ObjectItem):
             return Menu(None, <object>menu)
 
     property menu:
-        def __get__(self):
-            return self.menu_get()
+        """This property has two diffent functionalities. The object you get
+        from it is the L{Menu} object used by this toolbar item, and setting
+        it to True or False controls whether this item is a menu or not.
 
-        def __set__(self, value):
-            self.menu_set(value)
+        If item wasn't set as menu item, getting the value of this property
+        sets it to be that.
+
+        Once it is set to be a menu, it can be manipulated through
+        L{Toolbar.menu_parent} and the L{Menu} functions and properties.
+
+        So, items to be displayed in this item's menu should be added with
+        L{Menu.item_add()}.
+
+        The following code exemplifies the most basic usage::
+            tb = Toolbar(win)
+            item = tb.item_append("refresh", "Menu")
+            item.menu = True
+            tb.menu_parent = win
+            menu = item.menu
+            menu.item_add(None, "edit-cut", "Cut")
+            menu_item = menu.item_add(None, "edit-copy", "Copy")
+
+        @type: bool
+
+        """
+        def __get__(self):
+            cdef Evas_Object *menu
+            menu = elm_toolbar_item_menu_get(self.item)
+            if menu == NULL:
+                return None
+            else:
+                return Menu(None, <object>menu)
+
+        def __set__(self, menu):
+            elm_toolbar_item_menu_set(self.item, menu)
 
 
     #TODO def state_add(self, icon, label, func, data):
@@ -427,6 +556,13 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_icon_size_get(self.obj)
 
     property icon_size:
+        """The icon size, in pixels, to be used by toolbar items.
+
+        @note: Default value is C{32}. It reads value from elm config.
+
+        @type: int
+
+        """
         def __set__(self, icon_size):
             elm_toolbar_icon_size_set(self.obj, icon_size)
 
@@ -459,6 +595,14 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_icon_order_lookup_get(self.obj)
 
     property icon_order_lookup:
+        """Icon lookup order, for toolbar items' icons.
+
+        Icons added before calling this function will not be affected.
+        The default lookup order is ELM_ICON_LOOKUP_THEME_FDO.
+
+        @type: Elm_Icon_Lookup_Order
+
+        """
         def __set__(self, order):
             elm_toolbar_icon_order_lookup_set(self.obj, order)
 
@@ -466,7 +610,9 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
             return elm_toolbar_icon_order_lookup_get(self.obj)
 
     def item_append(self, icon, label, callback = None, *args, **kargs):
-        """Append item to the toolbar.
+        """item_append(icon, label, callback, *args, **kargs)
+
+        Append item to the toolbar.
 
         A new item will be created and appended to the toolbar, i.e., will
         be set as B{last} item.
@@ -480,18 +626,19 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         enough. The same should be done for C{data}.
 
         Toolbar will load icon image from fdo or current theme. This
-        behavior can be set by L{icon_order_lookup_set()} function.
+        behavior can be set by L{icon_order_lookup} function.
         If an absolute path is provided it will load it direct from a file.
 
-        @see: L{ToolbarItem.icon_set()}
+        @see: L{ToolbarItem.icon}
         @see: L{ObjectItem.delete()}
 
         @param icon: A string with icon name or the absolute path of an image file.
         @type icon: string
         @param label: The label of the item.
         @type label: string
-        @param func: The function to call when the item is clicked.
-        @type func: function
+        @param callback: The function to call when the item is clicked.
+        @type callback: function
+
         @return: The created item or C{None} upon failure.
         @rtype: ToolbarItem
 
@@ -613,13 +760,19 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_toolbar_first_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_first_item_get(self.obj))
 
     property first_item:
+        """Get the first item in the given toolbar widget's list of items.
+
+        @see: L{item_append()}
+        @see: L{last_item_get()}
+
+        @type: L{ToolbarItem}
+
+        """
         def __get__(self):
-            return self.first_item_get()
+            return _object_item_to_python(elm_toolbar_first_item_get(self.obj))
 
     def last_item_get(self):
         """Get the last item in the given toolbar widget's list of items.
@@ -631,16 +784,24 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_toolbar_last_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_last_item_get(self.obj))
 
     property last_item:
-        def __get__(self):
-            return self.last_item_get()
+        """Get the last item in the given toolbar widget's list of items.
 
-    def elm_toolbar_item_find_by_label(self, label):
-        """Returns a toolbar item by its label.
+        @see: L{item_prepend()}
+        @see: L{first_item_get()}
+
+        @type: L{ToolbarItem}
+
+        """
+        def __get__(self):
+            return _object_item_to_python(elm_toolbar_last_item_get(self.obj))
+
+    def item_find_by_label(self, label):
+        """item_find_by_label(label)
+
+        Returns a toolbar item by its label.
 
         @param label: The label of the item to find.
         @type label: string
@@ -648,8 +809,7 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it = elm_toolbar_item_find_by_label(self.obj, _cfruni(label))
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_item_find_by_label(self.obj, _cfruni(label)))
 
     def selected_item_get(self):
         """Get the selected item.
@@ -665,13 +825,22 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_toolbar_selected_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_selected_item_get(self.obj))
 
     property selected_item:
+        """The selected item.
+
+        The selected item can be unselected with L{ToolbarItem.selected}.
+
+        The selected item always will be highlighted on toolbar.
+
+        @see: L{selected_items}
+
+        @type: L{ToolbarItem}
+
+        """
         def __get__(self):
-            return self.selected_item_get()
+            return _object_item_to_python(elm_toolbar_selected_item_get(self.obj))
 
     def more_item_get(self):
         """Get the more item.
@@ -683,9 +852,19 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{ToolbarItem}
 
         """
-        cdef Elm_Object_Item *it
-        it = elm_toolbar_more_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_toolbar_more_item_get(self.obj))
+
+    property more_item:
+        """Get the more item.
+
+        The more item can be changed with function
+        L{ObjectItem.text_set()} and L{ObjectItem.content_set()}.
+
+        @type: L{ToolbarItem}
+
+        """
+        def __get__(self):
+            return _object_item_to_python(elm_toolbar_more_item_get(self.obj))
 
     def shrink_mode_set(self, mode):
         """Set the shrink state of toolbar.
@@ -714,11 +893,22 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_shrink_mode_get(self.obj)
 
     property shrink_mode:
-        def __get__(self):
-            return self.shrink_mode_get()
+        """The shrink state of toolbar.
 
-        def __set__(self, value):
-            self.shrink_mode_set(value)
+        The toolbar won't scroll if ELM_TOOLBAR_SHRINK_NONE, but will
+        enforce a minimum size so all the items will fit, won't scroll and
+        won't show the items that don't fit if ELM_TOOLBAR_SHRINK_HIDE, will
+        scroll if ELM_TOOLBAR_SHRINK_SCROLL, and will create a button to pop
+        up excess elements with ELM_TOOLBAR_SHRINK_MENU.
+
+        @type: Elm_Toolbar_Shrink_Mode
+
+        """
+        def __get__(self):
+            return elm_toolbar_shrink_mode_get(self.obj)
+
+        def __set__(self, mode):
+            elm_toolbar_shrink_mode_set(self.obj, mode)
 
     def homogeneous_set(self, homogeneous):
         """Enable/disable homogeneous mode.
@@ -747,6 +937,13 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_homogeneous_get(self.obj)
 
     property homogeneous:
+        """Homogeneous mode.
+
+        This will enable the homogeneous mode where items are of the same size.
+
+        @type: bool
+
+        """
         def __set__(self, homogeneous):
             elm_toolbar_homogeneous_set(self.obj, homogeneous)
 
@@ -779,15 +976,27 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *parent = elm_toolbar_menu_parent_get(self.obj)
-        return Object_from_instance(parent)
+        return Object_from_instance(elm_toolbar_menu_parent_get(self.obj))
 
     property menu_parent:
-        def __get__(self):
-            return self.menu_parent_get()
+        """The parent object of the toolbar items' menus.
 
-        def __set__(self, value):
-            self.menu_parent_set(value)
+        Each item can be set as item menu, with L{ToolbarItem.menu_set()}.
+
+        For more details about setting the parent for toolbar menus, see
+        L{Menu.parent_set()}.
+
+        @see: L{Menu.parent} for details.
+        @see: L{ToolbarItem.menu} for details.
+
+        @type: L{Object}
+
+        """
+        def __get__(self):
+            return Object_from_instance(elm_toolbar_menu_parent_get(self.obj))
+
+        def __set__(self, evasObject parent):
+            elm_toolbar_menu_parent_set(self.obj, parent.obj)
 
     def align_set(self, align):
         """Set the alignment of the items.
@@ -818,6 +1027,17 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_align_get(self.obj)
 
     property align:
+        """The alignment of the items.
+
+        Alignment of toolbar items, from C{0.0} to indicates to align
+        left, to C{1.0}, to align to right. C{0.5} centralize
+        items.
+
+        Centered items by default.
+
+        @type: float
+
+        """
         def __set__(self, align):
             elm_toolbar_align_set(self.obj, align)
 
@@ -849,6 +1069,14 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_horizontal_get(self.obj)
 
     property horizontal:
+        """A toolbar's orientation
+
+        By default, a toolbar will be horizontal. Change this property to
+        create a vertical toolbar.
+
+        @type: bool
+
+        """
         def __set__(self, horizontal):
             elm_toolbar_horizontal_set(self.obj, horizontal)
 
@@ -913,11 +1141,27 @@ cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementary
         return elm_toolbar_select_mode_get(self.obj)
 
     property select_mode:
-        def __get__(self):
-            return self.select_mode_get()
+        """The toolbar select mode.
 
-        def __set__(self, value):
-            self.select_mode_set(value)
+        The possible modes are:
+            - ELM_OBJECT_SELECT_MODE_DEFAULT : Items will only call their
+              selection func and callback when first becoming selected. Any
+              further clicks will do nothing, unless you set always select
+              mode.
+            - ELM_OBJECT_SELECT_MODE_ALWAYS :  This means that, even if
+              selected, every click will make the selected callbacks be called.
+            - ELM_OBJECT_SELECT_MODE_NONE : This will turn off the ability
+              to select items entirely and they will neither appear selected
+              nor call selected callback functions.
+
+        @type: Elm_Object_Select_Mode
+
+        """
+        def __get__(self):
+            return elm_toolbar_select_mode_get(self.obj)
+
+        def __set__(self, mode):
+            elm_toolbar_select_mode_set(self.obj, mode)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         """When the user clicks on a toolbar item and becomes selected."""

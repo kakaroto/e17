@@ -18,8 +18,7 @@
 
 cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type PyElementaryProgressbar_Type]:
 
-    """
-    The progress bar is a widget for visually representing the progress
+    """The progress bar is a widget for visually representing the progress
     status of a given job/task.
 
     A progress bar may be horizontal or vertical. It may display an icon
@@ -147,10 +146,10 @@ cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type
 
         """
         def __get__(self):
-            return self.value_get()
+            return elm_progressbar_value_get(self.obj)
 
         def __set__(self, value):
-            self.value_set(value)
+            elm_progressbar_value_set(self.obj, value)
 
     def span_size_set(self, size):
         """Set the (exact) length of the bar region of a given progress bar
@@ -204,10 +203,10 @@ cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type
 
         """
         def __get__(self):
-            return self.span_size_get()
+            return elm_progressbar_span_size_get(self.obj)
 
         def __set__(self, size):
-            self.span_size_set(size)
+            elm_progressbar_span_size_set(self.obj, size)
 
     def unit_format_set(self, format):
         """Set the format string for a given progress bar widget's units
@@ -264,10 +263,13 @@ cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type
 
         """
         def __get__(self):
-            self.unit_format_get()
+            return _ctouni(elm_progressbar_unit_format_get(self.obj))
 
         def __set__(self, format):
-            self.unit_format_set(format)
+            if format is None:
+                elm_progressbar_unit_format_set(self.obj, NULL)
+            else:
+                elm_progressbar_unit_format_set(self.obj, _cfruni(format))
 
     def horizontal_set(self, horizontal):
         """Set the orientation of a given progress bar widget.
@@ -306,10 +308,10 @@ cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type
 
         """
         def __get__(self):
-            return self.horizontal_get()
+            return bool(elm_progressbar_horizontal_get(self.obj))
 
         def __set__(self, horizontal):
-            self.horizontal_set(horizontal)
+            elm_progressbar_horizontal_set(self.obj, horizontal)
 
     def inverted_set(self, inverted):
         """Invert a given progress bar widget's displaying values order.
@@ -356,10 +358,10 @@ cdef public class Progressbar(LayoutClass) [object PyElementaryProgressbar, type
 
         """
         def __get__(self):
-            return self.inverted_get()
+            return bool(elm_progressbar_inverted_get(self.obj))
 
         def __set__(self, inverted):
-            self.inverted_set(inverted)
+            elm_progressbar_inverted_set(self.obj, inverted)
 
 _elm_widget_type_register("progressbar", Progressbar)
 

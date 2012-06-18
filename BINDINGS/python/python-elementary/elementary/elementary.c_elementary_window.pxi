@@ -101,6 +101,11 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         - "maximized": window has been maximized
         - "unmaximized": window has stopped being maximized
 
+    @param name: A name for the new window.
+    @type name: string
+    @param type: A type for the new window:
+    @type type: Elm_Win_Type
+
     """
 
     def __init__(self, name, type):
@@ -112,7 +117,9 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         evasObject.__init__(self, canvas)
 
     def resize_object_add(self, evasObject subobj):
-        """Add C{subobj} as a resize object of the window.
+        """resize_object_add(subobj)
+
+        Add C{subobj} as a resize object of the window.
 
         Setting an object as a resize object of the window means that the
         C{subobj} child's size and position will be controlled by the window
@@ -141,7 +148,9 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         elm_win_resize_object_add(self.obj, subobj.obj)
 
     def resize_object_del(self, evasObject subobj):
-        """Delete C{subobj} as a resize object of the window.
+        """resize_object_del(subobj)
+
+        Delete C{subobj} as a resize object of the window.
 
         This function removes the object C{subobj} from the resize objects of
         the window. It will not delete the object itself, which will be
@@ -166,10 +175,6 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def title_get(self):
         """Get the title of the window
 
-        The returned string is an internal one and should not be freed or
-        modified. It will also be rendered invalid if a new title is set or if
-        the window is destroyed.
-
         @return: The title
         @rtype: string
 
@@ -177,6 +182,11 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return _ctouni(elm_win_title_get(self.obj))
 
     property title:
+        """The title of the window.
+
+        @type: string
+
+        """
         def __get__(self):
             return _ctouni(elm_win_title_get(self.obj))
         def __set__(self, title):
@@ -194,10 +204,6 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def icon_name_get(self):
         """Get the icon name of the window
 
-        The returned string is an internal one and should not be freed or
-        modified. It will also be rendered invalid if a new icon name is set or if
-        the window is destroyed.
-
         @return: The icon name
         @rtype: string
 
@@ -205,6 +211,11 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return _ctouni(elm_win_icon_name_get(self.obj))
 
     property icon_name:
+        """The icon name of the window.
+
+        @type: string
+
+        """
         def __get__(self):
             return _ctouni(elm_win_icon_name_get(self.obj))
         def __set__(self, icon_name):
@@ -222,10 +233,6 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
     def role_get(self):
         """Get the role of the window
 
-        The returned string is an internal one and should not be freed or
-        modified. It will also be rendered invalid if a new role is set or if
-        the window is destroyed.
-
         @return: The role
         @rtype: string
 
@@ -233,10 +240,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return _ctouni(elm_win_role_get(self.obj))
 
     property role:
+        """The role of the window.
+
+        @type: string
+
+        """
         def __get__(self):
-            return self.role_get()
+            return _ctouni(elm_win_role_get(self.obj))
         def __set__(self, role):
-            self.role_set(role)
+            elm_win_role_set(self.obj, _cfruni(role))
 
     def icon_object_set(self, evasObject icon):
         """Set the object to represent the window icon
@@ -264,14 +276,26 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         @rtype: L{Image}
 
         """
-        cdef Evas_Object *obj = <Evas_Object *>elm_win_icon_object_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(<Evas_Object *>elm_win_icon_object_get(self.obj))
 
     property icon_object:
+        """The object to represent the window icon
+
+        This sets an object that will be used as the icon for the window.
+        The exact pixel dimensions of the object (not object size) will be
+        used, and the image pixels will be used as-is when this function is
+        called. If the image object has been updated, then call this
+        function again to source the image pixels and put them on the
+        window's icon. This has limitations as only image objects allowed at
+        this stage. This may be lifted in future.
+
+        @type: L{Image}
+
+        """
         def __get__(self):
-            return self.icon_object_get()
-        def __set__(self, icon):
-            self.icon_object_set(icon)
+            return Object_from_instance(<Evas_Object *>elm_win_icon_object_get(self.obj))
+        def __set__(self, evasObject icon):
+            elm_win_icon_object_set(self.obj, icon.obj)
 
     def autodel_set(self, autodel):
         """Set the window's autodel state.
@@ -306,13 +330,31 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_autodel_get(self.obj)
 
     property autodel:
+        """The window's autodel state.
+
+        When closing the window in any way outside of the program control,
+        like pressing the X button in the titlebar or using a command from
+        the Window Manager, a "delete,request" signal is emitted to indicate
+        that this event occurred and the developer can take any action,
+        which may include, or not, destroying the window object.
+
+        When this property is set, the window will be automatically
+        destroyed when this event occurs, after the signal is emitted. If
+        C{autodel} is C{False}, then the window will not be destroyed and is
+        up to the program to do so when it's required.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.autodel_get()
+            return elm_win_autodel_get(self.obj)
         def __set__(self, autodel):
-            self.autodel_set(autodel)
+            elm_win_autodel_set(self.obj, autodel)
 
     def activate(self):
-        """Activate a window object.
+        """activate()
+
+        Activate a window object.
 
         This function sends a request to the Window Manager to activate the
         window. If honored by the WM, the window will receive the keyboard
@@ -326,7 +368,9 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         elm_win_activate(self.obj)
 
     def lower(self):
-        """Lower a window object.
+        """lower()
+
+        Lower a window object.
 
         Places the window at the bottom of the stack, so that no other
         window is covered by it.
@@ -338,7 +382,9 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         elm_win_lower(self.obj)
 
     def _raise(self):
-        """Raise a window object.
+        """_raise()
+
+        Raise a window object.
 
         Places the window at the top of the stack, so that it's not covered
         by any other window.
@@ -350,7 +396,9 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         elm_win_raise(self.obj)
 
     def center(self, h, v):
-        """Center a window on its screen
+        """center(h, v)
+
+        Center a window on its screen
 
         This function centers window horizontally and/or vertically
         based on the values of C{h} and C{v}.
@@ -387,6 +435,14 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_borderless_get(self.obj))
 
     property borderless:
+        """The borderless state of a window.
+
+        Setting this to True requests the Window Manager to not draw any
+        decoration around the window.
+
+        @type: bool
+
+        """
         def __get__(self):
             return self.borderless_get()
         def __set__(self, borderless):
@@ -422,10 +478,24 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_shaped_get(self.obj))
 
     property shaped:
+        """The shaped state of a window.
+
+        Shaped windows, when supported, will render the parts of the window that
+        has no content, transparent.
+
+        If C{shaped} is False, then it is strongly advised to have some
+        background object or cover the entire window in any other way, or the
+        parts of the canvas that have no data will show framebuffer artifacts.
+
+        @see: L{alpha}
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.shaped_get()
+            return bool(elm_win_shaped_get(self.obj))
         def __set__(self, shaped):
-            self.shaped_set(shaped)
+            elm_win_shaped_set(self.obj, shaped)
 
     def alpha_set(self,alpha):
         """Set the alpha channel state of a window.
@@ -436,8 +506,6 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         supporting it, like for example, running under a compositing
         manager. If no compositing is available, enabling this option will
         instead fallback to using shaped windows, with L{shaped_set()}.
-
-        @see: L{alpha_set()}
 
         @param alpha: If True, the window has an alpha channel
         @type alpha: bool
@@ -455,10 +523,22 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_alpha_get(self.obj))
 
     property alpha:
+        """The alpha channel state of a window.
+
+        If C{alpha} is True, the alpha channel of the canvas will be enabled
+        possibly making parts of the window completely or partially
+        transparent. This is also subject to the underlying system
+        supporting it, like for example, running under a compositing
+        manager. If no compositing is available, enabling this option will
+        instead fallback to using shaped windows, with L{shaped}.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.alpha_get()
+            return bool(elm_win_alpha_get(self.obj))
         def __set__(self, alpha):
-            self.alpha_set(alpha)
+            elm_win_alpha_set(self.obj, alpha)
 
     def override_set(self, override):
         """Set the override state of a window.
@@ -491,10 +571,25 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_override_get(self.obj))
 
     property override:
+        """The override state of a window.
+
+        A window with C{override} set to True will not be managed by the
+        Window Manager. This means that no decorations of any kind will be
+        shown for it, moving and resizing must be handled by the
+        application, as well as the window visibility.
+
+        This should not be used for normal windows, and even for not so
+        normal ones, it should only be used when there's a good reason and
+        with a lot of care. Mishandling override windows may result
+        situations that disrupt the normal workflow of the end user.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.override_get()
+            return bool(elm_win_override_get(self.obj))
         def __set__(self, override):
-            self.override_set(override)
+            elm_win_override_set(self.obj, override)
 
     def fullscreen_set(self, fullscreen):
         """Set the window to fullscreen mode
@@ -515,10 +610,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_fullscreen_get(self.obj))
 
     property fullscreen:
+        """The fullscreen state of a window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.fullscreen_get()
+            return bool(elm_win_fullscreen_get(self.obj))
         def __set__(self, fullscreen):
-            self.fullscreen_set(fullscreen)
+            elm_win_fullscreen_set(self.obj, fullscreen)
 
     def maximized_set(self, maximized):
         """Set the maximized state of a window.
@@ -539,10 +639,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_maximized_get(self.obj))
 
     property maximized:
+        """The maximized state of a window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.maximized_get()
+            return bool(elm_win_maximized_get(self.obj))
         def __set__(self, maximized):
-            self.maximized_set(maximized)
+            elm_win_maximized_set(self.obj, maximized)
 
     def iconified_set(self, iconified):
         """Set the iconified state of the window.
@@ -563,10 +668,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_iconified_get(self.obj))
 
     property iconified:
+        """The iconified state of the window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.iconified_get()
+            return bool(elm_win_iconified_get(self.obj))
         def __set__(self, iconified):
-            self.iconified_set(iconified)
+            elm_win_iconified_set(self.obj, iconified)
 
     def withdrawn_set(self, withdrawn):
         """Set the withdrawn state of the window.
@@ -587,10 +697,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_withdrawn_get(self.obj))
 
     property withdrawn:
+        """The withdrawn state of the window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.withdrawn_get()
+            return bool(elm_win_withdrawn_get(self.obj))
         def __set__(self, withdrawn):
-            self.withdrawn_set(withdrawn)
+            elm_win_withdrawn_set(self.obj, withdrawn)
 
     def urgent_set(self, urgent):
         """Set the urgent state of the window.
@@ -611,10 +726,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_urgent_get(self.obj))
 
     property urgent:
+        """The urgent state of the window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.urgent_get()
+            return bool(elm_win_urgent_get(self.obj))
         def __set__(self, urgent):
-            self.urgent_set(urgent)
+            elm_win_urgent_set(self.obj, urgent)
 
     def demand_attention_set(self, demand_attention):
         """Set the demand attention state of the window.
@@ -635,10 +755,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_demand_attention_get(self.obj))
 
     property demand_attention:
+        """The demand attention state of the window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.demand_attention_get()
+            return bool(elm_win_demand_attention_get(self.obj))
         def __set__(self, demand_attention):
-            self.demand_attention_set(demand_attention)
+            elm_win_demand_attention_set(self.obj, demand_attention)
 
     def modal_set(self, modal):
         """Set the Modal state of the window.
@@ -659,10 +784,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_modal_get(self.obj))
 
     property modal:
+        """The Modal state of the window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.modal_get()
+            return bool(elm_win_modal_get(self.obj))
         def __set__(self, modal):
-            self.modal_set(modal)
+            elm_win_modal_set(self.obj, modal)
 
     def aspect_set(self, aspect):
         """Set the aspect ratio of a window.
@@ -683,10 +813,18 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_aspect_get(self.obj)
 
     property aspect:
+        """Set the aspect ratio of a window.
+
+        If 0, the window has no aspect limits, otherwise it is width divided
+        by height
+
+        @type: float
+
+        """
         def __get__(self):
-            return self.aspect_get()
+            return elm_win_aspect_get(self.obj)
         def __set__(self, aspect):
-            self.aspect_set(aspect)
+            elm_win_aspect_set(self.obj, aspect)
 
     def layer_set(self, layer):
         """Set the layer of the window.
@@ -717,10 +855,23 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_layer_get(self.obj)
 
     property layer:
+        """The layer of the window.
+
+        What this means exactly will depend on the underlying engine used.
+
+        In the case of X11 backed engines, the value in C{layer} has the
+        following meanings:
+            - < 3: The window will be placed below all others.
+            - > 5: The window will be placed above all others.
+            - other: The window will be placed in the default layer.
+
+        @type: int
+
+        """
         def __get__(self):
-            return self.layer_get()
+            return elm_win_layer_get(self.obj)
         def __set__(self, layer):
-            self.layer_set(layer)
+            elm_win_layer_set(self.obj, layer)
 
     def rotation_set(self, rotation):
         """Set the rotation of the window.
@@ -752,10 +903,22 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_rotation_get(self.obj)
 
     property rotation:
+        """The rotation of the window.
+
+        Most engines only work with multiples of 90.
+
+        This function is used to set the orientation of the window to match
+        that of the screen. The window itself will be resized to adjust to
+        the new geometry of its contents. If you want to keep the window
+        size, see L{rotation_with_resize_set()}.
+
+        @type: int
+
+        """
         def __get__(self):
-            return self.rotation_get()
+            return elm_win_rotation_get(self.obj)
         def __set__(self, rotation):
-            self.rotation_set(rotation)
+            elm_win_rotation_set(self.obj, rotation)
 
     def rotation_with_resize_set(self, rotation):
         """Rotates the window and resizes it.
@@ -769,6 +932,18 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
 
         """
         elm_win_rotation_set(self.obj, rotation)
+
+    property rotation_with_resize:
+        """Rotates the window and resizes it.
+
+        Like L{rotation}, but it also resizes the window's contents so that
+        they fit inside the current window geometry.
+
+        @type: int
+
+        """
+        def __set__(self, rotation):
+            elm_win_rotation_set(self.obj, rotation)
 
     def sticky_set(self, sticky):
         """Set the Sticky state of the window.
@@ -791,10 +966,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_sticky_get(self.obj))
 
     property sticky:
+        """The Sticky state of the window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.sticky_get()
+            return bool(elm_win_sticky_get(self.obj))
         def __set__(self, sticky):
-            self.sticky_set(sticky)
+            elm_win_sticky_set(self.obj, sticky)
 
     def conformant_set(self, conformant):
         """Set if this window is an illume conformant window.
@@ -815,10 +995,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_conformant_get(self.obj))
 
     property conformant:
+        """Whether this window is an illume conformant window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.conformant_get()
+            return bool(elm_win_conformant_get(self.obj))
         def __set__(self, conformant):
-            self.conformant_set(conformant)
+            elm_win_conformant_set(self.obj, conformant)
 
     def quickpanel_set(self, quickpanel):
         """Set a window to be an illume quickpanel window.
@@ -840,10 +1025,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_quickpanel_get(self.obj))
 
     property quickpanel:
+        """Whether this window is an illume quickpanel window.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.quickpanel_get()
+            return bool(elm_win_quickpanel_get(self.obj))
         def __set__(self, quickpanel):
-            self.quickpanel_set(quickpanel)
+            elm_win_quickpanel_set(self.obj, quickpanel)
 
     def quickpanel_priority_major_set(self, priority):
         """Set the major priority of a quickpanel window.
@@ -864,10 +1054,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_quickpanel_priority_major_get(self.obj)
 
     property quickpanel_priority_major:
+        """The major priority of a quickpanel window.
+
+        @type: int
+
+        """
         def __get__(self):
-            return self.quickpanel_priority_major_get()
+            return elm_win_quickpanel_priority_major_get(self.obj)
         def __set__(self, priority):
-            self.quickpanel_priority_major_set(priority)
+            elm_win_quickpanel_priority_major_set(self.obj, priority)
 
     def quickpanel_priority_minor_set(self, priority):
         """Set the minor priority of a quickpanel window.
@@ -888,10 +1083,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_quickpanel_priority_minor_get(self.obj)
 
     property quickpanel_priority_minor:
+        """The minor priority of a quickpanel window.
+
+        @type: int
+
+        """
         def __get__(self):
-            return self.quickpanel_priority_minor_get()
+            return elm_win_quickpanel_priority_minor_get(self.obj)
         def __set__(self, priority):
-            self.quickpanel_priority_minor_set(priority)
+            elm_win_quickpanel_priority_minor_set(self.obj, priority)
 
     def quickpanel_zone_set(self, zone):
         """Set which zone this quickpanel should appear in.
@@ -912,10 +1112,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_quickpanel_zone_get(self.obj)
 
     property quickpanel_zone:
+        """Which zone this quickpanel should appear in.
+
+        @type: int
+
+        """
         def __get__(self):
-            return self.quickpanel_zone_get()
+            return elm_win_quickpanel_zone_get(self.obj)
         def __set__(self, zone):
-            self.quickpanel_zone_set(zone)
+            elm_win_quickpanel_zone_set(self.obj, zone)
 
     def prop_focus_skip_set(self, skip):
         """Set the window to be skipped by keyboard focus
@@ -940,21 +1145,47 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         """
         elm_win_prop_focus_skip_set(self.obj, skip)
 
-    def illume_command_send(self, command, params):
-        """Send a command to the windowing environment
+    property focus_skip_set:
+        """Set the window to be skipped by keyboard focus
+
+        This sets the window to be skipped by normal keyboard input. This
+        means a window manager will be asked to not focus this window as
+        well as omit it from things like the taskbar, pager, "alt-tab" list
+        etc. etc.
+
+        Set this and enable it on a window BEFORE you show it for the first
+        time, otherwise it may have no effect.
+
+        Use this for windows that have only output information or might only
+        be interacted with by the mouse or fingers, and never for typing
+        input. Be careful that this may have side-effects like making the
+        window non-accessible in some cases unless the window is specially
+        handled. Use this with care.
+
+        @type: bool
+
+        """
+        def __set__(self, skip):
+            elm_win_prop_focus_skip_set(self.obj, skip)
+
+    def illume_command_send(self, command, *args, **kwargs):
+        """illume_command_send(command, params)
+
+        Send a command to the windowing environment
 
         This is intended to work in touchscreen or small screen device
         environments where there is a more simplistic window management
         policy in place. This uses the window object indicated to select
         which part of the environment to control (the part that this window
         lives in), and provides a command and an optional parameter
-        structure (use NULL for this if not needed).
+        structure (use None for this if not needed).
 
         @param command: The command to send
         @type command: Elm_Illume_Command
         @param params: Optional parameters for the command
 
         """
+        params = (args, kwargs)
         elm_win_illume_command_send(self.obj, command, params)
 
     def inlined_image_object_get(self):
@@ -970,9 +1201,28 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         @rtype: evasObject
 
         """
-        cdef Object o
-        o = <Object>elm_win_inlined_image_object_get(self.obj)
-        return o
+        cdef evasImage img = evasImage()
+        cdef Evas_Object *obj = elm_win_inlined_image_object_get(self.obj)
+        img.obj = obj
+        return img
+
+    property inlined_image_object:
+        """Get the inlined image object handle
+
+        When you create a window of type ELM_WIN_INLINED_IMAGE, then the
+        window is in fact an evas image object inlined in the parent canvas.
+        You can get this object (be careful to not manipulate it as it is
+        under control of elementary), and use it to do things like get pixel
+        data, save the image to a file, etc.
+
+        @type: evasObject
+
+        """
+        def __get__(self):
+            cdef evasImage img = evasImage()
+            cdef Evas_Object *obj = elm_win_inlined_image_object_get(self.obj)
+            img.obj = obj
+            return img
 
     def focus_get(self):
         """Determine whether a window has focus
@@ -982,6 +1232,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
 
         """
         return bool(elm_win_focus_get(self.obj))
+
+    property focus:
+        """Determine whether a window has focus
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return bool(elm_win_focus_get(self.obj))
 
     def screen_constrain_set(self, constrain):
         """Constrain the maximum width and height of a window to the width
@@ -1012,10 +1271,19 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_screen_constrain_get(self.obj))
 
     property screen_constrain:
+        """Constrain the maximum width and height of a window to the width
+        and height of its screen
+
+        When C{constrain} is true, the window will never resize larger than
+        the screen.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.screen_constrain_get()
+            return bool(elm_win_screen_constrain_get(self.obj))
         def __set__(self, constrain):
-            self.screen_constrain_set(constrain)
+            elm_win_screen_constrain_set(self.obj, constrain)
 
     def screen_size_get(self):
         """Get screen geometry details for the screen that a window is on
@@ -1027,6 +1295,17 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         cdef int x, y, w, h
         elm_win_screen_size_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
+
+    property screen_size:
+        """Get screen geometry details for the screen that a window is on
+
+        @type: tuple of ints
+
+        """
+        def __get__(self):
+            cdef int x, y, w, h
+            elm_win_screen_size_get(self.obj, &x, &y, &w, &h)
+            return (x, y, w, h)
 
     def focus_highlight_enabled_set(self, enabled):
         """Set the enabled status for the focus highlight in a window
@@ -1050,10 +1329,18 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_focus_highlight_enabled_get(self.obj))
 
     property focus_highlight_enabled:
+        """The enabled status of the focus highlight in a window
+
+        This will enable or disable the focus highlight only for the given
+        window, regardless of the global setting for it
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.focus_highlight_enabled_get()
+            return bool(elm_win_focus_highlight_enabled_get(self.obj))
         def __set__(self, enabled):
-            self.focus_highlight_enabled_set(enabled)
+            elm_win_focus_highlight_enabled_set(self.obj, enabled)
 
     def focus_highlight_style_set(self, style):
         """Set the style for the focus highlight on this window
@@ -1081,10 +1368,18 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return _ctouni(elm_win_focus_highlight_style_get(self.obj))
 
     property focus_highlight_style:
+        """The style for the focus highlight on this window
+
+        The style to use for theming the highlight of focused objects on
+        the given window. If C{style} is None, the default will be used.
+
+        @type: string
+
+        """
         def __get__(self):
-            return self.focus_highlight_style_get()
+            return _ctouni(elm_win_focus_highlight_style_get(self.obj))
         def __set__(self, style):
-            self.focus_highlight_style_set(style)
+            elm_win_focus_highlight_style_set(self.obj, _cfruni(style))
 
     def keyboard_mode_set(self, mode):
         """Sets the keyboard mode of the window.
@@ -1105,10 +1400,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_keyboard_mode_get(self.obj)
 
     property keyboard_mode:
+        """The keyboard mode of the window.
+
+        @type: Elm_Win_Keyboard_Mode
+
+        """
         def __get__(self):
-            return self.keyboard_mode_get()
+            return elm_win_keyboard_mode_get(self.obj)
         def __set__(self, mode):
-            self.keyboard_mode_set(mode)
+            elm_win_keyboard_mode_set(self.obj, mode)
 
     def keyboard_win_set(self, is_keyboard):
         """Sets whether the window is a keyboard.
@@ -1129,10 +1429,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return bool(elm_win_keyboard_win_get(self.obj))
 
     property keyboard_win:
+        """Whether the window is a keyboard.
+
+        @type: bool
+
+        """
         def __get__(self):
-            return self.keyboard_win_get()
+            return bool(elm_win_keyboard_win_get(self.obj))
         def __set__(self, is_keyboard):
-            self.keyboard_win_set(is_keyboard)
+            elm_win_keyboard_win_set(self.obj, is_keyboard)
 
     def indicator_mode_set(self, mode):
         """Sets the indicator mode of the window.
@@ -1153,10 +1458,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_indicator_mode_get(self.obj)
 
     property indicator_mode:
+        """The indicator mode of the window.
+
+        @type: Elm_Win_Indicator_Mode
+
+        """
         def __get__(self):
-            return self.indicator_mode_get()
+            return elm_win_indicator_mode_get(self.obj)
         def __set__(self, mode):
-            self.indicator_mode_set(mode)
+            elm_win_indicator_mode_set(self.obj, mode)
 
     def indicator_opacity_set(self, mode):
         """Sets the indicator opacity mode of the window.
@@ -1177,10 +1487,15 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         return elm_win_indicator_opacity_get(self.obj)
 
     property indicator_opacity:
+        """The indicator opacity mode of the window.
+
+        @type: Elm_Win_Indicator_Opacity_Mode
+
+        """
         def __get__(self):
-            return self.indicator_opacity_get()
+            return elm_win_indicator_opacity_get(self.obj)
         def __set__(self, mode):
-            self.indicator_opacity_set(mode)
+            elm_win_indicator_opacity_set(self.obj, mode)
 
     def screen_position_get(self):
         """Get the screen position of a window.
@@ -1193,8 +1508,21 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         elm_win_screen_position_get(self.obj, &x, &y)
         return (x, y)
 
+    property screen_position:
+        """Get the screen position of a window.
+
+        @type: tuple of ints
+
+        """
+        def __get__(self):
+            cdef int x, y
+            elm_win_screen_position_get(self.obj, &x, &y)
+            return (x, y)
+
     def socket_listen(self, svcname, svcnum, svcsys):
-        """Create a socket to provide the service for Plug widget
+        """socket_listen(svcname, svcnum, svcsys)
+
+        Create a socket to provide the service for Plug widget
 
         @param svcname: The name of the service to be advertised. ensure that it is unique.
         @type svcname: string
@@ -1227,6 +1555,29 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         cdef Ecore_X_Window xwin
         xwin = elm_win_xwindow_get(self.obj)
         return xwin
+
+    property xwindow_xid:
+        """Returns the X Window id.
+
+        X Window id is a value of type long int which can be used in
+        combination with some functions/objects in the ecore.x module.
+
+        For example you can hide the mouse cursor with:
+        import ecore.x
+        xid = your_elm_win.xwindow_xid_get()
+        xwin = ecore.x.Window_from_xid(xid)
+        xwin.cursor_hide()
+
+        @note: This is not portable at all. Works only under the X window
+            system.
+
+        @type: long
+
+        """
+        def __get__(self):
+            cdef Ecore_X_Window xwin
+            xwin = elm_win_xwindow_get(self.obj)
+            return xwin
 
     def callback_delete_request_add(self, func, *args, **kwargs):
         """The user requested to close the window. See L{autodel_set()}."""
@@ -1327,7 +1678,14 @@ _install_metaclass(&PyElementaryWindow_Type, ElementaryObjectMeta)
 
 cdef public class StandardWindow(Window) [object PyElementaryStandardWindow, type PyElementaryStandardWindow_Type]:
 
-    """A L{Window} with standard setup."""
+    """A L{Window} with standard setup.
+
+    @param name: A name for the new window.
+    @type name: string
+    @param title: A title for the new window.
+    @type title: string
+
+    """
 
     def __init__(self, name, title):
         self._set_obj(elm_win_util_standard_add(_cfruni(name), _cfruni(title)))

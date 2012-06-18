@@ -41,8 +41,7 @@ cdef class SegmentControlItem(ObjectItem):
 
         """
         def __get__(self):
-            cdef Evas_Object *obj = elm_segment_control_item_object_get(self.item)
-            return Object_from_instance(obj)
+            return Object_from_instance(elm_segment_control_item_object_get(self.item))
 
     property selected:
         """Set the selected state of an item.
@@ -96,7 +95,7 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         self._set_obj(elm_segment_control_add(parent.obj))
 
     def item_add(self, evasObject icon, label = None):
-        """item_add(icon, label)
+        """item_add(icon, label=None)
 
         Append a new item to the segment control object.
 
@@ -128,9 +127,12 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         @param icon: The icon object to use for the left side of the item. An
             icon can be any Evas object, but usually it is an icon created
             with elm_icon_add().
+        @type icon: L{Object}
         @param label: The label of the item. Note that, None is different
             from empty string "".
+        @type label: string
         @return: The created item or C{None} upon failure.
+        @rtype: L{SegmentControlItem}
 
         """
         cdef SegmentControlItem ret = SegmentControlItem()
@@ -144,7 +146,9 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
             return None
 
     def item_insert_at(self, evasObject icon, label = None, index = 0):
-        """Insert a new item to the segment control object at specified position.
+        """item_insert_at(icon, label=None, index=0)
+
+        Insert a new item to the segment control object at specified position.
 
         Index values must be between C{0}, when item will be prepended to
         segment control, and items count, that can be get with
@@ -166,9 +170,13 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         @param icon: The icon object to use for the left side of the item. An
             icon can be any Evas object, but usually it is an icon created
             with elm_icon_add().
+        @type icon: L{Object}
         @param label: The label of the item.
+        @type label: string
         @param index: Item position. Value should be between 0 and items count.
+        @type index: int
         @return: The created item or C{None} upon failure.
+        @rtype: L{SegmentControlItem}
 
         """
         cdef SegmentControlItem ret = SegmentControlItem()
@@ -191,6 +199,7 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         elm_segment_control_item_insert_at().
 
         @param index: The position of the segment control item to be deleted.
+        @type index: int
 
         """
         elm_segment_control_item_del_at(self.obj, index)
@@ -207,7 +216,9 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
             return elm_segment_control_item_count_get(self.obj)
 
     def item_get(self, index):
-        """Get the item placed at specified index.
+        """item_get(index)
+
+        Get the item placed at specified index.
 
         Index is the position of an item in segment control widget. Its
         range is from C{0} to <tt> count - 1 </tt>.
@@ -215,14 +226,17 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         elm_segment_control_item_count_get().
 
         @param index: The index of the segment item.
+        @type index: int
         @return: The segment control item or C{None} on failure.
+        @rtype: L{SegmentControlItem}
 
         """
-        cdef Elm_Object_Item *it = elm_segment_control_item_get(self.obj, index)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_segment_control_item_get(self.obj, index))
 
     def item_label_get(self, index):
-        """Get the label of item.
+        """item_label_get(index)
+
+        Get the label of item.
 
         The return value is a pointer to the label associated to the item when
         it was created, with function elm_segment_control_item_add(), or later
@@ -233,13 +247,17 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         @see: L{SegmentControl.item_add()}
 
         @param index: The index of the segment item.
+        @type index: int
         @return: The label of the item at C{index}.
+        @rtype: string
 
         """
         return _ctouni(elm_segment_control_item_label_get(self.obj, index))
 
     def item_icon_get(self, index):
-        """Get the icon associated to the item.
+        """item_icon_get(index)
+
+        Get the icon associated to the item.
 
         The return value is a pointer to the icon associated to the item when
         it was created, with function elm_segment_control_item_add(), or later
@@ -250,11 +268,12 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         @see: L{ObjectItem.part_content_set()}
 
         @param index: The index of the segment item.
+        @type index: int
         @return: The left side icon associated to the item at C{index}.
+        @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_segment_control_item_icon_get(self.obj, index)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_segment_control_item_icon_get(self.obj, index))
 
     property item_selected:
         """Get the selected item.
@@ -264,13 +283,11 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
 
         The selected item always will be highlighted on segment control.
 
-        @return: The selected item or C{None} if none of segment items is
-        selected.
+        @type: L{SegmentControlItem}
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *it = elm_segment_control_item_selected_get(self.obj)
-            return _object_item_to_python(it)
+            return _object_item_to_python(elm_segment_control_item_selected_get(self.obj))
 
     def callback_changed_add(self, func, *args, **kwargs):
         """When the user clicks on a segment item which is not previously

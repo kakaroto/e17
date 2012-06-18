@@ -66,10 +66,10 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
 
         """
         def __get__(self):
-            return self.homogeneous_get()
+            return elm_table_homogeneous_get(self.obj)
 
-        def __set__(self, value):
-            self.homogeneous_set(value)
+        def __set__(self, homogeneous):
+            elm_table_homogeneous_set(self.obj, homogeneous)
 
     def padding_set(self, horizontal, vertical):
         """Set padding between cells.
@@ -104,13 +104,18 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
 
         """
         def __get__(self):
-            return self.padding_get()
+            cdef Evas_Coord horizontal, vertical
+            elm_table_padding_get(self.obj, &horizontal, &vertical)
+            return (horizontal, vertical)
 
         def __set__(self, value):
-            self.padding_set(*value)
+            horizontal, vertical = value
+            elm_table_padding_set(self.obj, horizontal, vertical)
 
     def pack(self, evasObject subobj, x, y, w, h):
-        """Add a subobject on the table with the coordinates passed
+        """pack(subobj, x, y, w, h)
+
+        Add a subobject on the table with the coordinates passed
 
         @note: All positioning inside the table is relative to rows and
             columns, so a value of 0 for x and y, means the top left cell of
@@ -132,7 +137,9 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         elm_table_pack(self.obj, subobj.obj, x, y, w, h)
 
     def unpack(self, evasObject subobj):
-        """Remove child from table.
+        """unpack(subobj)
+
+        Remove child from table.
 
         @param subobj: The subobject
         @type subobj: L{Object}
@@ -141,7 +148,9 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         elm_table_unpack(self.obj, subobj.obj)
 
     def clear(self, clear):
-        """Faster way to remove all child objects from a table object.
+        """clear(clear)
+
+        Faster way to remove all child objects from a table object.
 
         @param clear: If True, will delete children, else just remove from table.
         @type clear: bool
@@ -150,7 +159,9 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         elm_table_clear(self.obj, clear)
 
     def pack_set(evasObject subobj, x, y, w, h):
-        """Set the packing location of an existing child of the table
+        """pack_set(subobj, x, y, w, h)
+
+        Set the packing location of an existing child of the table
 
         Modifies the position of an object already in the table.
 
@@ -174,20 +185,16 @@ cdef public class Table(Object) [object PyElementaryTable, type PyElementaryTabl
         elm_table_pack_set(subobj.obj, x, y, w, h)
 
     def pack_get(evasObject subobj):
-        """Get the packing location of an existing child of the table
+        """pack_get(subobj)
+
+        Get the packing location of an existing child of the table
 
         @see: L{pack_set()}
 
         @param subobj: The subobject to be modified in the table
         @type subobj: L{Object}
-        @param x: Row number
-        @type x: int
-        @param y: Column number
-        @type y: int
-        @param w: rowspan
-        @type w: int
-        @param h: colspan
-        @type h: int
+        @return: Row number, Column number, rowspan, colspan
+        @rtype: tuple of ints
 
         """
         cdef int x, y, w, h

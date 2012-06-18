@@ -59,7 +59,9 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
         self._set_obj(elm_thumb_add(parent.obj))
 
     def reload(self):
-        """Reload thumbnail if it was generated before.
+        """reload()
+
+        Reload thumbnail if it was generated before.
 
         This is useful if the ethumb client configuration changed, like its
         size, aspect or any other property one set in the handle returned
@@ -68,7 +70,7 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
         If the options didn't change, the thumbnail won't be generated
         again, but the old one will still be used.
 
-        @see: L{file_set()}
+        @see: L{file}
 
         """
         elm_thumb_reload(self.obj)
@@ -91,7 +93,7 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
                 file, key = value
             else:
                 file = value
-                key = ""
+                key = None
             elm_thumb_file_set(self.obj, _cfruni(file), _cfruni(key))
         def __get__(self):
             cdef const_char_ptr file, key
@@ -178,7 +180,7 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
         @rtype: Ethumb_Client
 
         """
-        return
+        return None
         #return elm_thumb_ethumb_client_get(void)
 
     def ethumb_client_connected_get(self):

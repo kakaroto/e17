@@ -119,10 +119,10 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.span_size_get()
+            return elm_slider_span_size_get(self.obj)
 
         def __set__(self, size):
-            self.span_size_set(size)
+            elm_slider_span_size_set(self.obj, size)
 
     def unit_format_set(self, format):
         """Set the format string for the unit label.
@@ -182,10 +182,10 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.unit_format_get()
+            return _ctouni(elm_slider_unit_format_get(self.obj))
 
         def __set__(self, format):
-            self.unit_format_set(format)
+            elm_slider_unit_format_set(self.obj, _cfruni(format))
 
     def indicator_format_set(self, format):
         """Set the format string for the indicator label.
@@ -248,10 +248,10 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.indicator_format_get()
+            return _ctouni(elm_slider_indicator_format_get(self.obj))
 
         def __set__(self, format):
-            self.indicator_format_set(format)
+            elm_slider_indicator_format_set(self.obj, _cfruni(format))
 
     #TODO: def indicator_format_function_set(self, func, free_func)
 #~         """Set the format function pointer for the indicator label
@@ -324,9 +324,9 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.horizontal_get()
+            return bool(elm_slider_horizontal_get(self.obj))
         def __set__(self, horizontal):
-            self.horizontal_set(horizontal)
+            elm_slider_horizontal_set(self.obj, horizontal)
 
     def min_max_set(self, min, max):
         """Set the minimum and maximum values for the slider.
@@ -384,10 +384,13 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.min_max_get()
+            cdef double min, max
+            elm_slider_min_max_get(self.obj, &min, &max)
+            return (min, max)
 
         def __set__(self, value):
-            self.min_max_set(*value)
+            min, max = value
+            elm_slider_min_max_set(self.obj, min, max)
 
     def value_set(self, value):
         """Set the value the slider displays.
@@ -439,9 +442,9 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.value_get()
+            return elm_slider_value_get(self.obj)
         def __set__(self, value):
-            self.value_set(value)
+            elm_slider_value_set(self.obj, value)
 
     def inverted_set(self, inverted):
         """Invert a given slider widget's displaying values order
@@ -487,10 +490,10 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.inverted_get()
+            return bool(elm_slider_inverted_get(self.obj))
 
         def __set__(self, inverted):
-            self.inverted_set(inverted)
+            elm_slider_inverted_set(self.obj, inverted)
 
     def indicator_show_set(self, show):
         """Set whether to enlarge slider indicator (augmented knob) or not.
@@ -531,10 +534,10 @@ cdef public class Slider(LayoutClass) [object PyElementarySlider, type PyElement
 
         """
         def __get__(self):
-            return self.indicator_show_get()
+            return bool(elm_slider_indicator_show_get(self.obj))
 
         def __set__(self, show):
-            self.indicator_show_set(show)
+            elm_slider_indicator_show_set(self.obj, show)
 
     def callback_changed_add(self, func, *args, **kwargs):
         """Whenever the slider value is changed by the user."""

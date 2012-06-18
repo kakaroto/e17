@@ -79,7 +79,9 @@ cdef class Transit(object):
         self.obj = elm_transit_add()
 
     def delete(self):
-        """Stops the animation and delete the C{transit} object.
+        """delete()
+
+        Stops the animation and delete the C{transit} object.
 
         Call this function if you want to stop the animation before the
         transit time. Make sure the C{transit} object is still alive with
@@ -93,7 +95,9 @@ cdef class Transit(object):
         elm_transit_del(self.obj)
 
     #def effect_add(self, Elm_Transit_Effect_Transition_Cb transition_cb, effect, Elm_Transit_Effect_End_Cb end_cb):
-        """Add a new effect to the transit.
+        """effect_ass(transition_cb, effect, end_cb)
+
+        Add a new effect to the transit.
 
         Example::
             t = Transit()
@@ -125,7 +129,9 @@ cdef class Transit(object):
         #elm_transit_effect_add(self.obj, transition_cb, effect, end_cb)
 
     #def effect_del(self, Elm_Transit_Effect_Transition_Cb transition_cb, effect):
-        """Delete an added effect.
+        """effect_del(transition_cb, effect)
+
+        Delete an added effect.
 
         This function will remove the effect from the C{transit}, calling the
         data_free_cb to free the C{data}.
@@ -143,7 +149,9 @@ cdef class Transit(object):
         #elm_transit_effect_del(self.obj, transition_cb, effect)
 
     def object_add(self, evasObject obj):
-        """Add new object to apply the effects.
+        """object_add(obj)
+
+        Add new object to apply the effects.
 
         @note: After the first addition of an object to C{transit}, if its
             object list become empty again, the C{transit} will be killed by
@@ -165,7 +173,9 @@ cdef class Transit(object):
         elm_transit_object_add(self.obj, obj.obj)
 
     def object_remove(self, evasObject obj):
-        """Removes an added object from the transit.
+        """object_remove(obj)
+
+        Removes an added object from the transit.
 
         @note: If the C{obj} is not in the C{transit}, nothing is done.
         @note: If the list become empty, this function will call
@@ -317,8 +327,12 @@ cdef class Transit(object):
             return elm_transit_duration_get(self.obj)
 
     def go(self):
-        """Starts the transition. Once this API is called, the transit
-        begins to measure the time."""
+        """go()
+
+        Starts the transition. Once this API is called, the transit
+        begins to measure the time.
+
+        """
         elm_transit_go(self.obj)
 
     property paused:
@@ -349,7 +363,9 @@ cdef class Transit(object):
             return elm_transit_progress_value_get(self.obj)
 
     def chain_transit_add(self, Transit chain_transit):
-        """Makes the chain relationship between two transits.
+        """chain_transit_add(chain_transit)
+
+        Makes the chain relationship between two transits.
 
         This function adds C{chain_transit} transition to a chain after the
         C{transit}, and will be started as soon as C{transit} ends.
@@ -364,7 +380,9 @@ cdef class Transit(object):
         elm_transit_chain_transit_add(self.obj, chain_transit.obj)
 
     def chain_transit_del(self, Transit chain_transit):
-        """Cut off the chain relationship between two transits.
+        """chain_transit_del(chain_transit)
+
+        Cut off the chain relationship between two transits.
 
         This function removes the C{chain_transit} transition from the
         C{transit}.
@@ -397,7 +415,9 @@ cdef class Transit(object):
             return ret
 
     def effect_resizing_add(self, Evas_Coord from_w, Evas_Coord from_h, Evas_Coord to_w, Evas_Coord to_h):
-        """Add the Resizing Effect to Elm_Transit.
+        """effect_resizing_add(from_w, from_h, to_w, to_h)
+
+        Add the Resizing Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates resizing effect
             context and add it's required APIs to elm_transit_effect_add.
@@ -420,7 +440,9 @@ cdef class Transit(object):
         elm_transit_effect_resizing_add(self.obj, from_w, from_h, to_w, to_h)
 
     def effect_translation_add(self, Evas_Coord from_dx, Evas_Coord from_dy, Evas_Coord to_dx, Evas_Coord to_dy):
-        """Add the Translation Effect to Elm_Transit.
+        """effect_translation_add(from_dx, from_dy, to_dx, to_dy)
+
+        Add the Translation Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates translation effect
             context and add it's required APIs to elm_transit_effect_add.
@@ -445,7 +467,9 @@ cdef class Transit(object):
         elm_transit_effect_translation_add(self.obj, from_dx, from_dy, to_dx, to_dy)
 
     def effect_zoom_add(self, float from_rate, float to_rate):
-        """Add the Zoom Effect to Elm_Transit.
+        """effect_zoom_add(from_rate, to_rate)
+
+        Add the Zoom Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates zoom effect context
             and add it's required APIs to elm_transit_effect_add.
@@ -468,7 +492,9 @@ cdef class Transit(object):
         elm_transit_effect_zoom_add(self.obj, from_rate, to_rate)
 
     def effect_flip_add(self, Elm_Transit_Effect_Flip_Axis axis, Eina_Bool cw):
-        """Add the Flip Effect to Elm_Transit.
+        """effect_flip_add(axis, cw)
+
+        Add the Flip Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates flip effect context
             and add it's required APIs to elm_transit_effect_add.
@@ -495,7 +521,9 @@ cdef class Transit(object):
         elm_transit_effect_flip_add(self.obj, axis, cw)
 
     def effect_resizable_flip_add(self, Elm_Transit_Effect_Flip_Axis axis, Eina_Bool cw):
-        """Add the Resizeable Flip Effect to Elm_Transit.
+        """effect_resizable_flip_add(axis, cw)
+
+        Add the Resizeable Flip Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates resizable flip
             effect context and add it's required APIs to
@@ -523,7 +551,9 @@ cdef class Transit(object):
         elm_transit_effect_resizable_flip_add(self.obj, axis, cw)
 
     def effect_wipe_add(self, Elm_Transit_Effect_Wipe_Type type, Elm_Transit_Effect_Wipe_Dir dir):
-        """Add the Wipe Effect to Elm_Transit.
+        """effect_wipe_add(type, dir)
+
+        Add the Wipe Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates wipe effect context
             and add it's required APIs to elm_transit_effect_add.
@@ -546,7 +576,9 @@ cdef class Transit(object):
         elm_transit_effect_wipe_add(self.obj, type, dir)
 
     def effect_color_add(self, unsigned int from_r, unsigned int from_g, unsigned int from_b, unsigned int from_a, unsigned int to_r, unsigned int to_g, unsigned int to_b, unsigned int to_a):
-        """Add the Color Effect to Elm_Transit.
+        """effect_color_add(from_r, from_g, from_b, from_a, to_r, to_g, to_b, to_a)
+
+        Add the Color Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates color effect
             context and add it's required APIs to elm_transit_effect_add.
@@ -569,7 +601,9 @@ cdef class Transit(object):
         elm_transit_effect_color_add(self.obj, from_r, from_g, from_b, from_a, to_r, to_g, to_b, to_a)
 
     def effect_fade_add(self):
-        """Add the Fade Effect to Elm_Transit.
+        """effect_face_add()
+
+        Add the Fade Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates fade effect context
             and add it's required APIs to elm_transit_effect_add.
@@ -594,7 +628,9 @@ cdef class Transit(object):
         elm_transit_effect_fade_add(self.obj)
 
     def effect_blend_add(self):
-        """Add the Blend Effect to Elm_Transit.
+        """effect_blend_add()
+
+        Add the Blend Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates blend effect
             context and add it's required APIs to elm_transit_effect_add.
@@ -619,7 +655,9 @@ cdef class Transit(object):
         elm_transit_effect_blend_add(self.obj)
 
     def effect_rotation_add(self, float from_degree, float to_degree):
-        """Add the Rotation Effect to Elm_Transit.
+        """effect_rotation_add(from_degree, to_degree)
+
+        Add the Rotation Effect to Elm_Transit.
 
         @note: This API is one of the facades. It creates rotation effect
             context and add it's required APIs to elm_transit_effect_add.
@@ -643,15 +681,10 @@ cdef class Transit(object):
         #TODO: can the return value Elm_Transit_Effect be used somehow?
         elm_transit_effect_rotation_add(self.obj, from_degree, to_degree)
 
-    #def effect_image_animation_add(self, images):
-        """Add the ImageAnimation Effect to Elm_Transit.
+    def effect_image_animation_add(self, images):
+        """effect_image_animation_add(images)
 
-        @note: This API is one of the facades. It creates image animation
-            effect context and add it's required APIs to
-            elm_transit_effect_add. The C{images} parameter is a list images
-            paths. This list and its contents will be deleted at the end of
-            the effect by elm_transit_effect_image_animation_context_free()
-            function.
+        Add the ImageAnimation Effect to Elm_Transit.
 
         Example::
             t = Transit()
@@ -660,14 +693,22 @@ cdef class Transit(object):
             images.append("%s/images/logo_small.png" % PACKAGE_DATA_DIR)
             t.effect_image_animation_add(images)
 
+        @note: This API is one of the facades. It creates image animation
+            effect context and add it's required APIs to
+            elm_transit_effect_add. The C{images} parameter is a list images
+            paths. This list and its contents will be deleted at the end of
+            the effect by elm_transit_effect_image_animation_context_free()
+            function.
+
         @see: L{effect_add()}
 
-        @param images: Eina_List of images file paths. This list and its
+        @param images: A list of images file paths. This list and its
             contents will be deleted at the end of the effect by
             elm_transit_effect_image_animation_context_free() function.
+        @type images: list
         @return: Image Animation effect context data.
         @rtype: Elm_Transit_Effect
 
         """
         #TODO: can the return value Elm_Transit_Effect be used somehow?
-        #elm_transit_effect_image_animation_add(self.obj, images)
+        elm_transit_effect_image_animation_add(self.obj, _strings_from_python(images))

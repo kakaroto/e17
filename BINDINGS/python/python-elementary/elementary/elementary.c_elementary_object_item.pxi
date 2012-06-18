@@ -104,8 +104,8 @@ cdef class ObjectItem(object):
         cdef Evas_Object *obj = elm_object_item_widget_get(self.item)
         return Object_from_instance(obj)
 
-    def part_content_set(self, part, Object obj):
-        """part_content_set(part, obj)
+    def part_content_set(self, part, Object content):
+        """part_content_set(part, content)
 
         Set a content of an object item
 
@@ -120,7 +120,7 @@ cdef class ObjectItem(object):
         @param content: The new content of the object item
 
         """
-        elm_object_item_part_content_set(self.item, _cfruni(part), obj.obj)
+        elm_object_item_part_content_set(self.item, _cfruni(part), content.obj)
 
     def content_set(self, Object obj):
         elm_object_item_part_content_set(self.item, NULL, obj.obj)

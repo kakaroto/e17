@@ -98,10 +98,10 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.label_format_get()
+            return _ctouni(elm_spinner_label_format_get(self.obj))
 
-        def __set__(self, value):
-            self.label_format_set(value)
+        def __set__(self, format):
+            elm_spinner_label_format_set(self.obj, _cfruni(format))
 
     def min_max_set(self, min, max):
         """Set the minimum and maximum values for the spinner.
@@ -157,10 +157,13 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.min_max_get()
+            cdef double min, max
+            elm_spinner_min_max_get(self.obj, &min, &max)
+            return (min, max)
 
         def __set__(self, value):
-            self.min_max_set(*value)
+            min, max = value
+            elm_spinner_min_max_set(self.obj, min, max)
 
     def step_set(self, step):
         """Set the step used to increment or decrement the spinner value.
@@ -211,10 +214,10 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.step_get()
+            return elm_spinner_step_get(self.obj)
 
         def __set__(self, step):
-            self.step_set(step)
+            elm_spinner_step_set(self.obj, step)
 
     def value_set(self, value):
         """Set the value the spinner displays.
@@ -244,9 +247,7 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
         @rtype: float
 
         """
-        cdef double value
-        value = elm_spinner_value_get(self.obj)
-        return value
+        return elm_spinner_value_get(self.obj)
 
     property value:
         """The value the spinner displays.
@@ -264,9 +265,9 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.value_get()
+            return elm_spinner_value_get(self.obj)
         def __set__(self, value):
-            self.value_set(value)
+            elm_spinner_value_set(self.obj, value)
 
     def wrap_set(self, wrap):
         """Set whether the spinner should wrap when it reaches its
@@ -343,9 +344,9 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.wrap_get()
+            return elm_spinner_wrap_get(self.obj)
         def __set__(self, wrap):
-            self.wrap_set(wrap)
+            elm_spinner_wrap_set(self.obj, wrap)
 
     def editable_set(self, editable):
         """Set whether the spinner can be directly edited by the user or not.
@@ -394,12 +395,14 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.editable_get()
+            return elm_spinner_editable_get(self.obj)
         def __set__(self, editable):
-            self.editable_set(editable)
+            elm_spinner_editable_set(self.obj, editable)
 
     def special_value_add(self, value, label):
-        """Set a special string to display in the place of the numerical value.
+        """special_value_add(value, label)
+
+        Set a special string to display in the place of the numerical value.
 
         It's useful for cases when a user should select an item that is
         better indicated by a label than a value. For example, weekdays or months.
@@ -480,10 +483,10 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.interval_get()
+            return elm_spinner_interval_get(self.obj)
 
         def __set__(self, interval):
-            self.interval_set(interval)
+            elm_spinner_interval_set(self.obj, interval)
 
     def base_set(self, base):
         """Set the base for rounding
@@ -552,10 +555,10 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.base_get()
+            return elm_spinner_base_get(self.obj)
 
         def __set__(self, base):
-            self.base_set(base)
+            elm_spinner_base_set(self.obj, base)
 
     def round_set(self, rnd):
         """Set the round value for rounding
@@ -594,10 +597,10 @@ cdef public class Spinner(LayoutClass) [object PyElementarySpinner, type PyEleme
 
         """
         def __get__(self):
-            return self.round_get()
+            return elm_spinner_round_get(self.obj)
 
         def __set__(self, rnd):
-            self.round_set(rnd)
+            elm_spinner_round_set(self.obj, rnd)
 
     def callback_changed_add(self, func, *args, **kwargs):
         """Whenever the spinner value is changed."""

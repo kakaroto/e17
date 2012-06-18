@@ -2058,7 +2058,7 @@ cdef extern from "Elementary.h":
     const_char_ptr elm_toolbar_item_icon_get(Elm_Object_Item *item)
     Evas_Object             *elm_toolbar_item_object_get(Elm_Object_Item *item)
     Evas_Object             *elm_toolbar_item_icon_object_get(Elm_Object_Item *item)
-    #Eina_Bool                elm_toolbar_item_icon_memfile_set(Elm_Object_Item *item, const_char_ptr img, const_char_ptr size, const_char_ptr format, const_char_ptr key)
+    Eina_Bool                elm_toolbar_item_icon_memfile_set(Elm_Object_Item *item, const_char_ptr img, const_char_ptr size, const_char_ptr format, const_char_ptr key)
     Eina_Bool                elm_toolbar_item_icon_file_set(Elm_Object_Item *item, const_char_ptr file, const_char_ptr key)
     void                     elm_toolbar_item_separator_set(Elm_Object_Item *item, Eina_Bool separator)
     Eina_Bool                elm_toolbar_item_separator_get(Elm_Object_Item *item)

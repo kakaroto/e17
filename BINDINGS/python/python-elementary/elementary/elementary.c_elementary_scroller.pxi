@@ -57,7 +57,9 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         self._set_obj(elm_scroller_add(parent.obj))
 
     def custom_widget_base_theme_set(self, widget, base):
-        """Set custom theme elements for the scroller
+        """custom_widget_base_theme_set(widget, base)
+
+        Set custom theme elements for the scroller
 
         @param widget: The widget name to use (default is "scroller")
         @type widget: string
@@ -68,7 +70,9 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_custom_widget_base_theme_set(self.obj, _cfruni(widget), _cfruni(base))
 
     def content_min_limit(self, w, h):
-        """Make the scroller minimum size limited to the minimum size of the
+        """content_min_limit(w, h)
+
+        Make the scroller minimum size limited to the minimum size of the
         content
 
         By default the scroller will be as small as its design allows,
@@ -85,7 +89,9 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_content_min_limit(self.obj, w, h)
 
     def region_show(self, x, y, w, h):
-        """Show a specific virtual region within the scroller content object
+        """region_show(x, y, w, h)
+
+        Show a specific virtual region within the scroller content object
 
         This will ensure all (or part if it does not fit) of the designated
         region in the virtual content object (0, 0 starting at the top-left
@@ -147,10 +153,14 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
 
         """
         def __get__(self):
-            return self.policy_get()
+            cdef Elm_Scroller_Policy policy_h, policy_v
+            elm_scroller_policy_get(self.obj, &policy_h, &policy_v)
+            return (policy_h, policy_v)
 
         def __set__(self, value):
-            self.policy_set(*value)
+            cdef Elm_Scroller_Policy policy_h, policy_v
+            policy_h, policy_v = value
+            elm_scroller_policy_set(self.obj, policy_h, policy_v)
 
     def region_get(self):
         """Get the currently visible content region
@@ -171,6 +181,25 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_region_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
 
+    property region:
+        """Get the currently visible content region
+
+        This gets the current region in the content object that is visible
+        through the scroller. The region co-ordinates are returned in the
+        C{x}, C{y}, C{w}, C{h} values pointed to.
+
+        @note: All coordinates are relative to the content.
+
+        @see: L{region_show()}
+
+        @type: tuple of Evas_Coord (int)
+
+        """
+        def __get__(self):
+            cdef Evas_Coord x, y, w, h
+            elm_scroller_region_get(self.obj, &x, &y, &w, &h)
+            return (x, y, w, h)
+
     def child_size_get(self):
         """Get the size of the content object
 
@@ -183,6 +212,19 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         cdef Evas_Coord w, h
         elm_scroller_child_size_get(self.obj, &w, &h)
         return (w, h)
+
+    property child_size:
+        """Get the size of the content object
+
+        This gets the size of the content object of the scroller.
+
+        @type: tuple of Evas_Coord (int)
+
+        """
+        def __get__(self):
+            cdef Evas_Coord w, h
+            elm_scroller_child_size_get(self.obj, &w, &h)
+            return (w, h)
 
     def bounce_set(self, h, v):
         """Set bouncing behavior
@@ -232,10 +274,14 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
 
         """
         def __get__(self):
-            return self.bounce_get()
+            cdef Eina_Bool h, v
+            elm_scroller_bounce_get(self.obj, &h, &v)
+            return (h, v)
 
         def __set__(self, value):
-            self.bounce_set(*value)
+            cdef Eina_Bool h, v
+            h, v = value
+            elm_scroller_bounce_set(self.obj, h, v)
 
     def page_relative_set(self, h_pagerel, v_pagerel):
         """Set scroll page size relative to viewport size.
@@ -259,6 +305,27 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         """
         elm_scroller_page_relative_set(self.obj, h_pagerel, v_pagerel)
 
+    property page_relative:
+        """Set scroll page size relative to viewport size.
+
+        The scroller is capable of limiting scrolling by the user to
+        "pages". That is to jump by and only show a "whole page" at a time
+        as if the continuous area of the scroller content is split into page
+        sized pieces. This sets the size of a page relative to the viewport
+        of the scroller. 1.0 is "1 viewport" is size (horizontally or
+        vertically). 0.0 turns it off in that axis. This is mutually
+        exclusive with page size (see L{page_size_set()} for more
+        information). Likewise 0.5 is "half a viewport". Sane usable values
+        are normally between 0.0 and 1.0 including 1.0. If you only want a
+        single axis to be page "limited", use 0.0 for the other axis.
+
+        @type: tuple of floats
+
+        """
+        def __set__(self, value):
+            h_pagerel, v_pagerel = value
+            elm_scroller_page_relative_set(self.obj, h_pagerel, v_pagerel)
+
     def page_size_set(self, h_pagesize, v_pagesize):
         """Set scroll page size.
 
@@ -274,6 +341,21 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
 
         """
         elm_scroller_page_size_set(self.obj, h_pagesize, v_pagesize)
+
+    property page_size:
+        """Set scroll page size.
+
+        This sets the page size to an absolute fixed value, with 0 turning it off
+        for that axis.
+
+        @see: L{page_relative_set()}
+
+        @type: tuple of Evas_Coords (int)
+
+        """
+        def __set__(self, value):
+            h_pagesize, v_pagesize = value
+            elm_scroller_page_size_set(self.obj, h_pagesize, v_pagesize)
 
     def current_page_get(self):
         """Get scroll current page number.
@@ -295,6 +377,26 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_current_page_get(self.obj, &h_pagenumber, &v_pagenumber)
         return (h_pagenumber, v_pagenumber)
 
+    property current_page:
+        """Get scroll current page number.
+
+        The page number starts from 0. 0 is the first page.
+        Current page means the page which meets the top-left of the viewport.
+        If there are two or more pages in the viewport, it returns the number of the page
+        which meets the top-left of the viewport.
+
+        @see: L{last_page_get()}
+        @see: L{page_show()}
+        @see: L{page_bring_in()}
+
+        @type: tuple of ints
+
+        """
+        def __get__(self):
+            cdef int h_pagenumber, v_pagenumber
+            elm_scroller_current_page_get(self.obj, &h_pagenumber, &v_pagenumber)
+            return (h_pagenumber, v_pagenumber)
+
     def last_page_get(self):
         """Get scroll last page number.
 
@@ -313,8 +415,28 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_last_page_get(self.obj, &h_pagenumber, &v_pagenumber)
         return (h_pagenumber, v_pagenumber)
 
+    property last_page:
+        """Get scroll last page number.
+
+        The page number starts from 0. 0 is the first page.
+        This returns the last page number among the pages.
+
+        @see: L{current_page_get()}
+        @see: L{page_show()}
+        @see: L{page_bring_in()}
+
+        @type: tuple of ints
+
+        """
+        def __get__(self):
+            cdef int h_pagenumber, v_pagenumber
+            elm_scroller_last_page_get(self.obj, &h_pagenumber, &v_pagenumber)
+            return (h_pagenumber, v_pagenumber)
+
     def page_show(self, h_pagenumber, v_pagenumber):
-        """Show a specific virtual region within the scroller content object by page number.
+        """page_show(h_pagenumber, v_pagenumber)
+
+        Show a specific virtual region within the scroller content object by page number.
 
         0, 0 of the indicated page is located at the top-left of the viewport.
         This will jump to the page directly without animation.
@@ -337,7 +459,9 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_page_show(self.obj, h_pagenumber, v_pagenumber)
 
     def page_bring_in(self, h_pagenumber, v_pagenumber):
-        """Show a specific virtual region within the scroller content object by page number.
+        """page_bring_in(h_pagenumber, v_pagenumber)
+
+        Show a specific virtual region within the scroller content object by page number.
 
         0, 0 of the indicated page is located at the top-left of the viewport.
         This will slide to the page with animation.
@@ -360,7 +484,9 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         elm_scroller_page_bring_in(self.obj, h_pagenumber, v_pagenumber)
 
     def region_bring_in(self, x, y, w, h):
-        """Show a specific virtual region within the scroller content object.
+        """region_bring_in(x, y, w, h)
+
+        Show a specific virtual region within the scroller content object.
 
         This will ensure all (or part if it does not fit) of the designated
         region in the virtual content object (0, 0 starting at the top-left of the
@@ -419,10 +545,10 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
 
         """
         def __get__(self):
-            return self.propagate_events_get()
+            return bool(elm_scroller_propagate_events_get(self.obj))
 
         def __set__(self, propagation):
-            self.propagate_events_set(propagation)
+            elm_scroller_propagate_events_set(self.obj, propagation)
 
     def gravity_set(self, x, y):
         """Set scrolling gravity on a scroller
@@ -481,10 +607,13 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
 
         """
         def __get__(self):
-            return self.gravity_get()
+            cdef double x, y
+            elm_scroller_gravity_get(self.obj, &x, &y)
+            return (x, y)
 
         def __set__(self, value):
-            self.gravity_set(*value)
+            x, y = value
+            elm_scroller_gravity_set(self.obj, x, y)
 
     def callback_edge_left_add(self, func, *args, **kwargs):
         """The left edge of the content has been reached."""

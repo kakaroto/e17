@@ -64,7 +64,8 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
 
         """
         def __set__(self, filename):
-            self.video_file_set(filename)
+            # TODO: check return value
+            elm_video_file_set(self.obj, _cfruni(filename))
 
     def emotion_get(self):
         """Get the underlying Emotion object.
@@ -73,8 +74,7 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
         @rtype: emotion.Object
 
         """
-        cdef Evas_Object *o = elm_video_emotion_get(self.obj)
-        return Object_from_instance(o)
+        return Object_from_instance(elm_video_emotion_get(self.obj))
 
     property emotion:
         """The underlying Emotion object.
@@ -83,18 +83,30 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
 
         """
         def __get__(self):
-            return self.emotion_get()
+            return Object_from_instance(elm_video_emotion_get(self.obj))
 
     def play(self):
-        """Start to play the video and cancel all suspend state."""
+        """play()
+
+        Start to play the video and cancel all suspend state.
+
+        """
         elm_video_play(self.obj)
 
     def pause(self):
-        """Pause the video and start a timer to trigger suspend mode."""
+        """pause()
+
+        Pause the video and start a timer to trigger suspend mode.
+
+        """
         elm_video_pause(self.obj)
 
     def stop(self):
-        """Stop the video and put the emotion in deep sleep mode."""
+        """stop()
+
+        Stop the video and put the emotion in deep sleep mode.
+
+        """
         elm_video_stop(self.obj)
 
     def is_playing_get(self):

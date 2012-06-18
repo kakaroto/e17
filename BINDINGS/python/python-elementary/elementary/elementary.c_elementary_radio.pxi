@@ -64,7 +64,9 @@ cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementar
             self._set_obj(<Evas_Object*>obj)
 
     def group_add(self, evasObject group):
-        """Add this radio to a group of other radio objects
+        """group_add(group)
+
+        Add this radio to a group of other radio objects
 
         Radio objects work in groups. Each member should have a different integer
         value assigned. In order to have them work as a group, they need to know
@@ -107,9 +109,9 @@ cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementar
 
         """
         def __get__(self):
-            return self.state_value_get()
+            return elm_radio_state_value_get(self.obj)
         def __set__(self, value):
-            self.state_value_set(value)
+            elm_radio_state_value_set(self.obj, value)
 
     def value_set(self, value):
         """Set the value of the radio group.
@@ -143,9 +145,9 @@ cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementar
 
         """
         def __get__(self):
-            return self.value_get()
+            return elm_radio_value_get(self.obj)
         def __set__(self, value):
-            self.value_set(value)
+            elm_radio_value_set(self.obj, value)
 
     #TODO: Check whether this actually works
     def value_pointer_set(self, value):
@@ -173,12 +175,28 @@ cdef public class Radio(LayoutClass) [object PyElementaryRadio, type PyElementar
         @rtype: L{Radio}
 
         """
-        cdef Evas_Object *selected
-        selected = elm_radio_selected_object_get(self.obj)
+        cdef Radio r = Radio()
+        cdef Evas_Object *selected = elm_radio_selected_object_get(self.obj)
         if selected == NULL:
             return None
         else:
-            return Radio(None, <object>selected)
+            r.obj = selected
+            return r
+
+    property selected_object:
+        """Get the selected radio object.
+
+        @type: L{Radio}
+
+        """
+        def __get__(self):
+            cdef Radio r = Radio()
+            cdef Evas_Object *selected = elm_radio_selected_object_get(self.obj)
+            if selected == NULL:
+                return None
+            else:
+                r.obj = selected
+                return r
 
     def callback_changed_add(self, func, *args, **kwargs):
         """This is called whenever the user changes the state of one of the
