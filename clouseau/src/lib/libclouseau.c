@@ -204,7 +204,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
            {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
               Evas_Object *obj = (Evas_Object *) (uintptr_t) ht->object;
-              libclouseau_highlight(obj, NULL);
+              libclouseau_highlight(obj, NULL, NULL);
            }
          break;
 

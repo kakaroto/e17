@@ -677,7 +677,7 @@ _verify_e_obj(Evas_Object *obj)
 }
 
 void
-libclouseau_highlight(Evas_Object *obj, st_evas_props *props)
+libclouseau_highlight(Evas_Object *obj, st_evas_props *props, Evas *e)
 {
    Evas_Object *r;
    int x, y, wd, ht;
@@ -690,7 +690,7 @@ libclouseau_highlight(Evas_Object *obj, st_evas_props *props)
         ht = props->h;
      }
    else
-     {
+     {  /* Check validity of object when working online */
         if (_verify_e_obj(obj))
           evas_object_geometry_get(obj, &x, &y, &wd, &ht);
         else
@@ -699,10 +699,11 @@ libclouseau_highlight(Evas_Object *obj, st_evas_props *props)
                    __func__, obj);
              return;
           }
-     }
 
-   Evas *e = evas_object_evas_get(obj);
-   if (!e) return;
+        /* Take evas from object if working online */
+        e = evas_object_evas_get(obj);
+        if (!e) return;
+     }
 
    /* Continue and do the Highlight */
    r = evas_object_rectangle_add(e);

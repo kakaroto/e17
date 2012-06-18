@@ -194,5 +194,5 @@ Eina_Bool eet_info_save(const char *filename, app_info_st *a, tree_data_st *ftd,
 Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
 
 /* Highlight code, we may choose to move this to other file later */
-void libclouseau_highlight(Evas_Object *obj, st_evas_props *props);
+void libclouseau_highlight(Evas_Object *obj, st_evas_props *props, Evas *e);
 #endif  /*  EET_DATA_H  */
