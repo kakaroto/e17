@@ -127,6 +127,9 @@ struct _bmp_info_st
    unsigned long long w;       /* BMP width, make  Evas_Coord */
    unsigned long long h;       /* BMP hight, make  Evas_Coord */
    Evas_Object *win;           /* Window of view if open      */
+   Evas_Object *o;             /* Actuall object displays BMP */
+   Evas_Object *lb_mouse;      /* Label contains mouse cords  */
+   Evas_Object *lb_argb;       /* Current mouse pos argb val  */
    Evas_Object *bt;            /* Button opening win          */
    void *bmp;      /* Bitmap BLOB, size (w * h * sizeof(int)) */
 };
@@ -194,5 +197,6 @@ Eina_Bool eet_info_save(const char *filename, app_info_st *a, tree_data_st *ftd,
 Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
 
 /* Highlight code, we may choose to move this to other file later */
-void libclouseau_highlight(Evas_Object *obj, st_evas_props *props, Evas *e);
+void libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view);
+void libclouseau_make_line(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
 #endif  /*  EET_DATA_H  */

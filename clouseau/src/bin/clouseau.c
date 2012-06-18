@@ -610,34 +610,136 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
 }
 
 static void
+_mouse_out(void *data,
+      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      EINA_UNUSED void *event_info)
+{
+   bmp_info_st *st = data;
+   elm_object_text_set(st->lb_mouse, " ");
+   elm_object_text_set(st->lb_argb, " ");
+}
+
+static void
+_mouse_move(void *data,
+      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info)
+{  /* Event info is label getting mouse pointer cords */
+   bmp_info_st *st = data;
+   char s_bar[64];
+   unsigned char *pt;
+   Evas_Coord x, y, xx, yy;
+   evas_object_geometry_get(st->o, &x, &y, NULL, NULL);
+   xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x) - x;
+   yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y) - y;
+   sprintf(s_bar, "%dx%d", xx, yy);
+
+   elm_object_text_set(st->lb_mouse, s_bar);
+
+   pt = st->bmp + (xx * yy * sizeof(int));
+   sprintf(s_bar, "argb(%d,%d,%d,%d)", pt[0], pt[1], pt[2], pt[3]);
+   elm_object_text_set(st->lb_argb, s_bar);
+}
+
+static void
 _app_win_del(void *data,
       Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {  /* when closeing view, set view ptr to NULL, and enable open button */
    bmp_info_st *st = data;
    elm_object_disabled_set(st->bt, EINA_FALSE);
-   st->win = st->bt = NULL;
+   evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_MOVE,
+         _mouse_move);
+   evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_OUT,
+         _mouse_out);
+   evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_DOWN,
+         libclouseau_make_line);
+   st->win = st->bt = st->lb_mouse = st->o = NULL;
 }
 
 static void
 _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
 {
+#define SHOT_HEADER " - Screenshot"
+#define SBAR_PAD_X 4
+#define SBAR_PAD_Y 2
+
+   Evas_Object *bg, *lb_size, *hbx, *scr;
+
+   char s_bar[64];
+   char *win_name = malloc(strlen(treeit->name) + strlen(SHOT_HEADER) + 1);
    st->bt = bt;
    st->win = elm_win_add(NULL, "win", ELM_WIN_BASIC);
-   elm_win_title_set(st->win, treeit->name);
-   Evas_Object *o = evas_object_image_filled_add(
-         evas_object_evas_get(st->win));
+   sprintf(win_name, "%s%s", treeit->name, SHOT_HEADER);
+   elm_win_title_set(st->win, win_name);
+   free(win_name);
+
+   bg = elm_bg_add(st->win);
+   elm_win_resize_object_add(st->win, bg);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+
+   Evas_Object *bx = elm_box_add(st->win);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(bx);
+
+   scr = elm_scroller_add(bx);
+   elm_box_pack_end(bx, scr);
+   evas_object_size_hint_weight_set(scr,
+         EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
+   evas_object_size_hint_align_set(scr, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(scr);
+
+   st->o = evas_object_image_filled_add(
+         evas_object_evas_get(bx));
+
+   evas_object_size_hint_min_set(st->o, st->w, st->h);
+   elm_object_content_set(scr, st->o);
 
    elm_object_disabled_set(bt, EINA_TRUE);
-   evas_object_image_colorspace_set(o, EVAS_COLORSPACE_ARGB8888);
-   evas_object_image_alpha_set(o, EINA_FALSE);
-   evas_object_image_size_set(o, st->w, st->h);
-   evas_object_image_data_copy_set(o, st->bmp);
-   evas_object_image_data_update_add(o, 0, 0, st->w, st->h);
-   evas_object_show(o);
+   evas_object_image_colorspace_set(st->o, EVAS_COLORSPACE_ARGB8888);
+   evas_object_image_alpha_set(st->o, EINA_FALSE);
+   evas_object_image_size_set(st->o, st->w, st->h);
+   evas_object_image_data_copy_set(st->o, st->bmp);
+   evas_object_image_data_update_add(st->o, 0, 0, st->w, st->h);
+   evas_object_show(st->o);
    evas_object_smart_callback_add(st->win,
          "delete,request", _app_win_del, st);
 
-   evas_object_resize(o, st->w, st->h);
+   /* Build status bar */
+   hbx = elm_box_add(bx);
+   elm_box_horizontal_set(hbx, EINA_TRUE);
+   evas_object_show(hbx);
+   elm_box_padding_set(hbx, SBAR_PAD_X, SBAR_PAD_Y);
+   evas_object_size_hint_align_set(hbx, 0.0, EVAS_HINT_FILL);
+   elm_box_pack_end(bx, hbx);
+   lb_size = elm_label_add(hbx);
+   sprintf(s_bar, "%llux%llu", st->w, st->h);
+   elm_object_text_set(lb_size, s_bar);
+   evas_object_show(lb_size);
+   elm_box_pack_end(hbx, lb_size);
+
+   st->lb_mouse = elm_label_add(hbx);
+   elm_object_text_set(st->lb_mouse, s_bar);
+   evas_object_show(st->lb_mouse);
+   elm_box_pack_end(hbx, st->lb_mouse);
+
+   st->lb_argb = elm_label_add(hbx);
+   elm_object_text_set(st->lb_argb, s_bar);
+   evas_object_show(st->lb_argb);
+   elm_box_pack_end(hbx, st->lb_argb);
+
+   evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_MOVE,
+         _mouse_move, st);
+
+   evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_OUT,
+         _mouse_out, st);
+
+   evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_DOWN,
+         libclouseau_make_line, st);
+
+   evas_object_resize(scr, st->w, st->h);
+   elm_win_resize_object_add(st->win, bx);
    evas_object_resize(st->win, st->w, st->h);
 
    elm_win_autodel_set(st->win, EINA_TRUE);
@@ -998,9 +1100,8 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
 
    if (v)
      {  /* Third param gives evas surface when running offline */
-        bmp_info_st *view = v->data;
         libclouseau_highlight(treeit->ptr,
-              &treeit->info->evas_props, evas_object_evas_get(view->win));
+              &treeit->info->evas_props, v->data);
      }
    /* END   - replacing libclouseau_highlight(obj); */
 

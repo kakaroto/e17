@@ -677,17 +677,22 @@ _verify_e_obj(Evas_Object *obj)
 }
 
 void
-libclouseau_highlight(Evas_Object *obj, st_evas_props *props, Evas *e)
+libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view)
 {
    Evas_Object *r;
    int x, y, wd, ht;
+   Evas *e = NULL;
 
    if (props)
      {  /* When working offline grab info from struct */
-        x = props->x;
-        y = props->y;
+        Evas_Coord x_bmp, y_bmp;
+        evas_object_geometry_get(view->o, &x_bmp, &y_bmp, NULL, NULL);
+        x = props->x + x_bmp;
+        y = props->y + y_bmp;
         wd = props->w;
         ht = props->h;
+
+        e = evas_object_evas_get(view->win);
      }
    else
      {  /* Check validity of object when working online */
@@ -717,3 +722,34 @@ libclouseau_highlight(Evas_Object *obj, st_evas_props *props, Evas *e)
    tmp = evas_object_data_get(obj, ".clouseau.bt");
    fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp); */
 }
+
+void
+libclouseau_make_line(void *data,
+      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info)
+{
+   if (((Evas_Event_Mouse_Down *) event_info)->button != 1)
+     return; /* We only process left-click at the moment */
+
+   bmp_info_st *st = data;
+   Evas_Coord xx, yy, x_bmp, y_bmp, w_bmp, h_bmp;
+   evas_object_geometry_get(st->o, &x_bmp, &y_bmp, &w_bmp, &h_bmp);
+   xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x);
+   yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y);
+
+   Evas_Object *lx = evas_object_line_add(evas_object_evas_get(st->o));
+   evas_object_line_xy_set(lx, 0, yy, w_bmp, yy);
+   Evas_Object *ly = evas_object_line_add(evas_object_evas_get(st->o));
+   evas_object_line_xy_set(ly, xx, 0, xx, h_bmp);
+
+   evas_object_color_set(lx, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_color_set(ly, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_show(lx);
+   evas_object_show(ly);
+
+   ecore_timer_add(0.1, libclouseau_highlight_fade, lx);
+   ecore_timer_add(0.1, libclouseau_highlight_fade, ly);
+}
+
