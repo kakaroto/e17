@@ -439,7 +439,7 @@ cdef extern from "Evas.h":
     int evas_init()
     int evas_shutdown()
 
-    ctypedef int (*Eina_Compare_Cb)(void *data1, void *data2)
+    ctypedef int (*Eina_Compare_Cb)(const_void *data1, const_void *data2)
 
     Eina_List *eina_list_free(Eina_List *list)
     Eina_List *eina_list_append(Eina_List *list, void *data)

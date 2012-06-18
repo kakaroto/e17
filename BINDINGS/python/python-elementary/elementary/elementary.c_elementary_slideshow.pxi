@@ -59,7 +59,7 @@ cdef void _py_elm_slideshow_item_del(void *data, Evas_Object *obj) with gil:
 
     item._unset_obj()
 
-cdef int _py_elm_slideshow_compare_func(void *data1, void *data2) with gil:
+cdef int _py_elm_slideshow_compare_func(const_void *data1, const_void *data2) with gil:
     cdef object prm1            = <object>data1
     cdef SlideshowItem item1    = prm1[2]
     cdef object prm2            = <object>data2
@@ -67,7 +67,7 @@ cdef int _py_elm_slideshow_compare_func(void *data1, void *data2) with gil:
     cdef object func            = prm1[3]
 
     if func is None:
-        return False
+        return 0
 
     ret = func(item1, item2)
     if ret is not None:
