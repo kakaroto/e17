@@ -14,6 +14,7 @@ from test_bubble import bubble_clicked
 from test_button import buttons_clicked
 from test_check import check_clicked
 from test_clock import clock_clicked
+from test_colorselector import colorselector_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
 from test_ctxpopup import ctxpopup_clicked
 from test_dayselector import dayselector_clicked
@@ -134,8 +135,9 @@ items = [("3D", [
             ("Hoversel", hoversel_clicked),
             ("Menu", menu_clicked),
             ("Radios", radio_clicked),
-            ("Actionslider", actionslider_clicked),
-            ("Dayselector", dayselector_clicked),
+            ("Action Slider", actionslider_clicked),
+            ("Day Selector", dayselector_clicked),
+            ("Color Selector", colorselector_clicked),
         ]),
          ("Stored Surface Buffer", [
             ("Launcher", mapbuf_clicked),

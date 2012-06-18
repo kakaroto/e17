@@ -16,9 +16,25 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
+def _cb_colorselector_palette_item_conv(long addr):
+    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
+    cdef void *data = elm_object_item_data_get(it)
+    if data == NULL:
+        return None
+    else:
+        return <object>data
+
+cdef void _colorselector_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
+    csi = <object>data
+    csi.__del_cb()
+
 cdef class ColorselectorPaletteItem(ObjectItem):
     def __init__(self, evasObject colorselector, r, g, b, a):
         self.item = elm_colorselector_palette_color_add(colorselector.obj, r, g, b, a)
+        elm_object_item_data_set(self.item, <void*>self)
+        elm_object_item_del_cb_set(self.item, _colorselector_item_del_cb)
+        Py_INCREF(self)
 
     def color_get(self):
         cdef int r, g, b, a
@@ -204,28 +220,34 @@ cdef public class Colorselector(LayoutClass) [object PyElementaryColorselector, 
         def __set__(self, palette_name):
             elm_colorselector_palette_name_set(self.obj, _cfruni(palette_name))
 
-    def callback_selected_add(self, func, *args, **kwargs):
+    def callback_changed_add(self, func, *args, **kwargs):
         """When the color value changes on selector"""
-        self._callback_add("selected", func, *args, **kwargs)
+        self._callback_add("changed", func, *args, **kwargs)
 
-    def callback_selected_del(self, func):
-        self._callback_del("selected", func)
+    def callback_changed_del(self, func):
+        self._callback_del("changed", func)
 
     def callback_color_item_selected_add(self, func, *args, **kwargs):
         """When user clicks on color item. The event_info parameter of the
         callback will be the selected color item."""
-        self._callback_add_full("color,item,selected", _cb_object_item_conv, func, *args, **kwargs)
+        self._callback_add_full("color,item,selected",
+                                _cb_colorselector_palette_item_conv,
+                                func, *args, **kwargs)
 
     def callback_color_item_selected_del(self, func):
-        self._callback_del_full("color,item,selected", _cb_object_item_conv, func)
+        self._callback_del_full("color,item,selected",
+                                _cb_colorselector_palette_item_conv, func)
 
     def callback_color_item_longpressed_add(self, func, *args, **kwargs):
         """When user long presses on color item. The event_info parameter of
         the callback will be the selected color item."""
-        self._callback_add_full("color,item,longpressed", _cb_object_item_conv, func, *args, **kwargs)
+        self._callback_add_full("color,item,longpressed",
+                                _cb_colorselector_palette_item_conv,
+                                func, *args, **kwargs)
 
     def callback_color_item_longpressed_del(self, func):
-        self._callback_del_full("color,item,longpressed", _cb_object_item_conv, func)
+        self._callback_del_full("color,item,longpressed",
+                                _cb_colorselector_palette_item_conv, func)
 
 _elm_widget_type_register("colorselector", Colorselector)
 

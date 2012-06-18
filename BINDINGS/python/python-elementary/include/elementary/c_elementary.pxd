@@ -1014,7 +1014,7 @@ cdef extern from "Elementary.h":
     void                     elm_clock_first_interval_set(Evas_Object *obj, double interval)
     double                   elm_clock_first_interval_get(Evas_Object *obj)
 
-    # Colorselector         (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Colorselector         (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_colorselector_add(Evas_Object *parent)
     void                     elm_colorselector_color_set(Evas_Object *obj, int r, int g, int b, int a)
     void                     elm_colorselector_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
