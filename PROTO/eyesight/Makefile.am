@@ -22,7 +22,7 @@ m4/ltoptions.m4 \
 m4/ltsugar.m4 \
 m4/ltversion.m4
 
-SUBDIRS = src
+SUBDIRS = src data
 
 EXTRA_DIST = \
 COPYING-LGPL \

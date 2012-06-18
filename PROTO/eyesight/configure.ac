@@ -81,6 +81,7 @@ fi
 AC_SUBST([pkgconfig_requires_private])
 
 EFL_ENABLE_BIN([eyesight])
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 # doxygen program for documentation building
 
@@ -99,7 +100,8 @@ EYESIGHT_CHECK_MODULE([Img], [${want_img}])
 PKG_CHECK_MODULES([EYESIGHT], [${requirement_eyesight}])
 
 if test "x${have_eyesight}" = "xyes" ; then
-   PKG_CHECK_MODULES([EYESIGHT_BIN], [evas >= 1.0.0 ecore >= 1.0.0 ecore-evas >= 1.0.0 edje >= 1.0])
+   PKG_CHECK_MODULES([EYESIGHT_BIN], [elementary >= 1.0.0],
+      [build_eyesight_bin="yes"], [build_eyesight_bin="no"])
 fi
 
 
@@ -156,6 +158,7 @@ src/modules/pdf/Makefile
 src/modules/pdf/mupdf-0.9/Makefile
 src/modules/ps/Makefile
 src/modules/txt/Makefile
+data/Makefile
 ])
 
 AC_OUTPUT
@@ -186,7 +189,7 @@ fi
 echo "    Postscript.........: ${enable_postscript}"
 echo "    Txt................: ${enable_txt}"
 echo
-echo "  Build eyesight test..: $have_eyesight"
+echo "  Build eyesight test..: ${build_eyesight_bin}"
 echo
 echo "Compilation............: make (or gmake)"
 echo "  CPPFLAGS.............: $CPPFLAGS"
