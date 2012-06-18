@@ -432,6 +432,53 @@ data_descriptors_shutdown(void)
      }
 }
 
+static void *
+_host_to_net_blob_get(void *blob, int *blob_size)
+{
+   if (!blob)
+     return blob;
+
+   /* Add extra long if needed */
+   if ((*blob_size) % sizeof(uint32_t))
+     (*blob_size)++;
+
+   void *n_blob = malloc(*blob_size);
+   uint32_t *src = blob;
+   uint32_t *dst = n_blob;
+   int cnt = (*blob_size) / sizeof(uint32_t);
+   while (cnt)
+     {
+        *dst = htonl(*src);
+        src++;
+        dst++;
+        cnt--;
+     }
+
+   return n_blob;
+}
+
+static void *
+_net_to_host_blob_get(void *blob, int blob_size)
+{
+   if (!blob)
+     return blob;
+
+   void *h_blob = malloc(blob_size);
+
+   uint32_t *src = blob;
+   uint32_t *dst = h_blob;
+   int cnt = blob_size / sizeof(uint32_t);
+   while (cnt)
+     {
+        *dst = ntohl(*src);
+        src++;
+        dst++;
+        cnt--;
+     }
+
+   return h_blob;
+}
+
 void *
 packet_compose(message_type t, void *data,
       int data_size, int *size,
@@ -461,6 +508,8 @@ packet_compose(message_type t, void *data,
 
               /* Save encoded size in network format */
               uint32_t enc_size = htonl((uint32_t) e_size);
+              void *net_blob = _host_to_net_blob_get(blob, &blob_size);
+
 
               /* Update size to the buffer size we about to return */
               *size = (e_size + blob_size + sizeof(enc_size));
@@ -471,8 +520,11 @@ packet_compose(message_type t, void *data,
               memcpy(b + sizeof(enc_size), p, e_size);
               free(p);
 
-              if (blob)    /* Copy BMP info */
-                memcpy(b + sizeof(enc_size) + e_size, blob, blob_size);
+              if (net_blob)    /* Copy BMP info */
+                {
+                   memcpy(b + sizeof(enc_size) + e_size, net_blob, blob_size);
+                   free(net_blob);
+                }
 
               p_type = BMP_RAW_DATA;
               p = b;
@@ -516,8 +568,8 @@ packet_info_get(void *data, int size)
 
               if (blob_size)
                 {  /* Allocate BMP only if was included in packet */
-                   bmp = malloc(blob_size);
-                   memcpy(bmp, b + sizeof(enc_size) + enc_size, blob_size);
+                   bmp = _net_to_host_blob_get(
+                         b + sizeof(enc_size) + enc_size, blob_size);
                 }
 
               /* User have to free both: variant_free(rt), free(t->bmp) */
