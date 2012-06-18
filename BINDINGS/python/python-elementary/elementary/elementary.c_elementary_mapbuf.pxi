@@ -73,7 +73,7 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
         @type smooth: bool
 
         """
-        elm_mapbuf_smooth_set(self.obj, bool(smooth))
+        elm_mapbuf_smooth_set(self.obj, smooth)
 
     def smooth_get(self):
         """Get the smooth state of the map.
@@ -98,8 +98,8 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
         """
         def __get__(self):
             return bool(elm_mapbuf_smooth_get(self.obj))
-        def __set__(self, value):
-            elm_mapbuf_smooth_set(self.obj, bool(smooth))
+        def __set__(self, smooth):
+            elm_mapbuf_smooth_set(self.obj, smooth)
 
     def alpha_set(self, alpha):
         """Set or unset alpha flag for map rendering.
@@ -108,7 +108,7 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
         @type alpha: bool
 
         """
-        elm_mapbuf_alpha_set(self.obj, bool(alpha))
+        elm_mapbuf_alpha_set(self.obj, alpha)
 
     def alpha_get(self):
         """Get the alpha state of the map.
@@ -127,8 +127,8 @@ cdef public class Mapbuf(Object) [object PyElementaryMapbuf, type PyElementaryMa
         """
         def __get__(self):
             return bool(elm_mapbuf_alpha_get(self.obj))
-        def __set__(self, value):
-            elm_mapbuf_alpha_set(self.obj, bool(alpha))
+        def __set__(self, alpha):
+            elm_mapbuf_alpha_set(self.obj, alpha)
 
 
 _elm_widget_type_register("mapbuf", Mapbuf)

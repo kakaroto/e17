@@ -247,7 +247,8 @@ cdef class MenuItem(ObjectItem):
         @type: L{MenuItem}
 
         """
-        return _object_item_to_python(elm_menu_item_prev_get(self.item))
+        def __get__(self):
+            return _object_item_to_python(elm_menu_item_prev_get(self.item))
 
 cdef void _menu_item_separator_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
     it = <object>data
@@ -332,7 +333,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         """
         def __get__(self):
             return Object_from_instance(elm_menu_parent_get(self.obj))
-        def __set__(self, parent):
+        def __set__(self, evasObject parent):
             elm_menu_parent_set(self.obj, parent.obj)
 
     def move(self, x, y):

@@ -75,7 +75,7 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         """
         def __get__(self):
             return Object_from_instance(elm_notify_parent_get(self.obj))
-        def __set__(self, parent):
+        def __set__(self, evasObject parent):
             cdef Evas_Object *o
             if parent is not None:
                 o = parent.obj
@@ -204,7 +204,7 @@ cdef public class Notify(Object) [object PyElementaryNotify, type PyElementaryNo
         def __get__(self):
             return bool(elm_notify_allow_events_get(self.obj))
         def __set__(self, allow_events):
-            elm_notify_allow_events_set(self.obj, repeat)
+            elm_notify_allow_events_set(self.obj, allow_events)
 
     def callback_timeout_add(self, func, *args, **kwargs):
         """When timeout happens on notify and it's hidden."""

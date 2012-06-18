@@ -79,7 +79,7 @@ cdef class NaviframeItem(ObjectItem):
         """
         def __get__(self):
             return _ctouni(elm_naviframe_item_style_get(self.item))
-        def __set__(self, value):
+        def __set__(self, style):
             elm_naviframe_item_style_set(self.item, _cfruni(style))
 
     def title_visible_set(self, visible):
@@ -118,7 +118,7 @@ cdef class NaviframeItem(ObjectItem):
         """
         def __get__(self):
             return bool(elm_naviframe_item_title_visible_get(self.item))
-        def __set__(self, value):
+        def __set__(self, visible):
             elm_naviframe_item_title_visible_set(self.item, visible)
 
 cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
