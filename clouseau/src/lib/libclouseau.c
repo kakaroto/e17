@@ -54,7 +54,20 @@ _canvas_bmp_get(Ecore_Evas *ee, Evas_Coord *w_out, Evas_Coord *h_out)
    unsigned int *dst;
    int bpl = 0, rows = 0, bpp = 0;
    Evas_Coord w, h;
-   Ecore_X_Window xwin = (Ecore_X_Window) ecore_evas_window_get(ee);
+
+   /* Check that this window still exists */
+   Eina_List *eeitr, *ees = ecore_evas_ecore_evas_list_get();
+   Ecore_Evas *eel;
+   Eina_Bool found_evas = EINA_FALSE;
+   EINA_LIST_FOREACH(ees, eeitr, eel)
+      if (eel == ee)
+        {
+           found_evas = EINA_TRUE;
+           break;
+        }
+
+   Ecore_X_Window xwin = (found_evas) ?
+      (Ecore_X_Window) ecore_evas_window_get(ee) : 0;
 
    if (!xwin)
      {
