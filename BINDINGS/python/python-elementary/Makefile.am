@@ -80,6 +80,7 @@ examples_files = \
 	tests/test.py \
 	tests/test.edj \
 	tests/cursors.edj \
+	tests/test_3d.py \
 	tests/test_actionslider.py \
 	tests/test_bg.py \
 	tests/test_box.py \

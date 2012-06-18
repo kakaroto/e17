@@ -5,6 +5,7 @@ import edje
 import ecore
 import evas
 
+from test_3d import evas3d_clicked
 from test_actionslider import actionslider_clicked
 from test_bg import bg_plain_clicked, bg_image_clicked
 from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
@@ -50,7 +51,10 @@ from test_web import web_clicked
 from test_win import window_states_clicked
 
 
-items = [("Booleans", [
+items = [("3D", [
+            ("Evas Map 3D", evas3d_clicked),
+        ]),
+         ("Booleans", [
             ("Checks", check_clicked),
             #("Toggles", toggles_clicked),TODO make a toggle with check
         ]),
