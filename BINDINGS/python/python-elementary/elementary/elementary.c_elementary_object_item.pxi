@@ -33,22 +33,33 @@ cdef void _tooltip_item_data_del_cb(void *data, Evas_Object *o, void *event_info
 def _cb_object_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
     cdef void *data = elm_object_item_data_get(it)
+    cdef object prm
+
     if data == NULL:
         return None
-    else:
-        prm = <object>data
+
+    prm = <object>data
+    if isinstance(prm, tuple):
         return prm[2]
+    else:
+        return prm
 
 cdef _object_item_to_python(Elm_Object_Item *it):
     cdef void *data
     cdef object prm
+
     if it == NULL:
         return None
+
     data = elm_object_item_data_get(it)
     if data == NULL:
         return None
+
     prm = <object>data
-    return prm[2]
+    if isinstance(prm, tuple):
+        return prm[2]
+    else:
+        return prm
 
 cdef _object_item_list_to_python(const_Eina_List *lst):
     cdef Elm_Object_Item *it
