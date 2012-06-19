@@ -9,16 +9,13 @@
  *
  * Epdf is a library that provides a C interface to the Poppler library
  * to render PDF documents in different ways, using an Evas frontend.
- * Straight Evas can be used, but several widgets implementations can
+ * Straight Evas can be used, but a widget implementations can
  * integrate a PDF document in an Edje user interface using an Evas
- * smart object or Ewl user interface using respective widgets.
+ * smart object.
  *
  * @section install_sec Installation
  *
  * The Epdf library requires Evas, Ecore and Poppler to be installed.
- *
- * If the Ewl  toolkits is available, then an Ewl widget
- * will be built. Also, an Ewl test will be installed.
  *
  * @subsection api_sec API Documentation
  *
@@ -28,11 +25,6 @@
  * For the Esmart object library, the complete api can be read in the
  * section @ref Esmart_Pdf.
  *
- * For the Ewl widget, the complete api can be read in the
- * section @ref Ewl_Pdf.
- *
- * For the Etk widget, the complete api can be read in the
- * section @ref Etk_Pdf.
  */
 
 
