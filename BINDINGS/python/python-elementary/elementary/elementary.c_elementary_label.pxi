@@ -87,9 +87,9 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
 
         """
         def __get__(self):
-            return self.line_wrap_get()
+            return elm_label_line_wrap_get(self.obj)
         def __set__(self, wrap):
-            self.line_wrap_set(wrap)
+            elm_label_line_wrap_set(self.obj, wrap)
 
     def wrap_width_set(self, int w):
         """Set wrap width of the label
@@ -126,9 +126,9 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
 
         """
         def __get__(self):
-            return self.wrap_width_get()
+            return elm_label_wrap_width_get(self.obj)
         def __set__(self, w):
-            self.wrap_width_set(w)
+            elm_label_wrap_width_set(self.obj, w)
 
     def ellipsis_set(self, bool ellipsis):
         """Set the ellipsis behavior of the label
@@ -168,9 +168,9 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
 
         """
         def __get__(self):
-            return self.ellipsis_get()
+            return elm_label_ellipsis_get(self.obj)
         def __set__(self, ellipsis):
-            self.ellipsis_set(ellipsis)
+            elm_label_ellipsis_set(self.obj, ellipsis)
 
     def slide_set(self, bool slide):
         """Set the sliding effect of the label widget.
@@ -196,7 +196,7 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
         @rtype: bool
 
         """
-        elm_label_slide_get(self.obj)
+        return elm_label_slide_get(self.obj)
 
     property slide:
         """The sliding effect of the label widget.
@@ -211,9 +211,9 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
 
         """
         def __get__(self):
-            return self.slide_get()
+            return elm_label_slide_get(self.obj)
         def __set__(self, slide):
-            self.slide_set(slide)
+            elm_label_slide_set(self.obj, slide)
 
     def slide_duration_set(self, duration):
         """Set the slide duration (speed) of the label
@@ -234,7 +234,7 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
         @rtype: float
 
         """
-        elm_label_slide_duration_get(self.obj)
+        return elm_label_slide_duration_get(self.obj)
 
     property slide_duration:
         """The duration time in moving text from slide begin position to slide end position
@@ -243,9 +243,9 @@ cdef public class Label(LayoutClass) [object PyElementaryLabel, type PyElementar
 
         """
         def __get__(self):
-            return self.slide_duration_get()
+            return elm_label_slide_duration_get(self.obj)
         def __set__(self, duration):
-            self.slide_duration_set(duration)
+            elm_label_slide_duration_set(self.obj, duration)
 
     def callback_language_changed_add(self, func, *args, **kwargs):
         """The program's language changed."""

@@ -156,9 +156,10 @@ cdef class ListItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.selected_get()
+            return bool(elm_list_item_selected_get(self.item))
+
         def __set__(self, selected):
-            self.selected_set(selected)
+            elm_list_item_selected_set(self.item, selected)
 
     def separator_set(self, separator):
         """Set or unset item as a separator.
@@ -200,12 +201,15 @@ cdef class ListItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.separator_get()
+            return bool(elm_list_item_separator_get(self.item))
+
         def __set__(self, separator):
-            self.separator_set(separator)
+            elm_list_item_separator_set(self.item, separator)
 
     def show(self):
-        """Show the item in the list view.
+        """show()
+
+        Show the item in the list view.
 
         It won't animate list until item is visible. If such behavior is wanted,
         use L{bring_in()} instead.
@@ -214,7 +218,9 @@ cdef class ListItem(ObjectItem):
         elm_list_item_show(self.item)
 
     def bring_in(self):
-        """Bring in the given item to list view.
+        """bring_in()
+
+        Bring in the given item to list view.
 
         This causes list to jump to the given item and show it
         (by scrolling), if it is not fully visible.
@@ -235,14 +241,23 @@ cdef class ListItem(ObjectItem):
         feed Edje signals to add more features to row representation.
 
         @rtype: edje.Edje
-        """
-        cdef Evas_Object *obj
-        cdef void *data
 
-        obj = elm_list_item_object_get(self.item)
-        if obj == NULL:
-            return None
-        return Object_from_instance(obj)
+        """
+        return Object_from_instance(elm_list_item_object_get(self.item))
+
+    property object:
+        """Returns the base object set for this list item.
+
+        Base object is the one that visually represents the list item
+        row. It must not be changed in a way that breaks the list
+        behavior (like deleting the base!), but it might be used to
+        feed Edje signals to add more features to row representation.
+
+        @type: edje.Edje
+
+        """
+        def __get__(self):
+            return Object_from_instance(elm_list_item_object_get(self.item))
 
     def prev_get(self):
         """Get the item before this item in the list.
@@ -256,19 +271,7 @@ cdef class ListItem(ObjectItem):
         @rtype: L{ListItem}
 
         """
-        cdef Elm_Object_Item *item
-        cdef void *data
-
-        item = elm_list_item_prev(self.item)
-        if item == NULL:
-            return None
-
-        data = elm_object_item_data_get(item)
-        if data == NULL:
-            return None
-
-        (obj, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_list_item_prev(self.item))
 
     property prev:
         """The item before this item in the list.
@@ -282,7 +285,7 @@ cdef class ListItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.prev_get()
+            return _object_item_to_python(elm_list_item_prev(self.item))
 
     def next_get(self):
         """Get the item after this item in the list.
@@ -296,19 +299,7 @@ cdef class ListItem(ObjectItem):
         @rtype: L{ListItem}
 
         """
-        cdef Elm_Object_Item *item
-        cdef void *data
-
-        item = elm_list_item_next(self.item)
-        if item == NULL:
-            return None
-
-        data = elm_object_item_data_get(item)
-        if data == NULL:
-            return None
-
-        (obj, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_list_item_next(self.item))
 
     property next:
         """The item after this item in the list.
@@ -322,7 +313,7 @@ cdef class ListItem(ObjectItem):
 
         """
         def __get__(self):
-            return self.next_get()
+            return _object_item_to_python(elm_list_item_next(self.item))
 
 cdef public class List(Object) [object PyElementaryList, type PyElementaryList_Type]:
 
@@ -366,7 +357,9 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         self._set_obj(elm_list_add(parent.obj))
 
     def go(self):
-        """Starts the list.
+        """go()
+
+        Starts the list.
 
         Example::
             li = List(win)
@@ -425,6 +418,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """
         def __get__(self):
             return elm_list_multi_select_get(self.obj)
+
         def __set__(self, multi):
             elm_list_multi_select_set(self.obj, multi)
 
@@ -474,6 +468,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """
         def __get__(self):
             return elm_list_mode_get(self.obj)
+
         def __set__(self, Elm_List_Mode mode):
             elm_list_mode_set(self.obj, mode)
 
@@ -492,6 +487,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """
         def __get__(self):
             return elm_list_horizontal_get(self.obj)
+
         def __set__(self, horizontal):
             elm_list_horizontal_set(self.obj, horizontal)
 
@@ -499,14 +495,15 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """Set the list select mode.
 
         select_mode_set() changes item select mode in the list widget.
-            - ELM_OBJECT_SELECT_MODE_DEFAULT : Items will only call their selection func and
-              callback when first becoming selected. Any further clicks will
-              do nothing, unless you set always select mode.
-            - ELM_OBJECT_SELECT_MODE_ALWAYS :  This means that, even if selected,
-              every click will make the selected callbacks be called.
-            - ELM_OBJECT_SELECT_MODE_NONE : This will turn off the ability to select items
-              entirely and they will neither appear selected nor call selected
-              callback functions.
+            - ELM_OBJECT_SELECT_MODE_DEFAULT : Items will only call their
+                selection func and callback when first becoming selected. Any
+                further clicks will do nothing, unless you set always
+                select mode.
+            - ELM_OBJECT_SELECT_MODE_ALWAYS :  This means that, even if
+                selected, every click will make the selected callbacks be called.
+            - ELM_OBJECT_SELECT_MODE_NONE : This will turn off the ability
+                to select items entirely and they will neither appear
+                selected nor call selected callback functions.
 
         @see: L{select_mode_get()}
 
@@ -527,6 +524,30 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         """
         return elm_list_select_mode_get(self.obj)
+
+    property select_mode:
+        """The list select mode.
+
+        Possible modes are:
+            - ELM_OBJECT_SELECT_MODE_DEFAULT : Items will only call their
+                selection func and callback when first becoming selected. Any
+                further clicks will do nothing, unless you set always
+                select mode.
+            - ELM_OBJECT_SELECT_MODE_ALWAYS :  This means that, even if
+                selected, every click will make the selected callbacks be
+                called.
+            - ELM_OBJECT_SELECT_MODE_NONE : This will turn off the ability
+                to select items entirely and they will neither appear
+                selected nor call selected callback functions.
+
+        @type: Elm_Object_Select_Mode
+
+        """
+        def __set__(self, mode):
+            elm_list_select_mode_set(self.obj, mode)
+
+        def __get__(self):
+            return elm_list_select_mode_get(self.obj)
 
     def bounce_set(self, h, v):
         """Set bouncing behaviour when the scrolled content reaches an edge.
@@ -561,15 +582,30 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         elm_list_bounce_get(self.obj, &h, &v)
         return (h, v)
 
+    property bounce:
+        """The bouncing behaviour when the scrolled content reaches an edge.
+
+        Whether the internal scroller object should bounce or not when it
+        reaches the respective edges for each axis.
+
+        @type: tuple of bools
+
+        """
+        def __set__(self, value):
+            h, v = value
+            elm_list_bounce_set(self.obj, h, v)
+
     def scroller_policy_set(self, policy_h, policy_v):
         """Set the scrollbar policy.
 
-        This sets the scrollbar visibility policy for the given scroller. ELM_SCROLLER_POLICY_AUTO
-        means the scrollbar is made visible if it is needed, and otherwise kept
-        hidden. ELM_SCROLLER_POLICY_ON turns it on all the time, and ELM_SCROLLER_POLICY_OFF
-        always keeps it off. This applies respectively for the horizontal and vertical scrollbars.
+        This sets the scrollbar visibility policy for the given scroller.
+        ELM_SCROLLER_POLICY_AUTO means the scrollbar is made visible if it
+        is needed, and otherwise kept hidden. ELM_SCROLLER_POLICY_ON turns
+        it on all the time, and ELM_SCROLLER_POLICY_OFF always keeps it off.
+        This applies respectively for the horizontal and vertical scrollbars.
 
-        The both are disabled by default, i.e., are set to ELM_SCROLLER_POLICY_OFF.
+        The both are disabled by default, i.e., are set to
+        ELM_SCROLLER_POLICY_OFF.
 
         @param policy_h: Horizontal scrollbar policy.
         @type policy_h: Elm_Scroller_Policy
@@ -592,9 +628,35 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         elm_list_scroller_policy_get(self.obj, &policy_h, &policy_v)
         return (policy_h, policy_v)
 
+    property scroller_policy:
+        """The scrollbar policy.
+
+        This sets the scrollbar visibility policy for the given scroller.
+        ELM_SCROLLER_POLICY_AUTO means the scrollbar is made visible if it
+        is needed, and otherwise kept hidden. ELM_SCROLLER_POLICY_ON turns
+        it on all the time, and ELM_SCROLLER_POLICY_OFF always keeps it off.
+        This applies respectively for the horizontal and vertical scrollbars.
+
+        The both are disabled by default, i.e., are set to
+        ELM_SCROLLER_POLICY_OFF.
+
+        @type: Elm_Scroller_Policy
+
+        """
+        def __set__(self, value):
+            policy_h, policy_v = value
+            elm_list_scroller_policy_set(self.obj, policy_h, policy_v)
+
+        def __get__(self):
+            cdef Elm_Scroller_Policy policy_h, policy_v
+            elm_list_scroller_policy_get(self.obj, &policy_h, &policy_v)
+            return (policy_h, policy_v)
+
     def item_append(self, label, evasObject icon = None,
                     evasObject end = None, callback = None, *args, **kargs):
-        """Append a new item to the list object.
+        """item_append(label, icon=None, end=None, callback=None, *args, **kargs)
+
+        Append a new item to the list object.
 
         A new item will be created and appended to the list, i.e., will
         be set as B{last} item.
@@ -642,19 +704,21 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
     def item_prepend(self, label, evasObject icon = None,
                     evasObject end = None, callback = None, *args, **kargs):
-        """Prepend a new item to the list object.
+        """item_prepend(label, icon=None, end=None, callback=None, *args, **kargs)
+
+        Prepend a new item to the list object.
 
         A new item will be created and prepended to the list, i.e., will
         be set as B{first} item.
 
-        Items created with this method can be deleted with L{ObjectItem.delete()}.
+        Items created with this method can be deleted with
+        L{ObjectItem.delete()}.
 
-        If a function is passed as argument, it will be called every time this item
-        is selected, i.e., the user clicks over an unselected item.
+        If a function is passed as argument, it will be called every time
+        this item is selected, i.e., the user clicks over an unselected item.
         If always select is enabled it will call this function every time
-        user clicks over an item (already selected or not).
-        If such function isn't needed, just passing
-        C{None} as C{func} is enough.
+        user clicks over an item (already selected or not). If such function
+        isn't needed, just passing C{None} as C{func} is enough.
 
         @see: L{item_append()} for a simple code example.
         @see: L{select_mode_set()}
@@ -682,19 +746,21 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
     def item_insert_before(self, ListItem before, label, evasObject icon = None,
                     evasObject end = None, callback = None, *args, **kargs):
-        """Insert a new item into the list object before item C{before}.
+        """item_insert_before(before, label, icon=None, end=None, callback=None, *args, **kargs)
+
+        Insert a new item into the list object before item C{before}.
 
         A new item will be created and added to the list. Its position in
         this list will be just before item C{before}.
 
-        Items created with this method can be deleted with L{ObjectItem.delete()}.
+        Items created with this method can be deleted with
+        L{ObjectItem.delete()}.
 
-        If a function is passed as argument, it will be called every time this item
-        is selected, i.e., the user clicks over an unselected item.
+        If a function is passed as argument, it will be called every time
+        this item is selected, i.e., the user clicks over an unselected item.
         If always select is enabled it will call this function every time
-        user clicks over an item (already selected or not).
-        If such function isn't needed, just passing
-        C{None} as C{func} is enough.
+        user clicks over an item (already selected or not). If such function
+        isn't needed, just passing C{None} as C{func} is enough.
 
         @see: L{item_append()} for a simple code example.
         @see: L{select_mode_set()}
@@ -724,19 +790,21 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
     def item_insert_after(self, ListItem after, label, evasObject icon = None,
                     evasObject end = None, callback = None, *args, **kargs):
-        """Insert a new item into the list object after item C{after}.
+        """item_insert_after(after, label, icon=None, end=None, callback=None, *args, **kargs)
+
+        Insert a new item into the list object after item C{after}.
 
         A new item will be created and added to the list. Its position in
         this list will be just after item C{after}.
 
-        Items created with this method can be deleted with L{ObjectItem.delete()}.
+        Items created with this method can be deleted with
+        L{ObjectItem.delete()}.
 
-        If a function is passed as argument, it will be called every time this item
-        is selected, i.e., the user clicks over an unselected item.
+        If a function is passed as argument, it will be called every time
+        this item is selected, i.e., the user clicks over an unselected item.
         If always select is enabled it will call this function every time
-        user clicks over an item (already selected or not).
-        If such function isn't needed, just passing
-        C{None} as C{func} is enough.
+        user clicks over an item (already selected or not). If such function
+        isn't needed, just passing C{None} as C{func} is enough.
 
         @see: L{item_append()} for a simple code example.
         @see: L{select_mode_set()}
@@ -766,7 +834,9 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
     #def item_sorted_insert(self, label, evasObject icon = None,
                     #evasObject end = None, callback = None, cmp_func=None, *args, **kargs):
-        """Insert a new item into the sorted list object.
+        """item_sorted_insert(label, icon=None, end=None, callback=None, cmp_func=None, *args, **kargs)
+
+        Insert a new item into the sorted list object.
 
         A new item will be created and added to the list. Its position in
         this list will be found comparing the new item with previously inserted
@@ -817,7 +887,9 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
                         #None, callback, *args, **kargs)
 
     def clear(self):
-        """Remove all list's items.
+        """clear()
+
+        Remove all list's items.
 
         @see: L{ObjectItem.delete()}
         @see: L{item_append()}
@@ -836,18 +908,20 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: tuple of L{ListItem}s
 
         """
-        cdef const_Eina_List *lst, *itr
-        cdef void *data
-        ret = []
-        lst = elm_list_items_get(self.obj)
-        itr = lst
-        while itr:
-            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
-            if data != NULL:
-                (o, callback, it, a, ka) = <object>data
-                ret.append(it)
-            itr = itr.next
-        return ret
+        return _object_item_list_to_python(elm_list_items_get(self.obj))
+
+    property items:
+        """Get a list of all the list items.
+
+        @see: L{item_append()}
+        @see: L{ObjectItem.delete()}
+        @see: L{clear()}
+
+        @type: tuple of L{ListItem}s
+
+        """
+        def __get__(self):
+            return _object_item_list_to_python(elm_list_items_get(self.obj))
 
     def selected_item_get(self):
         """Get the selected item.
@@ -863,17 +937,23 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: L{ListItem}
 
         """
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_list_selected_item_get(self.obj)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        else:
-            (o, callback, it, a, ka) = <object>data
-            return it
+        return _object_item_to_python(elm_list_selected_item_get(self.obj))
+
+    property selected_item:
+        """Get the selected item.
+
+        The selected item can be unselected with function
+        L{ListItem.selected_set()}.
+
+        The selected item always will be highlighted on list.
+
+        @see: L{selected_items}
+
+        @type: L{ListItem}
+
+        """
+        def __get__(self):
+            return _object_item_to_python(elm_list_selected_item_get(self.obj))
 
     def selected_items_get(self):
         """Return a list of the currently selected list items.
@@ -888,18 +968,22 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: tuple of L{ListItem}s
 
         """
-        cdef const_Eina_List *lst, *itr
-        cdef void *data
-        ret = []
-        lst = elm_list_selected_items_get(self.obj)
-        itr = lst
-        while itr:
-            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
-            if data != NULL:
-                (o, callback, it, a, ka) = <object>data
-                ret.append(it)
-            itr = itr.next
-        return ret
+        return _object_item_list_to_python(elm_list_selected_items_get(self.obj))
+
+    property selected_items:
+        """Return a list of the currently selected list items.
+
+        Multiple items can be selected if multi select is enabled. It can be
+        done with L{multi_select_set()}.
+
+        @see: L{selected_item}
+        @see: L{multi_select}
+
+        @type: tuple of L{ListItem}s
+
+        """
+        def __get__(self):
+            return _object_item_list_to_python(elm_list_selected_items_get(self.obj))
 
     def first_item_get(self):
         """Get the first item in the list
@@ -910,17 +994,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: L{ListItem}
 
         """
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_list_first_item_get(self.obj)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        else:
-            (o, callback, it, a, ka) = <object>data
-            return it
+        return _object_item_to_python(elm_list_first_item_get(self.obj))
 
     property first_item:
         """The first item in the list
@@ -929,7 +1003,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         """
         def __get__(self):
-            return self.first_item_get()
+            return _object_item_to_python(elm_list_first_item_get(self.obj))
 
     def last_item_get(self):
         """Get the last item in the list
@@ -940,17 +1014,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @rtype: L{ListItem}
 
         """
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_list_last_item_get(self.obj)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        else:
-            (o, callback, it, a, ka) = <object>data
-            return it
+        return _object_item_to_python(elm_list_last_item_get(self.obj))
 
     property last_item:
         """The last item in the list
@@ -959,7 +1023,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         """
         def __get__(self):
-            return self.last_item_get()
+            return _object_item_to_python(elm_list_last_item_get(self.obj))
 
     def callback_activated_add(self, func, *args, **kwargs):
         """The user has double-clicked or pressed (enter|return|spacebar) on

@@ -121,14 +121,6 @@ cdef class NaviframeItem(ObjectItem):
         def __set__(self, visible):
             elm_naviframe_item_title_visible_set(self.item, visible)
 
-cdef _elm_naviframe_item_to_python(Elm_Object_Item *it):
-    cdef NaviframeItem ret = NaviframeItem()
-
-    if it == NULL:
-        return None
-    ret.item = it
-    return ret
-
 cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyElementaryNaviframe_Type]:
 
     """Naviframe stands for navigation frame. It's a views manager
@@ -403,7 +395,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         @rtype: L{NaviframeItem}
 
         """
-        return _elm_naviframe_item_to_python(elm_naviframe_top_item_get(self.obj))
+        return _object_item_to_python(elm_naviframe_top_item_get(self.obj))
 
     property top_item:
         """Get a top item on the naviframe stack
@@ -412,7 +404,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         """
         def __get__(self):
-            return _elm_naviframe_item_to_python(elm_naviframe_top_item_get(self.obj))
+            return _object_item_to_python(elm_naviframe_top_item_get(self.obj))
 
     def bottom_item_get(self):
         """Get a bottom item on the naviframe stack
@@ -422,7 +414,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         @rtype: L{NaviframeItem}
 
         """
-        return _elm_naviframe_item_to_python(elm_naviframe_bottom_item_get(self.obj))
+        return _object_item_to_python(elm_naviframe_bottom_item_get(self.obj))
 
     property bottom_item:
         """Get a bottom item on the naviframe stack
@@ -431,7 +423,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         """
         def __get__(self):
-            return _elm_naviframe_item_to_python(elm_naviframe_bottom_item_get(self.obj))
+            return _object_item_to_python(elm_naviframe_bottom_item_get(self.obj))
 
     def prev_btn_auto_pushed_set(self, auto_pushed):
         """Set creating prev button automatically or not
@@ -480,19 +472,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         @rtype: tuple of L{NaviframeItem}s
 
         """
-        cdef Elm_Object_Item *it
-        cdef const_Eina_List *lst
-
-        lst = elm_naviframe_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _elm_naviframe_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(elm_naviframe_items_get(self.obj))
 
     property items:
         """Get a list of all the naviframe items.
@@ -501,19 +481,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *it
-            cdef const_Eina_List *lst
-
-            lst = elm_naviframe_items_get(self.obj)
-            ret = []
-            ret_append = ret.append
-            while lst:
-                it = <Elm_Object_Item *>lst.data
-                lst = lst.next
-                o = _elm_naviframe_item_to_python(it)
-                if o is not None:
-                    ret_append(o)
-            return ret
+            return _object_item_list_to_python(elm_naviframe_items_get(self.obj))
 
     def event_enabled_set(self, enabled):
         """Set the event enabled when pushing/popping items

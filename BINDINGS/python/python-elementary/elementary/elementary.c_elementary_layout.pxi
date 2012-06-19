@@ -143,16 +143,18 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         self._set_obj(elm_layout_add(parent.obj))
 
     def content_set(self, swallow, evasObject content):
-        """Set the layout content.
+        """content_set(swallow, content)
+
+        Set the layout content.
 
         Once the content object is set, a previously set one will be deleted.
         If you want to keep that old content object, use the
         L{Object.part_content_unset()} function.
 
-        @note: In an Edje theme, the part used as a content container is called
-        C{SWALLOW}. This is why the parameter name is called C{swallow}, but it is
-        expected to be a part name just like the second parameter of
-        L{box_append()}.
+        @note: In an Edje theme, the part used as a content container is
+        called C{SWALLOW}. This is why the parameter name is called
+        C{swallow}, but it is expected to be a part name just like the
+        second parameter of L{box_append()}.
 
         @see: L{box_append()}
         @see: L{Object.part_content_get()}
@@ -162,6 +164,7 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         @type swallow: string
         @param content: The child that will be added in this layout object
         @type content: L{Object}
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -174,7 +177,9 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         elm_layout_content_set(self.obj, _cfruni(swallow), o)
 
     def content_get(self, swallow):
-        """Get the child object in the given content part.
+        """content_get(swallow)
+
+        Get the child object in the given content part.
 
         @param swallow: The SWALLOW part to get its content
         @type swallow: string
@@ -182,11 +187,12 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         @return: The swallowed object or None if none or an error occurred
 
         """
-        cdef Evas_Object *obj = elm_layout_content_get(self.obj, _cfruni(swallow))
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_content_get(self.obj, _cfruni(swallow)))
 
     def content_unset(self, swallow):
-        """Unset the layout content.
+        """content_unset(swallow)
+
+        Unset the layout content.
 
         Unparent and return the content object which was set for this part.
 
@@ -196,11 +202,12 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_layout_content_unset(self.obj, _cfruni(swallow))
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_content_unset(self.obj, _cfruni(swallow)))
 
     def text_set(self, part, text):
-        """Set the text of the given part
+        """text_set(part, text)
+
+        Set the text of the given part
 
         @param part: The TEXT part where to set the text
         @type part: string
@@ -212,7 +219,9 @@ cdef public class Layout(LayoutClass) [object PyElementaryLayout, type PyElement
         elm_layout_text_set(self.obj, _cfruni(part), _cfruni(text))
 
     def text_get(self, part):
-        """Get the text set in the given part
+        """text_get(part)
+
+        Get the text set in the given part
 
         @param part: The TEXT part to retrieve the text off
         @type part: string

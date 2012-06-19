@@ -57,6 +57,18 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_file_set(self.obj, _cfruni(filename), _cfruni(group)))
 
+    property file:
+        """Set the file path and group of the edje file that will be used as
+        layout.
+
+        @type: tuple of string
+
+        """
+        def __set__(self, value):
+            filename, group = value
+            # TODO: check return value
+            elm_layout_file_set(self.obj, _cfruni(filename), _cfruni(group))
+
     def theme_set(self, clas, group, style):
         """Set the edje group from the elementary theme that will be used as layout
 
@@ -76,13 +88,29 @@ cdef class LayoutClass(Object):
         """
         return bool(elm_layout_theme_set(self.obj, _cfruni(clas), _cfruni(group), _cfruni(style)))
 
-    def signal_emit(self, emission, source):
-        """Send a (Edje) signal to a given layout widget's underlying Edje
-        object.
+    property theme:
+        """Set the edje group class, group name and style from the elementary
+        theme that will be used as layout.
 
-        This function sends a signal to the underlying Edje object of @a
-        obj. An Edje program on that Edje object's definition can respond
-        to a signal by specifying matching 'signal' and 'source' fields.
+        Note that C{style} will be the new style too, as in an
+        L{Object.style_set()} call.
+
+        @type: tuple of string
+
+        """
+        def __set__(self, theme):
+            clas, group, style = theme
+            # TODO: check return value
+            elm_layout_theme_set(self.obj, _cfruni(clas), _cfruni(group), _cfruni(style))
+
+    def signal_emit(self, emission, source):
+        """signal_emit(emission, source)
+
+        Send a (Edje) signal to a given layout widget's underlying Edje object.
+
+        This function sends a signal to the underlying Edje object. An Edje
+        program on that Edje object's definition can respond to a signal by
+        specifying matching 'signal' and 'source' fields.
 
         @param emission: The signal's name string
         @type emission: string
@@ -133,7 +161,9 @@ cdef class LayoutClass(Object):
         #elm_layout_signal_callback_del(self.obj, _cfruni(emission), _cfruni(source), Edje_Signal_Cb func)
 
     def box_append(self, part, evasObject child):
-        """Append child to layout box part.
+        """box_append(part, child)
+
+        Append child to layout box part.
 
         Once the object is appended, it will become child of the layout. Its
         lifetime will be bound to the layout, whenever the layout dies the child
@@ -149,6 +179,7 @@ cdef class LayoutClass(Object):
         @type part: string
         @param child: the child object to append to box.
         @type child: L{Object}
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -156,12 +187,14 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_box_append(self.obj, _cfruni(part), child.obj))
 
     def box_prepend(self, part, evasObject child):
-        """Prepend child to layout box part.
+        """box_prepend(part, child)
+
+        Prepend child to layout box part.
 
         Once the object is prepended, it will become child of the layout. Its
-        lifetime will be bound to the layout, whenever the layout dies the child
-        will be deleted automatically. One should use L{box_remove()} to
-        make this layout forget about the object.
+        lifetime will be bound to the layout, whenever the layout dies the
+        child will be deleted automatically. One should use L{box_remove()}
+        to make this layout forget about the object.
 
         @see: L{box_append()}
         @see: L{box_insert_before()}
@@ -172,6 +205,7 @@ cdef class LayoutClass(Object):
         @type part: string
         @param child: the child object to prepend to box.
         @type child: L{Object}
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -179,12 +213,14 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_box_prepend(self.obj, _cfruni(part), child.obj))
 
     def box_insert_before(self, part, evasObject child, evasObject reference):
-        """Insert child to layout box part before a reference object.
+        """box_insert_before(part, child, reference)
+
+        Insert child to layout box part before a reference object.
 
         Once the object is inserted, it will become child of the layout. Its
-        lifetime will be bound to the layout, whenever the layout dies the child
-        will be deleted automatically. One should use L{box_remove()} to
-        make this layout forget about the object.
+        lifetime will be bound to the layout, whenever the layout dies the
+        child will be deleted automatically. One should use L{box_remove()}
+        to make this layout forget about the object.
 
         @see: L{box_append()}
         @see: L{box_prepend()}
@@ -197,6 +233,7 @@ cdef class LayoutClass(Object):
         @type child: L{Object}
         @param reference: another reference object to insert before in box.
         @type reference: L{Object}
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -204,7 +241,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_box_insert_before(self.obj, _cfruni(part), child.obj, reference.obj))
 
     def box_insert_at(self, part, evasObject child, pos):
-        """Insert child to layout box part at a given position.
+        """box_insert_at(part, child, pos)
+
+        Insert child to layout box part at a given position.
 
         Once the object is inserted, it will become child of the layout. Its
         lifetime will be bound to the layout, whenever the layout dies the child
@@ -222,6 +261,7 @@ cdef class LayoutClass(Object):
         @type child: L{Object}
         @param pos: the numeric position >=0 to insert the child.
         @type pos: int
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -229,7 +269,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_box_insert_at(self.obj, _cfruni(part), child.obj, pos))
 
     def box_remove(self, part, evasObject child):
-        """Remove a child of the given part box.
+        """box_remove(part, child):
+
+        Remove a child of the given part box.
 
         The object will be removed from the box part and its lifetime will
         not be handled by the layout anymore. This is equivalent to
@@ -242,15 +284,17 @@ cdef class LayoutClass(Object):
         @type part: string
         @param child: The object to remove from box.
         @type child: L{Object}
+
         @return: The object that was being used, or None if not found.
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_layout_box_remove(self.obj, _cfruni(part), child.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_box_remove(self.obj, _cfruni(part), child.obj))
 
     def box_remove_all(self, part, clear):
-        """Remove all children of the given part box.
+        """box_remove_all(part, clear)
+
+        Remove all children of the given part box.
 
         The objects will be removed from the box part and their lifetime will
         not be handled by the layout anymore. This is equivalent to
@@ -265,6 +309,7 @@ cdef class LayoutClass(Object):
             well, otherwise they will just be removed and will be
             dangling on the canvas.
         @type clear: bool
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -272,7 +317,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_box_remove_all(self.obj, _cfruni(part), clear))
 
     def table_pack(self, part, evasObject child_obj, col, row, colspan, rowspan):
-        """Insert child to layout table part.
+        """table_pack(part, child_obj, col, row, colspan, rowspan)
+
+        Insert child to layout table part.
 
         Once the object is inserted, it will become child of the table. Its
         lifetime will be bound to the layout, and whenever the layout dies the
@@ -298,6 +345,7 @@ cdef class LayoutClass(Object):
         @type colspan: int
         @param rowspan: how many rows should be used to store this object. (>= 1)
         @type rowspan: int
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -305,7 +353,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_table_pack(self.obj, _cfruni(part), child_obj.obj, col, row, colspan, rowspan))
 
     def table_unpack(self, part, evasObject child_obj):
-        """Unpack (remove) a child of the given part table.
+        """table_unpack(part, child_obj)
+
+        Unpack (remove) a child of the given part table.
 
         The object will be unpacked from the table part and its lifetime
         will not be handled by the layout anymore. This is equivalent to
@@ -318,15 +368,17 @@ cdef class LayoutClass(Object):
         @type part: string
         @param child_obj: The object to remove from table.
         @type child_obj: L{Object}
+
         @return: The object that was being used, or None if not found.
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_layout_table_unpack(self.obj, _cfruni(part), child_obj.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_table_unpack(self.obj, _cfruni(part), child_obj.obj))
 
     def table_clear(self, part, clear):
-        """Remove all the child objects of the given part table.
+        """table_clear(part, clear)
+
+        Remove all the child objects of the given part table.
 
         The objects will be removed from the table part and their lifetime will
         not be handled by the layout anymore. This is equivalent to
@@ -341,6 +393,7 @@ cdef class LayoutClass(Object):
             well, otherwise they will just be removed and will be
             dangling on the canvas.
         @type clear: bool
+
         @return: C{True} on success, C{False} otherwise
         @rtype: bool
 
@@ -373,21 +426,45 @@ cdef class LayoutClass(Object):
         @rtype: Evas_Object
 
         """
-        cdef Evas_Object *obj = elm_layout_edje_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_edje_get(self.obj))
 
     property edje:
+        """Get the edje layout
+
+        This returns the edje object. It is not expected to be used to then
+        swallow objects via edje_object_part_swallow() for example. Use
+        L{part_content_set()} instead so child object handling and sizing is
+        done properly.
+
+        @note: This function should only be used if you really need to call
+        some low level Edje function on this edje object. All the common
+        stuff (setting text, emitting signals, hooking callbacks to signals,
+        etc.) can be done with proper elementary functions.
+
+        @see: L{signal_callback_add()}
+        @see: L{signal_emit()}
+        @see: L{part_text_set()}
+        @see: L{part_content_set()}
+        @see: L{box_append()}
+        @see: L{table_pack()}
+        @see: L{data_get()}
+
+        @type: L{edje.Edje}
+
+        """
         def __get__(self):
-            return self.edje_get()
+            return Object_from_instance(elm_layout_edje_get(self.obj))
 
     def data_get(self, key):
-        """Get the edje data from the given layout
+        """data_get(key)
 
-        This function fetches data specified inside the edje theme of this layout.
-        This function return None if data is not found.
+        Get the edje data from the given layout
 
-        In EDC this comes from a data block within the group block that it was
-        loaded from. E.g::
+        This function fetches data specified inside the edje theme of this
+        layout. This function returns None if data is not found.
+
+        In EDC this comes from a data block within the group block that it
+        was loaded from. E.g::
 
             collections {
                 group {
@@ -409,27 +486,32 @@ cdef class LayoutClass(Object):
         return _ctouni(elm_layout_data_get(self.obj, _cfruni(key)))
 
     def sizing_eval(self):
-        """Eval sizing
+        """sizing_eval()
 
-        Manually forces a sizing re-evaluation. This is useful when the minimum
-        size required by the edje theme of this layout has changed. The change on
-        the minimum size required by the edje theme is not immediately reported to
-        the elementary layout, so one needs to call this function in order to tell
-        the widget (layout) that it needs to reevaluate its own size.
+        Eval sizing
+
+        Manually forces a sizing re-evaluation. This is useful when the
+        minimum size required by the edje theme of this layout has changed.
+        The change on the minimum size required by the edje theme is not
+        immediately reported to the elementary layout, so one needs to call
+        this function in order to tell the widget (layout) that it needs to
+        reevaluate its own size.
 
         The minimum size of the theme is calculated based on minimum size of
-        parts, the size of elements inside containers like box and table, etc. All
-        of this can change due to state changes, and that's when this function
-        should be called.
+        parts, the size of elements inside containers like box and table,
+        etc. All of this can change due to state changes, and that's when
+        this function should be called.
 
-        Also note that a standard signal of "size,eval" "elm" emitted from the
-        edje object will cause this to happen too.
+        Also note that a standard signal of "size,eval" "elm" emitted from
+        the edje object will cause this to happen too.
 
         """
         elm_layout_sizing_eval(self.obj)
 
     def part_cursor_set(self, part_name, cursor):
-        """Sets a specific cursor for an edje part.
+        """part_cursor_set(part_name, cursor)
+
+        Sets a specific cursor for an edje part.
 
         @param part_name: a part from loaded edje group.
         @type part_name: string
@@ -444,7 +526,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_part_cursor_set(self.obj, _cfruni(part_name), _cfruni(cursor)))
 
     def part_cursor_get(self, part_name):
-        """Get the cursor to be shown when mouse is over an edje part
+        """part_cursor_get(part_name)
+
+        Get the cursor to be shown when mouse is over an edje part
 
         @param part_name: a part from loaded edje group.
         @type part_name: string
@@ -455,7 +539,9 @@ cdef class LayoutClass(Object):
         return _ctouni(elm_layout_part_cursor_get(self.obj, _cfruni(part_name)))
 
     def part_cursor_unset(self, part_name):
-        """Unsets a cursor previously set with L{part_cursor_set()}.
+        """part_cursor_unset(part_name)
+
+        Unsets a cursor previously set with L{part_cursor_set()}.
 
         @param part_name: a part from loaded edje group, that had a cursor set
             with L{part_cursor_set()}.
@@ -467,7 +553,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_part_cursor_unset(self.obj, _cfruni(part_name)))
 
     def part_cursor_style_set(self, part_name, style):
-        """Sets a specific cursor style for an edje part.
+        """part_cursor_style_set(part_name, style)
+
+        Sets a specific cursor style for an edje part.
 
         @param part_name: a part from loaded edje group.
         @type part_name: string
@@ -482,7 +570,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_part_cursor_style_set(self.obj, _cfruni(part_name), _cfruni(style)))
 
     def part_cursor_style_get(self, part_name):
-        """Gets a specific cursor style for an edje part.
+        """part_cursor_style_get(part_name)
+
+        Gets a specific cursor style for an edje part.
 
         @param part_name: a part from loaded edje group.
         @type part_name: string
@@ -495,7 +585,9 @@ cdef class LayoutClass(Object):
         return _ctouni(elm_layout_part_cursor_style_get(self.obj, _cfruni(part_name)))
 
     def part_cursor_engine_only_set(self, part_name, engine_only):
-        """Sets if the cursor set should be searched on the theme or should use
+        """part_cursor_engine_only_set(part_name, engine_only)
+
+        Sets if the cursor set should be searched on the theme or should use
         the provided by the engine, only.
 
         @note: before you set if should look on theme you should define a
@@ -516,7 +608,9 @@ cdef class LayoutClass(Object):
         return bool(elm_layout_part_cursor_engine_only_set(self.obj, _cfruni(part_name), engine_only))
 
     def part_cursor_engine_only_get(self, part_name):
-        """Gets a specific cursor engine_only for an edje part.
+        """part_cursor_engine_only_get(part_name)
+
+        Gets a specific cursor engine_only for an edje part.
 
         @param part_name: a part from loaded edje group.
         @type part_name: string
@@ -531,6 +625,9 @@ cdef class LayoutClass(Object):
         """Convenience macro to set the icon object in a layout that follows the
         Elementary naming convention for its parts.
 
+        @param icon: The icon object
+        @type icon: L{Object}
+
         """
         elm_layout_icon_set(self.obj, icon.obj if icon else NULL)
 
@@ -538,19 +635,31 @@ cdef class LayoutClass(Object):
         """Convenience macro to get the icon object from a layout that follows the
         Elementary naming convention for its parts.
 
+        @return: The icon object
+        @rtype: L{Object}
+
         """
-        cdef Evas_Object *obj = elm_layout_icon_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_icon_get(self.obj))
 
     property icon:
+        """The icon object in a layout that follows the Elementary naming
+        convention for its parts.
+
+        @type: L{Object}
+
+        """
         def __get__(self):
-            return self.icon_get()
-        def __set__(self, value):
-            self.icon_set(value)
+            return Object_from_instance(elm_layout_icon_get(self.obj))
+
+        def __set__(self, evasObject icon):
+            elm_layout_icon_set(self.obj, icon.obj if icon else NULL)
 
     def end_set(self, evasObject end):
         """Convenience macro to set the end object in a layout that follows the
         Elementary naming convention for its parts.
+
+        @param end: The end object
+        @type end: L{Object}
 
         """
         elm_layout_end_set(self.obj, end.obj if end else NULL)
@@ -559,15 +668,24 @@ cdef class LayoutClass(Object):
         """Convenience macro to get the end object in a layout that follows the
         Elementary naming convention for its parts.
 
+        @return: The end object
+        @rtype: L{Object}
+
         """
-        cdef Evas_Object *obj = elm_layout_end_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_layout_end_get(self.obj))
 
     property end:
+        """The end object in a layout that follows the Elementary naming
+        convention for its parts.
+
+        @type: L{Object}
+
+        """
         def __get__(self):
-            return self.end_get()
-        def __set__(self, value):
-            self.end_set(value)
+            return Object_from_instance(elm_layout_end_get(self.obj))
+
+        def __set__(self, evasObject end):
+            elm_layout_end_set(self.obj, end.obj if end else NULL)
 
     def callback_theme_changed_add(self, func, *args, **kwargs):
         """The theme was changed."""

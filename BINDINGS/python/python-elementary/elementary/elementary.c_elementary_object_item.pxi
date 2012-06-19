@@ -112,8 +112,7 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_object_item_widget_get(self.item)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_item_widget_get(self.item))
 
     def part_content_set(self, part, Object content):
         """part_content_set(part, content)
@@ -150,12 +149,10 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_object_item_part_content_get(self.item, _cfruni(part))
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_item_part_content_get(self.item, _cfruni(part)))
 
     def content_get(self):
-        cdef Evas_Object *obj = elm_object_item_content_get(self.item)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_item_content_get(self.item))
 
     def part_content_unset(self, part):
         """part_content_unset(part)
@@ -169,13 +166,10 @@ cdef class ObjectItem(object):
         @type part: string
 
         """
-        cdef Evas_Object *obj = elm_object_item_part_content_unset(self.item, _cfruni(part))
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_item_part_content_unset(self.item, _cfruni(part)))
 
     def content_unset(self):
-        cdef Evas_Object *obj = elm_object_item_content_unset(self.item)
-        return Object_from_instance(obj)
-
+        return Object_from_instance(elm_object_item_content_unset(self.item))
 
     def part_text_set(self, part, text):
         """part_text_set(part, text)
@@ -271,7 +265,6 @@ cdef class ObjectItem(object):
             return None
         else:
             (obj, callback, it, a, ka) = <object>data
-
             return (a, ka)
 
     #def data_set(self, data):

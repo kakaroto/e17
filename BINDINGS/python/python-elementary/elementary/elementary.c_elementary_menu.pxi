@@ -152,18 +152,7 @@ cdef class MenuItem(ObjectItem):
         @rtype: tuple of L{MenuItem}s
 
         """
-        cdef const_Eina_List *lst, *itr
-        cdef void *data
-        ret = []
-        lst = elm_menu_item_subitems_get(self.item)
-        itr = lst
-        while itr:
-            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
-            if data != NULL:
-                (o, callback, it, a, ka) = <object>data
-                ret.append(it)
-            itr = itr.next
-        return ret
+        return _object_item_list_to_python(elm_menu_item_subitems_get(self.item))
 
     property subitems:
         """A list of item's subitems.
@@ -172,18 +161,7 @@ cdef class MenuItem(ObjectItem):
 
         """
         def __get__(self):
-            cdef const_Eina_List *lst, *itr
-            cdef void *data
-            ret = []
-            lst = elm_menu_item_subitems_get(self.item)
-            itr = lst
-            while itr:
-                data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
-                if data != NULL:
-                    (o, callback, it, a, ka) = <object>data
-                    ret.append(it)
-                itr = itr.next
-            return ret
+            return _object_item_list_to_python(elm_menu_item_subitems_get(self.item))
 
     def index_get(self):
         """Get the position of a menu item
@@ -370,21 +348,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: tuple of L{Object}s
 
         """
-        cdef Elm_Object_Item *it
-        cdef const_Eina_List *lst
-        cdef void *data
-        cdef object prm
-
-        lst = elm_menu_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _object_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(elm_menu_items_get(self.obj))
 
     property items:
         """Returns a list of C{item}'s items.
@@ -393,21 +357,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
 
         """
         def __get__(self):
-            cdef Elm_Object_Item *it
-            cdef const_Eina_List *lst
-            cdef void *data
-            cdef object prm
-
-            lst = elm_menu_items_get(self.obj)
-            ret = []
-            ret_append = ret.append
-            while lst:
-                it = <Elm_Object_Item *>lst.data
-                lst = lst.next
-                o = _object_item_to_python(it)
-                if o is not None:
-                    ret_append(o)
-            return ret
+            return _object_item_list_to_python(elm_menu_items_get(self.obj))
 
     def item_add(self, parent = None, label = None, icon = None, callback = None, *args, **kwargs):
         """item_add(parent=None, label=None, icon=None, callback=None, *args, **kwargs)
