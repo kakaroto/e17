@@ -22,10 +22,10 @@ struct E_Phys_Force
   void (*free) (E_Phys_Force *force);
 };
 
-void e_phys_force_init(E_Phys_Force *force, E_Phys_World *world,
-       void (*apply_func) (E_Phys_Force *force),
-       void (*free_func) (E_Phys_Force *force));
-void e_phys_force_free(E_Phys_Force *force);
+EAPI void e_phys_force_init(E_Phys_Force *force, E_Phys_World *world,
+            void (*apply_func) (E_Phys_Force *force),
+            void (*free_func) (E_Phys_Force *force));
+EAPI void e_phys_force_free(E_Phys_Force *force);
 
 /**
  * Type definition of the gravity force
@@ -47,7 +47,7 @@ struct E_Phys_Force_Gravity
   float g;
 };
 
-E_Phys_Force_Gravity   *e_phys_force_gravity_add(E_Phys_World *world, float g);
+EAPI E_Phys_Force_Gravity   *e_phys_force_gravity_add(E_Phys_World *world, float g);
 
 /**
  * Type definition of the spring force
@@ -73,10 +73,10 @@ struct E_Phys_Force_Spring
   int modified;
 };
 
-E_Phys_Force_Spring    *e_phys_force_spring_add(E_Phys_World *world,
-                          E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len);
-E_Phys_Force_Spring    *e_phys_force_modified_spring_add(E_Phys_World *world,
-                          E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len);
+EAPI E_Phys_Force_Spring    *e_phys_force_spring_add(E_Phys_World *world,
+                               E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len);
+EAPI E_Phys_Force_Spring    *e_phys_force_modified_spring_add(E_Phys_World *world,
+                               E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len);
 
 /**
  * Type definition of the collision force
@@ -98,7 +98,7 @@ struct E_Phys_Force_Collision
   float e; // elasticity?
 };
 
-E_Phys_Force_Collision *e_phys_force_collision_add(E_Phys_World *world);
+EAPI E_Phys_Force_Collision *e_phys_force_collision_add(E_Phys_World *world);
 
 /**
  * Type definition of the uniform force
@@ -122,9 +122,9 @@ struct E_Phys_Force_Uniform
   int is_acceleration;
 };
 
-E_Phys_Force_Uniform *e_phys_force_uniform_add(E_Phys_World *world, 
-                        E_Phys_Vector (*force_func) (float t), 
-                        int is_acceleration);
+EAPI E_Phys_Force_Uniform *e_phys_force_uniform_add(E_Phys_World *world, 
+                             E_Phys_Vector (*force_func) (float t), 
+                             int is_acceleration);
 
 /**
  * Type definition of the constant force
@@ -137,7 +137,7 @@ typedef E_Phys_Force_Uniform E_Phys_Force_Constant;
  */
 #define E_PHYS_FORCE_CONSTANT(force) ((E_Phys_Force_Constant *)(force))
 
-E_Phys_Force_Constant *e_phys_force_constant_add(E_Phys_World *world, 
-                         E_Phys_Vector force, int is_acceleration);
+EAPI E_Phys_Force_Constant *e_phys_force_constant_add(E_Phys_World *world, 
+                              E_Phys_Vector force, int is_acceleration);
 
 #endif

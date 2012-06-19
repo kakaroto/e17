@@ -22,11 +22,11 @@ struct E_Phys_Constraint
   void (*free) (E_Phys_Constraint *con);
 };
 
-void e_phys_constraint_init(E_Phys_Constraint *con, E_Phys_World *world,
-       void (*apply_func) (E_Phys_Constraint *con),
-       void (*free_func) (E_Phys_Constraint *con));
-void e_phys_constraint_del(E_Phys_Constraint *con);
-void e_phys_constraint_free(E_Phys_Constraint *con);
+EAPI void e_phys_constraint_init(E_Phys_Constraint *con, E_Phys_World *world,
+            void (*apply_func) (E_Phys_Constraint *con),
+            void (*free_func) (E_Phys_Constraint *con));
+EAPI void e_phys_constraint_del(E_Phys_Constraint *con);
+EAPI void e_phys_constraint_free(E_Phys_Constraint *con);
 
 /**
  * Type definition of the boundary constraint
@@ -49,7 +49,7 @@ struct E_Phys_Constraint_Boundary
   Eina_List *exclusions;
 };
 
-E_Phys_Constraint_Boundary *e_phys_constraint_boundary_add(E_Phys_World *world);
+EAPI E_Phys_Constraint_Boundary *e_phys_constraint_boundary_add(E_Phys_World *world);
 
 /**
  * Type definition of the stick constraint
@@ -73,10 +73,10 @@ struct E_Phys_Constraint_Stick
   float len;
 };
 
-E_Phys_Constraint_Stick    *e_phys_constraint_stick_add(
-                              E_Phys_Particle *p1,
-                              E_Phys_Particle *p2,
-                              int len);
+EAPI E_Phys_Constraint_Stick    *e_phys_constraint_stick_add(
+                                   E_Phys_Particle *p1,
+                                   E_Phys_Particle *p2,
+                                   int len);
 
 /**
  * Type definition of the anchor constraint
@@ -99,7 +99,7 @@ struct E_Phys_Constraint_Anchor
   E_Phys_Point pos;
 };
 
-E_Phys_Constraint_Anchor *e_phys_constraint_anchor_add(E_Phys_Particle *p, 
-                            float x, float y);
+EAPI E_Phys_Constraint_Anchor *e_phys_constraint_anchor_add(E_Phys_Particle *p, 
+                                 float x, float y);
 
 #endif

@@ -47,15 +47,15 @@ struct E_Phys_World
   void *update_data;
 };
 
-E_Phys_World    *e_phys_world_add(void);
-void             e_phys_world_free(E_Phys_World *world);
-void             e_phys_world_go(E_Phys_World *world);
-void             e_phys_world_stop(E_Phys_World *world);
-void             e_phys_world_update_func_set(E_Phys_World *world,
-                   void (*func) (void *data, E_Phys_World *world),
-                   void *data);
-void             e_phys_world_size_set(E_Phys_World *world, float w, float h);
-E_Phys_Particle *e_phys_world_nearest_particle(E_Phys_World *world,
-                   int x, int y);
+EAPI E_Phys_World    *e_phys_world_add(void);
+EAPI void             e_phys_world_free(E_Phys_World *world);
+EAPI void             e_phys_world_go(E_Phys_World *world);
+EAPI void             e_phys_world_stop(E_Phys_World *world);
+EAPI void             e_phys_world_update_func_set(E_Phys_World *world,
+                        void (*func) (void *data, E_Phys_World *world),
+                        void *data);
+EAPI void             e_phys_world_size_set(E_Phys_World *world, float w, float h);
+EAPI E_Phys_Particle *e_phys_world_nearest_particle(E_Phys_World *world,
+                        int x, int y);
 
 #endif
