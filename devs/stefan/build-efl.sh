@@ -14,7 +14,7 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 
 defcore="eina eet evas evas_generic_loaders ecore eio edje emotion eeze
 	embryo e_dbus efreet PROTO/libeweather PROTO/emap elementary"
-defapps="terminology e ephoto rage expedite"
+defapps="ethumb terminology e ephoto rage expedite"
 
 defpkgs="$defcore $defapps"
 
