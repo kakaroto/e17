@@ -317,13 +317,6 @@ def coords_finger_size_adjust(times_w, w, times_h, h):
     height = h
     elm_coords_finger_size_adjust(times_w, &width, times_h, &height)
 
-def theme_overlay_add(item):
-    elm_theme_overlay_add(NULL, item)
-
-def theme_extension_add(item):
-    elm_theme_extension_add(NULL, item)
-
-
 cdef object _elm_widget_type_mapping
 
 _elm_widget_type_mapping = {}
@@ -370,6 +363,7 @@ class ElementaryObjectMeta(type):
             append((name, evt))
 
 include "elementary.c_elementary_configuration.pxi"
+include "elementary.c_elementary_theme.pxi"
 include "elementary.c_elementary_object.pxi"
 include "elementary.c_elementary_object_item.pxi"
 include "elementary.c_elementary_layout_class.pxi"

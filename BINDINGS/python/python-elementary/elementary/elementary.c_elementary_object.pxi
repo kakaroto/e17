@@ -243,12 +243,10 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_object_part_content_get(self.obj, _cfruni(part))
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_part_content_get(self.obj, _cfruni(part)))
 
     def content_get(self):
-        cdef Evas_Object *obj = elm_object_content_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_content_get(self.obj))
 
     def part_content_unset(self, part):
         """part_content_unset(part)
@@ -262,12 +260,10 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @type part: string
 
         """
-        cdef Evas_Object *obj = elm_object_part_content_unset(self.obj, _cfruni(part))
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_part_content_unset(self.obj, _cfruni(part)))
 
     def content_unset(self):
-        cdef Evas_Object *obj = elm_object_content_unset(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_content_unset(self.obj))
 
     property content:
         def __get__(self):
@@ -446,8 +442,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_object_parent_widget_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_parent_widget_get(self.obj))
 
     property parent_widget:
         """The first parent of the given object that is an Elementary
@@ -469,8 +464,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_object_top_widget_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_top_widget_get(self.obj))
 
     property top_widget:
         """The top level parent of an Elementary widget.
@@ -839,7 +833,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         ret = []
         lst = elm_object_focus_custom_chain_get(self.obj)
         while lst:
-            o = <Evas_Object *> lst.data
+            o = <Evas_Object *>lst.data
             obj = <Object>evas_object_data_get(o, "python-evas")
             ret.append(obj)
             lst = lst.next
@@ -1041,7 +1035,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
 
         @param scale: Scale factor (from C{0.0} up, with C{1.0} meaning
             no scaling)
-        @type scale: double
+        @type scale: float
 
         """
         elm_object_scale_set(self.obj, scale)
@@ -1052,17 +1046,15 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         Get the scaling factor for a given Elementary object
 
         @return: The scaling factor set by L{scale_set()}
-        @rtype: double
+        @rtype: float
 
         """
-        cdef double scale
-        scale = elm_object_scale_get(self.obj)
-        return scale
+        return elm_object_scale_get(self.obj)
 
     property scale:
         """The scaling factor for the Elementary object.
 
-        @type: double
+        @type: float
 
         """
         def __get__(self):
@@ -1141,11 +1133,27 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             self.scroll_lock_y_set(value)
 
     # Theme
-    #def theme_set(self, Elm_Theme* th):
-        #elm_object_theme_set(self.obj, th)
+    property theme:
+        """A theme to be used for this object and its children.
 
-    #def theme_get(self):
-        #return <Elm_Theme>elm_object_theme_get(self.obj)
+        This sets a specific theme that will be used for the given object and any
+        child objects it has. If @p th is NULL then the theme to be used is
+        cleared and the object will inherit its theme from its parent (which
+        ultimately will use the default theme if no specific themes are set).
+
+        Use special themes with great care as this will annoy users and make
+        configuration difficult. Avoid any custom themes at all if it can be
+        helped.
+
+        @type: L{Theme}
+
+        """
+        def __set__(self, Theme th):
+            elm_object_theme_set(self.obj, th.th)
+        def __get__(self):
+            cdef Theme th = Theme()
+            th.th = elm_object_theme_get(self.obj)
+            return th
 
     # Tooltips
     def tooltip_show(self):
