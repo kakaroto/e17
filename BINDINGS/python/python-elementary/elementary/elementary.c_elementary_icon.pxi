@@ -114,6 +114,30 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
         else:
             elm_icon_thumb_set(self.obj, _cfruni(filename), _cfruni(group))
 
+    property thumb:
+        """Set the file (and edje group) that will be used, but use a
+        generated thumbnail.
+
+        This functions like L{Image.file_set()} but requires the Ethumb
+        library support to be enabled successfully with elm_need_ethumb().
+        When set the file indicated has a thumbnail generated and cached on
+        disk for future use or will directly use an existing cached
+        thumbnail if it is valid.
+
+        @see: L{Image.file}
+
+        @type group: string or tuple of strings
+
+        """
+        def __set__(self, value):
+            if isinstance(value, tuple):
+                filename, group = value
+            else:
+                filename = value
+                group = None
+            # TODO: check return value
+            elm_icon_thumb_set(self.obj, _cfruni(filename), _cfruni(group))
+
     def standard_set(self, name):
         """Set the icon by icon standards names.
 
@@ -174,9 +198,10 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
 
         """
         def __get__(self):
-            return self.standard_get()
-        def __set__(self, standard):
-            self.standard_set(standard)
+            return _ctouni(elm_icon_standard_get(self.obj))
+        def __set__(self, name):
+            # TODO: check return value
+            elm_icon_standard_set(self.obj, _cfruni(name))
 
     def order_lookup_set(self, order):
         """Sets the icon lookup order used by L{standard_set()}.
@@ -209,9 +234,9 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
 
         """
         def __get__(self):
-            return self.order_lookup_get()
-        def __set__(self, order_lookup):
-            self.order_lookup_set(order_lookup)
+            return elm_icon_order_lookup_get(self.obj)
+        def __set__(self, order):
+            elm_icon_order_lookup_set(self.obj, order)
 
     def callback_thumb_done_add(self, func, *args, **kwargs):
         """L{thumb_set()} has completed with success."""

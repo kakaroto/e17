@@ -101,8 +101,7 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_hover_target_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_hover_target_get(self.obj))
 
     property target:
         """The target object for the hover.
@@ -113,9 +112,9 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
 
         """
         def __get__(self):
-            return self.target_get()
-        def __set__(self, target):
-            self.target_set(target)
+            return Object_from_instance(elm_hover_target_get(self.obj))
+        def __set__(self, evasObject target):
+            elm_hover_target_set(self.obj, target.obj)
 
     def parent_set(self, evasObject parent):
         """Sets the parent object for the hover.
@@ -138,11 +137,27 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_hover_parent_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_hover_parent_get(self.obj))
+
+    property parent:
+        """The parent object for the hover.
+
+        This will cause the hover to take up the entire space that the
+        parent object fills.
+
+        @type: L{Object}
+
+        """
+        def __set__(self, evasObject parent):
+            elm_hover_parent_set(self.obj, parent.obj)
+
+        def __get__(self):
+            return Object_from_instance(elm_hover_parent_get(self.obj))
 
     def best_content_location_get(self, axis):
-        """Returns the best swallow location for content in the hover.
+        """best_content_location_get(axis)
+
+        Returns the best swallow location for content in the hover.
 
         Best is defined here as the location at which there is the most
         available space.
@@ -165,19 +180,18 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
         @param pref_axis: The preferred orientation axis for the hover
             object to use
         @type pref_axis: Elm_Hover_Axis
+
         @return: The edje location to place content into the hover or C{None},
             on errors.
         @rtype: string
 
         """
-        cdef const_char_ptr string
-        string = elm_hover_best_content_location_get(self.obj, axis)
-        if string == NULL:
-            return None
-        return string
+        return _ctouni(elm_hover_best_content_location_get(self.obj, axis))
 
     def dismiss(self):
-        """Dismiss a hover object
+        """dismiss()
+
+        Dismiss a hover object
 
         Use this function to simulate clicking outside the hover to dismiss
         it. In this way, the hover will be hidden and the "clicked" signal

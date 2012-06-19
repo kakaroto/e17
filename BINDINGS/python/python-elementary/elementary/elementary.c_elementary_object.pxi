@@ -115,6 +115,16 @@ def _cb_string_conv(long addr):
     else:
         return s
 
+cdef _object_list_to_python(const_Eina_List *lst):
+    cdef Evas_Object *o
+    ret = []
+    while lst:
+        o = <Evas_Object *>lst.data
+        obj = Object_from_instance(o)
+        ret.append(obj)
+        lst = lst.next
+    return ret
+
 cdef class Canvas(evas.c_evas.Canvas):
     def __init__(self):
         pass

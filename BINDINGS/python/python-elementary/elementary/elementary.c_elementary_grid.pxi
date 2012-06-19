@@ -57,8 +57,24 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_size_get(self.obj, &w, &h)
         return (w, h)
 
-    def pack(self, evasObject subobj, x, y, w, h):
+    property size:
+        """The virtual size (width and height) of the grid.
+
+        @type: tuple of Evas_Coords (int)
+
         """
+        def __set__(self, value):
+            w, h = value
+            elm_grid_size_set(self.obj, w, h)
+
+        def __get__(self):
+            cdef Evas_Coord w, h
+            elm_grid_size_get(self.obj, &w, &h)
+            return (w, h)
+
+    def pack(self, evasObject subobj, x, y, w, h):
+        """pack(subobj, x, y, w, h)
+
         Pack child at given position and size
 
         @param subobj: The child to pack
@@ -76,7 +92,9 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_pack(self.obj, subobj.obj, x, y, w, h)
 
     def unpack(self, evasObject subobj):
-        """Unpack a child from a grid object
+        """unpack(subobj)
+
+        Unpack a child from a grid object
 
         @param subobj: The child to unpack
         @type subobj: L{Object}
@@ -85,7 +103,8 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_unpack(self.obj, subobj.obj)
 
     def clear(self, clear):
-        """
+        """clear()
+
         Faster way to remove all child objects from a grid object.
 
         @param clear: If True, it will delete just removed children
@@ -95,7 +114,9 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_clear(self.obj, clear)
 
     def pack_set(evasObject subobj, x, y, w, h):
-        """Set packing of an existing child at to position and size
+        """pack_set(subobj, x, y, w, h)
+
+        Set packing of an existing child at to position and size
 
         @param subobj: The child to set packing of
         @type subobj: L{Object}
@@ -112,18 +133,15 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_pack_set(subobj.obj, x, y, w, h)
 
     def pack_get(evasObject subobj):
-        """Get packing of a child
+        """pack_get(subobj)
+
+        Get packing of a child
 
         @param subobj: The child to query
         @type subobj: L{Object}
-        @param x: Pointer to integer to store the virtual x coord
-        @type x: Evas_Coord (int)
-        @param y: Pointer to integer to store the virtual y coord
-        @type y: Evas_Coord (int)
-        @param w: Pointer to integer to store the virtual width
-        @type w: Evas_Coord (int)
-        @param h: Pointer to integer to store the virtual height
-        @type h: Evas_Coord (int)
+
+        return: The position and size
+        rtype: tuple of Evas_Coords (int)
 
         """
         cdef Evas_Coord x, y, w, h
@@ -137,18 +155,29 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         @rtype: tuple of L{Object}s
 
         """
-        cdef Evas_Object *o
-        cdef Object obj
-        cdef Eina_List *lst
+        return _object_list_to_python(elm_box_children_get(self.obj))
+#~         cdef Evas_Object *o
+#~         cdef Object obj
+#~         cdef Eina_List *lst
+#~
+#~         ret = []
+#~         lst = elm_box_children_get(self.obj)
+#~         while lst:
+#~             o = <Evas_Object *> lst.data
+#~             obj = <Object>evas_object_data_get(o, "python-evas")
+#~             ret.append(obj)
+#~             lst = lst.next
+#~         return ret
 
-        ret = []
-        lst = elm_box_children_get(self.obj)
-        while lst:
-            o = <Evas_Object *> lst.data
-            obj = <Object>evas_object_data_get(o, "python-evas")
-            ret.append(obj)
-            lst = lst.next
-        return ret
+    property children:
+        """Get the list of the children for the grid.
+
+        @return: The list of children
+        @rtype: tuple of L{Object}s
+
+        """
+        def __get__(self):
+            return _object_list_to_python(elm_box_children_get(self.obj))
 
 _elm_widget_type_register("grid", Grid)
 

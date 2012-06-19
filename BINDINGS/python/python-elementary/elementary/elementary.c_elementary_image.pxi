@@ -87,6 +87,31 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         elm_image_file_get(self.obj, &filename, &group)
         return (_ctouni(filename), _ctouni(group))
 
+    property file:
+        """The file (and edje group) that will be used as the image's source.
+
+        @note: Setting this will trigger the Edje file case based on the
+            extension of the C{file} string (expects C{".edj"}, for this
+            case). If one wants to force this type of file independently of
+            the extension, L{file_edje_set()} must be used, instead.
+
+        @type: string or tuple of strings
+
+        """
+        def __set__(self, value):
+            if isinstance(value, tuple):
+                filename, group = value
+            else:
+                filename = value
+                group = None
+            # TODO: check return value
+            elm_image_file_set(self.obj, _cfruni(filename), _cfruni(group))
+
+        def __get__(self):
+            cdef const_char_ptr filename, group
+            elm_image_file_get(self.obj, &filename, &group)
+            return (_ctouni(filename), _ctouni(group))
+
     def smooth_set(self, smooth):
         """Set the smooth effect for an image.
 
@@ -133,9 +158,10 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.smooth_get()
+            return bool(elm_image_smooth_get(self.obj))
+
         def __set__(self, smooth):
-            self.smooth_set(smooth)
+            elm_image_smooth_set(self.obj, smooth)
 
     def object_size_get(self):
         """Gets the current size of the image.
@@ -159,7 +185,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.object_size_get()
+            cdef int width, height
+            elm_image_object_size_get(self.obj, &width, &height)
+            return (width, height)
 
     def no_scale_set(self, no_scale):
         """Disable scaling of this object.
@@ -206,9 +234,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.no_scale_get()
+            return bool(elm_image_no_scale_get(self.obj))
         def __set__(self, no_scale):
-            self.no_scale_set(no_scale)
+            elm_image_no_scale_set(self.obj, no_scale)
 
     def resizable_set(self, size_up, size_down):
         """Set if the object is (up/down) resizable.
@@ -251,9 +279,13 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.resizable_get()
+            cdef Eina_Bool size_up, size_down
+            elm_image_resizable_get(self.obj, &size_up, &size_down)
+            return (size_up, size_down)
+
         def __set__(self, value):
-            self.resizable_set(*value)
+            size_up, size_down = value
+            elm_image_resizable_set(self.obj, size_up, size_down)
 
     def fill_outside_set(self, fill_outside):
         """Set if the image fills the entire object area, when keeping the aspect ratio.
@@ -306,9 +338,10 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.fill_outside_get()
+            return bool(elm_image_fill_outside_get(self.obj))
+
         def __set__(self, fill_outside):
-            self.fill_outside_set(fill_outside)
+            elm_image_fill_outside_set(self.obj, fill_outside)
 
     def preload_disabled_set(self, disabled):
         """Enable or disable preloading of the image
@@ -318,6 +351,15 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         elm_image_preload_disabled_set(self.obj, disabled)
+
+    property preload_disabled:
+        """Enable or disable preloading of the image
+
+        @type: bool
+
+        """
+        def __set__(self, disabled):
+            elm_image_preload_disabled_set(self.obj, disabled)
 
     def prescale_set(self, size):
         """Set the prescale size for the image
@@ -372,9 +414,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.prescale_get()
-        def __set__(self, prescale):
-            self.prescale_set(prescale)
+            return elm_image_prescale_get(self.obj)
+        def __set__(self, size):
+            elm_image_prescale_set(self.obj, size)
 
     def orient_set(self, orientation):
         """Set the image orientation.
@@ -409,9 +451,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.orient_get()
-        def __set__(self, orient):
-            self.orient_set(orient)
+            return elm_image_orient_get(self.obj)
+        def __set__(self, orientation):
+            elm_image_orient_set(self.obj, orientation)
 
     def editable_set(self, editable):
         """Make the image 'editable'.
@@ -447,9 +489,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.editable_get()
+            return bool(elm_image_editable_get(self.obj))
         def __set__(self, editable):
-            self.editable_set(editable)
+            elm_image_editable_set(self.obj, editable)
 
     def object_get(self):
         """Get the inlined image object of the image widget.
@@ -465,11 +507,24 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         @rtype: evas.Image
 
         """
-        pass
-        # XXX: This is not right at all.
-        #cdef Evas_Object *o
-        #o = elm_image_object_get(self.obj)
-        #return <Object>o
+        return Object_from_instance(elm_image_object_get(self.obj))
+
+    property object:
+        """Get the inlined image object of the image widget.
+
+        This function allows one to get the underlying C{Evas_Object} of type
+        Image from this elementary widget. It can be useful to do things like get
+        the pixel data, save the image to a file, etc.
+
+        @note: Be careful to not manipulate it, as it is under control of
+        elementary.
+
+        @return: The inlined image object, or None if none exists
+        @rtype: evas.Image
+
+        """
+        def __get__(self):
+            return Object_from_instance(elm_image_object_get(self.obj))
 
     def aspect_fixed_set(self, fixed):
         """Set whether the original aspect ratio of the image should be kept on resize.
@@ -513,9 +568,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.aspect_fixed_get()
-        def __set__(self, aspect_fixed):
-            self.aspect_fixed_set(aspect_fixed)
+            return bool(elm_image_aspect_fixed_get(self.obj))
+        def __set__(self, fixed):
+            elm_image_aspect_fixed_set(self.obj, fixed)
 
     def animated_available_get(self):
         """Get whether an image object supports animation or not.
@@ -548,7 +603,7 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.animated_available_get()
+            return bool(elm_image_animated_available_get(self.obj))
 
     def animated_set(self, animated):
         """Set whether an image object (which supports animation) is to
@@ -598,9 +653,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.animated_get()
+            return bool(elm_image_animated_get(self.obj))
         def __set__(self, animated):
-            self.animated_set(animated)
+            elm_image_animated_set(self.obj, animated)
 
     def animated_play_set(self, play):
         """Start or stop an image object's animation.
@@ -660,9 +715,9 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
 
         """
         def __get__(self):
-            return self.animated_play_get()
-        def __set__(self, animated_play):
-            self.animated_play_set(animated_play)
+            return bool(elm_image_animated_play_get(self.obj))
+        def __set__(self, play):
+            elm_image_animated_play_set(self.obj, play)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         """This is called when a user has clicked the image."""

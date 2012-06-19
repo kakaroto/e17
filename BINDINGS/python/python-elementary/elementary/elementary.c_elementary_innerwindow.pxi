@@ -91,9 +91,7 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *o
-        o = elm_win_inwin_content_get(self.obj)
-        return <Object>o
+        return Object_from_instance(elm_win_inwin_content_get(self.obj))
 
     def content_unset(self):
         """Unset the content of an inwin object.
@@ -104,26 +102,29 @@ cdef public class InnerWindow(LayoutClass) [object PyElementaryInnerWindow, type
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *o
-        o = elm_win_inwin_content_unset(self.obj)
-        return <Object>o
+        return Object_from_instance(elm_win_inwin_content_unset(self.obj))
 
     property content:
         """The content of an inwin object.
 
         Once the content object is set, a previously set one will be deleted.
-        If you want to keep that old content object, use the
-        L{content_unset()} function.
 
         @type: L{Object}
 
         """
         def __get__(self):
-            return self.content_get()
-        def __set__(self, content):
-            self.content_set(content)
+            return Object_from_instance(elm_win_inwin_content_get(self.obj))
+
+        def __set__(self, evasObject content):
+            cdef Evas_Object *o
+            if content is not None:
+                o = content.obj
+            else:
+                o = NULL
+            elm_win_inwin_content_set(self.obj, o)
+
         def __del__(self):
-            self.content_unset()
+            elm_win_inwin_content_unset(self.obj)
 
 _elm_widget_type_register("inwin", InnerWindow)
 
