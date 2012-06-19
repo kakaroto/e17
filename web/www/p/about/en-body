@@ -89,12 +89,12 @@
    <p>
     Enlightenment, the window manager is built on top of building blocks
     known as EFL (the Enlightenment Foundation Libraries). There are more
-    than can be sensibly put into the simple block diagram above, but this
-    covers the essentials.
+    than can be sensibly put into the block diagram above, but this covers
+    the essentials.
    </p>
    
    <center>
-    <?php img("diagram-efl-simple-small.png", "Simple E stack");?>
+    <?php img("diagram-efl-simple-small.png", "EFL Block Diagram");?>
    </center>
    
    <p>

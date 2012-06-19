@@ -30,13 +30,13 @@
     </p>
 
     <p>
-     A simple overview of the EFL (Enlightenment Foundation Libraries) stack
-     is here. <?php a("about", "There is more to this");?>, but this gives
-     a quick overview of where it fits in.
+     A overview of the EFL (Enlightenment Foundation Libraries) stack is
+     here. <?php a("about", "There is more to this");?>, but this gives a
+     quick overview of where it fits in.
     </p>
 
     <center>
-     <?php ast("about");?><?php img("diagram-efl-simple-small.png", "Simple E stack");?></a>
+     <?php ast("about");?><?php img("diagram-efl-simple-small.png", "EFL Block Diagram");?></a>
    </center>
 
    </div>
