@@ -89,7 +89,7 @@ epdf_postscript_print (const Epdf_Postscript *postscript)
 #endif
                             postscript->pdfdoc->getXRef(),
                             postscript->pdfdoc->getCatalog(),
-                            "PS title",
+                            (char *)"PS title",
                             postscript->first_page,
                             postscript->last_page,
                             psModePS,

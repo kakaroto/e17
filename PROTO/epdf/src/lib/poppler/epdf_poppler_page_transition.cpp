@@ -36,7 +36,7 @@ epdf_page_transition_new (Object *data)
 
   trans_dict = data->getDict ();
 
-  if (trans_dict->lookup ("S", &obj)->isName ()) {
+  if (trans_dict->lookup ((char *)"S", &obj)->isName ()) {
     const char *s;
 
     s = obj.getName();
@@ -67,12 +67,12 @@ epdf_page_transition_new (Object *data)
   }
   obj.free();
 
-  if (trans_dict->lookup ("D", &obj)->isInt ()) {
+  if (trans_dict->lookup ((char *)"D", &obj)->isInt ()) {
     transition->duration = obj.getInt();
   }
   obj.free();
 
-  if (trans_dict->lookup("Dm", &obj)->isName()) {
+  if (trans_dict->lookup((char *)"Dm", &obj)->isName()) {
     const char *dm = obj.getName();
     if ( strcmp( "H", dm ) == 0 )
       transition->alignment = EPDF_PAGE_TRANSITION_HORIZONTAL;
@@ -81,7 +81,7 @@ epdf_page_transition_new (Object *data)
   }
   obj.free();
 
-  if (trans_dict->lookup("M", &obj)->isName()) {
+  if (trans_dict->lookup((char *)"M", &obj)->isName()) {
     const char *m = obj.getName();
     if ( strcmp( "I", m ) == 0 )
       transition->direction = EPDF_PAGE_TRANSITION_INWARD;
@@ -90,23 +90,23 @@ epdf_page_transition_new (Object *data)
   }
   obj.free();
 
-  if (trans_dict->lookup("Di", &obj)->isInt()) {
+  if (trans_dict->lookup((char *)"Di", &obj)->isInt()) {
     transition->angle = obj.getInt();
   }
   obj.free();
 
-  if (trans_dict->lookup("Di", &obj)->isName()) {
+  if (trans_dict->lookup((char *)"Di", &obj)->isName()) {
     if ( strcmp( "None", obj.getName() ) == 0 )
       transition->angle = 0;
   }
   obj.free();
 
-  if (trans_dict->lookup("SS", &obj)->isReal()) {
+  if (trans_dict->lookup((char *)"SS", &obj)->isReal()) {
     transition->scale = obj.getReal();
   }
   obj.free();
 
-  if (trans_dict->lookup("B", &obj)->isBool()) {
+  if (trans_dict->lookup((char *)"B", &obj)->isBool()) {
     transition->is_rectangular = obj.getBool();
   }
   obj.free();
