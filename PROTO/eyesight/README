@@ -23,7 +23,8 @@ II) Modules
 
 III) Binary test
 
-Press right and left arrow to navigate in the document (if more than one page)
+Press arrows to navigate in the current page
+Press 'n'ext or 'p'revious key to navigate in the document (if more than one page)
 Press 'q' to quit
 
 EYESIGHT_DATA_DIR environment variable : directory where gradient.png is located
