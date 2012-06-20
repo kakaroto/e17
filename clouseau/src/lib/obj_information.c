@@ -582,14 +582,19 @@ obj_information_get(Tree_Item *treeit)
      {
         const char *style;
         const char *text;
+        char shorttext[48];
         const Evas_Textblock_Style *ts;
         oinfo->extra_props.type = CLOUSEAU_OBJ_TYPE_TEXTBLOCK;
 
         ts = evas_object_textblock_style_get(obj);
         style = evas_textblock_style_get(ts);
         text = evas_object_textblock_text_markup_get(obj);
+        strncpy(shorttext, text, 38);
+        if (shorttext[37])
+          strcpy(shorttext + 37, "\xe2\x80\xa6"); /* HORIZONTAL ELLIPSIS */
+
         oinfo->extra_props.u.textblock.style = eina_stringshare_add(style);
-        oinfo->extra_props.u.textblock.text = eina_stringshare_add(text);
+        oinfo->extra_props.u.textblock.text = eina_stringshare_add(shorttext);
      }
    else
      {
