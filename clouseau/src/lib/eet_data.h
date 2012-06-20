@@ -207,5 +207,6 @@ Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **
 
 /* Highlight code, we may choose to move this to other file later */
 void libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view);
-void libclouseau_make_lines(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
+void libclouseau_make_lines(bmp_info_st *st, Evas_Coord xx, Evas_Coord yy);
+void libclouseau_lines_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
 #endif  /*  EET_DATA_H  */

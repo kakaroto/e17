@@ -629,6 +629,9 @@ _mouse_move(void *data,
 
    elm_object_text_set(st->lb_mouse, s_bar);
 
+   if (((Evas_Event_Mouse_Move *) event_info)->buttons > 1)
+     libclouseau_make_lines(st, mp_x, mp_y);
+
    if (((xx >= 0) && (xx < ((Evas_Coord) st->w))) &&
          ((yy >= 0) && (yy < ((Evas_Coord) st->h))))
      { /* Need to test borders, because image may be scrolled */
@@ -651,7 +654,7 @@ _app_win_del(void *data,
    evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_OUT,
          _mouse_out);
    evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_DOWN,
-         libclouseau_make_lines);
+         libclouseau_lines_cb);
    st->win = st->bt = st->lb_mouse = st->o = NULL;
 }
 
@@ -834,7 +837,7 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
          _mouse_out, st);
 
    evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_DOWN,
-         libclouseau_make_lines, st);
+         libclouseau_lines_cb, st);
 
    evas_object_resize(st->scr, st->w, st->h);
    elm_win_resize_object_add(st->win, bx);

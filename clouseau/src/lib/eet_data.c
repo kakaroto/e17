@@ -810,20 +810,12 @@ libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view)
 }
 
 void
-libclouseau_make_lines(void *data,
-      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-      void *event_info)
+libclouseau_make_lines(bmp_info_st *st, Evas_Coord xx, Evas_Coord yy)
 {  /* and no, we are NOT talking about WHITE lines */
-   if (((Evas_Event_Mouse_Down *) event_info)->button == 1)
-     return; /* make line only if not left mouse button */
-
-   bmp_info_st *st = data;
-   Evas_Coord xx, yy, x_rgn, y_rgn, w_rgn, h_rgn;
+   Evas_Coord x_rgn, y_rgn, w_rgn, h_rgn;
    lines_free(st);
 
    elm_scroller_region_get(st->scr, &x_rgn, &y_rgn, &w_rgn, &h_rgn);
-   xx = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x);
-   yy = (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y);
 
    st->lx = evas_object_line_add(evas_object_evas_get(st->o));
    st->ly = evas_object_line_add(evas_object_evas_get(st->o));
@@ -839,4 +831,17 @@ libclouseau_make_lines(void *data,
          HIGHLIGHT_A);
    evas_object_show(st->lx);
    evas_object_show(st->ly);
+}
+
+void
+libclouseau_lines_cb(void *data,
+      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info)
+{
+   if (((Evas_Event_Mouse_Down *) event_info)->button == 1)
+     return; /* Draw line only if not left mouse button */
+
+   libclouseau_make_lines(data, 
+         (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x),
+         (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y));
 }
