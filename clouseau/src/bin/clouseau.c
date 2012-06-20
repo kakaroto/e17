@@ -536,6 +536,7 @@ static void
 _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
 {  /* Remove bmp if exists (according to obj-ptr), then add the new one */
    bmp_info_st *st = v->data;
+   st->zoom_val = 1.0; /* Init zoom value */
 
    app_data_st *app = (app_data_st *)
       eina_list_search_unsorted(apps, _app_ptr_cmp,
@@ -661,18 +662,51 @@ reset_view(void *data , void *event_info EINA_UNUSED)
    st->zoom_val = 1.0;
    lines_free(st);
    evas_object_size_hint_min_set(st->o, st->w, st->h);
-   st->cw = st->w;
-   st->ch = st->h;
 
    return EVAS_EVENT_FLAG_ON_HOLD;
 }
 
+static void
+_update_zoom(Evas_Object *img, Evas_Object *scr, Evas_Coord zx,
+      Evas_Coord zy, double zoom, Evas_Coord origw, Evas_Coord origh)
+{
+   Evas_Coord origrelx = 0, origrely= 0;
+   Evas_Coord offx = 0, offy= 0;
+
+   Evas_Coord sx, sy, sw, sh;
+   elm_scroller_region_get(scr, &sx, &sy, &sw, &sh);
+
+   /* Get coords on pic. */
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(img, &x, &y, &w, &h);
+        double ratio = (((double) origw) / w) * zoom;
+        origrelx = ratio * (double) (zx - x);
+        origrely = ratio * (double) (zy - y);
+
+        /* Offset of the cursor from the first visible pixel of the
+         * content. */
+        offx = (zx - x) - sx;
+        offy = (zy - y) - sy;
+     }
+
+   Evas_Coord imw, imh;
+   imw = origw * zoom;
+   imh = origh * zoom;
+   evas_object_size_hint_min_set(img, imw, imh);
+   evas_object_size_hint_max_set(img, imw, imh);
+
+   elm_scroller_region_show(scr, origrelx - offx, origrely - offy, sw, sh);
+}
+
 static Evas_Event_Flags
-zoom_start(void *data , void *event_info EINA_UNUSED)
+zoom_start(void *data , void *event_info)
 {
    bmp_info_st *st = data;
+   Elm_Gesture_Zoom_Info *p = (Elm_Gesture_Zoom_Info *) event_info;
    lines_free(st);
-   evas_object_size_hint_min_get(st->o, &st->cw, &st->ch);
+   _update_zoom(st->o, st->scr, p->x, p->y, st->zoom_val, st->w, st->h);
+
    return EVAS_EVENT_FLAG_ON_HOLD;
 }
 
@@ -681,14 +715,18 @@ zoom_move(void *data , void *event_info)
 {
    bmp_info_st *st = data;
    Elm_Gesture_Zoom_Info *p = (Elm_Gesture_Zoom_Info *) event_info;
+   _update_zoom(st->o, st->scr, p->x, p->y,
+         st->zoom_val * p->zoom, st->w, st->h);
 
-   if (p->zoom <= 0.1)  /* it's useless to go smaller then this */
-     return EVAS_EVENT_FLAG_ON_HOLD;
+   return EVAS_EVENT_FLAG_ON_HOLD;
+}
 
-   st->zoom_val = p->zoom;
-   evas_object_size_hint_min_set(st->o, st->cw * p->zoom, st->ch * p->zoom);
-   elm_scroller_region_show(st->scr,
-         p->x, p->y, st->w * p->zoom, st->h * p->zoom);
+static Evas_Event_Flags
+zoom_end(void *data , void *event_info)
+{
+   Elm_Gesture_Zoom_Info *p = (Elm_Gesture_Zoom_Info *) event_info;
+   bmp_info_st *st = data;
+   st->zoom_val *= p->zoom;
 
    return EVAS_EVENT_FLAG_ON_HOLD;
 }
@@ -751,8 +789,6 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
    st->o = evas_object_image_filled_add(
          evas_object_evas_get(bx));
 
-   st->cw = st->w;  /* Init current width  */
-   st->ch = st->h;  /* Init current hieght */
    evas_object_size_hint_min_set(st->o, st->w, st->h);
    elm_object_content_set(st->scr, st->o);
 
@@ -817,6 +853,10 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
          ELM_GESTURE_STATE_START, zoom_start, st);
    elm_gesture_layer_cb_set(glayer, ELM_GESTURE_ZOOM,
          ELM_GESTURE_STATE_MOVE, zoom_move, st);
+   elm_gesture_layer_cb_set(glayer, ELM_GESTURE_ZOOM,
+         ELM_GESTURE_STATE_END, zoom_end, st);
+   elm_gesture_layer_cb_set(glayer, ELM_GESTURE_ZOOM,
+         ELM_GESTURE_STATE_ABORT, zoom_end, st);
 }
 
 static void

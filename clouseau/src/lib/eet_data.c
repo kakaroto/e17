@@ -769,10 +769,10 @@ libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view)
      {  /* When working offline grab info from struct */
         Evas_Coord x_bmp, y_bmp;
         evas_object_geometry_get(view->o, &x_bmp, &y_bmp, NULL, NULL);
-        x = props->x + x_bmp;
-        y = props->y + y_bmp;
-        wd = props->w;
-        ht = props->h;
+        x =  (view->zoom_val * props->x) + x_bmp;
+        y =  (view->zoom_val * props->y) + y_bmp;
+        wd = (view->zoom_val * props->w);
+        ht = (view->zoom_val * props->h);
 
         e = evas_object_evas_get(view->win);
      }

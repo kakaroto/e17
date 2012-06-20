@@ -132,8 +132,6 @@ struct _bmp_info_st
    Evas_Object *scr;           /* Scroller holds view         */
    Evas_Object *o;             /* Actuall object displays BMP */
    double zoom_val;            /* Current zoom value          */
-   Evas_Coord cw;              /* Current Width (after zoom)  */
-   Evas_Coord ch;              /* Current Hieght (after zoom) */
    Evas_Object *lb_mouse;      /* Label contains mouse cords  */
    Evas_Object *lb_rgba;       /* Current mouse pos rgba val  */
    Evas_Object *bt;            /* Button opening win          */
