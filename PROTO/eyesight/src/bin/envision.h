@@ -21,6 +21,7 @@ struct _Envision
   char        *file;
   int          page_nbr;
   double       scale;
+  unsigned int start_with_file : 1;
 };
 
 #endif /* ENVISION_H */

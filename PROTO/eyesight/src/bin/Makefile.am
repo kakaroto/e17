@@ -24,10 +24,12 @@ endif
 envision_SOURCES = \
 envision_config.c \
 envision_load.c \
+envision_input.c \
 envision_main.c \
 envision_win.c \
 envision.h \
 envision_config.h \
+envision_input.h \
 envision_load.h \
 envision_win.h
 #eyesight.c eyesight_popup.c eyesight_popup.h

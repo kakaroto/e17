@@ -7,12 +7,11 @@
 #include "Eyesight.h"
 #include "envision.h"
 #include "envision_config.h"
+#include "envision_input.h"
 #include "envision_load.h"
 #include "envision_win.h"
 
 #define __UNUSED__
-
-#define ENV_SCALE_STEP 1.414213562
 
 /********** Local **********/
 
@@ -44,77 +43,6 @@ static void
 _env_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    elm_exit();
-}
-
-static Eina_Bool
-_env_key_cb(void *data, int type, void *event)
-{
-  Ecore_Event_Key *ev;
-  Envision *envision;
-  Eina_Bool is_scaled = EINA_FALSE;
-
-  ev = (Ecore_Event_Key *)event;
-  envision = (Envision *)data;
-
-  if (type == ECORE_EVENT_KEY_UP)
-    {
-      if (!strcmp(ev->keyname, "q"))
-        {
-          elm_exit();
-          return ECORE_CALLBACK_DONE;
-        }
-      if (!strcmp(ev->keyname, "p"))
-        {
-          if (envision->page_nbr > 0) envision->page_nbr--;
-        }
-      if (!strcmp(ev->keyname, "n"))
-        {
-          if (envision->page_nbr < (eyesight_object_page_count(envision->obj) - 1)) envision->page_nbr++;
-        }
-      if (!strcmp(ev->keyname, "asterisk"))
-        {
-          envision->scale *= ENV_SCALE_STEP;
-          is_scaled = EINA_TRUE;
-        }
-      if (!strcmp(ev->keyname, "slash"))
-        {
-          envision->scale /= ENV_SCALE_STEP;
-          is_scaled = EINA_TRUE;
-        }
-    }
-
-  if (envision->page_nbr != eyesight_object_page_get(envision->obj))
-    {
-      char buf[16];
-      double t0, t1;
-
-      eyesight_object_page_set(envision->obj, envision->page_nbr);
-      eyesight_object_page_render(envision->obj);
-      env_win_title_set(envision);
-    }
-  else if (is_scaled)
-    {
-      eyesight_object_page_scale_set(envision->obj,
-                                     envision->scale, envision->scale);
-      eyesight_object_page_render(envision->obj);
-    }
-
-  return ECORE_CALLBACK_PASS_ON;
-}
-
-static Eina_Bool
-_env_mouse_cb(void *data, int type, void *event)
-{
-  Ecore_Event_Mouse_Button *ev;
-
-  ev = (Ecore_Event_Mouse_Button *)event;
-
-  if (type == ECORE_EVENT_MOUSE_BUTTON_UP)
-    {
-      printf("button : %d\n", ev->buttons);
-    }
-
-  return ECORE_CALLBACK_PASS_ON;
 }
 
 static Envision *
@@ -211,12 +139,12 @@ elm_main(int argc, char **argv)
     goto failure;
 
   handler_key_up = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
-                                           _env_key_cb, envision);
+                                           env_input_key_cb, envision);
   if (!handler_key_up)
     goto free_envision;
 
   handler_mouse_up = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP,
-                                             _env_mouse_cb, envision);
+                                             env_input_mouse_cb, envision);
   if (!handler_key_up)
     goto del_key_up;
 
@@ -237,6 +165,7 @@ elm_main(int argc, char **argv)
     {
       if (!env_file_load(envision, file))
         elm_exit();
+      envision->start_with_file = 1;
     }
   else
     {
