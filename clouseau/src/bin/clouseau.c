@@ -1,3 +1,4 @@
+#include <Elementary_Cursor.h>
 #include "libclouseau.h"
 #include <Ecore_Ipc.h>
 
@@ -791,6 +792,7 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Tree_Item *treeit)
 
    evas_object_size_hint_min_set(st->o, st->w, st->h);
    elm_object_content_set(st->scr, st->o);
+   elm_object_cursor_set(st->o, ELM_CURSOR_TARGET);
 
    elm_object_disabled_set(bt, EINA_TRUE);
    evas_object_image_colorspace_set(st->o, EVAS_COLORSPACE_ARGB8888);
