@@ -33,6 +33,15 @@ icon_27.png \
 icon_28.png \
 icon_29.png \
 icon_30.png \
-icon_31.png
+icon_31.png \
+mobile_icon_00.png \
+mobile_icon_01.png \
+mobile_icon_02.png \
+mobile_icon_03.png \
+mobile_icon_04.png \
+mobile_icon_05.png \
+mobile_icon_06.png \
+mobile_icon_07.png \
+cards.png
 
 EXTRA_DIST = $(files_DATA)

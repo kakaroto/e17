@@ -3,6 +3,7 @@
 #endif
 #include <Elementary.h>
 #include <Edje.h>
+#include <Eina.h>
 #include <Evas.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -12,6 +13,8 @@
 #define BOARD_SIZE_MAX 64
 #define FLIP_HIDE 3
 
+#define HELP_STRING "To play this game in a mobile version use econcentration" \
+                    " --mobile"
 typedef struct _Card
 {
     int value;
@@ -26,6 +29,8 @@ typedef struct _Game
     Evas_Object *time_lb, *attempts_lb, *found_lb, *won_lb, *inwin, *table;
     Ecore_Timer *play_timer, *show_timer, *dl_pop;
     Eina_Bool running:1;
+    /* Are we running in a mobile device? */
+    Eina_Bool econcentration_mobile;
 } Game;
 
 static void
@@ -77,11 +82,26 @@ _player_win(Game *game)
     game->play_timer = NULL;
 
     evas_object_show(game->inwin);
-    snprintf(buf, sizeof(buf),
-            "Congratulations, you solved it!<br>"
-            "You spent %i seconds and<br>"
-            "made %i attempts.",
-            game->play_time, game->attempts);
+
+    if (game->econcentration_mobile)
+      {
+         if (game->play_time >= 0 && game->play_time <= 60)
+           snprintf(buf, sizeof(buf),
+                    "Wow ! you're very fast.<br> I liked your ninja style.<br>");
+         else if (game->play_time > 60 && game->play_time <= 120)
+           snprintf(buf, sizeof(buf),
+                    "Nice try, you won but try to be faster!<br>");
+         else
+           snprintf(buf, sizeof(buf),
+                    "ZzzzZz. You won.<br>But you can do better.<br>");
+      }
+    else
+      snprintf(buf, sizeof(buf),
+               "Congratulations, you solved it!<br>"
+               "You spent %i seconds and<br>"
+               "made %i attempts.",
+               game->play_time, game->attempts);
+
     elm_object_text_set(game->won_lb, buf);
 }
 
@@ -116,8 +136,13 @@ _fl_selected(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 
     /* first and second cards match */
     game->found++;
-    snprintf(buf, sizeof(buf), "%i", game->found);
-    elm_object_text_set(game->found_lb, buf);
+
+    if (!game->econcentration_mobile)
+      {
+         snprintf(buf, sizeof(buf), "%i", game->found);
+         elm_object_text_set(game->found_lb, buf);
+      }
+
     if (game->found == (game->total_size / 2))
         _player_win(game);
     game->first_card = NULL;
@@ -173,13 +198,18 @@ _populate_table(void *data)
         game->cards[i].value = values[i];
 
         ic = elm_icon_add(game->cards[i].flip);
-        elm_object_scale_set(ic, 0.5);
-        snprintf(buf, sizeof(buf), "%s/images/icon_%02i.png",
-                PACKAGE_DATA_DIR, values[i]);
+        elm_object_scale_set(ic, 1);
+
+        if (game->econcentration_mobile)
+          snprintf(buf, sizeof(buf), "%s/images/mobile_icon_%02i.png",
+                   PACKAGE_DATA_DIR, values[i]);
+        else
+          snprintf(buf, sizeof(buf), "%s/images/icon_%02i.png",
+                   PACKAGE_DATA_DIR, values[i]);
+
         elm_icon_file_set(ic, buf, NULL);
-        elm_icon_resizable_set(ic, 0, 0);
         evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
-                EVAS_HINT_EXPAND);
+                                         EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(ic, 0.5, 0.5);
         elm_object_part_content_set(game->cards[i].flip, "back", ic);
         evas_object_show(ic);
@@ -209,15 +239,21 @@ _prepopulate_table(Game *game)
 {
     Evas_Object *fl, *bt, *table;
     int i;
+    char buf[1024];
+    Evas_Object *ic;
 
     table = game->table;
+
+    if (game->econcentration_mobile)
+      snprintf(buf, sizeof(buf), "%s/images/cards.png",
+               PACKAGE_DATA_DIR);
 
     for (i = 0; i < game->total_size; i++)
     {
         fl = elm_flip_add(table);
         evas_object_size_hint_align_set(fl, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(fl, EVAS_HINT_EXPAND,
-                EVAS_HINT_EXPAND);
+                                         EVAS_HINT_EXPAND);
         elm_table_pack(table, fl, i % game->board_size, i / game->board_size,
             1, 1);
         evas_object_show(fl);
@@ -226,9 +262,22 @@ _prepopulate_table(Game *game)
         bt = elm_button_add(table);
         evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND,
-                EVAS_HINT_EXPAND);
+                                         EVAS_HINT_EXPAND);
         elm_object_part_content_set(fl, "front", bt);
         evas_object_show(bt);
+
+        if (game->econcentration_mobile)
+          {
+             ic = elm_icon_add(bt);
+             elm_object_scale_set(ic, 1);
+             elm_icon_file_set(ic, buf, NULL);
+             evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
+                                              EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(ic, EVAS_HINT_FILL,
+                                             EVAS_HINT_FILL);
+             elm_object_part_content_set(bt, NULL, ic);
+             evas_object_show(ic);
+          }
 
         evas_object_data_set(bt, "card", &(game->cards[i]));
         evas_object_smart_callback_add(bt, "clicked", _fl_selected, game);
@@ -249,7 +298,8 @@ _start_game_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSE
 
     elm_object_text_set(game->time_lb, "0 s");
     elm_object_text_set(game->attempts_lb, "0");
-    elm_object_text_set(game->found_lb, "0");
+    if (!game->econcentration_mobile)
+      elm_object_text_set(game->found_lb, "0");
 
     if (game->play_timer)
         ecore_timer_del(game->play_timer);
@@ -283,7 +333,124 @@ _win_delete_request(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 }
 
 static Eina_Bool
-_win_new(Game *game)
+_create_window_mobile(Game *game)
+{
+    Evas_Object *win, *inwin, *bg, *bx, *bxctl, *table, *bt, *lb,
+                *boxLabels;
+
+    win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
+    if (!win) return EINA_FALSE;
+    evas_object_smart_callback_add(win, "delete,request",
+                                   _win_delete_request, game);
+
+    elm_win_fullscreen_set(win, EINA_TRUE);
+    evas_object_move(win, 0, 0);
+
+    bg = elm_bg_add(win);
+    elm_win_resize_object_add(win, bg);
+    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+    evas_object_show(bg);
+
+    bx = elm_box_add(win);
+    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+    elm_win_resize_object_add(win, bx);
+    elm_box_padding_set(bx, 10, 10);
+    evas_object_show(bx);
+
+    game->table = table = elm_table_add(win);
+    elm_table_padding_set(table, 2, 2);
+    _prepopulate_table(game);
+    evas_object_size_hint_weight_set(table, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+    evas_object_size_hint_align_set(table, EVAS_HINT_FILL, EVAS_HINT_FILL);
+    evas_object_show(table);
+    elm_box_pack_end(bx, table);
+
+    bxctl = elm_box_add(win);
+    evas_object_size_hint_align_set(bxctl, EVAS_HINT_FILL, 0);
+    evas_object_show(bxctl);
+    elm_box_pack_start(bx, bxctl);
+    elm_box_horizontal_set(bxctl, EINA_TRUE);
+
+    bt = elm_button_add(win);
+    elm_object_text_set(bt, "Start");
+    evas_object_smart_callback_add(bt, "clicked", _start_game_cb, game);
+    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, 0);
+    evas_object_size_hint_min_set(bt, 180, 88);
+    evas_object_show(bt);
+    elm_box_pack_end(bxctl, bt);
+
+    boxLabels = elm_box_add(win);
+    evas_object_size_hint_weight_set(boxLabels,
+                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+    evas_object_size_hint_align_set(boxLabels, EVAS_HINT_FILL, EVAS_HINT_FILL);
+    evas_object_show(boxLabels);
+    elm_box_pack_end(bxctl, boxLabels);
+    elm_box_horizontal_set(boxLabels, EINA_TRUE);
+
+    game->attempts_lb = lb = elm_label_add(win);
+    elm_object_text_set(lb, "0");
+    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
+    evas_object_size_hint_align_set(lb, 1, 0.5);
+    evas_object_color_set(lb, 255, 255, 255, 255);
+    elm_box_pack_end(boxLabels, lb);
+    evas_object_show(lb);
+
+    lb = elm_label_add(win);
+    elm_object_text_set(lb, " attempts in ");
+    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
+    evas_object_size_hint_align_set(lb, 1, 0.5);
+    evas_object_color_set(lb, 102, 102, 102, 255);
+    elm_box_pack_end(boxLabels, lb);
+    evas_object_show(lb);
+
+    game->time_lb = lb = elm_label_add(win);
+    elm_object_text_set(lb, "0 s");
+    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
+    evas_object_size_hint_align_set(lb, 1, 0.5);
+    evas_object_color_set(lb, 255, 255, 255, 255);
+    elm_box_pack_end(boxLabels, lb);
+    evas_object_show(lb);
+
+    bt = elm_button_add(win);
+    elm_object_text_set(bt, "Quit");
+    evas_object_smart_callback_add(bt, "clicked", _win_delete_request, game);
+    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+    evas_object_size_hint_min_set(bt, 180, 88);
+    evas_object_show(bt);
+    elm_box_pack_end(bxctl, bt);
+
+    game->inwin = inwin = elm_popup_add(win);
+    elm_object_part_text_set(inwin, "title,text", "You won!");
+
+    bx = elm_box_add(inwin);
+    evas_object_show(bx);
+    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+    game->won_lb = lb = elm_label_add(inwin);
+    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
+    evas_object_size_hint_align_set(lb, 0.5, 0.5);
+    evas_object_color_set(lb, 255, 255, 255, 255);
+    evas_object_show(lb);
+    elm_box_pack_end(bx, lb);
+
+    bt = elm_button_add(inwin);
+    elm_object_text_set(bt, "Yay!");
+    evas_object_smart_callback_add(bt, "clicked", _won_ok, game);
+    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+    evas_object_show(bt);
+    elm_box_pack_end(bx, bt);
+
+    elm_object_content_set(inwin, bx);
+
+    elm_win_title_set(win, "Econcentration");
+    evas_object_show(win);
+
+    return EINA_TRUE;
+}
+
+static Eina_Bool
+_create_window_desktop(Game *game)
 {
     Evas_Object *win, *inwin, *bg, *bx, *bxctl, *table, *bt, *sp, *fr, *lb;
 
@@ -420,8 +587,30 @@ _win_new(Game *game)
     return EINA_TRUE;
 }
 
+static Eina_Bool
+_win_new(Game *game)
+{
+    if (game->econcentration_mobile)
+      return _create_window_mobile(game);
+
+    return _create_window_desktop(game);
+}
+
+void
+checkArguments(char **argv, Game *game)
+{
+    if (!strcmp(argv[1], "--mobile"))
+      {
+         game->econcentration_mobile = EINA_TRUE;
+         return;
+      }
+
+    fprintf(stdout, "%s\n", HELP_STRING);
+    exit(0);
+}
+
 EAPI int
-elm_main(int argc __UNUSED__, char **argv __UNUSED__)
+elm_main(int argc, char **argv)
 {
     Game game;
     int r = 0;
@@ -430,9 +619,13 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     game.total_size = BOARD_SIZE_DEFAULT * BOARD_SIZE_DEFAULT;
     game.prev_board_size = BOARD_SIZE_DEFAULT;
     game.running = EINA_FALSE;
+    game.econcentration_mobile = EINA_FALSE;
     game.play_timer = NULL;
     game.show_timer = NULL;
     game.dl_pop = NULL;
+
+    if (argc > 1)
+      checkArguments(argv, &game);
 
     if(!_win_new(&game))
     {
