@@ -46,6 +46,14 @@ AC_DEFINE_UNQUOTED(VREV, [v_rev], [Revison])
 AC_SUBST(VMAJ)
 AC_SUBST(version_info)
 
+m4_ifdef([v_mic],
+        [
+        EFL_COMPILER_FLAG([-Wshadow])
+        EFL_COMPILER_FLAG([-Wall])
+        EFL_COMPILER_FLAG([-Wextra])
+        EFL_COMPILER_FLAG([-W])
+        ])
+
 AC_C_BIGENDIAN
 AC_PROG_CC_C99
 AM_PROG_CC_C_O
