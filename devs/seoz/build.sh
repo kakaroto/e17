@@ -24,8 +24,8 @@ export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python
 export BUILD_CPP_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/edjexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage E-MODULES-EXTRA/everything-shotgun"
+export BUILD_ETC="terminology exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/efx"
 export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
-export BUILD_ETC="exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/efx terminology"
 export BUILD_ETC2="excessive enki ecrire espionnage evas_generic_loaders"
 
 PWD=`pwd`
@@ -60,7 +60,7 @@ build evas --disable-cpu-sse3 --disable-doc
 build "$BUILD_BASIC2" --disable-doc
 build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
 #build "$BUILD_CPP_BINDINGS"
-build "$BUILD_E_MODULES $BUILD_EXAMPLE $BUILD_ETC"
+build "$BUILD_E_MODULES $BUILD_ETC $BUILD_EXAMPLE "
 #build "$BUILD_ETC2"
 
 #efenniht theme
