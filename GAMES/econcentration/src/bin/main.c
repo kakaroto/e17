@@ -207,7 +207,7 @@ _populate_table(void *data)
           snprintf(buf, sizeof(buf), "%s/images/icon_%02i.png",
                    PACKAGE_DATA_DIR, values[i]);
 
-        elm_icon_file_set(ic, buf, NULL);
+        elm_image_file_set(ic, buf, NULL);
         evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
                                          EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(ic, 0.5, 0.5);
@@ -270,7 +270,7 @@ _prepopulate_table(Game *game)
           {
              ic = elm_icon_add(bt);
              elm_object_scale_set(ic, 1);
-             elm_icon_file_set(ic, buf, NULL);
+             elm_image_file_set(ic, buf, NULL);
              evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
                                               EVAS_HINT_EXPAND);
              evas_object_size_hint_align_set(ic, EVAS_HINT_FILL,
@@ -506,7 +506,6 @@ _create_window_desktop(Game *game)
 
     sp = elm_spinner_add(win);
     elm_spinner_min_max_set(sp, 1, 3);
-    elm_spinner_label_format_set(sp, "Board size: %.0f");
     elm_spinner_step_set(sp, 1.0);
     elm_spinner_editable_set(sp, EINA_FALSE);
     elm_spinner_special_value_add(sp, 1, "Small");
