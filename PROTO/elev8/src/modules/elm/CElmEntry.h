@@ -67,6 +67,7 @@ public:
    Handle<Value> cursor_prev(const Arguments&);
    Handle<Value> cursor_up(const Arguments&);
    Handle<Value> cursor_down(const Arguments&);
+   Handle<Value> cursor_selection_begin(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
