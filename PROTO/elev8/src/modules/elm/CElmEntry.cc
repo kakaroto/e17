@@ -18,6 +18,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_end);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_is_format);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_next);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_prev);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_up);
@@ -39,6 +40,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
+                  PROPERTY_RO(cursor_is_format),
                   METHOD(cursor_next),
                   METHOD(cursor_prev),
                   METHOD(cursor_up),
@@ -223,6 +225,11 @@ Handle<Value> CElmEntry::selection_get() const
 Handle<Value> CElmEntry::cursor_content_get() const
 {
    return String::New(elm_entry_cursor_content_get(eo));
+}
+
+Handle<Value> CElmEntry::cursor_is_format_get() const
+{
+   return Boolean::New(elm_entry_cursor_is_format_get(eo));
 }
 
 Handle<Value> CElmEntry::cursor_next(const Arguments&)
