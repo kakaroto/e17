@@ -52,6 +52,8 @@ public:
 
    Handle<Value> selection_get() const;
 
+   Handle<Value> cursor_content_get() const;
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
