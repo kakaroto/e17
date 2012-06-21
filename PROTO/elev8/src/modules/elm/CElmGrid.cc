@@ -36,7 +36,13 @@ void CElmGrid::DidRealiseElement(Local<Value> val)
 void CElmGrid::pack(Handle<Object> obj)
 {
    int x, y, w, h;
-   Local<Object> element = obj->Get(String::NewSymbol("element"))->ToObject();
+   Local<Value> element = obj->Get(String::NewSymbol("element"));
+
+   if (element->IsUndefined())
+     return;
+
+   element = Realise(element, jsObject);
+   obj->Set(String::NewSymbol("element"), element);
 
    x = obj->Get(String::NewSymbol("x"))->IntegerValue();
    y = obj->Get(String::NewSymbol("y"))->IntegerValue();
@@ -65,6 +71,36 @@ Handle<Value> CElmGrid::pack(const Arguments &args)
    pack(obj);
 
    return Undefined();
+}
+
+Handle<Value> CElmGrid::Pack(Handle<Value> obj)
+{
+   pack(obj->ToObject());
+   return obj;
+}
+
+Handle<Value> CElmGrid::Unpack(Handle<Value> item)
+{
+   HandleScope scope;
+   Handle<Value> element = item->ToObject()->Get(String::New("element"));
+
+   if (element->IsUndefined())
+     return Undefined();
+
+   CElmObject *obj = GetObjectFromJavascript(element);
+
+   int x, y, w, h;
+
+   elm_grid_pack_get(obj->GetEvasObject(), &x, &y, &w, &h);
+   Handle<Object> result = Object::New();
+   result->Set(String::NewSymbol("x"), Integer::New(x));
+   result->Set(String::NewSymbol("y"), Integer::New(y));
+   result->Set(String::NewSymbol("w"), Integer::New(w));
+   result->Set(String::NewSymbol("h"), Integer::New(h));
+   result->Set(String::NewSymbol("element"), item);
+   elm_grid_unpack(eo, obj->GetEvasObject());
+
+   return scope.Close(result);
 }
 
 void CElmGrid::size_set(Handle<Value> val)

@@ -65,6 +65,10 @@ var my_window = elm.realise(elm.Window({
                     2 : {
                         element : elm.Button ({
                             label : "Kill'em All",
+                            on_click : function () {
+                                for (var i in my_window.elements.the_grid.elements)
+                                    delete my_window.elements.the_grid.elements[i];
+                            }
                         }),
                         x : 40,
                         y : 40,
@@ -75,6 +79,13 @@ var my_window = elm.realise(elm.Window({
                         element : elm.Button ({
                             type : "button",
                             label : "Astala Vista Baby",
+                            on_click : function () {
+                                var temp = my_window.elements.the_grid.elements[3];
+                                my_window.elements.the_grid.elements[3] =
+                                        {element: elm.Label({label: "Bye!"})};
+                                temp.element.visible = false;
+                                delete temp;
+                            }
                         }),
                         x : 10,
                         y : 10,

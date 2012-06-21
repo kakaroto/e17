@@ -20,6 +20,9 @@ public:
    static void Initialize(Handle<Object> target);
    virtual void DidRealiseElement(Local<Value>);
 
+   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Unpack(Handle<Value>);
+
    static Handle<Value> add(const Arguments& args);
    static Handle<Value> clear(const Arguments& args);
 
