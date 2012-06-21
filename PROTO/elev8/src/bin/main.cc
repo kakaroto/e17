@@ -22,6 +22,11 @@ int elev8_log_domain = -1;
 static Persistent<Object> module_cache;
 static Persistent<ObjectTemplate> global;
 
+enum ContextUseRule{
+   CREATE_NEW_CONTEXT,
+   USE_CURRENT_CONTEXT
+};
+
 static Handle<Value>
 print(const Arguments& args)
 {
@@ -99,7 +104,7 @@ find_js_module_file_name(char *module_name)
 }
 
 static bool
-module_native_load(Handle<String> module_name, Handle<Object> name_space)
+module_native_load(Handle<String> module_name, Handle<Object> name_space, ContextUseRule)
 {
    char *file_name = find_native_module_file_name(*String::AsciiValue(module_name));
 
@@ -137,13 +142,14 @@ module_native_load(Handle<String> module_name, Handle<Object> name_space)
 }
 
 static bool
-module_js_load(Handle<String> module_name, Handle<Object> name_space)
+module_js_load(Handle<String> module_name, Handle<Object> name_space, ContextUseRule context_use_rule)
 {
    char *file_name = find_js_module_file_name(*String::AsciiValue(module_name));
+   bool return_value = false;
 
    if (!file_name) return false;
 
-   DBG("Loading JavaScript module: %s", file_name);
+   DBG("Loading JavaScript module: %s [%s context]", file_name, context_use_rule ? "current" : "new");
 
    Handle<String> mod_source = string_from_file(file_name);
    if (mod_source.IsEmpty())
@@ -154,54 +160,51 @@ module_js_load(Handle<String> module_name, Handle<Object> name_space)
 
    HandleScope handle_scope;
 
-   global->Set(String::NewSymbol("exports"), name_space);
+   Persistent<Context> mod_context;
+   if (context_use_rule == CREATE_NEW_CONTEXT)
+     {
+        global->Set(String::NewSymbol("exports"), name_space);
+        mod_context = Context::New(NULL, global);
+        mod_context->Enter();
 
-   Persistent<Context> mod_context = Context::New(NULL, global);
-   Context::Scope mod_context_scope(mod_context);
-
-   run_script(PACKAGE_LIB_DIR "/../init.js");
+        run_script(PACKAGE_LIB_DIR "/../init.js");
+     }
 
    TryCatch try_catch;
    Local<Script> mod_script = Script::Compile(mod_source->ToString(), String::New(file_name));
    if (try_catch.HasCaught())
-     {
-        mod_context.Dispose();
-        free(file_name);
-        return false;
-     }
+     goto end;
     
    mod_script->Run();
    if (try_catch.HasCaught())
-     {
-        mod_context.Dispose();
-        free(file_name);
-        return false;
-     }
+     goto end;
 
    name_space->Set(String::NewSymbol("__file_name"), String::New(file_name));
    // FIXME: How to wrap mod_context so that t can be Disposed() properly?
 
+   return_value = true;
+end:
    free(file_name);
-   return true;
+
+   if (context_use_rule == CREATE_NEW_CONTEXT)
+     mod_context->Exit();
+
+   return return_value;
 }
 
 static Handle<Value>
-require(const Arguments& args)
+load_module(Handle<String> module_name, ContextUseRule context_use_rule)
 {
    HandleScope scope;
-   Local<Object> name_space;
-   Local<String> module_name;
     
-   if (args.Length() < 1)
-     return scope.Close(ThrowException(Exception::Error(String::New("Module name missing"))));
-    
-   module_name = args[0]->ToString();
-
    if (module_cache->HasOwnProperty(module_name))
      return scope.Close(module_cache->Get(module_name));
 
-   name_space = Object::New();
-   if (module_native_load(module_name, name_space) || module_js_load(module_name, name_space))
+   Local<Object> name_space = (context_use_rule == CREATE_NEW_CONTEXT) ?
+                Object::New() : Context::GetCurrent()->Global();
+
+   if (module_native_load(module_name, name_space, context_use_rule) ||
+       module_js_load(module_name, name_space, context_use_rule))
      {
         module_cache->Set(module_name, Persistent<Object>::New(name_space));
         return scope.Close(name_space);
@@ -209,6 +212,27 @@ require(const Arguments& args)
 
    Local<String> msg = String::Concat(String::New("Cannot load module: "), module_name);
    return scope.Close(ThrowException(Exception::Error(msg)));
+}
+
+static inline Handle<Value>
+internal_require(const Arguments& args, ContextUseRule cur)
+{
+   HandleScope scope;
+   if (args.Length() < 1)
+     return scope.Close(ThrowException(Exception::Error(String::New("Module name missing"))));
+   return scope.Close(load_module(args[0]->ToString(), cur));
+}
+
+static Handle<Value>
+require(const Arguments& args)
+{
+   return internal_require(args, CREATE_NEW_CONTEXT);
+}
+
+static Handle<Value>
+__require__(const Arguments& args)
+{
+   return internal_require(args, USE_CURRENT_CONTEXT);
 }
 
 static Handle<Value>
@@ -247,6 +271,7 @@ main(int argc, char **argv)
    global = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
 
    global->Set(String::NewSymbol("require"), FunctionTemplate::New(require));
+   global->Set(String::NewSymbol("__require__"), FunctionTemplate::New(__require__));
    global->Set(String::NewSymbol("modules"), FunctionTemplate::New(modules));
    global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
    storage::RegisterModule(global);
