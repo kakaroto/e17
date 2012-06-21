@@ -24,6 +24,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, v_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_disabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_autoenabled);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, prediction_allow);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -67,6 +68,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(input_panel_enabled),
                   PROPERTY(input_panel_return_key_disabled),
                   PROPERTY(input_panel_return_key_autoenabled),
+                  PROPERTY(prediction_allow),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -381,6 +383,17 @@ void CElmEntry::input_panel_return_key_autoenabled_set(Handle<Value> value)
 
    enabled_status.Dispose();
    enabled_status = Persistent<Value>::New(value);
+}
+
+Handle<Value> CElmEntry::prediction_allow_get() const
+{
+   return Boolean::New(elm_entry_prediction_allow_get(eo));
+}
+
+void CElmEntry::prediction_allow_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_entry_prediction_allow_set(eo, value->BooleanValue());
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
