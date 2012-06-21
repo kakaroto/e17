@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <v8.h>
 #include <Eio.h>
 #include <Ecore.h>
@@ -64,6 +66,12 @@ public:
       return obj;
    }
 
+   void Stop() {
+      if (eio)
+        eio_file_cancel(eio);
+      eio = NULL;
+   }
+
    static Handle<Value> listFiles(const Arguments& args)
    {
       HandleScope scope;
@@ -74,7 +82,14 @@ public:
       if (!args[1]->IsFunction())
         return Undefined();
 
-      return ((new ListFiles(args, args.This()))->ToObject());
+      return (new ListFiles(args, args.This()))->ToObject();
+   }
+
+   static Handle<Value> StopWrapper(const Arguments& args)
+   {
+      ListFiles *self = static_cast<ListFiles *>(args.This()->GetPointerFromInternalField(0));
+      self->Stop();
+      return Undefined();
    }
 
    static Persistent<FunctionTemplate> GetTemplate() {
@@ -83,6 +98,7 @@ public:
            ListFiles::tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New(listFiles));
            ListFiles::tmpl->InstanceTemplate()->SetInternalFieldCount(1);
            ListFiles::tmpl->SetClassName(String::NewSymbol("listFiles"));
+           ListFiles::tmpl->PrototypeTemplate()->Set(String::NewSymbol("stop"), FunctionTemplate::New(StopWrapper));
         }
 
       return ListFiles::tmpl;
