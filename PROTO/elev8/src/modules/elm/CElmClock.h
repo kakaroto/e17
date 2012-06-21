@@ -37,6 +37,9 @@ public:
    Handle<Value> edit_get() const;
    void edit_set(Handle<Value> val);
 
+   Handle<Value> first_interval_get() const;
+   void first_interval_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmClock>(const Arguments& args);
 };
 
