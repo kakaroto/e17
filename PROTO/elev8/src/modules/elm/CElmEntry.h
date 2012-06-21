@@ -78,6 +78,7 @@ public:
 
    Handle<Value> selection_cut(const Arguments&);
    Handle<Value> selection_copy(const Arguments&);
+   Handle<Value> selection_paste(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
