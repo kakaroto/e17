@@ -72,6 +72,12 @@ public:
    Handle<Value> end_visible_get() const;
    void end_visible_set(Handle<Value>);
 
+   Handle<Value> h_bounce_get() const;
+   void h_bounce_set(Handle<Value> value);
+
+   Handle<Value> v_bounce_get() const;
+   void v_bounce_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;

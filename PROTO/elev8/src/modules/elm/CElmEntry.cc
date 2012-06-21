@@ -19,6 +19,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, icon_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, context_menu_disabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, autosave);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, end_visible);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, h_bounce);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, v_bounce);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -57,6 +59,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(context_menu_disabled),
                   PROPERTY(autosave),
                   PROPERTY(end_visible),
+                  PROPERTY(h_bounce),
+                  PROPERTY(v_bounce),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -298,6 +302,40 @@ void CElmEntry::end_visible_set(Handle<Value> value)
 
    end_visible.Dispose();
    end_visible = Persistent<Value>::New(value);
+}
+
+Handle<Value> CElmEntry::h_bounce_get() const
+{
+   Eina_Bool horizontal;
+   elm_entry_bounce_get(eo, &horizontal, NULL);
+   return Boolean::New(horizontal);
+}
+
+void CElmEntry::h_bounce_set(Handle<Value> value)
+{
+   if (!value->IsBoolean())
+     return;
+
+   Eina_Bool vertical;
+   elm_entry_bounce_get(eo, NULL, &vertical);
+   elm_entry_bounce_set(eo, value->BooleanValue(), vertical);
+}
+
+Handle<Value> CElmEntry::v_bounce_get() const
+{
+   Eina_Bool vertical;
+   elm_entry_bounce_get(eo, &vertical, NULL);
+   return Boolean::New(vertical);
+}
+
+void CElmEntry::v_bounce_set(Handle<Value> value)
+{
+   if (!value->IsBoolean())
+     return;
+
+   Eina_Bool horizontal;
+   elm_entry_bounce_get(eo, &horizontal, NULL);
+   elm_entry_bounce_set(eo, horizontal, value->BooleanValue());
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
