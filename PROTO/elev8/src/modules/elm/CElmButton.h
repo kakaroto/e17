@@ -26,6 +26,9 @@ public:
    Handle<Value> icon_get() const;
    void icon_set(Handle<Value> value);
 
+   Handle<Value> autorepeat_get() const;
+   void autorepeat_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmButton>(const Arguments& args);
 };
 
