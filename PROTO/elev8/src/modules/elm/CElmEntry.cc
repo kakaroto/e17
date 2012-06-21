@@ -16,6 +16,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_pos);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
+GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_next);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -28,7 +29,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(cursor_pos),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
-                  PROPERTY_RO(cursor_content));
+                  PROPERTY_RO(cursor_content),
+                  METHOD(cursor_next));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -187,6 +189,11 @@ Handle<Value> CElmEntry::selection_get() const
 Handle<Value> CElmEntry::cursor_content_get() const
 {
    return String::New(elm_entry_cursor_content_get(eo));
+}
+
+Handle<Value> CElmEntry::cursor_next(const Arguments&)
+{
+   return Boolean::New(elm_entry_cursor_next(eo));
 }
 
 }
