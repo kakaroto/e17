@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, line_wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, scrollable);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, single_line);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, on_change);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, entry);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -18,7 +19,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(line_wrap),
                   PROPERTY(scrollable),
                   PROPERTY(single_line),
-                  PROPERTY(on_change));
+                  PROPERTY(on_change),
+                  PROPERTY(entry));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -122,6 +124,35 @@ void CElmEntry::single_line_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_entry_single_line_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmEntry::entry_get() const
+{
+   return String::New(elm_entry_entry_get(eo));
+}
+
+void CElmEntry::entry_set(Handle<Value> val)
+{
+   if (!val->IsString())
+     return;
+
+   elm_entry_entry_set(eo, *String::Utf8Value(val));
+}
+
+void CElmEntry::entry_append(Handle<Value> val)
+{
+   if (!val->IsString())
+     return;
+
+   elm_entry_entry_append(eo, *String::Utf8Value(val));
+}
+
+void CElmEntry::entry_insert(Handle<Value> val)
+{
+   if (!val->IsString())
+     return;
+
+   elm_entry_entry_insert(eo, *String::Utf8Value(val));
 }
 
 }

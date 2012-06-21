@@ -43,6 +43,11 @@ public:
    Handle<Value> single_line_get() const;
    void single_line_set(Handle<Value> value);
 
+   Handle<Value> entry_get() const;
+   void entry_set(Handle<Value> value);
+   void entry_append(Handle<Value> value);
+   void entry_insert(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
