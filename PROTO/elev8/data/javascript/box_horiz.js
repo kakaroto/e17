@@ -23,7 +23,7 @@ var win = elm.realise(elm.Window({
                     label: 'Pack',
                     align: FILL_BOTH,
                     on_click: function() {
-                      win.elements.box.elements['logo_' + count] = elm.Icon({
+                      win.elements.box.elements['logo_' + count++] = elm.Icon({
                         image: elm.datadir + "data/images/logo_small.png",
                         resizable_up: false,
                         resizable_down: false,
