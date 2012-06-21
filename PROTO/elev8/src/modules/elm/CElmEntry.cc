@@ -17,6 +17,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_begin);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_end);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, icon_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, context_menu_disabled);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, autosave);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -49,6 +50,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(cursor_end),
                   PROPERTY(icon_visible),
                   PROPERTY(context_menu_disabled),
+                  PROPERTY(autosave),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -258,6 +260,17 @@ void CElmEntry::context_menu_disabled_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_entry_context_menu_disabled_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmEntry::autosave_get() const
+{
+   return Boolean::New(elm_entry_autosave_get(eo));
+}
+
+void CElmEntry::autosave_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_entry_autosave_set(eo, value->BooleanValue());
 }
 
 Handle<Value> CElmEntry::is_empty_get() const

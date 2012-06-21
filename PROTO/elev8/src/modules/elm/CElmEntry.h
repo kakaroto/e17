@@ -65,6 +65,9 @@ public:
    Handle<Value> context_menu_disabled_get() const;
    void context_menu_disabled_set(Handle<Value> value);
 
+   Handle<Value> autosave_get() const;
+   void autosave_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;
