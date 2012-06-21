@@ -37,6 +37,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, selection_paste);
 GENERATE_METHOD_CALLBACKS(CElmEntry, context_menu_clear);
 GENERATE_METHOD_CALLBACKS(CElmEntry, markup_to_utf8);
 GENERATE_METHOD_CALLBACKS(CElmEntry, utf8_to_markup);
+GENERATE_METHOD_CALLBACKS(CElmEntry, input_panel_show);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -70,7 +71,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(selection_paste),
                   METHOD(context_menu_clear),
                   METHOD(markup_to_utf8),
-                  METHOD(utf8_to_markup));
+                  METHOD(utf8_to_markup),
+                  METHOD(input_panel_show));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -394,6 +396,12 @@ Handle<Value> CElmEntry::utf8_to_markup(const Arguments& args)
    if (!args[0]->IsString())
      return String::New(elm_entry_utf8_to_markup(*String::Utf8Value(args[0])));
 
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::input_panel_show(const Arguments&)
+{
+   elm_entry_input_panel_show(eo);
    return Undefined();
 }
 

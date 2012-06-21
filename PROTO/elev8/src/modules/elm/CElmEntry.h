@@ -100,6 +100,8 @@ public:
    Handle<Value> markup_to_utf8(const Arguments& args);
    Handle<Value> utf8_to_markup(const Arguments& args);
 
+   Handle<Value> input_panel_show(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
