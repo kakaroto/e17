@@ -26,10 +26,19 @@ static Eina_Bool OnInterval(void *data)
    return obj->GetHiddenValue(String::NewSymbol("repeat"))->BooleanValue();
 }
 
+static void clearInterval(Handle<Value> val)
+{
+   Handle<Object> obj = val->ToObject();
+   Ecore_Timer *et = static_cast<Ecore_Timer *>(obj->GetPointerFromInternalField(0));
+   if (et == NULL) return;
+   ecore_timer_del(et);
+   obj->SetPointerInInternalField(0, NULL);
+}
+
 static void Delete(Persistent<Value> object, void *data)
 {
    Timer *timer = static_cast<Timer *>(data);
-   ecore_timer_del((Ecore_Timer *)timer->obj->GetPointerFromInternalField(0));
+   clearInterval(timer->obj);
    object.Dispose();
    delete timer;
 }
@@ -66,9 +75,8 @@ static Handle<Value> New(const Arguments& args, bool repeat)
 
 static Handle<Value> clearInterval(const Arguments& args)
 {
-   if (!tmpl->HasInstance(args[0]))
-     return Undefined();
-   ecore_timer_del((Ecore_Timer *)args[0]->ToObject()->GetPointerFromInternalField(0));
+   if (tmpl->HasInstance(args[0]))
+      clearInterval(args[0]);
    return Undefined();
 }
 
