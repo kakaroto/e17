@@ -22,6 +22,7 @@ protected:
 
    Persistent<Value> icon_visible;
    Persistent<Value> end_visible;
+   Persistent<Value> enabled_status;
 
 public:
    static void Initialize(Handle<Object> val);
@@ -83,6 +84,9 @@ public:
 
    Handle<Value> input_panel_return_key_disabled_get() const;
    void input_panel_return_key_disabled_set(Handle<Value> value);
+
+   Handle<Value> input_panel_return_key_autoenabled_get() const;
+   void input_panel_return_key_autoenabled_set(Handle<Value> value);
 
    Handle<Value> is_empty_get() const;
 

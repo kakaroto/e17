@@ -23,6 +23,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, h_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, v_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_disabled);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_autoenabled);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -65,6 +66,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(v_bounce),
                   PROPERTY(input_panel_enabled),
                   PROPERTY(input_panel_return_key_disabled),
+                  PROPERTY(input_panel_return_key_autoenabled),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -98,6 +100,7 @@ CElmEntry::~CElmEntry()
    on_change_set(Undefined());
    icon_visible.Dispose();
    end_visible.Dispose();
+   enabled_status.Dispose();
 }
 
 void CElmEntry::Initialize(Handle<Object> target)
@@ -362,6 +365,22 @@ void CElmEntry::input_panel_return_key_disabled_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_entry_input_panel_return_key_disabled_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmEntry::input_panel_return_key_autoenabled_get() const
+{
+   return enabled_status;
+}
+
+void CElmEntry::input_panel_return_key_autoenabled_set(Handle<Value> value)
+{
+   if (!value->IsBoolean())
+     return;
+
+   elm_entry_input_panel_return_key_autoenabled_set(eo, value->BooleanValue());
+
+   enabled_status.Dispose();
+   enabled_status = Persistent<Value>::New(value);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
