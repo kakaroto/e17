@@ -77,6 +77,7 @@ public:
    Handle<Value> cursor_selection_end(const Arguments&);
 
    Handle<Value> selection_cut(const Arguments&);
+   Handle<Value> selection_copy(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
