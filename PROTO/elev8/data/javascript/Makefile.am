@@ -50,6 +50,7 @@ files_SCRIPTS = \
 	spinner.js \
 	stock.js \
 	table.js \
+	thumb.js \
 	toolbar.js \
 	twitter.js
 

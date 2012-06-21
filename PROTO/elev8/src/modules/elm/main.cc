@@ -43,6 +43,7 @@ using namespace v8;
 #include "CElmSlider.h"
 #include "CElmSpinner.h"
 #include "CElmTable.h"
+#include "CElmThumb.h"
 #include "CElmToolbar.h"
 #include "CElmWindow.h"
 
@@ -187,6 +188,7 @@ void RegisterModule(Handle<Object> target)
    CElmSlider::Initialize(target);
    CElmSpinner::Initialize(target);
    CElmTable::Initialize(target);
+   CElmThumb::Initialize(target);
    CElmToolbar::Initialize(target);
    CElmWindow::Initialize(target);
 }

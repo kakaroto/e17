@@ -53,6 +53,7 @@ libelm_la_SOURCES = \
 	CElmSlider.cc \
 	CElmSpinner.cc \
 	CElmTable.cc \
+	CElmThumb.cc \
 	CElmToolbar.cc \
 	CElmWindow.cc
 
