@@ -9,7 +9,8 @@ using namespace v8;
 
 Handle<String> string_from_file(const char *filename);
 int shebang_length(const char *p, int len);
-void boom(TryCatch &try_catch);
+void boom(Handle<Message> msg, const char *exception);
+void boom(const TryCatch &try_catch);
 void compile_and_run(Handle<String> source, const char *filename);
 
 #endif

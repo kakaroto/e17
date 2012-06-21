@@ -49,18 +49,15 @@ fail:
                              EINA_LOG_LEVEL_ERR, ## __VA_ARGS__)
 
 void
-boom(TryCatch &try_catch)
+boom(Handle<Message> msg, const char *error)
 {
-   Handle<Message> msg = try_catch.Message();
-   String::Utf8Value error(try_catch.Exception());
-
    if (msg.IsEmpty())
-     ERR("%s", *error);
+     ERR("%s", error);
    else
      {
         String::Utf8Value file(msg->GetScriptResourceName());
         int line = msg->GetLineNumber();
-        JSERR(*file, "", line, "%s", *error);
+        JSERR(*file, "", line, "%s", error);
 
         Handle<StackTrace> trace = msg->GetStackTrace();
         if (trace.IsEmpty())
@@ -79,16 +76,29 @@ boom(TryCatch &try_catch)
         JSERR(*file, "", line, "   Stack trace:");
         for (unsigned i = 0; i < frame_count; i++)
           {
+             HandleScope scope;
              Local<StackFrame> frame = trace->GetFrame(i);
+             Local<String> function_name = frame->GetFunctionName();
 
-             JSERR(*String::AsciiValue(frame->GetScriptName()),
-                   *String::AsciiValue(frame->GetFunctionName()),
-                   frame->GetLineNumber(), "   <- #%d", i);
+             JSERR(*file, "", line, "     %s (ln %d, col %d) %s%s %s%s",
+                   *String::Utf8Value(frame->GetScriptName()),
+                   frame->GetLineNumber(),
+                   frame->GetColumn(),
+                   function_name->Length() ? *String::Utf8Value(function_name) : "global context",
+                   function_name->Length() ? "()" : "",
+                   frame->IsEval() ? "[eval]" : "",
+                   frame->IsConstructor() ? "[constructor]" : "");
           }
      }
 
 end:
    exit(1);
+}
+
+void
+boom(const TryCatch &try_catch)
+{
+   boom(try_catch.Message(), *String::Utf8Value(try_catch.Exception()));
 }
 
 void compile_and_run(Handle<String> source, const char *filename)

@@ -173,11 +173,17 @@ module_js_load(Handle<String> module_name, Handle<Object> name_space, ContextUse
    TryCatch try_catch;
    Local<Script> mod_script = Script::Compile(mod_source->ToString(), String::New(file_name));
    if (try_catch.HasCaught())
-     goto end;
+     {
+        boom(try_catch);
+        goto end;
+     }
     
    mod_script->Run();
    if (try_catch.HasCaught())
-     goto end;
+     {
+        boom(try_catch);
+        goto end;
+     }
 
    name_space->Set(String::NewSymbol("__file_name"), String::New(file_name));
    // FIXME: How to wrap mod_context so that t can be Disposed() properly?
@@ -242,6 +248,12 @@ modules(const Arguments&)
    return scope.Close(module_cache);
 }
 
+static void
+message(Handle<Message> message, Handle<Value>)
+{
+   boom(message, *String::Utf8Value(message->Get()));
+}
+
 int
 main(int argc, char **argv)
 {
@@ -266,6 +278,8 @@ main(int argc, char **argv)
      }
 
    V8::SetFlagsFromCommandLine(&argc, argv, true);
+   V8::AddMessageListener(message, Undefined());
+   V8::SetCaptureStackTraceForUncaughtExceptions(true, 10, StackTrace::kDetailed);
 
    HandleScope handle_scope;
    global = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
