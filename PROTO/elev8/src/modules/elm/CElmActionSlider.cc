@@ -9,13 +9,14 @@ GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, labels);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, slider);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, magnet);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, on_select);
-
+GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, enabled);
 
 GENERATE_TEMPLATE(CElmActionSlider,
                   PROPERTY(labels),
                   PROPERTY(slider),
                   PROPERTY(magnet),
-                  PROPERTY(on_select));
+                  PROPERTY(on_select),
+                  PROPERTY(enabled));
 
 CElmActionSlider::CElmActionSlider(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_actionslider_add(parent->GetEvasObject()))
@@ -142,6 +143,19 @@ void CElmActionSlider::on_select_set(Handle<Value> val)
 
    cb.select = Persistent<Value>::New(val);
    evas_object_smart_callback_add(eo, "selected", &OnSelectWrapper, this);
+}
+
+void CElmActionSlider::enabled_set(Handle<Value> val)
+{
+   Elm_Actionslider_Pos pos;
+
+   if (position_from_string(val, pos))
+     elm_actionslider_enabled_pos_set(eo, pos);
+}
+
+Handle<Value> CElmActionSlider::enabled_get() const
+{
+   return Integer::New(elm_actionslider_enabled_pos_get(eo));
 }
 
 }
