@@ -30,6 +30,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_selection_end);
 GENERATE_METHOD_CALLBACKS(CElmEntry, selection_cut);
 GENERATE_METHOD_CALLBACKS(CElmEntry, selection_copy);
 GENERATE_METHOD_CALLBACKS(CElmEntry, selection_paste);
+GENERATE_METHOD_CALLBACKS(CElmEntry, context_menu_clear);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -56,7 +57,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(cursor_selection_end),
                   METHOD(selection_cut),
                   METHOD(selection_copy),
-                  METHOD(selection_paste));
+                  METHOD(selection_paste),
+                  METHOD(context_menu_clear));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -302,6 +304,12 @@ Handle<Value> CElmEntry::selection_copy(const Arguments&)
 Handle<Value> CElmEntry::selection_paste(const Arguments&)
 {
    elm_entry_selection_paste(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::context_menu_clear(const Arguments&)
+{
+   elm_entry_context_menu_clear(eo);
    return Undefined();
 }
 

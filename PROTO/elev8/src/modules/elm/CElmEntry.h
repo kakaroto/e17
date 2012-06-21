@@ -80,6 +80,8 @@ public:
    Handle<Value> selection_copy(const Arguments&);
    Handle<Value> selection_paste(const Arguments&);
 
+   Handle<Value> context_menu_clear(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
