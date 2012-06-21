@@ -16,6 +16,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_pos);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_begin);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_end);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, icon_visible);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, context_menu_disabled);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -47,6 +48,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(cursor_begin),
                   PROPERTY(cursor_end),
                   PROPERTY(icon_visible),
+                  PROPERTY(context_menu_disabled),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -245,6 +247,17 @@ void CElmEntry::icon_visible_set(Handle<Value> value)
 
    icon_visible.Dispose();
    icon_visible = Persistent<Value>::New(value);
+}
+
+Handle<Value> CElmEntry::context_menu_disabled_get() const
+{
+   return Boolean::New(elm_entry_context_menu_disabled_get(eo));
+}
+
+void CElmEntry::context_menu_disabled_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_entry_context_menu_disabled_set(eo, value->BooleanValue());
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
