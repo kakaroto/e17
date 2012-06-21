@@ -157,6 +157,7 @@ public:
 
       /* FIXME: This might leak. Investigate. */
       Local<Value> content = CElmObject::Realise(retval->ToObject(), gen->GetJSObject());
+      evas_object_propagate_events_set(GetEvasObjectFromJavascript(content), EINA_FALSE);
       return content.IsEmpty() ? NULL : GetEvasObjectFromJavascript(content);
    }
 
