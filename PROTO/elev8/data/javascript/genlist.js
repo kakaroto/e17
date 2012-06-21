@@ -50,6 +50,7 @@ var win = elm.realise(elm.Window({
             align: FILL_BOTH,
             resize: true,
             elements: {
+        
                 list: elm.Genlist({
                     weight: EXPAND_BOTH,
                     align: FILL_BOTH,
@@ -80,20 +81,17 @@ var win = elm.realise(elm.Window({
                     }
                 }),
                 but_box: elm.Box({
-                    //weight: EXPAND_BOTH,
-                    align: FILL_BOTH,
-                    resize: true,
                     horizontal: true,
                     elements: {
                         prepend: elm.Button({
+                            icon: violet,
                             label: "Prepend",
                             weight: EXPAND_BOTH,
-                            icon: violet,
                         }),
                         append: elm.Button({
+                            icon: violet,
                             label: "Append",
                             weight: EXPAND_BOTH,
-                            icon: violet,
                             on_click: button_append,
                         })
                     }
