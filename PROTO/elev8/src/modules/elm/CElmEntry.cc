@@ -115,13 +115,13 @@ void CElmEntry::scrollable_set(Handle<Value> value)
 
 Handle<Value> CElmEntry::single_line_get() const
 {
-   return Integer::New(elm_entry_single_line_get(eo));
+   return Boolean::New(elm_entry_single_line_get(eo));
 }
 
 void CElmEntry::single_line_set(Handle<Value> value)
 {
-   if (value->IsNumber())
-     elm_entry_single_line_set(eo, (Elm_Wrap_Type) value->Int32Value());
+   if (value->IsBoolean())
+     elm_entry_single_line_set(eo, value->BooleanValue());
 }
 
 }
