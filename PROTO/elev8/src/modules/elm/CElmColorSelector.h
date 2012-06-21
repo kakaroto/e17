@@ -41,6 +41,9 @@ public:
    Handle<Value> alpha_get() const;
    void alpha_set(Handle<Value> val);
 
+   Handle<Value> palette_name_get() const;
+   void palette_name_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmColorSelector>(const Arguments& args);
 };
 

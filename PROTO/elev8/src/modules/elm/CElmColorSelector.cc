@@ -10,13 +10,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, red);
 GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, green);
 GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, blue);
 GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, alpha);
+GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, palette_name);
 
 GENERATE_TEMPLATE(CElmColorSelector,
                   PROPERTY(on_change),
                   PROPERTY(red),
                   PROPERTY(green),
                   PROPERTY(blue),
-                  PROPERTY(alpha));
+                  PROPERTY(alpha),
+                  PROPERTY(palette_name));
 
 CElmColorSelector::CElmColorSelector(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_colorselector_add(parent->GetEvasObject()))
@@ -135,6 +137,19 @@ void CElmColorSelector::alpha_set(Handle<Value> val)
    int r, g, b;
    elm_colorselector_color_get(eo, &r, &g, &b, NULL);
    elm_colorselector_color_set(eo, r, g, b, val->ToNumber()->Value());
+}
+
+Handle<Value> CElmColorSelector::palette_name_get() const
+{
+   return String::New(elm_colorselector_palette_name_get(eo));
+}
+
+void CElmColorSelector::palette_name_set(Handle<Value> val)
+{
+   if (!val->IsString())
+     return;
+
+   elm_colorselector_palette_name_set(eo, *String::Utf8Value(val));
 }
 
 }
