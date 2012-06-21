@@ -81,6 +81,9 @@ public:
    Handle<Value> input_panel_enabled_get() const;
    void input_panel_enabled_set(Handle<Value> value);
 
+   Handle<Value> input_panel_return_key_disabled_get() const;
+   void input_panel_return_key_disabled_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;
