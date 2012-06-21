@@ -23,6 +23,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_prev);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_up);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_down);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_selection_begin);
+GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_selection_end);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -42,7 +43,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(cursor_prev),
                   METHOD(cursor_up),
                   METHOD(cursor_down),
-                  METHOD(cursor_selection_begin));
+                  METHOD(cursor_selection_begin),
+                  METHOD(cursor_selection_end));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -246,6 +248,12 @@ Handle<Value> CElmEntry::cursor_down(const Arguments&)
 Handle<Value> CElmEntry::cursor_selection_begin(const Arguments&)
 {
    elm_entry_cursor_selection_begin(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::cursor_selection_end(const Arguments&)
+{
+   elm_entry_cursor_selection_end(eo);
    return Undefined();
 }
 
