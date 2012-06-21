@@ -16,43 +16,40 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _menu_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
-    try:
-        (menu, callback, it, a, ka) = <object>cbt
-        callback(menu, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _menu_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef class MenuItem(ObjectItem):
 
     """An item for the L{Menu} widget."""
 
-    def __init__(self, evasObject menu, MenuItem parent, label, icon,
-                 callback, *args, **kargs):
-        cdef Elm_Object_Item *parent_obj = NULL
-        cdef void* cbdata = NULL
-        cdef void (*cb) (void *, Evas_Object *, void *)
-        cb = NULL
+    def __init__(   self,
+                    evasObject menu,
+                    MenuItem parent = None,
+                    label = None,
+                    icon = None,
+                    callback = None,
+                    *args, **kargs):
 
-        if parent:
-            parent_obj = parent.item
+        cdef Elm_Object_Item *item, *parent_obj = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
-        if callback:
+        parent_obj = parent.item if parent is not None else NULL
+
+        if callback is not None:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _menu_callback
+            cb = _object_item_callback
 
-        self.cbt = (menu, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
-        self.item = elm_menu_item_add(menu.obj, parent_obj, _cfruni(icon), _cfruni(label),
-                                          cb, cbdata)
+        self.params = (callback, args, kargs)
+        item = elm_menu_item_add(   menu.obj,
+                                    parent_obj,
+                                    _cfruni(icon) if icon is not None else NULL,
+                                    _cfruni(label) if label is not None else NULL,
+                                    cb,
+                                    <void*>self)
 
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _menu_item_del_cb)
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def object_get(self):
         """Get the Evas_Object of an Elm_Object_Item
@@ -62,9 +59,7 @@ cdef class MenuItem(ObjectItem):
         @return: The edje object containing the swallowed content
 
         """
-        return None
-        # TODO: try Object_from_instance here
-        #return <Object>elm_menu_item_object_get(self.item)
+        return Object_from_instance(elm_menu_item_object_get(self.item))
 
     def icon_name_set(self, icon):
         """Set the icon of a menu item to the standard icon with name C{icon}
@@ -228,23 +223,17 @@ cdef class MenuItem(ObjectItem):
         def __get__(self):
             return _object_item_to_python(elm_menu_item_prev_get(self.item))
 
-cdef void _menu_item_separator_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    it = <object>data
-    it.__del_cb()
-
 cdef class MenuSeparatorItem(ObjectItem):
     def __init__(self, evasObject menu, MenuItem parent):
         cdef Elm_Object_Item *parent_obj = NULL
 
         if parent:
             parent_obj = parent.item
-        self.item = elm_menu_item_separator_add(menu.obj, parent_obj)
-        if not self.item:
+        item = elm_menu_item_separator_add(menu.obj, parent_obj)
+        if not item:
             raise RuntimeError("Error creating separator")
 
-        elm_object_item_data_set(self.item, <void*>self)
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _menu_item_separator_del_cb)
+        self._set_obj(item)
 
     def is_separator(self):
         """Returns whether the item is a separator.

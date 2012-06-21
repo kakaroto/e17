@@ -16,17 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _index_callback(void *cbt, Evas_Object *o, void *event_info) with gil:
-    try:
-        (obj, callback, it, a, ka) = <object>cbt
-        callback(obj, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _index_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef enum Elm_Index_Item_Insert_Kind:
     ELM_INDEX_ITEM_INSERT_APPEND
     ELM_INDEX_ITEM_INSERT_PREPEND
@@ -37,35 +26,33 @@ cdef enum Elm_Index_Item_Insert_Kind:
 cdef class IndexItem(ObjectItem):
     def __init__(self, kind, evasObject index, letter, IndexItem before_after = None,
                  callback = None, *args, **kargs):
-        cdef void* cbdata
-        cdef void (*cb) (void *, Evas_Object *, void *)
-
-        cbdata = NULL
-        cb = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
         if callback is not None:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _index_callback
-        self.cbt = (index, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
+            cb = _object_item_callback
+
+        self.params = (callback, args, kargs)
 
         if kind == ELM_INDEX_ITEM_INSERT_APPEND:
-            self.item = elm_index_item_append(index.obj, _cfruni(letter), cb, cbdata)
+            item = elm_index_item_append(index.obj, _cfruni(letter), cb, <void*>self)
         elif kind == ELM_INDEX_ITEM_INSERT_PREPEND:
-            self.item = elm_index_item_prepend(index.obj, _cfruni(letter), cb, cbdata)
+            item = elm_index_item_prepend(index.obj, _cfruni(letter), cb, <void*>self)
         #elif kind == ELM_INDEX_ITEM_INSERT_SORTED:
-            #self.item = elm_index_item_sorted_insert(index.obj, _cfruni(letter), cb, cbdata, cmp_f, cmp_data_f)
+            #item = elm_index_item_sorted_insert(index.obj, _cfruni(letter), cb, <void*>self, cmp_f, cmp_data_f)
         else:
             if before_after == None:
                 raise ValueError("need a valid after object to add an item before/after another item")
             if kind == ELM_INDEX_ITEM_INSERT_BEFORE:
-                self.item = elm_index_item_insert_before(index.obj, before_after.item, _cfruni(letter), cb, cbdata)
+                item = elm_index_item_insert_before(index.obj, before_after.item, _cfruni(letter), cb, <void*>self)
             else:
-                self.item = elm_index_item_insert_after(index.obj, before_after.item, _cfruni(letter), cb, cbdata)
+                item = elm_index_item_insert_after(index.obj, before_after.item, _cfruni(letter), cb, <void*>self)
 
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _index_item_del_cb)
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def selected_set(self, selected):
         """Set the selected state of an item.
@@ -87,6 +74,26 @@ cdef class IndexItem(ObjectItem):
         """
         elm_index_item_selected_set(self.item, selected)
 
+    property selected:
+        """Set the selected state of an item.
+
+        This sets the selected state of the given item.
+        C{True} for selected, C{False} for not selected.
+
+        If a new item is selected the previously selected will be unselected.
+        Previously selected item can be get with function
+        L{Index.selected_item_get()}.
+
+        Selected items will be highlighted.
+
+        @see: L{Index.selected_item_get()}
+
+        @type: bool
+
+        """
+        def __set__(self, selected):
+            elm_index_item_selected_set(self.item, selected)
+
     def letter_get(self):
         """Get the letter (string) set on a given index widget item.
 
@@ -95,6 +102,15 @@ cdef class IndexItem(ObjectItem):
 
         """
         return _ctouni(elm_index_item_letter_get(self.item))
+
+    property letter:
+        """Get the letter (string) set on a given index widget item.
+
+        @type: string
+
+        """
+        def __get__(self):
+            return _ctouni(elm_index_item_letter_get(self.item))
 
 cdef Elm_Object_Item *_elm_index_item_from_python(IndexItem item):
     if item is None:
@@ -176,9 +192,10 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
 
         """
         def __get__(self):
-            return self.autohide_disabled_get()
+            return bool(elm_index_autohide_disabled_get(self.obj))
+
         def __set__(self, disabled):
-            self.autohide_disabled_set(disabled)
+            elm_index_autohide_disabled_set(self.obj, disabled)
 
     def item_level_set(self, level):
         """Set the items level for a given index widget.
@@ -211,33 +228,28 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
 
         """
         def __get__(self):
-            return self.item_level_get()
+            return elm_index_item_level_get(self.obj)
         def __set__(self, level):
-            self.item_level_set(level)
+            elm_index_item_level_set(self.obj, level)
 
     def selected_item_get(self, level):
-        """Returns the last selected item, for a given index widget.
+        """selected_item_get(level)
+
+        Returns the last selected item, for a given index widget.
 
         @param level: C{0} or C{1}, the currently implemented levels.
         @type level: int
+
         @return: The last item B{selected} (or C{None}, on errors).
         @rtype: L{IndexItem}
 
         """
-        cdef Elm_Object_Item *obj
-        cdef void *d
-        obj = elm_index_item_find(self.obj, <void*>level)
-        if obj == NULL:
-            return None
-        d = elm_object_item_data_get(obj)
-        if d == NULL:
-            return None
-        else:
-            (o, callback, it, a, ka) = <object>d
-            return it
+        return _object_item_to_python(elm_index_selected_item_get(self.obj, level))
 
     def item_append(self, letter, callback = None, *args, **kargs):
-        """Append a new item on a given index widget.
+        """item_append(letter, callback, *args, **kargs)
+
+        Append a new item on a given index widget.
 
         Despite the most common usage of the C{letter} argument is for
         single char strings, one could use arbitrary strings as index
@@ -250,6 +262,7 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
         @type letter: string
         @param callback: The function to call when the item is selected.
         @type callback: function
+
         @return: A handle to the item added or C{None}, on errors
         @rtype: L{IndexItem}
 
@@ -258,7 +271,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
                         None, callback, *args, **kargs)
 
     def item_prepend(self, letter, callback = None, *args, **kargs):
-        """Prepend a new item on a given index widget.
+        """item_prepend(letter, callback=None, *args, **kargs)
+
+        Prepend a new item on a given index widget.
 
         Despite the most common usage of the C{letter} argument is for
         single char strings, one could use arbitrary strings as index
@@ -279,7 +294,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
                         None, callback, *args, **kargs)
 
     def item_insert_after(self, IndexItem after, letter, callback = None, *args, **kargs):
-        """Insert a new item into the index object after item C{after}.
+        """item_insert_after(after, letter, callback=None, *args, **kargs)
+
+        Insert a new item into the index object after item C{after}.
 
         Despite the most common usage of the C{letter} argument is for
         single char strings, one could use arbitrary strings as index
@@ -305,7 +322,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
                         after, callback, *args, **kargs)
 
     def item_insert_before(self, IndexItem before, letter, callback = None, *args, **kargs):
-        """Insert a new item into the index object before item C{before}.
+        """item_insert_before(before, letter, callback=None, *args, **kargs)
+
+        Insert a new item into the index object before item C{before}.
 
         Despite the most common usage of the C{letter} argument is for
         single char strings, one could use arbitrary strings as index
@@ -331,7 +350,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
                         before, callback, *args, **kargs)
 
     #def item_sorted_insert(self, letter, callback = None, *args, **kargs):
-        """Insert a new item into the given index widget, using C{cmp_func}
+        """item_sorted_insert(letter, cmp_func, cmp_data_func=None, callback=None, *args, **kargs)
+
+        Insert a new item into the given index widget, using C{cmp_func}
         function to sort items (by item handles).
 
         Despite the most common usage of the C{letter} argument is for
@@ -361,6 +382,7 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
             not provided (C{None} is given), index items will be B{duplicated},
             if C{cmp_func} returns C{0}.
         @type cmp_data_func: function
+
         @return: A handle to the item added or C{None}, on errors
         @rtype: L{IndexItem}
 
@@ -376,20 +398,13 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
         @rtype: L{IndexItem}
 
         """
-        cdef Elm_Object_Item *obj
-        cdef void *d
-        obj = elm_index_item_find(self.obj, <void*>data)
-        if obj == NULL:
-            return None
-        d = elm_object_item_data_get(obj)
-        if d == NULL:
-            return None
-        else:
-            (o, callback, it, a, ka) = <object>d
-            return it
+        # XXX: This doesn't seem right.
+        # return _object_item_to_python(elm_index_item_find(self.obj, <void*>data))
 
     def item_clear(self):
-        """Removes B{all} items from a given index widget.
+        """item_clear()
+
+        Removes B{all} items from a given index widget.
 
         If deletion callbacks are set, via L{delete_cb_set()},
         that callback function will be called for each item.
@@ -398,7 +413,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
         elm_index_item_clear(self.obj)
 
     def level_go(self, level):
-        """Go to a given items level on a index widget
+        """level_go(level)
+
+        Go to a given items level on a index widget
 
         @param level: The index level (one of C{0} or C{1})
         @type level: int
@@ -439,9 +456,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
 
         """
         def __get__(self):
-            return self.indicator_disabled_get()
+            return bool(elm_index_indicator_disabled_get(self.obj))
         def __set__(self, disabled):
-            self.indicator_disabled_set(disabled)
+            elm_index_indicator_disabled_set(self.obj, disabled)
 
     def horizontal_set(self, horizontal):
         """Enable or disable horizontal mode on the index object
@@ -488,9 +505,9 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
 
         """
         def __get__(self):
-            return self.horizontal_get()
+            return bool(elm_index_horizontal_get(self.obj))
         def __set__(self, horizontal):
-            self.horizontal_set(horizontal)
+            elm_index_horizontal_set(self.obj, horizontal)
 
     def callback_changed_add(self, func, *args, **kwargs):
         """When the selected index item changes. C{event_info} is the selected

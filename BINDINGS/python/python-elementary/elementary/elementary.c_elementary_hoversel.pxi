@@ -16,45 +16,31 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _hoversel_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
-    try:
-        (hoversel, callback, it, a, ka) = <object>cbt
-        callback(hoversel, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _hoversel_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef class HoverselItem(ObjectItem):
 
     """An item for the Hoversel widget."""
 
     def __init__(self, evasObject hoversel, label, icon_file, icon_type,
                  callback, *args, **kargs):
-        cdef void* cbdata = NULL
-        cdef void (*cb) (void *, Evas_Object *, void *)
-        cb = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
         if callback:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _hoversel_callback
+            cb = _object_item_callback
 
-        self.cbt = (hoversel, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
-        self.item = elm_hoversel_item_add(hoversel.obj, _cfruni(label), _cfruni(icon_file), icon_type,
-                                          cb, cbdata)
+        self.params = (callback, args, kargs)
+        item = elm_hoversel_item_add(   hoversel.obj,
+                                        _cfruni(label) if label is not None else NULL,
+                                        _cfruni(icon_file) if icon_file is not None else NULL,
+                                        icon_type,
+                                        cb,
+                                        <void*>self)
 
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _hoversel_item_del_cb)
-
-    def delete(self):
-        """Delete the hoversel item"""
-        if self.item == NULL:
-            raise ValueError("Object already deleted")
-        elm_object_item_del(self.item)
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def icon_set(self, icon_file, icon_group, icon_type):
         """This sets the icon for the given hoversel item.
@@ -84,22 +70,36 @@ cdef class HoverselItem(ObjectItem):
         @rtype: (string, string, Elm_Icon_Type)
 
         """
-        cdef const_char_ptr cicon_file
-        cdef const_char_ptr cicon_group
+        cdef const_char_ptr cicon_file, cicon_group
         cdef Elm_Icon_Type cicon_type
         elm_hoversel_item_icon_get(self.item, &cicon_file, &cicon_group, &cicon_type)
         return (_ctouni(cicon_file), _ctouni(cicon_group), cicon_type)
 
-cdef _elm_hoversel_item_to_python(Elm_Object_Item *it):
-    cdef void *data
-    cdef object prm
-    if it == NULL:
-        return None
-    data = elm_object_item_data_get(it)
-    if data == NULL:
-        return None
-    prm = <object>data
-    return prm[2]
+    property icon:
+        """This sets the icon for the given hoversel item.
+
+        The icon can be loaded from the standard set, from an image file, or
+        from an edje file.
+
+        @see: L{Hoversel.item_add()}
+
+        @param icon_file: An image file path on disk to use for the icon or
+            standard icon name
+        @type icon_file: string
+        @param icon_group: The edje group to use if C{icon_file} is an edje
+            file. Set this to None if the icon is not an edje file
+        @param icon_type: The icon type
+
+        """
+        def __set__(self, value):
+            icon_file, icon_group, icon_type = value
+            elm_hoversel_item_icon_set(self.item, _cfruni(icon_file), _cfruni(icon_group), icon_type)
+
+        def __get__(self):
+            cdef const_char_ptr cicon_file, cicon_group
+            cdef Elm_Icon_Type cicon_type
+            elm_hoversel_item_icon_get(self.item, &cicon_file, &cicon_group, &cicon_type)
+            return (_ctouni(cicon_file), _ctouni(cicon_group), cicon_type)
 
 cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementaryHoversel_Type]:
 
@@ -155,6 +155,21 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         """
         return bool(elm_hoversel_horizontal_get(self.obj))
 
+    property horizontal:
+        """Whether the hoversel is set to expand horizontally.
+
+        @note: The initial button will display horizontally regardless of this
+            setting.
+
+        @type: bool
+
+        """
+        def __set__(self, horizontal):
+            elm_hoversel_horizontal_set(self.obj, horizontal)
+
+        def __get__(self):
+            return bool(elm_hoversel_horizontal_get(self.obj))
+
     def hover_parent_set(self, evasObject parent):
         """Set the Hover parent
 
@@ -179,19 +194,38 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_hoversel_hover_parent_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_hoversel_hover_parent_get(self.obj))
+
+    property hover_parent:
+        """The Hover parent.
+
+        The hover parent object, the area that will be darkened when the
+        hoversel is clicked. Should probably be the window that the hoversel
+        is in. See L{Hover} objects for more information.
+
+        @type: L{Object}
+
+        """
+        def __set__(self, evasObject parent):
+            elm_hoversel_hover_parent_set(self.obj, parent.obj)
+
+        def __get__(self):
+            return Object_from_instance(elm_hoversel_hover_parent_get(self.obj))
 
     def hover_begin(self):
-        """This triggers the hoversel popup from code, the same as if the user
+        """hover_begin()
+
+        This triggers the hoversel popup from code, the same as if the user
         had clicked the button.
 
         """
         elm_hoversel_hover_begin(self.obj)
 
     def hover_end(self):
-        """This dismisses the hoversel popup as if the user had clicked
-        outside the hover.
+        """hover_end()
+
+        This dismisses the hoversel popup as if the user had clicked outside
+        the hover.
 
         """
         elm_hoversel_hover_end(self.obj)
@@ -206,8 +240,19 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         """
         return bool(elm_hoversel_expanded_get(self.obj))
 
+    property expanded:
+        """Returns whether the hoversel is expanded.
+
+        @type: bool
+
+        """
+        def __get__(self):
+            return bool(elm_hoversel_expanded_get(self.obj))
+
     def clear(self):
-        """This will remove all the children items from the hoversel.
+        """clear()
+
+        This will remove all the children items from the hoversel.
 
         @warning: Should B{not} be called while the hoversel is active; use
             L{expanded_get()} to check first.
@@ -226,22 +271,24 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         @rtype: tuple of Elm_Object_Item
 
         """
-        cdef Elm_Object_Item *it
-        cdef const_Eina_List *lst
+        return _object_item_list_to_python(elm_hoversel_items_get(self.obj))
 
-        lst = elm_hoversel_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _elm_hoversel_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+    property items:
+        """Get the list of items within the given hoversel.
 
-    def item_add(self, label, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
-        """Add an item to the hoversel button
+        @see: L{item_add()}
+
+        @return: Returns a list of Elm_Object_Item*
+        @rtype: tuple of Elm_Object_Item
+
+        """
+        def __get__(self):
+            return _object_item_list_to_python(elm_hoversel_items_get(self.obj))
+
+    def item_add(self, label = None, icon_file = None, icon_type = ELM_ICON_NONE, callback = None, *args, **kwargs):
+        """item_add(label, icon_file=None, icon_type=ELM_ICON_NONE, callback=None, *args, **kwargs)
+
+        Add an item to the hoversel button
 
         This adds an item to the hoversel to show when it is clicked. Note:
         if you need to use an icon from an edje file then use
@@ -260,6 +307,7 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         @type icon_type: string
         @param func: Convenience function to call when this item is selected
         @type func: function
+
         @return: The item added.
         @rtype: Elm_Object_Item
 

@@ -28,29 +28,31 @@ cdef _py_elm_genlist_item_call(func, Evas_Object *obj, part, data) with gil:
         return None
 
 cdef char *_py_elm_genlist_item_text_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
-    cdef object prm = <object>data
-    cdef GenlistItemClass itc = prm[0]
+    cdef GenlistItem item = <object>data
+    cdef object params = item.params
+    cdef GenlistItemClass itc = params[0]
 
     func = itc._text_get_func
     if func is None:
         return NULL
 
-    ret = _py_elm_genlist_item_call(func, obj, part, prm[1])
+    ret = _py_elm_genlist_item_call(func, obj, part, params[1])
     if ret is not None:
         return strdup(_fruni(ret))
     else:
         return NULL
 
 cdef Evas_Object *_py_elm_genlist_item_content_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
-    cdef object prm = <object>data
+    cdef GenlistItem item = <object>data
+    cdef object params = item.params
     cdef evasObject icon
-    cdef GenlistItemClass itc = prm[0]
+    cdef GenlistItemClass itc = params[0]
 
     func = itc._content_get_func
     if func is None:
         return NULL
 
-    ret = _py_elm_genlist_item_call(func, obj, part, prm[1])
+    ret = _py_elm_genlist_item_call(func, obj, part, params[1])
     if ret is not None:
         try:
             icon = ret
@@ -62,46 +64,51 @@ cdef Evas_Object *_py_elm_genlist_item_content_get(void *data, Evas_Object *obj,
         return NULL
 
 cdef Eina_Bool _py_elm_genlist_item_state_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
-    cdef object prm = <object>data
-    cdef GenlistItemClass itc = prm[0]
+    cdef GenlistItem item = <object>data
+    cdef object params = item.params
+    cdef GenlistItemClass itc = params[0]
 
     func = itc._state_get_func
     if func is None:
         return False
 
-    ret = _py_elm_genlist_item_call(func, obj, part, prm[1])
+    ret = _py_elm_genlist_item_call(func, obj, part, params[1])
     if ret is not None:
         return bool(ret)
     else:
         return False
 
 cdef void _py_elm_genlist_object_item_del(void *data, Evas_Object *obj) with gil:
-    cdef object prm = <object>data
-    cdef GenlistItemClass itc = prm[0]
-    cdef GenlistItem item = prm[2]
+    cdef GenlistItem item = <object>data
+    cdef object params
+    cdef GenlistItemClass itc
+
+    if item is None:
+        return
+
+    params = item.params
+    itc = params[0]
 
     func = itc._del_func
     if func is not None:
         try:
             o = Object_from_instance(obj)
-            func(o, prm[1])
+            func(o, params[1])
         except Exception as e:
             traceback.print_exc()
-
     item._unset_obj()
+    Py_DECREF(item)
 
 cdef void _py_elm_genlist_item_func(void *data, Evas_Object *obj, void *event_info) with gil:
-    cdef object prm = <object>data
-    cdef object func = prm[3]
-    cdef GenlistItem item = prm[2]
+    cdef GenlistItem item = <object>data
+    cdef object func = item.params[2]
 
     if func is not None:
         try:
             o = Object_from_instance(obj)
-            func(item, o, prm[1])
+            func(item, o, item.params[1])
         except Exception as e:
             traceback.print_exc()
-
 
 cdef class GenlistItemClass:
     """Defines the behavior of each list item.
@@ -274,32 +281,25 @@ cdef class GenlistItemClass:
         """
         return False
 
-
 cdef class GenlistItem(ObjectItem):
-    """
-    An item for the genlist widget
-    """
-    cdef object params
 
-    cdef int _set_obj(self, Elm_Object_Item *item, params) except 0:
+    """An item for the L{Genlist} widget."""
+
+    cdef int _set_obj(self, Elm_Object_Item *item, params=None) except 0:
         assert self.item == NULL, "Object must be clean"
         self.item = item
-        self.params = params
         Py_INCREF(self)
         return 1
 
-    cdef int _unset_obj(self) except 0:
+    cdef void _unset_obj(self):
         assert self.item != NULL, "Object must wrap something"
         self.item = NULL
-        self.params = None
-        Py_DECREF(self)
-        return 1
 
     def __str__(self):
         return "%s(item_class=%s, func=%s, item_data=%s)" % \
                (self.__class__.__name__,
                 self.params[0].__class__.__name__,
-                self.params[3],
+                self.params[2],
                 self.params[1])
 
     def __repr__(self):
@@ -310,7 +310,7 @@ cdef class GenlistItem(ObjectItem):
                 PY_REFCOUNT(self),
                 <unsigned long>self.item,
                 self.params[0].__class__.__name__,
-                self.params[3],
+                self.params[2],
                 self.params[1])
 
     def data_get(self):
@@ -319,7 +319,7 @@ cdef class GenlistItem(ObjectItem):
         if data == NULL:
             return None
         else:
-            (item_class, item_data, ret, func) = <object>data
+            (item_class, item_data, func) = <object>data
             return item_data
 
     property data:
@@ -327,18 +327,14 @@ cdef class GenlistItem(ObjectItem):
             return self.data_get()
 
     def next_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_item_next_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_item_next_get(self.item))
 
     property next:
         def __get__(self):
             return self.next_get()
 
     def prev_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_item_prev_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_item_prev_get(self.item))
 
     property prev:
         def __get__(self):
@@ -489,9 +485,7 @@ cdef class GenlistItem(ObjectItem):
         return elm_genlist_item_cursor_engine_only_get(self.item)
 
     def parent_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_item_parent_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_item_parent_get(self.item))
 
     property parent:
         def __get__(self):
@@ -517,19 +511,9 @@ cdef class GenlistItem(ObjectItem):
         return elm_genlist_item_expanded_depth_get(self.item)
 
     def all_contents_unset(self):
-        cdef Elm_Object_Item *it
         cdef Eina_List *lst
-
         elm_genlist_item_all_contents_unset(self.item, &lst)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _object_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(lst)
 
     def promote(self):
         elm_genlist_item_promote(self.item)
@@ -598,7 +582,9 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         elm_genlist_bounce_get(self.obj, &h_bounce, &v_bounce)
         return (h_bounce, v_bounce)
 
-    def item_append(self, GenlistItemClass item_class not None, item_data,
+    def item_append(self,
+                    GenlistItemClass item_class not None,
+                    item_data,
                     GenlistItem parent_item=None,
                     int flags=ELM_GENLIST_ITEM_NONE,
                     func=None):
@@ -631,7 +617,7 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         cdef Elm_Object_Item *item, *parent
         cdef Evas_Smart_Cb cb
 
-        parent = _object_item_from_python(parent_item)
+        parent = _object_item_from_python(parent_item) if parent_item is not None else NULL
 
         if func is None:
             cb = NULL
@@ -640,22 +626,27 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_genlist_item_append(self.obj, &item_class.obj, <void*>prm,
-                                       parent,
-                                       <Elm_Genlist_Item_Type>flags, cb,
-                                       <void*>prm)
+        ret.params = (item_class, item_data, func)
+        item = elm_genlist_item_append( self.obj,
+                                        &item_class.obj,
+                                        <void*>ret,
+                                        parent,
+                                        <Elm_Genlist_Item_Type>flags,
+                                        cb,
+                                        <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
-    def item_prepend(self, GenlistItemClass item_class not None, item_data,
-                     GenlistItem parent_item=None,
-                     int flags=ELM_GENLIST_ITEM_NONE,
-                     func=None):
+    def item_prepend(   self,
+                        GenlistItemClass item_class not None,
+                        item_data,
+                        GenlistItem parent_item=None,
+                        int flags=ELM_GENLIST_ITEM_NONE,
+                        func=None):
         """Prepend a new item (add as first row) to this genlist.
 
         @param item_class: a valid instance that defines the
@@ -685,7 +676,7 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         cdef Elm_Object_Item *item, *parent
         cdef Evas_Smart_Cb cb
 
-        parent = _object_item_from_python(parent_item)
+        parent = _object_item_from_python(parent_item) if parent_item is not None else NULL
 
         if func is None:
             cb = NULL
@@ -694,22 +685,30 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_genlist_item_prepend(self.obj, &item_class.obj, <void*>prm,
+        ret.params = (item_class, item_data, func)
+        item = elm_genlist_item_prepend(self.obj,
+                                        &item_class.obj,
+                                        <void*>ret,
                                         parent,
-                                        <Elm_Genlist_Item_Type>flags, cb,
-                                        <void*>prm)
+                                        <Elm_Genlist_Item_Type>flags,
+                                        cb,
+                                        <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
-    def item_insert_before(self, GenlistItemClass item_class not None,
-                           item_data, GenlistItem before_item=None,
-                           int flags=ELM_GENLIST_ITEM_NONE,
-                           func=None):
+    def item_insert_before( self,
+                            GenlistItemClass item_class not None,
+                            item_data,
+                            #API XXX: parent
+                            GenlistItem before_item=None,
+                            int flags=ELM_GENLIST_ITEM_NONE,
+                            func=None
+                            #API XXX: *args, **kwargs
+                            ):
         """Insert a new item (row) before another item in this genlist.
 
         @param item_class: a valid instance that defines the
@@ -746,24 +745,30 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_genlist_item_insert_before(self.obj, &item_class.obj,
-                                              <void*>prm,
-                                              NULL,
-                                              before,
-                                              <Elm_Genlist_Item_Type>flags, cb,
-                                              <void*>prm)
+        ret.params = (item_class, item_data, func)
+        item = elm_genlist_item_insert_before(  self.obj,
+                                                &item_class.obj,
+                                                <void*>ret,
+                                                NULL,
+                                                before,
+                                                <Elm_Genlist_Item_Type>flags, cb,
+                                                <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
-    def item_insert_after(self, GenlistItemClass item_class not None,
-                          item_data, GenlistItem after_item=None,
-                          int flags=ELM_GENLIST_ITEM_NONE,
-                          func=None):
+    def item_insert_after(  self,
+                            GenlistItemClass item_class not None,
+                            item_data,
+                            #API XXX: parent
+                            GenlistItem after_item=None,
+                            int flags=ELM_GENLIST_ITEM_NONE,
+                            func=None
+                            #API XXX: *args, **kwargs
+                            ):
         """Insert a new item (row) after another item in this genlist.
 
         @param item_class: a valid instance that defines the
@@ -800,78 +805,48 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
+        ret.params = (item_class, item_data, func)
         item = elm_genlist_item_insert_after(self.obj, &item_class.obj,
-                                             <void*>prm,
+                                             <void*>ret,
                                              NULL,
                                              after,
                                              <Elm_Genlist_Item_Type>flags, cb,
-                                             <void*>prm)
+                                             <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
     #Elm_Object_Item         *elm_genlist_item_sorted_insert(self.obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Type flags, Eina_Compare_Cb comp, Evas_Smart_Cb func, void *func_data)
 
     def selected_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_selected_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_selected_item_get(self.obj))
 
     property selected_item:
         def __get__(self):
             return self.selected_item_get()
 
     def selected_items_get(self):
-        cdef Elm_Object_Item *it
-        cdef const_Eina_List *lst
-
-        lst = elm_genlist_selected_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _object_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(elm_genlist_selected_items_get(self.obj))
 
     def realized_items_get(self):
-        cdef Elm_Object_Item *it
-        cdef Eina_List *lst
-
-        lst = elm_genlist_realized_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = eina_list_remove_list(lst, lst)
-            o = _object_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(elm_genlist_realized_items_get(self.obj))
 
     def first_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_first_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_first_item_get(self.obj))
 
     property first_item:
         def __get__(self):
-            return self.first_item_get()
+            return _object_item_to_python(elm_genlist_first_item_get(self.obj))
 
     def last_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_last_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_last_item_get(self.obj))
 
     property last_item:
         def __get__(self):
-            return self.last_item_get()
+            return _object_item_to_python(elm_genlist_last_item_get(self.obj))
 
     def scroller_policy_set(self, policy_h, policy_v):
         elm_genlist_scroller_policy_set(self.obj, policy_h, policy_v)
@@ -906,21 +881,10 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         return elm_genlist_longpress_timeout_get(self.obj)
 
     def at_xy_item_get(self, int x, int y):
-        cdef Elm_Object_Item *it
-        it = elm_genlist_at_xy_item_get(self.obj, x, y, NULL)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_genlist_at_xy_item_get(self.obj, x, y, NULL))
 
     def decorated_item_get(self):
-        cdef void *data
-        cdef object prm
-        cdef const_Elm_Object_Item *it = elm_genlist_decorated_item_get(self.obj)
-        if it == NULL:
-            return None
-        data = elm_object_item_data_get(it)
-        if data == NULL:
-            return None
-        prm = <object>data
-        return prm[2]
+        return _object_item_to_python(elm_genlist_decorated_item_get(self.obj))
 
     def reorder_mode_set(self, reorder_mode):
         elm_genlist_reorder_mode_set(self.obj, reorder_mode)

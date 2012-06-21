@@ -25,15 +25,16 @@ cdef _py_elm_slideshow_item_call(func, Evas_Object *obj, data) with gil:
         return None
 
 cdef Evas_Object *_py_elm_slideshow_item_get(void *data, Evas_Object *obj) with gil:
-    cdef object prm = <object>data
+    cdef SlideshowItem item = <object>data
+    cdef object params = item.params
     cdef evasObject icon
-    cdef SlideshowItemClass itc = prm[0]
+    cdef SlideshowItemClass itc = params[0]
 
     func = itc._get_func
     if func is None:
         return NULL
 
-    ret = _py_elm_slideshow_item_call(func, obj, prm[1])
+    ret = _py_elm_slideshow_item_call(func, obj, params[1])
     if ret is not None:
         try:
             icon = ret
@@ -45,26 +46,25 @@ cdef Evas_Object *_py_elm_slideshow_item_get(void *data, Evas_Object *obj) with 
         return NULL
 
 cdef void _py_elm_slideshow_item_del(void *data, Evas_Object *obj) with gil:
-    cdef object prm = <object>data
-    cdef SlideshowItemClass itc = prm[0]
-    cdef SlideshowItem item = prm[2]
+    cdef SlideshowItem item = <object>data
+    cdef object params = item.params
+    cdef SlideshowItemClass itc = params[0]
 
     func = itc._del_func
     if func is not None:
         try:
             o = Object_from_instance(obj)
-            func(o, prm[1])
+            func(o, params[1])
         except Exception as e:
             traceback.print_exc()
-
     item._unset_obj()
+    Py_DECREF(item)
 
 cdef int _py_elm_slideshow_compare_func(const_void *data1, const_void *data2) with gil:
-    cdef object prm1            = <object>data1
-    cdef SlideshowItem item1    = prm1[2]
-    cdef object prm2            = <object>data2
-    cdef SlideshowItem item2    = prm2[2]
-    cdef object func            = prm1[3]
+    cdef SlideshowItem item1    = <object>data1
+    cdef SlideshowItem item2    = <object>data2
+    cdef object params          = item1.params
+    cdef object func            = params[2]
 
     if func is None:
         return 0
@@ -170,21 +170,8 @@ cdef class SlideshowItem(ObjectItem):
 
     """An item for Slideshow."""
 
-    cdef object params
-
-    cdef int _set_obj(self, Elm_Object_Item *item, params) except 0:
-        assert self.item == NULL, "Object must be clean"
-        self.item = item
-        self.params = params
-        Py_INCREF(self)
-        return 1
-
-    cdef int _unset_obj(self) except 0:
-        assert self.item != NULL, "Object must wrap something"
-        self.item = NULL
-        self.params = None
-        Py_DECREF(self)
-        return 1
+    def __init__(self, item, params):
+        pass
 
     def __str__(self):
         return "%s(item_class=%s, func=%s, item_data=%s)" % \
@@ -323,11 +310,9 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
         cdef Elm_Object_Item *item
 
         item_data = (args, kwargs)
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, None)
-        item = elm_slideshow_item_add(self.obj, &item_class.obj, <void*>prm)
+        item = elm_slideshow_item_add(self.obj, &item_class.obj, <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret.item = item
             return ret
         else:
             return None
@@ -370,11 +355,10 @@ cdef public class Slideshow(LayoutClass) [object PyElementarySlideshow, type PyE
             raise TypeError("func is not None or callable")
 
         item_data = (args, kwargs)
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_slideshow_item_sorted_insert(self.obj, &item_class.obj, <void*>prm, compare)
+        ret.params = (item_class, item_data, func)
+        item = elm_slideshow_item_sorted_insert(self.obj, &item_class.obj, <void*>ret, compare)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret.item = item
             return ret
         else:
             return None

@@ -16,17 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _toolbar_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
-    try:
-        (toolbar, callback, it, a, ka) = <object>cbt
-        callback(toolbar, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _toolbar_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef class ToolbarItem(ObjectItem):
 
     """An item for the toolbar."""
@@ -34,21 +23,21 @@ cdef class ToolbarItem(ObjectItem):
     def __init__(self, evasObject toolbar, icon, label,
                  callback, *args, **kargs):
         cdef Evas_Object *ic = NULL
-        cdef void* cbdata = NULL
-        cdef void (*cb) (void *, Evas_Object *, void *)
-        cb = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
         if callback:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _hoversel_callback
+            cb = _object_item_callback
 
-        self.cbt = (toolbar, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
-        self.item = elm_toolbar_item_append(toolbar.obj, icon, _cfruni(label), cb, cbdata)
+        self.params = (callback, args, kargs)
 
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _toolbar_item_del_cb)
+        item = elm_toolbar_item_append(toolbar.obj, icon, _cfruni(label), cb, <void*>self)
+
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def next_get(self):
         """Get the item after C{item} in toolbar.

@@ -85,7 +85,7 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
         @see: L{reload()}
         @see: L{animate()}
 
-        @type: (string file, optional string eet_key)
+        @type: string or tuple(string file, optional string eet_key)
 
         """
         def __set__(self, value):
@@ -94,7 +94,9 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
             else:
                 file = value
                 key = None
-            elm_thumb_file_set(self.obj, _cfruni(file), _cfruni(key))
+            elm_thumb_file_set( self.obj,
+                                _cfruni(file) if file is not None else NULL,
+                                _cfruni(key) if key is not None else NULL)
         def __get__(self):
             cdef const_char_ptr file, key
             elm_thumb_file_get(self.obj, &file, &key)

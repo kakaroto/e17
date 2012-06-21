@@ -30,23 +30,20 @@ cdef Evas_Object *_tooltip_item_content_create(void *data, Evas_Object *o, Evas_
 cdef void _tooltip_item_data_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
    Py_DECREF(<object>data)
 
+cdef class ObjectItem
+
 def _cb_object_item_conv(long addr):
     cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
-    cdef void *data = elm_object_item_data_get(it)
-    cdef object prm
+    return _object_item_to_python(it)
 
-    if data == NULL:
-        return None
-
-    prm = <object>data
-    if isinstance(prm, tuple):
-        return prm[2]
-    else:
-        return prm
+cdef Elm_Object_Item * _object_item_from_python(ObjectItem item) except NULL:
+    if item is None or item.item is NULL:
+        raise TypeError("Invalid item!")
+    return item.item
 
 cdef _object_item_to_python(Elm_Object_Item *it):
     cdef void *data
-    cdef object prm
+    cdef object item
 
     if it == NULL:
         return None
@@ -55,11 +52,8 @@ cdef _object_item_to_python(Elm_Object_Item *it):
     if data == NULL:
         return None
 
-    prm = <object>data
-    if isinstance(prm, tuple):
-        return prm[2]
-    else:
-        return prm
+    item = <object>data
+    return item
 
 cdef _object_item_list_to_python(const_Eina_List *lst):
     cdef Elm_Object_Item *it
@@ -73,6 +67,20 @@ cdef _object_item_list_to_python(const_Eina_List *lst):
             ret_append(o)
     return ret
 
+cdef void _object_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
+    cdef ObjectItem d = <object>data
+    d.item = NULL
+    Py_DECREF(d)
+
+cdef void _object_item_callback(void *data, Evas_Object *obj, void *event_info) with gil:
+    cdef ObjectItem item = <object>data
+    (callback, a, ka) = item.params
+    try:
+        o = Object_from_instance(obj)
+        callback(o, item, *a, **ka)
+    except Exception as e:
+        traceback.print_exc()
+
 cdef class ObjectItem(object):
 
     """A generic item for the widgets.
@@ -85,20 +93,42 @@ cdef class ObjectItem(object):
         tooltip_style_get, cursor_set, cursor_get, cursor_unset,
         cursor_style_set, cursor_style_get, cursor_engine_only_set,
         cursor_engine_only_get
+
     @group Styles: disabled_set, disabled_get, disabled
 
     """
 
+    # Notes to bindings' developers:
+    # ==============================
+    #
+    # After calling _set_obj, Elm_Object_Item's "data" contains the python item
+    # instance pointer, and the attribute "item", that you see below, contains
+    # a pointer to Elm_Object_Item.
+    #
+    # The variable params holds callback data, usually the tuple
+    # (callback, args, kwargs). Note that some of the generic object item
+    # functions expect this tuple. Use custom functions if you assign the
+    # params differently.
+    #
+    # Gen type widgets MUST set the params BEFORE adding the item as the
+    # items need their data immediately when adding them.
+
     cdef Elm_Object_Item *item
-    cdef object cbt
+    cdef object params
 
-    def __cinit__(self):
-        self.item = NULL
+    def __dealloc__(self):
+        if self.item != NULL:
+            elm_object_item_del_cb_set(self.item, NULL)
+            elm_object_item_del(self.item)
+            self.item = NULL
 
-    def __del_cb(self):
-        self.item = NULL
-        self.cbt = None
-        Py_DECREF(self)
+    cdef int _set_obj(self, Elm_Object_Item *item) except 0:
+        assert self.item == NULL, "Object must be clean"
+        self.item = item
+        elm_object_item_data_set(item, <void*>self)
+        elm_object_item_del_cb_set(item, _object_item_del_cb)
+        Py_INCREF(self)
+        return 1
 
     def widget_get(self):
         """widget_get()
@@ -114,7 +144,7 @@ cdef class ObjectItem(object):
         """
         return Object_from_instance(elm_object_item_widget_get(self.item))
 
-    def part_content_set(self, part, Object content):
+    def part_content_set(self, part, Object content not None):
         """part_content_set(part, content)
 
         Set a content of an object item
@@ -130,10 +160,10 @@ cdef class ObjectItem(object):
         @param content: The new content of the object item
 
         """
-        elm_object_item_part_content_set(self.item, _cfruni(part), content.obj)
+        elm_object_item_part_content_set(self.item, _cfruni(part) if part is not None else NULL, content.obj)
 
-    def content_set(self, Object obj):
-        elm_object_item_part_content_set(self.item, NULL, obj.obj)
+    def content_set(self, Object content not None):
+        elm_object_item_content_set(self.item, content.obj)
 
     def part_content_get(self, part):
         """part_content_get(part)
@@ -149,7 +179,7 @@ cdef class ObjectItem(object):
         @rtype: L{Object}
 
         """
-        return Object_from_instance(elm_object_item_part_content_get(self.item, _cfruni(part)))
+        return Object_from_instance(elm_object_item_part_content_get(self.item, _cfruni(part) if part is not None else NULL))
 
     def content_get(self):
         return Object_from_instance(elm_object_item_content_get(self.item))
@@ -166,7 +196,7 @@ cdef class ObjectItem(object):
         @type part: string
 
         """
-        return Object_from_instance(elm_object_item_part_content_unset(self.item, _cfruni(part)))
+        return Object_from_instance(elm_object_item_part_content_unset(self.item, _cfruni(part) if part is not None else NULL))
 
     def content_unset(self):
         return Object_from_instance(elm_object_item_content_unset(self.item))
@@ -184,7 +214,7 @@ cdef class ObjectItem(object):
         @type text: string
 
         """
-        elm_object_item_part_text_set(self.item, _cfruni(part), _cfruni(text))
+        elm_object_item_part_text_set(self.item, _cfruni(part) if part is not None else NULL, _cfruni(text))
 
     def text_set(self, text):
         """text_set(text)
@@ -212,7 +242,7 @@ cdef class ObjectItem(object):
         @rtype: string
 
         """
-        return _ctouni(elm_object_item_part_text_get(self.item, _cfruni(part)))
+        return _ctouni(elm_object_item_part_text_get(self.item, _cfruni(part) if part is not None else NULL))
 
     def text_get(self):
         """text_get()
@@ -259,16 +289,17 @@ cdef class ObjectItem(object):
         @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
 
         """
-        cdef void* data
-        data = elm_object_item_data_get(self.item)
-        if data == NULL:
-            return None
-        else:
-            (obj, callback, it, a, ka) = <object>data
-            return (a, ka)
+        (callback, a, ka) = self.params
+        return (a, ka)
 
-    #def data_set(self, data):
-        #elm_object_item_data_set(self.item, <void*>data)
+    def data_set(self, *args, **kwargs):
+        """data_set(*args, **kwargs)
+
+        Set the callback data.
+
+        """
+        (callback, a, ka) = self.params
+        self.params = tuple(callback, *args, **kwargs)
 
     property data:
         def __get__(self):
@@ -352,6 +383,7 @@ cdef class ObjectItem(object):
         if self.item == NULL:
             raise ValueError("Object already deleted")
         elm_object_item_del(self.item)
+        Py_DECREF(self)
 
     def tooltip_text_set(self, char *text):
         """tooltip_text_set(text)
@@ -420,10 +452,7 @@ cdef class ObjectItem(object):
             L{tooltip_content_cb_set()} or L{tooltip_text_set()}
 
         """
-        if style:
-            elm_object_item_tooltip_style_set(self.item, _cfruni(style))
-        else:
-            elm_object_item_tooltip_style_set(self.item, NULL)
+        elm_object_item_tooltip_style_set(self.item, _cfruni(style) if style is not None else NULL)
 
     def tooltip_style_get(self):
         """tooltip_style_get()
@@ -468,10 +497,7 @@ cdef class ObjectItem(object):
             L{cursor_set()}
 
         """
-        if style:
-            elm_object_item_cursor_style_set(self.item, _cfruni(style))
-        else:
-            elm_object_item_cursor_style_set(self.item, NULL)
+        elm_object_item_cursor_style_set(self.item, _cfruni(style) if style is not None else NULL)
 
     def cursor_style_get(self):
         """cursor_style_get()
@@ -499,11 +525,5 @@ cdef class ObjectItem(object):
 
         """
         return elm_object_item_cursor_engine_only_get(self.item)
-
-cdef Elm_Object_Item * _object_item_from_python(ObjectItem item):
-    if item is None:
-        return NULL
-    else:
-        return item.item
 
 _elm_widget_type_register("object_item", ObjectItem)

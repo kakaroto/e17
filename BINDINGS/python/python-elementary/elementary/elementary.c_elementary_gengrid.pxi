@@ -27,29 +27,31 @@ cdef _py_elm_gengrid_item_call(func, Evas_Object *obj, part, data) with gil:
         return None
 
 cdef char *_py_elm_gengrid_item_text_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
-    cdef object prm = <object>data
-    cdef GengridItemClass itc = prm[0]
+    cdef GengridItem item = <object>data
+    cdef object params = item.params
+    cdef GengridItemClass itc = params[0]
 
     func = itc._text_get_func
     if func is None:
         return NULL
 
-    ret = _py_elm_gengrid_item_call(func, obj, part, prm[1])
+    ret = _py_elm_gengrid_item_call(func, obj, part, params[1])
     if ret is not None:
-        return strdup(ret)
+        return strdup(_fruni(ret))
     else:
         return NULL
 
 cdef Evas_Object *_py_elm_gengrid_item_content_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
-    cdef object prm = <object>data
+    cdef GengridItem item = <object>data
+    cdef object params = item.params
     cdef evasObject icon
-    cdef GengridItemClass itc = prm[0]
+    cdef GengridItemClass itc = params[0]
 
     func = itc._content_get_func
     if func is None:
         return NULL
 
-    ret = _py_elm_gengrid_item_call(func, obj, part, prm[1])
+    ret = _py_elm_gengrid_item_call(func, obj, part, params[1])
     if ret is not None:
         try:
             icon = ret
@@ -61,46 +63,51 @@ cdef Evas_Object *_py_elm_gengrid_item_content_get(void *data, Evas_Object *obj,
         return NULL
 
 cdef Eina_Bool _py_elm_gengrid_item_state_get(void *data, Evas_Object *obj, const_char_ptr part) with gil:
-    cdef object prm = <object>data
-    cdef GengridItemClass itc = prm[0]
+    cdef GengridItem item = <object>data
+    cdef object params = item.params
+    cdef GengridItemClass itc = params[0]
 
     func = itc._state_get_func
     if func is None:
         return False
 
-    ret = _py_elm_gengrid_item_call(func, obj, part, prm[1])
+    ret = _py_elm_gengrid_item_call(func, obj, part, params[1])
     if ret is not None:
         return bool(ret)
     else:
         return False
 
 cdef void _py_elm_gengrid_object_item_del(void *data, Evas_Object *obj) with gil:
-    cdef object prm = <object>data
-    cdef GengridItemClass itc = prm[0]
-    cdef GengridItem item = prm[2]
+    cdef GengridItem item = <object>data
+    cdef object params
+    cdef GengridItemClass itc
+
+    if item is None:
+        return
+
+    params = item.params
+    itc = params[0]
 
     func = itc._del_func
     if func is not None:
         try:
             o = Object_from_instance(obj)
-            func(o, prm[1])
+            func(o, params[1])
         except Exception as e:
             traceback.print_exc()
-
     item._unset_obj()
+    Py_DECREF(item)
 
 cdef void _py_elm_gengrid_item_func(void *data, Evas_Object *obj, void *event_info) with gil:
-    cdef object prm = <object>data
-    cdef object func = prm[3]
-    cdef GengridItem item = prm[2]
+    cdef GengridItem item = <object>data
+    cdef object func = item.params[2]
 
     if func is not None:
         try:
             o = Object_from_instance(obj)
-            func(item, o, prm[1])
+            func(item, o, item.params[1])
         except Exception as e:
             traceback.print_exc()
-
 
 cdef class GengridItemClass:
     """Defines the behavior of each grid item.
@@ -275,30 +282,24 @@ cdef class GengridItemClass:
 
 
 cdef class GengridItem(ObjectItem):
-    """
-    An item for the gengrid widget
-    """
-    cdef object params
 
-    cdef int _set_obj(self, Elm_Object_Item *item, params) except 0:
+    """An item for the L{Gengrid} widget."""
+
+    cdef int _set_obj(self, Elm_Object_Item *item) except 0:
         assert self.item == NULL, "Object must be clean"
         self.item = item
-        self.params = params
         Py_INCREF(self)
         return 1
 
-    cdef int _unset_obj(self) except 0:
+    cdef void _unset_obj(self):
         assert self.item != NULL, "Object must wrap something"
         self.item = NULL
-        self.params = None
-        Py_DECREF(self)
-        return 1
 
     def __str__(self):
         return "%s(item_class=%s, func=%s, item_data=%s)" % \
                (self.__class__.__name__,
                 self.params[0].__class__.__name__,
-                self.params[3],
+                self.params[2],
                 self.params[1])
 
     def __repr__(self):
@@ -307,50 +308,39 @@ cdef class GengridItem(ObjectItem):
                (self.__class__.__name__,
                 <unsigned long><void*>self,
                 PY_REFCOUNT(self),
-                <unsigned long>self.obj,
+                <unsigned long>self.item,
                 self.params[0].__class__.__name__,
-                self.params[3],
+                self.params[2],
                 self.params[1])
 
+    def data_get(self):
+        (item_class, item_data, func) = self.params
+        return item_data
+
+    property data:
+        def __get__(self):
+            return self.data_get()
+
     def next_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_gengrid_item_next_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_gengrid_item_next_get(self.item))
 
     property next:
         def __get__(self):
             return self.next_get()
 
     def prev_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_gengrid_item_prev_get(self.item)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_gengrid_item_prev_get(self.item))
 
     property prev:
         def __get__(self):
             return self.prev_get()
 
     def gengrid_get(self):
-        cdef Evas_Object *o
-        o = elm_object_item_widget_get(self.item)
-        return Object_from_instance(o)
+        return Object_from_instance(elm_object_item_widget_get(self.item))
 
     property gengrid:
         def __get__(self):
             return self.gengrid_get()
-
-    def data_get(self):
-        cdef void* data
-        data = elm_object_item_data_get(self.item)
-        if data == NULL:
-            return None
-        else:
-            (item_class, item_data, ret, func) = <object>data
-            return item_data
-
-    property data:
-        def __get__(self):
-            return self.data_get()
 
     def index_get(self):
         return elm_gengrid_item_index_get(self.item)
@@ -641,14 +631,18 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_gengrid_item_append(self.obj, &item_class.obj, <void*>prm,
-                                       cb, <void*>prm)
+        ret.params = (item_class, item_data, func)
+        item = elm_gengrid_item_append( self.obj,
+                                        &item_class.obj,
+                                        <void*>ret,
+                                        cb,
+                                        <void*>ret)
+
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
     def item_prepend(self, GengridItemClass item_class not None,
@@ -681,14 +675,17 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_gengrid_item_prepend(self.obj, &item_class.obj, <void*>prm,
-                                        cb, <void*>prm)
+        ret.params = (item_class, item_data, func)
+        item = elm_gengrid_item_prepend(self.obj,
+                                        &item_class.obj,
+                                        <void*>ret,
+                                        cb,
+                                        <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
     def item_insert_before(self, GengridItemClass item_class not None,
@@ -726,15 +723,18 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_gengrid_item_insert_before(self.obj, &item_class.obj,
-                                              <void*>prm, before,
-                                              cb, <void*>prm)
+        (item_class, item_data, func)
+        item = elm_gengrid_item_insert_before(  self.obj,
+                                                &item_class.obj,
+                                                <void*>ret,
+                                                before,
+                                                cb,
+                                                <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
     def item_insert_after(self, GengridItemClass item_class not None,
@@ -772,61 +772,38 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         else:
             raise TypeError("func is not None or callable")
 
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (item_class, item_data, ret, func)
-        item = elm_gengrid_item_insert_after(self.obj, &item_class.obj,
-                                             <void*>prm, after,
-                                             cb, <void*>prm)
+        ret.params = (item_class, item_data, func)
+        item = elm_gengrid_item_insert_after(   self.obj,
+                                                &item_class.obj,
+                                                <void*>ret,
+                                                after,
+                                                cb,
+                                                <void*>ret)
         if item != NULL:
-            ret._set_obj(item, prm)
+            ret._set_obj(item)
             return ret
         else:
+            Py_DECREF(ret)
             return None
 
     # XXX TODO elm_gengrid_item_sorted_insert()
 
     def selected_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_gengrid_selected_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_gengrid_selected_item_get(self.obj))
 
     property selected_item:
         def __get__(self):
             return self.selected_item_get()
 
     def selected_items_get(self):
-        cdef Elm_Object_Item *it
-        cdef const_Eina_List *lst
-
-        lst = elm_gengrid_selected_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _object_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(elm_gengrid_selected_items_get(self.obj))
 
     property selected_items:
         def __get__(self):
             return self.selected_items_get()
 
     def realized_items_get(self):
-        cdef Elm_Object_Item *it
-        cdef const_Eina_List *lst
-
-        lst = elm_gengrid_realized_items_get(self.obj)
-        ret = []
-        ret_append = ret.append
-        while lst:
-            it = <Elm_Object_Item *>lst.data
-            lst = lst.next
-            o = _object_item_to_python(it)
-            if o is not None:
-                ret_append(o)
-        return ret
+        return _object_item_list_to_python(elm_gengrid_realized_items_get(self.obj))
 
     property realized_items:
         def __get__(self):
@@ -836,18 +813,14 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
         elm_gengrid_realized_items_update(self.obj)
 
     def first_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_gengrid_first_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_gengrid_first_item_get(self.obj))
 
     property first_item:
         def __get__(self):
             return self.first_item_get()
 
     def last_item_get(self):
-        cdef Elm_Object_Item *it
-        it = elm_gengrid_last_item_get(self.obj)
-        return _object_item_to_python(it)
+        return _object_item_to_python(elm_gengrid_last_item_get(self.obj))
 
     property last_item:
         def __get__(self):
@@ -858,7 +831,6 @@ cdef public class Gengrid(Object) [object PyElementaryGengrid, type PyElementary
 
     def scroller_policy_get(self):
         cdef Elm_Scroller_Policy policy_h, policy_v
-
         elm_gengrid_scroller_policy_get(self.obj, &policy_h, &policy_v)
         return (policy_h, policy_v)
 

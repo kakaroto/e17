@@ -140,7 +140,7 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
 
         item = elm_segment_control_item_add(self.obj, icon.obj, _cfruni(label))
         if item != NULL:
-            ret.item = item
+            ret._set_obj(item)
             return ret
         else:
             return None
@@ -184,7 +184,7 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
 
         item = elm_segment_control_item_insert_at(self.obj, icon.obj, _cfruni(label), index)
         if item != NULL:
-            ret.item = item
+            ret._set_obj(item)
             return ret
         else:
             return None

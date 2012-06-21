@@ -16,17 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _list_callback(void *cbt, Evas_Object *o, void *event_info) with gil:
-    try:
-        (obj, callback, it, a, ka) = <object>cbt
-        callback(obj, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _list_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef enum Elm_List_Item_Insert_Kind:
     ELM_LIST_ITEM_INSERT_APPEND
     ELM_LIST_ITEM_INSERT_PREPEND
@@ -41,15 +30,10 @@ cdef class ListItem(ObjectItem):
     def __init__(self, kind, evasObject list, label, evasObject icon = None,
                  evasObject end = None, ListItem before_after = None,
                  callback = None, *args, **kargs):
-        cdef Evas_Object* icon_obj
-        cdef Evas_Object* end_obj
-        cdef void* cbdata
-        cdef void (*cb) (void *, Evas_Object *, void *)
 
-        icon_obj = NULL
-        end_obj = NULL
-        cbdata = NULL
-        cb = NULL
+        cdef Evas_Object* icon_obj = NULL
+        cdef Evas_Object* end_obj = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
         if icon is not None:
             icon_obj = icon.obj
@@ -59,38 +43,66 @@ cdef class ListItem(ObjectItem):
         if callback is not None:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _list_callback
-        self.cbt = (list, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
+            cb = _object_item_callback
+
+        self.params = (callback, args, kargs)
 
         if kind == ELM_LIST_ITEM_INSERT_APPEND:
-            self.item = elm_list_item_append(list.obj, _cfruni(label), icon_obj, end_obj,
-                                             cb, cbdata)
+            item = elm_list_item_append(   list.obj,
+                                            _cfruni(label),
+                                            icon_obj,
+                                            end_obj,
+                                            cb,
+                                            <void*>self)
+
         elif kind == ELM_LIST_ITEM_INSERT_PREPEND:
-            self.item = elm_list_item_prepend(list.obj, _cfruni(label), icon_obj, end_obj,
-                                              cb, cbdata)
+            item = elm_list_item_prepend(  list.obj,
+                                            _cfruni(label),
+                                            icon_obj,
+                                            end_obj,
+                                            cb,
+                                            <void*>self)
+
         #elif kind == ELM_LIST_ITEM_INSERT_SORTED:
-            #self.item = elm_list_item_sorted_insert(list.obj, _cfruni(label), icon_obj, end_obj, cb, cbdata, cmp_f)
+            #item = elm_list_item_sorted_insert(   list.obj,
+                                                    #_cfruni(label),
+                                                    #icon_obj,
+                                                    #end_obj,
+                                                    #cb,
+                                                    #<void*>self,
+                                                    #cmp_f)
+
         else:
             if before_after == None:
                 raise ValueError("need a valid after object to add an item before/after another item")
-            if kind == ELM_LIST_ITEM_INSERT_BEFORE:
-                self.item = elm_list_item_insert_before(list.obj, before_after.item, _cfruni(label),
-                                                        icon_obj, end_obj,
-                                                        cb, cbdata)
-            else:
-                self.item = elm_list_item_insert_after(list.obj, before_after.item, _cfruni(label),
-                                                        icon_obj, end_obj,
-                                                        cb, cbdata)
 
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _list_item_del_cb)
+            if kind == ELM_LIST_ITEM_INSERT_BEFORE:
+                item = elm_list_item_insert_before(list.obj,
+                                                    before_after.item,
+                                                    _cfruni(label),
+                                                    icon_obj,
+                                                    end_obj,
+                                                    cb,
+                                                    <void*>self)
+
+            else:
+                item = elm_list_item_insert_after( list.obj,
+                                                    before_after.item,
+                                                    _cfruni(label),
+                                                    icon_obj,
+                                                    end_obj,
+                                                    cb,
+                                                    <void*>self)
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def __str__(self):
         return ("%s(label=%r, icon=%s, end=%s, "
                 "callback=%r, args=%r, kargs=%s)") % \
             (self.__class__.__name__, self.text_get(), bool(self.part_content_get("icon")),
-             bool(self.part_content_get("end")), self.cbt[1], self.cbt[3], self.cbt[4])
+             bool(self.part_content_get("end")), self.params[0], self.params[1], self.params[2])
 
     def __repr__(self):
         return ("%s(%#x, refcount=%d, Elm_Object_Item=%#x, "
@@ -99,7 +111,7 @@ cdef class ListItem(ObjectItem):
             (self.__class__.__name__, <unsigned long><void *>self,
              PY_REFCOUNT(self), <unsigned long><void *>self.item,
              self.text_get(), bool(self.part_content_get("icon")),
-             bool(self.part_content_get("end")), self.cbt[1], self.cbt[3], self.cbt[4])
+             bool(self.part_content_get("end")), self.params[0], self.params[1], self.params[2])
 
     def selected_set(self, selected):
         """Set the selected state of an item.

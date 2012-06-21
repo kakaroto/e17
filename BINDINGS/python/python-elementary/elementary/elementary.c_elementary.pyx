@@ -170,7 +170,7 @@ people and organizations behind this, as listed below:
 @contact: U{Enlightenment developer mailing list<mailto:enlightenment-devel@lists.sourceforge.net>}
 
 @group Infrastructure: Canvas, Configuration, ElementaryObjectMeta,
-    EntryAnchor*, Object
+    EntryAnchor*, Object, Theme
 
 @group Widgets: Actionslider, Background, Box, Bubble, Button, Calendar,
     Check, Clock, Colorselector, Conformant, Ctxpopup, Dayselector,
@@ -199,7 +199,8 @@ from evas.c_evas import _object_mapping_unregister
 import traceback
 import logging
 
-logger = logging.getLogger("elementary")
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger("elementary")
 
 cdef int PY_REFCOUNT(object o):
     cdef PyObject *obj = <PyObject *>o
@@ -221,18 +222,16 @@ cdef _METHOD_DEPRECATED(self, replacement=None, message=None):
         msg += " Use %s() instead." % (replacement,)
     if message:
         msg += " " + message
-    logging.warn(msg)
+    log.warn(msg)
 
-cdef unicode _touni(char* s):
+cdef inline unicode _touni(char* s):
     return s.decode('UTF-8', 'strict')
 
-cdef unicode _ctouni(const_char_ptr s):
+cdef inline unicode _ctouni(const_char_ptr s):
     return s.decode('UTF-8', 'strict')
 
-cdef char* _fruni(s):
+cdef inline char* _fruni(s):
     cdef char* c_string
-    if not s:
-        return NULL
     if isinstance(s, unicode):
         string = s.encode('UTF-8')
         c_string = string
@@ -242,10 +241,8 @@ cdef char* _fruni(s):
         raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
     return c_string
 
-cdef const_char_ptr _cfruni(s):
+cdef inline const_char_ptr _cfruni(s):
     cdef const_char_ptr c_string
-    if not s:
-        return NULL
     if isinstance(s, unicode):
         string = s.encode('UTF-8')
         c_string = string
@@ -261,8 +258,6 @@ def init():
     argc = len(sys.argv)
     argv = <char **>PyMem_Malloc(argc * sizeof(char *))
     for i from 0 <= i < argc:
-        if not sys.argv[i]:
-            continue
         arg = _fruni(sys.argv[i])
         arg_len = len(arg)
         argv[i] = <char *>PyMem_Malloc(arg_len + 1)

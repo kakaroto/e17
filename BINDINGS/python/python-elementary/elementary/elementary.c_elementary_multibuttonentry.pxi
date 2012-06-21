@@ -32,18 +32,6 @@ cdef Eina_Bool _multibuttonentry_filter_callback(Evas_Object *obj, const_char_pt
     except Exception, e:
         traceback.print_exc()
 
-cdef void _multibuttonentry_callback(void *cbt, Evas_Object *o, void *event_info) with gil:
-    print "calling cb  :/ " # TODO this is never called :/
-    try:
-        (obj, callback, it, a, ka) = <object>cbt
-        callback(obj, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _multibuttonentry_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef enum Elm_MultiButtonEntry_Item_Insert_Kind:
     ELM_MULTIBUTTONENTRY_INSERT_APPEND
     ELM_MULTIBUTTONENTRY_INSERT_PREPEND
@@ -57,41 +45,43 @@ cdef class MultiButtonEntryItem(ObjectItem):
     def __init__(self, kind, evasObject mbe, label,
                        MultiButtonEntryItem before_after = None,
                        callback = None, *args, **kargs):
-        cdef void* cbdata = NULL
-        cdef void (*cb) (void *, Evas_Object *, void *)
-        cb = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
         if callback:
-            print "ok cb"
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _multibuttonentry_callback
+            cb = _object_item_callback
 
-        self.cbt = (mbe, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
+        self.params = (callback, args, kargs)
 
         if kind == ELM_MULTIBUTTONENTRY_INSERT_PREPEND:
-            self.item = elm_multibuttonentry_item_prepend(mbe.obj,
-                                                    _cfruni(label), cb, cbdata)
+            item = elm_multibuttonentry_item_prepend(mbe.obj,
+                                                    _cfruni(label), cb, <void*>self)
         elif kind == ELM_MULTIBUTTONENTRY_INSERT_APPEND:
-            self.item = elm_multibuttonentry_item_append(mbe.obj,
-                                                    _cfruni(label), cb, cbdata)
+            item = elm_multibuttonentry_item_append(mbe.obj,
+                                                    _cfruni(label), cb, <void*>self)
         elif kind == ELM_MULTIBUTTONENTRY_INSERT_BEFORE:
-            self.item = elm_multibuttonentry_item_insert_before(mbe.obj,
-                                 before_after.item, _cfruni(label), cb, cbdata)
+            item = elm_multibuttonentry_item_insert_before(mbe.obj,
+                                 before_after.item, _cfruni(label), cb, <void*>self)
         elif kind == ELM_MULTIBUTTONENTRY_INSERT_AFTER:
-            self.item = elm_multibuttonentry_item_insert_after(mbe.obj,
-                                 before_after.item, _cfruni(label), cb, cbdata)
+            item = elm_multibuttonentry_item_insert_after(mbe.obj,
+                                 before_after.item, _cfruni(label), cb, <void*>self)
 
-        if self.item != NULL:
-            Py_INCREF(self)
-            elm_object_item_del_cb_set(self.item, _multibuttonentry_item_del_cb)
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
-    def delete(self):
-        """Delete the hoversel item"""
-        if self.item == NULL:
-            raise ValueError("Object already deleted")
-        elm_object_item_del(self.item)
+    def __str__(self):
+        return ("%s(label=%r, callback=%r, args=%r, kargs=%s)") % \
+            (self.__class__.__name__, self.text_get(), self.params[0], self.params[1], self.params[2])
+
+    def __repr__(self):
+        return ("%s(%#x, refcount=%d, Elm_Object_Item=%#x, "
+                "label=%r, callback=%r, args=%r, kargs=%s)") % \
+            (self.__class__.__name__, <unsigned long><void *>self,
+             PY_REFCOUNT(self), <unsigned long><void *>self.item,
+             self.text_get(), self.params[0], self.params[1], self.params[2])
 
     def selected_set(self, selected):
         elm_multibuttonentry_item_selected_set(self.item, bool(selected))
@@ -106,37 +96,19 @@ cdef class MultiButtonEntryItem(ObjectItem):
             self.selected_set(value)
 
     def prev_get(self):
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_multibuttonentry_item_prev_get(self.item)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        (o, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_multibuttonentry_item_prev_get(self.item))
 
     property prev:
         def __get__(self):
             return self.prev_get()
-    
+
     def next_get(self):
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_multibuttonentry_item_next_get(self.item)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        (o, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_multibuttonentry_item_next_get(self.item))
 
     property next:
         def __get__(self):
             return self.next_get()
-    
+
 
 cdef public class MultiButtonEntry(Object) [object PyElementaryMultiButtonEntry, type PyElementaryMultiButtonEntry_Type]:
 
@@ -153,12 +125,12 @@ cdef public class MultiButtonEntry(Object) [object PyElementaryMultiButtonEntry,
 
     Default text parts of the multibuttonentry widget that you can use for are:
     @li "default" - A label of the multibuttonentry
- 
+
     Default text parts of the multibuttonentry items that you can use for are:
     @li "default" - A label of the multibuttonentry item
- 
+
     """
-    
+
     def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_multibuttonentry_add(parent.obj))
@@ -170,8 +142,7 @@ cdef public class MultiButtonEntry(Object) [object PyElementaryMultiButtonEntry,
         @rtype: Entry
 
         """
-        cdef Evas_Object *obj = elm_multibuttonentry_entry_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_multibuttonentry_entry_get(self.obj))
 
     property entry:
         """The Entry object child of the multibuttonentry.
@@ -233,66 +204,28 @@ cdef public class MultiButtonEntry(Object) [object PyElementaryMultiButtonEntry,
                                     self, label, after, func, *args, **kwargs)
 
     def items_get(self):
-        cdef const_Eina_List *lst, *itr
-        cdef void *data
-        ret = []
-        lst = elm_multibuttonentry_items_get(self.obj)
-        itr = lst
-        while itr:
-            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
-            if data != NULL:
-                (o, callback, it, a, ka) = <object>data
-                ret.append(it)
-            itr = itr.next
-        return ret
+        return _object_item_list_to_python(elm_multibuttonentry_items_get(self.obj))
 
     property items:
         def __get__(self):
             return self.items_get()
 
     def first_item_get(self):
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_multibuttonentry_first_item_get(self.obj)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        (o, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_multibuttonentry_first_item_get(self.obj))
 
     property first_item:
         def __get__(self):
             return self.first_item_get()
 
     def last_item_get(self):
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_multibuttonentry_last_item_get(self.obj)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        (o, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_multibuttonentry_last_item_get(self.obj))
 
     property last_item:
         def __get__(self):
             return self.last_item_get()
 
     def selected_item_get(self):
-        cdef Elm_Object_Item *obj
-        cdef void *data
-        obj = elm_multibuttonentry_selected_item_get(self.obj)
-        if obj == NULL:
-            return None
-        data = elm_object_item_data_get(obj)
-        if data == NULL:
-            return None
-        (o, callback, it, a, ka) = <object>data
-        return it
+        return _object_item_to_python(elm_multibuttonentry_selected_item_get(self.obj))
 
     property selected_item:
         def __get__(self):
@@ -319,61 +252,61 @@ cdef public class MultiButtonEntry(Object) [object PyElementaryMultiButtonEntry,
 
     def callback_item_selected_add(self, func, *args, **kwargs):
         self._callback_add("item,selected", func, *args, **kwargs)
-    
+
     def callback_item_selected_del(self, func):
         self._callback_del("item,selected", func)
 
     def callback_item_added_add(self, func, *args, **kwargs):
         self._callback_add("item,added", func, *args, **kwargs)
-    
+
     def callback_item_added_del(self, func):
         self._callback_del("item,added", func)
 
     def callback_item_deleted_add(self, func, *args, **kwargs):
         self._callback_add("item,deleted", func, *args, **kwargs)
-    
+
     def callback_item_deleted_del(self, func):
         self._callback_del("item,deleted", func)
 
     def callback_item_clicked_add(self, func, *args, **kwargs):
         self._callback_add("item,clicked", func, *args, **kwargs)
-    
+
     def callback_item_clicked_del(self, func):
         self._callback_del("item,clicked", func)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
-    
+
     def callback_clicked_del(self, func):
         self._callback_del("clicked", func)
 
     def callback_focused_add(self, func, *args, **kwargs):
         self._callback_add("focused", func, *args, **kwargs)
-    
+
     def callback_focused_del(self, func):
         self._callback_del("focused", func)
 
     def callback_unfocused_add(self, func, *args, **kwargs):
         self._callback_add("unfocused", func, *args, **kwargs)
-    
+
     def callback_unfocused_del(self, func):
         self._callback_del("unfocused", func)
 
     def callback_expanded_add(self, func, *args, **kwargs):
         self._callback_add("expanded", func, *args, **kwargs)
-    
+
     def callback_expanded_del(self, func):
         self._callback_del("expanded", func)
 
     def callback_contracted_add(self, func, *args, **kwargs):
         self._callback_add("contracted", func, *args, **kwargs)
-    
+
     def callback_contracted_del(self, func):
         self._callback_del("contracted", func)
 
     def callback_expand_state_changed_add(self, func, *args, **kwargs):
         self._callback_add("expand,state,changed", func, *args, **kwargs)
-    
+
     def callback_expand_state_changed_del(self, func):
         self._callback_del("expand,state,changed", func)
 

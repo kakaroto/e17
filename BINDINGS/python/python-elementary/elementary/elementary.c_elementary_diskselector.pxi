@@ -16,26 +16,13 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _diskselector_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
-    try:
-        (hoversel, callback, it, a, ka) = <object>cbt
-        callback(hoversel, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
-cdef void _diskselector_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    (obj, callback, it, a, ka) = <object>data
-    it.__del_cb()
-
 cdef class DiskselectorItem(ObjectItem):
 
     """An item for the Diskselector widget."""
 
     def __init__(self, evasObject diskselector, label, evasObject icon=None, callback=None, *args, **kargs):
-        cdef Evas_Object* icon_obj
-        cdef void* cbdata = NULL
-        cdef void (*cb) (void *, Evas_Object *, void *)
-        cb = NULL
+        cdef Evas_Object* icon_obj = NULL
+        cdef Evas_Smart_Cb cb = NULL
 
         if icon is not None:
             icon_obj = icon.obj
@@ -43,14 +30,16 @@ cdef class DiskselectorItem(ObjectItem):
         if callback is not None:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _diskselector_callback
-        self.cbt = (list, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
+            cb = _object_item_callback
 
-        self.item = elm_diskselector_item_append(diskselector.obj, _cfruni(label), icon_obj, cb, cbdata)
+        self.params = (callback, args, kargs)
 
-        Py_INCREF(self)
-        elm_object_item_del_cb_set(self.item, _diskselector_item_del_cb)
+        item = elm_diskselector_item_append(diskselector.obj, _cfruni(label), icon_obj, cb, <void*>self)
+
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     property selected:
         """The selected state of an item.

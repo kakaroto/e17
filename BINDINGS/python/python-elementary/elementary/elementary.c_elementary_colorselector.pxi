@@ -16,16 +16,16 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _colorselector_item_del_cb(void *data, Evas_Object *o, void *event_info) with gil:
-    csi = <object>data
-    csi.__del_cb()
-
 cdef class ColorselectorPaletteItem(ObjectItem):
-    def __init__(self, evasObject colorselector, r, g, b, a):
-        self.item = elm_colorselector_palette_color_add(colorselector.obj, r, g, b, a)
-        elm_object_item_data_set(self.item, <void*>self)
-        elm_object_item_del_cb_set(self.item, _colorselector_item_del_cb)
-        Py_INCREF(self)
+
+    """An item for the L{Colorselector} widget."""
+
+    def __init__(self, evasObject cs, r, g, b, a):
+        cdef Elm_Object_Item *item = elm_colorselector_palette_color_add(cs.obj, r, g, b, a)
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def color_get(self):
         cdef int r, g, b, a

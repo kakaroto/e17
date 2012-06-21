@@ -16,32 +16,27 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _ctxpopup_callback(void *cbt, Evas_Object *obj, void *event_info) with gil:
-    try:
-        (ctxpopup, callback, it, a, ka) = <object>cbt
-        callback(ctxpopup, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
 cdef class CtxpopupItem(ObjectItem):
-    def __init__(self, evasObject ctxpopup, label, evasObject icon = None, callback = None, *args, **kargs):
-        cdef Evas_Object* icon_obj
-        cdef void* cbdata = NULL
-        cdef void (*cb) (void *, Evas_Object *, void *)
-        icon_obj = NULL
-        cb = NULL
-
-        if icon is not None:
-            icon_obj = icon.obj
+    def __init__(self, evasObject ctxpopup, label = None, evasObject icon = None, callback = None, *args, **kargs):
+        cdef Elm_Object_Item *item
+        cdef Evas_Smart_Cb cb = NULL
 
         if callback:
             if not callable(callback):
                 raise TypeError("callback is not callable")
-            cb = _ctxpopup_callback
+            cb = _object_item_callback
 
-        self.cbt = (ctxpopup, callback, self, args, kargs)
-        cbdata = <void*>self.cbt
-        self.item = elm_ctxpopup_item_append(ctxpopup.obj, _cfruni(label), icon_obj, cb, cbdata)
+        self.params = (callback, args, kargs)
+        item = elm_ctxpopup_item_append(ctxpopup.obj,
+                                        _cfruni(label) if label is not None else NULL,
+                                        icon.obj if icon is not None else NULL,
+                                        cb,
+                                        <void*>self)
+
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
 cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementaryCtxpopup_Type]:
 
@@ -96,8 +91,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_ctxpopup_hover_parent_get(self.obj)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_ctxpopup_hover_parent_get(self.obj))
 
     property parent:
         """Ctxpopup's parent
@@ -106,8 +100,8 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
 
         """
         def __get__(self):
-            cdef Evas_Object *obj = elm_ctxpopup_hover_parent_get(self.obj)
-            return Object_from_instance(obj)
+            return Object_from_instance(elm_ctxpopup_hover_parent_get(self.obj))
+
         def __set__(self, evasObject parent):
             elm_ctxpopup_hover_parent_set(self.obj, parent.obj)
 
@@ -143,6 +137,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
         """
         def __get__(self):
             return bool(elm_ctxpopup_horizontal_get(self.obj))
+
         def __set__(self, horizontal):
             elm_ctxpopup_horizontal_set(self.obj, horizontal)
 
@@ -213,6 +208,7 @@ cdef public class Ctxpopup(Object) [object PyElementaryCtxpopup, type PyElementa
             cdef Elm_Ctxpopup_Direction first, second, third, fourth
             elm_ctxpopup_direction_priority_get(self.obj, &first, &second, &third, &fourth)
             return (first, second, third, fourth)
+
         def __set__(self, priority):
             cdef Elm_Ctxpopup_Direction first, second, third, fourth
             first, second, third, fourth = priority

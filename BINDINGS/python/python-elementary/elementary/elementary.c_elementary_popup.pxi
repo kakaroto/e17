@@ -16,13 +16,6 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef void _popup_callback(void *cbt, Evas_Object *o, void *event_info) with gil:
-    try:
-        (obj, callback, it, a, ka) = <object>cbt
-        callback(obj, it, *a, **ka)
-    except Exception, e:
-        traceback.print_exc()
-
 cdef class PopupItem(ObjectItem):
 
     """An item for L{Popup}.
@@ -35,27 +28,34 @@ cdef class PopupItem(ObjectItem):
 
     """
 
-    cdef object params
+    def __init__(self, Popup popup, label = None, evasObject icon = None, func = None, *args, **kwargs):
+        cdef Elm_Object_Item *item
+        cdef Evas_Smart_Cb cb
 
-    cdef int _set_obj(self, Elm_Object_Item *item, params) except 0:
-        assert self.item == NULL, "Object must be clean"
-        self.item = item
-        self.params = params
-        Py_INCREF(self)
-        return 1
+        if func is None:
+            cb = NULL
+        elif callable(func):
+            cb = _object_item_callback
+        else:
+            raise TypeError("func is not None or callable")
 
-    cdef int _unset_obj(self) except 0:
-        assert self.item != NULL, "Object must wrap something"
-        self.item = NULL
-        self.params = None
-        Py_DECREF(self)
-        return 1
+        self.params = (func, args, kwargs)
+        item = elm_popup_item_append(   popup.obj,
+                                        _cfruni(label) if not None else NULL,
+                                        icon.obj if not None else NULL,
+                                        cb if not None else NULL,
+                                        <void *>self)
+
+        if item != NULL:
+            self._set_obj(item)
+        else:
+            Py_DECREF(self)
 
     def __str__(self):
         return "%s(func=%s, item_data=%s)" % \
                (self.__class__.__name__,
-                self.params[1],
-                self.params[3])
+                self.params[0],
+                self.params[1])
 
     def __repr__(self):
         return ("%s(%#x, refcount=%d, Elm_Object_Item=%#x, "
@@ -64,8 +64,8 @@ cdef class PopupItem(ObjectItem):
                 <unsigned long><void*>self,
                 PY_REFCOUNT(self),
                 <unsigned long>self.item,
-                self.params[1],
-                self.params[3])
+                self.params[0],
+                self.params[1])
 
 cdef public class Popup(Object) [object PyElementaryPopup, type PyElementaryPopup_Type]:
 
@@ -170,25 +170,7 @@ cdef public class Popup(Object) [object PyElementaryPopup, type PyElementaryPopu
             content area.
 
         """
-        cdef PopupItem ret = PopupItem()
-        cdef Elm_Object_Item *item
-        cdef Evas_Smart_Cb cb
-
-        if func is None:
-            cb = NULL
-        elif callable(func):
-            cb = _popup_callback
-        else:
-            raise TypeError("func is not None or callable")
-
-        # note: keep this positions sync'ed with the rest of the code:
-        prm = (self, func, ret, args, kwargs)
-        item = elm_popup_item_append(self.obj, _cfruni(label), icon.obj, cb, <void *>prm)
-        if item != NULL:
-            ret._set_obj(item, prm)
-            return ret
-        else:
-            return None
+        return PopupItem(self, label, icon, func, *args, **kwargs)
 
     property content_text_wrap_type:
         """Sets the wrapping type of content text packed in content

@@ -22,15 +22,22 @@ cdef class NaviframeItem(ObjectItem):
     """An item for the Naviframe widget."""
 
     def item_pop_to(self):
+        _METHOD_DEPRECATED(self, "pop_to")
+        elm_naviframe_item_pop_to(self.item)
+
+    def pop_to(self):
         """item_pop_to()
 
         Pop the items between the top and the above one on the given item.
 
         """
-        # TODO: this method should be named simply pop_to
         elm_naviframe_item_pop_to(self.item)
 
     def item_promote(self):
+        _METHOD_DEPRECATED(self, "promote")
+        elm_naviframe_item_promote(self.item)
+
+    def promote(self):
         """item_promote()
 
         Promote an item already in the naviframe stack to the top of the stack
@@ -40,7 +47,6 @@ cdef class NaviframeItem(ObjectItem):
         naviframe stack to work.
 
         """
-        # TODO: this method should be named simply promote
         elm_naviframe_item_promote(self.item)
 
     def style_set(self, style):
@@ -224,6 +230,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         @type content: L{Object}
         @param item_style: The current item style name. C{None} would be default.
         @type item_style: string
+
         @return: The created item or C{None} upon failure.
         @rtype: L{NaviframeItem}
 
@@ -237,7 +244,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
                                        content.obj if content else NULL,
                                        _cfruni(item_style) if item_style else NULL)
         if item != NULL:
-            ret.item = item
+            ret._set_obj(item)
             return ret
         else:
             return None
@@ -284,7 +291,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         item = elm_naviframe_item_insert_before(self.obj, before.item, _cfruni(title_label), prev_btn.obj, next_btn.obj, content.obj, _cfruni(item_style))
         if item != NULL:
-            ret.item = item
+            ret._set_obj(item)
             return ret
         else:
             return None
@@ -331,7 +338,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         item = elm_naviframe_item_insert_after(self.obj, after.item, _cfruni(title_label), prev_btn.obj, next_btn.obj, content.obj, _cfruni(item_style))
         if item != NULL:
-            ret.item = item
+            ret._set_obj(item)
             return ret
         else:
             return None
@@ -548,7 +555,7 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
 
         item = elm_naviframe_item_simple_push(self.obj, content.obj)
         if item != NULL:
-            ret.item = item
+            ret._set_obj(item)
             return ret
         else:
             return None

@@ -27,6 +27,7 @@ from evas.c_evas cimport eina_list_append
 
 from evas.c_evas import _extended_object_mapping_register
 
+#API XXX: Callbacks!
 cdef void _object_callback(void *data,
                            Evas_Object *o, void *event_info) with gil:
     cdef Object obj
@@ -71,6 +72,7 @@ cdef Eina_Bool _event_dispatcher(o, src, Evas_Callback_Type t, event_info):
                 return True
     return False
 
+#TODO: More event types
 cdef Eina_Bool _event_callback(void *data, Evas_Object *o, Evas_Object *src, Evas_Callback_Type t, void *event_info) with gil:
     cdef Object obj = <Object>Object_from_instance(o)
     cdef Object src_obj = <Object>Object_from_instance(src)
@@ -168,7 +170,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @type text: string
 
         """
-        elm_object_part_text_set(self.obj, _cfruni(part), _cfruni(text))
+        elm_object_part_text_set(self.obj, _cfruni(part) if part is not None else NULL, _cfruni(text))
 
     def text_set(self, text):
         """text_set(text)
@@ -196,7 +198,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: string
 
         """
-        return _ctouni(elm_object_part_text_get(self.obj, _cfruni(part)))
+        return _ctouni(elm_object_part_text_get(self.obj, _cfruni(part) if part is not None else NULL))
 
     def text_get(self):
         """text_get()
@@ -235,7 +237,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @type content: L{Object}
 
         """
-        elm_object_part_content_set(self.obj, _cfruni(part), content.obj)
+        elm_object_part_content_set(self.obj, _cfruni(part) if part is not None else NULL, content.obj)
 
     def content_set(self, evasObject obj):
         elm_object_part_content_set(self.obj, NULL, obj.obj)
@@ -253,7 +255,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: L{Object}
 
         """
-        return Object_from_instance(elm_object_part_content_get(self.obj, _cfruni(part)))
+        return Object_from_instance(elm_object_part_content_get(self.obj, _cfruni(part) if part is not None else NULL))
 
     def content_get(self):
         return Object_from_instance(elm_object_content_get(self.obj))
@@ -270,7 +272,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @type part: string
 
         """
-        return Object_from_instance(elm_object_part_content_unset(self.obj, _cfruni(part)))
+        return Object_from_instance(elm_object_part_content_unset(self.obj, _cfruni(part) if part is not None else NULL))
 
     def content_unset(self):
         return Object_from_instance(elm_object_content_unset(self.obj))
@@ -294,7 +296,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         """
         elm_object_access_info_set(self.obj, _cfruni(txt))
 
-    def name_find(self, name, recurse):
+    def name_find(self, name not None, int recurse = 0):
         """name_find(name, recurse)
 
         Get a named object from the children
@@ -317,8 +319,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: L{Object}
 
         """
-        cdef Evas_Object *obj = elm_object_name_find(self.obj, _cfruni(name), recurse)
-        return Object_from_instance(obj)
+        return Object_from_instance(elm_object_name_find(self.obj, _cfruni(name), recurse))
 
     def style_set(self, style):
         """style_set(style)
@@ -672,10 +673,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             elm_object_cursor_set()
 
         """
-        if style:
-            elm_object_cursor_style_set(self.obj, _cfruni(style))
-        else:
-            elm_object_cursor_style_set(self.obj, NULL)
+        elm_object_cursor_style_set(self.obj, _cfruni(style) if style is not None else NULL)
 
     def cursor_style_get(self):
         """cursor_style_get()
@@ -837,17 +835,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
         @rtype: list of L{Object}s
 
         """
-        cdef Evas_Object *o
-        cdef Object obj
-        cdef const_Eina_List *lst
-        ret = []
-        lst = elm_object_focus_custom_chain_get(self.obj)
-        while lst:
-            o = <Evas_Object *>lst.data
-            obj = <Object>evas_object_data_get(o, "python-evas")
-            ret.append(obj)
-            lst = lst.next
-        return ret
+        return _object_list_to_python(elm_object_focus_custom_chain_get(self.obj))
 
     property focus_custom_chain:
         """The custom focus chain.
@@ -1256,10 +1244,7 @@ cdef public class Object(evasObject) [object PyElementaryObject, type PyElementa
             L{tooltip_content_cb_set()} or L{tooltip_text_set()}
 
         """
-        if style:
-            elm_object_tooltip_style_set(self.obj, _cfruni(style))
-        else:
-            elm_object_tooltip_style_set(self.obj, NULL)
+        elm_object_tooltip_style_set(self.obj, _cfruni(style) if style is not None else NULL)
 
     def tooltip_style_get(self):
         """tooltip_style_get()
