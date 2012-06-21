@@ -37,6 +37,9 @@ public:
    Handle<Value> load_size_get() const;
    void load_size_set(Handle<Value> value);
 
+   Handle<Value> option_get() const;
+   void option_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmBackground>(const Arguments& args);
 };
 

@@ -10,13 +10,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmBackground, red);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, green);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, blue);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, load_size);
+GENERATE_PROPERTY_CALLBACKS(CElmBackground, option);
 
 GENERATE_TEMPLATE(CElmBackground,
                   PROPERTY(image),
                   PROPERTY(red),
                   PROPERTY(green),
                   PROPERTY(blue),
-                  PROPERTY(load_size));
+                  PROPERTY(load_size),
+                  PROPERTY(option));
 
 CElmBackground::CElmBackground(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_bg_add(parent->GetEvasObject()))
@@ -119,6 +121,42 @@ void CElmBackground::load_size_set(Handle<Value> value)
 
    load_size.Dispose();
    load_size = Persistent<Value>::New(value);
+}
+
+Handle<Value> CElmBackground::option_get() const
+{
+   switch (elm_bg_option_get(eo)) {
+     case ELM_BG_OPTION_CENTER:
+       return String::New("center");
+     case ELM_BG_OPTION_SCALE:
+       return String::New("scale");
+     case ELM_BG_OPTION_STRETCH:
+       return String::New("stretch");
+     case ELM_BG_OPTION_TILE:
+       return String::New("tile");
+     case ELM_BG_OPTION_LAST:
+       return String::New("last");
+     default:
+       return String::New("unknown");
+    }
+}
+
+void CElmBackground::option_set(Handle<Value> val)
+{
+   if (!val->IsString())
+     return;
+
+   String::Utf8Value str(val);
+   if (!strcmp(*str, "center"))
+     elm_bg_option_set(eo, ELM_BG_OPTION_CENTER);
+   else if (!strcmp(*str, "scale"))
+     elm_bg_option_set(eo, ELM_BG_OPTION_SCALE);
+   else if (!strcmp(*str, "stretch"))
+     elm_bg_option_set(eo, ELM_BG_OPTION_STRETCH);
+   else if (!strcmp(*str, "tile"))
+     elm_bg_option_set(eo, ELM_BG_OPTION_TILE);
+   else if (!strcmp(*str, "last"))
+     elm_bg_option_set(eo, ELM_BG_OPTION_LAST);
 }
 
 }
