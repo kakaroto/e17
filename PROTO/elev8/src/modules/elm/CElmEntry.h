@@ -58,6 +58,7 @@ public:
    Handle<Value> cursor_content_get() const;
 
    Handle<Value> cursor_next(const Arguments&);
+   Handle<Value> cursor_prev(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
