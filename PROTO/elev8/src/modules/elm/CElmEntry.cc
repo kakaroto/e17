@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, scrollable);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, single_line);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, on_change);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, entry);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -20,7 +21,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(scrollable),
                   PROPERTY(single_line),
                   PROPERTY(on_change),
-                  PROPERTY(entry));
+                  PROPERTY(entry),
+                  PROPERTY_RO(is_empty));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -153,6 +155,11 @@ void CElmEntry::entry_insert(Handle<Value> val)
      return;
 
    elm_entry_entry_insert(eo, *String::Utf8Value(val));
+}
+
+Handle<Value> CElmEntry::is_empty_get() const
+{
+   return Boolean::New(elm_entry_is_empty(eo));
 }
 
 }

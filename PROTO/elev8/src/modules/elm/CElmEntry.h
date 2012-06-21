@@ -48,6 +48,8 @@ public:
    void entry_append(Handle<Value> value);
    void entry_insert(Handle<Value> value);
 
+   Handle<Value> is_empty_get() const;
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
