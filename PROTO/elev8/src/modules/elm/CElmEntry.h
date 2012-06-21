@@ -48,6 +48,9 @@ public:
    void entry_append(Handle<Value> value);
    void entry_insert(Handle<Value> value);
 
+   Handle<Value> cursor_pos_get() const;
+   void cursor_pos_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;
