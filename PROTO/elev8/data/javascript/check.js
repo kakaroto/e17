@@ -25,18 +25,18 @@ var w = elm.Window({
             resize: true,
             elements: {
                 icon_sized_check: elm.Check({
+                    icon: logo_icon,
                     label: "Icon sized to check",
                     weight: { x: -1.0, y: -1.0 },
                     align: { x: -1.0, y: 0.5 },
-                    icon: logo_icon,
                     state: true
                 }),
                 toggle1: elm.Check({
                     style: "toggle",
+                    icon: logo_icon,
                     label: "Spades",
                     onlabel: "Numbers",
                     offlabel: "Alphabets",
-                    icon: logo_icon,
                     weight: { x: -1.0, y: -1.0 },
                     align: { x: -1.0, y: 0.5 },
                     on_change: function(arg) {
@@ -44,17 +44,17 @@ var w = elm.Window({
                     }
                 }),
                 icon_check: elm.Check({
+                    icon: logo_icon_unscaled,
                     label: "Icon no scale",
-                    icon: logo_icon_unscaled
                 }),
                 label_check: elm.Check({
                     label: "Label Only"
                 }),
                 disabled_check: elm.Check({
+                    icon: logo_icon,
                     label: "Disabled check",
                     weight: { x: -1.0, y: -1.0 },
                     align: { x: -1.0, y: 0.5 },
-                    icon: logo_icon,
                     state: true,
                     enabled: false
                 }),

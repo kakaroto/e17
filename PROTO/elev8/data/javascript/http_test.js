@@ -41,6 +41,7 @@ var my_window = elm.realise(elm.Window({
                         fill : true,
                     }),
                     icon_button : elm.Button({
+                        icon : logo_icon,
                         label : "Icon sized to button",
                         weight : { x : -1.0, y : -1.0 },
                         on_click : function(arg) {
@@ -51,7 +52,6 @@ var my_window = elm.realise(elm.Window({
                         on_unpressed : function(arg) {
                             print("unpressed event on Button: 1");
                         },
-                        icon : logo_icon,
                     }),
                 },
             }),

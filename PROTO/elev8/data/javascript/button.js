@@ -31,6 +31,7 @@ var w = elm.Window({
                 weight: EXPAND_BOTH,
                 elements: {
                     icon_button: elm.Button({
+                        icon: logo_icon,
                         label: "Icon sized to button",
                         weight: { x: -1.0, y: -1.0 },
                         on_click: function(arg) {
@@ -39,16 +40,15 @@ var w = elm.Window({
                         on_unpressed: function(arg) {
                             print("unpressed event on Button: 1" + this.label);
                         },
-                        icon: logo_icon
                     }),
                     icon_no_scale: elm.Button({
+                        icon: logo_icon_unscaled,
                         label: "Icon no scale",
                         weight: { x: -1.0, y: -1.0 },
-                        icon: logo_icon_unscaled
                     }),
                     disabled: elm.Button({
-                        label: "Disabled Button",
                         icon: logo_icon,
+                        label: "Disabled Button",
                         enabled: false
                     }),
                     disabled_icon: elm.Button({

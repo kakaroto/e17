@@ -25,18 +25,18 @@ var desc = elm.Window({
             resize : true,
             elements : {
                 sized_radio_icon : elm.Radio ({
+                    icon : logo_icon,
                     label : "Icon sized to radio",
                     weight : EXPAND_BOTH,
                     align : { x : 1.0, y : 0.5 },
-                    icon : logo_icon,
                     value : 0,
                     group : "rdg",
                 }),
                 unscaled_radio_icon : elm.Radio ({
+                    icon : logo_icon_unscaled,
                     label : "Icon no scale",
                     weight : EXPAND_BOTH,
                     align : { x : 1.0, y : 0.5 },
-                    icon : logo_icon_unscaled,
                     value : 1,
                     group : "rdg",
                 }),

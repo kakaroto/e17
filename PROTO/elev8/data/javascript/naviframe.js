@@ -81,10 +81,10 @@ win = elm.realise(elm.Window({
                     horizontal: true,
                     elements: {
                         pop: elm.Button({
+                            icon: maroon,
                             label: "Pop",
                             weight: EXPAND_BOTH,
                             on_click: button_pop,
-                            icon: maroon
                         })
                     }
                 }),

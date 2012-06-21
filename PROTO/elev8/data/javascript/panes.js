@@ -23,6 +23,7 @@ elm.realise(elm.Window({
             resize: true,
             fill: true,
             left: elm.Button({
+                icon: logo_icon,
                 label: "Left",
                 weight: { x: -1.0, y: -1.0 },
                 on_click: function(arg) {
@@ -31,7 +32,6 @@ elm.realise(elm.Window({
                 on_unpress: function(arg) {
                     print("unpressed event on Button: Left");
                 },
-                icon: logo_icon,
             }),
             right: elm.Pane({
                 weight: EXPAND_BOTH,
@@ -40,6 +40,7 @@ elm.realise(elm.Window({
                 fill: true,
                 horizontal: true,
                 left: elm.Button({
+                    icon: logo_icon,
                     label: "Up",
                     weight: { x: -1.0, y: -1.0 },
                     on_click: function(arg) {
@@ -48,9 +49,9 @@ elm.realise(elm.Window({
                     on_unpress: function(arg) {
                         print("unpressed event on Button: Up");
                     },
-                    icon: logo_icon,
                 }),
                 right: elm.Button({
+                    icon: logo_icon,
                     label: "Down",
                     weight: { x: -1.0, y: -1.0 },
                     on_click: function(arg) {
@@ -59,7 +60,6 @@ elm.realise(elm.Window({
                     on_unpress: function(arg) {
                         print("unpressed event on Button: Down");
                     },
-                    icon: logo_icon,
                 }),
                 on_press: function(arg) {
                     print("clicked event on Pane 2");
