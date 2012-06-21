@@ -54,6 +54,9 @@ var win = elm.realise(elm.Window({
                 list: elm.Genlist({
                     weight: EXPAND_BOTH,
                     align: FILL_BOTH,
+                    on_longpress: function(data, item) {
+                        print(data, " long pressed");
+                    },
                     classes: {
                         'default': {
                             text: function(arg) {

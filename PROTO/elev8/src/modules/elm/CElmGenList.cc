@@ -19,6 +19,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, classes);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_longpress);
 GENERATE_METHOD_CALLBACKS(CElmGenList, append);
 GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
@@ -38,6 +39,7 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(reorder_mode),
                   PROPERTY(multi_select),
                   PROPERTY(classes),
+                  PROPERTY(on_longpress),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -46,6 +48,11 @@ GENERATE_TEMPLATE(CElmGenList,
 CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
 {
+}
+
+CElmGenList::~CElmGenList()
+{
+   on_longpress_set(Undefined());
 }
 
 void CElmGenList::Initialize(Handle<Object> target)
@@ -74,6 +81,7 @@ Handle<Value> CElmGenList::append(const Arguments& args)
 
    item->object_item = elm_genlist_item_append(eo, item_class->GetElmClass(), item, NULL,
           ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
+   elm_object_item_data_set(item->object_item, item);
 
    return External::Wrap(item);
 }
@@ -284,6 +292,41 @@ void CElmGenList::classes_set(Handle<Value> value)
 Handle<Value> CElmGenList::classes_get() const
 {
    return cached.classes;
+}
+
+void CElmGenList::OnLongPress(void *event_info)
+{
+   Handle<Function> callback(Function::Cast(*cb.longpress));
+   Item<CElmGenList> *item = static_cast< Item<CElmGenList> *>
+      (elm_object_item_data_get((Elm_Object_Item *)event_info));
+   Handle<Value> args[2] = { item->data, External::Wrap(item->object_item) };
+   callback->Call(jsObject, 2, args);
+}
+
+void CElmGenList::OnLongPressWrapper(void *data, Evas_Object *, void *event_info)
+{
+   static_cast<CElmGenList*>(data)->OnLongPress(event_info);
+}
+
+Handle<Value> CElmGenList::on_longpress_get() const
+{
+   return cb.longpress;
+}
+
+void CElmGenList::on_longpress_set(Handle<Value> val)
+{
+   if (!cb.longpress.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "longpressed", &OnLongPressWrapper);
+        cb.longpress.Dispose();
+        cb.longpress.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.longpress = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "longpressed", &OnLongPressWrapper, this);
 }
 
 }

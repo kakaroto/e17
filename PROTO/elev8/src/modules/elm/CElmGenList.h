@@ -13,10 +13,15 @@ private:
 
 protected:
    CElmGenList(Local<Object> _jsObject, CElmObject *parent);
+   ~CElmGenList();
 
    struct {
       Persistent<Object> classes;
    } cached;
+
+   struct {
+      Persistent<Value> longpress;
+   } cb;
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -66,6 +71,11 @@ public:
 
    Handle<Value> classes_get() const;
    void classes_set(Handle<Value> value);
+
+   void OnLongPress(void *event_info);
+   static void OnLongPressWrapper(void *data, Evas_Object *, void *event_info);
+   Handle<Value> on_longpress_get() const;
+   void on_longpress_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmGenList>(const Arguments&);
 };
