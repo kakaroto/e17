@@ -56,6 +56,7 @@ var win = elm.realise(elm.Window({
                     align: FILL_BOTH,
                     on_longpress: function(data, item) {
                         print(data, " long pressed");
+                        win.elements.box.elements.list.set_item_class(item, 'default');
                     },
                     classes: {
                         'default': {
