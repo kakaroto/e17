@@ -61,6 +61,8 @@ protected:
 
    static void Delete(Persistent<Value>, void *parameter);
 
+   static void EvasFreeEvent(void *data, Evas *e, void *event_info);
+
 public:
 
    template <class T>

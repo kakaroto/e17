@@ -79,7 +79,24 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
 
 void CElmObject::Delete(Persistent<Value>, void *parameter)
 {
-   delete static_cast<CElmObject *>(parameter);
+   CElmObject *self = static_cast<CElmObject *>(parameter);
+
+   evas_object_data_set(self->eo, "deleted-from-gc", (void *)1);
+   delete static_cast<CElmObject *>(self);
+}
+
+void CElmObject::EvasFreeEvent(void *data, Evas *, void *)
+{
+   CElmObject *self = static_cast<CElmObject *>(data);
+
+   if (evas_object_data_get(self->eo, "deleted-from-gc"))
+     return;
+
+   ELM_DBG("Received EVAS_CALLBACK_FREE event for CElmObject @ %p (%s). " \
+           "Nullifying pointer to Evas_Object: expect breakage.",
+           data, *String::Utf8Value(self->jsObject->ObjectProtoToString()));
+
+   self->eo = NULL;
 }
 
 CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
@@ -88,6 +105,8 @@ CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
 {
    jsObject = Persistent<Object>::New(_jsObject);
    jsObject->SetPointerInInternalField(0, this);
+   evas_event_callback_add(evas_object_evas_get(eo),
+                           EVAS_CALLBACK_FREE, CElmObject::EvasFreeEvent, this);
 }
 
 CElmObject::~CElmObject()
