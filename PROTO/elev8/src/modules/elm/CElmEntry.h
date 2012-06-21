@@ -50,6 +50,8 @@ public:
 
    Handle<Value> is_empty_get() const;
 
+   Handle<Value> selection_get() const;
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
