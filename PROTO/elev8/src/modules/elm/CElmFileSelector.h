@@ -47,6 +47,9 @@ public:
    void on_done_set(Handle<Value> val);
    Handle<Value> on_done_get(void) const;
 
+   Handle<Value> buttons_get() const;
+   void buttons_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmFileSelector>(const Arguments& args);
 };
 

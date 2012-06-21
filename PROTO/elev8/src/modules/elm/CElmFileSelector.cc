@@ -25,6 +25,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, is_save);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, mode);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, selected);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, on_done);
+GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, buttons);
 
 GENERATE_TEMPLATE(CElmFileSelector,
                   PROPERTY(path),
@@ -33,7 +34,8 @@ GENERATE_TEMPLATE(CElmFileSelector,
                   PROPERTY(is_save),
                   PROPERTY(mode),
                   PROPERTY(selected),
-                  PROPERTY(on_done));
+                  PROPERTY(on_done),
+                  PROPERTY(buttons));
 
 CElmFileSelector::CElmFileSelector(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_fileselector_add(parent->GetEvasObject()))
@@ -147,6 +149,17 @@ void CElmFileSelector::on_done_set(Handle<Value> val)
 
    cb.done = Persistent<Value>::New(val);
    evas_object_smart_callback_add(eo, "done", &OnDoneWrapper, this);
+}
+
+Handle<Value> CElmFileSelector::buttons_get() const
+{
+   return Boolean::New(elm_fileselector_buttons_ok_cancel_get(eo));
+}
+
+void CElmFileSelector::buttons_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+       elm_fileselector_buttons_ok_cancel_set(eo, val->BooleanValue());
 }
 
 }
