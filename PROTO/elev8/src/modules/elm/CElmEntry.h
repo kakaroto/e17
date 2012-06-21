@@ -91,6 +91,9 @@ public:
    Handle<Value> prediction_allow_get() const;
    void prediction_allow_set(Handle<Value> value);
 
+   Handle<Value> anchor_hover_style_get() const;
+   void anchor_hover_style_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;

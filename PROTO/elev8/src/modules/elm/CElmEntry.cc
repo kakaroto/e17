@@ -25,6 +25,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_disabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_autoenabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, prediction_allow);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, anchor_hover_style);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -69,6 +70,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(input_panel_return_key_disabled),
                   PROPERTY(input_panel_return_key_autoenabled),
                   PROPERTY(prediction_allow),
+                  PROPERTY(anchor_hover_style),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -394,6 +396,19 @@ void CElmEntry::prediction_allow_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_entry_prediction_allow_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmEntry::anchor_hover_style_get() const
+{
+   return String::New(elm_entry_anchor_hover_style_get(eo));
+}
+
+void CElmEntry::anchor_hover_style_set(Handle<Value> val)
+{
+   if (!val->IsString())
+     return;
+
+   elm_entry_anchor_hover_style_set(eo, *String::Utf8Value(val));
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
