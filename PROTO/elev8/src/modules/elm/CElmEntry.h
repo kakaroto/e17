@@ -103,6 +103,8 @@ public:
    Handle<Value> input_panel_show(const Arguments&);
    Handle<Value> input_panel_hide(const Arguments&);
 
+   Handle<Value> imf_context_reset(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 

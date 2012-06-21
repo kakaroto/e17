@@ -39,6 +39,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, markup_to_utf8);
 GENERATE_METHOD_CALLBACKS(CElmEntry, utf8_to_markup);
 GENERATE_METHOD_CALLBACKS(CElmEntry, input_panel_show);
 GENERATE_METHOD_CALLBACKS(CElmEntry, input_panel_hide);
+GENERATE_METHOD_CALLBACKS(CElmEntry, imf_context_reset);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -74,7 +75,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(markup_to_utf8),
                   METHOD(utf8_to_markup),
                   METHOD(input_panel_show),
-                  METHOD(input_panel_hide));
+                  METHOD(input_panel_hide),
+                  METHOD(imf_context_reset));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -410,6 +412,12 @@ Handle<Value> CElmEntry::input_panel_show(const Arguments&)
 Handle<Value> CElmEntry::input_panel_hide(const Arguments&)
 {
    elm_entry_input_panel_hide(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::imf_context_reset(const Arguments&)
+{
+   elm_entry_imf_context_reset(eo);
    return Undefined();
 }
 
