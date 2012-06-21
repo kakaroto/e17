@@ -59,6 +59,9 @@ extern int log_domain;
 #define PROPERTY(name_) \
    #name_, Callback_## name_ ##_get, Callback_## name_ ##_set, NULL
 
+#define PROPERTY_RO(name_) \
+   #name_, Callback_## name_ ##_get, NULL, NULL
+
 #define METHOD(name_) \
    #name_, NULL, NULL, Callback_## name_
 
@@ -70,6 +73,12 @@ extern int log_domain;
    static void Callback_## name_ ##_set(Local<String>, Local<Value> value, const AccessorInfo &info) { \
       HandleScope scope; \
       GetObjectFromAccessorInfo<class_>(info)->name_ ##_set(value); \
+   }
+
+#define GENERATE_RO_PROPERTY_CALLBACKS(class_,name_) \
+   static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
+      HandleScope scope; \
+      return scope.Close(GetObjectFromAccessorInfo<class_>(info)->name_ ##_get()); \
    }
 
 #define GENERATE_METHOD_CALLBACKS(class_,name_) \
