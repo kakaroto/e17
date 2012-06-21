@@ -29,6 +29,9 @@ public:
    Handle<Value> autorepeat_get() const;
    void autorepeat_set(Handle<Value> value);
 
+   Handle<Value> autorepeat_initial_timeout_get() const;
+   void autorepeat_initial_timeout_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmButton>(const Arguments& args);
 };
 

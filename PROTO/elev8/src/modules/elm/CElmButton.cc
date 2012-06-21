@@ -8,10 +8,12 @@ using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmButton, icon);
 GENERATE_PROPERTY_CALLBACKS(CElmButton, autorepeat);
+GENERATE_PROPERTY_CALLBACKS(CElmButton, autorepeat_initial_timeout);
 
 GENERATE_TEMPLATE(CElmButton,
                   PROPERTY(icon),
-                  PROPERTY(autorepeat));
+                  PROPERTY(autorepeat),
+                  PROPERTY(autorepeat_initial_timeout));
 
 CElmButton::CElmButton(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_button_add(parent->GetEvasObject()))
@@ -52,6 +54,17 @@ void CElmButton::autorepeat_set(Handle<Value> value)
 {
    if (value->IsBoolean())
       elm_button_autorepeat_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmButton::autorepeat_initial_timeout_get() const
+{
+   return Number::New(elm_button_autorepeat_initial_timeout_get(eo));
+}
+
+void CElmButton::autorepeat_initial_timeout_set(Handle<Value> value)
+{
+   if (value->IsNumber())
+      elm_button_autorepeat_initial_timeout_set(eo, value->NumberValue());
 }
 
 }
