@@ -20,6 +20,8 @@ protected:
       Persistent<Value> on_change;
    } cb;
 
+   Persistent<Value> icon_visible;
+
 public:
    static void Initialize(Handle<Object> val);
 
@@ -56,6 +58,9 @@ public:
 
    Handle<Value> cursor_end_get() const;
    void cursor_end_set(Handle<Value>);
+
+   Handle<Value> icon_visible_get() const;
+   void icon_visible_set(Handle<Value>);
 
    Handle<Value> is_empty_get() const;
 
