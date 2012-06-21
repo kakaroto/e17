@@ -51,6 +51,9 @@ public:
    Handle<Value> cursor_pos_get() const;
    void cursor_pos_set(Handle<Value> value);
 
+   Handle<Value> cursor_begin_get() const;
+   void cursor_begin_set(Handle<Value>);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;
