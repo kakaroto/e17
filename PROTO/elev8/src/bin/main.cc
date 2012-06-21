@@ -104,9 +104,9 @@ find_js_module_file_name(char *module_name)
 }
 
 static bool
-module_native_load(Handle<String> module_name, Handle<Object> name_space, ContextUseRule)
+module_native_load(char *module_name, Handle<Object> name_space, ContextUseRule)
 {
-   char *file_name = find_native_module_file_name(*String::AsciiValue(module_name));
+   char *file_name = find_native_module_file_name(module_name);
 
    if (!file_name) return false;
 
@@ -142,9 +142,9 @@ module_native_load(Handle<String> module_name, Handle<Object> name_space, Contex
 }
 
 static bool
-module_js_load(Handle<String> module_name, Handle<Object> name_space, ContextUseRule context_use_rule)
+module_js_load(char *module_name, Handle<Object> name_space, ContextUseRule context_use_rule)
 {
-   char *file_name = find_js_module_file_name(*String::AsciiValue(module_name));
+   char *file_name = find_js_module_file_name(module_name);
    bool return_value = false;
 
    if (!file_name) return false;
@@ -198,6 +198,37 @@ end:
    return return_value;
 }
 
+static bool
+load_module_with_type_hints(Handle<String> module_name, Local<Object> name_space, ContextUseRule context_use_rule)
+{
+   String::Utf8Value module_name_utf(module_name);
+
+   if (module_name->Length() <= 3)
+     {
+        DBG("no extension found in module [%s] name, trying both types", *String::Utf8Value(module_name));
+        goto end;
+     }
+
+   if (eina_str_has_suffix(*module_name_utf, ".js"))
+     {
+        *(*module_name_utf + module_name->Length() - 3) = '\0';
+        DBG("module [%s] is javascript, running module_js_load(%s)", *String::Utf8Value(module_name), *module_name_utf);
+        return module_js_load(*module_name_utf, name_space, context_use_rule);
+     }
+
+   if (eina_str_has_suffix(*module_name_utf, ".so"))
+     {
+        *(*module_name_utf + module_name->Length() - 3) = '\0';
+        DBG("module [%s] is native, running module_native_load(%s)", *String::Utf8Value(module_name), *module_name_utf);
+        return module_native_load(*module_name_utf, name_space, context_use_rule);
+     }
+
+   DBG("no extension provided for module [%s] trying to load native then js", *String::Utf8Value(module_name));
+end:
+   return module_native_load(*module_name_utf, name_space, context_use_rule)
+       || module_js_load(*module_name_utf, name_space, context_use_rule);
+}
+
 static Handle<Value>
 load_module(Handle<String> module_name, ContextUseRule context_use_rule)
 {
@@ -209,8 +240,7 @@ load_module(Handle<String> module_name, ContextUseRule context_use_rule)
    Local<Object> name_space = (context_use_rule == CREATE_NEW_CONTEXT) ?
                 Object::New() : Context::GetCurrent()->Global();
 
-   if (module_native_load(module_name, name_space, context_use_rule) ||
-       module_js_load(module_name, name_space, context_use_rule))
+   if (load_module_with_type_hints(module_name, name_space, context_use_rule))
      {
         module_cache->Set(module_name, Persistent<Object>::New(name_space));
         return scope.Close(name_space);
