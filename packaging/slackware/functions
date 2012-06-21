@@ -99,7 +99,6 @@ function post_clean {
 function pack_slack {
 
   cd ${PKG}
-  chown -R root:root .
   
   mkdir install
   install -m644 ${CWD}/slack-desc install/
