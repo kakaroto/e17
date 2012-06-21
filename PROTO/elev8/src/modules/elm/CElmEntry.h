@@ -21,6 +21,7 @@ protected:
    } cb;
 
    Persistent<Value> icon_visible;
+   Persistent<Value> end_visible;
 
 public:
    static void Initialize(Handle<Object> val);
@@ -67,6 +68,9 @@ public:
 
    Handle<Value> autosave_get() const;
    void autosave_set(Handle<Value> value);
+
+   Handle<Value> end_visible_get() const;
+   void end_visible_set(Handle<Value>);
 
    Handle<Value> is_empty_get() const;
 

@@ -18,6 +18,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_end);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, icon_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, context_menu_disabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, autosave);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, end_visible);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -51,6 +52,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(icon_visible),
                   PROPERTY(context_menu_disabled),
                   PROPERTY(autosave),
+                  PROPERTY(end_visible),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -79,6 +81,7 @@ CElmEntry::~CElmEntry()
 {
    on_change_set(Undefined());
    icon_visible.Dispose();
+   end_visible.Dispose();
 }
 
 void CElmEntry::Initialize(Handle<Object> target)
@@ -271,6 +274,22 @@ void CElmEntry::autosave_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_entry_autosave_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmEntry::end_visible_get() const
+{
+   return end_visible;
+}
+
+void CElmEntry::end_visible_set(Handle<Value> value)
+{
+   if (!value->IsBoolean())
+     return;
+
+   elm_entry_end_visible_set(eo, value->BooleanValue());
+
+   end_visible.Dispose();
+   end_visible = Persistent<Value>::New(value);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
