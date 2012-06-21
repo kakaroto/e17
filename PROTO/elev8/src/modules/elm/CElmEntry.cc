@@ -40,6 +40,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, utf8_to_markup);
 GENERATE_METHOD_CALLBACKS(CElmEntry, input_panel_show);
 GENERATE_METHOD_CALLBACKS(CElmEntry, input_panel_hide);
 GENERATE_METHOD_CALLBACKS(CElmEntry, imf_context_reset);
+GENERATE_METHOD_CALLBACKS(CElmEntry, anchor_hover_end);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -76,7 +77,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(utf8_to_markup),
                   METHOD(input_panel_show),
                   METHOD(input_panel_hide),
-                  METHOD(imf_context_reset));
+                  METHOD(imf_context_reset),
+                  METHOD(anchor_hover_end));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -418,6 +420,12 @@ Handle<Value> CElmEntry::input_panel_hide(const Arguments&)
 Handle<Value> CElmEntry::imf_context_reset(const Arguments&)
 {
    elm_entry_imf_context_reset(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::anchor_hover_end(const Arguments&)
+{
+   elm_entry_anchor_hover_end(eo);
    return Undefined();
 }
 

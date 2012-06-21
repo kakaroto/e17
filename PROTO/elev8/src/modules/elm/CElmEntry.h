@@ -105,6 +105,8 @@ public:
 
    Handle<Value> imf_context_reset(const Arguments&);
 
+   Handle<Value> anchor_hover_end(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
