@@ -9,16 +9,23 @@ GENERATE_PROPERTY_CALLBACKS(CElmBackground, image);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, red);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, green);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, blue);
+GENERATE_PROPERTY_CALLBACKS(CElmBackground, load_size);
 
 GENERATE_TEMPLATE(CElmBackground,
                   PROPERTY(image),
                   PROPERTY(red),
                   PROPERTY(green),
-                  PROPERTY(blue));
+                  PROPERTY(blue),
+                  PROPERTY(load_size));
 
 CElmBackground::CElmBackground(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_bg_add(parent->GetEvasObject()))
 {
+}
+
+CElmBackground::~CElmBackground()
+{
+   load_size.Dispose();
 }
 
 void CElmBackground::Initialize(Handle<Object> target)
@@ -93,6 +100,25 @@ void CElmBackground::blue_set(Handle<Value> val)
    int r, g;
    elm_bg_color_get(eo, &r, &g, NULL);
    elm_bg_color_set(eo, r, g, val->ToNumber()->Value());
+}
+
+Handle<Value> CElmBackground::load_size_get() const
+{
+  return load_size;
+}
+
+void CElmBackground::load_size_set(Handle<Value> value)
+{
+   if (!value->IsArray())
+     return;
+
+   Local<Object> size = value->ToObject();
+   elm_bg_load_size_set(eo,
+        size->Get(0)->ToNumber()->Value(),
+        size->Get(1)->ToNumber()->Value());
+
+   load_size.Dispose();
+   load_size = Persistent<Value>::New(value);
 }
 
 }

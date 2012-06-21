@@ -15,6 +15,9 @@ private:
 protected:
    CElmBackground(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
+   ~CElmBackground();
+
+   Persistent<Value> load_size;
 
 public:
    static void Initialize(Handle<Object> target);
@@ -30,6 +33,9 @@ public:
 
    Handle<Value> blue_get() const;
    void blue_set(Handle<Value> val);
+
+   Handle<Value> load_size_get() const;
+   void load_size_set(Handle<Value> value);
 
    friend Handle<Value> CElmObject::New<CElmBackground>(const Arguments& args);
 };
