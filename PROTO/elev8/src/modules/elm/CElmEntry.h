@@ -83,6 +83,7 @@ public:
    Handle<Value> context_menu_clear(const Arguments&);
 
    Handle<Value> markup_to_utf8(const Arguments& args);
+   Handle<Value> utf8_to_markup(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
