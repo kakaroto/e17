@@ -14,6 +14,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, on_change);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, entry);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_pos);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_begin);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_end);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -32,6 +33,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(entry),
                   PROPERTY(cursor_pos),
                   PROPERTY(cursor_begin),
+                  PROPERTY(cursor_end),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -192,6 +194,16 @@ Handle<Value> CElmEntry::cursor_begin_get() const
 void CElmEntry::cursor_begin_set(Handle<Value>)
 {
    elm_entry_cursor_begin_set(eo);
+}
+
+Handle<Value> CElmEntry::cursor_end_get() const
+{
+   return Undefined();
+}
+
+void CElmEntry::cursor_end_set(Handle<Value>)
+{
+   elm_entry_cursor_end_set(eo);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
