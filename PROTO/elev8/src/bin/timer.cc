@@ -22,8 +22,9 @@ static Eina_Bool OnInterval(void *data)
    HandleScope scope;
    Handle<Object> obj = static_cast<Timer *>(data)->obj;
    Handle<Function> func(Function::Cast(*obj->GetHiddenValue(String::NewSymbol("callback"))));
+   Eina_Bool repeat = obj->GetHiddenValue(String::NewSymbol("repeat"))->BooleanValue();
    func->Call(obj->GetHiddenValue(String::NewSymbol("this"))->ToObject(), 0, NULL);
-   return obj->GetHiddenValue(String::NewSymbol("repeat"))->BooleanValue();
+   return repeat;
 }
 
 static void clearInterval(Handle<Value> val)
