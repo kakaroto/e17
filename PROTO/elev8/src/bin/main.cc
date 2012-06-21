@@ -244,8 +244,7 @@ __require__(const Arguments& args)
 static Handle<Value>
 modules(const Arguments&)
 {
-   HandleScope scope;
-   return scope.Close(module_cache);
+   return module_cache;
 }
 
 static void
