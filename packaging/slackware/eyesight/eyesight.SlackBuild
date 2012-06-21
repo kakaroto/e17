@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Begin eyesight.SlackBuild
+
+NAME=eyesight
+BUILD=1jp
+CWD=$(pwd)
+
+# Get functions
+. ../functions
+set_env
+
+# Go to source code
+cd ../../../PROTO/${NAME}
+prepare_src
+
+# Configure
+CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
+  ./autogen.sh \
+    --prefix=/usr \
+    --libdir=${LIBDIR} \
+    --with-pdf-backend=poppler \
+    --build=${ARCH}-slackware-linux
+
+# Install
+make_install
+install_doc AUTHORS COPYING* LICENCE README TODO
+
+# Add API doc
+api_doc
+
+# Build the package
+post_clean
+pack_slack
+
+# End eyesight.SlackBuild
