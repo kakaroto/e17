@@ -78,6 +78,9 @@ public:
    Handle<Value> v_bounce_get() const;
    void v_bounce_set(Handle<Value> value);
 
+   Handle<Value> input_panel_enabled_get() const;
+   void input_panel_enabled_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;

@@ -21,6 +21,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, autosave);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, end_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, h_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, v_bounce);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_enabled);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -61,6 +62,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(end_visible),
                   PROPERTY(h_bounce),
                   PROPERTY(v_bounce),
+                  PROPERTY(input_panel_enabled),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -336,6 +338,17 @@ void CElmEntry::v_bounce_set(Handle<Value> value)
    Eina_Bool horizontal;
    elm_entry_bounce_get(eo, &horizontal, NULL);
    elm_entry_bounce_set(eo, horizontal, value->BooleanValue());
+}
+
+Handle<Value> CElmEntry::input_panel_enabled_get() const
+{
+   return Boolean::New(elm_entry_input_panel_enabled_get(eo));
+}
+
+void CElmEntry::input_panel_enabled_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_entry_input_panel_enabled_set(eo, value->BooleanValue());
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
