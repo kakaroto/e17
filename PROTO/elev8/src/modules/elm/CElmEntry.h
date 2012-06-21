@@ -112,6 +112,7 @@ public:
    Handle<Value> cursor_down(const Arguments&);
    Handle<Value> cursor_selection_begin(const Arguments&);
    Handle<Value> cursor_selection_end(const Arguments&);
+   Handle<Value> cursor_line_begin(const Arguments&);
 
    Handle<Value> selection_cut(const Arguments&);
    Handle<Value> selection_copy(const Arguments&);
