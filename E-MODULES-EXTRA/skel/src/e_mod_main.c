@@ -395,9 +395,9 @@ _skel_conf_item_get(const char *id)
    GADCON_CLIENT_CONFIG_GET(Config_Item, skel_conf->conf_items, _gc_class, id);
 
    ci = E_NEW(Config_Item, 1);
+   ci->id = eina_stringshare_add(id);
    ci->switch2 = 0;
    skel_conf->conf_items = eina_list_append(skel_conf->conf_items, ci);
-   ci->id = eina_stringshare_printf("%s.%d", _gc_class.name, eina_list_count(skel_conf->conf_items));
    return ci;
 }
 
