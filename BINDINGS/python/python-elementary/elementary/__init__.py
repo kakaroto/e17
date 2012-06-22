@@ -30,7 +30,8 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, \
     Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
     Transit, Map, MapOverlay, MapOverlayClass, Mapbuf, MultiButtonEntry, \
     MultiButtonEntryItem, Slideshow, SlideshowItem, SegmentControl, \
-    SegmentControlItem, Popup, PopupItem, Plug, Photocam, Theme ,\
+    SegmentControlItem, Popup, PopupItem, Plug, Photocam, Theme, \
+    GestureLayer, \
     init, shutdown, run, exit, scale_get, scale_set, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
@@ -163,6 +164,23 @@ ELM_GENLIST_ITEM_FIELD_ALL = 0
 ELM_GENLIST_ITEM_FIELD_TEXT = 1
 ELM_GENLIST_ITEM_FIELD_CONTENT = 2
 ELM_GENLIST_ITEM_FIELD_STATE = 3
+
+ELM_GESTURE_STATE_UNDEFINED = -1
+ELM_GESTURE_STATE_START = 0
+ELM_GESTURE_STATE_MOVE = 1
+ELM_GESTURE_STATE_END = 2
+ELM_GESTURE_STATE_ABORT = 3
+
+ELM_GESTURE_FIRST = 0
+ELM_GESTURE_N_TAPS = 1
+ELM_GESTURE_N_LONG_TAPS = 2
+ELM_GESTURE_N_DOUBLE_TAPS = 3
+ELM_GESTURE_N_TRIPLE_TAPS = 4
+ELM_GESTURE_MOMENTUM = 5
+ELM_GESTURE_N_LINES = 6
+ELM_GESTURE_N_FLICKS = 7
+ELM_GESTURE_ZOOM = 8
+ELM_GESTURE_ROTATE = 9
 
 ELM_HOVER_AXIS_NONE = 0
 ELM_HOVER_AXIS_HORIZONTAL = 1

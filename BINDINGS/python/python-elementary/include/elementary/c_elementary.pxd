@@ -24,6 +24,7 @@ from evas.c_evas cimport Evas_Callback_Type
 from evas.c_evas cimport Evas_Smart_Cb
 from evas.c_evas cimport Evas_Font_Size
 from evas.c_evas cimport Evas_Load_Error
+from evas.c_evas cimport Evas_Event_Flags
 
 cdef extern from *:
     ctypedef char* const_char_ptr "const char *"
@@ -241,6 +242,26 @@ cdef extern from "Elementary.h":
         ELM_GENLIST_ITEM_SCROLLTO_IN        # to the nearest viewport
         ELM_GENLIST_ITEM_SCROLLTO_TOP       # to the top of viewport
         ELM_GENLIST_ITEM_SCROLLTO_MIDDLE    # to the middle of viewport
+
+    ctypedef enum Elm_Gesture_State:
+        ELM_GESTURE_STATE_UNDEFINED
+        ELM_GESTURE_STATE_START
+        ELM_GESTURE_STATE_MOVE
+        ELM_GESTURE_STATE_END
+        ELM_GESTURE_STATE_ABORT
+
+    ctypedef enum Elm_Gesture_Type:
+        ELM_GESTURE_FIRST
+        ELM_GESTURE_N_TAPS
+        ELM_GESTURE_N_LONG_TAPS
+        ELM_GESTURE_N_DOUBLE_TAPS
+        ELM_GESTURE_N_TRIPLE_TAPS
+        ELM_GESTURE_MOMENTUM
+        ELM_GESTURE_N_LINES
+        ELM_GESTURE_N_FLICKS
+        ELM_GESTURE_ZOOM
+        ELM_GESTURE_ROTATE
+        ELM_GESTURE_LAST
 
     ctypedef enum Elm_Hover_Axis:
         ELM_HOVER_AXIS_NONE
@@ -552,6 +573,45 @@ cdef extern from "Elementary.h":
         char *item_style
         Elm_Gengrid_Item_Class_Func func
 
+    #gesture layer
+    ctypedef struct Elm_Gesture_Taps_Info:
+        Evas_Coord   x, y
+        unsigned int n
+        unsigned int timestamp
+
+    ctypedef struct Elm_Gesture_Momentum_Info:
+        Evas_Coord   x1
+        Evas_Coord   y1
+        Evas_Coord   x2
+        Evas_Coord   y2
+
+        unsigned int tx
+        unsigned int ty
+
+        Evas_Coord   mx
+        Evas_Coord   my
+
+        unsigned int n
+
+    ctypedef struct _Elm_Gesture_Line_Info:
+        Elm_Gesture_Momentum_Info momentum
+        double                    angle
+
+    ctypedef struct _Elm_Gesture_Zoom_Info:
+        Evas_Coord x, y
+        Evas_Coord radius
+        double     zoom
+        double     momentum
+
+    ctypedef struct _Elm_Gesture_Rotate_Info:
+        Evas_Coord x, y
+        Evas_Coord radius
+        double     base_angle
+        double     angle
+        double     momentum
+
+    ctypedef Evas_Event_Flags (*Elm_Gesture_Event_Cb)(void *data, void *event_info)
+
     #object item
     ctypedef struct Elm_Object_Item
     ctypedef Elm_Object_Item const_Elm_Object_Item "const Elm_Object_Item"
@@ -715,6 +775,17 @@ cdef extern from "Elementary.h":
 
     # Finger
     void                     elm_coords_finger_size_adjust(int times_w, Evas_Coord *w, int times_h, Evas_Coord *h)
+
+    # Gesture layer
+    void                     elm_gesture_layer_cb_set(Evas_Object *obj, Elm_Gesture_Type idx, Elm_Gesture_State cb_type, Elm_Gesture_Event_Cb cb, void *data)
+    Eina_Bool                elm_gesture_layer_hold_events_get(Evas_Object *obj)
+    void                     elm_gesture_layer_hold_events_set(Evas_Object *obj, Eina_Bool hold_events)
+    void                     elm_gesture_layer_zoom_step_set(Evas_Object *obj, double step)
+    double                   elm_gesture_layer_zoom_step_get(Evas_Object *obj)
+    void                     elm_gesture_layer_rotate_step_set(Evas_Object *obj, double step)
+    double                   elm_gesture_layer_rotate_step_get(Evas_Object *obj)
+    Eina_Bool                elm_gesture_layer_attach(Evas_Object *obj, Evas_Object *target)
+    Evas_Object             *elm_gesture_layer_add(Evas_Object *parent)
 
     # Need
     Eina_Bool                elm_need_efreet()
@@ -2209,6 +2280,10 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_win_modal_get(Evas_Object *obj)
     void                     elm_win_aspect_set(Evas_Object *obj, double aspect)
     double                   elm_win_aspect_get(Evas_Object *obj)
+    void                     elm_win_size_base_set(Evas_Object *obj, int w, int h)
+    void                     elm_win_size_base_get(Evas_Object *obj, int *w, int *h)
+    void                     elm_win_size_step_set(Evas_Object *obj, int w, int h)
+    void                     elm_win_size_step_get(Evas_Object *obj, int *w, int *h)
     void                     elm_win_layer_set(Evas_Object *obj, int layer)
     int                      elm_win_layer_get(Evas_Object *obj)
     void                     elm_win_rotation_set(Evas_Object *obj, int rotation)

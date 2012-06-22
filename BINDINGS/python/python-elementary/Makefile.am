@@ -38,6 +38,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_frame.pxi \
 	elementary/elementary.c_elementary_genlist.pxi \
 	elementary/elementary.c_elementary_gengrid.pxi \
+	elementary/elementary.c_elementary_gesture_layer.pxi \
 	elementary/elementary.c_elementary_grid.pxi \
 	elementary/elementary.c_elementary_hover.pxi \
 	elementary/elementary.c_elementary_hoversel.pxi \
