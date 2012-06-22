@@ -127,8 +127,6 @@ _elsa_event_status_dd()
    Eet_Data_Descriptor_Class eddc;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Status_Event);
    edd = eet_data_descriptor_stream_new(&eddc);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Status_Event, "login",
-                                 login, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Status_Event, "granted",
                                  granted, EET_T_UCHAR);
    return edd;

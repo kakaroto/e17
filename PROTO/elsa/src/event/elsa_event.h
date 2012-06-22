@@ -40,7 +40,6 @@ typedef struct Elsa_Maxtries_Event_
 typedef struct Elsa_Status_Event_
 {
    Eina_Bool granted;
-   const char *login;
 } Elsa_Status_Event;
 
 typedef struct Elsa_Action_Event_
