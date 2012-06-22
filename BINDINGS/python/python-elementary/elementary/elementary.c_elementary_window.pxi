@@ -826,6 +826,44 @@ cdef public class Window(Object) [object PyElementaryWindow, type PyElementaryWi
         def __set__(self, aspect):
             elm_win_aspect_set(self.obj, aspect)
 
+    property size_base:
+        """The base window size used with stepping calculation
+
+        Base size + stepping is what is calculated for window sizing restrictions.
+
+        @type: tuple(int w, int h)
+
+        @see: L{size_step}
+
+        """
+        def __set__(self, value):
+            w, h = value
+            elm_win_size_base_set(self.obj, w, h)
+
+        def __get__(self):
+            cdef int w, h
+            elm_win_size_base_get(self.obj, &w, &h)
+            return (w, h)
+
+    property size_step:
+        """Set the window stepping used with sizing calculation
+
+        Base size + stepping is what is calculated for window sizing restrictions.
+
+        @type: tuple(int w, int h)
+
+        @see: L{size_base}
+
+        """
+        def __set__(self, value):
+            w, h = value
+            elm_win_size_step_set(self.obj, w, h)
+
+        def __get__(self):
+            cdef int w, h
+            elm_win_size_step_get(self.obj, &w, &h)
+            return (w, h)
+
     def layer_set(self, layer):
         """Set the layer of the window.
 
