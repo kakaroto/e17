@@ -397,7 +397,7 @@ _skel_conf_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->switch2 = 0;
    skel_conf->conf_items = eina_list_append(skel_conf->conf_items, ci);
-   ci->id = eina_stringshare_printf("%s.%d", id, eina_list_count(skel_conf->conf_items));
+   ci->id = eina_stringshare_printf("%s.%d", _gc_class.name, eina_list_count(skel_conf->conf_items));
    return ci;
 }
 
