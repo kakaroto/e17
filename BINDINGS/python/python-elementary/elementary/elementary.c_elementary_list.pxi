@@ -704,8 +704,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @param   end: The icon object to use for the right side of the item. An
                       icon can be any Evas object.
         @type    end: L{Object}
-        @param  func: The function to call when the item is clicked.
-        @type   func: function
+        @param  callback: The function to call when the item is clicked.
+        @type   callback: function
 
         @return:      The created item or C{None} upon failure.
         @rtype:       L{ListItem}
@@ -746,8 +746,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @param   end: The icon object to use for the right side of the item. An
                       icon can be any Evas object.
         @type    end: L{Object}
-        @param  func: The function to call when the item is clicked.
-        @type   func: function
+        @param  callback: The function to call when the item is clicked.
+        @type   callback: function
 
         @return:      The created item or C{None} upon failure.
         @rtype:       L{ListItem}
@@ -790,8 +790,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @param    end: The icon object to use for the right side of the item. An
                        icon can be any Evas object.
         @type     end: L{Object}
-        @param   func: The function to call when the item is clicked.
-        @type    func: function
+        @param   callback: The function to call when the item is clicked.
+        @type    callback: function
 
         @return:       The created item or C{None} upon failure.
         @rtype:        L{ListItem}
@@ -834,8 +834,8 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @param   end: The icon object to use for the right side of the item. An
                       icon can be any Evas object.
         @type    end: L{Object}
-        @param  func: The function to call when the item is clicked.
-        @type   func: function
+        @param  callback: The function to call when the item is clicked.
+        @type   callback: function
 
         @return:      The created item or C{None} upon failure.
         @rtype:       L{ListItem}

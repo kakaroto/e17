@@ -312,8 +312,8 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
         @type after: L{IndexItem}
         @param letter: Letter under which the item should be indexed
         @type letter: string
-        @param func: The function to call when the item is clicked.
-        @type func: function
+        @param callback: The function to call when the item is clicked.
+        @type callback: function
         @return: A handle to the item added or C{None}, on errors
         @rtype: L{IndexItem}
 
@@ -340,8 +340,8 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
         @type before: L{IndexItem}
         @param letter: Letter under which the item should be indexed
         @type letter: string
-        @param func: The function to call when the item is clicked.
-        @type func: function
+        @param callback: The function to call when the item is clicked.
+        @type callback: function
         @return: A handle to the item added or C{None}, on errors
         @rtype: L{IndexItem}
 

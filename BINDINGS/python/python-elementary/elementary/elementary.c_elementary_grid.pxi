@@ -103,7 +103,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         elm_grid_unpack(self.obj, subobj.obj)
 
     def clear(self, clear):
-        """clear()
+        """clear(clear)
 
         Faster way to remove all child objects from a grid object.
 
@@ -172,8 +172,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
     property children:
         """Get the list of the children for the grid.
 
-        @return: The list of children
-        @rtype: tuple of L{Object}s
+        @type: tuple of L{Object}s
 
         """
         def __get__(self):

@@ -18,7 +18,7 @@
 
 cdef class HoverselItem(ObjectItem):
 
-    """An item for the Hoversel widget."""
+    """An item for the L{Hoversel} widget."""
 
     def __init__(self, evasObject hoversel, label, icon_file, icon_type,
                  callback, *args, **kargs):
@@ -83,12 +83,7 @@ cdef class HoverselItem(ObjectItem):
 
         @see: L{Hoversel.item_add()}
 
-        @param icon_file: An image file path on disk to use for the icon or
-            standard icon name
-        @type icon_file: string
-        @param icon_group: The edje group to use if C{icon_file} is an edje
-            file. Set this to None if the icon is not an edje file
-        @param icon_type: The icon type
+        @type: tuple(string file, string group, Elm_Icon_Type type)
 
         """
         def __set__(self, value):
@@ -268,7 +263,7 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         @see: L{item_add()}
 
         @return: Returns a list of Elm_Object_Item*
-        @rtype: tuple of Elm_Object_Item
+        @rtype: tuple of Elm_Object_Items
 
         """
         return _object_item_list_to_python(elm_hoversel_items_get(self.obj))
@@ -278,8 +273,7 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
 
         @see: L{item_add()}
 
-        @return: Returns a list of Elm_Object_Item*
-        @rtype: tuple of Elm_Object_Item
+        @type: tuple of Elm_Object_Items
 
         """
         def __get__(self):
@@ -305,8 +299,8 @@ cdef public class Hoversel(Button) [object PyElementaryHoversel, type PyElementa
         @type icon_file: string
         @param icon_type: The icon type if relevant
         @type icon_type: string
-        @param func: Convenience function to call when this item is selected
-        @type func: function
+        @param callback: Convenience function to call when this item is selected
+        @type callback: function
 
         @return: The item added.
         @rtype: Elm_Object_Item

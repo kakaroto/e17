@@ -177,9 +177,9 @@ cdef public class Hover(LayoutClass) [object PyElementaryHover, type PyElementar
 
         @see: L{Object.part_content_set()}
 
-        @param pref_axis: The preferred orientation axis for the hover
+        @param axis: The preferred orientation axis for the hover
             object to use
-        @type pref_axis: Elm_Hover_Axis
+        @type axis: Elm_Hover_Axis
 
         @return: The edje location to place content into the hover or C{None},
             on errors.

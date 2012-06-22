@@ -112,22 +112,22 @@ cdef class MultiButtonEntryItem(ObjectItem):
 
 cdef public class MultiButtonEntry(Object) [object PyElementaryMultiButtonEntry, type PyElementaryMultiButtonEntry_Type]:
 
-    """A Multibuttonentry is a widget to allow a user enter text and manage it as a number
-    of buttons. Each text button is inserted by pressing the "return" key.
-    If there is no space in the current row, a new button is added to the next row.
-    When a text button is pressed, it will become focused.
-    Backspace removes the focus.
-    When the Multibuttonentry loses focus items longer than one line are shrunk
-    to one line.
+    """A Multibuttonentry is a widget to allow a user enter text and manage
+    it as a number of buttons. Each text button is inserted by pressing the
+    "return" key. If there is no space in the current row, a new button is
+    added to the next row. When a text button is pressed, it will become
+    focused. Backspace removes the focus. When the Multibuttonentry loses
+    focus items longer than one line are shrunk to one line.
 
-    Typical use case of multibuttonentry is, composing emails/messages to a group
-    of addresses, each of which is an item that can be clicked for further actions.
+    Typical use case of multibuttonentry is, composing emails/messages to a
+    group of addresses, each of which is an item that can be clicked for
+    further actions.
 
     Default text parts of the multibuttonentry widget that you can use for are:
-    @li "default" - A label of the multibuttonentry
+        - "default" - A label of the multibuttonentry
 
     Default text parts of the multibuttonentry items that you can use for are:
-    @li "default" - A label of the multibuttonentry item
+        - "default" - A label of the multibuttonentry item
 
     """
 

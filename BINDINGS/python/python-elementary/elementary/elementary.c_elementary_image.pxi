@@ -519,8 +519,7 @@ cdef public class Image(Object) [object PyElementaryImage, type PyElementaryImag
         @note: Be careful to not manipulate it, as it is under control of
         elementary.
 
-        @return: The inlined image object, or None if none exists
-        @rtype: evas.Image
+        @type: evas.Image
 
         """
         def __get__(self):

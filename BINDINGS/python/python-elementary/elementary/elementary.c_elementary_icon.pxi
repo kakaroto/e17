@@ -126,7 +126,7 @@ cdef public class Icon(Image) [object PyElementaryIcon, type PyElementaryIcon_Ty
 
         @see: L{Image.file}
 
-        @type group: string or tuple of strings
+        @type: string C{file} or tuple(string C{file}, string C{group})
 
         """
         def __set__(self, value):

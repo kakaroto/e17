@@ -359,8 +359,8 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @type icon: string
         @param label: The label of the item.
         @type label: string
-        @param func: Function called when the user select the item.
-        @type func: function
+        @param callback: Function called when the user select the item.
+        @type callback: function
 
         @return: Returns the new item.
         @rtype: L{MenuItem}
@@ -368,8 +368,8 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         """
         return MenuItem(self, parent, label, icon, callback, *args, **kwargs)
 
-    def item_separator_add(self, item = None):
-        """item_separator_add(item=None)
+    def item_separator_add(self, parent = None):
+        """item_separator_add(parent=None)
 
         Add a separator item to menu under C{parent}.
 
@@ -381,7 +381,7 @@ cdef public class Menu(Object) [object PyElementaryMenu, type PyElementaryMenu_T
         @rtype: L{MenuSeparatorItem}
 
         """
-        return MenuSeparatorItem(self, item)
+        return MenuSeparatorItem(self, parent)
 
     def selected_item_get(self):
         """Get the selected item in the menu

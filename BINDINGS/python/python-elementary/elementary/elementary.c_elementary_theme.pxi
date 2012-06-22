@@ -100,18 +100,26 @@ cdef class Theme(object):
         applications).
 
         """
+        cdef Elm_Theme *th
         if default:
-            self.th = elm_theme_default_get()
+            th = elm_theme_default_get()
         else:
-            self.th = elm_theme_new()
+            th = elm_theme_new()
 
-    def __del__(self):
+        if th != NULL:
+            self.th = th
+        else:
+            Py_DECREF(self)
+
+    def __dealloc__(self):
         """Free a specific theme
 
         This frees a theme created with elm_theme_new().
 
         """
-        elm_theme_free(self.th)
+        if self.th != NULL
+            elm_theme_free(self.th)
+            self.th = NULL
 
     def copy(self, Theme thdst):
         """copy(thdst)
@@ -136,11 +144,12 @@ cdef class Theme(object):
         so C{th} acts as an override to C{thref}, but where its overrides
         don't apply, it will fall through to C{thref} for configuration.
 
-        @param thref: The theme that is the reference source
+        @type: L{Theme}
 
         """
         def __set__(self, Theme thref):
             elm_theme_ref_set(self.th, thref.th)
+
         def __get__(self):
             cdef Theme thref = Theme()
             thref.th = elm_theme_ref_get(self.th)
@@ -253,11 +262,12 @@ cdef class Theme(object):
 
         @see: L{list_get()}
 
-        @param theme: Theme search string
+        @type: string
 
         """
         def __set__(self, theme):
             elm_theme_set(self.th, _cfruni(theme))
+
         def __get__(self):
             return _ctouni(elm_theme_get(self.th))
 
