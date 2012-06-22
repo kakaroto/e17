@@ -14,6 +14,7 @@ naviframe - need to block the style set while transiton is going on
 naviframe - more transition effect styles.
 naviframe - focus problem (shotgun -> open a couple chat tabs -> switching between them, discomfitor)
 naviframe - visible problem (normal style naviframe -> naviframe in naviframe -> switching items outside naviframe -> the content inner naviframe do not properly hide all the time
+naviframe - check the bg color
 hoversel - add horizontal mode style.
 genlist - need to check to prevent flickerling when theme_hook is called
 gengrid - segfault with elm_gengrid_item_sorted_insert func (#984)
