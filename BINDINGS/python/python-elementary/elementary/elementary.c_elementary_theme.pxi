@@ -117,7 +117,7 @@ cdef class Theme(object):
         This frees a theme created with elm_theme_new().
 
         """
-        if self.th != NULL
+        if self.th != NULL:
             elm_theme_free(self.th)
             self.th = NULL
 
