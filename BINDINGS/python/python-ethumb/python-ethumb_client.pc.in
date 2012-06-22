@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datarootdir@/python-ethumb
+pythondir=@pythondir@
+pyexecdir=@pyexecdir@
+
+Name: Python Ethumb Client
+Description: Python bindings for Ethumb Client
+@pkgconfig_requires_private@: @pkgconfig_ethumb_client_requires_libs@
+Version: @VERSION@
