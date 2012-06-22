@@ -28,7 +28,7 @@ cdef class PopupItem(ObjectItem):
 
     """
 
-    def __init__(self, Popup popup, label = None, evasObject icon = None, func = None, *args, **kwargs):
+    def __init__(self, evasObject popup, label = None, evasObject icon = None, func = None, *args, **kwargs):
         cdef Elm_Object_Item *item
         cdef Evas_Smart_Cb cb
 
