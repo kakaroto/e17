@@ -13,7 +13,7 @@ def pop_existent(client, files):
         f = files.pop()
         client.file_set(f)
         print client
-        if not client.exists():
+        if not client.thumb_exists():
             return f
         tf, tk = client.thumb_path
         print "%s already thumbnailed %s, %s" % (f, tf, tk)

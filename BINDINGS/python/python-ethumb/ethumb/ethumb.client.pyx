@@ -18,10 +18,6 @@
 from cpython cimport PyObject, Py_INCREF, Py_DECREF
 import traceback
 
-__extra_epydoc_fields__ = (
-    ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
-    )
-
 def shutdown():
     ethumb_client_shutdown()
 
@@ -74,6 +70,10 @@ cdef void _generated_cb(void *data, Ethumb_Client *client, int id, const_char_pt
 cdef void _generated_cb_free_data(void *data) with gil:
     obj = <object>data
     Py_DECREF(obj)
+
+cdef void _thumb_exists_cb(void *data, Ethumb_Client *client, Ethumb_Exists *thread, Eina_Bool exists) with gil:
+    #TODO
+    pass
 
 cdef char *str_to_c(object s):
     cdef char *mystr
@@ -163,7 +163,7 @@ cdef class Client:
         return ("%s(file=(%r, %r), thumb=(%r, %r), exists=%s, size=%dx%d, "
                 "format=%s, aspect=%s, quality=%d, compress=%d, "
                 "directory=%r, category=%r)") % \
-                (self.__class__.__name__, f, k, tf, tk, self.exists(),
+                (self.__class__.__name__, f, k, tf, tk, self.thumb_exists(),
                  w, h, format, aspect, self.quality, self.compress,
                  self.directory, self.category)
 
@@ -544,13 +544,25 @@ cdef class Client:
     def document_page_set(self, int page):
         ethumb_client_document_page_set(self.obj, page)
 
-    def exists(self):
+    def thumb_exists(self, callback = None, *args, **kwargs):
         """Checks if thumbnail already exists.
 
         If you want to avoid regenerating thumbnails, check if they
         already exist with this function.
+
         """
-        return bool(ethumb_client_thumb_exists(self.obj))
+        cdef Ethumb_Client_Thumb_Exists_Cb cb = NULL
+        cdef Ethumb_Exists *res
+
+        if callback:
+            if not callable(callback):
+                raise TypeError("callback is not callable")
+            cb = _thumb_exists_cb
+
+        data = (args, kwargs)
+        res = ethumb_client_thumb_exists(self.obj, cb, <void *>data)
+        return False
+        #TODO: handle return value
 
     def generate(self, func, *args, **kargs):
         """Ask EThumb server to generate the specified thumbnail.

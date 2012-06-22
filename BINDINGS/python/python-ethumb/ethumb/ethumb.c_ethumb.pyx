@@ -15,28 +15,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ethumb.  If not, see <http://www.gnu.org/licenses/>.
 
-__extra_epydoc_fields__ = (
-    ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
-    )
-
 def init():
     return ethumb_init()
 
 def shutdown():
     ethumb_shutdown()
 
-ETHUMB_THUMB_NORMAL = 0
-ETHUMB_THUMB_LARGE = 1
-
-ETHUMB_THUMB_FDO = 0
-ETHUMB_THUMB_JPEG = 1
-ETHUMB_THUMB_EET = 2
-
-ETHUMB_THUMB_KEEP_ASPECT = 0
-ETHUMB_THUMB_IGNORE_ASPECT = 1
-ETHUMB_THUMB_CROP = 2
-
-cdef class Ethumb:
+cdef class PyEthumb:
     """Ethumb thumbnail generator"""
     def __init__(self):
         """Ethumb constructor."""

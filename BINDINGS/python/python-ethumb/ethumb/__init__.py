@@ -15,8 +15,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this Python-Ethumb.  If not, see <http://www.gnu.org/licenses/>.
 
-from c_ethumb import shutdown, Ethumb, ETHUMB_THUMB_NORMAL, \
-                     ETHUMB_THUMB_LARGE, ETHUMB_THUMB_FDO, ETHUMB_THUMB_JPEG, \
-                     ETHUMB_THUMB_EET, \
-                     ETHUMB_THUMB_KEEP_ASPECT, ETHUMB_THUMB_IGNORE_ASPECT, \
-                     ETHUMB_THUMB_CROP
+from c_ethumb import init, shutdown, PyEthumb
+
+ETHUMB_THUMB_NORMAL = 0
+ETHUMB_THUMB_LARGE = 1
+
+ETHUMB_THUMB_FDO = 0
+ETHUMB_THUMB_JPEG = 1
+ETHUMB_THUMB_EET = 2
+
+ETHUMB_THUMB_KEEP_ASPECT = 0
+ETHUMB_THUMB_IGNORE_ASPECT = 1
+ETHUMB_THUMB_CROP = 2
+
