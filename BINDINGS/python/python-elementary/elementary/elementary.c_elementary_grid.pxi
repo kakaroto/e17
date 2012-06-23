@@ -113,7 +113,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         elm_grid_clear(self.obj, clear)
 
-    def pack_set(evasObject subobj, x, y, w, h):
+    def pack_set(self, evasObject subobj, x, y, w, h):
         """pack_set(subobj, x, y, w, h)
 
         Set packing of an existing child at to position and size
@@ -132,7 +132,7 @@ cdef public class Grid(Object) [object PyElementaryGrid, type PyElementaryGrid_T
         """
         elm_grid_pack_set(subobj.obj, x, y, w, h)
 
-    def pack_get(evasObject subobj):
+    def pack_get(self, evasObject subobj):
         """pack_get(subobj)
 
         Get packing of a child

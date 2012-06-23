@@ -103,6 +103,7 @@ examples_files = \
 	tests/test_flip.py \
 	tests/test_genlist.py \
 	tests/test_gengrid.py \
+	tests/test_grid.py \
 	tests/test_hover.py \
 	tests/test_hoversel.py \
 	tests/test_icon.py \

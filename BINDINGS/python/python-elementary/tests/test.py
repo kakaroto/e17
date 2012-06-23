@@ -24,6 +24,7 @@ from test_fileselector import fileselector_clicked, fileselector_button_clicked,
 from test_flip import flip_clicked, flip_interactive_clicked
 from test_gengrid import gengrid_clicked
 from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
+from test_grid import grid_clicked
 from test_hover import hover_clicked, hover2_clicked
 from test_hoversel import hoversel_clicked
 from test_icon import icon_clicked, icon_transparent_clicked
@@ -75,6 +76,7 @@ items = [("3D", [
             ("Box Layout Transition", box_transition_clicked),
             ("Table", table_clicked),
             ("Layout", layout_clicked),
+            ("Grid", grid_clicked),
         ]),
          ("Cursors", [
             ("Cursor", cursor_clicked),
@@ -279,7 +281,7 @@ if __name__ == "__main__":
 
     menu_create(None, win)
 
-    win.resize(480, 480)
+    win.resize(320, 480)
     win.show()
     elementary.run()
     elementary.shutdown()
