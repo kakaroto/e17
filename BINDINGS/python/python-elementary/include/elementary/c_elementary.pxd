@@ -1475,7 +1475,7 @@ cdef extern from "Elementary.h":
 
     # GLView                (XXX)
 
-    # Grid                  (api:DONE  cb:N/A   test:TODO  doc:DONE)
+    # Grid                  (api:DONE  cb:N/A   test:DONE  doc:DONE)
     Evas_Object             *elm_grid_add(Evas_Object *parent)
     void                     elm_grid_size_set(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
     void                     elm_grid_size_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
