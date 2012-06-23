@@ -1140,7 +1140,7 @@ cdef extern from "Elementary.h":
     void                     elm_dayselector_weekend_length_set(Evas_Object *obj, unsigned int length)
     unsigned int             elm_dayselector_weekend_length_get(Evas_Object *obj)
 
-    # Diskselector          (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Diskselector          (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_diskselector_add(Evas_Object *parent)
     void                     elm_diskselector_round_enabled_set(Evas_Object *obj, Eina_Bool enabled)
     Eina_Bool                elm_diskselector_round_enabled_get(Evas_Object *obj)

@@ -97,6 +97,7 @@ examples_files = \
 	tests/test_config.py \
 	tests/test_ctxpopup.py \
 	tests/test_dayselector.py \
+	tests/test_diskselector.py \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \

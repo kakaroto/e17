@@ -18,6 +18,7 @@ from test_colorselector import colorselector_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
 from test_ctxpopup import ctxpopup_clicked
 from test_dayselector import dayselector_clicked
+from test_diskselector import diskselector_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
 from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
 from test_flip import flip_clicked, flip_interactive_clicked
@@ -138,6 +139,7 @@ items = [("3D", [
             ("Action Slider", actionslider_clicked),
             ("Day Selector", dayselector_clicked),
             ("Color Selector", colorselector_clicked),
+            ("Disk Selector", diskselector_clicked),
         ]),
          ("Stored Surface Buffer", [
             ("Launcher", mapbuf_clicked),
