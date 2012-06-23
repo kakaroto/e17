@@ -36,8 +36,8 @@ def cb_chk_overlays_paused(ck, Map):
 def cb_overlay_clicked(Map, ov):
     ov.delete()
 
-def cb_ctx_overlay_add(ctx, item, Map, lon, lat, min_zoom = 0, icon = None):
-    ctx.dismiss()
+def cb_ctx_overlay_add(li, item, Map, lon, lat, min_zoom = 0, icon = None):
+    item.widget_get().dismiss()
     ov = Map.overlay_add(lon, lat)
     if min_zoom > 0:
         ov.displayed_zoom_min = min_zoom
@@ -46,8 +46,8 @@ def cb_ctx_overlay_add(ctx, item, Map, lon, lat, min_zoom = 0, icon = None):
 
     ov.callback_clicked_set(cb_overlay_clicked)
 
-def cb_ctx_overlay_add_custom(ctx, item, Map, lon, lat):
-    ctx.dismiss()
+def cb_ctx_overlay_add_custom(li, item, Map, lon, lat):
+    item.widget_get().dismiss()
     cont = elementary.Icon(Map)
     cont.file_set("images/sky_01.jpg")
     cont.size_hint_min = (50, 50)
@@ -55,14 +55,14 @@ def cb_ctx_overlay_add_custom(ctx, item, Map, lon, lat):
     ov = Map.overlay_add(lon, lat)
     ov.content = cont
 
-def cb_ctx_overlay_add_random_color(ctx, item, Map, lon, lat):
-    ctx.dismiss()
+def cb_ctx_overlay_add_random_color(li, item, Map, lon, lat):
+    item.widget_get().dismiss()
     ov = Map.overlay_add(lon, lat)
     ov.color = (random.randint(0, 255), random.randint(0, 255),
                 random.randint(0, 255), 200)
 
-def cb_ctx_overlay_grouped(ctx, item, Map, lon, lat, sx, sy):
-    ctx.dismiss()
+def cb_ctx_overlay_grouped(li, item, Map, lon, lat, sx, sy):
+    item.widget_get().dismiss()
     cls = Map.overlay_class_add()
     for x in range(4):
         for y in range(4):
@@ -70,8 +70,8 @@ def cb_ctx_overlay_grouped(ctx, item, Map, lon, lat, sx, sy):
             ov = Map.overlay_add(lon, lat)
             cls.append(ov)
 
-def cb_ctx_overlay_bubble(ctx, item, Map, lon, lat):
-    ctx.dismiss()
+def cb_ctx_overlay_bubble(li, item, Map, lon, lat):
+    item.widget_get().dismiss()
 
     ov = Map.overlay_add(lon, lat)
     bub = Map.overlay_bubble_add()
@@ -94,25 +94,32 @@ def cb_ctx_overlay_bubble(ctx, item, Map, lon, lat):
     bub.content_append(bt)
     bt.show()
 
-def cb_ctx_overlay_line(ctx, item, Map, lon, lat):
-    ctx.dismiss()
+def cb_ctx_overlay_line(li, item, Map, lon, lat):
+    item.widget_get().dismiss()
     line = Map.overlay_line_add(lon, lat, lon + 1, lat + 1)
 
-def cb_ctx_overlay_polygon(ctx, item, Map, lon, lat):
-    ctx.dismiss()
+def cb_ctx_overlay_polygon(li, item, Map, lon, lat):
+    item.widget_get().dismiss()
     poly = Map.overlay_polygon_add()
     poly.region_add(lon, lat)
     poly.region_add(lon + 1, lat + 1)
     poly.region_add(lon + 1, lat - 1)
     poly.region_add(lon - 1, lat)
 
-def cb_ctx_overlay_circle(ctx, item, Map, lon, lat, radius):
-    ctx.dismiss()
+def cb_ctx_overlay_circle(li, item, Map, lon, lat, radius):
+    item.widget_get().dismiss()
     Map.overlay_circle_add(lon, lat, radius)
 
-def cb_ctx_overlay_scale(ctx, item, Map, x, y):
-    ctx.dismiss()
+def cb_ctx_overlay_scale(li, item, Map, x, y):
+    item.widget_get().dismiss()
     Map.overlay_scale_add(x, y)
+
+def test(li, item, Map, lon, lat):
+    print li
+    print item
+    print Map
+    # ctx.dismiss()
+    ov = Map.overlay_add(lon, lat)
 
 def cb_map_clicked(Map):
     (x, y) = Map.evas.pointer_canvas_xy_get()
