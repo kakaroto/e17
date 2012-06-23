@@ -1662,7 +1662,7 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_list_first_item_get(Evas_Object *obj)
     Elm_Object_Item         *elm_list_last_item_get(Evas_Object *obj)
 
-    # Map                   (api:DONE  cb:DONE  doc:TODO  py3:TODO)
+    # Map                   (api:DONE  cb:DONE  doc:DONE  py3:TODO)
     ctypedef void *Elm_Map_Overlay
     ctypedef void *Elm_Map_Route
     ctypedef void *Elm_Map_Name
