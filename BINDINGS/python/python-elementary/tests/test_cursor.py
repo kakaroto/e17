@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 import os
 import elementary
 from elementary import cursors

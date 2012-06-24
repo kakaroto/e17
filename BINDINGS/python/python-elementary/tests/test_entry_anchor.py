@@ -1,6 +1,9 @@
 #!/usr/bin/python
-
-from elementary import *
+# encoding: utf-8
+import elementary
+import edje
+import ecore
+import evas
 
 class Test(Window):
     def __init__(self):
