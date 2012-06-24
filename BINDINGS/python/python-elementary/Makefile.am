@@ -128,6 +128,7 @@ examples_files = \
 	tests/test_progressbar.py \
 	tests/test_radio.py \
 	tests/test_scroller.py \
+	tests/test_segment_control.py \
 	tests/test_separator.py \
 	tests/test_spinner.py \
 	tests/test_table.py \

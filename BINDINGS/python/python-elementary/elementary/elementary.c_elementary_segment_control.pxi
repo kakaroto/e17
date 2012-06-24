@@ -20,6 +20,20 @@ cdef class SegmentControlItem(ObjectItem):
 
     """An item for L{SegmentControl}."""
 
+    def index_get(self):
+        """Get the index of an item.
+
+        Index is the position of an item in segment control widget. Its
+        range is from C{0} to <tt> count - 1 </tt>.
+        Count is the number of items, that can be get with
+        elm_segment_control_item_count_get().
+
+        @return: The position index
+        @rtype: int
+
+        """
+        return elm_segment_control_item_index_get(self.item)
+
     property index:
         """Get the index of an item.
 
@@ -34,6 +48,15 @@ cdef class SegmentControlItem(ObjectItem):
         def __get__(self):
             return elm_segment_control_item_index_get(self.item)
 
+    def object_get(self):
+        """Get the base object of the item.
+
+        @return: The SegmentControl object
+        @rtype: L{SegmentControl}
+
+        """
+        return Object_from_instance(elm_segment_control_item_object_get(self.item))
+
     property object:
         """Get the base object of the item.
 
@@ -42,6 +65,22 @@ cdef class SegmentControlItem(ObjectItem):
         """
         def __get__(self):
             return Object_from_instance(elm_segment_control_item_object_get(self.item))
+
+    def selected_set(self, select):
+        """Set the selected state of an item.
+
+        This sets the selected state of the given item C{it}.
+        C{True} for selected, C{False} for not selected.
+
+        If a new item is selected the previously selected will be unselected.
+
+        The selected item always will be highlighted on segment control.
+
+        @param select: The selected state
+        @type select: bool
+
+        """
+        elm_segment_control_item_selected_set(self.item, select)
 
     property selected:
         """Set the selected state of an item.
@@ -138,7 +177,9 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         cdef SegmentControlItem ret = SegmentControlItem()
         cdef Elm_Object_Item *item
 
-        item = elm_segment_control_item_add(self.obj, icon.obj, _cfruni(label))
+        item = elm_segment_control_item_add(self.obj,
+                                            icon.obj if icon else NULL,
+                                            _cfruni(label))
         if item != NULL:
             ret._set_obj(item)
             return ret
@@ -182,7 +223,9 @@ cdef public class SegmentControl(LayoutClass) [object PyElementarySegmentControl
         cdef SegmentControlItem ret = SegmentControlItem()
         cdef Elm_Object_Item *item
 
-        item = elm_segment_control_item_insert_at(self.obj, icon.obj, _cfruni(label), index)
+        item = elm_segment_control_item_insert_at(self.obj,
+                                                  icon.obj if icon else NULL,
+                                                  _cfruni(label), index)
         if item != NULL:
             ret._set_obj(item)
             return ret

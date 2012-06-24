@@ -1989,7 +1989,7 @@ cdef extern from "Elementary.h":
     void                     elm_scroller_gravity_set(Evas_Object *obj, double x, double y)
     void                     elm_scroller_gravity_get(Evas_Object *obj, double *x, double *y)
 
-    # SegmentControl        (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # SegmentControl        (api:BUGS  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_segment_control_add(Evas_Object *parent)
     Elm_Object_Item         *elm_segment_control_item_add(Evas_Object *obj, Evas_Object *icon, const_char_ptr label)
     Elm_Object_Item         *elm_segment_control_item_insert_at(Evas_Object *obj, Evas_Object *icon, const_char_ptr label, int index)

@@ -50,6 +50,7 @@ from test_popup import popup_clicked
 from test_progressbar import progressbar_clicked
 from test_radio import radio_clicked
 from test_scroller import scroller_clicked
+from test_segment_control import segment_control_clicked
 from test_separator import separator_clicked
 from test_spinner import spinner_clicked
 from test_table import table_clicked
@@ -153,6 +154,7 @@ items = [("3D", [
             ("Color Selector", colorselector_clicked),
             ("Disk Selector", diskselector_clicked),
             ("Index", index_clicked),
+            ("Segment Control", segment_control_clicked),
         ]),
          ("Stored Surface Buffer", [
             ("Launcher", mapbuf_clicked),
