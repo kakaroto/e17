@@ -537,7 +537,7 @@ e_modapi_init(E_Module *m)
    #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, interval, DOUBLE);
-   E_CONFIG_VAL(D, T, interval, INT);
+   E_CONFIG_VAL(D, T, merge_cpus, INT);
    
    #undef T
    #define T Config
