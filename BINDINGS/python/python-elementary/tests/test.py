@@ -44,6 +44,7 @@ from test_multibuttonentry import multibuttonentry_clicked
 from test_naviframe import naviframe_clicked
 from test_notify import notify_clicked
 from test_panel import panel_clicked
+from test_panes import panes_clicked
 from test_progressbar import progressbar_clicked
 from test_radio import radio_clicked
 from test_scroller import scroller_clicked
@@ -89,6 +90,7 @@ items = [("3D", [
         ]),
          ("Dividers", [
             ("Panel", panel_clicked),
+            ("Panes", panes_clicked),
         ]),
          ("Effects", [
             ("Flip", flip_clicked),

@@ -131,12 +131,12 @@ cdef public class Panes(LayoutClass) [object PyElementaryPanes, type PyElementar
     def callback_press_del(self, func):
         self._callback_del("press", func)
 
-    def callback_unpressed_add(self, func, *args, **kwargs):
+    def callback_unpress_add(self, func, *args, **kwargs):
         """The panes was released after being pressed."""
-        self._callback_add("unpressed", func, *args, **kwargs)
+        self._callback_add("unpress", func, *args, **kwargs)
 
-    def callback_unpressed_del(self, func):
-        self._callback_del("unpressed", func)
+    def callback_unpress_del(self, func):
+        self._callback_del("unpress", func)
 
     def callback_clicked_add(self, func, *args, **kwargs):
         """The panes has been clicked."""

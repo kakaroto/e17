@@ -1882,7 +1882,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_panel_hidden_get(Evas_Object *obj)
     void                     elm_panel_toggle(Evas_Object *obj)
 
-    # Panes                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Panes                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_panes_add(Evas_Object *parent)
     void                     elm_panes_fixed_set(Evas_Object *obj, Eina_Bool fixed)
     Eina_Bool                elm_panes_fixed_get(Evas_Object *obj)
