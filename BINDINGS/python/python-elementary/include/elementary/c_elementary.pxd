@@ -1548,7 +1548,7 @@ cdef extern from "Elementary.h":
     void                     elm_image_animated_play_set(Evas_Object *obj, Eina_Bool play)
     Eina_Bool                elm_image_animated_play_get(Evas_Object *obj)
 
-    # Index                 (api:TODO  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Index                 (api:TODO  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_index_add(Evas_Object *parent)
     void                     elm_index_autohide_disabled_set(Evas_Object *obj, Eina_Bool disabled)
     Eina_Bool                elm_index_autohide_disabled_get(Evas_Object *obj)

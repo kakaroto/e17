@@ -30,6 +30,7 @@ from test_grid import grid_clicked
 from test_hover import hover_clicked, hover2_clicked
 from test_hoversel import hoversel_clicked
 from test_icon import icon_clicked, icon_transparent_clicked
+from test_index import index_clicked
 from test_inwin import inner_window_clicked
 from test_label import label_clicked
 from test_layout import layout_clicked
@@ -145,6 +146,7 @@ items = [("3D", [
             ("Day Selector", dayselector_clicked),
             ("Color Selector", colorselector_clicked),
             ("Disk Selector", diskselector_clicked),
+            ("Index", index_clicked),
         ]),
          ("Stored Surface Buffer", [
             ("Launcher", mapbuf_clicked),

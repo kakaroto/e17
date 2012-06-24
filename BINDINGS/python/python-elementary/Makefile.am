@@ -108,6 +108,7 @@ examples_files = \
 	tests/test_hover.py \
 	tests/test_hoversel.py \
 	tests/test_icon.py \
+	tests/test_index.py \
 	tests/test_inwin.py \
 	tests/test_label.py \
 	tests/test_layout.py \

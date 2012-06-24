@@ -517,13 +517,13 @@ cdef public class Index(LayoutClass) [object PyElementaryIndex, type PyElementar
     def callback_changed_del(self, func):
         self._callback_del_full("changed",  _cb_object_item_conv, func)
 
-    def callback_changed_delay_add(self, func, *args, **kwargs):
+    def callback_delay_changed_add(self, func, *args, **kwargs):
         """When the selected index item changes, but after a small idling
         period. C{event_info} is the selected item's data."""
-        self._callback_add_full("changed,delay", _cb_object_item_conv, func, *args, **kwargs)
+        self._callback_add_full("delay,changed", _cb_object_item_conv, func, *args, **kwargs)
 
-    def callback_changed_delay_del(self, func):
-        self._callback_del_full("changed,delay",  _cb_object_item_conv, func)
+    def callback_delay_changed_del(self, func):
+        self._callback_del_full("delay,changed",  _cb_object_item_conv, func)
 
     def callback_selected_add(self, func, *args, **kwargs):
         """When the user releases a mouse button and selects an item.
