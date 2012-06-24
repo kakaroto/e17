@@ -53,7 +53,7 @@ cdef public class Photocam(Object) [object PyElementaryPhotocam, type PyElementa
 
     def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
-        self._set_obj(elm_popup_add(parent.obj))
+        self._set_obj(elm_photocam_add(parent.obj))
 
     property file:
         """The photo file to be shown

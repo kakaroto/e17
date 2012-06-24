@@ -27,7 +27,7 @@ cdef public class Plug(Object) [object PyElementaryPlug, type PyElementaryPlug_T
 
     def __init__(self, evasObject parent):
         Object.__init__(self, parent.evas)
-        self._set_obj(elm_popup_add(parent.obj))
+        self._set_obj(elm_plug_add(parent.obj))
 
     def connect(self, svcname, svcnum, svcsys):
         """connect(svcname, svcnum, svcsys)
