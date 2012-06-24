@@ -7,6 +7,7 @@ Makefile.in \
 $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz \
 $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.bz2 \
 aclocal.m4 \
+compile \
 config.guess \
 config.h.in \
 config.sub \
