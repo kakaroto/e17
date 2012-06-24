@@ -237,6 +237,8 @@ cdef inline char* _fruni(s):
         c_string = string
     elif isinstance(s, str):
         c_string = s
+    elif s is None:
+        return NULL
     else:
         raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
     return c_string
@@ -248,6 +250,8 @@ cdef inline const_char_ptr _cfruni(s):
         c_string = string
     elif isinstance(s, str):
         c_string = s
+    elif s is None:
+        return NULL
     else:
         raise TypeError("Expected str or unicode object, got %s" % (type(s).__name__))
     return c_string
@@ -311,6 +315,9 @@ def coords_finger_size_adjust(times_w, w, times_h, h):
     width = w
     height = h
     elm_coords_finger_size_adjust(times_w, &width, times_h, &height)
+
+def need_ethumb():
+    elm_need_ethumb()
 
 cdef object _elm_widget_type_mapping
 

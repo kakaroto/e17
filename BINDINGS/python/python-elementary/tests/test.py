@@ -45,6 +45,7 @@ from test_naviframe import naviframe_clicked
 from test_notify import notify_clicked
 from test_panel import panel_clicked
 from test_panes import panes_clicked
+from test_photo import photo_clicked
 from test_progressbar import progressbar_clicked
 from test_radio import radio_clicked
 from test_scroller import scroller_clicked
@@ -110,6 +111,7 @@ items = [("3D", [
             ("Icon", icon_clicked),
             ("Icon Transparent", icon_transparent_clicked),
             ("Thumb", thumb_clicked),
+            ("Photo", photo_clicked),
         ]),
          ("Lists", [
             ("List", list_clicked),

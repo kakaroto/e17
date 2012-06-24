@@ -67,7 +67,7 @@ cdef public class Photo(Object) [object PyElementaryPhoto, type PyElementaryPhot
             else:
                elm_photo_file_set(self.obj, NULL)
 
-    def thumb_set(self, filename, group):
+    def thumb_set(self, filename, group = None):
         """Set the file that will be used as thumbnail in the photo.
 
         @param file: The path to file that will be used as thumbnail.

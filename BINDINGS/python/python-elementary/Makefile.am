@@ -123,6 +123,7 @@ examples_files = \
 	tests/test_notify.py \
 	tests/test_panel.py \
 	tests/test_panes.py \
+	tests/test_photo.py \
 	tests/test_progressbar.py \
 	tests/test_radio.py \
 	tests/test_scroller.py \
