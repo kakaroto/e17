@@ -1309,7 +1309,7 @@ cdef extern from "Elementary.h":
 
     # Flipselector          (XXX)
 
-    # Frame                 (api:DONE  cb:DONE  test:TODO  doc:DONE)
+    # Frame                 (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_frame_add(Evas_Object *parent)
     void                     elm_frame_autocollapse_set(Evas_Object *obj, Eina_Bool autocollapse)
     Eina_Bool                elm_frame_autocollapse_get(Evas_Object *obj)

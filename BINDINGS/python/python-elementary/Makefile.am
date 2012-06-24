@@ -101,6 +101,7 @@ examples_files = \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \
+	tests/test_frame.py \
 	tests/test_genlist.py \
 	tests/test_gengrid.py \
 	tests/test_grid.py \

@@ -22,6 +22,7 @@ from test_diskselector import diskselector_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
 from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
 from test_flip import flip_clicked, flip_interactive_clicked
+from test_frame import frame_clicked
 from test_gengrid import gengrid_clicked
 from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
 from test_grid import grid_clicked
@@ -77,6 +78,7 @@ items = [("3D", [
             ("Table", table_clicked),
             ("Layout", layout_clicked),
             ("Grid", grid_clicked),
+            ("Frame", frame_clicked),
         ]),
          ("Cursors", [
             ("Cursor", cursor_clicked),
