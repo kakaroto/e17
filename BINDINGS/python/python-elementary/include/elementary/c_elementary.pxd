@@ -1893,7 +1893,7 @@ cdef extern from "Elementary.h":
     void                     elm_panes_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_panes_horizontal_get(Evas_Object *obj)
 
-    # Photo                 (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Photo                 (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_photo_add(Evas_Object *parent)
     Eina_Bool                elm_photo_file_set(Evas_Object *obj, const_char_ptr file)
     void                     elm_photo_thumb_set(Evas_Object *obj, const_char_ptr file, const_char_ptr group)
@@ -1928,7 +1928,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_plug_connect(Evas_Object *obj, const_char_ptr svcname, int svcnum, Eina_Bool svcsys)
     Evas_Object             *elm_plug_image_object_get(Evas_Object *obj)
 
-    # Popup                 (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Popup                 (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_popup_add(Evas_Object *parent)
     Elm_Object_Item         *elm_popup_item_append(Evas_Object *obj, const_char_ptr label, Evas_Object *icon, Evas_Smart_Cb func, void *data)
     void                     elm_popup_content_text_wrap_type_set(Evas_Object *obj, Elm_Wrap_Type wrap)

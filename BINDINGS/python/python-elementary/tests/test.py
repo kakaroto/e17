@@ -46,6 +46,7 @@ from test_notify import notify_clicked
 from test_panel import panel_clicked
 from test_panes import panes_clicked
 from test_photo import photo_clicked
+from test_popup import popup_clicked
 from test_progressbar import progressbar_clicked
 from test_radio import radio_clicked
 from test_scroller import scroller_clicked
@@ -131,6 +132,7 @@ items = [("3D", [
             ("Notify", notify_clicked),
             ("Tooltip", tooltip_clicked),
             ("Ctxpopup", ctxpopup_clicked),
+            ("Popup", popup_clicked),
         ]),
          ("Range Values", [
             ("Spinner", spinner_clicked),

@@ -40,11 +40,9 @@ cdef class PopupItem(ObjectItem):
             raise TypeError("func is not None or callable")
 
         self.params = (func, args, kwargs)
-        item = elm_popup_item_append(   popup.obj,
-                                        _cfruni(label) if not None else NULL,
-                                        icon.obj if not None else NULL,
-                                        cb if not None else NULL,
-                                        <void *>self)
+        item = elm_popup_item_append(popup.obj, _cfruni(label),
+                                     icon.obj if icon else NULL,
+                                     cb, <void *>self)
 
         if item != NULL:
             self._set_obj(item)
@@ -146,7 +144,7 @@ cdef public class Popup(Object) [object PyElementaryPopup, type PyElementaryPopu
         Object.__init__(self, parent.evas)
         self._set_obj(elm_popup_add(parent.obj))
 
-    def item_append(self, label, evasObject icon, func = None, *args, **kwargs):
+    def item_append(self, label = None, evasObject icon = None, func = None, *args, **kwargs):
         """item_append(label, icon, func, *args, **kwargs)
 
         Add a new item to a Popup object
