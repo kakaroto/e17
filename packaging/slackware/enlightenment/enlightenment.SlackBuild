@@ -29,6 +29,8 @@ CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
     --sysconfdir=/etc \
     --with-profile=${PC} \
     --enable-mount-eeze \
+    --disable-mount-hal \
+    --disable-mount-udisks \
     --build=${ARCH}-slackware-linux
 
 # Install
