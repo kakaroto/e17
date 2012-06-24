@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+         |-----handy-ruler------------------------------------------------------|
+exquisite: 
+exquisite: This is a psplash replacement that is very simple and uses EFL 
+exquisite: (Evas, Edje, Ecore etc.) for display - thus having immensely 
+exquisite: powerful theme abilities without needing any platform-specific 
+exquisite: compiled themes or modules. It is compatible with psplash with 
+exquisite: the same message commands (and more). The difference is that it 
+exquisite: requires libraries like evas, edje, ecore, eet and embryo. 
+exquisite: 
+exquisite: 
+exquisite: 
+exquisite: 
