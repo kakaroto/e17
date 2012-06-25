@@ -29,6 +29,7 @@ po/Makefile
 po/Makefile.in
 po/Makefile.in.in
 po/Makevars.template
+po/remove-potcdate.sed
 po/POTFILES
 po/Rules-quot
 po/boldquot.sed

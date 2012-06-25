@@ -69,7 +69,11 @@ m4/visibility.m4
 m4/wchar_t.m4
 m4/wint_t.m4
 m4/xsize.m4
+m4/ulonglong.m4
+m4/inttypes.m4
+m4/isc-posix.m4
 missing
+mkinstalldirs
 po/Makefile
 po/Makefile.in
 po/Makefile.in.in
@@ -83,6 +87,7 @@ po/insert-header.sin
 po/quot.sed
 po/remove-potcdate.sed
 po/remove-potcdate.sin
+po/stamp-po
 src/Makefile
 src/Makefile.in
 src/bin/.deps/
