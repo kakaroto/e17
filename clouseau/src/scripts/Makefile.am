@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+EXTRA_DIST = gen_script.sh
+
 uninstall-local:
 	rm $(bindir)/clouseau
 	rm $(bindir)/clouseau_start
