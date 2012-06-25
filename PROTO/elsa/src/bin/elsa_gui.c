@@ -224,7 +224,7 @@ _elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __
      {
         elm_object_text_set(obj, _gui->selected_session->name);
         icon = elm_icon_add(screen->win);
-        elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
+        elm_image_file_set(icon, _gui->selected_session->icon, NULL);
         elm_object_content_set(obj, icon);
         evas_object_show(icon);
      }
@@ -280,7 +280,7 @@ _elsa_gui_session_update(Elsa_Xsession *xsession)
         _gui->selected_session = xsession;
         elm_object_text_set(o, _gui->selected_session->name);
         icon = elm_icon_add(screen->win);
-        elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
+        elm_image_file_set(icon, _gui->selected_session->icon, NULL);
         elm_object_content_set(o, icon);
      }
 }
@@ -623,7 +623,7 @@ _elsa_gui_user_content_get(void *data __UNUSED__, Evas_Object *obj, const char *
         if (eu->image)
           {
              ic = elm_icon_add(obj);
-             elm_icon_file_set(ic, eu->image, "elsa/user/icon");
+             elm_image_file_set(ic, eu->image, "elsa/user/icon");
           }
         else
           {
