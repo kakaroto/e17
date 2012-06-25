@@ -22,11 +22,13 @@ EXTRA_DIST = module.desktop.in \
 	     e-module-skel.edc \
 	     images/module_icon.png
 
+e-module-skel.edj: Makefile e-module-skel.edc images/module_icon.png
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf e-module-skel.edj module.desktop e_modules-skel.spec *~
+	 rm -rf *.edj module.desktop e_modules-skel.spec *~
 
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)

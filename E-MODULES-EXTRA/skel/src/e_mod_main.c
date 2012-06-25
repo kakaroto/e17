@@ -75,7 +75,7 @@ e_modapi_init(E_Module *m)
    /* Display this Modules config info in the main Config Panel */
 
    /* starts with a category, create it if not already exists */
-   e_configure_registry_category_add("advanced", 80, "Advanced", 
+   e_configure_registry_category_add("advanced", 80, D_("Advanced"), 
                                      NULL, "preferences-advanced");
    /* add right-side item */
    e_configure_registry_item_add("advanced/skel", 110, D_("Skel"), 
