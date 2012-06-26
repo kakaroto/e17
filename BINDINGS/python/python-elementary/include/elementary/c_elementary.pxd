@@ -1114,7 +1114,7 @@ cdef extern from "Elementary.h":
     Elm_Ctxpopup_Direction   elm_ctxpopup_direction_get(Evas_Object *obj)
     void                     elm_ctxpopup_dismiss(Evas_Object *obj)
 
-    # Datetime              (api: DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Datetime              (api: DONE  cb:DONE  test:XXX   doc:DONE  py3:DONE)
     Evas_Object             *elm_datetime_add(Evas_Object *parent)
     const_char_ptr           elm_datetime_format_get(Evas_Object *obj)
     void                     elm_datetime_format_set(Evas_Object *obj, const_char_ptr fmt)
@@ -2158,7 +2158,7 @@ cdef extern from "Elementary.h":
     void                     elm_toolbar_select_mode_set(Evas_Object *obj, Elm_Object_Select_Mode mode)
     Elm_Object_Select_Mode   elm_toolbar_select_mode_get(Evas_Object *obj)
 
-    # Video                 (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Video                 (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_player_add(Evas_Object *parent)
     Evas_Object             *elm_video_add(Evas_Object *parent)
     Eina_Bool                elm_video_file_set(Evas_Object *video, const_char_ptr filename)

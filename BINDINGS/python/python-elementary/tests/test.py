@@ -18,6 +18,7 @@ from test_clock import clock_clicked
 from test_colorselector import colorselector_clicked
 from test_cursor import cursor_clicked, cursor2_clicked, cursor3_clicked
 from test_ctxpopup import ctxpopup_clicked
+from test_datetime import datetime_clicked
 from test_dayselector import dayselector_clicked
 from test_diskselector import diskselector_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
@@ -168,6 +169,7 @@ items = [("3D", [
         ]),
          ("Times & Dates", [
             ("Clock", clock_clicked),
+            ("Datetime", datetime_clicked),
         ]),
         ("Toolbars", [
             ("Toolbar", toolbar_clicked),

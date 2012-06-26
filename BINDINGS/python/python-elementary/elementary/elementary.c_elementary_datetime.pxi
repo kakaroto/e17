@@ -16,6 +16,8 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from datetime import datetime
+
 cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementaryDatetime_Type]:
 
     """Datetime widget is used to display and input date & time values.
@@ -281,32 +283,26 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
         def __get__(self):
             cdef tm time
             elm_datetime_value_max_get(self.obj, &time)
-            sec = time.tm_sec
-            tm_min = time.tm_min
-            hour = time.tm_hour
-            mday = time.tm_mday
-            mon = time.tm_mon
-            year = time.tm_year
-            wday = time.tm_wday
-            yday = time.tm_yday
-            isdst = time.tm_isdst
-            gmtoff = time.tm_gmtoff
-            zone = time.tm_zone
-            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, _ctouni(zone))
-        def __set__(self, maxtime):
+            ret = datetime( time.tm_yday,
+                            time.tm_mon,
+                            time.tm_mday,
+                            time.tm_hour,
+                            time.tm_min,
+                            time.tm_sec)
+            return ret
+
+        def __set__(self, newtime):
             cdef tm time
-            sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = maxtime
-            time.tm_sec = sec
-            time.tm_min = tm_min
-            time.tm_hour = hour
-            time.tm_mday = mday
-            time.tm_mon = mon
-            time.tm_year = year
-            time.tm_wday = wday
-            time.tm_yday = yday
-            time.tm_isdst = isdst
-            time.tm_gmtoff = gmtoff
-            time.tm_zone = _cfruni(zone)
+            tmtup = newtime.timetuple()
+            time.tm_sec = tmtup.tm_sec
+            time.tm_min = tmtup.tm_min
+            time.tm_hour = tmtup.tm_hour
+            time.tm_mday = tmtup.tm_mday
+            time.tm_mon = tmtup.tm_mon
+            time.tm_year = tmtup.tm_year
+            time.tm_wday = tmtup.tm_wday
+            time.tm_yday = tmtup.tm_yday
+            time.tm_isdst = tmtup.tm_isdst
             elm_datetime_value_max_set(self.obj, &time)
 
     property value_min:
@@ -329,32 +325,26 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
         def __get__(self):
             cdef tm time
             elm_datetime_value_min_get(self.obj, &time)
-            sec = time.tm_sec
-            tm_min = time.tm_min
-            hour = time.tm_hour
-            mday = time.tm_mday
-            mon = time.tm_mon
-            year = time.tm_year
-            wday = time.tm_wday
-            yday = time.tm_yday
-            isdst = time.tm_isdst
-            gmtoff = time.tm_gmtoff
-            zone = time.tm_zone
-            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, _ctouni(zone))
+            ret = datetime( time.tm_yday,
+                            time.tm_mon,
+                            time.tm_mday,
+                            time.tm_hour,
+                            time.tm_min,
+                            time.tm_sec)
+            return ret
+
         def __set__(self, newtime):
             cdef tm time
-            sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = newtime
-            time.tm_sec = sec
-            time.tm_min = tm_min
-            time.tm_hour = hour
-            time.tm_mday = mday
-            time.tm_mon = mon
-            time.tm_year = year
-            time.tm_wday = wday
-            time.tm_yday = yday
-            time.tm_isdst = isdst
-            time.tm_gmtoff = gmtoff
-            time.tm_zone = _cfruni(zone)
+            tmtup = newtime.timetuple()
+            time.tm_sec = tmtup.tm_sec
+            time.tm_min = tmtup.tm_min
+            time.tm_hour = tmtup.tm_hour
+            time.tm_mday = tmtup.tm_mday
+            time.tm_mon = tmtup.tm_mon
+            time.tm_year = tmtup.tm_year
+            time.tm_wday = tmtup.tm_wday
+            time.tm_yday = tmtup.tm_yday
+            time.tm_isdst = tmtup.tm_isdst
             elm_datetime_value_min_set(self.obj, &time)
 
     property field_limit:
@@ -406,32 +396,26 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
         def __get__(self):
             cdef tm time
             elm_datetime_value_get(self.obj, &time)
-            sec = time.tm_sec
-            tm_min = time.tm_min
-            hour = time.tm_hour
-            mday = time.tm_mday
-            mon = time.tm_mon
-            year = time.tm_year
-            wday = time.tm_wday
-            yday = time.tm_yday
-            isdst = time.tm_isdst
-            gmtoff = time.tm_gmtoff
-            zone = time.tm_zone
-            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, _ctouni(zone))
+            ret = datetime( time.tm_yday,
+                            time.tm_mon,
+                            time.tm_mday,
+                            time.tm_hour,
+                            time.tm_min,
+                            time.tm_sec)
+            return ret
+
         def __set__(self, newtime):
             cdef tm time
-            sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = newtime
-            time.tm_sec = sec
-            time.tm_min = tm_min
-            time.tm_hour = hour
-            time.tm_mday = mday
-            time.tm_mon = mon
-            time.tm_year = year
-            time.tm_wday = wday
-            time.tm_yday = yday
-            time.tm_isdst = isdst
-            time.tm_gmtoff = gmtoff
-            time.tm_zone = zone
+            tmtup = newtime.timetuple()
+            time.tm_sec = tmtup.tm_sec
+            time.tm_min = tmtup.tm_min
+            time.tm_hour = tmtup.tm_hour
+            time.tm_mday = tmtup.tm_mday
+            time.tm_mon = tmtup.tm_mon
+            time.tm_year = tmtup.tm_year
+            time.tm_wday = tmtup.tm_wday
+            time.tm_yday = tmtup.tm_yday
+            time.tm_isdst = tmtup.tm_isdst
             elm_datetime_value_set(self.obj, &time)
 
     def field_visible_get(self, fieldtype):
