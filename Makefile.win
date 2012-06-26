@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Thu May 10 11:44:07 2012.
+# Generated for win at Tue Jun 26 14:56:45 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -1295,7 +1295,8 @@ $(BUILDROOT)/edje/stamps/configure: $(BUILDROOT)/edje/stamps/autogen $(BUILDROOT
 	export LDFLAGS="$${LDFLAGS}";\
 	cd $(BUILDROOT)/edje/compile && \
 	$(SRCROOT)/edje/configure --prefix=$(INSTALLROOT) --enable-tests \
-		--enable-doc
+		--enable-doc \
+		--enable-coverage
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/configure
 	$(V)echo "Success configuring edje."

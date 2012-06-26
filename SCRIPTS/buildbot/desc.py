@@ -161,7 +161,7 @@ Package(
         "common": [
             "--enable-tests",
             "--enable-doc",
-            #"--enable-coverage",
+            "--enable-coverage",
             ],
         },
     )
