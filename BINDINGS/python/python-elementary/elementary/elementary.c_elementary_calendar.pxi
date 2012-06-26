@@ -16,15 +16,24 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from datetime import date
+
 cdef class CalendarMark(object):
-    #cdef Elm_Calendar_Mark *obj
+    cdef Elm_Calendar_Mark *obj
 
-    def __init__(self, mark_type, mark_time, repeat):
+    def __init__(self, evasObject cal, mark_type, mark_time, repeat):
         """@see: L{Calendar.mark_add()}"""
-        #self.obj = elm_calendar_mark_add(self.obj, _cfruni(mark_type), struct tm *mark_time, Elm_Calendar_Mark_Repeat_Type repeat)
-        pass
+        cdef tm time
+        tmtup = mark_time.timetuple()
+        time.tm_mday = tmtup.tm_mday
+        time.tm_mon = tmtup.tm_mon - 1
+        time.tm_year = tmtup.tm_year - 1900
+        time.tm_wday = tmtup.tm_wday
+        time.tm_yday = tmtup.tm_yday
+        time.tm_isdst = tmtup.tm_isdst
+        self.obj = elm_calendar_mark_add(cal.obj, _cfruni(mark_type), &time, repeat)
 
-    #def delete(self, mark):
+    def delete(self):
         """Delete a mark from the calendar.
 
         If deleting all calendar marks is required, L{marks_clear()}
@@ -36,7 +45,7 @@ cdef class CalendarMark(object):
         @type mark: L{CalendarMark}
 
         """
-        #elm_calendar_mark_del(mark)
+        elm_calendar_mark_del(self.obj)
 
 cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyElementaryCalendar_Type]:
 
@@ -127,7 +136,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
             min, max = value
             elm_calendar_min_max_year_set(self.obj, min, max)
 
-    property selected_mode:
+    property select_mode:
         """The day selection mode used.
 
         @type: Elm_Calendar_Select_Mode
@@ -145,38 +154,26 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         Selected date changes when the user goes to next/previous month or
         select a day pressing over it on calendar.
 
-        @type: tm struct
+        @type: datetime.date
 
         """
         def __get__(self):
             cdef tm time
             elm_calendar_selected_time_get(self.obj, &time)
-            sec = time.tm_sec
-            tm_min = time.tm_min
-            hour = time.tm_hour
-            mday = time.tm_mday
-            mon = time.tm_mon
-            year = time.tm_year
-            wday = time.tm_wday
-            yday = time.tm_yday
-            isdst = time.tm_isdst
-            gmtoff = time.tm_gmtoff
-            zone = time.tm_zone
-            return (sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone)
+            ret = date( time.tm_year + 1900,
+                        time.tm_mon + 1,
+                        time.tm_mday)
+            return ret
+
         def __set__(self, selected_time):
             cdef tm time
-            sec, tm_min, hour, mday, mon, year, wday, yday, isdst, gmtoff, zone = selected_time
-            time.tm_sec = sec
-            time.tm_min = tm_min
-            time.tm_hour = hour
-            time.tm_mday = mday
-            time.tm_mon = mon
-            time.tm_year = year
-            time.tm_wday = wday
-            time.tm_yday = yday
-            time.tm_isdst = isdst
-            time.tm_gmtoff = gmtoff
-            time.tm_zone = zone
+            tmtup = selected_time.timetuple()
+            time.tm_mday = tmtup.tm_mday
+            time.tm_mon = tmtup.tm_mon - 1
+            time.tm_year = tmtup.tm_year - 1900
+            time.tm_wday = tmtup.tm_wday
+            time.tm_yday = tmtup.tm_yday
+            time.tm_isdst = tmtup.tm_isdst
             elm_calendar_selected_time_set(self.obj, &time)
 
     def format_function_set(self, format_func):
@@ -207,7 +204,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         pass
         #elm_calendar_format_function_set(self.obj, format_func)
 
-    #def mark_add(self, mark_type, mark_time, repeat):
+    def mark_add(self, mark_type, mark_time, repeat):
         """Add a new mark to the calendar
 
         Add a mark that will be drawn in the calendar respecting the insertion
@@ -253,7 +250,7 @@ cdef public class Calendar(LayoutClass) [object PyElementaryCalendar, type PyEle
         @rtype: L{CalendarMark}
 
         """
-        #return CalendarMark(mark_type, mark_time, repeat)
+        return CalendarMark(self, mark_type, mark_time, repeat)
 
     property marks:
         """Calendar marks.

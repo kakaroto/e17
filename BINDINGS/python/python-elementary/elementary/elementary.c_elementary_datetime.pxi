@@ -277,14 +277,14 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
 
         Minute: default value range is from 0 to 59.
 
-        @type: tm
+        @type: datetime.datetime
 
         """
         def __get__(self):
             cdef tm time
             elm_datetime_value_max_get(self.obj, &time)
-            ret = datetime( time.tm_yday,
-                            time.tm_mon,
+            ret = datetime( time.tm_year + 1900,
+                            time.tm_mon + 1,
                             time.tm_mday,
                             time.tm_hour,
                             time.tm_min,
@@ -298,8 +298,8 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
             time.tm_min = tmtup.tm_min
             time.tm_hour = tmtup.tm_hour
             time.tm_mday = tmtup.tm_mday
-            time.tm_mon = tmtup.tm_mon
-            time.tm_year = tmtup.tm_year
+            time.tm_mon = tmtup.tm_mon - 1
+            time.tm_year = tmtup.tm_year - 1900
             time.tm_wday = tmtup.tm_wday
             time.tm_yday = tmtup.tm_yday
             time.tm_isdst = tmtup.tm_isdst
@@ -319,14 +319,14 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
 
         Minute: default value range is from 0 to 59.
 
-        @type: tm
+        @type: datetime.datetime
 
         """
         def __get__(self):
             cdef tm time
             elm_datetime_value_min_get(self.obj, &time)
-            ret = datetime( time.tm_yday,
-                            time.tm_mon,
+            ret = datetime( time.tm_year + 1900,
+                            time.tm_mon + 1,
                             time.tm_mday,
                             time.tm_hour,
                             time.tm_min,
@@ -340,8 +340,8 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
             time.tm_min = tmtup.tm_min
             time.tm_hour = tmtup.tm_hour
             time.tm_mday = tmtup.tm_mday
-            time.tm_mon = tmtup.tm_mon
-            time.tm_year = tmtup.tm_year
+            time.tm_mon = tmtup.tm_mon - 1
+            time.tm_year = tmtup.tm_year - 1900
             time.tm_wday = tmtup.tm_wday
             time.tm_yday = tmtup.tm_yday
             time.tm_isdst = tmtup.tm_isdst
@@ -396,8 +396,8 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
         def __get__(self):
             cdef tm time
             elm_datetime_value_get(self.obj, &time)
-            ret = datetime( time.tm_yday,
-                            time.tm_mon,
+            ret = datetime( time.tm_year + 1900,
+                            time.tm_mon + 1,
                             time.tm_mday,
                             time.tm_hour,
                             time.tm_min,
@@ -411,8 +411,8 @@ cdef public class Datetime(Object) [object PyElementaryDatetime, type PyElementa
             time.tm_min = tmtup.tm_min
             time.tm_hour = tmtup.tm_hour
             time.tm_mday = tmtup.tm_mday
-            time.tm_mon = tmtup.tm_mon
-            time.tm_year = tmtup.tm_year
+            time.tm_mon = tmtup.tm_mon - 1
+            time.tm_year = tmtup.tm_year - 1900
             time.tm_wday = tmtup.tm_wday
             time.tm_yday = tmtup.tm_yday
             time.tm_isdst = tmtup.tm_isdst

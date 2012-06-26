@@ -13,6 +13,7 @@ from test_box import box_vert_clicked, box_vert2_clicked, box_horiz_clicked
 from test_box import box_layout_clicked, box_transition_clicked
 from test_bubble import bubble_clicked
 from test_button import buttons_clicked
+from test_calendar import calendar_clicked
 from test_check import check_clicked
 from test_clock import clock_clicked
 from test_colorselector import colorselector_clicked
@@ -168,6 +169,7 @@ items = [("3D", [
             ("Label", label_clicked),
         ]),
          ("Times & Dates", [
+            ("Calendar", calendar_clicked),
             ("Clock", clock_clicked),
             ("Datetime", datetime_clicked),
         ]),

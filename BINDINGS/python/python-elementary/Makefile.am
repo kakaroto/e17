@@ -91,6 +91,7 @@ examples_files = \
 	tests/test_bg.py \
 	tests/test_box.py \
 	tests/test_button.py \
+	tests/test_calendar.py \
 	tests/test_check.py \
 	tests/test_clock.py \
 	tests/test_colorselector.py \
