@@ -1129,7 +1129,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_datetime_field_visible_get(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype)
     void                     elm_datetime_field_visible_set(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, Eina_Bool visible)
 
-    # Dayselector           (api:DONE  cb:DONE  test:BUG  doc:DONE)
+    # Dayselector           (api:DONE  cb:DONE  test:DONE  doc:DONE)
     Evas_Object             *elm_dayselector_add(Evas_Object *parent)
     void                     elm_dayselector_day_selected_set(Evas_Object *obj, Elm_Dayselector_Day day, Eina_Bool selected)
     Eina_Bool                elm_dayselector_day_selected_get(Evas_Object *obj, Elm_Dayselector_Day day)
@@ -1662,7 +1662,7 @@ cdef extern from "Elementary.h":
     Elm_Object_Item         *elm_list_first_item_get(Evas_Object *obj)
     Elm_Object_Item         *elm_list_last_item_get(Evas_Object *obj)
 
-    # Map                   (api:DONE  cb:DONE  doc:DONE  py3:TODO)
+    # Map                   (api:DONE  cb:DONE  test:DONE  doc:TODO  py3:TODO)
     ctypedef void *Elm_Map_Overlay
     ctypedef void *Elm_Map_Route
     ctypedef void *Elm_Map_Name
@@ -1989,7 +1989,7 @@ cdef extern from "Elementary.h":
     void                     elm_scroller_gravity_set(Evas_Object *obj, double x, double y)
     void                     elm_scroller_gravity_get(Evas_Object *obj, double *x, double *y)
 
-    # SegmentControl        (api:BUGS  cb:DONE  test:DONE  doc:DONE  py3:DONE)
+    # SegmentControl        (api:DONE  cb:DONE  test:XXX   doc:DONE  py3:DONE)
     Evas_Object             *elm_segment_control_add(Evas_Object *parent)
     Elm_Object_Item         *elm_segment_control_item_add(Evas_Object *obj, Evas_Object *icon, const_char_ptr label)
     Elm_Object_Item         *elm_segment_control_item_insert_at(Evas_Object *obj, Evas_Object *icon, const_char_ptr label, int index)
@@ -2029,7 +2029,7 @@ cdef extern from "Elementary.h":
     void                     elm_slider_indicator_show_set(Evas_Object *obj, Eina_Bool show)
     Eina_Bool                elm_slider_indicator_show_get(Evas_Object *obj)
 
-    # Slideshow             (api:DONE  cb:DONE  test:TODO  doc:DONE  py3:DONE)
+    # Slideshow             (api:DONE  cb:DONE  test:XXX   doc:DONE  py3:DONE)
     Evas_Object             *elm_slideshow_add(Evas_Object *parent)
     Elm_Object_Item         *elm_slideshow_item_add(Evas_Object *obj, Elm_Slideshow_Item_Class *itc, void *data)
     Elm_Object_Item         *elm_slideshow_item_sorted_insert(Evas_Object *obj, Elm_Slideshow_Item_Class *itc, void *data, Eina_Compare_Cb func)
@@ -2237,7 +2237,7 @@ cdef extern from "Elementary.h":
     Eina_Bool                elm_web_window_features_property_get(Elm_Web_Window_Features *wf, Elm_Web_Window_Feature_Flag flag)
     void                     elm_web_window_features_region_get(Elm_Web_Window_Features *wf, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 
-    # Window                (api:DONE  cb:DONE  test:TODO  doc:TODO  py3:DONE)
+    # Window                (api:DONE  cb:DONE  test:DONE  doc:DONE  py3:DONE)
     Evas_Object             *elm_win_add(Evas_Object *parent, const_char_ptr name, Elm_Win_Type type)
     Evas_Object             *elm_win_util_standard_add(const_char_ptr name, const_char_ptr title)
     void                     elm_win_resize_object_add(Evas_Object *obj, Evas_Object* subobj)

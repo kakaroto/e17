@@ -52,6 +52,7 @@ from test_radio import radio_clicked
 from test_scroller import scroller_clicked
 from test_segment_control import segment_control_clicked
 from test_separator import separator_clicked
+from test_slideshow import slideshow_clicked
 from test_spinner import spinner_clicked
 from test_table import table_clicked
 from test_thumb import thumb_clicked
@@ -112,8 +113,9 @@ items = [("3D", [
          ("Images", [
             ("Icon", icon_clicked),
             ("Icon Transparent", icon_transparent_clicked),
-            ("Thumb", thumb_clicked),
             ("Photo", photo_clicked),
+            ("Slideshow", slideshow_clicked),
+            ("Thumb", thumb_clicked),
         ]),
          ("Lists", [
             ("List", list_clicked),

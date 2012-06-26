@@ -130,6 +130,7 @@ examples_files = \
 	tests/test_scroller.py \
 	tests/test_segment_control.py \
 	tests/test_separator.py \
+	tests/test_slideshow.py \
 	tests/test_spinner.py \
 	tests/test_table.py \
 	tests/test_thumb.py \

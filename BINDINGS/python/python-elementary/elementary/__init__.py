@@ -29,9 +29,9 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, \
     , Ctxpopup, Grid, Video, Player, Configuration, Conformant, Dayselector, \
     Panes, Thumb, Diskselector, DiskselectorItem, StandardWindow, Datetime, \
     Transit, Map, MapOverlay, MapOverlayClass, Mapbuf, MultiButtonEntry, \
-    MultiButtonEntryItem, Slideshow, SlideshowItem, SegmentControl, \
-    SegmentControlItem, Popup, PopupItem, Plug, Photocam, Theme, \
-    GestureLayer, \
+    MultiButtonEntryItem, Slideshow, SlideshowItem, SlideshowItemClass, \
+    SegmentControl, SegmentControlItem, Popup, PopupItem, Plug, Photocam, \
+    Theme, GestureLayer, \
     init, shutdown, run, exit, scale_get, scale_set, need_ethumb, \
     config_finger_size_get, config_finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
