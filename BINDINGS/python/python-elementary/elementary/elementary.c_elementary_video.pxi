@@ -30,7 +30,7 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
         Object.__init__(self, parent.evas)
         self._set_obj(elm_video_add(parent.obj))
 
-    def video_file_set(self, filename):
+    def file_set(self, filename):
         """Define the file or URI that will be the video source.
 
         This function will explicitly define a file or URI as a source
@@ -49,7 +49,7 @@ cdef public class Video(LayoutClass) [object PyElementaryVideo, type PyElementar
         """
         return bool(elm_video_file_set(self.obj, _cfruni(filename)))
 
-    property video_file:
+    property file:
         """Define the file or URI that will be the video source.
 
         Setting this property will explicitly define a file or URI as a source

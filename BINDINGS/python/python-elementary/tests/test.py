@@ -58,6 +58,7 @@ from test_table import table_clicked
 from test_thumb import thumb_clicked
 from test_toolbar import toolbar_clicked
 from test_tooltip import tooltip_clicked
+from test_video import video_clicked
 from test_web import web_clicked
 from test_win import window_states_clicked
 
@@ -116,6 +117,7 @@ items = [("3D", [
             ("Photo", photo_clicked),
             ("Slideshow", slideshow_clicked),
             ("Thumb", thumb_clicked),
+            ("Video", video_clicked),
         ]),
          ("Lists", [
             ("List", list_clicked),
@@ -173,7 +175,7 @@ items = [("3D", [
          ("Web", [
             ("Web", web_clicked),
         ]),
-         ("Window / Backgroud", [
+         ("Window / Background", [
             ("Bg Plain", bg_plain_clicked),
             ("Bg Image", bg_image_clicked),
             ("InnerWindow", inner_window_clicked),

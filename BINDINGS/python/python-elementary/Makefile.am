@@ -136,6 +136,7 @@ examples_files = \
 	tests/test_thumb.py \
 	tests/test_toolbar.py \
 	tests/test_tooltip.py \
+	tests/test_video.py \
 	tests/test_web.py \
 	tests/test_win.py
 
