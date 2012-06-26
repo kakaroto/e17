@@ -197,10 +197,10 @@ do
 
 	tsfile="`echo $e | sed -e 's/\//_/g'`"
 
+	new_sha=`git ls-tree -d HEAD "$e" | cut -f1 | cut -f3 -d\ `
 	if [ $force = 0 -a -r "$tsdir/$tsfile" ]
 	then
 		old_sha=`cat "$tsdir/$tsfile" 2> /dev/null`
-		new_sha=`git ls-tree -d HEAD "$e" | cut -f1 | cut -f3 -d\ `
 
 		if [ "x$new_sha" = "x$old_sha" ]
 		then
