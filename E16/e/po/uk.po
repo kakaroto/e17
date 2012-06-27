@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-04-22 19:25+0200\n"
+"POT-Creation-Date: 2012-06-27 20:32+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -176,7 +176,7 @@ msgstr "Вийти з Enlightenment"
 msgid "Attention !!!"
 msgstr "Увага !!!"
 
-#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "Гаразд"
@@ -430,7 +430,7 @@ msgstr "Закрити"
 msgid "Create New Iconbox"
 msgstr "Створити новий Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Розмір піктограми: %2d"
@@ -1279,27 +1279,27 @@ msgstr "Згорнути цю групу"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2141
+#: src/menus.c:1948
 msgid "Animated display of menus"
 msgstr "Анімоване відображення меню"
 
-#: src/menus.c:2146
+#: src/menus.c:1953
 msgid "Always pop up menus on screen"
 msgstr "Зринаючі меню завжди на екрані"
 
-#: src/menus.c:2151
+#: src/menus.c:1958
 msgid "Warp pointer after moving menus"
 msgstr "Рух вказівника після переміщення меню"
 
-#: src/menus.c:2168
+#: src/menus.c:1975
 msgid "Menus"
 msgstr "Меню"
 
-#: src/menus.c:2169
+#: src/menus.c:1976
 msgid "Menu Settings"
 msgstr "Налаштування меню"
 
-#: src/menus.c:2172
+#: src/menus.c:1979
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1704,51 +1704,51 @@ msgstr "Ковзання вікон навколо під час очищенн�
 msgid "Slide Method:"
 msgstr "Метод ковзання:"
 
-#: src/settings.c:457
+#: src/settings.c:458
 msgid "Appear Slide speed:"
 msgstr "Швидкість ковзання проявлення:"
 
-#: src/settings.c:468
+#: src/settings.c:469
 msgid "Cleanup Slide speed:"
 msgstr "Очищення швидкості ковзання:"
 
-#: src/settings.c:481
+#: src/settings.c:482
 msgid "Animate shading and unshading of windows"
 msgstr "Анімувати згортання та розгортання вікон"
 
-#: src/settings.c:487
+#: src/settings.c:488
 msgid "Window Shading speed:"
 msgstr "Швидкість згортання вікна:"
 
-#: src/settings.c:500
+#: src/settings.c:501
 msgid "Ignore struts/panels for placing normal windows"
 msgstr ""
 
-#: src/settings.c:505
+#: src/settings.c:506
 msgid "Ignore struts/panels when windows are fullscreen"
 msgstr ""
 
-#: src/settings.c:510
+#: src/settings.c:511
 msgid "Ignore struts/panels when maximizing windows"
 msgstr ""
 
-#: src/settings.c:515
+#: src/settings.c:516
 msgid "Raise fullscreen windows"
 msgstr "Піднімати повноекранні вікна"
 
-#: src/settings.c:523
+#: src/settings.c:524
 msgid "Place windows on another head when full"
 msgstr "Розміщати вікна на іншу стільницю, якщо ця заповнена"
 
-#: src/settings.c:531
+#: src/settings.c:532
 msgid "Placement"
 msgstr "Розміщення"
 
-#: src/settings.c:532
+#: src/settings.c:533
 msgid "Window Placement Settings"
 msgstr "Параметри розміщення вікон"
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
@@ -1756,35 +1756,35 @@ msgstr ""
 "Діалог налаштування розміщення\n"
 "вікон Enlightenment"
 
-#: src/settings.c:585
+#: src/settings.c:586
 msgid "Enable Dialog Headers"
 msgstr "Ввімкнути заголовки діалогів"
 
-#: src/settings.c:591
+#: src/settings.c:592
 msgid "Enable Button Images"
 msgstr "Ввімкнути зображення на кнопках"
 
-#: src/settings.c:600
+#: src/settings.c:601
 msgid "Enable sliding startup windows"
 msgstr "Ввімкнути ковзання вікон під час старту"
 
-#: src/settings.c:608
+#: src/settings.c:609
 msgid "Use saveunders to reduce window exposures"
 msgstr "Use saveunders to reduce window exposures"
 
-#: src/settings.c:617
+#: src/settings.c:618
 msgid "Magwin zoom resolution"
 msgstr ""
 
-#: src/settings.c:629 config/strings.c:136 config/strings.c:152
+#: src/settings.c:630 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Різне"
 
-#: src/settings.c:630
+#: src/settings.c:631
 msgid "Miscellaneous Settings"
 msgstr "Параметри різного"
 
-#: src/settings.c:633
+#: src/settings.c:634
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1792,55 +1792,55 @@ msgstr ""
 "Діалог налаштування\n"
 "різного в Enlightenment"
 
-#: src/settings.c:677
+#: src/settings.c:678
 msgid "Enable Composite"
 msgstr "Ввімкнути композит"
 
-#: src/settings.c:685
+#: src/settings.c:686
 msgid "Enable Fading"
 msgstr "Ввімкнути згасання"
 
-#: src/settings.c:691
+#: src/settings.c:692
 msgid "Fading Speed:"
 msgstr "Швидкість згасання:"
 
-#: src/settings.c:704
+#: src/settings.c:705
 msgid "Shadows Off"
 msgstr "Вимкнути тіні"
 
-#: src/settings.c:710
+#: src/settings.c:711
 msgid "Shadows Sharp"
 msgstr "Різкі тіні"
 
-#: src/settings.c:716
+#: src/settings.c:717
 msgid "Shadows Sharp2"
 msgstr "Різкі тіні 2"
 
-#: src/settings.c:722
+#: src/settings.c:723
 msgid "Shadows Blurred"
 msgstr "Розмиті тіні"
 
-#: src/settings.c:733
+#: src/settings.c:734
 msgid "Default focused window opacity:"
 msgstr "Прозорість типового активного вікна:"
 
-#: src/settings.c:744
+#: src/settings.c:745
 msgid "Default unfocused window opacity:"
 msgstr "Прозорість типового неактивного вікна:"
 
-#: src/settings.c:755
+#: src/settings.c:756
 msgid "Default pop-up window opacity:"
 msgstr "Прозорість типового зринаючого вікна:"
 
-#: src/settings.c:766
+#: src/settings.c:767
 msgid "Composite"
 msgstr "Композит"
 
-#: src/settings.c:767
+#: src/settings.c:768
 msgid "Composite Settings"
 msgstr "Налаштування композиту"
 
-#: src/settings.c:770
+#: src/settings.c:771
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1848,7 +1848,7 @@ msgstr ""
 "Діалог налаштування\n"
 "композиту Enlightenment"
 
-#: src/settings.c:855
+#: src/settings.c:856
 msgid "Enlightenment Settings"
 msgstr "Налаштування Enlightenment"
 

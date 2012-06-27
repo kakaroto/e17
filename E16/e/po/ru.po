@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-04-22 19:25+0200\n"
+"POT-Creation-Date: 2012-06-27 20:32+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: sda00 <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -177,7 +177,7 @@ msgstr "Выйти из Enlightenment"
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "ОК"
@@ -431,7 +431,7 @@ msgstr "Закрыть"
 msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Размер пиктограммы: %2d"
@@ -1288,27 +1288,27 @@ msgstr "Свернуть эту группу"
 msgid "Group %i"
 msgstr "Группа %i"
 
-#: src/menus.c:2141
+#: src/menus.c:1948
 msgid "Animated display of menus"
 msgstr "Анимированный показ окон"
 
-#: src/menus.c:2146
+#: src/menus.c:1953
 msgid "Always pop up menus on screen"
 msgstr "Всегда показывать меню поверх остальных окон"
 
-#: src/menus.c:2151
+#: src/menus.c:1958
 msgid "Warp pointer after moving menus"
 msgstr "Следить за перемещением меню"
 
-#: src/menus.c:2168
+#: src/menus.c:1975
 msgid "Menus"
 msgstr "Стиль рамки"
 
-#: src/menus.c:2169
+#: src/menus.c:1976
 msgid "Menu Settings"
 msgstr "Настройки меню"
 
-#: src/menus.c:2172
+#: src/menus.c:1979
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1713,139 +1713,139 @@ msgstr "Раскидать окна при разгребании мусора �
 msgid "Slide Method:"
 msgstr "Метод \"Скольжения\":"
 
-#: src/settings.c:457
+#: src/settings.c:458
 msgid "Appear Slide speed:"
 msgstr "Скорость появления:"
 
-#: src/settings.c:468
+#: src/settings.c:469
 msgid "Cleanup Slide speed:"
 msgstr "%i рабочий стол"
 
-#: src/settings.c:481
+#: src/settings.c:482
 msgid "Animate shading and unshading of windows"
 msgstr "Анимировать скрытие и восстановление окон"
 
-#: src/settings.c:487
+#: src/settings.c:488
 msgid "Window Shading speed:"
 msgstr "Скорость скрытия окна"
 
-#: src/settings.c:500
+#: src/settings.c:501
 msgid "Ignore struts/panels for placing normal windows"
 msgstr ""
 
-#: src/settings.c:505
+#: src/settings.c:506
 msgid "Ignore struts/panels when windows are fullscreen"
 msgstr ""
 
-#: src/settings.c:510
+#: src/settings.c:511
 msgid "Ignore struts/panels when maximizing windows"
 msgstr ""
 
-#: src/settings.c:515
+#: src/settings.c:516
 msgid "Raise fullscreen windows"
 msgstr "Поднимать окна в фулскрине выше всех остальных"
 
-#: src/settings.c:523
+#: src/settings.c:524
 msgid "Place windows on another head when full"
 msgstr "Располагать окна на другом столе если текущий уже заполнен"
 
-#: src/settings.c:531
+#: src/settings.c:532
 msgid "Placement"
 msgstr "Расположение"
 
-#: src/settings.c:532
+#: src/settings.c:533
 msgid "Window Placement Settings"
 msgstr "Установки расположения окон"
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
 msgstr "Настройки расположения окон"
 
-#: src/settings.c:585
+#: src/settings.c:586
 msgid "Enable Dialog Headers"
 msgstr "Включить показ заголовков"
 
-#: src/settings.c:591
+#: src/settings.c:592
 msgid "Enable Button Images"
 msgstr "Включить картинки кнопок"
 
-#: src/settings.c:600
+#: src/settings.c:601
 msgid "Enable sliding startup windows"
 msgstr "Включить анимированную заставку при старте"
 
-#: src/settings.c:608
+#: src/settings.c:609
 msgid "Use saveunders to reduce window exposures"
 msgstr "Использовать \"saveunders\""
 
-#: src/settings.c:617
+#: src/settings.c:618
 msgid "Magwin zoom resolution"
 msgstr ""
 
-#: src/settings.c:629 config/strings.c:136 config/strings.c:152
+#: src/settings.c:630 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Прочее"
 
-#: src/settings.c:630
+#: src/settings.c:631
 msgid "Miscellaneous Settings"
 msgstr "Прочие Настройки"
 
-#: src/settings.c:633
+#: src/settings.c:634
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
 msgstr "Диалог прочих настроек"
 
-#: src/settings.c:677
+#: src/settings.c:678
 msgid "Enable Composite"
 msgstr "Включить композит"
 
-#: src/settings.c:685
+#: src/settings.c:686
 msgid "Enable Fading"
 msgstr "Разрешить переход через край"
 
-#: src/settings.c:691
+#: src/settings.c:692
 msgid "Fading Speed:"
 msgstr "Скорость угасания:"
 
-#: src/settings.c:704
+#: src/settings.c:705
 msgid "Shadows Off"
 msgstr "Выключить тени"
 
-#: src/settings.c:710
+#: src/settings.c:711
 msgid "Shadows Sharp"
 msgstr "Точные тени"
 
-#: src/settings.c:716
+#: src/settings.c:717
 msgid "Shadows Sharp2"
 msgstr "Точные тени 2 (а теперь - банановые!)"
 
-#: src/settings.c:722
+#: src/settings.c:723
 msgid "Shadows Blurred"
 msgstr "Размытые тени от окна"
 
-#: src/settings.c:733
+#: src/settings.c:734
 msgid "Default focused window opacity:"
 msgstr "Прозрачность активного окна по умолчанию:"
 
-#: src/settings.c:744
+#: src/settings.c:745
 msgid "Default unfocused window opacity:"
 msgstr "Прозрачность неактивного окна:"
 
-#: src/settings.c:755
+#: src/settings.c:756
 msgid "Default pop-up window opacity:"
 msgstr "Прозрачность всплывающего окна:"
 
-#: src/settings.c:766
+#: src/settings.c:767
 msgid "Composite"
 msgstr "Композит"
 
-#: src/settings.c:767
+#: src/settings.c:768
 msgid "Composite Settings"
 msgstr "Установки подсказок"
 
-#: src/settings.c:770
+#: src/settings.c:771
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1853,7 +1853,7 @@ msgstr ""
 "Диалог настройки композита\n"
 "(прозрачность окон)"
 
-#: src/settings.c:855
+#: src/settings.c:856
 msgid "Enlightenment Settings"
 msgstr "Настройки  Enlightenment..."
 

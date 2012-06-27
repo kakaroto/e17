@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-04-22 19:25+0200\n"
+"POT-Creation-Date: 2012-06-27 20:32+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Danish\n"
@@ -173,7 +173,7 @@ msgstr "Afslut Enlightenment"
 msgid "Attention !!!"
 msgstr "Vigtigt !!!"
 
-#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1889 src/events.c:94
+#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "Ok"
@@ -409,7 +409,7 @@ msgstr "Luk"
 msgid "Create New Iconbox"
 msgstr "Opret ny ikonboks"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2118
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonstørrelse: %2d"
@@ -1188,27 +1188,27 @@ msgstr "Ikonificér denne gruppe"
 msgid "Group %i"
 msgstr "Gruppe %i"
 
-#: src/menus.c:2141
+#: src/menus.c:1948
 msgid "Animated display of menus"
 msgstr "Animeret visning af menuer"
 
-#: src/menus.c:2146
+#: src/menus.c:1953
 msgid "Always pop up menus on screen"
 msgstr "Hold menuer inden for skærmen"
 
-#: src/menus.c:2151
+#: src/menus.c:1958
 msgid "Warp pointer after moving menus"
 msgstr "Flyt markør efter flytning af menuer"
 
-#: src/menus.c:2168
+#: src/menus.c:1975
 msgid "Menus"
 msgstr "Menuer"
 
-#: src/menus.c:2169
+#: src/menus.c:1976
 msgid "Menu Settings"
 msgstr "Menuindstillinger"
 
-#: src/menus.c:2172
+#: src/menus.c:1979
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1597,85 +1597,85 @@ msgstr "Vinduer glider rundt når der ryddes op på skrivebordet"
 msgid "Slide Method:"
 msgstr "Glidningsmetode:"
 
-#: src/settings.c:457
+#: src/settings.c:458
 msgid "Appear Slide speed:"
 msgstr "Glidehastighed ved oprettelse:"
 
-#: src/settings.c:468
+#: src/settings.c:469
 msgid "Cleanup Slide speed:"
 msgstr "Glidehastighed ved oprydning:"
 
-#: src/settings.c:481
+#: src/settings.c:482
 msgid "Animate shading and unshading of windows"
 msgstr "Animeret op/nedrulning af vinduer"
 
-#: src/settings.c:487
+#: src/settings.c:488
 msgid "Window Shading speed:"
 msgstr "Op/nedrulninghastighed:"
 
-#: src/settings.c:500
+#: src/settings.c:501
 msgid "Ignore struts/panels for placing normal windows"
 msgstr ""
 
-#: src/settings.c:505
+#: src/settings.c:506
 msgid "Ignore struts/panels when windows are fullscreen"
 msgstr ""
 
-#: src/settings.c:510
+#: src/settings.c:511
 msgid "Ignore struts/panels when maximizing windows"
 msgstr ""
 
-#: src/settings.c:515
+#: src/settings.c:516
 msgid "Raise fullscreen windows"
 msgstr "Løft fuldskærmsvinduer"
 
-#: src/settings.c:523
+#: src/settings.c:524
 msgid "Place windows on another head when full"
 msgstr "Placér vinduer på anden skærm hvis fuld"
 
-#: src/settings.c:531
+#: src/settings.c:532
 msgid "Placement"
 msgstr "Placering"
 
-#: src/settings.c:532
+#: src/settings.c:533
 msgid "Window Placement Settings"
 msgstr "Indstillinger for vinduesplacering"
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
 msgstr "Indstillinger for vinduesplacering"
 
-#: src/settings.c:585
+#: src/settings.c:586
 msgid "Enable Dialog Headers"
 msgstr "Aktivér dialoghoveder"
 
-#: src/settings.c:591
+#: src/settings.c:592
 msgid "Enable Button Images"
 msgstr "Aktivér billeder i knapper"
 
-#: src/settings.c:600
+#: src/settings.c:601
 msgid "Enable sliding startup windows"
 msgstr "Aktivér glidende vinduer under start"
 
-#: src/settings.c:608
+#: src/settings.c:609
 msgid "Use saveunders to reduce window exposures"
 msgstr "Brug saveunders til at reducere vindueseksponeringer"
 
-#: src/settings.c:617
+#: src/settings.c:618
 msgid "Magwin zoom resolution"
 msgstr ""
 
-#: src/settings.c:629 config/strings.c:136 config/strings.c:152
+#: src/settings.c:630 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: src/settings.c:630
+#: src/settings.c:631
 msgid "Miscellaneous Settings"
 msgstr "Diverse indstillinger"
 
-#: src/settings.c:633
+#: src/settings.c:634
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1683,61 +1683,61 @@ msgstr ""
 "Indstillinger for\n"
 "diverse funktioner"
 
-#: src/settings.c:677
+#: src/settings.c:678
 msgid "Enable Composite"
 msgstr "Aktivér composite"
 
-#: src/settings.c:685
+#: src/settings.c:686
 msgid "Enable Fading"
 msgstr "Aktivér fading"
 
-#: src/settings.c:691
+#: src/settings.c:692
 msgid "Fading Speed:"
 msgstr "Fadinghastighed:"
 
-#: src/settings.c:704
+#: src/settings.c:705
 msgid "Shadows Off"
 msgstr "Ingen skygger"
 
-#: src/settings.c:710
+#: src/settings.c:711
 msgid "Shadows Sharp"
 msgstr "Skarpe skygger"
 
-#: src/settings.c:716
+#: src/settings.c:717
 msgid "Shadows Sharp2"
 msgstr "Skarpe skygger(2)"
 
-#: src/settings.c:722
+#: src/settings.c:723
 msgid "Shadows Blurred"
 msgstr "Uskarpe skygger"
 
-#: src/settings.c:733
+#: src/settings.c:734
 msgid "Default focused window opacity:"
 msgstr "Standard uigennemsigtighed for aktivt vindue:"
 
-#: src/settings.c:744
+#: src/settings.c:745
 msgid "Default unfocused window opacity:"
 msgstr "Standard uigennemsigtighed for inaktivt vindue:"
 
-#: src/settings.c:755
+#: src/settings.c:756
 msgid "Default pop-up window opacity:"
 msgstr "Standard uigennemsigtighed for pop-op vinduer:"
 
-#: src/settings.c:766
+#: src/settings.c:767
 msgid "Composite"
 msgstr "Composite"
 
-#: src/settings.c:767
+#: src/settings.c:768
 msgid "Composite Settings"
 msgstr "Compositeindstillinger"
 
-#: src/settings.c:770
+#: src/settings.c:771
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
 msgstr "Indstillinger for composite"
 
-#: src/settings.c:855
+#: src/settings.c:856
 msgid "Enlightenment Settings"
 msgstr "Enlightenment indstillinger"
 
