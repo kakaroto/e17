@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Begin ephysics.SlackBuild
+
+NAME=ephysics
+BUILD=1jp
+CWD=$(pwd)
+
+# Get functions
+. ../functions
+set_env
+
+# Go to source code
+cd ../../../${NAME}
+prepare_src
+
+# Configure
+CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
+  ./autogen.sh \
+    --prefix=/usr \
+    --libdir=${LIBDIR} \
+    --build=${ARCH}-slackware-linux
+
+# Install
+make_install
+install_doc AUTHORS COPYING* ChangeLog INSTALL NEWS README TODO
+
+# Add API doc
+api_doc
+
+# Build the package
+post_clean
+pack_slack
+
+# End ephysics.SlackBuild

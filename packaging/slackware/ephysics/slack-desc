@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+        |-----handy-ruler------------------------------------------------------|
+ephysics: 
+ephysics: EPhysics is a library that manages Ecore, Evas and Bullet Physics
+ephysics: into an easy to use way. It's a kind of wrapper, a glue, between
+ephysics: these libraries. It's not intended to be a physics library (we
+ephysics: already have many out there).
+ephysics: 
+ephysics: 
+ephysics: 
+ephysics: 
+ephysics: 
+ephysics: 

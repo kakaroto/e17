@@ -102,6 +102,9 @@ function pack_slack {
   
   mkdir install
   install -m644 ${CWD}/slack-desc install/
+  if [ -f ${CWD}/slack-required ]; then
+    install -m644 ${CWD}/slack-required install/
+  fi
   
   makepkg -l y -c n ${TMP}/${NAME}-${VERSION}-${ARCH}-${BUILD}.txz
   rm -rf ${PKG}
