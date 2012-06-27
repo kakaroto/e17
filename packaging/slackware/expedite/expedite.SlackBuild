@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Begin emprint.SlackBuild
+# Begin expedite.SlackBuild
 
-NAME=emprint
+NAME=expedite
 BUILD=1jp
 CWD=$(pwd)
 
@@ -23,10 +23,10 @@ CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
 
 # Install
 make_install
-install_doc AUTHORS COPYING* NEWS README TODO
+install_doc AUTHORS COPYING* INSTALL README
 
 # Build the package
 post_clean
 pack_slack
 
-# End emprint.SlackBuild
+# End expedite.SlackBuild
