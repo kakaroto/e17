@@ -1,4 +1,4 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in e_dbus_doxy_warnings.txt
 
 .PHONY: doc
 
