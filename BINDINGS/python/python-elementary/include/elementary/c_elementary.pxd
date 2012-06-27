@@ -129,6 +129,7 @@ cdef extern from "Elementary.h":
         ELM_CALENDAR_WEEKLY
         ELM_CALENDAR_MONTHLY
         ELM_CALENDAR_ANNUALLY
+        ELM_CALENDAR_LAST_DAY_OF_MONTH
 
     ctypedef enum Elm_Calendar_Select_Mode:
         ELM_CALENDAR_SELECT_MODE_DEFAULT
@@ -1951,6 +1952,7 @@ cdef extern from "Elementary.h":
     Evas_Coord               elm_progressbar_span_size_get(Evas_Object *obj)
     void                     elm_progressbar_unit_format_set(Evas_Object *obj, const_char_ptr format)
     const_char_ptr           elm_progressbar_unit_format_get(Evas_Object *obj)
+    void                     elm_progressbar_unit_format_function_set(Evas_Object *obj, char *(*format_func)(double value), void (*free_func)(char * string))
     void                     elm_progressbar_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
     Eina_Bool                elm_progressbar_horizontal_get(Evas_Object *obj)
     void                     elm_progressbar_inverted_set(Evas_Object *obj, Eina_Bool inverted)
