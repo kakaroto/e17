@@ -18,33 +18,27 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <string>
+#include <Evas.h>
+
+#include "defines.h"
+#include "object.h"
+
 namespace ehninjas
 {
-   class singleton;
-   class MemoryMgr;
-   class PlayerChar;
+   class Character;
 
-   class App : public Singleton<App>
+   class PlayerChar : public Character
      {
-      private:
-         MemoryMgr *memmgr;
-         PlayerChar *pc;
-         Evas *e;
-         Evas_Object *win;
-         Evas_Object *bg;
-         Eina_Bool initialized;
-
-         Eina_Bool CreateWin(const char *, unsigned int, unsigned int);
-         Eina_Bool CreateBg(int, int, int);
-         Eina_Bool InitPlayerChar();
+        Evas_Object *img;
 
       public:
-         App();
-         ~App();
-         Eina_Bool Initialize(int, char **);
-         Eina_Bool Run();
-         Eina_Bool Terminate();
-         void DispatchKeyDown(const char * const);
-         void DispatchKeyUp(const char *const);
+         PlayerChar();
+         ~PlayerChar();
+         Eina_Bool Initialize();
+         Eina_Bool Release();
+         Eina_Bool SetImgObj(Evas_Object*);
+         const Evas_Object *GetImgObj();
+         Eina_Bool Move(eMoveDir, unsigned int);
      };
 }

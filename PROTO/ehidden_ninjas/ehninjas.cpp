@@ -31,6 +31,15 @@
 
 using namespace ehninjas;
 
+
+static void _win_del_cb(void *data,
+                        Evas *e,
+                        Evas_Object *obj,
+                        void *event_info)
+{
+   elm_exit();
+}
+
 static void _key_up_cb(void *data,
                        Evas *e,
                        Evas_Object *obj,
@@ -72,6 +81,18 @@ void App ::DispatchKeyDown(const char * const keyname)
    if (!strcmp("Escape", keyname))
      elm_exit();
 
+   //Move Player Character
+   if (!strcmp(keyname, "w"))
+     this->pc->Move(Character ::Up, 20);
+
+   if (!strcmp(keyname, "s"))
+     this->pc->Move(Character ::Down, 20);
+
+   if (!strcmp(keyname, "a"))
+     this->pc->Move(Character ::Left, 20);
+
+   if (!strcmp(keyname, "d"))
+     this->pc->Move(Character ::Right, 20);
 
 }
 
@@ -81,7 +102,6 @@ void App ::DispatchKeyUp(const char * const keyname)
 {
    assert(keyname);
    PRINT_DBG(keyname);
-
 }
 
 
@@ -95,6 +115,7 @@ Eina_Bool App ::CreateWin(const char *title,
    elm_win_autodel_set(win, EINA_TRUE);
    elm_win_title_set(win, title);
    evas_object_resize(win, width, height);
+   evas_object_event_callback_add(win, EVAS_CALLBACK_DEL, _win_del_cb, this);
    evas_object_show(win);
 
    this->e = evas_object_evas_get(win);
@@ -127,7 +148,7 @@ Eina_Bool App ::CreateBg(int r, int g, int b)
 
 
 
-Eina_Bool App ::InitializeObjs()
+Eina_Bool App ::InitPlayerChar()
 {
    assert(this->e);
 
@@ -137,9 +158,13 @@ Eina_Bool App ::InitializeObjs()
    //Player Character for test
    Evas_Object *obj = evas_object_rectangle_add(this->e);
    if (!obj) return EINA_FALSE;
-   evas_object_color_set(obj, 125, 0, 0, 125);
+   evas_object_color_set(obj, 255, 255, 0, 255);
    evas_object_resize(obj, 30, 30);
    evas_object_show(obj);
+
+   pc->SetImgObj(obj);
+
+   this->pc = pc;
 
    return EINA_TRUE;
 }
@@ -187,8 +212,10 @@ Eina_Bool App ::Initialize(int argc, char **argv)
                                   EVAS_CALLBACK_KEY_UP,
                                   _key_up_cb,
                                   this);
-
-   InitializeObjs();
+   if (!this->InitPlayerChar())
+     {
+        PRINT_DBG("Failed to init player character!");
+     }
 
    this->memmgr = memmgr;
    this->initialized = EINA_TRUE;
@@ -211,6 +238,7 @@ Eina_Bool App:: Run()
 Eina_Bool App:: Terminate()
 {
    this->memmgr->Terminate();
+   delete(this->pc);
 
    //Terminate elementary
    elm_shutdown();

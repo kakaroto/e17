@@ -24,7 +24,7 @@
 using namespace std;
 using namespace ehninjas;
 
-PlayerChar ::PlayerChar() :Character(string(""), ID_PLAYER)
+PlayerChar ::PlayerChar() :Character(string(""), ID_PLAYER), img(NULL)
 {
 }
 
@@ -32,7 +32,6 @@ PlayerChar ::PlayerChar() :Character(string(""), ID_PLAYER)
 
 PlayerChar ::~PlayerChar()
 {
-
 }
 
 
@@ -51,8 +50,9 @@ Eina_Bool PlayerChar ::Release()
 
 
 
-Eina_Bool PlayerChar ::SetImgObj(Evas_Object* img_obj)
+Eina_Bool PlayerChar ::SetImgObj(Evas_Object* img)
 {
+   this->img = img;
    return EINA_TRUE;
 }
 
@@ -61,5 +61,38 @@ Eina_Bool PlayerChar ::SetImgObj(Evas_Object* img_obj)
 const Evas_Object *PlayerChar ::GetImgObj()
 {
    return NULL;
+}
+
+Eina_Bool PlayerChar ::Move(eMoveDir dir, unsigned int velocity)
+{
+   switch (dir)
+     {
+      case Left:
+         --Object ::pos.x;
+         if (Object ::pos.x < 0)
+           Object ::pos.x = 0;
+         break;
+      case Right:
+         ++Object ::pos.x;
+         //SCREEN: SCREEN SIZE?
+         if (Object ::pos.x > 10000)
+           Object ::pos.x = 10000;
+         break;
+      case Up:
+         --Object ::pos.y;
+         if (Object ::pos.y < 0)
+           Object ::pos.y = 0;
+         break;
+      case Down:
+         ++Object ::pos.y;
+         //FIX: SCREEN SIZE?
+         if (Object ::pos.y > 10000)
+           Object ::pos.y = 10000;
+         break;
+     }
+
+   evas_object_move(this->img, Object ::pos.x, Object ::pos.y);
+
+   return EINA_TRUE;
 }
 

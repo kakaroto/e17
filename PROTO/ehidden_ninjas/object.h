@@ -27,7 +27,7 @@ namespace ehninjas
 {
    class Object
      {
-      private:
+      protected:
         std:: string name;
         unsigned int id;
         Evas_Coord_Point size;
@@ -41,7 +41,7 @@ namespace ehninjas
 
          std:: string& GetString() { return this->name; }
          unsigned int GetId() { return this->id; }
-         VECTOR2 &Position() { return this->pos; }
+         const VECTOR2 &Position() { return this->pos; }
          Evas_Coord_Point &Size() { return this->size; }
          virtual Eina_Bool Initialize() { return EINA_TRUE; }
          virtual Eina_Bool Release() { return EINA_TRUE; }
@@ -62,12 +62,12 @@ namespace ehninjas
 
    class Character : public Object
      {
-        enum eMoveDirection { Left, Right, Up, Down };
-
       public:
+         enum eMoveDir{Left, Right, Up, Down };
+
          Character(const std ::string name, unsigned int id) : Object(name, id)
          {}
-         virtual Eina_Bool Move(unsigned int) { return EINA_TRUE; }
+         virtual Eina_Bool Move(eMoveDir, unsigned int) = 0;
      };
 
    class NonPlayerChar : public Character
@@ -78,6 +78,7 @@ namespace ehninjas
          Eina_Bool Release() { return EINA_TRUE; }
          Eina_Bool SetImgObj(Evas_Object*);
          const Evas_Object *GetImgObj();
+         Eina_Bool Move(eMoveDir, unsigned int) { return EINA_FALSE; };
      };
 
 }
