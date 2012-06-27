@@ -365,6 +365,7 @@ class ElementaryObjectMeta(type):
             append((name, evt))
 
 include "elementary.c_elementary_configuration.pxi"
+include "elementary.c_elementary_need.pxi"
 include "elementary.c_elementary_theme.pxi"
 include "elementary.c_elementary_object.pxi"
 include "elementary.c_elementary_object_item.pxi"

@@ -4,6 +4,10 @@ import elementary
 import evas
 
 def thumb_clicked(obj):
+    if not elementary.need_ethumb():
+        print("Ethumb not available!")
+        return
+
     images = (
         "panel_01.jpg",
         "plant_01.jpg",

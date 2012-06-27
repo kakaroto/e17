@@ -54,7 +54,6 @@ cdef public class Thumb(Object) [object PyElementaryThumb, type PyElementaryThum
     """
 
     def __init__(self, evasObject parent):
-        elm_need_ethumb()
         Object.__init__(self, parent.evas)
         self._set_obj(elm_thumb_add(parent.obj))
 

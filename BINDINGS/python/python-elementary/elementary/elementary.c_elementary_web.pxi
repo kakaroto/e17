@@ -93,7 +93,6 @@ cdef public class Web(Object) [object PyElementaryWeb, type PyElementaryWeb_Type
     cdef object _console_message_hook
 
     def __init__(self,evasObject parent):
-        elm_need_web()
         Object.__init__(self, parent.evas)
         self._set_obj(elm_web_add(parent.obj))
 

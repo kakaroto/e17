@@ -8,6 +8,10 @@ import evas
 
 #----- Web -{{{-
 def web_clicked(obj):
+    if not elementary.need_web():
+        print("EFL-webkit not available!")
+        return
+
     win = elementary.Window("web", elementary.ELM_WIN_BASIC)
     win.title_set("Web")
     win.autodel_set(True)

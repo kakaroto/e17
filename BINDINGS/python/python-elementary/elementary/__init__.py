@@ -39,7 +39,7 @@ from elementary.c_elementary import Object, Window, Background, Icon, Box, \
     cursor_engine_only_get, focus_highlight_enabled_get, \
     focus_highlight_enabled_set, focus_highlight_animate_get, \
     focus_highlight_animate_set, preferred_engine_get, preferred_engine_set, \
-    engine_get, engine_set
+    engine_get, engine_set, need_e_dbus, need_efreet, need_ethumb, need_web
 
 ELM_ACTIONSLIDER_NONE = 0
 ELM_ACTIONSLIDER_LEFT = 1 << 0

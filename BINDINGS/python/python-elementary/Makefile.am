@@ -54,6 +54,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_mapbuf.pxi \
 	elementary/elementary.c_elementary_menu.pxi \
 	elementary/elementary.c_elementary_multibuttonentry.pxi \
+	elementary/elementary.c_elementary_need.pxi \
 	elementary/elementary.c_elementary_notify.pxi \
 	elementary/elementary.c_elementary_object.pxi \
 	elementary/elementary.c_elementary_object_item.pxi \
