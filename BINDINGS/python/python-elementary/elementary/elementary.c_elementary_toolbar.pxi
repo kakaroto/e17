@@ -16,9 +16,30 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+cdef class ToolbarItemState(object):
+
+    """A state for a L{ToolbarItem}."""
+
+    cdef Elm_Toolbar_Item_State *obj
+    cdef object params
+
+    def __init__(self, ToolbarItem it, icon = None, label = None, callback = None, *args, **kwargs):
+        cdef Evas_Smart_Cb cb = NULL
+
+        if callback:
+            if not callable(callback):
+                raise TypeError("callback is not callable")
+            cb = _object_item_callback
+
+        self.params = (callback, args, kwargs)
+
+        self.obj = elm_toolbar_item_state_add(it.item, _cfruni(icon), _cfruni(label), cb, <void*>self)
+        if self.obj == NULL:
+            Py_DECREF(self)
+
 cdef class ToolbarItem(ObjectItem):
 
-    """An item for the toolbar."""
+    """An item for the L{Toolbar} widget."""
 
     def __init__(self, evasObject toolbar, icon, label,
                  callback, *args, **kargs):
@@ -470,27 +491,105 @@ cdef class ToolbarItem(ObjectItem):
         def __set__(self, menu):
             elm_toolbar_item_menu_set(self.item, menu)
 
+    def state_add(self, icon = None, label = None, func = None, *args, **kwargs):
+        """state_add(icon=None, label=None, func=None, *args, **kwargs)
 
-    #TODO def state_add(self, icon, label, func, data):
-        #return elm_toolbar_item_state_add(self.item, icon, label, func, data)
+        Add a new state to C{item}.
 
-    #TODO def state_del(self, state):
-        #return bool(elm_toolbar_item_state_del(self.item, state))
+        Toolbar will load icon image from fdo or current theme. This
+        behavior can be set by elm_toolbar_icon_order_lookup_set() function.
+        If an absolute path is provided it will load it direct from a file.
 
-    #TODO def state_set(self, state):
-        #return bool(elm_toolbar_item_state_set(self.item, state))
+        States created with this function can be removed with
+        elm_toolbar_item_state_del().
 
-    #TODO def state_unset(self):
-        #elm_toolbar_item_state_unset(self.item)
+        @see: L{state)
 
-    #TODO def state_get(self):
-        #return elm_toolbar_item_state_get(self.item)
+        @param icon: A string with icon name or the absolute path of an
+            image file.
+        @type icon: string
+        @param label: The label of the new state.
+        @type label: string
+        @param func: The function to call when the item is clicked when this
+            state is selected.
+        @type func: function
 
-    #TODO def state_next(self):
-        #return elm_toolbar_item_state_next(self.item)
+        @return: The toolbar item state, or C{None} upon failure.
+        @rtype: L{ToolbarItemState}
 
-    #TODO def state_prev(self):
-        #return elm_toolbar_item_state_prev(self.item)
+        """
+        return ToolbarItemState(self, icon, label, func, *args, **kwargs)
+
+    def state_del(self, ToolbarItemState state):
+        """state_del(state)
+
+        Delete a previously added state to C{item}.
+
+        @see: L{state_add(})
+
+        @param state: The state to be deleted.
+        @type state: L{ToolbarItemState}
+
+        @return: C{True} on success or C{False} on failure.
+        @rtype: bool
+
+        """
+        return bool(elm_toolbar_item_state_del(self.item, state.obj))
+
+    property state:
+        """The current state of the item.
+
+        If C{state} is C{None}, it won't select any state and the default
+        item's icon and label will be used. It's the same behaviour than
+        elm_toolbar_item_state_unset().
+
+        @type: L{ToolbarItemState}
+
+        """
+        def __set__(self, ToolbarItemState state):
+            # TODO: check return value bool for errors
+            elm_toolbar_item_state_set(self.item, state.obj)
+
+        def __del__(self):
+            elm_toolbar_item_state_unset(self.item)
+
+        def __get__(self):
+            return None
+            # TODO: C api doesn't have data_get() for states so we can't get
+            #       the py object from there. Store it in the item instead?
+            #elm_toolbar_item_state_get(self.item)
+
+    property state_next:
+        """Get the state after selected state in toolbar's C{item}.
+
+        If last state is selected, this function will return first state.
+
+        @see: L{state)
+        @see: L{state_add(})
+
+        @type: L{ToolbarItemState}
+
+        """
+        def __get__(self):
+            return None
+            # TODO: keep a list of the states?
+            #return elm_toolbar_item_state_next(self.item)
+
+    property state_prev:
+        """Get the state before selected state in toolbar's C{item}.
+
+        If first state is selected, this function will return last state.
+
+        @see: L{state)
+        @see: L{state_add(})
+
+        @type: L{ToolbarItemState}
+
+        """
+        def __get__(self):
+            return None
+            # TODO: keep a list of the states?
+            #return elm_toolbar_item_state_prev(self.item)
 
 cdef public class Toolbar(Object) [object PyElementaryToolbar, type PyElementaryToolbar_Type]:
 
