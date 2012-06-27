@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Tue Jun 26 14:56:40 2012.
+# Generated for linux at Wed Jun 27 10:24:11 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -860,7 +860,8 @@ $(BUILDROOT)/efreet/stamps/configure: $(BUILDROOT)/efreet/stamps/autogen $(BUILD
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/efreet/compile && \
 	$(SRCROOT)/efreet/configure --prefix=$(INSTALLROOT) --enable-tests \
-		--enable-doc
+		--enable-doc \
+		--enable-coverage
 	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
 	touch $(BUILDROOT)/efreet/stamps/configure
 	$(V)echo "Success configuring efreet."
