@@ -1,6 +1,3 @@
-EXTRA_DIST = \
-  tests.h
-
 check_PROGRAMS = t001_content
 
 t001_content_CFLAGS = \
