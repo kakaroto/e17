@@ -35,6 +35,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_fileselector_entry.pxi \
 	elementary/elementary.c_elementary_fileselector_button.pxi \
 	elementary/elementary.c_elementary_flip.pxi \
+	elementary/elementary.c_elementary_flipselector.pxi \
 	elementary/elementary.c_elementary_frame.pxi \
 	elementary/elementary.c_elementary_genlist.pxi \
 	elementary/elementary.c_elementary_gengrid.pxi \
@@ -104,6 +105,7 @@ examples_files = \
 	tests/test_entry.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \
+	tests/test_flipselector.py \
 	tests/test_frame.py \
 	tests/test_genlist.py \
 	tests/test_gengrid.py \

@@ -25,6 +25,7 @@ from test_diskselector import diskselector_clicked
 from test_entry import entry_clicked, entry_scrolled_clicked
 from test_fileselector import fileselector_clicked, fileselector_button_clicked, fileselector_entry_clicked
 from test_flip import flip_clicked, flip_interactive_clicked
+from test_flipselector import flipselector_clicked
 from test_frame import frame_clicked
 from test_gengrid import gengrid_clicked
 from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
@@ -149,17 +150,18 @@ items = [("3D", [
             ("Scroller", scroller_clicked),
         ]),
          ("Selectors", [
-            ("File Selector", fileselector_clicked),
+            ("Action Slider", actionslider_clicked),
+            ("Color Selector", colorselector_clicked),
+            ("Day Selector", dayselector_clicked),
+            ("Disk Selector", diskselector_clicked),
+            ("Flip Selector", flipselector_clicked),
             ("FS button", fileselector_button_clicked),
             ("FS entry", fileselector_entry_clicked),
+            ("File Selector", fileselector_clicked),
             ("Hoversel", hoversel_clicked),
+            ("Index", index_clicked),
             ("Menu", menu_clicked),
             ("Radios", radio_clicked),
-            ("Action Slider", actionslider_clicked),
-            ("Day Selector", dayselector_clicked),
-            ("Color Selector", colorselector_clicked),
-            ("Disk Selector", diskselector_clicked),
-            ("Index", index_clicked),
             ("Segment Control", segment_control_clicked),
         ]),
          ("Stored Surface Buffer", [
