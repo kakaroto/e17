@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       config.sub configure depcomp install-sh ltmain.sh \
 		       missing module.desktop config.rpath mkinstalldirs \
-                       INSTALL ABOUT-NLS* m4/libtool.m4 m4/lt~obsolete.m4 \
+                       ABOUT-NLS* m4/libtool.m4 m4/lt~obsolete.m4 \
                        m4/ltoptions.m4 m4/ltsugar.m4 m4/ltversion.m4 \
                        m4/codeset.m4 m4/gettext.m4 m4/glibc21.m4 m4/iconv.m4 \
                        m4/intdiv0.m4 m4/inttypes_h.m4 m4/inttypes.m4 \
