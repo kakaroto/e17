@@ -5565,3 +5565,46 @@ Sat Oct  8 09:32:29 CEST 2011
 Change default systray icon size to 16.
 Update internal area hint when changing area.
 Italian translation update (Massimo Maiurana).
+
+-------------------------------------------------------------------------------
+
+Wed Jun 27 20:10:02 CEST 2012
+
+--- 1.0.10.001 ---
+Spec file fixes.
+Expose ECompMgrWinSetOpacity() - call via EobjChangeOpacityNow().
+Eliminate Mode.place.doing_slide.
+Fix setting slide-in mode in dialog.
+Menus - Remove unused code.
+Change ewin sliding function API.
+Dialog sliders - Enable having upper bound below lower.
+Dialogs - Add missing const.
+Remove server grab around EShapeSetShape().
+Add EX_EVENT_GLX_FLIP.
+Move pre-eventloop calls of EobjsRepaint() out of progress bar functions.
+Remove useless parameter from SnapshotsSaveReal().
+GSOD - Make work when compositing.
+GSOD - Refactor + some changes.
+GSOD - Just use fixed font. Font sets are causing trouble again.
+Name ewin sliding functions consistently.
+Move ewin sliding functions to slide.c.
+EwinMove/Resize - Change various global/ewin flags to function parameter.
+Use OPSRC_NA in stead of 0.
+Add uninstall-local to fix distcheck (with recent autotools?).
+Move GetTimeMs/Us() to time.c.
+French translation update (Tristan D.).
+Make clean shouldn't remove e16-gnome3-session.desktop.
+Remove USER_NAME, HOME_DIR, and USER_SHELL from config file preparsing.
+Simplify user info functions.
+Close all fd's above 2 when exec'ing for restart.
+French translation update (Tristan D.).
+Minor tweak around ECompMgrGetRootBuffer().
+Remove some obsolete code.
+Change some longs to ints where long is not needed.
+Fix build without composite but with xrender.
+Remove now unused EKeycodeToString().
+Remove old e16keyedit (pre 0.7) IPC functions.
+Fix bug in pareto_maximizer() (Daniel Manjarres).
+Remove unnecessary AC_PROG_MAKE_SET.
+Warning fix for gcc-4.6.x.
+Japanese translation update (Yasufumi Haga).
