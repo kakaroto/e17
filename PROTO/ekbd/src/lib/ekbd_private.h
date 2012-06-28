@@ -17,6 +17,7 @@ struct _Smart_Data
 {
    Eina_List *layouts;
    Evas_Coord x, y, w, h;
+   const char *theme;
    struct {
         char *directory;
         const char *file;

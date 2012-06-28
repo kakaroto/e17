@@ -56,6 +56,7 @@ EAPI void             ekbd_object_layout_add(Evas_Object *obj, const char *path)
 EAPI void             ekbd_object_layout_clear(Evas_Object *obj);
 EAPI void             ekbd_object_layout_select(Evas_Object *obj, Ekbd_Layout *layout);
 EAPI const Eina_List *ekbd_object_layout_get(const Evas_Object *obj);
+EAPI void             ekbd_object_theme_set(Evas_Object *obj, const char *path);
 
 EAPI const char *     ekbd_layout_file_get(const Ekbd_Layout *layout);
 EAPI const char *     ekbd_layout_path_get(const Ekbd_Layout *layout);

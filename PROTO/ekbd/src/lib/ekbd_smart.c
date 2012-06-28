@@ -98,6 +98,19 @@ ekbd_layout_type_get(const Ekbd_Layout *layout)
    return EKBD_TYPE_UNKNOWN;
 }
 
+EAPI void
+ekbd_object_theme_set(Evas_Object *obj, const char *path)
+{
+   Smart_Data *sd = evas_object_smart_data_get(obj);
+   if (!sd || !path) return;
+   if (sd->theme)
+	   eina_stringshare_replace(&sd->theme, path);
+   else
+     sd->theme = eina_stringshare_add(path);
+   if (sd->layouts)
+      ekbd_object_layout_select(obj, eina_list_data_get(sd->layouts));
+}
+
 
 static void
 _smart_init()
@@ -170,6 +183,7 @@ _smart_del(Evas_Object *obj)
    if (_handler)
      ecore_event_handler_del(_handler);
    evas_object_del(sd->layout_obj);
+   if (sd->theme) eina_stringshare_del(sd->theme);
    free(sd);
 }
 

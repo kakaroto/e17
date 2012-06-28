@@ -551,7 +551,7 @@ _ekbd_layout_build(Smart_Data *sd)
    EINA_LIST_FOREACH(sd->layout.keys, l, ky)
      {
         o = ekbd_layout_theme_obj_new(evas_object_evas_get(sd->layout_obj),
-                                      NULL, "ekbd/key/default");
+                                      sd->theme, "ekbd/key/default");
         evas_object_move(o, sd->x + ky->orig_x, sd->y + ky->orig_y);
         evas_object_resize(o, ky->orig_w, ky->orig_h);
         evas_object_clip_set(o, sd->layout_obj);
@@ -659,17 +659,17 @@ _ekbd_layout_tie_build(Smart_Data *sd)
    Ekbd_Int_Tie *kt;
    Ekbd_Int_Key *ky;
    Evas_Object *o, *ic;
-   double rw, rh;
+   double rw;//, rh;
    //Evas_Coord x, y, ex, ey, ew, eh;
 
    kt = sd->down.tie;
    rw = sd->w / (double)sd->layout.w;
-   rh = sd->h / (double)sd->layout.h;
+   //rh = sd->h / (double)sd->layout.h;
 
 
    evas_event_freeze(evas_object_evas_get(sd->layout_obj));
    o = ekbd_layout_theme_obj_new(evas_object_evas_get(sd->layout_obj),
-                                 NULL, "ekbd/cover/default");
+                                 sd->theme, "ekbd/cover/default");
    evas_object_move(o, sd->x, sd->y);
    evas_object_resize(o, sd->w, sd->h);
    evas_object_show(o);
@@ -677,7 +677,7 @@ _ekbd_layout_tie_build(Smart_Data *sd)
    evas_object_raise(sd->layout.pressed->obj);
 
    o = ekbd_layout_theme_obj_new(evas_object_evas_get(sd->layout_obj),
-                                 NULL, "ekbd/tie/default");
+                                 sd->theme, "ekbd/tie/default");
    evas_object_show(o);
    kt->base_obj = o;
 
@@ -687,7 +687,7 @@ _ekbd_layout_tie_build(Smart_Data *sd)
         const char *label, *icon;
 
         o = ekbd_layout_theme_obj_new(
-           evas_object_evas_get(sd->layout_obj), NULL, "ekbd/key/default");
+           evas_object_evas_get(sd->layout_obj), sd->theme, "ekbd/key/default");
         ky->obj = o;
         label = "";
         icon = NULL;
