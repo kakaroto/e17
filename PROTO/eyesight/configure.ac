@@ -100,7 +100,7 @@ EYESIGHT_CHECK_MODULE([Img], [${want_img}])
 PKG_CHECK_MODULES([EYESIGHT], [${requirement_eyesight}])
 
 if test "x${have_eyesight}" = "xyes" ; then
-   PKG_CHECK_MODULES([EYESIGHT_BIN], [elementary >= 1.0.0],
+   PKG_CHECK_MODULES([EYESIGHT_BIN], [ecore-input elementary >= 1.0.0],
       [build_eyesight_bin="yes"], [build_eyesight_bin="no"])
 fi
 
