@@ -202,7 +202,7 @@ main(int argc, char *argv[])
    elm_win_resize_object_add(win, img);
    elm_icon_animated_set(img, EINA_TRUE);
    elm_icon_aspect_fixed_set(img, EINA_TRUE);
-   elm_icon_fill_outside_set(img, EINA_FALSE);
+   elm_image_fill_outside_set(img, EINA_FALSE);
    evas_object_show(img);
    evas_object_show(win);
 
