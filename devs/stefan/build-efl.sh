@@ -13,7 +13,7 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 	libxtst-dev graphviz libasound2-dev libpam0g-dev"
 
 defcore="eina eet evas evas_generic_loaders ecore eio edje emotion eeze
-	embryo e_dbus efreet PROTO/libeweather PROTO/emap elementary"
+	embryo e_dbus efreet PROTO/libeweather PROTO/emap elementary ephysics"
 defapps="ethumb terminology e ephoto rage expedite"
 
 defpkgs="$defcore $defapps"
@@ -119,8 +119,11 @@ EOF
 exit 0
 }
 
-# some EFL libraries don't build with warnings by default...
-CFLAGS="-O2 -Wall -g"
+# Try to show many, many warnings :).
+CFLAGS="-O2 -Wall -g -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections"
+CXXFLAGS=$CFLAGS
+LDFLAGS="-fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed"
+
 
 # how many CPUs?
 if [ -f /proc/cpuinfo ]
