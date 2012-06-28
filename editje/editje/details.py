@@ -32,7 +32,7 @@ class EditjeDetails(elementary.Layout):
                             " EditjeDetails objects.")
 
         elementary.Layout.__init__(self, parent)
-        self.file_set(parent.theme, group)
+        self.file_set(parent.themeext, group)
         self._edje = self.edje_get()
 
         self._parent = parent
@@ -92,7 +92,7 @@ class EditjeDetails(elementary.Layout):
         tbl.show()
         frm = elementary.Layout(self._parent)
 
-        frm.file_set(self._parent.theme, "subgroup")
+        frm.file_set(self._parent.themeext, "subgroup")
         frm.edje_get().part_text_set("title.label", name)
         frm.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         frm.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)

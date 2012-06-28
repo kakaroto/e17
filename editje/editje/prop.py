@@ -102,7 +102,7 @@ class Property(object):
         self._parent = parent
 
         lbl = elementary.Layout(self._parent)
-        lbl.file_set(self._parent.theme, "prop_label")
+        lbl.file_set(self._parent.themeext, "prop_label")
         ed = lbl.edje_get()
 
         ed.part_text_set("label", self._name.replace("_", " ") + ":")

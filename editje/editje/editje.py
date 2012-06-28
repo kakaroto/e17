@@ -62,8 +62,8 @@ def debug_cb(obj, emission, source):
 class Editje(elementary.Window, OpenFileManager):
     def __init__(self, swapfile, theme="default", slave_mode=False,
                  in_port=None):
-        self.theme = sysconfig.theme_file_get(theme)
-        elementary.theme_extension_add(self.theme)
+        self.themeext = sysconfig.theme_file_get(theme)
+        elementary.theme_extension_add(self.themeext)
 
         # external modules
         for m in edje.available_modules_get():
@@ -226,7 +226,7 @@ class Editje(elementary.Window, OpenFileManager):
 
     def _load_theme(self, group="main"):
         self.main_layout = elementary.Layout(self)
-        self.main_layout.file_set(self.theme, group)
+        self.main_layout.file_set(self.themeext, group)
         self.main_layout.size_hint_weight_set(
             evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         self.resize_object_add(self.main_layout)
@@ -372,7 +372,7 @@ class Editje(elementary.Window, OpenFileManager):
             if self._window_blocker:
                 return
             self._window_blocker = elementary.Layout(self)
-            self._window_blocker.file_set(self.theme, "blocker")
+            self._window_blocker.file_set(self.themeext, "blocker")
             self._window_blocker.size_hint_weight_set(
                 evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
             self.resize_object_add(self._window_blocker)
@@ -837,7 +837,7 @@ class Editje(elementary.Window, OpenFileManager):
         item = self._modes_selector.item_add(
             name, "", 0, self._mode_set_cb, name)
         self._modes[name] = (item, toolbar, mainbar, sidebar)
-        item.icon_set(self.theme, icon, elementary.ELM_ICON_FILE)
+        item.icon_set(self.themeext, icon, elementary.ELM_ICON_FILE)
         self._toolbar_pager.item_simple_push(toolbar)
         self._mainbar_pager.item_simple_push(mainbar)
         self._sidebar_pager.item_simple_push(sidebar)
@@ -953,7 +953,7 @@ class Editje(elementary.Window, OpenFileManager):
     def _parts_init(self):
         # Toolbar
         toolbar = elementary.Layout(self)
-        toolbar.file_set(self.theme, "toolbar.edit")
+        toolbar.file_set(self.themeext, "toolbar.edit")
         toolbar.show()
 
         edj = toolbar.edje_get()
@@ -1042,7 +1042,7 @@ class Editje(elementary.Window, OpenFileManager):
 
         # Toolbar
         toolbar = elementary.Layout(self)
-        toolbar.file_set(self.theme, "toolbar.anim")
+        toolbar.file_set(self.themeext, "toolbar.anim")
         toolbar.show()
         self._delay = None
 

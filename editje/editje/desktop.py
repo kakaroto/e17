@@ -183,7 +183,7 @@ class EditManager(View, evas.ClippedSmartObject):
 
         #Group Handler
         self.group_handler = GroupResizeHandler(
-            self.controller.e, self.parent_view, self.theme,
+            self.controller.e, self.parent_view, self.themeext,
             self.group_resize, self.padding_update, self._operation_stack_cb)
         self.listener_member_push(self.group_handler)
 
@@ -220,7 +220,7 @@ class EditManager(View, evas.ClippedSmartObject):
         self.listener_member_push(self.highlight)
 
         def handler_args_list():
-            return (self.controller.e, self.parent_view, self.theme,
+            return (self.controller.e, self.parent_view, self.themeext,
                     self._inform_rel1_changed, self._inform_rel2_changed,
                     self._operation_stack_cb)
 
@@ -481,7 +481,7 @@ class GroupListener(object):
 class GroupBorder(GroupListener, edje.Edje):
     def __init__(self, parent):
         self._parent = parent
-        edje.Edje.__init__(self, parent.evas, file=parent.theme,
+        edje.Edje.__init__(self, parent.evas, file=parent.themeext,
                            group="editje/desktop/frame")
         GroupListener.__init__(self)
 
@@ -539,7 +539,7 @@ class GroupResizeHandler(Handler, GroupListener):
 
 class PartHighlight(PartListener, edje.Edje):
     def __init__(self, parent):
-        edje.Edje.__init__(self, parent.evas, file=parent.theme,
+        edje.Edje.__init__(self, parent.evas, file=parent.themeext,
                            group="editje/desktop/highlight")
         PartListener.__init__(self)
 

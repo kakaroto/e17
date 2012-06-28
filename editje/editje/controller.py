@@ -56,6 +56,6 @@ class View(object):
 
     # Theme
     def _theme_get(self):
-        return self.parent_view.theme
+        return self.parent_view.themeext
 
-    theme = property(_theme_get)
+    themeext = property(_theme_get)

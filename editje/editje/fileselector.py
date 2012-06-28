@@ -68,8 +68,8 @@ class FileSelector(Manager, elementary.Table):
         self._nav_home.text_set("Home")
         ic = elementary.Icon(self)
         ic.standard_set("home")
-        ic.scale_set(0, 0)
-        self._nav_home.icon_set(ic)
+        ic.resizable_set(0, 0)
+        self._nav_home.content_set(ic)
         self._nav_home.callback_clicked_add(self._home_load)
         bx.pack_end(self._nav_home)
         self._nav_home.show()
@@ -87,8 +87,8 @@ class FileSelector(Manager, elementary.Table):
         self._nav_up.text_set("Up")
         ic = elementary.Icon(self)
         ic.standard_set("arrow_up")
-        ic.scale_set(0, 0)
-        self._nav_up.icon_set(ic)
+        ic.resizable_set(0, 0)
+        self._nav_up.content_set(ic)
         self._nav_up.callback_clicked_add(self._parent_load)
         bx.pack_end(self._nav_up)
         self._nav_up.show()
@@ -132,7 +132,7 @@ class FileSelector(Manager, elementary.Table):
                                          evas.EVAS_HINT_EXPAND)
         self._files.callback_selected_add(self._file_selected)
         self._files.callback_unselected_add(self._file_unselected)
-        self._files.callback_clicked_add(self._file_clicked)
+        self._files.callback_activated_add(self._file_clicked)
         self._right_bx.pack_end(self._files)
         self._files.show()
 
@@ -253,7 +253,7 @@ class FileSelector(Manager, elementary.Table):
                 if os.path.isdir(full):
                     ic = elementary.Icon(self)
                     ic.standard_set("folder")
-                    ic.scale_set(0, 0)
+                    ic.resizable_set(0, 0)
                     it = self._directories.item_append(
                         file, ic, None, None, full)
                     self._ls_dir[file] = it
@@ -261,7 +261,7 @@ class FileSelector(Manager, elementary.Table):
                     if not filter or self._filter_call(full):
                         ic = elementary.Icon(self)
                         ic.standard_set("file")
-                        ic.scale_set(0, 0)
+                        ic.resizable_set(0, 0)
                         it = self._files.item_append(file, ic, None, None,
                                                        full)
                         self._ls_dir[file] = it
@@ -270,7 +270,9 @@ class FileSelector(Manager, elementary.Table):
         self._directories.go()
 
     def _folder_change(self, li, id):
-        self.path = li.selected_item_get().data_get()[0][0]
+        selected = li.selected_item_get()
+        print(selected)
+        self.path = selected.data_get()[0][0]
 
     def _path_change(self, en):
         self.path = self._nav_path.entry_get()
