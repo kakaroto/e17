@@ -1659,6 +1659,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    /* The main list */
      {
         gui->gl = elm_genlist_add(panes);
+        elm_genlist_mode_set(gui->gl, ELM_LIST_COMPRESS);
         evas_object_size_hint_align_set(gui->gl,
               EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(gui->gl,
