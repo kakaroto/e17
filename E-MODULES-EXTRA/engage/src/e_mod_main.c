@@ -49,6 +49,7 @@ ngi_new(Config_Item *cfg)
    Ng *ng;
    E_Zone *zone;
    Config_Box *cfg_box;
+   E_Shelf *es;
    Eina_List *l;
    int alpha;
 
@@ -81,6 +82,8 @@ ngi_new(Config_Item *cfg)
    ng->o_bg    = edje_object_add(ng->evas);
    ng->o_frame = edje_object_add(ng->evas);
    ng->o_label = edje_object_add(ng->evas);
+   es = e_shelf_zone_dummy_new(zone, ng->o_frame, eina_list_count(ngi_config->instances));
+   e_shelf_orient(es, cfg->orient);
 
    switch(cfg->orient)
      {
