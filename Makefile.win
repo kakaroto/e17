@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Wed Jun 27 10:24:06 2012.
+# Generated for win at Thu Jun 28 09:08:57 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -783,17 +783,17 @@ efreet-install: $(BUILDROOT)/efreet/stamps/compile
 
 $(BUILDROOT)/efreet/stamps/test: $(BUILDROOT)/efreet/stamps/compile efreet-test
 efreet-test: $(BUILDROOT)/efreet/stamps/compile
-	$(V)echo "Testing (make check) efreet..."
+	$(V)echo "Testing (make coverage) efreet..."
 	$(V)rm -f $(BUILDROOT)/efreet/stamps/test
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
-	make $(MAKEOPTS) check -C $(BUILDROOT)/efreet/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/efreet/compile
 	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
 	touch $(BUILDROOT)/efreet/stamps/test
-	$(V)echo "Success testing (make check) efreet."
+	$(V)echo "Success testing (make coverage) efreet."
 
 $(BUILDROOT)/efreet/stamps/doc: $(BUILDROOT)/efreet/stamps/compile efreet-doc
 efreet-doc: $(BUILDROOT)/efreet/stamps/compile
@@ -1348,17 +1348,17 @@ edje-install: $(BUILDROOT)/edje/stamps/compile
 
 $(BUILDROOT)/edje/stamps/test: $(BUILDROOT)/edje/stamps/compile edje-test
 edje-test: $(BUILDROOT)/edje/stamps/compile
-	$(V)echo "Testing (make check) edje..."
+	$(V)echo "Testing (make coverage) edje..."
 	$(V)rm -f $(BUILDROOT)/edje/stamps/test
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
-	make $(MAKEOPTS) check -C $(BUILDROOT)/edje/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/edje/compile
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/test
-	$(V)echo "Success testing (make check) edje."
+	$(V)echo "Success testing (make coverage) edje."
 
 $(BUILDROOT)/edje/stamps/doc: $(BUILDROOT)/edje/stamps/compile edje-doc
 edje-doc: $(BUILDROOT)/edje/stamps/compile

@@ -151,7 +151,7 @@ Package(
 
 Package(
     name="edje",
-    test_target="check",
+    test_target="coverage",
     doc_target="doc",
     dependencies={
         "common": ["eina", "eet", "evas", "ecore", "embryo", "eio"],
@@ -168,7 +168,7 @@ Package(
 
 Package(
     name="efreet",
-    test_target="check",
+    test_target="coverage",
     doc_target="doc",
     dependencies={
         "common": ["eina", "eet", "ecore"],
