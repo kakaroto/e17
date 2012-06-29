@@ -43,7 +43,9 @@ function buildTree(path, patterns, onDone) {
                         onDone(tree);
                 }
             }
-        }, patterns);
+        }, {
+            patterns: patterns
+        });
         return node;
     }
 

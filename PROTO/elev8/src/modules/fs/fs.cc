@@ -30,35 +30,50 @@ public:
       callback = Persistent<Value>::New(args[1]);
       batch = Persistent<Array>::New(Array::New());
 
-      Eio_Filter_Direct_Cb filter = NULL;
-      if (args[2]->IsArray())
+      Eina_Bool recursive;
+      Eio_Filter_Direct_Cb filter;
+
+      recursive = EINA_FALSE;
+      period = 0.5;
+      allowHidden = false;
+      filter = NULL;
+
+      if (!args[2].IsEmpty() && args[2]->IsObject())
         {
-           Array *a = Array::Cast(*args[2]->ToObject());
+           HandleScope scope;
+           Local<Object> kwargs = args[2]->ToObject();
+           Local<Value> tmp;
 
-           patterns.reserve(a->Length());
-           for (unsigned int i = 0; i < a->Length(); i++)
+           tmp = kwargs->Get(String::NewSymbol("recursive"));
+           if (!tmp.IsEmpty())
+             recursive = tmp->IsBoolean() && tmp->BooleanValue();
+
+           tmp = kwargs->Get(String::NewSymbol("period"));
+           if (!tmp.IsEmpty() && tmp->IsNumber())
+             period = tmp->NumberValue();
+
+           tmp = kwargs->Get(String::NewSymbol("allow_hidden"));
+           if (!tmp.IsEmpty())
+             allowHidden = tmp->IsBoolean() && tmp->BooleanValue();
+
+           tmp = kwargs->Get(String::NewSymbol("filters"));
+           if (!tmp.IsEmpty() && tmp->IsArray())
              {
-                patterns.push_back(*String::Utf8Value(a->Get(i)));
-             }
-           filter = onFilter;
-        }
+                Array *a = Array::Cast(*tmp->ToObject());
 
-      Eina_Bool recursive = args[3]->IsBoolean() ? args[3]->BooleanValue() : 0;
-      period = args[4]->IsNumber() ? args[4]->NumberValue() : 0.5;
-      allowHidden = args[5]->IsBoolean() ? args[5]->BooleanValue() : false;
+                patterns.reserve(a->Length());
+                for (unsigned int i = 0; i < a->Length(); i++)
+                  patterns.push_back(*String::Utf8Value(a->Get(i)));
+                filter = onFilter;
+             }
+        }
 
       if (!allowHidden)
         filter = onFilter;
 
-      Eio_File *(*worker)(const char *, Eio_Filter_Direct_Cb, Eio_Main_Direct_Cb, Eio_Done_Cb, Eio_Error_Cb, const void *);
-      if (recursive)
-        worker = eio_dir_stat_ls;
-      else
-        worker = eio_file_stat_ls;
-
       lastTimeout = ecore_loop_time_get();
 
-      eio = worker(*String::Utf8Value(args[0]),
+      eio = (recursive ? eio_dir_stat_ls : eio_file_stat_ls)(*String::Utf8Value(args[0]),
                    filter, onFile, onDone, onError, this);
    }
 
