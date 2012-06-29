@@ -37,6 +37,8 @@ def mapbuf_clicked(obj, item=None):
     win = elementary.Window("mapbuf", elementary.ELM_WIN_BASIC)
     win.title_set("Mapbuf test")
     win.autodel_set(True)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     bg = elementary.Background(win)
     bg.file = "images/sky_04.jpg"

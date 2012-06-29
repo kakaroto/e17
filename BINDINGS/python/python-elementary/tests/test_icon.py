@@ -118,6 +118,8 @@ def icon_transparent_clicked(obj):
     win.title_set("Icon Transparent")
     win.autodel_set(True)
     win.alpha_set(True)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     icon = elementary.Icon(win)
     icon.file_set("images/logo.png")

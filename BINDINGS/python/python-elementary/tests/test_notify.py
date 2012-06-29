@@ -41,6 +41,8 @@ def notify_clicked(obj):
     win.size_hint_min_set(160, 160)
     win.size_hint_max_set(320, 320)
     win.resize(320, 320)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)

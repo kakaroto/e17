@@ -52,6 +52,8 @@ def gengrid_clicked(obj):
     win = elementary.Window("gengrid", elementary.ELM_WIN_BASIC)
     win.title_set("Gengrid")
     win.autodel_set(True)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     # background
     bg = elementary.Background(win)

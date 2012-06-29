@@ -24,6 +24,8 @@ def thumb_clicked(obj):
 
     win = elementary.StandardWindow("thumb", "Thumb")
     win.autodel_set(True)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     tb = elementary.Table(win)
     tb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)

@@ -15,6 +15,8 @@ def layout_clicked(obj):
     win.title_set("Layout")
     win.elm_event_callback_add(_event)
     win.autodel_set(True)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)

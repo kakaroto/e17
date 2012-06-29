@@ -12,6 +12,8 @@ def buttons_clicked(obj):
     win.title_set("Buttons")
     win.focus_highlight_enabled_set(True)
     win.autodel_set(True)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)

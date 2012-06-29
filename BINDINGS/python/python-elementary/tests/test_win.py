@@ -28,6 +28,8 @@ def window_states_clicked(obj):
     win.title = "Window States test"
     win.autodel = True
     win.callback_moved_add(cb_win_moved)
+    if obj is None:
+        win.callback_delete_request_add(lambda o: elementary.exit())
 
     bg = elementary.Background(win)
     win.resize_object_add(bg)
