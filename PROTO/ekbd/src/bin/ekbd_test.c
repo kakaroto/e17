@@ -82,6 +82,7 @@ _keyboard_add()
    _kbd = ekbd_object_add(evas_object_evas_get(_win));
    ekbd_object_theme_set(_kbd,  PACKAGE_DATA_DIR"/themes/default.edj");
 
+   ekbd_object_aspect_fixed_set(_kbd, EINA_TRUE);
    len = eina_str_join_len(buf, sizeof(buf), '/', PACKAGE_DATA_DIR,
                            sizeof(PACKAGE_DATA_DIR) - 1,
                            "keyboards", 9);

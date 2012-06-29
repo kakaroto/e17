@@ -48,6 +48,22 @@ ekbd_object_layout_add(Evas_Object *obj, const char *path)
 }
 
 EAPI void
+ekbd_object_aspect_fixed_set(Evas_Object *obj, Eina_Bool fixed)
+{
+   Smart_Data *sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   ekbd_layout_aspect_fixed_set(sd, fixed);
+}
+
+EAPI Eina_Bool
+ekbd_object_aspect_fixed_get(const Evas_Object *obj)
+{
+   Smart_Data *sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+   return ekbd_layout_aspect_fixed_get(sd);
+}
+
+EAPI void
 ekbd_object_layout_clear(Evas_Object *obj)
 {
    Smart_Data *sd = evas_object_smart_data_get(obj);
