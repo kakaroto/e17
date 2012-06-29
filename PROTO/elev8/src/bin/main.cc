@@ -5,11 +5,12 @@
  * then exit
  */
 
-#include <unistd.h>
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <elev8_common.h>
 #include <elev8_utils.h>
+#include <unistd.h>
+#include <v8-debug.h>
 #include "storage.h"
 #include "timer.h"
 
@@ -283,9 +284,25 @@ message(Handle<Message> message, Handle<Value>)
    boom(message, *String::Utf8Value(message->Get()));
 }
 
-int
-main(int argc, char **argv)
+static Eina_Bool
+debug_message_handler_idler_cb(void *)
 {
+   DBG("Processing debug messages");
+   Debug::ProcessDebugMessages();
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+debug_message_handler()
+{
+   ecore_idler_add(debug_message_handler_idler_cb, NULL);
+}
+
+int
+main(int argc, char *argv[])
+{
+   int script_arg = 1;
+
    eina_init();
    elev8_log_domain = eina_log_domain_register("elev8", EINA_COLOR_ORANGE);
    if (!elev8_log_domain)
@@ -296,6 +313,10 @@ main(int argc, char **argv)
      }
    INF("elev8 Logging initialized. %d", elev8_log_domain);
 
+   V8::SetFlagsFromCommandLine(&argc, argv, true);
+   V8::AddMessageListener(message, Undefined());
+   V8::SetCaptureStackTraceForUncaughtExceptions(true, 10, StackTrace::kDetailed);
+
    if (argc < 2)
      {
         ERR("%s: Error: no input file specified.", argv[0]);
@@ -305,10 +326,13 @@ main(int argc, char **argv)
              argv[0], argv[0]);
         exit(-1);
      }
-
-   V8::SetFlagsFromCommandLine(&argc, argv, true);
-   V8::AddMessageListener(message, Undefined());
-   V8::SetCaptureStackTraceForUncaughtExceptions(true, 10, StackTrace::kDetailed);
+   else if (argc >= 3 && !strcmp(argv[1], "--debug"))
+     {
+        printf("Awaiting connection from debugger on port 5858.");
+        Debug::EnableAgent("elev8", 5858, true);
+        Debug::SetDebugMessageDispatchHandler(debug_message_handler);
+        script_arg = 2;
+     }
 
    HandleScope handle_scope;
    global = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
@@ -327,7 +351,7 @@ main(int argc, char **argv)
 
    if (!run_script(PACKAGE_LIB_DIR "/../init.js"))
      goto end;
-   if (!run_script(argv[1]))
+   if (!run_script(argv[script_arg]))
      goto end;
 
    ecore_main_loop_begin();
