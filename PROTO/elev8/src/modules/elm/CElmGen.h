@@ -42,8 +42,20 @@ struct Item {
 
    void Destroy()
    {
+      if (klass)
+         klass->DeleteItem(data);
       if (object_item)
          elm_object_item_del(object_item);
+      delete this;
+   }
+
+   static void DestroyFromGarbageCollector(Persistent<Value> val, void *arg)
+   {
+      // val.Clear() will be performed by the GenList/GenGrid wrapper when
+      // deleting an item. Check if the Handle is empty before destroying
+      // the object to avoid double frees.
+      if (!val.IsEmpty())
+         static_cast<Item<T> *>(arg)->Destroy();
    }
 };
 
@@ -85,12 +97,16 @@ private:
       return EINA_FALSE;
    }
 
-   static void DeleteItemWrapper(void *item, Evas_Object *)
+   static void DeleteItemFromElementary(void *item, Evas_Object *)
    {
       Item<T> *list_item = static_cast<Item<T> *>(item);
-      if (list_item->klass->js.del->IsFunction())
-         list_item->klass->DeleteItem(list_item->data);
-      delete list_item;
+
+      // Only free up the memory if requested by the JavaScript side
+      // since items may be removed from the Elm side. Mark this object
+      // as ``freed'' so that wrapper callbacks can return before calling
+      // Elm with invalid parameters.
+      list_item->object_item = NULL;
+      list_item->klass = NULL;
    }
 
 public:
@@ -108,7 +124,7 @@ public:
       klass.func.text_get = ItemClass::GetTextWrapper;
       klass.func.content_get = ItemClass::GetContentWrapper;
       klass.func.state_get = ItemClass::GetStateWrapper;
-      klass.func.del = ItemClass::DeleteItemWrapper;
+      klass.func.del = ItemClass::DeleteItemFromElementary;
 
       js.text = Persistent<Value>::New(d->Get(String::NewSymbol("text")));
       js.content = Persistent<Value>::New(d->Get(String::NewSymbol("content")));
@@ -174,6 +190,8 @@ public:
 
    void DeleteItem(Handle<Value> data)
    {
+      if (!js.del->IsFunction())
+         return;
       HandleScope scope;
       Handle<Function> callback(Function::Cast(*js.del));
       Local<Object> temp = Object::New();

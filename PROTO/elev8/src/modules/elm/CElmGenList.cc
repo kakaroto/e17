@@ -85,12 +85,25 @@ Handle<Value> CElmGenList::append(const Arguments& args)
           ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
    elm_object_item_data_set(item->object_item, item);
 
-   return External::Wrap(item);
+   Persistent<Value> wrappedItem = Persistent<Value>::New(External::Wrap(item));
+   wrappedItem.MakeWeak(item, Item<CElmGenList>::DestroyFromGarbageCollector);
+
+   return wrappedItem;
 }
 
 Handle<Value> CElmGenList::delete_item(const Arguments &args)
 {
-   static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]))->Destroy();
+   Persistent<Value> wrappedItem = Persistent<Value>(args[0]);
+
+   // Call Destroy() on Item<>: this immediately remove the item from the GenList
+   // and frees up the memory used by the Item<> structure.
+   static_cast<Item<CElmGenList> *>(External::Unwrap(wrappedItem))->Destroy();
+
+   // Dispose the Handle; GC will kick in later, so also Clear the handle
+   // so that we're protected from double frees when that happens.
+   wrappedItem.Dispose();
+   wrappedItem.Clear();
+
    return Undefined();
 }
 
@@ -119,10 +132,19 @@ Handle<Value> CElmGenList::set_item_class(const Arguments &args)
      return Undefined();
 
    Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
-   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
-   item->klass = item_class;
+   if (!item->object_item) // Item deleted from Elm side... nothing to do.
+     return Undefined();
 
+   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
+   if (!item->klass) // Unexpected inconsistency... nothing to do.
+     return Undefined();
+
+   if (item->klass == item_class) // Only update class if needed.
+     return Undefined();
+
+   item->klass = item_class;
    elm_genlist_item_item_class_update(item->object_item, item_class->GetElmClass());
+
    return Undefined();
 }
 
