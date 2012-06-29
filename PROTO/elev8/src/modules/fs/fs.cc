@@ -112,7 +112,7 @@ public:
         {
            ListFiles::tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New(listFiles));
            ListFiles::tmpl->InstanceTemplate()->SetInternalFieldCount(1);
-           ListFiles::tmpl->SetClassName(String::NewSymbol("listFiles"));
+           ListFiles::tmpl->SetClassName(String::NewSymbol("ListFiles"));
            ListFiles::tmpl->PrototypeTemplate()->Set(String::NewSymbol("stop"), FunctionTemplate::New(StopWrapper));
         }
 
