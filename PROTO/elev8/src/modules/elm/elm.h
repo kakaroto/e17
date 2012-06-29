@@ -67,24 +67,39 @@ extern int log_domain;
 
 #define GENERATE_PROPERTY_CALLBACKS(class_,name_) \
    static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
-      HandleScope scope; \
-      return scope.Close(GetObjectFromAccessorInfo<class_>(info)->name_ ##_get()); \
+      class_ *obj = GetObjectFromAccessorInfo<class_>(info); \
+      if (obj) { \
+         HandleScope scope; \
+         return scope.Close(obj->name_ ##_get()); \
+      } \
+      return Undefined(); \
    } \
    static void Callback_## name_ ##_set(Local<String>, Local<Value> value, const AccessorInfo &info) { \
-      HandleScope scope; \
-      GetObjectFromAccessorInfo<class_>(info)->name_ ##_set(value); \
+      class_ *obj = GetObjectFromAccessorInfo<class_>(info); \
+      if (obj) { \
+         HandleScope scope; \
+         obj->name_ ##_set(value); \
+      } \
    }
 
 #define GENERATE_RO_PROPERTY_CALLBACKS(class_,name_) \
    static Handle<Value> Callback_## name_ ##_get(Local<String>, const AccessorInfo &info) { \
-      HandleScope scope; \
-      return scope.Close(GetObjectFromAccessorInfo<class_>(info)->name_ ##_get()); \
+      class_ *obj = GetObjectFromAccessorInfo<class_>(info); \
+      if (obj) { \
+         HandleScope scope; \
+         return scope.Close(obj->name_ ##_get()); \
+      } \
+      return Undefined(); \
    }
 
 #define GENERATE_METHOD_CALLBACKS(class_,name_) \
    static Handle<Value> Callback_## name_(const Arguments& args) { \
-      HandleScope scope; \
-      return scope.Close(GetObjectFromArguments<class_>(args)->name_(args)); \
+      class_ *obj = GetObjectFromArguments<class_>(args); \
+      if (obj) { \
+         HandleScope scope; \
+         return scope.Close(obj->name_(args)); \
+      } \
+      return Undefined(); \
    }
 
 #define GENERATE_TEMPLATE_FULL(super_class_,this_class_,...) \
