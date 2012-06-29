@@ -314,13 +314,7 @@ cdef class GenlistItem(ObjectItem):
                 self.params[1])
 
     def data_get(self):
-        cdef void* data
-        data = elm_object_item_data_get(self.item)
-        if data == NULL:
-            return None
-        else:
-            (item_class, item_data, func) = <object>data
-            return item_data
+        return self.params[1]
 
     property data:
         def __get__(self):
