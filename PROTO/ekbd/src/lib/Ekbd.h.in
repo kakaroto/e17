@@ -52,6 +52,8 @@ typedef struct _Ekbd_Layout Ekbd_Layout;
 EAPI int              ekbd_init(void);
 EAPI int              ekbd_shutdown(void);
 EAPI Evas_Object *    ekbd_object_add(Evas *evas);
+EAPI void             ekbd_object_aspect_fixed_set(Evas_Object *obj, Eina_Bool fixed);
+EAPI Eina_Bool        ekbd_object_aspect_fixed_get(const Evas_Object *obj);
 EAPI void             ekbd_object_layout_add(Evas_Object *obj, const char *path);
 EAPI void             ekbd_object_layout_clear(Evas_Object *obj);
 EAPI void             ekbd_object_layout_select(Evas_Object *obj, Ekbd_Layout *layout);

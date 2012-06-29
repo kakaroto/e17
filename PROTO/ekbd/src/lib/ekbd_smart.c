@@ -59,7 +59,7 @@ EAPI Eina_Bool
 ekbd_object_aspect_fixed_get(const Evas_Object *obj)
 {
    Smart_Data *sd = evas_object_smart_data_get(obj);
-   if (!sd) return;
+   if (!sd) return EINA_FALSE;
    return ekbd_layout_aspect_fixed_get(sd);
 }
 

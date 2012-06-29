@@ -9,4 +9,7 @@ void ekbd_layout_select(Smart_Data *sd, Ekbd_Layout *kil);
 Evas_Object *ekbd_layout_theme_obj_new(Evas *e, const char *custom_file, const char *group);
 void ekbd_layout_keys_calc(Smart_Data *sd);
 Ekbd_Layout *ekbd_layout_add(Smart_Data *sdc, const char *path);
+void ekbd_layout_aspect_fixed_set(Smart_Data *sd, Eina_Bool fixed);
+Eina_Bool ekbd_layout_aspect_fixed_get(const Smart_Data *sd);
+
 #endif /* EVKB_LAYOUT_H */
