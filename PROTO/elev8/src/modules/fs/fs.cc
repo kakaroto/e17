@@ -28,7 +28,6 @@ public:
 
       thisObj = Persistent<Object>::New(thisObj_);
       callback = Persistent<Value>::New(args[1]);
-      batch = Persistent<Array>::New(Array::New());
 
       Eina_Bool recursive;
       Eio_Filter_Direct_Cb filter;
@@ -37,6 +36,8 @@ public:
       period = 0.5;
       allowHidden = false;
       filter = NULL;
+      batchSize = 1024;
+      batchLen = 0;
 
       if (!args[2].IsEmpty() && args[2]->IsObject())
         {
@@ -51,6 +52,16 @@ public:
            tmp = kwargs->Get(String::NewSymbol("period"));
            if (!tmp.IsEmpty() && tmp->IsNumber())
              period = tmp->NumberValue();
+
+           tmp = kwargs->Get(String::NewSymbol("batch_size"));
+           if (!tmp.IsEmpty() && tmp->IsNumber())
+             {
+                batchSize = tmp->NumberValue();
+                if (batchSize > 4096)
+                   batchSize = 4096;
+                if (batchSize < 0)
+                   batchSize = 1024;
+             }
 
            tmp = kwargs->Get(String::NewSymbol("allow_hidden"));
            if (!tmp.IsEmpty())
@@ -68,11 +79,12 @@ public:
              }
         }
 
+      batch = Persistent<Array>::New(Array::New(batchSize));
+
       if (!allowHidden)
         filter = onFilter;
 
       lastTimeout = ecore_loop_time_get();
-
       eio = (recursive ? eio_dir_stat_ls : eio_file_stat_ls)(*String::Utf8Value(args[0]),
                    filter, onFile, onDone, onError, this);
    }
@@ -145,6 +157,7 @@ private:
    double period;
    double lastTimeout;
    bool allowHidden;
+   int batchSize, batchLen;
 
    static Persistent<FunctionTemplate> tmpl;
 
@@ -207,18 +220,15 @@ private:
 
       DBG("listFiles: path=%s", info->path);
 
-      Local<Object> file = Object::New();
-      Local<String> kPath = String::NewSymbol("path");
-      Local<String> kName = String::NewSymbol("name");
-      Local<String> kIsFile = String::NewSymbol("isFile");
+      Handle<Object> file = Object::New();
+      file->Set(String::NewSymbol("path"), String::New(info->path));
+      file->Set(String::NewSymbol("name"), String::New(info->path + info->name_start));
+      file->Set(String::NewSymbol("isFile"), Boolean::New((info->type == EINA_FILE_REG)));
 
-      file->Set(kPath, String::New(info->path));
-      file->Set(kName, String::New(info->path + info->name_start));
-      file->Set(kIsFile, Boolean::New((info->type == EINA_FILE_REG)));
-      t->batch->Set(t->batch->Length(), file);
+      t->batch->Set(t->batchLen++, file);
 
       double now = ecore_loop_time_get();
-      if ((now - t->lastTimeout >= t->period) || (t->batch->Length() > 4096))
+      if ((now - t->lastTimeout >= t->period) || (t->batchLen >= t->batchSize))
         {
            t->dispatchBatch(false, false);
            t->lastTimeout = now;
@@ -227,8 +237,14 @@ private:
 
    void dispatchBatch(bool isDone, bool isError)
    {
+      HandleScope scope;
+
+      Local<Array> batchTemp = Array::New(batchLen);
+      for (int item = batchLen - 1; item >= 0; --item)
+         batchTemp->Set(item, batch->Get(item));
+
       Handle<Value> args[3] = {
-        batch,
+        batchTemp,
         Boolean::New(isDone),
         Boolean::New(isError)
       };
@@ -236,8 +252,9 @@ private:
       Handle<Function> func(Function::Cast(*callback));
       func->Call(thisObj, 3, args);
 
-      for (int top = batch->Length() - 1; top >= 0; --top)
-        batch->Delete(top);
+      for (int item = batch->Length() - 1; item >= 0; --item)
+         batch->Delete(item);
+      batchLen = 0;
    }
 };
 
