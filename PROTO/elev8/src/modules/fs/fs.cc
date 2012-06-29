@@ -181,6 +181,8 @@ private:
 
    static void onError(void *data, Eio_File *, int error)
    {
+      if (!error) return;
+
       ListFiles *t = static_cast<ListFiles *>(data);
       t->eio = NULL;
       t->patterns.clear();
