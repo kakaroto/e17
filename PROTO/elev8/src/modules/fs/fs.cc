@@ -218,7 +218,7 @@ private:
       t->batch->Set(t->batch->Length(), file);
 
       double now = ecore_loop_time_get();
-      if (now - t->lastTimeout >= t->period)
+      if ((now - t->lastTimeout >= t->period) || (t->batch->Length() > 4096))
         {
            t->dispatchBatch(false, false);
            t->lastTimeout = now;
