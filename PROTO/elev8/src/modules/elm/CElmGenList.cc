@@ -118,8 +118,7 @@ Handle<Value> CElmGenList::set_item_class(const Arguments &args)
    if (klass.IsEmpty() || !klass->IsObject())
      return Undefined();
 
-   Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(
-      elm_object_item_data_get((Elm_Object_Item *)External::Unwrap(args[0])));
+   Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
    ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
    item->klass = item_class;
 
@@ -316,7 +315,7 @@ void CElmGenList::OnLongPress(void *event_info)
    Handle<Function> callback(Function::Cast(*cb.longpress));
    Item<CElmGenList> *item = static_cast< Item<CElmGenList> *>
       (elm_object_item_data_get((Elm_Object_Item *)event_info));
-   Handle<Value> args[2] = { item->data, External::Wrap(item->object_item) };
+   Handle<Value> args[2] = { item->data, External::Wrap(item) };
    callback->Call(jsObject, 2, args);
 }
 
