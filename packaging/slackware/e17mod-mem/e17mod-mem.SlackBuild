@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Begin terminology.SlackBuild
+# Begin e17mod-mem.SlackBuild
 
-NAME=terminology
+NAME=e17mod-mem
 BUILD=1jp
 CWD=$(pwd)
 
@@ -11,9 +11,7 @@ CWD=$(pwd)
 set_env
 
 # Go to source code
-cd ../../../${NAME}
-cp data/themes/default.edc{,.orig}
-patch -p1 -i ${CWD}/theme.patch
+cd ../../../E-MODULES-EXTRA/mem
 prepare_src
 
 # Configure
@@ -25,11 +23,10 @@ CFLAGS=${SCFLAGS} CXXFLAGS=${SCFLAGS} \
 
 # Install
 make_install
-install_doc AUTHORS COPYING ChangeLog INSTALL NEWS README
-mv data/themes/default.edc{.orig,}
+install_doc AUTHORS COPYING INSTALL
 
 # Build the package
 post_clean
 pack_slack
 
-# End terminology.SlackBuild
+# End e17mod-mem.SlackBuild

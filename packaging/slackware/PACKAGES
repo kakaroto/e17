@@ -20,10 +20,14 @@ exchange
 enlightenment
 terminology
 e17mod-alarm
+e17mod-comp-scale
 e17mod-cpu
+e17mod-engage
 e17mod-eweather
 e17mod-execwatch
 e17mod-mail
+e17mod-mem
+e17mod-net
 e17mod-tclock
 edje_viewer
 emprint
