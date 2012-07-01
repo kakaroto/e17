@@ -153,6 +153,8 @@ _clang_load_highlighting(Edi_File *ef)
               clang_getLocationForOffset(ef->tx_unit, cfile, 0),
               clang_getLocationForOffset(ef->tx_unit, cfile, eina_file_size_get(ef->f)));
         clang_tokenize(ef->tx_unit, range, &tokens, &n);
+        /* FIXME: We should use annotate tokens and then use a lot more
+         * color classes. I don't know why it's broken ATM... :( */
      }
 
    for (i = 0 ; i < n ; i++)
