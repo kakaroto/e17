@@ -325,7 +325,8 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
    l = f->current;
    evas_object_geometry_get(txtgrid, NULL, NULL, &w, &h);
    evas_object_textgrid_cell_size_get(txtgrid, &cw, &ch);
-   evas_object_textgrid_size_set(txtgrid, w / cw, h / ch);
+   evas_object_textgrid_size_set(txtgrid, ceil(((double) w) / cw),
+         ceil(((double) h) / ch));
 
    evas_object_textgrid_size_get(txtgrid, &w, &h);
 
@@ -343,6 +344,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
              for (x = 0; x < w; x++)
                {
                   cells[x].codepoint = 0;
+                  cells[x].bg = EDI_COLOR_BACKGROUND_DEFAULT;
                   cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
                }
              evas_object_textgrid_cellrow_set(txtgrid, y++, cells);
@@ -359,12 +361,13 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
              /* FIXME: there is an overrun to fix here */
              u = eina_unicode_utf8_get_next(el->read_only.line.start, &idx);
              cells[x].codepoint = u;
+             cells[x].bg = EDI_COLOR_BACKGROUND_DEFAULT;
              cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
-             /* cells[x].bg = 6; */
           }
         for (; x < w; x++)
           {
              cells[x].codepoint = 0;
+             cells[x].bg = EDI_COLOR_BACKGROUND_DEFAULT;
              cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
           }
         evas_object_textgrid_cellrow_set(txtgrid, y, cells);
@@ -375,9 +378,10 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
         for (x = 0; x < w; x++)
           {
              cells[x].codepoint = 0;
+             cells[x].bg = EDI_COLOR_BACKGROUND_DEFAULT;
              cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
           }
-        evas_object_textgrid_cellrow_set(txtgrid, y++, cells);
+        evas_object_textgrid_cellrow_set(txtgrid, y, cells);
      }
    evas_object_textgrid_update_add(txtgrid, 0, 0, w, h);
 
