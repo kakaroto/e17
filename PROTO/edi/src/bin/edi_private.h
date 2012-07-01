@@ -28,7 +28,7 @@ struct _Edi_File
    Eina_List *lines;
    Eina_List *current;
 
-   int offset;
+   unsigned int offset;
 
    /* Clang */
    CXTranslationUnit tx_unit;

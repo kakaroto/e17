@@ -64,6 +64,7 @@ _clang_load_errors(Edi_File *ef)
         clang_getPresumedLocation(clang_getDiagnosticLocation(diag), NULL, &line, &col);
         endline = line;
         endcol = col;
+        (void) endcol;
 
         /* Skip/break if we are out of the textgrid's size. */
         if (endline < ef->offset)
@@ -72,7 +73,7 @@ _clang_load_errors(Edi_File *ef)
            continue;
 
         /* FIXME: Currently we just skip here, should be done better. */
-        if (col > tgridw)
+        if (((int) col) > tgridw)
            continue;
 
 #if 0
@@ -199,7 +200,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
    int cw, ch;
    int w, h;
    int x, y;
-   int s;
+   unsigned int s;
 
    l = f->current;
    evas_object_geometry_get(txtgrid, NULL, NULL, &w, &h);
@@ -216,7 +217,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
         el = eina_list_data_get(l);
         l = eina_list_next(l);
 
-        while (y < h && s < el->read_only.line.index)
+        while ((y < h) && (s < el->read_only.line.index))
           {
              cells = evas_object_textgrid_cellrow_get(txtgrid, y);
              for (x = 0; x < w; x++)
@@ -231,7 +232,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
         if (y == h) break;
 
         cells = evas_object_textgrid_cellrow_get(txtgrid, y);
-        for (x = 0; x < w && idx < el->read_only.length; x++)
+        for (x = 0 ; (x < w) && (idx < (int) el->read_only.length) ; x++)
           {
              Eina_Unicode u;
 
@@ -264,7 +265,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
 }
 
 static void
-_move_to(Evas_Object *textgrid, Edi_File *f, int step)
+_move_to(Evas_Object *tgrid, Edi_File *f, int step)
 {
    if (step < 0)
      {
@@ -273,7 +274,7 @@ _move_to(Evas_Object *textgrid, Edi_File *f, int step)
              Edi_Line *l;
 
              l = eina_list_data_get(f->current);
-             while (step && l->read_only.line.index != f->offset)
+             while (step && (l->read_only.line.index != f->offset))
                {
                   step++;
                   f->offset++;
@@ -320,11 +321,11 @@ _move_to(Evas_Object *textgrid, Edi_File *f, int step)
              f->offset++;
           }
      }
-   _edi_file_fill(textgrid, f);
+   _edi_file_fill(tgrid, f);
 }
 
 static void
-_resize(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_resize(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    Edi_File *f = data;
 
@@ -332,7 +333,7 @@ _resize(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
-_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_key_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Evas_Event_Key_Down *ev = event_info;
 
@@ -425,7 +426,7 @@ elm_main(int argc, char **argv)
    evas_object_show(o);
 
    /* Basic setup of the Textgrid */
-   for (i = 0; i < sizeof (colors) / sizeof (colors[0]); i++)
+   for (i = 0; i < (int) (sizeof (colors) / sizeof (colors[0])); i++)
      evas_object_textgrid_palette_set(o, EVAS_TEXTGRID_PALETTE_STANDARD, i,
                                       colors[i][0], colors[i][1], colors[i][2], colors[i][3]);
 
