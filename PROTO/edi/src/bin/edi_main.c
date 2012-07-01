@@ -551,7 +551,7 @@ elm_main(int argc, char **argv)
      evas_object_textgrid_palette_set(o, EVAS_TEXTGRID_PALETTE_STANDARD, i,
                                       colors[i][0], colors[i][1], colors[i][2], colors[i][3]);
 
-   evas_object_textgrid_font_set(o, "Terminus", 10);
+   evas_object_textgrid_font_set(o, "Mono", 10);
    textgrid = o;
 
    evas_object_show(win);
