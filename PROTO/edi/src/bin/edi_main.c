@@ -30,7 +30,7 @@ static const Ecore_Getopt options = {
   }
 };
 
-static const int colors[7][4] =
+static const int colors[][4] =
 {
   { 0, 0, 0, 0 }, /* background */
   { 0, 128, 255, 255 }, /* language keyword */
@@ -38,8 +38,91 @@ static const int colors[7][4] =
   { 0, 0, 255, 255 }, /* function declaration */
   { 0, 255, 64, 255 }, /* variable declaration */
   { 128, 0, 0, 255 }, /* comments */
-  { 128, 128, 128, 255 } /* default */
+  { 128, 128, 128, 255 }, /* default */
+  { 0, 0, 255, 255 }, /* warning */
+  { 255, 0, 0, 255 }, /* error */
+  { 255, 128, 0, 255 } /* fatal */
 };
+
+static void
+_clang_load_errors(Edi_File *ef)
+{
+   int tgridw = 0, tgridh = 0;
+   unsigned n = clang_getNumDiagnostics(ef->tx_unit);
+   unsigned i = 0;
+
+   evas_object_textgrid_size_get(textgrid, &tgridw, &tgridh);
+
+   for(i = 0, n = clang_getNumDiagnostics(ef->tx_unit); i != n; ++i)
+     {
+        CXDiagnostic diag = clang_getDiagnostic(ef->tx_unit, i);
+        /* FIXME: Do something other than 0 */
+        unsigned line, col;
+        unsigned endline, endcol;
+        Evas_Textgrid_Cell *cells;
+
+        clang_getPresumedLocation(clang_getDiagnosticLocation(diag), NULL, &line, &col);
+        endline = line;
+        endcol = col;
+
+        /* Skip/break if we are out of the textgrid's size. */
+        if (endline < ef->offset)
+           continue;
+        else if (line >= (ef->offset + tgridh))
+           continue;
+
+        /* FIXME: Currently we just skip here, should be done better. */
+        if (col > tgridw)
+           continue;
+
+#if 0
+        /* Make sure we don't try to mark past the tgrid size. */
+        if (endcol > tgridw)
+           endcol = tgridw; /* Decreased later. */
+        /* FIXME: Should also show ranges. */
+        CXSourceRange dgrange = clang_getDiagnosticRange(diag, 1);
+        clang_getPresumedLocation(clang_getRangeStart(dgrange), NULL, &line, &col);
+        clang_getPresumedLocation(clang_getRangeEnd(dgrange), NULL, &endline, &endcol);
+        endline--;
+        endcol--;
+#endif
+        /* Dec line and col... because we start from 0 */
+        line -= ef->offset;
+        col--;
+
+        cells = evas_object_textgrid_cellrow_get(textgrid, line);
+        switch (clang_getDiagnosticSeverity(diag))
+          {
+           case CXDiagnostic_Ignored:
+           case CXDiagnostic_Note:
+              break;
+           case CXDiagnostic_Warning:
+              // FIXME: Make it an enum
+              cells[col].bg = 7;
+              break;
+           case CXDiagnostic_Error:
+              // FIXME: Make it an enum
+              cells[col].bg = 8;
+              break;
+           case CXDiagnostic_Fatal:
+              // FIXME: Make it an enum
+              cells[col].bg = 9;
+              break;
+          }
+
+        /* FIXME: Should mark all the relevant ranges? */
+
+        evas_object_textgrid_cellrow_set(textgrid, line, cells);
+
+#if 0
+        CXString str = clang_formatDiagnostic(diag, clang_defaultDiagnosticDisplayOptions());
+        printf("DEBUG: Diag:%s\n", clang_getCString(str));
+        clang_disposeString(str);
+#endif
+
+        clang_disposeDiagnostic(diag);
+     }
+}
 
 static Edi_File *
 _edi_file_open(const char *filename)
@@ -51,7 +134,7 @@ _edi_file_open(const char *filename)
    void *m;
 
    f = eina_file_open(filename, EINA_FALSE);
-   if (!f) return ;
+   if (!f) return NULL;
 
    m = eina_file_map_all(f, EINA_FILE_WILLNEED);
    if (!m) goto end;
@@ -79,11 +162,20 @@ _edi_file_open(const char *filename)
    ef->current = ef->lines;
    ef->offset = 1;
 
+   /* Clang */
+   /* FIXME: index should probably be global. */
+   const char const *clang_argv[] = {"-I/usr/lib/clang/3.1/include/", "-Wall", "-Wextra"};
+   int clang_argc = sizeof(clang_argv) / sizeof(*clang_argv);
+
+   CXIndex idx = clang_createIndex(0, 0);
+   ef->tx_unit = clang_parseTranslationUnit(idx, filename, clang_argv, clang_argc, NULL, 0, CXTranslationUnit_None);
+
    return ef;
 
  end:
    if (m) eina_file_map_free(f, m);
    eina_file_close(f);
+   return NULL;
 }
 
 static void
@@ -167,6 +259,8 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
         evas_object_textgrid_cellrow_set(txtgrid, y++, cells);
      }
    evas_object_textgrid_update_add(txtgrid, 0, 0, w, h);
+
+   _clang_load_errors(f);
 }
 
 static void

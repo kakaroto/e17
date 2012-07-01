@@ -6,6 +6,7 @@
 #endif
 
 #include <Eina.h>
+#include <clang-c/Index.h>
 
 extern int _log_domain;
 
@@ -28,6 +29,9 @@ struct _Edi_File
    Eina_List *current;
 
    int offset;
+
+   /* Clang */
+   CXTranslationUnit tx_unit;
 };
 
 struct _Edi_Line
