@@ -171,51 +171,21 @@ _clang_load_highlighting(Edi_File *ef)
 static void
 _clang_load_errors(Edi_File *ef)
 {
-   int tgridw = 0, tgridh = 0;
    unsigned n = clang_getNumDiagnostics(ef->tx_unit);
    unsigned i = 0;
-
-   evas_object_textgrid_size_get(textgrid, &tgridw, &tgridh);
 
    for(i = 0, n = clang_getNumDiagnostics(ef->tx_unit); i != n; ++i)
      {
         CXDiagnostic diag = clang_getDiagnostic(ef->tx_unit, i);
-        /* FIXME: Do something other than 0 */
-        unsigned line, col;
-        unsigned endline, endcol;
-        Evas_Textgrid_Cell *cells;
+        Edi_Range range;
 
-        clang_getPresumedLocation(clang_getDiagnosticLocation(diag), NULL, &line, &col);
-        endline = line;
-        endcol = col;
-        (void) endcol;
+        clang_getPresumedLocation(clang_getDiagnosticLocation(diag), NULL, &range.start.line, &range.start.col);
+        range.end = range.start;
 
-        /* Skip/break if we are out of the textgrid's size. */
-        if (endline < ef->offset)
-           continue;
-        else if (line >= (ef->offset + tgridh))
-           continue;
+        /* FIXME: Also handle ranges and fix suggestions. */
 
-        /* FIXME: Currently we just skip here, should be done better. */
-        if (((int) col) > tgridw)
-           continue;
+        unsigned char color = 6;
 
-#if 0
-        /* Make sure we don't try to mark past the tgrid size. */
-        if (endcol > tgridw)
-           endcol = tgridw; /* Decreased later. */
-        /* FIXME: Should also show ranges. */
-        CXSourceRange dgrange = clang_getDiagnosticRange(diag, 1);
-        clang_getPresumedLocation(clang_getRangeStart(dgrange), NULL, &line, &col);
-        clang_getPresumedLocation(clang_getRangeEnd(dgrange), NULL, &endline, &endcol);
-        endline--;
-        endcol--;
-#endif
-        /* Dec line and col... because we start from 0 */
-        line -= ef->offset;
-        col--;
-
-        cells = evas_object_textgrid_cellrow_get(textgrid, line);
         switch (clang_getDiagnosticSeverity(diag))
           {
            case CXDiagnostic_Ignored:
@@ -223,21 +193,19 @@ _clang_load_errors(Edi_File *ef)
               break;
            case CXDiagnostic_Warning:
               // FIXME: Make it an enum
-              cells[col].bg = 7;
+              color = 7;
               break;
            case CXDiagnostic_Error:
               // FIXME: Make it an enum
-              cells[col].bg = 8;
+              color = 8;
               break;
            case CXDiagnostic_Fatal:
               // FIXME: Make it an enum
-              cells[col].bg = 9;
+              color = 9;
               break;
           }
 
-        /* FIXME: Should mark all the relevant ranges? */
-
-        evas_object_textgrid_cellrow_set(textgrid, line, cells);
+        _clang_range_set(ef, range, color, _clang_bg_set);
 
 #if 0
         CXString str = clang_formatDiagnostic(diag, clang_defaultDiagnosticDisplayOptions());
