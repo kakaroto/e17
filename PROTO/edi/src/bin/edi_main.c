@@ -284,8 +284,8 @@ _edi_file_open(const char *filename)
    const char const *clang_argv[] = {"-I/usr/lib/clang/3.1/include/", "-Wall", "-Wextra"};
    int clang_argc = sizeof(clang_argv) / sizeof(*clang_argv);
 
-   CXIndex idx = clang_createIndex(0, 0);
-   ef->tx_unit = clang_parseTranslationUnit(idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, CXTranslationUnit_None);
+   ef->idx = clang_createIndex(0, 0);
+   ef->tx_unit = clang_parseTranslationUnit(ef->idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, CXTranslationUnit_None);
 
    return ef;
 
@@ -304,6 +304,10 @@ _edi_file_close(Edi_File *f)
      free(l);
    eina_file_map_free(f->f, f->m);
    eina_file_close(f->f);
+
+   clang_disposeTranslationUnit(f->tx_unit);
+   clang_disposeIndex(f->idx);
+
    free(f);
 }
 

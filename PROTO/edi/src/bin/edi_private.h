@@ -31,6 +31,7 @@ struct _Edi_File
    unsigned int offset;
 
    /* Clang */
+   CXIndex idx;
    CXTranslationUnit tx_unit;
 };
 
