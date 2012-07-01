@@ -30,18 +30,42 @@ static const Ecore_Getopt options = {
   }
 };
 
+typedef enum {
+     EDI_COLOR_BACKGROUND_DEFAULT = 0,
+     EDI_COLOR_FOREGROUND_DEFAULT,
+
+     /* SEVIRITY */
+     EDI_COLOR_BACKGROUND_SEVIRITY_IGNORED,
+     EDI_COLOR_BACKGROUND_SEVIRITY_NOTE,
+     EDI_COLOR_BACKGROUND_SEVIRITY_WARNING,
+     EDI_COLOR_BACKGROUND_SEVIRITY_ERROR,
+     EDI_COLOR_BACKGROUND_SEVIRITY_FATAL,
+
+     /* SYNTAX */
+     EDI_COLOR_FOREGROUND_PUNCTUATION,
+     EDI_COLOR_FOREGROUND_KEYWORD,
+     EDI_COLOR_FOREGROUND_IDENTIFIER,
+     EDI_COLOR_FOREGROUND_COMMENT,
+     EDI_COLOR_FOREGROUND_LITERAL
+} Edi_Color;
+
 static const int colors[][4] =
 {
   { 0, 0, 0, 255 }, /* background */
-  { 0x4E, 0x9A, 0x06, 255 }, /* language_keyword */
-  { 0x4E, 0x9A, 0x06, 255 }, /* type */
-  { 0, 0, 255, 255 }, /* function declaration */
-  { 0xDB, 0xDB, 0xDB, 255 }, /* variable declaration */
-  { 0x34, 0x65, 0xA4, 255 }, /* comments */
   { 128, 128, 128, 255 }, /* default */
+
+  /* SEVIRITY */
+  { 0, 0, 0, 255 }, /* ignored */
+  { 0, 0, 0, 255 }, /* note */
   { 0xEC, 0xF3, 0x20, 255 }, /* warning */
   { 0xEF, 0x29, 0x29, 255 }, /* error */
   { 255, 128, 0, 255 }, /* fatal */
+
+  /* SYNTAX */
+  { 0x4E, 0x9A, 0x06, 255 }, /* punctuation */
+  { 0x4E, 0x9A, 0x06, 255 }, /* keyword */
+  { 0xDB, 0xDB, 0xDB, 255 }, /* identifier */
+  { 0x34, 0x65, 0xA4, 255 }, /* comment */
   { 0xCC, 0x00, 0x00, 255 } /* literal */
 };
 
@@ -58,13 +82,13 @@ typedef struct
 } Edi_Range;
 
 void
-_clang_fg_set(Evas_Textgrid_Cell *cell, unsigned char color)
+_clang_fg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
 {
    cell->fg = color;
 }
 
 void
-_clang_bg_set(Evas_Textgrid_Cell *cell, unsigned char color)
+_clang_bg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
 {
    cell->bg = color;
 }
@@ -72,7 +96,7 @@ _clang_bg_set(Evas_Textgrid_Cell *cell, unsigned char color)
 /* FIXME: Don't use the callback hack, there are better ways to avoid
  * code duplication... */
 static void
-_clang_range_set(Edi_File *ef, Edi_Range range, unsigned char color, void (*func)(Evas_Textgrid_Cell *cell, unsigned char color))
+_clang_range_set(Edi_File *ef, Edi_Range range, Edi_Color color, void (*func)(Evas_Textgrid_Cell *cell, Edi_Color color))
 {
    int tgridw = 0, tgridh = 0;
    evas_object_textgrid_size_get(textgrid, &tgridw, &tgridh);
@@ -134,8 +158,7 @@ _clang_load_highlighting(Edi_File *ef)
    for (i = 0 ; i < n ; i++)
      {
         Edi_Range range;
-        /* FIXME: Use enums instead. */
-        unsigned char color = 6;
+        Edi_Color color = EDI_COLOR_FOREGROUND_DEFAULT;
 
         CXSourceRange tkrange = clang_getTokenExtent(ef->tx_unit, tokens[i]);
         clang_getPresumedLocation(clang_getRangeStart(tkrange), NULL,
@@ -147,18 +170,19 @@ _clang_load_highlighting(Edi_File *ef)
         switch (clang_getTokenKind(tokens[i]))
           {
              case CXToken_Punctuation:
+                color = EDI_COLOR_FOREGROUND_DEFAULT;
                 break;
              case CXToken_Keyword:
-                color = 1;
+                color = EDI_COLOR_FOREGROUND_KEYWORD;
                 break;
              case CXToken_Identifier:
-                color = 4; // Not really good, just a random choice.
+                color = EDI_COLOR_FOREGROUND_IDENTIFIER;
                 break;
              case CXToken_Literal:
-                color = 10;
+                color = EDI_COLOR_FOREGROUND_LITERAL;
                 break;
              case CXToken_Comment:
-                color = 5;
+                color = EDI_COLOR_FOREGROUND_COMMENT;
                 break;
           }
 
@@ -184,24 +208,24 @@ _clang_load_errors(Edi_File *ef)
 
         /* FIXME: Also handle ranges and fix suggestions. */
 
-        unsigned char color = 6;
+        Edi_Color color = EDI_COLOR_BACKGROUND_DEFAULT;
 
         switch (clang_getDiagnosticSeverity(diag))
           {
            case CXDiagnostic_Ignored:
+              color = EDI_COLOR_BACKGROUND_SEVIRITY_IGNORED;
+              break;
            case CXDiagnostic_Note:
+              color = EDI_COLOR_BACKGROUND_SEVIRITY_NOTE;
               break;
            case CXDiagnostic_Warning:
-              // FIXME: Make it an enum
-              color = 7;
+              color = EDI_COLOR_BACKGROUND_SEVIRITY_WARNING;
               break;
            case CXDiagnostic_Error:
-              // FIXME: Make it an enum
-              color = 8;
+              color = EDI_COLOR_BACKGROUND_SEVIRITY_ERROR;
               break;
            case CXDiagnostic_Fatal:
-              // FIXME: Make it an enum
-              color = 9;
+              color = EDI_COLOR_BACKGROUND_SEVIRITY_FATAL;
               break;
           }
 
@@ -315,7 +339,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
              for (x = 0; x < w; x++)
                {
                   cells[x].codepoint = 0;
-                  cells[x].fg = 0;
+                  cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
                }
              evas_object_textgrid_cellrow_set(txtgrid, y++, cells);
              s++;
@@ -331,13 +355,13 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
              /* FIXME: there is an overrun to fix here */
              u = eina_unicode_utf8_get_next(el->read_only.line.start, &idx);
              cells[x].codepoint = u;
-             cells[x].fg = 6;
+             cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
              /* cells[x].bg = 6; */
           }
         for (; x < w; x++)
           {
              cells[x].codepoint = 0;
-             cells[x].fg = 0;
+             cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
           }
         evas_object_textgrid_cellrow_set(txtgrid, y, cells);
      }
@@ -347,7 +371,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
         for (x = 0; x < w; x++)
           {
              cells[x].codepoint = 0;
-             cells[x].fg = 0;
+             cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
           }
         evas_object_textgrid_cellrow_set(txtgrid, y++, cells);
      }
