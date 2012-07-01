@@ -82,13 +82,13 @@ typedef struct
 } Edi_Range;
 
 void
-_clang_fg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
+_edi_fg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
 {
    cell->fg = color;
 }
 
 void
-_clang_bg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
+_edi_bg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
 {
    cell->bg = color;
 }
@@ -96,7 +96,7 @@ _clang_bg_set(Evas_Textgrid_Cell *cell, Edi_Color color)
 /* FIXME: Don't use the callback hack, there are better ways to avoid
  * code duplication... */
 static void
-_clang_range_set(Edi_File *ef, Edi_Range range, Edi_Color color, void (*func)(Evas_Textgrid_Cell *cell, Edi_Color color))
+_edi_range_color_set(Edi_File *ef, Edi_Range range, Edi_Color color, void (*func)(Evas_Textgrid_Cell *cell, Edi_Color color))
 {
    int tgridw = 0, tgridh = 0;
    evas_object_textgrid_size_get(textgrid, &tgridw, &tgridh);
@@ -186,7 +186,7 @@ _clang_load_highlighting(Edi_File *ef)
                 break;
           }
 
-        _clang_range_set(ef, range, color, _clang_fg_set);
+        _edi_range_color_set(ef, range, color, _edi_fg_set);
      }
 
    clang_disposeTokens(ef->tx_unit, tokens, n);
@@ -229,7 +229,7 @@ _clang_load_errors(Edi_File *ef)
               break;
           }
 
-        _clang_range_set(ef, range, color, _clang_bg_set);
+        _edi_range_color_set(ef, range, color, _edi_bg_set);
 
 #if 0
         CXString str = clang_formatDiagnostic(diag, clang_defaultDiagnosticDisplayOptions());
