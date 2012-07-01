@@ -32,17 +32,141 @@ static const Ecore_Getopt options = {
 
 static const int colors[][4] =
 {
-  { 0, 0, 0, 0 }, /* background */
-  { 0, 128, 255, 255 }, /* language keyword */
-  { 0, 255, 64, 255 }, /* type */
+  { 0, 0, 0, 255 }, /* background */
+  { 0x4E, 0x9A, 0x06, 255 }, /* language_keyword */
+  { 0x4E, 0x9A, 0x06, 255 }, /* type */
   { 0, 0, 255, 255 }, /* function declaration */
-  { 0, 255, 64, 255 }, /* variable declaration */
-  { 128, 0, 0, 255 }, /* comments */
+  { 0xDB, 0xDB, 0xDB, 255 }, /* variable declaration */
+  { 0x34, 0x65, 0xA4, 255 }, /* comments */
   { 128, 128, 128, 255 }, /* default */
-  { 0, 0, 255, 255 }, /* warning */
-  { 255, 0, 0, 255 }, /* error */
-  { 255, 128, 0, 255 } /* fatal */
+  { 0xEC, 0xF3, 0x20, 255 }, /* warning */
+  { 0xEF, 0x29, 0x29, 255 }, /* error */
+  { 255, 128, 0, 255 }, /* fatal */
+  { 0xCC, 0x00, 0x00, 255 } /* literal */
 };
+
+typedef struct
+{
+   unsigned int line;
+   unsigned int col;
+} Edi_Location;
+
+typedef struct
+{
+   Edi_Location start;
+   Edi_Location end;
+} Edi_Range;
+
+void
+_clang_fg_set(Evas_Textgrid_Cell *cell, unsigned char color)
+{
+   cell->fg = color;
+}
+
+void
+_clang_bg_set(Evas_Textgrid_Cell *cell, unsigned char color)
+{
+   cell->bg = color;
+}
+
+/* FIXME: Don't use the callback hack, there are better ways to avoid
+ * code duplication... */
+static void
+_clang_range_set(Edi_File *ef, Edi_Range range, unsigned char color, void (*func)(Evas_Textgrid_Cell *cell, unsigned char color))
+{
+   int tgridw = 0, tgridh = 0;
+   evas_object_textgrid_size_get(textgrid, &tgridw, &tgridh);
+
+   unsigned int i;
+   for (i = range.start.line ; i <= range.end.line ; i++)
+     {
+        unsigned int j = 0;
+        unsigned int line = i - ef->offset;
+        unsigned int start_col, end_col;
+        Evas_Textgrid_Cell *cells, *cell;
+
+        if (i < ef->offset)
+           continue;
+        else if (i >= (ef->offset + tgridh))
+           continue;
+
+        cells = evas_object_textgrid_cellrow_get(textgrid, line);
+
+        /* FIXME: Could be done faster, just cleaner this way... */
+        start_col = (i == range.start.line) ?  range.start.col : 0;
+        end_col = (i == range.end.line) ?  range.end.col : (unsigned int) tgridw;
+
+        for (cell = cells + (start_col - 1), j = start_col ; j <= end_col ; cell++, j++)
+          {
+             func(cell, color);
+          }
+
+        evas_object_textgrid_cellrow_set(textgrid, line, cells);
+     }
+}
+
+static void
+_clang_load_highlighting(Edi_File *ef)
+{
+   CXToken *tokens = NULL;
+   unsigned int n = 0;
+   unsigned int i = 0;
+
+     {
+        CXFile cfile = clang_getFile(ef->tx_unit, eina_file_filename_get(ef->f));
+        int tgridw = 0, tgridh = 0;
+        evas_object_textgrid_size_get(textgrid, &tgridw, &tgridh);
+
+#if 0
+        /* FIXME: Should be used, I don't know why tokenize doesn't work in mid
+         * comment cases and etc. */
+        int range_start, range_end;
+        range_start = ef->offset;
+        range_end = ef->offset + tgridh;
+        CXSourceRange range = clang_getRange(clang_getLocation(ef->tx_unit, cfile, range_start, 1), clang_getLocation(ef->tx_unit, cfile, range_end, tgridw));
+#endif
+        CXSourceRange range = clang_getRange(
+              clang_getLocationForOffset(ef->tx_unit, cfile, 0),
+              clang_getLocationForOffset(ef->tx_unit, cfile, eina_file_size_get(ef->f)));
+        clang_tokenize(ef->tx_unit, range, &tokens, &n);
+     }
+
+   for (i = 0 ; i < n ; i++)
+     {
+        Edi_Range range;
+        /* FIXME: Use enums instead. */
+        unsigned char color = 6;
+
+        CXSourceRange tkrange = clang_getTokenExtent(ef->tx_unit, tokens[i]);
+        clang_getPresumedLocation(clang_getRangeStart(tkrange), NULL,
+              &range.start.line, &range.start.col);
+        clang_getPresumedLocation(clang_getRangeEnd(tkrange), NULL,
+              &range.end.line, &range.end.col);
+        /* FIXME: Should probably do something fancier, this is only a limited
+         * number of types. */
+        switch (clang_getTokenKind(tokens[i]))
+          {
+             case CXToken_Punctuation:
+                break;
+             case CXToken_Keyword:
+                color = 1;
+                break;
+             case CXToken_Identifier:
+                color = 4; // Not really good, just a random choice.
+                break;
+             case CXToken_Literal:
+                color = 10;
+                break;
+             case CXToken_Comment:
+                color = 5;
+                break;
+          }
+
+        _clang_range_set(ef, range, color, _clang_fg_set);
+     }
+
+   clang_disposeTokens(ef->tx_unit, tokens, n);
+}
 
 static void
 _clang_load_errors(Edi_File *ef)
@@ -169,7 +293,7 @@ _edi_file_open(const char *filename)
    int clang_argc = sizeof(clang_argv) / sizeof(*clang_argv);
 
    CXIndex idx = clang_createIndex(0, 0);
-   ef->tx_unit = clang_parseTranslationUnit(idx, filename, clang_argv, clang_argc, NULL, 0, CXTranslationUnit_None);
+   ef->tx_unit = clang_parseTranslationUnit(idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, CXTranslationUnit_None);
 
    return ef;
 
@@ -262,6 +386,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
    evas_object_textgrid_update_add(txtgrid, 0, 0, w, h);
 
    _clang_load_errors(f);
+   _clang_load_highlighting(f);
 }
 
 static void
