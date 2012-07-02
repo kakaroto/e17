@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Icon=econnman
+Name=EConnMan
+GenericName=Connection Manager
+Comment=Manage your internet connections using ConnMan and EFL
+Categories=Network;Settings;Enlightenment;
+Exec=econnman-bin
+StartupNotify=true
+Terminal=false

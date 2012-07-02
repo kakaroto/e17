@@ -1,0 +1,1211 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# TODO:
+#  - IPv6
+#  - Proxy
+#  - Fix connman's PropertyChanged when changing off/manual -> dhcp,
+#    gateway is not updated.
+#  - Technology icon
+#  - Service icon
+#  - ServiceView should clear self.box contents and re-add items
+#    whenever visibility changes, otherwise there are some blank places
+
+import elementary as elm
+import evas
+import e_dbus
+import dbus
+import logging
+import argparse
+
+dbus_ml = e_dbus.DBusEcoreMainLoop()
+bus = dbus.SystemBus(mainloop=dbus_ml)
+log = logging.getLogger()
+
+manager = None
+
+EXPAND_BOTH = (evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+EXPAND_HORIZ = (evas.EVAS_HINT_EXPAND, 0.0)
+
+FILL_BOTH = (evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+
+########################################################################
+# Debug helpers:
+def dbus_variant_to_str(v):
+    if isinstance(v, dbus.String):
+        v = '"%s"' % (str(v),)
+    elif isinstance(v, dbus.Boolean):
+        v = str(bool(v))
+    elif isinstance(v, (dbus.Dictionary, dbus.Struct)):
+        v = "{%s}" % (dbus_dict_to_str(v),)
+    elif isinstance(v, dbus.Array):
+        v = "[%s]" % (dbus_array_to_str(v),)
+    elif isinstance(v, dbus.ObjectPath):
+        v = str(v)
+    elif isinstance(v, (dbus.Byte, dbus.Int16, dbus.Int32, dbus.Int64,
+                        dbus.UInt16, dbus.UInt32, dbus.UInt64)):
+        v = int(v)
+    elif isinstance(v, dbus.Double):
+        v = float(v)
+    else:
+        v = repr(v)
+    return v
+
+def dbus_dict_to_str(d):
+    "Help debug by converting a dbus.Dictionary to a string in a shorter form."
+    s = []
+    for k, v in d.iteritems():
+        s.append("%s=%s" % (k, dbus_variant_to_str(v)))
+    return ", ".join(s)
+
+def dbus_array_to_str(a):
+    "Help debug by converting a complex structure to a string in shorter form."
+    return ", ".join(dbus_variant_to_str(x) for x in a)
+
+def dbus_array_of_dict_to_str(a):
+    """Help debug by converting a complex structure to a string in a
+    shorter form with only the keys, not the value.
+    """
+    s = []
+    for k, v in a:
+        s.append(str(k))
+    return ", ".join(s)
+
+
+class ObjectView(object):
+    """Base for viewing a complex object.
+
+    Implementors must set:
+     - bus_interface: to assign to self.bus_obj
+     - create_view(properties): to create the specific view widgets
+     - on_property_changed(name, value): to update view widgets
+
+    Provided automatically by this class:
+     - path: object path
+     - bus_obj: proxy object with specific interface to remote bus object
+     - obj: main toplevel view object
+     - box: main toplevel view box
+    """
+    bus_interface = None
+
+    def __init__(self, parent, path, properties):
+        self.path = path
+        self.bus_obj = dbus.Interface(bus.get_object("net.connman", path),
+                                      self.bus_interface)
+        self.sig_ch = self.bus_obj.connect_to_signal("PropertyChanged",
+                                                     self.on_property_changed)
+
+        self.obj = elm.Scroller(parent)
+        self.obj.on_del_add(self._deleted)
+        self.obj.size_hint_weight = EXPAND_BOTH
+        self.obj.policy_set(elm.ELM_SCROLLER_POLICY_OFF,
+                            elm.ELM_SCROLLER_POLICY_AUTO)
+        self.obj.bounce_set(False, True)
+        self.obj.content_min_limit(True, False)
+
+        self.box = elm.Box(self.obj)
+        self.box.size_hint_weight = EXPAND_HORIZ
+        self.box.horizontal = False
+
+        self.create_view(properties)
+
+        self.obj.content = self.box
+        for k in properties:
+            self.on_property_changed(k, properties[k])
+
+    def _deleted(self, obj):
+        log.debug("View deleted %s (%s)", self.__class__.__name__, self.path)
+        self.sig_ch.remove()
+        self.bus_obj = None
+        self.sig_ch = None
+        self.obj = None
+
+    def create_view(self, properties):
+        log.critical("must be implemented!")
+        pass
+
+    def on_property_changed(self, name, value):
+        log.critical("must be implemented!")
+
+    def add_check(self, box, label, callback=None):
+        obj = elm.Check(box)
+        obj.size_hint_weight = EXPAND_HORIZ
+        obj.size_hint_align = FILL_BOTH
+        obj.text = label
+        obj.show()
+        box.pack_end(obj)
+        if callback:
+            obj.callback_changed_add(callback)
+        return obj
+
+    def add_button(self, box, label, callback):
+        obj = elm.Button(box)
+        obj.size_hint_weight = EXPAND_HORIZ
+        obj.size_hint_align = FILL_BOTH
+        obj.text = label
+        obj.show()
+        obj.callback_clicked_add(callback)
+        box.pack_end(obj)
+        return obj
+
+    def add_label(self, box, label):
+        lb = elm.Label(box)
+        lb.size_hint_weight = EXPAND_HORIZ
+        lb.size_hint_align = FILL_BOTH
+        lb.text = label
+        lb.show()
+        box.pack_end(lb)
+        return lb
+
+    def add_progress(self, box, label):
+        pb = elm.Progressbar(box)
+        pb.size_hint_weight = EXPAND_HORIZ
+        pb.size_hint_align = FILL_BOTH
+        pb.text = label
+        pb.show()
+        box.pack_end(pb)
+        return pb
+
+    def add_segment_control(self, box, options, callback):
+        sc = elm.SegmentControl(box)
+        sc.size_hint_weight = EXPAND_HORIZ
+        sc.size_hint_align = FILL_BOTH
+        items = {}
+        for o in options:
+            items[o] = sc.item_add(None, o)
+        sc.show()
+        box.pack_end(sc)
+        sc.callback_changed_add(callback)
+        return sc, items
+
+    def add_frame_and_box(self, box, label):
+        fr = elm.Frame(box)
+        fr.size_hint_weight = EXPAND_HORIZ
+        fr.size_hint_align = FILL_BOTH
+        fr.text = label
+        fr.show()
+        box.pack_end(fr)
+
+        bx = elm.Box(fr)
+        bx.size_hint_weight = EXPAND_HORIZ
+        bx.size_hint_align = FILL_BOTH
+        bx.horizontal = False
+        bx.show()
+        fr.content = bx
+        return fr, bx
+
+    def add_label_and_entry(self, box, label, callback=None):
+        lb = self.add_label(box, label)
+
+        en = elm.Entry(box)
+        en.size_hint_weight = EXPAND_HORIZ
+        en.size_hint_align = FILL_BOTH
+        en.single_line = True
+        en.scrollable = True
+        en.show()
+        box.pack_end(en)
+        if callback:
+            en.callback_activated_add(callback)
+        return lb, en
+
+
+########################################################################
+# Views:
+class OfflineModeMonitor(object):
+    """Monitors the Manager's OfflineMode property as a Toggle.
+
+    The toggle reflects the server state but can be changed by the
+    user to set the property remotely.
+    """
+    def __init__(self, win):
+        self.obj = elm.Check(win)
+        self.obj.style = "toggle"
+        self.obj.part_text_set("on", "Offline")
+        self.obj.part_text_set("off", "Online")
+        self.obj.callback_changed_add(self._on_user_changed)
+        self.obj.on_del_add(self._deleted)
+
+        def on_reply(properties):
+            for name, value in properties.iteritems():
+                log.debug("property %s: %s", name, value)
+                self._property_changed(name, value)
+
+        def on_error(exc):
+            popup_fatal(win, "Failed to get ConnMan Properties", str(exc))
+
+        manager.GetProperties(reply_handler=on_reply,
+                              error_handler=on_error)
+        self.sig_ch = manager.connect_to_signal("PropertyChanged",
+                                                self._property_changed)
+
+    def _deleted(self, obj):
+        self.sig_ch.remove()
+        self.obj = None
+        self.sig_ch = None
+
+    def _property_changed(self, name, value):
+        log.debug("property %s: %s", name, value)
+        if name == "OfflineMode":
+            self.obj.state = bool(value)
+
+    def _on_user_changed(self, obj):
+        state = obj.state
+        def on_reply():
+            log.info("Set OfflineMode=%s", state)
+
+        def on_error(exc):
+            log.error("Failed to set OfflineMode=%s: %s", state, exc)
+            obj.state = not state
+            popup_error(self.obj, "Failed to Apply Offline Mode",
+                        exc.get_dbus_message())
+
+        manager.SetProperty("OfflineMode", dbus.Boolean(state),
+                            reply_handler=on_reply, error_handler=on_error)
+
+
+class TechList(object):
+    """Provides a Genlist with the Technologies supported.
+
+    It will call manager's GetTechnologies() and then keep it updated
+    with TechnologyAdded and TechnologyRemoved signals, as well as the
+    technologies properties with PropertyChanged.
+
+    Selecting an item will call C{on_selected(path, tech_properties)}.
+    """
+    def __init__(self, parent, on_selected=None):
+        self.techs = {}
+        self.items = {}
+        self.obj = elm.Genlist(parent)
+        self.obj.on_del_add(self._deleted)
+        self.on_selected = on_selected
+        self.obj.callback_selected_add(self._tech_selected)
+        self.sig_added = manager.connect_to_signal("TechnologyAdded",
+                                                   self._tech_added)
+        self.sig_removed = manager.connect_to_signal("TechnologyRemoved",
+                                                     self._tech_removed)
+        self.sig_propch = bus.add_signal_receiver(self._tech_changed,
+                                                  "PropertyChanged",
+                                                  "net.connman.Technology",
+                                                  "net.connman",
+                                                  path_keyword='path')
+        self.itc = elm.GenlistItemClass(item_style="default",
+                                        text_get_func=self._item_text_get,
+                                        content_get_func=self._item_content_get)
+
+        manager.GetTechnologies(reply_handler=self._get_techs_reply,
+                                error_handler=self._get_techs_error)
+
+    def _deleted(self, lst):
+        self.sig_added.remove()
+        self.sig_removed.remove()
+        self.sig_propch.remove()
+
+        self.obj = None
+        self.sig_added = None
+        self.sig_removed = None
+        self.sig_propch = None
+        self.techs.clear()
+        self.items.clear()
+
+    def _get_techs_reply(self, techs):
+        log.debug("Got technologies: %s", dbus_array_of_dict_to_str(techs))
+        for path, properties in techs:
+            self._tech_added(path, properties)
+
+    def _get_techs_error(self, exc):
+        log.error("Failed to GetTechnologies(): %s", exc)
+        popup_error(self.obj, "Failed to get Technologies",
+                    exc.get_dbus_message())
+
+    def _tech_added(self, path, properties):
+        path = str(path)
+        log.debug("Added %s: %s", path, dbus_dict_to_str(properties))
+        self.techs[path] = properties
+        self.items[path] = self.obj.item_append(self.itc, path)
+
+    def _tech_changed(self, name, value, path):
+        path = str(path)
+        log.debug("Changed %s: %s=%s", path, name, value)
+        t = self.techs.get(path)
+        if not t:
+            return
+        t[name] = value
+        it = self.items.get(path)
+        if not it:
+            return
+        it.update()
+
+    def _tech_removed(self, path):
+        path = str(path)
+        log.debug("Removed %s", path)
+        try:
+            del self.techs[path]
+        except KeyError:
+            pass
+        try:
+            it = self.items.pop(path)
+            it.delete()
+        except KeyError:
+            pass
+
+    def _tech_selected(self, lst, item):
+        item.selected = False
+        if not self.on_selected:
+            return
+        path = item.data
+        t = self.techs.get(path)
+        if t:
+            self.on_selected(path, t)
+
+    def _item_text_get(self, obj, part, item_data):
+        if part != "elm.text":
+            return None
+        t = self.techs.get(item_data)
+        if not t:
+            return "Unknown"
+        return t.get("Name", item_data[len("/net/connman/technology/"):])
+
+    def _item_content_get(self, obj, part, item_data):
+        if part == "elm.swallow.end":
+            ic = elm.Icon(obj)
+            ic.standard = "arrow_right"
+            return ic
+
+        if part != "elm.swallow.icon":
+            return
+        t = self.techs.get(item_data)
+        if not t:
+            return None
+        connected = t.get("Connected", False)
+        powered = t.get("Powered", False)
+        lb = elm.Label(obj)
+        if connected:
+            lb.text = "[connected]"
+        elif powered:
+            lb.text = "[powered]"
+        else:
+            lb.text = "[offline]"
+        return lb
+
+
+class TechView(ObjectView):
+    """Provides a detailed view of the technology given by C{path}.
+
+    The C{properties} argument is used to populate the current state,
+    which will be updated with net.connman.Technology.PropertyChanged
+    signal that it will listen.
+
+    User updates will be automatically applied to the server.
+    """
+    bus_interface = "net.connman.Technology"
+
+    def create_view(self, properties):
+        self.powered = self.add_check(self.box, "Powered",
+                                      self._on_user_powered)
+
+        self.connected = self.add_check(self.box, "Connected")
+        self.connected.disabled = True
+
+        self.scan = self.add_button(self.box, "Scan", self._scan)
+
+        fr, bx = self.add_frame_and_box(self.box, "Tethering")
+
+        self.tethering = self.add_check(bx, "Enabled",
+                                        self._on_user_tethering)
+
+        lb, self.identifier = self.add_label_and_entry(bx, "Identifier:")
+        lb, self.passphrase = self.add_label_and_entry(bx, "Passphrase:")
+        self.tethering_apply = self.add_button(bx, "Apply Tethering",
+                                               self._tethering_apply)
+
+    def _on_user_powered(self, obj):
+        state = bool(self.powered.state)
+        def on_reply():
+            log.info("Set %s Powered=%s", self.path, state)
+
+        def on_error(exc):
+            log.error("Could not set %s Powered=%s: %s", self.path, state, exc)
+            obj.state = not state
+            popup_error(self.obj, "Failed to Apply Powered",
+                        exc.get_dbus_message())
+
+        self.bus_obj.SetProperty("Powered", dbus.Boolean(state),
+                                 reply_handler=on_reply, error_handler=on_error)
+
+    def _scan(self, obj):
+        def on_reply():
+            log.debug("Scanned %s", self.path)
+            self.scan.disabled = False
+            self.scan.text = "Scan"
+
+        def on_error(exc):
+            log.error("Could not scan %s", exc)
+            self.scan.disabled = False
+            self.scan.text = "Scan"
+
+        self.bus_obj.Scan(reply_handler=on_reply, error_handler=on_error)
+        self.scan.disabled = True
+        self.scan.text = "Scanning..."
+
+    def _on_user_tethering(self, obj):
+        state = bool(obj.state)
+        self.identifier.disabled = not state
+        self.passphrase.disabled = not state
+
+    def _tethering_apply(self, obj):
+        self.to_apply = [("TetheringIdentifier", self.identifier.text),
+                         ("TetheringPassphrase", self.passphrase.text),
+                         ("Tethering", dbus.Boolean(self.tethering.state)),
+                         ]
+        def apply_next():
+            if not self.to_apply:
+                return
+            name, value = self.to_apply.pop(0)
+            self.bus_obj.SetProperty(name, value,
+                                     reply_handler=on_reply,
+                                     error_handler=on_error)
+
+        def on_reply():
+            log.debug("Applied tethering %s", self.path)
+            self.tethering_apply.disabled = False
+            self.tethering_apply.text = "Apply Tethering"
+            apply_next()
+
+        def on_error(exc):
+            log.error("Could not apply tethering %s", exc)
+            self.tethering_apply.disabled = False
+            self.tethering_apply.text = "Apply Tethering"
+            popup_error(self.obj, "Failed to Apply Tethering",
+                        exc.get_dbus_message())
+
+        apply_next()
+        self.tethering_apply.disabled = True
+        self.tethering_apply.text = "Applying Tethering..."
+
+    def on_property_changed(self, name, value):
+        log.debug("Changed %s: %s=%s", self.path, name, value)
+        if name == "Powered":
+            self.powered.state = bool(value)
+        elif name == "Connected":
+            self.connected.state = bool(value)
+        elif name == "Tethering":
+            state = bool(value)
+            self.tethering.state = state
+            self.identifier.disabled = not state
+            self.passphrase.disabled = not state
+        elif name == "TetheringIdentifier":
+            self.identifier.text = str(value)
+        elif name == "TetheringPassphrase":
+            self.passphrase.text = str(value)
+
+
+class ServicesList(object):
+    """Provides a Genlist with the known Services.
+
+    It will call manager's GetServices() and then keep it updated with
+    ServicesChanged signal.
+
+    Selecting an item will call C{on_selected(path, service_properties)}.
+    """
+    def __init__(self, parent, on_selected=None, on_disclosure=None):
+        self.services = {}
+        self.items = {}
+        self.obj = elm.Genlist(parent)
+        self.on_selected = on_selected
+        self.on_disclosure = on_disclosure
+        self.obj.callback_selected_add(self._item_selected)
+        self.obj.on_del_add(self._deleted)
+        self.sig_ch = manager.connect_to_signal("ServicesChanged",
+                                                self._services_changed)
+        self.sig_propch = bus.add_signal_receiver(self._service_prop_changed,
+                                                  "PropertyChanged",
+                                                  "net.connman.Service",
+                                                  "net.connman",
+                                                  path_keyword='path')
+        manager.GetServices(reply_handler=self._get_services_reply,
+                            error_handler=self._get_services_error)
+        self.itc = elm.GenlistItemClass(item_style="default",
+                                        text_get_func=self._item_text_get,
+                                        content_get_func=self._item_content_get)
+
+    def _deleted(self, obj):
+        self.sig_ch.remove()
+
+        self.obj = None
+        self.sig_ch = None
+        self.services.clear()
+        self.items.clear()
+
+    def _items_repopulate(self, paths):
+        for path in paths:
+            self.items[path] = self.obj.item_append(self.itc, path)
+
+    def _get_services_reply(self, services):
+        log.debug("Got services: %s", dbus_array_of_dict_to_str(services))
+        for path, properties in services:
+            self._service_added(path, properties)
+        self._items_repopulate(str(path) for path, properties in services)
+
+    def _get_services_error(self, exc):
+        log.critical("Failed to GetServices(): %s", exc)
+        popup_fatal(self.obj, "Failed to get Services",
+                    exc.get_dbus_message())
+
+    def _service_added(self, path, properties):
+        log.debug("Added %s: %s", path, dbus_dict_to_str(properties))
+        self.services[path] = properties
+
+    def _service_prop_changed(self, name, value, path):
+        path = str(path)
+        log.debug("Changed %s: %s=%s", path, name, value)
+        s = self.services.get(path)
+        if not s:
+            return
+        s[name] = value
+        it = self.items.get(path)
+        if not it:
+            return
+        it.update()
+
+    def _service_changed(self, path, properties):
+        log.debug("Changed %s: %s", path, dbus_dict_to_str(properties))
+        d = self.services[path]
+        for k, v in properties.iteritems():
+            d[k] = v
+
+    def _services_changed(self, changed, removed):
+        log.debug("Changed: %s, Removed: %s",
+                  dbus_array_of_dict_to_str(changed),
+                  removed)
+
+        self.items.clear()
+        self.obj.clear()
+
+        for path in removed:
+            self._service_removed(path)
+        for path, properties in changed:
+            path = str(path)
+            if path in self.services:
+                self._service_changed(path, properties)
+            else:
+                self._service_added(path, properties)
+        self._items_repopulate(str(path) for path, properties in changed)
+
+    def _service_removed(self, path):
+        path = str(path)
+        log.debug("Removed %s", path)
+        try:
+            del self.services[path]
+        except KeyError:
+            pass
+
+    def _item_selected(self, lst, item):
+        item.selected = False
+        if not self.on_selected:
+            return
+        path = item.data
+        s = self.services.get(path)
+        if s:
+            self.on_selected(path, s)
+
+    def _item_disclosure(self, bt, path):
+        if not self.on_disclosure:
+            return
+        s = self.services.get(path)
+        if s:
+            self.on_disclosure(path, s)
+
+    def _item_text_get(self, obj, part, item_data):
+        if part != "elm.text":
+            return None
+        t = self.services.get(item_data)
+        if not t:
+            return "Unknown"
+        return t.get("Name", item_data[len("/net/connman/service/"):])
+
+    def _item_content_get(self, obj, part, item_data):
+        if part == "elm.swallow.end":
+            ic = elm.Icon(obj)
+            ic.standard = "arrow_right"
+            bt = elm.Button(obj)
+            bt.content = ic
+            bt.callback_clicked_add(self._item_disclosure, item_data)
+            bt.propagate_events = False
+            return bt
+
+        if part != "elm.swallow.icon":
+            return
+        s = self.services.get(item_data)
+        if not s:
+            return None
+        type = s.get("Type")
+        state = s.get("State")
+        error = s.get("Error")
+        security = s.get("Security")
+        strength = s.get("Strength")
+        favorite = s.get("Favorite")
+        roaming = s.get("Roaming")
+
+        lb = elm.Label(obj)
+        lb.text = "%s: %s" % (type, state)
+        return lb
+
+
+class ServiceView(ObjectView):
+    """Provides a detailed view of the service given by C{path}.
+
+    The C{properties} argument is used to populate the current state,
+    which will be updated with net.connman.Service.PropertyChanged
+    signal that it will listen.
+
+    User updates will be automatically applied to the server.
+    """
+    bus_interface = "net.connman.Service"
+
+    eth_fields = (("Method", "eth_method"),
+                  ("Interface", "eth_iface"),
+                  ("Address", "eth_addr"),
+                  ("MTU", "eth_mtu"),
+                  ("Speed", "eth_speed"),
+                  ("Duplex", "eth_duplex"),
+                  )
+    vpn_fields = (("Host", "vpn_host"),
+                  ("Domain", "vpn_domain"),
+                  ("Name", "vpn_name"),
+                  ("Type", "vpn_type"),
+                  )
+    ipv4_fields = (("Address", "ipv4_address"),
+                   ("Netmask", "ipv4_netmask"),
+                   ("Gateway", "ipv4_gateway"),
+                   )
+
+    def create_view(self, properties):
+        self.type = str(properties.get("Type"))
+        self.immutable = bool(properties.get("Immutable"))
+        self.readwrite_list_properties = {}
+        self.readwrite_list_widget = {}
+
+        self.connect = self.add_button(self.box, "Connect", self._connect)
+        self.disconnect = self.add_button(self.box, "Disconnect",
+                                          self._disconnect)
+
+        if not self.immutable and self.type != "ethernet":
+            self.forget = self.add_button(self.box, "Forget Network",
+                                          self._forget)
+
+        self.error = self.add_label(self.box, "error here")
+
+        self.auto_connect = self.add_check(self.box, "Auto connect",
+                                           self._on_user_auto_connect)
+
+        if self.type == "cellular":
+            self.roaming = self.add_check(self.box, "Roaming")
+            self.roaming.disabled = True
+
+        if properties.get("Strength") is not None:
+            self.strength = self.add_progress(self.box, "Strength:")
+
+        if self.type == "wifi":
+            self.security = self.add_label(self.box, "Security:")
+
+        self.add_readwrite_list("Name Servers:", "Nameservers", properties)
+        self.add_readwrite_list("Time Servers:", "Timeservers", properties)
+        self.add_readwrite_list("Domain Names:", "Domains", properties)
+
+        self.ipv4_properties = {"IPv4": {}, "IPv4.Configuration": {}}
+        fr, bx = self.add_frame_and_box(self.box, "IPv4")
+        self.ipv4_box = bx
+        options = ("Automatic", "Manual", "Off")
+        self.ipv4_method, self.ipv4_method_items = self.add_segment_control(
+            bx, options, self._on_ipv4_method)
+        for name, attr in self.ipv4_fields:
+            lb, en = self.add_label_and_entry(bx, name)
+            en.callback_activated_add(self._on_ipv4_property_changed)
+            en.callback_unfocused_add(self._on_ipv4_property_unfocused)
+            setattr(self, attr, en)
+
+        if properties.get("IPv6"):
+            fr, bx = self.add_frame_and_box(self.box, "IPv6")
+            lb = self.add_label(bx, "TODO")
+
+        self.proxy_properties = {"Proxy": {}, "Proxy.Configuration": {}}
+        fr, bx = self.add_frame_and_box(self.box, "Proxy")
+        self.proxy_box = bx
+        options = ("Direct", "Automatic", "Manual")
+        self.proxy_method, self.proxy_method_items = self.add_segment_control(
+            bx, options, self._on_proxy_method)
+        self.add_label(bx, "TODO")
+
+        # section IPv6: similar to ipv4? refactor ipv4?
+        # section Proxy: custom contents for direct, auto and manual
+        #  - direct: nothing
+        #  - auto: url
+        #  - manual: servers, excludes
+
+        if self.type in ("wifi", "ethernet", "wimax", "bluetooth", "cellular"):
+            self.add_readonly_section("Ethernet", self.eth_fields)
+        elif self.type == "vpn":
+            self.add_readonly_section("VPN", self.vpn_fields)
+
+    def add_readonly_section(self, title, fields):
+        fr, bx = self.add_frame_and_box(self.box, title)
+        for name, attr in fields:
+            lb, en = self.add_label_and_entry(bx, "%s:" % (name,))
+            en.editable = False
+            setattr(self, attr, en)
+
+    def populate_fields(self, fields, value):
+        for n, a in fields:
+            v = value.get(n)
+            if v:
+                en = getattr(self, a)
+                en.text = str(v)
+
+    def _readwrite_list_conv(self, a):
+        if not a:
+            return ""
+        return ", ".join(str(x).strip() for x in a)
+
+    def add_readwrite_list(self, title, name, properties):
+        conf = "%s.Configuration" % (name,)
+
+        used_value = self._readwrite_list_conv(properties.get(name))
+        conf_value = self._readwrite_list_conv(properties.get(conf))
+        self.readwrite_list_properties[name] = used_value
+        self.readwrite_list_properties[conf] = conf_value
+
+        def on_changed(obj):
+            value = obj.text.strip()
+            orig_value = self.readwrite_list_properties[name]
+            conf_value = self.readwrite_list_properties[conf]
+            if (conf_value and value != conf_value) or \
+                (not conf_value and value != orig_value):
+              log.debug("User changed %s=%r (%r, %r)", name, value,
+                        orig_value, conf_value)
+              value = value.strip()
+              if not value:
+                  value_array = []
+              else:
+                  value_array = list(x.strip() for x in value.split(","))
+              self._on_readwrite_changed(conf, value_array)
+        def on_unfocused(obj):
+            self.reload_readwrite_list(name)
+
+        lb, en = self.add_label_and_entry(self.box, title, on_changed)
+        en.callback_unfocused_add(on_unfocused)
+        self.readwrite_list_widget[name] = en
+        self.reload_readwrite_list(name)
+
+    def reload_readwrite_list(self, name):
+        used_value = self.readwrite_list_properties[name]
+        conf_value = self.readwrite_list_properties["%s.Configuration" % name]
+        en = self.readwrite_list_widget[name]
+        log.debug("%s=%r, %r", name, used_value, conf_value)
+        en.text = conf_value or used_value
+
+    def update_readwrite_list(self, name, value):
+        value = self._readwrite_list_conv(value)
+        if value == self.readwrite_list_properties[name]:
+            return
+        self.readwrite_list_properties[name] = value
+        if name.endswith(".Configuration"):
+            key = name[:-len(".Configuration")]
+        else:
+            key = name
+        self.reload_readwrite_list(key)
+
+    def on_property_changed(self, name, value):
+        log.debug("Changed %s: %s=%s", self.path, name, value)
+        if name == "Type":
+            self.type = str(value)
+        elif name == "Immutable":
+            value = bool(value)
+            self.immutable = value
+            self.auto_connect.disabled = value
+            for w in self.readwrite_list_widget.itervalues():
+                w.disabled = value
+            self.ipv4_method.disabled = value
+            self.ipv4_address.disabled = value
+            self.ipv4_netmask.disabled = value
+            self.ipv4_gateway.disabled = value
+            self.proxy_method.disabled = value
+        elif name == "Favorite":
+            value = bool(value)
+            if hasattr(self, "forget"):
+                self.forget.visible = value
+        elif name == "State":
+            value = str(value)
+            self.error.visible = (value == "failure")
+            connected = (value not in ("idle", "failure"))
+            self.disconnect.visible = connected
+            self.connect.visible = not connected
+        elif name == "Error":
+            self.error.text = "Error: %s" % value
+        elif name == "AutoConnect":
+            self.auto_connect.state = bool(value)
+        elif name == "Strength":
+            self.strength.value = float(value) / 100.0
+        elif self.type == "wifi" and name == "Security":
+            s = ", ".join(str(x) for x in value)
+            self.security.text = "Security: %s" % (s,)
+        elif name == "Roaming":
+            self.roaming.text = str(value)
+        elif name == "Ethernet":
+            self.populate_fields(self.eth_fields, value)
+        elif name == "Provider":
+            self.populate_fields(self.vpn_fields, value)
+        elif name in ("IPv4", "IPv4.Configuration"):
+            self.ipv4_properties[name] = value
+            used = self.ipv4_properties["IPv4"]
+            conf = self.ipv4_properties["IPv4.Configuration"]
+            def get_val(name):
+                v = used.get(name) or conf.get(name)
+                if not v:
+                    return ""
+                return str(v)
+            self.ipv4_address.text = get_val("Address")
+            self.ipv4_netmask.text = get_val("Netmask")
+            self.ipv4_gateway.text = get_val("Gateway")
+
+            method = str(conf.get("Method", ""))
+            editable = (method == "manual") and (not self.immutable)
+            self.ipv4_address.editable = editable
+            self.ipv4_netmask.editable = editable
+            self.ipv4_gateway.editable = editable
+
+            if method in ("dhcp", "fixed"):
+                self.ipv4_method_items["Automatic"].selected = True
+            elif method == "manual":
+                self.ipv4_method_items["Manual"].selected = True
+            elif method == "off":
+                self.ipv4_method_items["Off"].selected = True
+            elif method:
+                log.error("Unknown method: %s", method)
+
+        elif name in ("Proxy", "Proxy.Configuration"):
+            self.proxy_properties[name] = value
+            used = self.proxy_properties["Proxy"]
+            conf = self.proxy_properties["Proxy.Configuration"]
+            def get_val(name):
+                v = used.get(name) or conf.get(name)
+                if not v:
+                    return ""
+                return str(v)
+            # url, servers, excludes
+
+            method = str(conf.get("Method", ""))
+            editable = (method == "manual") and (not self.immutable)
+            # use editable...
+
+            if method == "direct":
+                self.proxy_method_items["Direct"].selected = True
+            elif method == "manual":
+                self.proxy_method_items["Manual"].selected = True
+            elif method == "auto":
+                self.proxy_method_items["Automatic"].selected = True
+            elif method:
+                log.error("Unknown method: %s", method)
+        elif name in self.readwrite_list_properties:
+            self.update_readwrite_list(name, value)
+
+    def _disconnect(self, obj):
+        def on_reply():
+            log.debug("Disconnected %s", self.path)
+            self.disconnect.disabled = False
+
+        def on_error(exc):
+            log.error("Could not disconnect %s", exc)
+            self.disconnect.disabled = False
+
+        self.bus_obj.Disconnect(reply_handler=on_reply, error_handler=on_error)
+        self.disconnect.disabled = True
+
+    def _connect(self, obj):
+        def on_reply():
+            log.debug("Connected %s", self.path)
+            self.connect.disabled = False
+
+        def on_error(exc):
+            log.error("Could not connect %s", exc)
+            self.connect.disabled = False
+
+        self.bus_obj.Connect(reply_handler=on_reply, error_handler=on_error)
+        self.connect.disabled = True
+
+    def _forget(self, obj):
+        def on_reply():
+            log.debug("Removed %s", self.path)
+            self.forget.disabled = False
+
+        def on_error(exc):
+            log.error("Could not remove %s", exc)
+            self.forget.disabled = False
+
+        self.bus_obj.Remove(reply_handler=on_reply, error_handler=on_error)
+        self.forget.disabled = True
+
+    def _on_user_auto_connect(self, obj):
+        state = obj.state
+        def on_reply():
+            log.info("Set AutoConnect=%s", state)
+
+        def on_error(exc):
+            log.error("Failed to set AutoConnect=%s: %s", state, exc)
+            obj.state = not state
+            popup_error(self.obj, "Failed to Apply Auto Connect",
+                        exc.get_dbus_message())
+
+        self.bus_obj.SetProperty("AutoConnect", dbus.Boolean(state),
+                                 reply_handler=on_reply, error_handler=on_error)
+
+    def _on_readwrite_changed(self, name, value):
+        def on_reply():
+            log.info("Set %s=%s", name, value)
+
+        def on_error(exc):
+            log.error("Failed to set %s=%s: %s", name, value, exc)
+            key = name[:-len(".Configuration")]
+            popup_error(self.obj, "Failed to Apply %s" % (key,),
+                        exc.get_dbus_message())
+            self.reload_readwrite_list(key)
+        self.bus_obj.SetProperty(name, dbus.Array(value, signature="s"),
+                                 reply_handler=on_reply, error_handler=on_error)
+
+    def _ipv4_apply(self):
+        value = self.ipv4_method.item_selected.text
+        if value == "Automatic":
+            method = "dhcp"
+        elif value == "Manual":
+            method = "manual"
+        elif value == "Off":
+            method = "off"
+
+        def make_variant(s):
+            return dbus.String(s, variant_level=1)
+        new = {"Method": make_variant(method)}
+        if method == "manual":
+            if self.ipv4_address.text:
+                new["Address"] = make_variant(self.ipv4_address.text)
+            if self.ipv4_netmask.text:
+                new["Netmask"] = make_variant(self.ipv4_netmask.text)
+            if self.ipv4_gateway.text:
+                new["Gateway"] = make_variant(self.ipv4_gateway.text)
+            if len(new) == 1: # no properties yet
+                return
+
+        conf = self.ipv4_properties["IPv4.Configuration"]
+        changed = []
+        for k, v in new.iteritems():
+            if conf.get(k) != v:
+                changed.append(k)
+        log.debug("Changed IPv4: %s", ", ".join(changed))
+        if not changed:
+            return
+
+        def on_reply():
+            log.info("Set IPv4=%s", new)
+
+        def on_error(exc):
+            log.error("Failed to set IPv4.Configuration=%s: %s", new, exc)
+            popup_error(self.obj, "Failed to Apply IPv4",
+                        exc.get_dbus_message())
+        self.bus_obj.SetProperty("IPv4.Configuration", new,
+                                 reply_handler=on_reply, error_handler=on_error)
+
+    def _on_ipv4_method(self, obj, item):
+        if item.text == "Automatic":
+            method = "dhcp"
+        elif item.text == "Manual":
+            method = "manual"
+        elif item.text == "Off":
+            method = "off"
+        conf = self.ipv4_properties["IPv4.Configuration"]
+        editable = (method == "manual") and (not self.immutable)
+        self.ipv4_address.editable = editable
+        self.ipv4_netmask.editable = editable
+        self.ipv4_gateway.editable = editable
+        if method == conf["Method"]:
+            return
+        self._ipv4_apply()
+
+    def _on_ipv4_property_changed(self, obj):
+        self._ipv4_apply()
+
+    def _on_ipv4_property_unfocused(self, obj):
+        used = self.ipv4_properties["IPv4"]
+        conf = self.ipv4_properties["IPv4.Configuration"]
+        def get_val(name):
+            v = used.get(name) or conf.get(name)
+            if not v:
+                return ""
+            return str(v)
+        self.ipv4_address.text = get_val("Address")
+        self.ipv4_netmask.text = get_val("Netmask")
+        self.ipv4_gateway.text = get_val("Gateway")
+
+    def _on_proxy_method(self, obj, item):
+        if item.text == "Direct":
+            method = "direct"
+        elif item.text == "Manual":
+            method = "manual"
+        elif item.text == "Automatic":
+            method = "auto"
+        conf = self.proxy_properties["Proxy.Configuration"]
+        editable = (method == "manual") and (not self.immutable)
+        # use editable...
+        if method == conf["Method"]:
+            return
+        #self._proxy_apply()
+
+    def _on_proxy_changed(self, obj):
+        pass
+        #self._proxy_apply()
+
+    def _on_proxy_unfocused(self, obj):
+        pass
+        #revert to configured values...
+
+
+########################################################################
+# Main Actions:
+def show_techs(button, naviframe):
+    def on_selected(path, properties):
+        name = str(properties.get("Name"))
+        log.debug("view technology: %r %s", name, path)
+        tv = TechView(naviframe, path, properties)
+        naviframe.item_push(name, None, None, tv.obj, "basic")
+
+    tl = TechList(naviframe, on_selected)
+    naviframe.item_push("Technologies", None, None, tl.obj, "basic")
+
+
+def connect_service(path, properties):
+    type = properties.get("Type")
+    if not type:
+        log.error("cannot try to connect to service without type: %s", path)
+        return
+    if type in ("system", "gps", "gadget"):
+        log.error("cannot connect to service with type: %s", type)
+        return
+
+    name = properties.get("Name")
+    if name:
+        name = str(name)
+    log.debug("connect to %s (%s): %s",
+              name, path, dbus_dict_to_str(properties))
+
+    def on_reply():
+        log.info("Connected to %s (%s)", name, path)
+
+    def on_error(exc):
+        exc_name = exc.get_dbus_name()
+        if exc_name == "net.connman.Error.AlreadyConnected" or \
+            exc_name == "net.connman.Error.InProgress":
+            log.debug("Failed to Connect to %s (%s): %s", name, path, exc)
+            return
+        log.error("Failed to Connect to %s (%s): %s", name, path, exc)
+        popup_error(win, "Failed to Connect to %s" % name,
+                    exc.get_dbus_message())
+
+    service = dbus.Interface(bus.get_object("net.connman", path),
+                             "net.connman.Service")
+    service.Connect(reply_handler=on_reply,
+                    error_handler=on_error)
+
+
+def show_service(path, properties):
+    name = str(properties.get("Name"))
+    log.debug("view service: %r %s", name, path)
+    sv = ServiceView(nf, path, properties)
+    nf.item_push(name, None, None, sv.obj, "basic")
+
+
+########################################################################
+# GUI helpers:
+def popup_fatal(obj, title, message):
+    """Shows a popup with a fatal message and a Quit button.
+
+    Dismissing this popup with the Quit button also exits the application.
+    """
+    win = obj.top_widget_get()
+    log.critical("%s: %s", title, message)
+    pop = elm.Popup(win)
+    pop.size_hint_weight = EXPAND_BOTH
+    pop.part_text_set("title,text", title)
+    pop.text = message
+
+    bt = elm.Button(win)
+    bt.text = "Quit"
+    bt.callback_clicked_add(lambda bt: elm.exit())
+    pop.part_content_set("button1", bt)
+    pop.show()
+
+
+def popup_error(obj, title, message):
+    """Shows a popup with an error message and a Close button."""
+    win = obj.top_widget_get()
+    log.error("%s: %s", title, message)
+    pop = elm.Popup(win)
+    pop.size_hint_weight = EXPAND_BOTH
+    pop.part_text_set("title,text", title)
+    pop.text = message
+
+    bt = elm.Button(win)
+    bt.text = "Close"
+    bt.callback_clicked_add(lambda bt: pop.delete())
+    pop.part_content_set("button1", bt)
+    pop.show()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Connection Manager for Enlightenment")
+    parser.add_argument("-v", "--verbose", action="count")
+    args = parser.parse_args()
+
+    level = logging.WARNING
+    if args.verbose:
+        level -= 10 * args.verbose
+    log.setLevel(level)
+
+    elm.init()
+    elm.policy_set(elm.ELM_POLICY_QUIT, elm.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
+
+    win = elm.Window("econnman", elm.ELM_WIN_BASIC)
+    win.title = "EConnMan"
+    win.icon_name = "econnman"
+    win.autodel = True
+    win.size = (480, 700)
+    win.show()
+
+    bg = elm.Background(win)
+    bg.size_hint_weight = EXPAND_BOTH
+    bg.show()
+    win.resize_object_add(bg)
+
+    try:
+        manager = dbus.Interface(bus.get_object("net.connman", "/"),
+                                 "net.connman.Manager")
+    except dbus.exceptions.DBusException, exc:
+        popup_fatal(win, "Failed to find ConnMan", str(exc))
+        elm.run()
+        elm.shutdown()
+        raise
+
+    nf = elm.Naviframe(win)
+    nf.size_hint_weight = EXPAND_BOTH
+    nf.show()
+    win.resize_object_add(nf)
+
+    offline_mon = OfflineModeMonitor(win)
+
+    techs = elm.Button(win)
+    techs.text = "Techs"
+    techs.callback_clicked_add(show_techs, nf)
+
+    serv_lst = ServicesList(win, connect_service, show_service)
+
+    nf.item_push("EConnMan", offline_mon.obj, techs, serv_lst.obj, "basic")
+
+    elm.run()
+    elm.shutdown()

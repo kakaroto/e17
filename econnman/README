@@ -1,0 +1,26 @@
+ConnMan User Interface in EFL
+
+REQUIREMENTS
+============
+
+ * Python-Elementary >= 0.7.3
+ * Python-E_DBus >= 0.7.3
+ * Python >= 2.7
+
+
+BUILDING AND INSTALLING
+=======================
+
+This package uses automake, so execute:
+
+Build::
+
+        ./configure --prefix=/usr
+        make all
+
+Install::
+
+        make install
+
+If you wish to install at alternative locations, then make sure to
+configure your PYTHONPATH to be able to access this location!
