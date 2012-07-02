@@ -1,6 +1,7 @@
 #include "main.h"
 #include "slideshow.h"
 #include "evas_object/photo_object.h"
+#include "evas_object/enki_elm_genlist_tree.h"
 
 static Evas_Object *inwin = NULL;
 static Evas_Object *list = NULL;
