@@ -481,10 +481,10 @@ _move_to(Evas_Object *tgrid, Edi_File *f, int step)
 
         while (f->current && step)
           {
-             Edi_Line *l;
+             Edi_Line *l2;
 
-             l = eina_list_data_get(f->current);
-             while (step && (l->read_only.line.index != f->offset))
+             l2 = eina_list_data_get(f->current);
+             while (step && (l2->read_only.line.index != f->offset))
                {
                   step++;
                   f->offset++;
