@@ -530,10 +530,10 @@ _mouse_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info)
    evas_object_geometry_get(obj, &x, &y, NULL, NULL);
    evas_object_textgrid_cell_size_get(obj, &cw, &ch);
 
-   line = (ev->canvas.y - y) / ch;
+   line = ef->offset + (ev->canvas.y - y) / ch;
    col = (ev->canvas.x - x) / cw;
 
-   CXCursor ref = clang_getCursor(ef->tx_unit, clang_getLocation(ef->tx_unit, cfile, line + 1, col + 1));
+   CXCursor ref = clang_getCursor(ef->tx_unit, clang_getLocation(ef->tx_unit, cfile, line, col));
      {
         CXCursor dest = clang_getCursorReferenced(ref);
         if (!clang_Cursor_isNull(dest))
