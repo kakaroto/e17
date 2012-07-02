@@ -1,6 +1,13 @@
 2012-02-12  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.ac:
+	* src/lib/poppler/epdf_poppler_page.cpp:
+	* src/lib/poppler/epdf_poppler_postscript.cpp:
+	use newer API if poppler >= 0.20 is installed
+
+2012-02-12  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.ac:
 	* src/lib/mupdf/Makefile.am:
 	* src/lib/poppler/Makefile.am:
 	fix DSO link errors
