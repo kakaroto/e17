@@ -172,10 +172,9 @@ fi
 AM_CONDITIONAL(WANT_ECORE_FILE,
    [test "x$want_ecore_file" != "xno" -a "x${have_ecore_file}" = "xyes"])
 
-python_evas_version="0.7.3"
 have_ecore_evas="no"
 want_ecore_evas="auto"
-pkgconfig_ecore_evas_requires_libs="ecore-evas >= 1.0.0 python-evas >= ${python_evas_version}"
+pkgconfig_ecore_evas_requires_libs="ecore-evas >= 1.0.0"
 AC_SUBST(pkgconfig_ecore_evas_requires_libs)
 AC_ARG_ENABLE([ecore-evas],
    [AC_HELP_STRING([--disable-ecore-evas],
@@ -194,12 +193,21 @@ if test "x$want_ecore_evas" = "xyes" -a "x$have_ecore_evas" = "xno"; then
     AC_MSG_ERROR([ecore-evas support requested, but not found by pkg-config: $pkgconfig_ecore_evas_requires_libs])
 fi
 CYTHON_ECORE_EVAS_INCLUDEDIR=""
+python_evas_version="0.7.3"
 if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
-   wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/evas/ecore.evas.c_ecore_evas.pyx"
-   CYTHON_ECORE_EVAS_INCLUDEDIR=`$PKG_CONFIG --variable=includedir "python-evas >= ${python_evas_version}"`
+   pkgconfig_python_evas_requires_libs="python-evas >= ${python_evas_version}"
+   AC_SUBST(pkgconfig_python_evas_requires_libs)
+   PKG_CHECK_MODULES([PYTHON_EVAS],
+      [$pkgconfig_python_evas_requires_libs],
+      [have_python_evas="yes"], [have_python_evas="no"]
+   )
+   if test "x${have_python_evas}" = "xyes"; then
+       wanted_cython_files="${wanted_cython_files} ${srcdir}/ecore/evas/ecore.evas.c_ecore_evas.pyx"
+       CYTHON_ECORE_EVAS_INCLUDEDIR=`$PKG_CONFIG --variable=includedir "python-evas >= ${python_evas_version}"`
+   fi
 fi
 AM_CONDITIONAL(WANT_ECORE_EVAS,
-   [test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"])
+   [test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes" -a "x${have_python_evas}" = "xyes"])
 AC_SUBST(CYTHON_ECORE_EVAS_INCLUDEDIR)
 
 AM_PATH_PYTHON(2.5)
@@ -228,7 +236,6 @@ if test "x$CYTHON_FOUND" != "xyes"; then
 fi
 AM_CONDITIONAL(HAVE_CYTHON, [test "x$CYTHON_FOUND" = "xyes"])
 
-
 FILTER_VAR_REGEXP([CFLAGS], [-fvisibility=hidden])
 FILTER_VAR_REGEXP([LDFLAGS], [-fvisibility=hidden])
 
@@ -239,7 +246,7 @@ fi
 
 AM_CHECK_PYTHONPATH
 
-if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
+if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes" -a "x${have_python_evas}" = "xyes" ; then
    PY_EFL_PYTHONPATH([PYTHON_EVAS], [python-evas >= ${python_evas_version}])
 fi
 
@@ -297,7 +304,7 @@ echo "  X....................: ${want_ecore_x} (found: ${have_ecore_x})"
 echo "  IMF..................: ${want_ecore_imf} (found: ${have_ecore_imf})"
 echo "  File.................: ${want_ecore_file} (found: ${have_ecore_file})"
 echo "  Win32................: ${want_ecore_win32} (found: ${have_ecore_win32})"
-echo "  Evas.................: ${want_ecore_evas} (found: ${have_ecore_evas})"
+echo "  Evas.................: ${want_ecore_evas} (found: ${have_ecore_evas} (ecore-evas), ${have_python_evas} (python-evas))"
 echo
 echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...............: $prefix"
@@ -310,7 +317,7 @@ if test "x$PYTHONPATH_CORRECT" != "xyes"; then
    AC_MSG_WARN([your \$PYTHONPATH does not contains the required directories to support your desired installation. Please check warnings above.])
 fi
 
-if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes" -a "x${PYTHON_EVAS_PYTHONPATH_CORRECT}" != "xyes"; then
+if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes" -a "x${have_python_evas}" = "xyes" -a "x${PYTHON_EVAS_PYTHONPATH_CORRECT}" != "xyes"; then
    AC_MSG_WARN([your \$PYTHONPATH does not includes python-evas, required by ecore-evas module and this may cause runtime problems. Please check warnings above.])
 fi
 

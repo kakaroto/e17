@@ -259,6 +259,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/ecore/win32 \
 	-I$(top_srcdir)/ecore/evas \
 	-I$(top_srcdir)/include \
+	-I@CYTHON_ECORE_EVAS_INCLUDEDIR@ \
 	@PYTHON_INCLUDES@ \
 	@ECORE_CFLAGS@ \
 	@ECORE_X_CFLAGS@ \
