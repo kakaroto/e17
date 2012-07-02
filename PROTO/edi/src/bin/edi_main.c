@@ -464,6 +464,21 @@ _move_to(Evas_Object *tgrid, Edi_File *f, int step)
 {
    if (step < 0)
      {
+        Edi_Line *l;
+        int h, ch, line;
+
+        evas_object_geometry_get(tgrid, NULL, NULL, NULL, &h);
+        evas_object_textgrid_cell_size_get(tgrid, NULL, &ch);
+
+        line = h / ch - 1; /* We need to get the actual count of visible line */
+
+        l = eina_list_data_get(eina_list_last(f->lines));
+        if (l)
+          {
+             while ((step < 0) && ((f->offset - step) >= (l->read_only.line.index - line + 1)))
+               step++;
+          }
+
         while (f->current && step)
           {
              Edi_Line *l;
