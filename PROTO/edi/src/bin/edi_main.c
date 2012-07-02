@@ -124,7 +124,9 @@ _edi_range_color_set(Edi_File *ef, Edi_Range range, Edi_Color color, void (*func
 
         /* FIXME: Could be done faster, just cleaner this way... */
         start_col = (i == range.start.line) ?  range.start.col : 0;
-        end_col = (i == range.end.line) ?  range.end.col : (unsigned int) tgridw;
+        end_col = ((i == range.end.line) &&
+              (range.end.col <= (unsigned int) tgridw)) ?
+           range.end.col : (unsigned int) tgridw;
 
         for (cell = cells + (start_col - 1), j = start_col ; j <= end_col ; cell++, j++)
           {
