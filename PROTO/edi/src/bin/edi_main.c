@@ -127,7 +127,7 @@ _edi_range_color_set(Edi_File *ef, Edi_Range range, Edi_Color color, void (*func
         cells = evas_object_textgrid_cellrow_get(textgrid, line);
 
         /* FIXME: Could be done faster, just cleaner this way... */
-        start_col = (i == range.start.line) ?  range.start.col : 0;
+        start_col = (i == range.start.line) ?  range.start.col : 1;
         end_col = ((i == range.end.line) &&
               (range.end.col <= (unsigned int) tgridw)) ?
            range.end.col : (unsigned int) tgridw;
@@ -531,7 +531,7 @@ _mouse_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info)
    evas_object_textgrid_cell_size_get(obj, &cw, &ch);
 
    line = ef->offset + (ev->canvas.y - y) / ch;
-   col = (ev->canvas.x - x) / cw;
+   col = 1 + (ev->canvas.x - x) / cw;
 
    CXCursor ref = clang_getCursor(ef->tx_unit, clang_getLocation(ef->tx_unit, cfile, line, col));
      {
