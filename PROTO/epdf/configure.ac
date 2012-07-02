@@ -124,10 +124,14 @@ else
    requirements_epdf="poppler ${requirements_epdf}"
    PKG_CHECK_MODULES(EPDF, [${requirements_epdf}])
    PKG_CHECK_EXISTS([poppler >= 0.15.2], [have_poppler_0_15_2="yes"], [have_poppler_0_15_2="no"])
+   PKG_CHECK_EXISTS([poppler >= 0.20], [have_poppler_0_20="yes"], [have_poppler_0_20="no"])
    POPPLER_VERSION=`${PKG_CONFIG} --modversion poppler`
    AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
    if test "x${have_poppler_0_15_2}" = "xyes" ; then
       AC_DEFINE([HAVE_POPPLER_0_15_2], [1], [Poppler >= 0.15.2.])
+   fi
+   if test "x${have_poppler_0_20}" = "xyes" ; then
+      AC_DEFINE([HAVE_POPPLER_0_20], [1], [Poppler >= 0.20.0.])
    fi
    backend="poppler"
 fi

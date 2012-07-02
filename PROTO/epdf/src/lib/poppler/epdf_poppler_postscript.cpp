@@ -77,36 +77,42 @@ epdf_postscript_duplex_set (Epdf_Postscript *postscript,
 void
 epdf_postscript_print (const Epdf_Postscript *postscript)
 {
-  PSOutputDev *ps_dev;
-
   if (!postscript)
     return;
 
   // FIXME: fix postscript title
-  ps_dev = new PSOutputDev (postscript->filename,
-#ifdef HAVE_POPPLER_0_15_2
-                            postscript->pdfdoc,
+#ifdef HAVE_POPPLER_0_20
+  PSOutputDev ps_dev(postscript->filename,
+                     postscript->pdfdoc,
+                     (char *)"PS title",
+                     postscript->first_page,
+                     postscript->last_page,
+                     psModePS,
+                     (int)postscript->width,
+                     (int)postscript->height,
+                     (GBool)postscript->duplex);
+#else
+  PSOutputDev ps_dev(postscript->filename,
+# ifdef HAVE_POPPLER_0_15_2
+                     postscript->pdfdoc,
+# endif
+                     postscript->pdfdoc->getXRef(),
+                     postscript->pdfdoc->getCatalog(),
+                     (char *)"PS title",
+                     postscript->first_page,
+                     postscript->last_page,
+                     psModePS,
+                     (int)postscript->width,
+                     (int)postscript->height,
+                     (GBool)postscript->duplex,
+                     0, 0, 0, 0, gFalse);
 #endif
-                            postscript->pdfdoc->getXRef(),
-                            postscript->pdfdoc->getCatalog(),
-                            (char *)"PS title",
-                            postscript->first_page,
-                            postscript->last_page,
-                            psModePS,
-                            (int)postscript->width,
-                            (int)postscript->height,
-                            (GBool)postscript->duplex,
-                            0, 0, 0, 0, gFalse);
-  if (!ps_dev)
-    return;
 
-  if (ps_dev->isOk ()) {
+  if (ps_dev.isOk()) {
     for (int page = postscript->first_page; page <= postscript->last_page; page++)
-      postscript->pdfdoc->displayPage (ps_dev,
-                                       page,
-                                       72.0, 72.0,
-                                       0, 0, 1, 0);
+      postscript->pdfdoc->displayPage(&ps_dev,
+                                      page,
+                                      72.0, 72.0,
+                                      0, 0, 1, 0);
   }
-
-  delete ps_dev;
 }
