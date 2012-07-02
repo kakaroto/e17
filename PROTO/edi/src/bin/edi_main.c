@@ -8,6 +8,8 @@
 
 #include "edi_private.h"
 
+#include "clang_debug.h"
+
 int _log_domain = 0;
 Evas_Object *win;
 Evas_Object *textgrid;
@@ -44,15 +46,17 @@ typedef enum {
      /* SYNTAX */
      EDI_COLOR_FOREGROUND_PUNCTUATION,
      EDI_COLOR_FOREGROUND_KEYWORD,
-     EDI_COLOR_FOREGROUND_IDENTIFIER,
+     EDI_COLOR_FOREGROUND_REF,
      EDI_COLOR_FOREGROUND_COMMENT,
-     EDI_COLOR_FOREGROUND_LITERAL
+     EDI_COLOR_FOREGROUND_LITERAL,
+     EDI_COLOR_FOREGROUND_USER_TYPE,
+     EDI_COLOR_FOREGROUND_PREPROCESSING_DIRECTIVE
 } Edi_Color;
 
 static const int colors[][4] =
 {
   { 0, 0, 0, 255 }, /* background */
-  { 128, 128, 128, 255 }, /* default */
+  { 0xDB, 0xDB, 0xDB, 255 }, /* default */
 
   /* SEVIRITY */
   { 0, 0, 0, 255 }, /* ignored */
@@ -64,9 +68,11 @@ static const int colors[][4] =
   /* SYNTAX */
   { 0x4E, 0x9A, 0x06, 255 }, /* punctuation */
   { 0x4E, 0x9A, 0x06, 255 }, /* keyword */
-  { 0xDB, 0xDB, 0xDB, 255 }, /* identifier */
+  { 128, 128, 128, 255 }, /* ref */
   { 0x34, 0x65, 0xA4, 255 }, /* comment */
-  { 0xCC, 0x00, 0x00, 255 } /* literal */
+  { 0xCC, 0x00, 0x00, 255 }, /* literal */
+  { 0x4E, 0x9A, 0x06, 255 }, /* usertype */
+  { 0x75, 0x50, 0x7B, 255 } /* preprocessor */
 };
 
 typedef struct
@@ -135,6 +141,7 @@ _clang_load_highlighting(Edi_File *ef)
    CXToken *tokens = NULL;
    unsigned int n = 0;
    unsigned int i = 0;
+   CXCursor *cursors = NULL;
 
      {
         CXFile cfile = clang_getFile(ef->tx_unit, eina_file_filename_get(ef->f));
@@ -148,13 +155,16 @@ _clang_load_highlighting(Edi_File *ef)
         range_start = ef->offset;
         range_end = ef->offset + tgridh;
         CXSourceRange range = clang_getRange(clang_getLocation(ef->tx_unit, cfile, range_start, 1), clang_getLocation(ef->tx_unit, cfile, range_end, tgridw));
-#endif
+#else
         CXSourceRange range = clang_getRange(
               clang_getLocationForOffset(ef->tx_unit, cfile, 0),
               clang_getLocationForOffset(ef->tx_unit, cfile, eina_file_size_get(ef->f)));
+#endif
         clang_tokenize(ef->tx_unit, range, &tokens, &n);
         /* FIXME: We should use annotate tokens and then use a lot more
          * color classes. I don't know why it's broken ATM... :( */
+        cursors = (CXCursor *) malloc(n * sizeof(CXCursor));
+        clang_annotateTokens(ef->tx_unit, tokens, n, cursors);
      }
 
    for (i = 0 ; i < n ; i++)
@@ -163,22 +173,35 @@ _clang_load_highlighting(Edi_File *ef)
         Edi_Color color = EDI_COLOR_FOREGROUND_DEFAULT;
 
         CXSourceRange tkrange = clang_getTokenExtent(ef->tx_unit, tokens[i]);
-        clang_getPresumedLocation(clang_getRangeStart(tkrange), NULL,
-              &range.start.line, &range.start.col);
-        clang_getPresumedLocation(clang_getRangeEnd(tkrange), NULL,
-              &range.end.line, &range.end.col);
+        clang_getSpellingLocation(clang_getRangeStart(tkrange), NULL,
+              &range.start.line, &range.start.col, NULL);
+        clang_getSpellingLocation(clang_getRangeEnd(tkrange), NULL,
+              &range.end.line, &range.end.col, NULL);
         /* FIXME: Should probably do something fancier, this is only a limited
          * number of types. */
         switch (clang_getTokenKind(tokens[i]))
           {
              case CXToken_Punctuation:
-                color = EDI_COLOR_FOREGROUND_DEFAULT;
+             case CXToken_Identifier:
+                switch (cursors[i].kind)
+                  {
+                   case CXCursor_DeclRefExpr:
+                      /* Handle different ref kinds */
+                      color = EDI_COLOR_FOREGROUND_REF;
+                      break;
+                   case CXCursor_PreprocessingDirective:
+                      color = EDI_COLOR_FOREGROUND_PREPROCESSING_DIRECTIVE;
+                      break;
+                   case CXCursor_TypeRef:
+                      color = EDI_COLOR_FOREGROUND_USER_TYPE;
+                      break;
+                   default:
+                      color = EDI_COLOR_FOREGROUND_DEFAULT;
+                      break;
+                  }
                 break;
              case CXToken_Keyword:
                 color = EDI_COLOR_FOREGROUND_KEYWORD;
-                break;
-             case CXToken_Identifier:
-                color = EDI_COLOR_FOREGROUND_IDENTIFIER;
                 break;
              case CXToken_Literal:
                 color = EDI_COLOR_FOREGROUND_LITERAL;
@@ -189,8 +212,30 @@ _clang_load_highlighting(Edi_File *ef)
           }
 
         _edi_range_color_set(ef, range, color, _edi_fg_set);
+
+#if 0
+        const char *kind = NULL;
+        switch (clang_getTokenKind(tokens[i])) {
+           case CXToken_Punctuation: kind = "Punctuation"; break;
+           case CXToken_Keyword: kind = "Keyword"; break;
+           case CXToken_Identifier: kind = "Identifier"; break;
+           case CXToken_Literal: kind = "Literal"; break;
+           case CXToken_Comment: kind = "Comment"; break;
+        }
+
+        printf("%s ", kind);
+        PrintToken(ef->tx_unit, tokens[i]);
+
+        if (!clang_isInvalid(cursors[i].kind)) {
+             printf(" ");
+             PrintCursor(cursors[i]);
+        }
+
+        printf("\n");
+#endif
      }
 
+   free(cursors);
    clang_disposeTokens(ef->tx_unit, tokens, n);
 }
 
@@ -205,7 +250,7 @@ _clang_load_errors(Edi_File *ef)
         CXDiagnostic diag = clang_getDiagnostic(ef->tx_unit, i);
         Edi_Range range;
 
-        clang_getPresumedLocation(clang_getDiagnosticLocation(diag), NULL, &range.start.line, &range.start.col);
+        clang_getSpellingLocation(clang_getDiagnosticLocation(diag), NULL, &range.start.line, &range.start.col, NULL);
         range.end = range.start;
 
         /* FIXME: Also handle ranges and fix suggestions. */
