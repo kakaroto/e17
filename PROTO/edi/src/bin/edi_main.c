@@ -505,6 +505,31 @@ _resize(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA
 }
 
 static void
+_mouse_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info)
+{
+   Edi_File *ef = data;
+   Evas_Coord x, y, cw, ch;
+   int line, col;
+   Evas_Event_Mouse_Down *ev = event_info;
+   CXFile cfile = clang_getFile(ef->tx_unit, eina_file_filename_get(ef->f));
+   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+   evas_object_textgrid_cell_size_get(obj, &cw, &ch);
+
+   line = (ev->canvas.y - y) / ch;
+   col = (ev->canvas.x - x) / cw;
+
+   CXCursor ref = clang_getCursor(ef->tx_unit, clang_getLocation(ef->tx_unit, cfile, line + 1, col + 1));
+     {
+        CXCursor dest = clang_getCursorReferenced(ref);
+        if (!clang_Cursor_isNull(dest))
+          {
+             PrintCursor(dest);
+             printf("\n");
+          }
+     }
+}
+
+static void
 _key_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Evas_Event_Key_Down *ev = event_info;
@@ -612,6 +637,7 @@ elm_main(int argc, char **argv)
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_RESIZE, _resize, file);
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, _key_down, file);
+   evas_object_event_callback_add(textgrid, EVAS_CALLBACK_MOUSE_DOWN, _mouse_down, file);
 
    elm_run();
  end:
