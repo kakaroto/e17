@@ -226,7 +226,7 @@ _clang_load_highlighting(Edi_File *ef)
 
         _edi_range_color_set(ef, range, color, _edi_fg_set);
 
-#if 1
+#if 0
         const char *kind = NULL;
         switch (clang_getTokenKind(tokens[i])) {
            case CXToken_Punctuation: kind = "Punctuation"; break;
