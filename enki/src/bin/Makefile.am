@@ -28,12 +28,25 @@ netsync.c \
 download.c \
 upload.c \
 main_menu.c \
+main.h \
+enlil_data.h \
+netsync.h \
+download.h \
+upload.h \
+objects.h \
+slideshow.h \
 evas_object/photos_list_object.c \
 evas_object/photo_object.c \
 evas_object/slideshow_object.c \
 evas_object/tabpanel.c \
 evas_object/enki_elm_genlist_tree.c \
-evas_object/edje_mempool.c
+evas_object/edje_mempool.c \
+evas_object/edje_mempool.h \
+evas_object/enki_elm_genlist_tree.h \
+evas_object/photo_object.h \
+evas_object/photos_list_object.h \
+evas_object/slideshow_object.h \
+evas_object/tabpanel.h
 
 enki_LDADD = @ENKI_LIBS@ @LTLIBINTL@
 

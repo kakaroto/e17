@@ -26,7 +26,9 @@ AUTHORS \
 COPYING \
 COPYING-PLAIN \
 autogen.sh \
-README
+README \
+enki.desktop \
+enki.png
 
 ICON = enki.png
 DESKTOP = enki.desktop

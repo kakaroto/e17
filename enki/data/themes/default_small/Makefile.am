@@ -1,5 +1,12 @@
 MAINTAINERCLEANFILES = Makefile.in default.edj
 
+EXTRA_DIST = \
+*.edc \
+../images/* \
+../default_elementary/*.edc \
+../default_elementary/images/* \
+fonts/*.ttf
+
 EDJE_CC = @edje_cc@
 EDJ = default_small.edj
 

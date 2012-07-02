@@ -2,3 +2,4 @@ MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = bin
 
+EXTRA_DIST = define.h
