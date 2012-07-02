@@ -214,7 +214,15 @@ _clang_load_highlighting(Edi_File *ef)
                   }
                 break;
              case CXToken_Keyword:
-                color = EDI_COLOR_FOREGROUND_KEYWORD;
+                switch (cursors[i].kind)
+                  {
+                   case CXCursor_PreprocessingDirective:
+                      color = EDI_COLOR_FOREGROUND_PREPROCESSING_DIRECTIVE;
+                      break;
+                   default:
+                      color = EDI_COLOR_FOREGROUND_KEYWORD;
+                      break;
+                  }
                 break;
              case CXToken_Literal:
                 color = EDI_COLOR_FOREGROUND_LITERAL;
