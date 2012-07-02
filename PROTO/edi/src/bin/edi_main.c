@@ -50,6 +50,8 @@ typedef enum {
      EDI_COLOR_FOREGROUND_COMMENT,
      EDI_COLOR_FOREGROUND_LITERAL,
      EDI_COLOR_FOREGROUND_USER_TYPE,
+     EDI_COLOR_FOREGROUND_MACRO_EXPANSION,
+     EDI_COLOR_FOREGROUND_MACRO_DEFINITION,
      EDI_COLOR_FOREGROUND_PREPROCESSING_DIRECTIVE
 } Edi_Color;
 
@@ -68,10 +70,12 @@ static const int colors[][4] =
   /* SYNTAX */
   { 0x4E, 0x9A, 0x06, 255 }, /* punctuation */
   { 0x4E, 0x9A, 0x06, 255 }, /* keyword */
-  { 128, 128, 128, 255 }, /* ref */
+  { 0x80, 0x80, 0x80, 255 }, /* ref */
   { 0x34, 0x65, 0xA4, 255 }, /* comment */
   { 0xCC, 0x00, 0x00, 255 }, /* literal */
   { 0x4E, 0x9A, 0x06, 255 }, /* usertype */
+  { 0x70, 0x70, 0x70, 255 }, /* macro expansion */
+  { 0x55, 0x30, 0x5B, 255 }, /* macro definition */
   { 0x75, 0x50, 0x7B, 255 } /* preprocessor */
 };
 
@@ -191,11 +195,18 @@ _clang_load_highlighting(Edi_File *ef)
                       /* Handle different ref kinds */
                       color = EDI_COLOR_FOREGROUND_REF;
                       break;
+                   case CXCursor_MacroDefinition:
+                      color = EDI_COLOR_FOREGROUND_MACRO_DEFINITION;
+                      break;
+                   case CXCursor_InclusionDirective:
                    case CXCursor_PreprocessingDirective:
                       color = EDI_COLOR_FOREGROUND_PREPROCESSING_DIRECTIVE;
                       break;
                    case CXCursor_TypeRef:
                       color = EDI_COLOR_FOREGROUND_USER_TYPE;
+                      break;
+                   case CXCursor_MacroExpansion:
+                      color = EDI_COLOR_FOREGROUND_MACRO_EXPANSION;
                       break;
                    default:
                       color = EDI_COLOR_FOREGROUND_DEFAULT;
@@ -215,7 +226,7 @@ _clang_load_highlighting(Edi_File *ef)
 
         _edi_range_color_set(ef, range, color, _edi_fg_set);
 
-#if 0
+#if 1
         const char *kind = NULL;
         switch (clang_getTokenKind(tokens[i])) {
            case CXToken_Punctuation: kind = "Punctuation"; break;
@@ -334,7 +345,9 @@ _edi_file_open(const char *filename)
    int clang_argc = sizeof(clang_argv) / sizeof(*clang_argv);
 
    ef->idx = clang_createIndex(0, 0);
-   ef->tx_unit = clang_parseTranslationUnit(ef->idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, CXTranslationUnit_None);
+
+   /* FIXME: Possibly activate more options? */
+   ef->tx_unit = clang_parseTranslationUnit(ef->idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, CXTranslationUnit_DetailedPreprocessingRecord);
 
    return ef;
 
