@@ -17,7 +17,9 @@ libenlil_la_SOURCES = 	\
 	enlil_main.c	\
 	enlil_data.c	\
 	enlil_alloc.c	\
-	enlil_library.c
+	enlil_library.c	\
+	enlil_private.h	\
+	Enlil.h
 
 installed_headersdir = $(includedir)/enlil-$(VMAJ)
 installed_headers_DATA = Enlil.h
