@@ -355,7 +355,7 @@ _edi_file_open(const char *filename)
    ef->idx = clang_createIndex(0, 0);
 
    /* FIXME: Possibly activate more options? */
-   ef->tx_unit = clang_parseTranslationUnit(ef->idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, CXTranslationUnit_DetailedPreprocessingRecord);
+   ef->tx_unit = clang_parseTranslationUnit(ef->idx, eina_file_filename_get(ef->f), clang_argv, clang_argc, NULL, 0, clang_defaultEditingTranslationUnitOptions() | CXTranslationUnit_DetailedPreprocessingRecord);
 
    return ef;
 
