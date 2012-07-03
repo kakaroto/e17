@@ -46,6 +46,7 @@ typedef enum {
      /* SYNTAX */
      EDI_COLOR_FOREGROUND_PUNCTUATION,
      EDI_COLOR_FOREGROUND_KEYWORD,
+     EDI_COLOR_FOREGROUND_KEYWORD_STMT,
      EDI_COLOR_FOREGROUND_REF,
      EDI_COLOR_FOREGROUND_COMMENT,
      EDI_COLOR_FOREGROUND_LITERAL,
@@ -70,6 +71,7 @@ static const int colors[][4] =
   /* SYNTAX */
   { 0x4E, 0x9A, 0x06, 255 }, /* punctuation */
   { 0x4E, 0x9A, 0x06, 255 }, /* keyword */
+  { 0xC4, 0xA0, 0x00, 255 }, /* keyword statement */
   { 0x80, 0x80, 0x80, 255 }, /* ref */
   { 0x34, 0x65, 0xA4, 255 }, /* comment */
   { 0xCC, 0x00, 0x00, 255 }, /* literal */
@@ -218,6 +220,20 @@ _clang_load_highlighting(Edi_File *ef)
                   {
                    case CXCursor_PreprocessingDirective:
                       color = EDI_COLOR_FOREGROUND_PREPROCESSING_DIRECTIVE;
+                      break;
+                   case CXCursor_CaseStmt:
+                   case CXCursor_DefaultStmt:
+                   case CXCursor_IfStmt:
+                   case CXCursor_SwitchStmt:
+                   case CXCursor_WhileStmt:
+                   case CXCursor_DoStmt:
+                   case CXCursor_ForStmt:
+                   case CXCursor_GotoStmt:
+                   case CXCursor_IndirectGotoStmt:
+                   case CXCursor_ContinueStmt:
+                   case CXCursor_BreakStmt:
+                   case CXCursor_ReturnStmt:
+                      color = EDI_COLOR_FOREGROUND_KEYWORD_STMT;
                       break;
                    default:
                       color = EDI_COLOR_FOREGROUND_KEYWORD;
