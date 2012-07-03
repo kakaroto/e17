@@ -123,7 +123,7 @@ group {
                rel1 {
                   to_y: "clipper";
                   to_x: "notification.swallow.app_icon";
-	          relative: 1.0 0.0;
+                  relative: 1.0 0.0;
                   offset: 10 5;
                }
                rel2 {
@@ -203,7 +203,7 @@ group {
             state: "default" 0.0;
             align: 0.0 0.0;
             min:  260 40;
-                   //	fixed: 1 1;
+                   //        fixed: 1 1;
 
             rel1 { 
                to_x: "notification.swallow.app_icon";

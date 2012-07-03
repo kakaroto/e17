@@ -3,69 +3,69 @@ group {
    name: "e/modules/clock/main";
    script {
       public clock_cb(val) {
-	 new buf[11];
-	 new year, month, day, yearday, weekday, hour, minute;
-	 new Float:second;
-	 new v;
-	 
-	 date(year, month, day, yearday, weekday, hour, minute, second);
-	 v = round(second);
+         new buf[11];
+         new year, month, day, yearday, weekday, hour, minute;
+         new Float:second;
+         new v;
+         
+         date(year, month, day, yearday, weekday, hour, minute, second);
+         v = round(second);
 #if E17_PROFILE != HIRES_PDA && E17_PROFILE != LOWRES_PDA && E17_PROFILE != MEDIUMRES_PDA
-	 timer(1.0 - (second - v), "clock_cb", 1);
+         timer(1.0 - (second - v), "clock_cb", 1);
 #else
-	 timer(10.0 - (second - v), "clock_cb", 1);
+         timer(10.0 - (second - v), "clock_cb", 1);
 #endif
 #if E17_PROFILE != HIRES_PDA && E17_PROFILE != LOWRES_PDA && E17_PROFILE != MEDIUMRES_PDA
-	 buf[0] = 0;
-	 if (v < 10) {snprintf(buf, 10, "0%i", v);}
-	 else        {snprintf(buf, 10, "%i", v);}
-	 set_state(PART:"seconds", buf, 0.0);
+         buf[0] = 0;
+         if (v < 10) {snprintf(buf, 10, "0%i", v);}
+         else        {snprintf(buf, 10, "%i", v);}
+         set_state(PART:"seconds", buf, 0.0);
 #endif
-	 v = minute;
-	 buf[0] = 0;
-	 if (v < 10) {snprintf(buf, 10, "0%i", v);}
-	 else        {snprintf(buf, 10, "%i", v);}
-	 set_state(PART:"minutes", buf, 0.0);
+         v = minute;
+         buf[0] = 0;
+         if (v < 10) {snprintf(buf, 10, "0%i", v);}
+         else        {snprintf(buf, 10, "%i", v);}
+         set_state(PART:"minutes", buf, 0.0);
 
-	 if (hour > 7 && hour < 20) {
-	     set_state(PART:"special", "default", 0.0);
-	 } else {
-	     set_state(PART:"special", "moon", 0.0);
-	 }
-	 v = ((hour % 12) * 5) + ((minute * 5) / 60);
-	 buf[0] = 0;
-	 if (v < 10) {snprintf(buf, 10, "0%i", v);}
-	 else        {snprintf(buf, 10, "%i", v);}
-	 set_state(PART:"hour", buf, 0.0);
+         if (hour > 7 && hour < 20) {
+             set_state(PART:"special", "default", 0.0);
+         } else {
+             set_state(PART:"special", "moon", 0.0);
+         }
+         v = ((hour % 12) * 5) + ((minute * 5) / 60);
+         buf[0] = 0;
+         if (v < 10) {snprintf(buf, 10, "0%i", v);}
+         else        {snprintf(buf, 10, "%i", v);}
+         set_state(PART:"hour", buf, 0.0);
       }
    }
    parts {
       part {
-	 name: "special";
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    image {
-	       normal: "clock_sun.png";
-	    }
-	 }
-	 description {
-	    state: "moon" 0.0;
-	    inherit: "default" 0.0;
-	    image {
-	       normal: "clock_moon.png";
-	    }
-	 }
+         name: "special";
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            image {
+               normal: "clock_sun.png";
+            }
+         }
+         description {
+            state: "moon" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "clock_moon.png";
+            }
+         }
       }
       part {
-	 name: "bg";
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    image {
-	       normal: "clock_bg.png";
-	    }
-	 }
+         name: "bg";
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            image {
+               normal: "clock_bg.png";
+            }
+         }
       }
 #ifdef IND
 # undef IND
@@ -73,86 +73,86 @@ group {
 #if E17_PROFILE != HIRES_PDA && E17_PROFILE != LOWRES_PDA && E17_PROFILE != MEDIUMRES_PDA
 # define IND "seconds"
       part {
-	 name: IND;
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    image {
-	       normal: "clock_"IND"_00.png";
-	    }
-	 }
+         name: IND;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            image {
+               normal: "clock_"IND"_00.png";
+            }
+         }
 # ifdef HAND
 #  undef HAND
 # endif
 # define HAND(num) \
-	    description { \
-	       state: num 0.0; \
-	       inherit: "default" 0.0; \
-	       image { \
-		  normal: "clock_"IND"_"num".png"; \
-	       } \
-	    }
-	 HAND("00")
-	 HAND("01")
-	 HAND("02")
-	 HAND("03")
-	 HAND("04")
-	 HAND("05")
-	 HAND("06")
-	 HAND("07")
-	 HAND("08")
-	 HAND("09")
-	 HAND("10")
-	 HAND("11")
-	 HAND("12")
-	 HAND("13")
-	 HAND("14")
-	 HAND("15")
-	 HAND("16")
-	 HAND("17")
-	 HAND("18")
-	 HAND("19")
-	 HAND("20")
-	 HAND("21")
-	 HAND("22")
-	 HAND("23")
-	 HAND("24")
-	 HAND("25")
-	 HAND("26")
-	 HAND("27")
-	 HAND("28")
-	 HAND("29")
-	 HAND("30")
-	 HAND("31")
-	 HAND("32")
-	 HAND("33")
-	 HAND("34")
-	 HAND("35")
-	 HAND("36")
-	 HAND("37")
-	 HAND("38")
-	 HAND("39")
-	 HAND("40")
-	 HAND("41")
-	 HAND("42")
-	 HAND("43")
-	 HAND("44")
-	 HAND("45")
-	 HAND("46")
-	 HAND("47")
-	 HAND("48")
-	 HAND("49")
-	 HAND("50")
-	 HAND("51")
-	 HAND("52")
-	 HAND("53")
-	 HAND("54")
-	 HAND("55")
-	 HAND("56")
-	 HAND("57")
-	 HAND("58")
-	 HAND("59")
+            description { \
+               state: num 0.0; \
+               inherit: "default" 0.0; \
+               image { \
+                  normal: "clock_"IND"_"num".png"; \
+               } \
+            }
+         HAND("00")
+         HAND("01")
+         HAND("02")
+         HAND("03")
+         HAND("04")
+         HAND("05")
+         HAND("06")
+         HAND("07")
+         HAND("08")
+         HAND("09")
+         HAND("10")
+         HAND("11")
+         HAND("12")
+         HAND("13")
+         HAND("14")
+         HAND("15")
+         HAND("16")
+         HAND("17")
+         HAND("18")
+         HAND("19")
+         HAND("20")
+         HAND("21")
+         HAND("22")
+         HAND("23")
+         HAND("24")
+         HAND("25")
+         HAND("26")
+         HAND("27")
+         HAND("28")
+         HAND("29")
+         HAND("30")
+         HAND("31")
+         HAND("32")
+         HAND("33")
+         HAND("34")
+         HAND("35")
+         HAND("36")
+         HAND("37")
+         HAND("38")
+         HAND("39")
+         HAND("40")
+         HAND("41")
+         HAND("42")
+         HAND("43")
+         HAND("44")
+         HAND("45")
+         HAND("46")
+         HAND("47")
+         HAND("48")
+         HAND("49")
+         HAND("50")
+         HAND("51")
+         HAND("52")
+         HAND("53")
+         HAND("54")
+         HAND("55")
+         HAND("56")
+         HAND("57")
+         HAND("58")
+         HAND("59")
       }
 #endif
 #ifdef IND
@@ -160,347 +160,347 @@ group {
 #endif
 #define IND "minutes"
       part {
-	 name: IND;
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    image {
-	       normal: "clock_"IND"_00.png";
-	    }
-	 }
+         name: IND;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            image {
+               normal: "clock_"IND"_00.png";
+            }
+         }
 #ifdef HAND
 # undef HAND
 #endif
 #define HAND(num) \
-	    description { \
-	       state: num 0.0; \
-	       inherit: "default" 0.0; \
-	       image { \
-		  normal: "clock_"IND"_"num".png"; \
-	       } \
-	    }
-	 HAND("00")
-	 HAND("01")
-	 HAND("02")
-	 HAND("03")
-	 HAND("04")
-	 HAND("05")
-	 HAND("06")
-	 HAND("07")
-	 HAND("08")
-	 HAND("09")
-	 HAND("10")
-	 HAND("11")
-	 HAND("12")
-	 HAND("13")
-	 HAND("14")
-	 HAND("15")
-	 HAND("16")
-	 HAND("17")
-	 HAND("18")
-	 HAND("19")
-	 HAND("20")
-	 HAND("21")
-	 HAND("22")
-	 HAND("23")
-	 HAND("24")
-	 HAND("25")
-	 HAND("26")
-	 HAND("27")
-	 HAND("28")
-	 HAND("29")
-	 HAND("30")
-	 HAND("31")
-	 HAND("32")
-	 HAND("33")
-	 HAND("34")
-	 HAND("35")
-	 HAND("36")
-	 HAND("37")
-	 HAND("38")
-	 HAND("39")
-	 HAND("40")
-	 HAND("41")
-	 HAND("42")
-	 HAND("43")
-	 HAND("44")
-	 HAND("45")
-	 HAND("46")
-	 HAND("47")
-	 HAND("48")
-	 HAND("49")
-	 HAND("50")
-	 HAND("51")
-	 HAND("52")
-	 HAND("53")
-	 HAND("54")
-	 HAND("55")
-	 HAND("56")
-	 HAND("57")
-	 HAND("58")
-	 HAND("59")
+            description { \
+               state: num 0.0; \
+               inherit: "default" 0.0; \
+               image { \
+                  normal: "clock_"IND"_"num".png"; \
+               } \
+            }
+         HAND("00")
+         HAND("01")
+         HAND("02")
+         HAND("03")
+         HAND("04")
+         HAND("05")
+         HAND("06")
+         HAND("07")
+         HAND("08")
+         HAND("09")
+         HAND("10")
+         HAND("11")
+         HAND("12")
+         HAND("13")
+         HAND("14")
+         HAND("15")
+         HAND("16")
+         HAND("17")
+         HAND("18")
+         HAND("19")
+         HAND("20")
+         HAND("21")
+         HAND("22")
+         HAND("23")
+         HAND("24")
+         HAND("25")
+         HAND("26")
+         HAND("27")
+         HAND("28")
+         HAND("29")
+         HAND("30")
+         HAND("31")
+         HAND("32")
+         HAND("33")
+         HAND("34")
+         HAND("35")
+         HAND("36")
+         HAND("37")
+         HAND("38")
+         HAND("39")
+         HAND("40")
+         HAND("41")
+         HAND("42")
+         HAND("43")
+         HAND("44")
+         HAND("45")
+         HAND("46")
+         HAND("47")
+         HAND("48")
+         HAND("49")
+         HAND("50")
+         HAND("51")
+         HAND("52")
+         HAND("53")
+         HAND("54")
+         HAND("55")
+         HAND("56")
+         HAND("57")
+         HAND("58")
+         HAND("59")
       }
 #ifdef IND
 # undef IND
 #endif
 #define IND "hour"
       part {
-	 name: IND;
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    image {
-	       normal: "clock_"IND"_00.png";
-	    }
-	 }
+         name: IND;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            image {
+               normal: "clock_"IND"_00.png";
+            }
+         }
 #ifdef HAND
 # undef HAND
 #endif
 #define HAND(num) \
-	    description { \
-	       state: num 0.0; \
-	       inherit: "default" 0.0; \
-	       image { \
-		  normal: "clock_"IND"_"num".png"; \
-	       } \
-	    }
-	 HAND("00")
-	 HAND("01")
-	 HAND("02")
-	 HAND("03")
-	 HAND("04")
-	 HAND("05")
-	 HAND("06")
-	 HAND("07")
-	 HAND("08")
-	 HAND("09")
-	 HAND("10")
-	 HAND("11")
-	 HAND("12")
-	 HAND("13")
-	 HAND("14")
-	 HAND("15")
-	 HAND("16")
-	 HAND("17")
-	 HAND("18")
-	 HAND("19")
-	 HAND("20")
-	 HAND("21")
-	 HAND("22")
-	 HAND("23")
-	 HAND("24")
-	 HAND("25")
-	 HAND("26")
-	 HAND("27")
-	 HAND("28")
-	 HAND("29")
-	 HAND("30")
-	 HAND("31")
-	 HAND("32")
-	 HAND("33")
-	 HAND("34")
-	 HAND("35")
-	 HAND("36")
-	 HAND("37")
-	 HAND("38")
-	 HAND("39")
-	 HAND("40")
-	 HAND("41")
-	 HAND("42")
-	 HAND("43")
-	 HAND("44")
-	 HAND("45")
-	 HAND("46")
-	 HAND("47")
-	 HAND("48")
-	 HAND("49")
-	 HAND("50")
-	 HAND("51")
-	 HAND("52")
-	 HAND("53")
-	 HAND("54")
-	 HAND("55")
-	 HAND("56")
-	 HAND("57")
-	 HAND("58")
-	 HAND("59")
+            description { \
+               state: num 0.0; \
+               inherit: "default" 0.0; \
+               image { \
+                  normal: "clock_"IND"_"num".png"; \
+               } \
+            }
+         HAND("00")
+         HAND("01")
+         HAND("02")
+         HAND("03")
+         HAND("04")
+         HAND("05")
+         HAND("06")
+         HAND("07")
+         HAND("08")
+         HAND("09")
+         HAND("10")
+         HAND("11")
+         HAND("12")
+         HAND("13")
+         HAND("14")
+         HAND("15")
+         HAND("16")
+         HAND("17")
+         HAND("18")
+         HAND("19")
+         HAND("20")
+         HAND("21")
+         HAND("22")
+         HAND("23")
+         HAND("24")
+         HAND("25")
+         HAND("26")
+         HAND("27")
+         HAND("28")
+         HAND("29")
+         HAND("30")
+         HAND("31")
+         HAND("32")
+         HAND("33")
+         HAND("34")
+         HAND("35")
+         HAND("36")
+         HAND("37")
+         HAND("38")
+         HAND("39")
+         HAND("40")
+         HAND("41")
+         HAND("42")
+         HAND("43")
+         HAND("44")
+         HAND("45")
+         HAND("46")
+         HAND("47")
+         HAND("48")
+         HAND("49")
+         HAND("50")
+         HAND("51")
+         HAND("52")
+         HAND("53")
+         HAND("54")
+         HAND("55")
+         HAND("56")
+         HAND("57")
+         HAND("58")
+         HAND("59")
       }
       part {
-	 name: "main";
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    rel1 {
-	       to: "bg";
-	    }
-	    rel2 {
-	       to: "bg";
-	    }
-	    image {
-	       normal: "clock_fg.png";
-	    }
-	 }
+         name: "main";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "bg";
+            }
+            rel2 {
+               to: "bg";
+            }
+            image {
+               normal: "clock_fg.png";
+            }
+         }
       }
    }
    programs {
       program {
-	 name: "init";
-	 signal: "load";
-	 source: "";
-	 script {
-	    clock_cb(0);
-	 }
+         name: "init";
+         signal: "load";
+         source: "";
+         script {
+            clock_cb(0);
+         }
       }
    }
 }
 
  
 group { name: "e/modules/clock/digital";
-	min: 56 16;
+        min: 56 16;
 
-	script {
-		public do_seconds, do_24h, tick_timer;
+        script {
+                public do_seconds, do_24h, tick_timer;
 
-		public clock_cb(val) {
-			new year, month, day, yearday, weekday, hour, minute;
-			new Float:second;
-			new v, dosec, do24h, tim;
-			new buf[32], bhour[3], bminute[3], bsecond[4], bampm[3];
+                public clock_cb(val) {
+                        new year, month, day, yearday, weekday, hour, minute;
+                        new Float:second;
+                        new v, dosec, do24h, tim;
+                        new buf[32], bhour[3], bminute[3], bsecond[4], bampm[3];
 
-			date(year, month, day, yearday, weekday, hour, minute, second);
+                        date(year, month, day, yearday, weekday, hour, minute, second);
 
-			dosec = get_int(do_seconds);
-			do24h = get_int(do_24h);
+                        dosec = get_int(do_seconds);
+                        do24h = get_int(do_24h);
 
-			if (do24h) {
-				strcat(bampm, "");
-				if (hour < 10)
-					snprintf(bhour, sizeof(bhour), "0%d", hour);
-				else
-					snprintf(bhour, sizeof(bhour), "%d", hour);
+                        if (do24h) {
+                                strcat(bampm, "");
+                                if (hour < 10)
+                                        snprintf(bhour, sizeof(bhour), "0%d", hour);
+                                else
+                                        snprintf(bhour, sizeof(bhour), "%d", hour);
 
-			} else {
-				v = hour % 12;
+                        } else {
+                                v = hour % 12;
 
-				if (hour >= 12)
-					strcat(bampm, "pm");
-				else
-					strcat(bampm, "am");
+                                if (hour >= 12)
+                                        strcat(bampm, "pm");
+                                else
+                                        strcat(bampm, "am");
 
-				if (v == 0)
-					v = 12;
+                                if (v == 0)
+                                        v = 12;
 
-				snprintf(bhour, sizeof(bhour), "%d", v);
-			}
+                                snprintf(bhour, sizeof(bhour), "%d", v);
+                        }
 
-			if (minute < 10)
-				snprintf(bminute, sizeof(bminute), "0%d", minute);
-			else
-				snprintf(bminute, sizeof(bminute), "%d", minute);
+                        if (minute < 10)
+                                snprintf(bminute, sizeof(bminute), "0%d", minute);
+                        else
+                                snprintf(bminute, sizeof(bminute), "%d", minute);
 
-			if (dosec) {
-				v = round(second);
-				if (v < 10)
-					snprintf(bsecond, sizeof(bsecond), ":0%d", v);
-				else
-					snprintf(bsecond, sizeof(bsecond), ":%d", v);
-			} else
-				strcat(bsecond, "");
+                        if (dosec) {
+                                v = round(second);
+                                if (v < 10)
+                                        snprintf(bsecond, sizeof(bsecond), ":0%d", v);
+                                else
+                                        snprintf(bsecond, sizeof(bsecond), ":%d", v);
+                        } else
+                                strcat(bsecond, "");
 
-			snprintf(buf, sizeof(buf), "%s:%s%s%s",
-			         bhour, bminute, bsecond, bampm);
-			set_text(PART:"time", buf);
+                        snprintf(buf, sizeof(buf), "%s:%s%s%s",
+                                 bhour, bminute, bsecond, bampm);
+                        set_text(PART:"time", buf);
 
-			if (dosec) {
-				v = round(second);
-				tim = timer(1.0 - (second - v), "clock_cb", 1);
-			} else {
-				tim = timer(60.0 - (second), "clock_cb", 1);
-			}
-			set_int(tick_timer, tim);
-		}
+                        if (dosec) {
+                                v = round(second);
+                                tim = timer(1.0 - (second - v), "clock_cb", 1);
+                        } else {
+                                tim = timer(60.0 - (second), "clock_cb", 1);
+                        }
+                        set_int(tick_timer, tim);
+                }
 
-		public restart_clock() {
-			new tim;
-			tim = get_int(tick_timer);
-			if (tim) {
-				cancel_timer(tim);
-				set_int(tick_timer, 0);
-			}
-			clock_cb(0);
-		}
-	}
+                public restart_clock() {
+                        new tim;
+                        tim = get_int(tick_timer);
+                        if (tim) {
+                                cancel_timer(tim);
+                                set_int(tick_timer, 0);
+                        }
+                        clock_cb(0);
+                }
+        }
 
-	parts {
-		part { name: "time";
-			type: TEXT;
-			effect: SOFT_SHADOW;
+        parts {
+                part { name: "time";
+                        type: TEXT;
+                        effect: SOFT_SHADOW;
                         scale: 1;
-			description { state: "default" 0.0;
-				color: 255 255 255 255;
-				color3: DARKNESS_BLUE 170;
-				text {
-					text_class: "module_large";
-					font: "Sans:style=Bold";
-					size: 14;
-					fit: 1 1;
-					min: 1 1;
-					size_range: 9 72;
-					text: "--:--";
-				}
-			}
-		}
+                        description { state: "default" 0.0;
+                                color: 255 255 255 255;
+                                color3: DARKNESS_BLUE 170;
+                                text {
+                                        text_class: "module_large";
+                                        font: "Sans:style=Bold";
+                                        size: 14;
+                                        fit: 1 1;
+                                        min: 1 1;
+                                        size_range: 9 72;
+                                        text: "--:--";
+                                }
+                        }
+                }
 
-		part { name: "event";
-			type: RECT;
-			mouse_events: 1;
-			description { state: "default" 0.0;
-				color: 0 0 0 0;
-			}
-		}
-	}
+                part { name: "event";
+                        type: RECT;
+                        mouse_events: 1;
+                        description { state: "default" 0.0;
+                                color: 0 0 0 0;
+                        }
+                }
+        }
 
-	programs {
-		program { name: "init";
-			signal: "load";
-			source: "";
-			script {
-				clock_cb(0);
-			}
-		}
-		program { name: "secon";
-			signal: "e,state,seconds,on";
-			source: "e";
-			script {
-				set_int(do_seconds, 1);
-				restart_clock();
-			}
-		}
-		program { name: "secoff";
-			signal: "e,state,seconds,off";
-			source: "e";
-			script {
-				set_int(do_seconds, 0);
-				restart_clock();
-			}
-		}
-		program { name: "24h";
-			signal: "e,state,24h,on";
-			source: "e";
-			script {
-				set_int(do_24h, 1);
-				restart_clock();
-			}
-		}
-		program { name: "12h";
-			signal: "e,state,24h,off";
-			source: "e";
-			script {
-				set_int(do_24h, 0);
-				restart_clock();
-			}
-		}
-	}
+        programs {
+                program { name: "init";
+                        signal: "load";
+                        source: "";
+                        script {
+                                clock_cb(0);
+                        }
+                }
+                program { name: "secon";
+                        signal: "e,state,seconds,on";
+                        source: "e";
+                        script {
+                                set_int(do_seconds, 1);
+                                restart_clock();
+                        }
+                }
+                program { name: "secoff";
+                        signal: "e,state,seconds,off";
+                        source: "e";
+                        script {
+                                set_int(do_seconds, 0);
+                                restart_clock();
+                        }
+                }
+                program { name: "24h";
+                        signal: "e,state,24h,on";
+                        source: "e";
+                        script {
+                                set_int(do_24h, 1);
+                                restart_clock();
+                        }
+                }
+                program { name: "12h";
+                        signal: "e,state,24h,off";
+                        source: "e";
+                        script {
+                                set_int(do_24h, 0);
+                                restart_clock();
+                        }
+                }
+        }
    }

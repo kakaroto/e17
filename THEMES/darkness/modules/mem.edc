@@ -15,8 +15,8 @@ group {
 
                 value = getfarg(2);
                 set_state(PART:"swap_label", "visible", value);
-            }		  
-        }	     
+            }                  
+        }             
     }
 
     parts {
@@ -57,7 +57,7 @@ group {
                     font: "Sans-Mono";
                     min: 1 1;
                     align: 0.5 0.5;
-                    text_class: "module_small";	       
+                    text_class: "module_small";               
                 }
             }
         }
@@ -222,6 +222,6 @@ group {
                 inherit: "visible" 0.0;
                 color: 228 41 27 255;
             }
-        }	     
+        }             
     }
 }

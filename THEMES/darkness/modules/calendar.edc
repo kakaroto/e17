@@ -6,46 +6,46 @@ images {
    image: "arrow2_right.png" COMP;
 }
 
-#define FLASHY_RECT(To, X1, X2)			\
-  part {					\
-     name: To"/back";				\
-     type: RECT;				\
-     mouse_events: 1;				\
-     description {				\
-        state: "default" 0.0;			\
-        rel1.to: To;				\
-        rel1.offset: -1 -1;			\
-        rel2.to: To;				\
-        rel2.offset: 0 0;			\
-        color: 255 128 128 0;			\
-     }						\
-     description {				\
-        state: "click" 0.0;			\
-        inherit: "default" 0.0;			\
-        color: DARKNESS_FRAME_BORDER 255;			\
-     }						\
-  }						\
-  part {					\
-     name: To;					\
-     type: RECT;				\
-     mouse_events: 1;				\
-     description {				\
-        state: "default" 0.0;			\
-        rel1.relative: X1 0.0;			\
-        rel2.relative: X2 1.0;			\
-        color: 255 195 195 0;			\
-     }						\
-     description {				\
-        state: "click" 0.0;			\
-        inherit: "default" 0.0;			\
-        color: DARKNESS_VERY_LIGHT_BLUE 255;			\
-     }						\
+#define FLASHY_RECT(To, X1, X2)                        \
+  part {                                        \
+     name: To"/back";                                \
+     type: RECT;                                \
+     mouse_events: 1;                                \
+     description {                                \
+        state: "default" 0.0;                        \
+        rel1.to: To;                                \
+        rel1.offset: -1 -1;                        \
+        rel2.to: To;                                \
+        rel2.offset: 0 0;                        \
+        color: 255 128 128 0;                        \
+     }                                                \
+     description {                                \
+        state: "click" 0.0;                        \
+        inherit: "default" 0.0;                        \
+        color: DARKNESS_FRAME_BORDER 255;                        \
+     }                                                \
+  }                                                \
+  part {                                        \
+     name: To;                                        \
+     type: RECT;                                \
+     mouse_events: 1;                                \
+     description {                                \
+        state: "default" 0.0;                        \
+        rel1.relative: X1 0.0;                        \
+        rel2.relative: X2 1.0;                        \
+        color: 255 195 195 0;                        \
+     }                                                \
+     description {                                \
+        state: "click" 0.0;                        \
+        inherit: "default" 0.0;                        \
+        color: DARKNESS_VERY_LIGHT_BLUE 255;                        \
+     }                                                \
   }
 
 group {
    name: "modules/calendar/header";
    min: 42 9;
-   parts {	 
+   parts {         
       part {
           name: "base";
          type: RECT;
