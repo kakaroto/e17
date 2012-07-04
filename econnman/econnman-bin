@@ -14,7 +14,9 @@
 import elementary as elm
 import evas
 import e_dbus
+import ecore
 import dbus
+import dbus.service
 import logging
 import argparse
 
@@ -650,6 +652,15 @@ class ServicesList(object):
         lb.text = "%s: %s" % (type, state)
         return lb
 
+    def service_name_get(self, path):
+        s = self.services.get(path)
+        if not s:
+            return None
+        n = s.get("Name")
+        if not n:
+            return None
+        return str(n)
+
 
 class ServiceView(ObjectView):
     """Provides a detailed view of the service given by C{path}.
@@ -1121,6 +1132,150 @@ def show_service(path, properties):
 
 
 ########################################################################
+# Agent:
+def agent_method(in_signature="", out_signature="", **kargs):
+    return dbus.service.method("net.connman.Agent",
+                               in_signature=in_signature,
+                               out_signature=out_signature,
+                               **kargs)
+
+class Agent(dbus.service.Object):
+    path = "/org/enlightenment/econnman/agent"
+
+    request_type_conv = {
+        "SSID": dbus.ByteArray,
+        }
+
+    class Canceled(dbus.DBusException):
+        _dbus_error_name = "net.connman.Agent.Error.Canceled"
+
+    def __init__(self, serv_lst):
+        dbus.service.Object.__init__(self, bus, self.path)
+        self.dialog = None
+        self.serv_lst = serv_lst
+
+    @agent_method()
+    def Release(self):
+        log.info("Agent released by ConnMan")
+        if self.dialog:
+            self.dialog.delete()
+            self.dialog = None
+
+    @agent_method(in_signature="os")
+    def RequestBrowser(self, path, url):
+        log.info("Open browser for %s at %s", path, url)
+        ecore.exe_run("xdg-open '%s'" % url)
+
+    @agent_method(in_signature="os")
+    def ReportError(self, path, error):
+        log.error("ConnMan error %s: %s", path, error)
+        popup_error(win, "ConnMan Error", str(error))
+
+    @agent_method()
+    def Cancel(self):
+        log.info("Canceled dialog")
+        if self.dialog:
+            self.dialog.delete()
+            self.dialog = None
+
+    @agent_method(in_signature="oa{sv}", out_signature="a{sv}",
+                  async_callbacks=("on_done", "on_error"))
+    def RequestInput(self, path, fields, on_done, on_error):
+        log.debug("Request Input for %s: %s", path, dbus_dict_to_str(fields))
+
+        def on_deleted(obj):
+            w = self.dialog
+            self.dialog = None
+            if w:
+                e = Agent.Canceled("user canceled")
+                log.debug("User canceled agent request: %s", e)
+                on_error(e)
+
+        def on_clicked(obj):
+            response = {}
+            keys = []
+            for name, en in widgets.iteritems():
+                conv = self.request_type_conv.get(name, dbus.String)
+                v = conv(en.text)
+                if v:
+                    response[name] = v
+                    keys.append(name)
+            log.debug("User Replies with keys: %s", ", ".join(keys))
+            w = self.dialog
+            self.dialog = None
+            on_done(response)
+            w.delete()
+
+        self.dialog = w = elm.Window("econnman-agent", elm.ELM_WIN_DIALOG_BASIC)
+        w.title = "ConnMan Requested Input"
+        w.icon_name = "econnman"
+        w.autodel = True
+        w.on_del_add(on_deleted)
+        w.show()
+
+        bg = elm.Background(w)
+        bg.size_hint_weight = EXPAND_BOTH
+        bg.show()
+        w.resize_object_add(bg)
+
+        bx = elm.Box(w)
+        bx.size_hint_align = FILL_BOTH
+        bx.horizontal = False
+        bx.show()
+        w.resize_object_add(bx)
+
+        lb = elm.Label(bx)
+        lb.size_hint_weight = EXPAND_HORIZ
+        lb.size_hint_align = FILL_BOTH
+        lb.text = "<b>ConnMan needs your input</b>"
+        lb.show()
+        bx.pack_end(lb)
+
+        name = self.serv_lst.service_name_get(path)
+        if name:
+            lb = elm.Label(bx)
+            lb.size_hint_weight = EXPAND_HORIZ
+            lb.size_hint_align = FILL_BOTH
+            lb.text = "Service: %s" % (name,)
+            lb.show()
+            bx.pack_end(lb)
+
+        widgets = {}
+        for name, desc in fields.iteritems():
+            decos = ""
+            t = desc.get("Type")
+            if t and t != "informational":
+                decos += " (type: %s)" % (t,)
+            if desc.get("Requirement") == "mandatory":
+                decos += " REQUIRED"
+            lb = elm.Label(bx)
+            lb.size_hint_weight = EXPAND_HORIZ
+            lb.size_hint_align = FILL_BOTH
+            lb.text = "%s:%s" % (name, decos)
+            lb.show()
+            bx.pack_end(lb)
+
+            en = elm.Entry(bx)
+            en.size_hint_weight = EXPAND_HORIZ
+            en.size_hint_align = FILL_BOTH
+            en.single_line = True
+            en.scrollable = True
+            en.text = desc.get("Value", "")
+            en.editable = (t != "informational")
+            en.show()
+            bx.pack_end(en)
+            widgets[name] = en
+
+        bt = elm.Button(bx)
+        bt.size_hint_weight = EXPAND_HORIZ
+        bt.size_hint_align = FILL_BOTH
+        bt.callback_clicked_add(on_clicked)
+        bt.text = "Submit"
+        bt.show()
+        bx.pack_end(bt)
+
+
+########################################################################
 # GUI helpers:
 def popup_fatal(obj, title, message):
     """Shows a popup with a fatal message and a Quit button.
@@ -1139,6 +1294,7 @@ def popup_fatal(obj, title, message):
     bt.callback_clicked_add(lambda bt: elm.exit())
     pop.part_content_set("button1", bt)
     pop.show()
+    return pop
 
 
 def popup_error(obj, title, message):
@@ -1155,12 +1311,14 @@ def popup_error(obj, title, message):
     bt.callback_clicked_add(lambda bt: pop.delete())
     pop.part_content_set("button1", bt)
     pop.show()
+    return pop
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Connection Manager for Enlightenment")
     parser.add_argument("-v", "--verbose", action="count")
+    parser.add_argument("-a", "--agent", action="store_true")
     args = parser.parse_args()
 
     level = logging.WARNING
@@ -1206,6 +1364,12 @@ if __name__ == "__main__":
     serv_lst = ServicesList(win, connect_service, show_service)
 
     nf.item_push("EConnMan", offline_mon.obj, techs, serv_lst.obj, "basic")
+
+    if args.agent:
+        log.debug("create agent")
+        agent = Agent(serv_lst)
+        manager.RegisterAgent(agent.path)
+        log.info("Registered agent at %s", agent.path)
 
     elm.run()
     elm.shutdown()
