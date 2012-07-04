@@ -101,7 +101,7 @@ _cube_pos(Cube *c,
           Evas_Coord x, Evas_Coord y, Evas_Coord z,
           double dx, double dy, double dz)
 {
-   Evas_Map *m = NULL;
+   static Evas_Map *m = NULL;
    int i, j, order[6], sorted;
    Evas_Coord mz[6];
    
