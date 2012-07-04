@@ -25,6 +25,7 @@ static int connection_slot = -1;
 
 static int _edbus_init_count = 0;
 static int close_connection = 0;
+EAPI int E_DBUS_EVENT_SIGNAL = 0;
 
 static E_DBus_Connection *shared_connections[2] = {NULL, NULL};
 
@@ -203,9 +204,36 @@ e_dbus_connection_free(void *data)
 
   if (cd->conn_name) free(cd->conn_name);
 
-  if (cd->idler) ecore_idler_del(cd->idler);
+  if (cd->idler) ecore_idle_enterer_del(cd->idler);
 
   free(cd);
+}
+
+
+static void
+cb_main_wakeup(void *data)
+{
+  E_DBus_Connection *cd;
+  DBG("wakeup main!");
+
+  cd = data;
+
+  if (!cd->idler) cd->idler = ecore_idle_enterer_add(e_dbus_idler, cd);
+  else DBG("already idling");
+}
+
+static void
+e_dbus_loop_wakeup(void)
+{
+  static int dummy_event = 0;
+
+  /* post a dummy event to get the mainloop back to normal - this is
+   * needed because idlers are very special things that won't re-evaluate
+   * timers and other stuff while idelrs run - idle_exiters and enterers
+   * can do this safely, but not idlers. idelrs were meant to be used
+   * very sparingly for very special cases */
+  if (dummy_event == 0) dummy_event = ecore_event_type_new();
+  ecore_event_add(dummy_event, NULL, NULL, NULL);
 }
 
 static void
@@ -216,13 +244,14 @@ cb_dispatch_status(DBusConnection *conn __UNUSED__, DBusDispatchStatus new_statu
   DBG("dispatch status: %d!", new_status);
   cd = data;
 
-  if (new_status == DBUS_DISPATCH_DATA_REMAINS && !cd->idler)
-    cd->idler = ecore_idler_add(e_dbus_idler, cd);
-  else if (new_status != DBUS_DISPATCH_DATA_REMAINS && cd->idler)
-    {
-       ecore_idler_del(cd->idler);
-       cd->idler = NULL;
-    }
+  if (new_status == DBUS_DISPATCH_DATA_REMAINS && !cd->idler) cd->idler = ecore_idle_enterer_add(e_dbus_idler, cd);
+
+  else if (new_status != DBUS_DISPATCH_DATA_REMAINS && cd->idler) 
+  {
+    ecore_idle_enterer_del(cd->idler);
+    cd->idler = NULL;
+    e_dbus_loop_wakeup();
+  }
 }
 
 static Eina_Bool
@@ -353,6 +382,12 @@ cb_watch_toggle(DBusWatch *watch, void *data __UNUSED__)
   else e_dbus_fd_handler_del(hd);
 }
 
+static void
+e_dbus_message_free(void *data __UNUSED__, void *message)
+{
+  dbus_message_unref(message);
+}
+
 static DBusHandlerResult
 e_dbus_filter(DBusConnection *conn __UNUSED__, DBusMessage *message, void *user_data)
 {
@@ -378,8 +413,14 @@ e_dbus_filter(DBusConnection *conn __UNUSED__, DBusMessage *message, void *user_
       DBG("error: %s", dbus_message_get_error_name(message));
       break;
     case DBUS_MESSAGE_TYPE_SIGNAL:
+      dbus_message_ref(message);
+
       if (cd->signal_dispatcher)
-        cd->signal_dispatcher(cd, message);
+	cd->signal_dispatcher(cd, message);
+
+      ecore_event_add(E_DBUS_EVENT_SIGNAL, message, e_dbus_message_free, NULL);
+      /* don't need to handle signals, they're for everyone who wants them */
+      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
       break;
     default:
       break;
@@ -405,7 +446,7 @@ e_dbus_idler(void *data)
   }
   e_dbus_idler_active++;
   dbus_connection_ref(cd->conn);
-  DBG("dispatch()");
+  DBG("dispatch!");
   dbus_connection_dispatch(cd->conn);
   dbus_connection_unref(cd->conn);
   e_dbus_idler_active--;
@@ -417,6 +458,7 @@ e_dbus_idler(void *data)
       e_dbus_connection_close(cd);
     } while (--close_connection);
   }
+  e_dbus_loop_wakeup();
   return ECORE_CALLBACK_RENEW;
 }
 
@@ -493,6 +535,7 @@ e_dbus_connection_setup(DBusConnection *conn)
                                       cd,
                                       NULL);
 
+  dbus_connection_set_wakeup_main_function(cd->conn, cb_main_wakeup, cd, NULL);
   dbus_connection_set_dispatch_status_function(cd->conn, cb_dispatch_status, cd, NULL);
   dbus_connection_add_filter(cd->conn, e_dbus_filter, cd, NULL);
 
@@ -533,7 +576,7 @@ e_dbus_connection_close(E_DBus_Connection *conn)
   /* Idler functin must be cancelled when dbus connection is  unreferenced */
   if (conn->idler)
     {
-      ecore_idler_del(conn->idler);
+      ecore_idle_enterer_del(conn->idler);
       conn->idler = NULL;
     }
 
@@ -584,6 +627,7 @@ e_dbus_init(void)
     }
 
 
+  E_DBUS_EVENT_SIGNAL = ecore_event_type_new();
   e_dbus_object_init();
 
   return _edbus_init_count;

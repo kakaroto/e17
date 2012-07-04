@@ -114,6 +114,7 @@ extern "C" {
    EAPI extern E_DBus_Version *e_dbus_version;
    
    EAPI extern int E_DBUS_DOMAIN_GLOBAL;
+   EAPI extern int E_DBUS_EVENT_SIGNAL;
 
    typedef struct E_DBus_Connection E_DBus_Connection;
    typedef struct E_DBus_Object E_DBus_Object;
