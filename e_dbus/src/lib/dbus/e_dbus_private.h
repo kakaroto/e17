@@ -26,7 +26,7 @@ struct E_DBus_Connection
   Eina_List *signal_handlers;
   void (*signal_dispatcher)(E_DBus_Connection *conn, DBusMessage *msg);
 
-  Ecore_Idle_Enterer *idler;
+  Ecore_Idler *idler;
 
   int refcount;
 };
