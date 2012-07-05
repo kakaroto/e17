@@ -3,6 +3,8 @@ win32_gl - start hurry (vincent)
 d3d_gl - start hurry (vincent)
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
+map - [E-devel] Bug regarding evas map and smart objects	
+map - apply evas_object_move while map is enabled
 line - width_set API? 
 text - check the text rendering when mapbuf is used.
 event - need to handle after pointer mode changed.
@@ -23,3 +25,9 @@ notify - let check the smart member relationship
 popup - let check the smart member relationship
 index - check the FIXEMEs
 conformant - how to skip the calc the size if the window is in background.
+glview - run the glview twice in elementary_test
+
+<Eina>
+check random functions
+eina_log_level off
+
