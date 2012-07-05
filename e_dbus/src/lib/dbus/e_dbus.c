@@ -17,8 +17,6 @@ EAPI E_DBus_Version *e_dbus_version = &_version;
 /*
  * TODO: 
  *  listen for disconnected signal and clean up?
- *  listen for NameOwnerChanged signals for names we have SignalHandler's for
- *    remap SH to listen for signals from new owner
  */
 int _e_dbus_log_dom = -1;
 static int connection_slot = -1;

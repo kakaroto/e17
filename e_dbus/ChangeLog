@@ -64,3 +64,4 @@
 2012-07-05 José Roberto de Souza
 
         * Use idler instead of idle_enterer for processing messages
+        * Listen and update the 'sender unique name' of signals
