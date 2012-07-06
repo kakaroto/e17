@@ -1,3 +1,5 @@
-1. Accessiblity 
-   - Make _focus_next_hook func in naviframe
-2. Focus movement by arrow keys
+[Elementary]
+
+- Modify focus movement by arrow keys.
+- Slider : Wrong calculation about min size if there is a text.
+- Make event_hook for some widgets.
