@@ -9,7 +9,7 @@ inherit enlightenment
 DESCRIPTION="Lightweight media scanner"
 HOMEPAGE="http://lms.garage.maemo.org/"
 # ATTENTION: Garage is stupid and change the full url (number) for packages
-SRC_URI="https://garage.maemo.org/frs/download.php/9439/lightmediascanner-0.4.3.0.tar.bz2"
+SRC_URI="http://packages.profusion.mobi/${PN}/${P}.tar.bz2"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~arm ~x86 ~amd64"
