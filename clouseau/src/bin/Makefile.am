@@ -2,15 +2,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 bin_PROGRAMS = clouseaud clouseau_client
 
-clouseaud_SOURCES = \
-		    clouseaud.c \
-		    ../lib/eet_data.c \
-		    ../lib/obj_information.c
-
-clouseau_client_SOURCES = \
-		 clouseau.c \
-		 ../lib/eet_data.c \
-		 ../lib/obj_information.c
+clouseaud_SOURCES = clouseaud.c
+clouseau_client_SOURCES = clouseau.c
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
@@ -21,5 +14,5 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @EFL_CFLAGS@
 
-clouseaud_LDADD = @EFL_LIBS@
-clouseau_client_LDADD = @EFL_LIBS@
+clouseaud_LDADD = $(top_builddir)/src/lib/libclouseau_client.la @EFL_LIBS@
+clouseau_client_LDADD = $(top_builddir)/src/lib/libclouseau_client.la @EFL_LIBS@

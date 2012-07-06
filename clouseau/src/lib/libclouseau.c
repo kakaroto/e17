@@ -14,35 +14,31 @@ static Eina_Bool _elm_is_init = EINA_FALSE;
 static const char *_my_app_name = NULL;
 
 static void
-libclouseau_item_add(Evas_Object *o, Tree_Item *parent)
+libclouseau_item_add(Evas_Object *o, Clouseau_Tree_Item *parent)
 {
-   Eina_List *children, *tmp;
+   Clouseau_Tree_Item *treeit;
+   Eina_List *children;
    Evas_Object *child;
-   Tree_Item *treeit;
-   char buf[1024];
 
-   treeit = calloc(1, sizeof(Tree_Item));
-   treeit->ptr = o;
+   treeit = calloc(1, sizeof(Clouseau_Tree_Item));
+   if (!treeit) return ;
+
+   treeit->ptr = (uintptr_t) o;
    treeit->is_obj = EINA_TRUE;
-   snprintf(buf, sizeof(buf), "%s", evas_object_type_get(o));
 
-   treeit->name = eina_stringshare_add(buf);
+   treeit->name = eina_stringshare_add(evas_object_type_get(o));
    treeit->is_clipper = !!evas_object_clipees_get(o);
    treeit->is_visible = evas_object_visible_get(o);
    treeit->info = obj_information_get(treeit);
 
    parent->children = eina_list_append(parent->children, treeit);
 
-   if (evas_object_smart_data_get(o))
-     {  /* Do this only for smart object */
-        children = evas_object_smart_members_get(o);
-        EINA_LIST_FOREACH(children, tmp, child)
-          {
-             libclouseau_item_add(child, treeit);
-          }
+   /* if (!evas_object_smart_data_get(o)) return ; */
 
-        eina_list_free(children);
-     }
+   /* Do this only for smart object */
+   children = evas_object_smart_members_get(o);
+   EINA_LIST_FREE(children, child)
+     libclouseau_item_add(child, treeit);
 }
 
 static void *
@@ -59,6 +55,7 @@ _canvas_bmp_get(Ecore_Evas *ee, Evas_Coord *w_out, Evas_Coord *h_out)
    Eina_List *eeitr, *ees = ecore_evas_ecore_evas_list_get();
    Ecore_Evas *eel;
    Eina_Bool found_evas = EINA_FALSE;
+
    EINA_LIST_FOREACH(ees, eeitr, eel)
       if (eel == ee)
         {
@@ -107,17 +104,16 @@ static Eina_List *
 _load_list(void)
 {
    Eina_List *tree = NULL;
-   Eina_List *ees, *eeitr;
+   Eina_List *ees;
    Ecore_Evas *ee;
-
 
    ees = ecore_evas_ecore_evas_list_get();
 
-   EINA_LIST_FOREACH(ees, eeitr, ee)
+   EINA_LIST_FREE(ees, ee)
      {
-        Eina_List *objs, *objitr;
+        Eina_List *objs;
         Evas_Object *obj;
-        Tree_Item *treeit;
+        Clouseau_Tree_Item *treeit;
 
         Evas *e;
         int w, h;
@@ -125,25 +121,22 @@ _load_list(void)
         e = ecore_evas_get(ee);
         evas_output_size_get(e, &w, &h);
 
-        treeit = calloc(1, sizeof(Tree_Item));
+        treeit = calloc(1, sizeof(Clouseau_Tree_Item));
+        if (!treeit) continue ;
+
         treeit->name = eina_stringshare_add(ecore_evas_title_get(ee));
-        treeit->ptr = ee;
+        treeit->ptr = (uintptr_t) ee;
 
         tree = eina_list_append(tree, treeit);
 
         objs = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
               USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
 
-        EINA_LIST_FOREACH(objs, objitr, obj)
-          {
-             libclouseau_item_add(obj, treeit);
-          }
-
-        eina_list_free(objs);
+        EINA_LIST_FREE(objs, obj)
+          libclouseau_item_add(obj, treeit);
     }
 
-   eina_list_free(ees);
-   return tree;  /* User has to call item_tree_free() */
+   return tree;  /* User has to call clouseau_tree_free() */
 }
 
 Eina_Bool
@@ -155,7 +148,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
    connect_st t = { getpid(), _my_app_name };
-   p = packet_compose(APP_CLIENT_CONNECT, &t, sizeof(t), &size, NULL, 0);
+   p = packet_compose(CLOUSEAU_APP_CLIENT_CONNECT, &t, sizeof(t), &size, NULL, 0);
    if (p)
      {
         ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -187,44 +180,47 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *e
 Eina_Bool
 _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
-   Variant_st *v = packet_info_get(ev->data, ev->size);
+   Variant_st *v;
 
-   switch(packet_mapping_type_get(v->t.type))
+   v = packet_info_get(ev->data, ev->size);
+   switch (clouseau_packet_mapping_type_get(v->t.type))
      {
-      case DATA_REQ:
-           {  /* data req includes ptr to GUI, to tell which client asking */
-              int size = 0;
-              data_req_st *req = v->data;
-              tree_data_st t;
-              t.gui = req->gui;  /* GUI client requesting data from daemon */
-              t.app = req->app;  /* APP client sending data to daemon */
-              t.tree = _load_list();
-              if (t.tree)
-                {  /* Reply with tree data to data request */
-                   void *p = packet_compose(TREE_DATA, &t, sizeof(t), &size,
-                         NULL, 0);
-                   if (p)
-                     {
-                        ecore_ipc_server_send(ev->server, 0,0,0,0,
-                              EINA_FALSE, p, size);
-                        ecore_ipc_server_flush(ev->server);
-                        free(p);
-                     }
+      case CLOUSEAU_DATA_REQ:
+        {  /* data req includes ptr to GUI, to tell which client asking */
+           int size = 0;
+           data_req_st *req = v->data;
+           tree_data_st t;
+           t.gui = req->gui;  /* GUI client requesting data from daemon */
+           t.app = req->app;  /* APP client sending data to daemon */
+           t.tree = _load_list();
 
-                   item_tree_free(t.tree);
-                }
-           }
-         break;
+           if (t.tree)
+             {  /* Reply with tree data to data request */
+                void *p = packet_compose(CLOUSEAU_TREE_DATA,
+                                         &t, sizeof(t), &size,
+                                         NULL, 0);
+                if (p)
+                  {
+                     ecore_ipc_server_send(ev->server, 0,0,0,0,
+                                           EINA_FALSE, p, size);
+                     ecore_ipc_server_flush(ev->server);
+                     free(p);
+                  }
 
-      case HIGHLIGHT:
+                clouseau_tree_free(t.tree);
+             }
+        }
+        break;
+
+      case CLOUSEAU_HIGHLIGHT:
            {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
               Evas_Object *obj = (Evas_Object *) (uintptr_t) ht->object;
-              libclouseau_highlight(obj, NULL, NULL);
+              clouseau_object_highlight(obj, NULL, NULL);
            }
          break;
 
-      case BMP_REQ:
+      case CLOUSEAU_BMP_REQ:
            {  /* Bitmap req msg contains PTR of Ecore Evas */
               bmp_req_st *req = v->data;
               Evas_Coord w, h;
@@ -237,7 +233,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
                    NULL,NULL, NULL, 1.0,
                    NULL, NULL, NULL, NULL, NULL, NULL };
 
-              void *p = packet_compose(BMP_DATA, &t, sizeof(t), &size,
+              void *p = packet_compose(CLOUSEAU_BMP_DATA, &t, sizeof(t), &size,
                     bmp, (w * h * sizeof(int)));
 
               if (p)
@@ -257,7 +253,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
          break;
      }
 
-   variant_free(v);
+   clouseau_variant_free(v);
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -336,9 +332,12 @@ ecore_main_loop_begin(void)
         return;
      }
 
+   clouseau_init();
+
    _ecore_main_loop_begin();
 
-   data_descriptors_shutdown();
+   clouseau_shutdown();
+
    return;
 }
 

@@ -2,10 +2,6 @@
 #define EET_DATA_H
 #include "libclouseau.h"
 /*  Global constants  */
-#define APP_ADD_ENTRY   "/clouseau/app"
-#define TREE_DATA_ENTRY "/clouseau/app/tree"
-#define BMP_LIST_ENTRY  "/clouseau/app/shot_list"
-#define BMP_DATA_ENTRY  "/clouseau/app/screenshot"
 #define BMP_FIELD "bmp"
 
 #define PORT           (22522)
@@ -17,35 +13,20 @@
 #define VARIANT_PACKET 0
 #define BMP_RAW_DATA   1
 
-
-#define DESC_ADD_BASIC(desc, type, member, eet_type) \
-   EET_DATA_DESCRIPTOR_ADD_BASIC             \
-   (desc, type, #member, member, eet_type)
-
-#define GUI_CONNECT_STR      "GUI_CONNECT"
-#define APP_CONNECT_STR      "APP_CONNECT"
-#define APP_ADD_STR          "APP_ADD"
-#define DATA_REQ_STR         "DATA_REQ"
-#define TREE_DATA_STR        "TREE_DATA"
-#define APP_CLOSED_STR       "APP_CLOSED"
-#define HIGHLIGHT_STR        "HIGHLIGHT"
-#define BMP_REQ_STR          "BMP_REQ"
-#define BMP_DATA_STR         "BMP_DATA"
-
-enum _message_type
+enum _Clouseau_Message_Type
 {  /*  Add any supported types of packets here */
-   UNKNOWN = 0,
-   GUI_CLIENT_CONNECT, /* client PID, name */
-   APP_CLIENT_CONNECT, /* client PID, name */
-   APP_ADD,            /* client PTR, name, PID fwd to GUI client */
-   DATA_REQ,  /* GUI client PTR (NULL for all),APP client PTR (NULL for all) */
-   TREE_DATA, /* GUI client PTR (NULL for all),APP client PTR, Tree Data */
-   APP_CLOSED,         /* APP client PTR from DAEMON to GUI */
-   HIGHLIGHT,          /* APP client PTR, object PTR */
-   BMP_REQ,            /* APP client PTR, object PTR */
-   BMP_DATA            /* bmp_info_st header + BMP raw data */
+   CLOUSEAU_UNKNOWN = 0,
+   CLOUSEAU_GUI_CLIENT_CONNECT = 1, /* client PID, name */
+   CLOUSEAU_APP_CLIENT_CONNECT = 2, /* client PID, name */
+   CLOUSEAU_APP_ADD = 3,   /* client PTR, name, PID fwd to GUI client */
+   CLOUSEAU_DATA_REQ = 4,  /* GUI client PTR (NULL for all),APP client PTR (NULL for all) */
+   CLOUSEAU_TREE_DATA = 5, /* GUI client PTR (NULL for all),APP client PTR, Tree Data */
+   CLOUSEAU_APP_CLOSED = 6,/* APP client PTR from DAEMON to GUI */
+   CLOUSEAU_HIGHLIGHT = 7, /* APP client PTR, object PTR */
+   CLOUSEAU_BMP_REQ = 8,   /* APP client PTR, object PTR */
+   CLOUSEAU_BMP_DATA = 9   /* bmp_info_st header + BMP raw data */
 };
-typedef enum _message_type message_type;
+typedef enum _Clouseau_Message_Type Clouseau_Message_Type;
 
 struct _Variant_Type_st
 {
@@ -141,13 +122,6 @@ struct _bmp_info_st
 };
 typedef struct _bmp_info_st bmp_info_st;
 
-struct _eet_message_type_mapping
-{
-   message_type t;
-   const char *name;
-};
-typedef struct _eet_message_type_mapping eet_message_type_mapping;
-
 struct _shot_list_st
 {  /* This will be used to write a shot list to eet file */
    Eina_List *view;       /* Screen views eahc is (bmp_info_st *) ptr */
@@ -174,39 +148,42 @@ struct _data_desc
 typedef struct _data_desc data_desc;
 
 /* Function Declarations */
-void lines_free(bmp_info_st *st);
-void bmp_blob_free(bmp_info_st *st);
-
-Eet_Data_Descriptor *connect_desc_make(void);
-Eet_Data_Descriptor *app_add_desc_make(void);
-Eet_Data_Descriptor *data_req_desc_make(void);
-Eet_Data_Descriptor *bmp_req_desc_make(void);
-Eet_Data_Descriptor *bmp_data_desc_make(void);
-Eet_Data_Descriptor *bmp_info_desc_make(void);
-Eet_Data_Descriptor *shot_list_desc_make(void);
-Eet_Data_Descriptor *tree_data_desc_make(void);
-Eet_Data_Descriptor *app_closed_desc_make(void);
-Eet_Data_Descriptor *highlight_desc_make(void);
-Eet_Data_Descriptor *tree_item_desc_make(void);
-
-Obj_Information *obj_information_get(Tree_Item *treeit);
-void obj_information_free(Obj_Information *oinfo);
-void item_tree_item_free(Tree_Item *parent);
-void item_tree_free(Eina_List *tree);
-void _item_tree_item_string(Tree_Item *parent);
+Clouseau_Object *obj_information_get(Clouseau_Tree_Item *treeit);
+void obj_information_free(Clouseau_Object *oinfo);
+void item_tree_item_free(Clouseau_Tree_Item *parent);
+void _item_tree_item_string(Clouseau_Tree_Item *parent);
 data_desc *data_descriptors_init(void);
 void data_descriptors_shutdown(void);
-void variant_free(Variant_st *v);
-Variant_st *variant_alloc(message_type t, size_t size, void *info);
-message_type packet_mapping_type_get(const char *name);
-const char *packet_mapping_type_str_get(message_type t);
-void *packet_compose(message_type t, void *data, int data_size, int *size, void *blob, int blob_size);
+void *packet_compose(Clouseau_Message_Type t, void *data, int data_size, int *size, void *blob, int blob_size);
 Variant_st *packet_info_get(void *data, int size);
 Eina_Bool eet_info_save(const char *filename, app_info_st *a, tree_data_st *ftd, Eina_List *ck_list);
 Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
 
 /* Highlight code, we may choose to move this to other file later */
-void libclouseau_highlight(Evas_Object *obj, st_evas_props *props, bmp_info_st *view);
 void libclouseau_make_lines(bmp_info_st *st, Evas_Coord xx, Evas_Coord yy);
 void libclouseau_lines_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
+
+/* Private function */
+#define CLOUSEAU_APP_ADD_ENTRY   "clouseau/app"
+#define CLOUSEAU_TREE_DATA_ENTRY "clouseau/app/tree"
+#define CLOUSEAU_BMP_LIST_ENTRY  "clouseau/app/shot_list"
+#define CLOUSEAU_BMP_DATA_ENTRY  "clouseau/app/screenshot"
+
+void clouseau_data_descriptors_init(void);
+void clouseau_data_descriptors_shutdown(void);
+
+/* Exported function */
+int clouseau_init(void);
+int clouseau_shutdown(void);
+
+Variant_st *clouseau_variant_alloc(Clouseau_Message_Type t, size_t size, void *info);
+void clouseau_variant_free(Variant_st *v);
+void clouseau_tree_free(Eina_List *tree);
+void clouseau_bmp_blob_free(bmp_info_st *st);
+void clouseau_lines_free(bmp_info_st *st);
+
+void clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view);
+
+Clouseau_Message_Type clouseau_packet_mapping_type_get(const char *name);
+
 #endif  /*  EET_DATA_H  */

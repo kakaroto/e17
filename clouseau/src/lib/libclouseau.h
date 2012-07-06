@@ -10,27 +10,31 @@
 #define ELM_INTERNAL_API_ARGESFSDFEFC
 #include <elm_widget.h>
 
+typedef struct _Clouseau_Evas_Props Clouseau_Evas_Props;
+typedef struct _Clouseau_Evas_Text_Props Clouseau_Evas_Text_Props;
+typedef struct _Clouseau_Evas_Image_Props Clouseau_Evas_Image_Props;
+typedef struct _Clouseau_Elm_Props Clouseau_Elm_Props;
+typedef struct _Clouseau_Edje_Props Clouseau_Edje_Props;
 
-#define CLOUSEAU_OBJ_TYPE_OTHER_STR     "CLOUSEAU_OBJ_TYPE_OTHER"
-#define CLOUSEAU_OBJ_TYPE_ELM_STR       "CLOUSEAU_OBJ_TYPE_ELM"
-#define CLOUSEAU_OBJ_TYPE_TEXT_STR      "CLOUSEAU_OBJ_TYPE_TEXT"
-#define CLOUSEAU_OBJ_TYPE_IMAGE_STR     "CLOUSEAU_OBJ_TYPE_IMAGE"
-#define CLOUSEAU_OBJ_TYPE_EDJE_STR      "CLOUSEAU_OBJ_TYPE_EDJE"
-#define CLOUSEAU_OBJ_TYPE_TEXTBLOCK_STR "CLOUSEAU_OBJ_TYPE_TEXTBLOCK"
+typedef struct _Clouseau_Extra_Props Clouseau_Extra_Props;
+typedef struct _Clouseau_Object Clouseau_Object;
+typedef struct _Clouseau_Bitmap Clouseau_Bitmap;
+
+typedef struct _Clouseau_Tree_Item Clouseau_Tree_Item;
 
 /* The color of the highlight */
 enum {
-	HIGHLIGHT_R = 255,
-	HIGHLIGHT_G = 128,
-	HIGHLIGHT_B = 128,
-	HIGHLIGHT_A = 255,
+   HIGHLIGHT_R = 255,
+   HIGHLIGHT_G = 128,
+   HIGHLIGHT_B = 128,
+   HIGHLIGHT_A = 255,
 
-	/* How much padding around the highlight box.
-         * Currently we don't want any. */
-	PADDING = 0,
+   /* How much padding around the highlight box.
+    * Currently we don't want any. */
+   PADDING = 0,
 };
 
-enum _en_obj_type
+typedef enum
 {
    CLOUSEAU_OBJ_TYPE_UNKNOWN,
    CLOUSEAU_OBJ_TYPE_OTHER,
@@ -39,17 +43,9 @@ enum _en_obj_type
    CLOUSEAU_OBJ_TYPE_IMAGE,
    CLOUSEAU_OBJ_TYPE_EDJE,
    CLOUSEAU_OBJ_TYPE_TEXTBLOCK
-};
-typedef enum _en_obj_type en_obj_type;
+} Clouseau_Object_Type;
 
-struct _eet_extra_props_mapping
-{
-   en_obj_type u;
-   const char *name;
-};
-typedef struct _eet_extra_props_mapping eet_extra_props_mapping;
-
-struct _st_evas_props
+struct _Clouseau_Evas_Props
 {
    const char *name;
    const char *bt;
@@ -66,9 +62,36 @@ struct _st_evas_props
    Eina_Bool is_visible;
    Evas_Object_Pointer_Mode mode;
 };
-typedef struct _st_evas_props st_evas_props;
 
-struct _st_elm
+struct _Clouseau_Evas_Text_Props
+{
+   const char *font;
+   int size;
+   const char *source;
+   const char *text;
+};
+
+struct _Clouseau_Evas_Image_Props
+{
+   const char *file, *key;
+   void *source;
+   const char *load_err;
+};
+
+struct _Clouseau_Evas_Textblock_Props
+{
+   const char *style;
+   const char *text;
+};
+typedef struct _Clouseau_Evas_Textblock_Props Clouseau_Evas_Textblock_Props;
+
+struct _Clouseau_Edje_Props
+{
+   const char *file, *group;
+   const char *load_err;
+};
+
+struct _Clouseau_Elm_Props
 {
    const char *type;
    const char *style;
@@ -78,88 +101,48 @@ struct _st_elm
    Eina_Bool is_mirrored;
    Eina_Bool is_mirrored_automatic;
 };
-typedef struct _st_elm st_elm;
 
-struct _st_text
-{
-   const char *font;
-   int size;
-   const char *source;
-   const char *text;
-};
-typedef struct _st_text st_text;
-
-struct _st_image
-{
-   const char *file, *key;
-   void *source;
-   const char *load_err;
-};
-typedef struct _st_image st_image;
-
-struct _st_edje
-{
-   const char *file, *group;
-   const char *load_err;
-};
-typedef struct _st_edje st_edje;
-
-struct _st_textblock
-{
-   const char *style;
-   const char *text;
-};
-typedef struct _st_textblock st_textblock;
-
-union _un_extra_props
-{
-   st_elm elm;
-   st_text text;
-   st_image image;
-   st_edje edje;
-   st_textblock textblock;
-};
-typedef union _un_extra_props un_extra_props;
-
-struct _st_extra_props
+struct _Clouseau_Extra_Props
 {  /* as Example_Union */
-   en_obj_type type;
-   un_extra_props u;
+   Clouseau_Object_Type type;
+   union {
+      Clouseau_Elm_Props elm;
+      Clouseau_Evas_Text_Props text;
+      Clouseau_Evas_Image_Props image;
+      Clouseau_Edje_Props edje;
+      Clouseau_Evas_Textblock_Props textblock;
+   } u;
 };
-typedef struct _st_extra_props st_extra_props;
 
-struct _Obj_Information
+struct _Clouseau_Object
 {
-   st_evas_props evas_props;
-   st_extra_props extra_props;
+   Clouseau_Evas_Props evas_props;
+   Clouseau_Extra_Props extra_props;
 };
-typedef struct _Obj_Information Obj_Information;
 
-struct _Bmp_Data
+struct _Clouseau_Bitmap
 {
    unsigned char  *bmp;
    int bmp_count; /* is (w * h), for EET_DATA_DESCRIPTOR_ADD_BASIC_VAR_ARRAY */
    Evas_Coord w;
    Evas_Coord h;
 };
-typedef struct _Bmp_Data Bmp_Data;
 
-struct _Tree_Item
+struct _Clouseau_Tree_Item
 {
    Eina_List *children;
    const char *name;
-   void *ptr;      /* Just a ptr, we keep the value but not accessing mem */
-   Obj_Information *info;
+   unsigned long long ptr;      /* Just a ptr, we keep the value but not accessing mem */
+   Clouseau_Object *info;
    Eina_Bool is_obj;
    Eina_Bool is_clipper;
    Eina_Bool is_visible;
 };
-typedef struct _Tree_Item Tree_Item;
 
-Obj_Information *_obj_information_get(Tree_Item *treeit);
-Eet_Data_Descriptor *Obj_Information_desc_make(void);
-void Obj_Information_desc_shutdown(void);
+Clouseau_Object *_obj_information_get(Clouseau_Tree_Item *treeit);
+Eet_Data_Descriptor *clouseau_object_desc_make(void);
+void clouseau_object_desc_shutdown(void);
 Evas_Object *clouseau_obj_information_list_add(Evas_Object *parent);
-void clouseau_obj_information_list_populate(Tree_Item *treeit, Evas_Object *lb);
+void clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *lb);
 void clouseau_obj_information_list_clear();
 #endif

@@ -65,7 +65,7 @@ _daemon_cleanup(void)
    gui = app = NULL;
    ipc_svr = NULL;
 
-   data_descriptors_shutdown();
+   clouseau_shutdown();
    ecore_ipc_shutdown();
    ecore_shutdown();
    eina_shutdown();
@@ -172,7 +172,7 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
         app_closed_st t = { (unsigned long long) (uintptr_t) ev->client };
         Eina_List *l;
         int size;
-        void *p = packet_compose(APP_CLOSED, &t, sizeof(t), &size, NULL, 0);
+        void *p = packet_compose(CLOUSEAU_APP_CLOSED, &t, sizeof(t), &size, NULL, 0);
         if (p)
           {
              EINA_LIST_FOREACH(gui, l, i)
@@ -212,233 +212,233 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
     * In order to simplify, all messages also contains recipient ptr
     * as saved by daemon.
     * Thus we only need to peek this info then FWD, reply to this recipient */
-   if (v)
+   if (!v)
      {
-        switch(packet_mapping_type_get(v->t.type))
-          {
-           case APP_CLIENT_CONNECT:
-                {  /* Register APP then notify GUI about it */
-                   app_info_st *st;
-                   Eina_List *l;
-                   connect_st *t = v->data;
-                   app_info_st m = { t->pid, (char *) t->name, NULL,
-                        (unsigned long long) (uintptr_t) ev->client, NULL, 0 };
-
-                   app = _add_client(app, t, ev->client);
-                   p = packet_compose(APP_ADD, &m, sizeof(m), &size, NULL, 0);
-                   if (p)
-                     {
-                        EINA_LIST_FOREACH(gui, l, st)
-                          {  /* Notify all GUI clients to add APP */
-                             ecore_ipc_client_send(
-                                   (void *) (uintptr_t) st->ptr,
-                                   0,0,0,0,EINA_FALSE, p, size);
-                             ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) st->ptr);
-                          }
-
-                        free(p);
-                     }
-                }
-              break;
-
-           case GUI_CLIENT_CONNECT:
-                {  /* Register GUI, then notify about all APP */
-                   app_info_st *st;
-                   Eina_List *l;
-                   connect_st *t = v->data;
-                   gui = _add_client(gui, t, ev->client);
-                   EINA_LIST_FOREACH(app, l, st)
-                     {  /* Add all registered apps to newly open GUI */
-                        p = packet_compose(APP_ADD, st, sizeof(*st), &size,
-                              NULL, 0);
-                        if (p)
-                          {
-                             ecore_ipc_client_send(ev->client,
-                                   0,0,0,0,EINA_FALSE, p, size);
-                             ecore_ipc_client_flush(ev->client);
-                             free(p);
-                          }
-                     }
-
-                }
-              break;
-
-           case DATA_REQ:
-                {  /* msg coming from GUI, FWD this to app specified in req */
-                   data_req_st *req = v->data;
-                   if (req->app)
-                     {  /* Requesting specific app data */
-                        if(eina_list_search_unsorted(app,
-                                 _client_ptr_cmp,
-                                 (void *) (uintptr_t) req->app))
-                          {  /* Do the req only of APP connected to daemon */
-                             data_req_st t = {
-                                  (unsigned long long) (uintptr_t) ev->client,
-                                  (unsigned long long) (uintptr_t) req->app };
-
-                             p = packet_compose(DATA_REQ,
-                                   &t, sizeof(t), &size, NULL, 0);
-                             if (p)
-                               {
-                                  ecore_ipc_client_send(
-                                        (void *) (uintptr_t) req->app,
-                                        0,0,0,0, EINA_FALSE, p, size);
-                                  ecore_ipc_client_flush(
-                                        (void *) (uintptr_t) req->app);
-                                  free(p);
-                               }
-                          }
-                     }
-                   else
-                     {  /* requesting ALL apps data */
-                        Eina_List *l;
-                        app_info_st *st;
-                        data_req_st t = {
-                             (unsigned long long) (uintptr_t) ev->client,
-                             (unsigned long long) (uintptr_t) NULL };
-
-                        EINA_LIST_FOREACH(app, l, st)
-                          {
-                             t.app = (unsigned long long) (uintptr_t) st->ptr;
-                             p = packet_compose(DATA_REQ,
-                                   &t, sizeof(t), &size, NULL, 0);
-                             if (p)
-                               {
-                                  ecore_ipc_client_send(
-                                        (void *) (uintptr_t) st->ptr,
-                                        0,0,0,0, EINA_FALSE, p, size);
-                                  ecore_ipc_client_flush(
-                                        (void *) (uintptr_t) st->ptr);
-                                  free(p);
-                               }
-                          }
-                     }
-                }
-              break;
-
-           case TREE_DATA:
-                {  /* Tree Data comes from APP, GUI client specified in msg */
-                   tree_data_st *td = v->data;
-                   if (td->gui)
-                     {  /* Sending tree data to specific GUI client */
-                        if(eina_list_search_unsorted(gui,
-                                 _client_ptr_cmp,
-                                 (void *) (uintptr_t) td->gui))
-                          {  /* Do the req only of GUI connected to daemon */
-                             ecore_ipc_client_send(
-                                   (void *) (uintptr_t) td->gui, 0,0,0,0,
-                                   EINA_FALSE, ev->data, ev->size);
-                             ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) td->gui);
-                          }
-                     }
-                   else
-                     {  /* Sending tree data to all GUI clients */
-                        Eina_List *l;
-                        app_info_st *info;
-                        EINA_LIST_FOREACH(gui, l, info)
-                          {
-                             ecore_ipc_client_send(
-                                   (void *) (uintptr_t) info->ptr, 0,0,0,0,
-                                   EINA_FALSE, ev->data, ev->size);
-                             ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) info->ptr);
-                          }
-                     }
-
-                   item_tree_free(td->tree);
-                }
-              break;
-
-           case HIGHLIGHT:
-                {  /* FWD this message to app */
-                   highlight_st *ht = v->data;
-                   if(eina_list_search_unsorted(app,
-                            _client_ptr_cmp, (void *) (uintptr_t) ht->app))
-                     {  /* Do the req only of APP connected to daemon */
-                        ecore_ipc_client_send((void *)
-                              (uintptr_t) ht->app, 0,0,0,0,
-                              EINA_FALSE, ev->data, ev->size);
-                        ecore_ipc_client_flush((void *) (uintptr_t) ht->app);
-                     }
-                }
-              break;
-
-           case BMP_REQ:
-                {
-                   bmp_req_st *req = v->data;
-                   if(eina_list_search_unsorted(app,
-                            _client_ptr_cmp, (void *) (uintptr_t) req->app))
-                     {  /* Do the req only of APP connected to daemon */
-                        bmp_req_st t = {
-                             (unsigned long long) (uintptr_t) ev->client,
-                             req->app, req->object, req->ctr };
-
-                        p = packet_compose(BMP_REQ,
-                              &t, sizeof(t), &size, NULL, 0);
-                        if (p)
-                          {  /* FWD req to app with client data */
-                             ecore_ipc_client_send(
-                                   (void *) (uintptr_t) req->app,
-                                   0,0,0,0, EINA_FALSE, p, size);
-                             ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) req->app);
-                             free(p);
-                          }
-                     }
-                }
-              break;
-
-           case BMP_DATA:
-                {  /* Bmp Data comes from APP, GUI client specified in msg */
-                   bmp_info_st *st = v->data;
-                   if (st->gui)
-                     {  /* Sending BMP data to specific GUI client */
-                        if(eina_list_search_unsorted(gui,
-                                 _client_ptr_cmp,
-                                 (void *) (uintptr_t) st->gui))
-                          {  /* Do the req only of GUI connected to daemon */
-                             ecore_ipc_client_send(
-                                   (void *) (uintptr_t) st->gui, 0,0,0,0,
-                                   EINA_FALSE, ev->data, ev->size);
-                             ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) st->gui);
-                          }
-                     }
-                   else
-                     {  /* Sending BMP data to all GUI clients */
-                        Eina_List *l;
-                        app_info_st *info;
-                        EINA_LIST_FOREACH(gui, l, info)
-                          {
-                             ecore_ipc_client_send(
-                                   (void *) (uintptr_t) info->ptr, 0,0,0,0,
-                                   EINA_FALSE, ev->data, ev->size);
-                             ecore_ipc_client_flush(
-                                   (void *) (uintptr_t) info->ptr);
-                          }
-                     }
-
-                   if (st->bmp)
-                     free(st->bmp);
-                }
-              break;
-
-           default:
-              break;
-          }
-
-        variant_free(v);
+        log_message(LOG_FILE, "a", "Failed to decode data.");
+        return ECORE_CALLBACK_RENEW;
      }
-   else
-     log_message(LOG_FILE, "a", "Failed to decode data.");
+
+   switch(clouseau_packet_mapping_type_get(v->t.type))
+     {
+      case CLOUSEAU_APP_CLIENT_CONNECT:
+        {  /* Register APP then notify GUI about it */
+           app_info_st *st;
+           Eina_List *l;
+           connect_st *t = v->data;
+           app_info_st m = { t->pid, (char *) t->name, NULL,
+                             (unsigned long long) (uintptr_t) ev->client, NULL, 0 };
+
+           app = _add_client(app, t, ev->client);
+           p = packet_compose(CLOUSEAU_APP_ADD, &m, sizeof(m), &size, NULL, 0);
+           if (p)
+             {
+                EINA_LIST_FOREACH(gui, l, st)
+                  {  /* Notify all GUI clients to add APP */
+                     ecore_ipc_client_send(
+                                           (void *) (uintptr_t) st->ptr,
+                                           0,0,0,0,EINA_FALSE, p, size);
+                     ecore_ipc_client_flush(
+                                            (void *) (uintptr_t) st->ptr);
+                  }
+
+                free(p);
+             }
+        }
+        break;
+
+      case CLOUSEAU_GUI_CLIENT_CONNECT:
+        {  /* Register GUI, then notify about all APP */
+           app_info_st *st;
+           Eina_List *l;
+           connect_st *t = v->data;
+           gui = _add_client(gui, t, ev->client);
+           EINA_LIST_FOREACH(app, l, st)
+             {  /* Add all registered apps to newly open GUI */
+                p = packet_compose(CLOUSEAU_APP_ADD, st, sizeof(*st), &size,
+                                   NULL, 0);
+                if (p)
+                  {
+                     ecore_ipc_client_send(ev->client,
+                                           0,0,0,0,EINA_FALSE, p, size);
+                     ecore_ipc_client_flush(ev->client);
+                     free(p);
+                  }
+             }
+
+        }
+        break;
+
+      case CLOUSEAU_DATA_REQ:
+        {  /* msg coming from GUI, FWD this to app specified in req */
+           data_req_st *req = v->data;
+           if (req->app)
+             {  /* Requesting specific app data */
+                if(eina_list_search_unsorted(app,
+                                             _client_ptr_cmp,
+                                             (void *) (uintptr_t) req->app))
+                  {  /* Do the req only of APP connected to daemon */
+                     data_req_st t = {
+                       (unsigned long long) (uintptr_t) ev->client,
+                       (unsigned long long) (uintptr_t) req->app };
+
+                     p = packet_compose(CLOUSEAU_DATA_REQ,
+                                        &t, sizeof(t), &size, NULL, 0);
+                     if (p)
+                       {
+                          ecore_ipc_client_send(
+                                                (void *) (uintptr_t) req->app,
+                                                0,0,0,0, EINA_FALSE, p, size);
+                          ecore_ipc_client_flush(
+                                                 (void *) (uintptr_t) req->app);
+                          free(p);
+                       }
+                  }
+             }
+           else
+             {  /* requesting ALL apps data */
+                Eina_List *l;
+                app_info_st *st;
+                data_req_st t = {
+                  (unsigned long long) (uintptr_t) ev->client,
+                  (unsigned long long) (uintptr_t) NULL };
+
+                EINA_LIST_FOREACH(app, l, st)
+                  {
+                     t.app = (unsigned long long) (uintptr_t) st->ptr;
+                     p = packet_compose(CLOUSEAU_DATA_REQ,
+                                        &t, sizeof(t), &size, NULL, 0);
+                     if (p)
+                       {
+                          ecore_ipc_client_send(
+                                                (void *) (uintptr_t) st->ptr,
+                                                0,0,0,0, EINA_FALSE, p, size);
+                          ecore_ipc_client_flush(
+                                                 (void *) (uintptr_t) st->ptr);
+                          free(p);
+                       }
+                  }
+             }
+        }
+        break;
+
+      case CLOUSEAU_TREE_DATA:
+        {  /* Tree Data comes from APP, GUI client specified in msg */
+           tree_data_st *td = v->data;
+           if (td->gui)
+             {  /* Sending tree data to specific GUI client */
+                if(eina_list_search_unsorted(gui,
+                                             _client_ptr_cmp,
+                                             (void *) (uintptr_t) td->gui))
+                  {  /* Do the req only of GUI connected to daemon */
+                     ecore_ipc_client_send(
+                                           (void *) (uintptr_t) td->gui, 0,0,0,0,
+                                           EINA_FALSE, ev->data, ev->size);
+                     ecore_ipc_client_flush(
+                                            (void *) (uintptr_t) td->gui);
+                  }
+             }
+           else
+             {  /* Sending tree data to all GUI clients */
+                Eina_List *l;
+                app_info_st *info;
+                EINA_LIST_FOREACH(gui, l, info)
+                  {
+                     ecore_ipc_client_send(
+                                           (void *) (uintptr_t) info->ptr, 0,0,0,0,
+                                           EINA_FALSE, ev->data, ev->size);
+                     ecore_ipc_client_flush(
+                                            (void *) (uintptr_t) info->ptr);
+                  }
+             }
+
+           clouseau_tree_free(td->tree);
+        }
+        break;
+
+      case CLOUSEAU_HIGHLIGHT:
+        {  /* FWD this message to app */
+           highlight_st *ht = v->data;
+           if(eina_list_search_unsorted(app,
+                                        _client_ptr_cmp, (void *) (uintptr_t) ht->app))
+             {  /* Do the req only of APP connected to daemon */
+                ecore_ipc_client_send((void *)
+                                      (uintptr_t) ht->app, 0,0,0,0,
+                                      EINA_FALSE, ev->data, ev->size);
+                ecore_ipc_client_flush((void *) (uintptr_t) ht->app);
+             }
+        }
+        break;
+
+      case CLOUSEAU_BMP_REQ:
+        {
+           bmp_req_st *req = v->data;
+           if(eina_list_search_unsorted(app,
+                                        _client_ptr_cmp, (void *) (uintptr_t) req->app))
+             {  /* Do the req only of APP connected to daemon */
+                bmp_req_st t = {
+                  (unsigned long long) (uintptr_t) ev->client,
+                  req->app, req->object, req->ctr };
+
+                p = packet_compose(CLOUSEAU_BMP_REQ,
+                                   &t, sizeof(t), &size, NULL, 0);
+                if (p)
+                  {  /* FWD req to app with client data */
+                     ecore_ipc_client_send(
+                                           (void *) (uintptr_t) req->app,
+                                           0,0,0,0, EINA_FALSE, p, size);
+                     ecore_ipc_client_flush(
+                                            (void *) (uintptr_t) req->app);
+                     free(p);
+                  }
+             }
+        }
+        break;
+
+      case CLOUSEAU_BMP_DATA:
+        {  /* Bmp Data comes from APP, GUI client specified in msg */
+           bmp_info_st *st = v->data;
+           if (st->gui)
+             {  /* Sending BMP data to specific GUI client */
+                if(eina_list_search_unsorted(gui,
+                                             _client_ptr_cmp,
+                                             (void *) (uintptr_t) st->gui))
+                  {  /* Do the req only of GUI connected to daemon */
+                     ecore_ipc_client_send(
+                                           (void *) (uintptr_t) st->gui, 0,0,0,0,
+                                           EINA_FALSE, ev->data, ev->size);
+                     ecore_ipc_client_flush(
+                                            (void *) (uintptr_t) st->gui);
+                  }
+             }
+           else
+             {  /* Sending BMP data to all GUI clients */
+                Eina_List *l;
+                app_info_st *info;
+                EINA_LIST_FOREACH(gui, l, info)
+                  {
+                             ecore_ipc_client_send(
+                                                   (void *) (uintptr_t) info->ptr, 0,0,0,0,
+                                                   EINA_FALSE, ev->data, ev->size);
+                             ecore_ipc_client_flush(
+                                                    (void *) (uintptr_t) info->ptr);
+                  }
+             }
+
+           if (st->bmp)
+             free(st->bmp);
+        }
+        break;
+
+      default:
+         break;
+     }
+
+   clouseau_variant_free(v);
 
    log_message(LOG_FILE, "a", "_data() finished");
    return ECORE_CALLBACK_RENEW;
 }
 /* END   - Ecore communication callbacks */
-
 
 int main(void)
 {
@@ -446,6 +446,7 @@ int main(void)
    eina_init();
    ecore_init();
    ecore_ipc_init();
+   clouseau_init();
 
    if (!(ipc_svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM,
                LISTEN_IP, PORT, NULL)))
