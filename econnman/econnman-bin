@@ -15,6 +15,7 @@ import elementary as elm
 import evas
 import e_dbus
 import ecore
+import edje
 import dbus
 import dbus.service
 import logging
@@ -378,16 +379,15 @@ class TechList(object):
         t = self.techs.get(item_data)
         if not t:
             return None
-        connected = t.get("Connected", False)
-        powered = t.get("Powered", False)
-        lb = elm.Label(obj)
-        if connected:
-            lb.text = "[connected]"
-        elif powered:
-            lb.text = "[powered]"
+
+        ic = elm.Icon(obj)
+        if t.get("Connected", False):
+            ic.standard = "connman-tech-connected"
+        elif t.get("Powered", False):
+            ic.standard = "connman-tech-powered"
         else:
-            lb.text = "[offline]"
-        return lb
+            ic.standard = "connman-tech-offline"
+        return ic
 
 
 class TechView(ObjectView):
@@ -647,10 +647,34 @@ class ServicesList(object):
         strength = s.get("Strength")
         favorite = s.get("Favorite")
         roaming = s.get("Roaming")
+        auto_connect = s.get("AutoConnect")
 
-        lb = elm.Label(obj)
-        lb.text = "%s: %s" % (type, state)
-        return lb
+        ly = elm.Layout(obj)
+        ly.theme_set("icon", type, "default")
+        ly.size_hint_min_set(48, 48)
+
+        def yesno(val):
+            return ("no", "yes")[bool(val)]
+
+        def ornone(val):
+            return val or "none"
+
+        ly.signal_emit("elm,state," + state, "elm")
+        ly.signal_emit("elm,error," + ornone(error), "elm")
+        ly.signal_emit("elm,favorite," + yesno(favorite), "elm")
+        ly.signal_emit("elm,roaming," + yesno(roaming), "elm")
+        ly.signal_emit("elm,auto_connect," + yesno(auto_connect), "elm")
+
+        for s in security:
+            ly.signal_emit("elm,security," + s, "elm")
+        if security:
+            ly.signal_emit("elm,security,yes", "elm")
+        else:
+            ly.signal_emit("elm,security,none", "elm")
+
+        if strength:
+            ly.edje.message_send(1, strength)
+        return ly
 
     def service_name_get(self, path):
         s = self.services.get(path)
@@ -1328,6 +1352,8 @@ if __name__ == "__main__":
 
     elm.init()
     elm.policy_set(elm.ELM_POLICY_QUIT, elm.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
+
+    elm.theme_extension_add("./data/theme/default.edj")
 
     win = elm.Window("econnman", elm.ELM_WIN_BASIC)
     win.title = "EConnMan"

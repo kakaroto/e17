@@ -1,10 +1,13 @@
 AC_INIT([econnman], [1], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.65])
 AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AM_PATH_PYTHON([2.7])
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 AC_CONFIG_FILES([
 Makefile
@@ -22,6 +25,7 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "  Python...............: $PYTHON ($PYTHON_VERSION)"
+echo "  edje_cc..............: $edje_cc"
 echo
 echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...............: $prefix"

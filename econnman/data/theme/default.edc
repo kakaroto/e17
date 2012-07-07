@@ -1,0 +1,220 @@
+collections {
+
+   group {
+      name: "elm/icon/connman-tech-connected/default";
+      max: 128 128;
+      min: 16 16;
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.image: "connman-tech-connected.png" COMP;
+               image.normal: "connman-tech-connected.png";
+            }
+         }
+      }
+   }
+   group {
+      name: "elm/icon/connman-tech-powered/default";
+      max: 128 128;
+      min: 16 16;
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.image: "connman-tech-powered.png" COMP;
+               image.normal: "connman-tech-powered.png";
+            }
+         }
+      }
+   }
+   group {
+      name: "elm/icon/connman-tech-offline/default";
+      max: 128 128;
+      min: 16 16;
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.image: "connman-tech-offline.png" COMP;
+               image.normal: "connman-tech-offline.png";
+            }
+         }
+      }
+   }
+
+   // quite close to e17 icon
+
+   // ICONS: receive the following signals, all with source being "elm"
+   //    elm,favorite,{yes,no}
+   //    elm,auto_connect,{yes,no}
+   //    elm,state,{idle,association,configuration,ready,disconnect,failure}
+   //    elm,security,{none,yes,wep,psk,ieee8021x,wpa,rsn} (yes = catch all)
+   // and also the following message:
+   //    id=1, type=MSG_INT, description=strength (0-100)
+
+   group {
+      name: "elm/icon/ethernet/default";
+      max: 128 128;
+      min: 16 16;
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.image: "connman-ethernet.png" COMP;
+               image.normal: "connman-ethernet.png";
+            }
+         }
+      }
+   }
+
+   group {
+      name: "elm/icon/wifi/default";
+      max: 128 128;
+      min: 16 16;
+      images {
+         image: "connman-wifi-good.png" COMP;
+         image: "connman-wifi-medium.png" COMP;
+         image: "connman-wifi-bad.png" COMP;
+         image: "connman-lock.png" COMP;
+         image: "connman-favorite.png" COMP;
+      }
+      script {
+         public message(Msg_Type:type, id, ...) {
+            if ((type == MSG_INT) && (id == 1)) {
+               new strength;
+               strength = getarg(2);
+               if (strength >= 65)
+                  run_program(PROGRAM:"strength,good");
+               else if (strength >= 35)
+                  run_program(PROGRAM:"strength,medium");
+               else
+                  run_program(PROGRAM:"strength,bad");
+            }
+         }
+      }
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "connman-wifi-good.png";
+            }
+            description {
+               state: "medium" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "connman-wifi-medium.png";
+            }
+            description {
+               state: "bad" 0.0;
+               inherit: "default" 0.0;
+               image.normal: "connman-wifi-bad.png";
+            }
+         }
+
+         part {
+            name: "security";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "connman-lock.png";
+               visible: 0;
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+
+         part {
+            name: "favorite";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "connman-favorite.png";
+               visible: 0;
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+
+         programs {
+            program {
+               signal: "elm,security,yes";
+               source: "elm";
+               action: STATE_SET "visible" 0.0;
+               target: "security";
+            }
+            program {
+               signal: "elm,security,none";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "security";
+            }
+
+            program {
+               signal: "elm,favorite,yes";
+               source: "elm";
+               action: STATE_SET "visible" 0.0;
+               target: "favorite";
+            }
+            program {
+               signal: "elm,favorite,none";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "favorite";
+            }
+
+            program {
+               name: "strength,good";
+               action: STATE_SET "default" 0.0;
+               target: "icon";
+            }
+            program {
+               name: "strength,medium";
+               action: STATE_SET "medium" 0.0;
+               target: "icon";
+            }
+            program {
+               name: "strength,bad";
+               action: STATE_SET "bad" 0.0;
+               target: "icon";
+            }
+         }
+      }
+   }
+}
