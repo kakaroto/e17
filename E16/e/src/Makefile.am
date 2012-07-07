@@ -93,7 +93,7 @@ e16_SOURCES = \
 	setup.c			\
 	shapewin.c		\
 	size.c			\
-	slide.c			\
+	slide.c			slide.h			\
 	slideout.c		\
 	snaps.c                 snaps.h			\
 	sound.c			sound.h			\

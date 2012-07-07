@@ -36,6 +36,7 @@
 #include "groups.h"
 #include "hints.h"
 #include "screen.h"
+#include "slide.h"
 #include "snaps.h"
 #include "timers.h"
 #include "windowmatch.h"

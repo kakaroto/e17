@@ -182,12 +182,6 @@ void                EobjChangeShadow(EObj * eo, int shadow);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);
-void                EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty,
-				int speed);
-void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
-				 int speed);
-void                EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty,
-				    int fw, int fh, int tw, int th, int speed);
 
 void                EobjsOpacityUpdate(int op_or);
 

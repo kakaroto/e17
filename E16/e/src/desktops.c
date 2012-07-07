@@ -38,6 +38,7 @@
 #include "iclass.h"
 #include "screen.h"
 #include "settings.h"
+#include "slide.h"
 #include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"

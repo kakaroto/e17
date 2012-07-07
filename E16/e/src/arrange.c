@@ -26,6 +26,7 @@
 #include "ewins.h"
 #include "groups.h"
 #include "screen.h"
+#include "slide.h"
 
 #define DEBUG_ARRANGE 0
 

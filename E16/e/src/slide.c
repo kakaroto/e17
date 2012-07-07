@@ -24,7 +24,97 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "focus.h"
+#include "slide.h"
 #include "xwin.h"
+
+/*
+ * EObj sliding functions
+ */
+
+void
+EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
+{
+   int                 k, x, y;
+
+   EGrabServer();
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
+	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	EobjMove(eo, x, y);
+
+	k = ETimedLoopNext();
+     }
+   EobjMove(eo, tx, ty);
+
+   EUngrabServer();
+}
+
+void
+EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
+{
+   int                 i, k, x, y;
+   struct _xy {
+      int                 x, y;
+   }                  *xy;
+
+   if (num <= 0)
+      return;
+
+   xy = EMALLOC(struct _xy, num);
+   if (!xy)
+      return;
+
+   for (i = 0; i < num; i++)
+     {
+	xy[i].x = EobjGetX(peo[i]);
+	xy[i].y = EobjGetY(peo[i]);
+     }
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
+	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
+	     EobjMove(peo[i], x, y);
+	  }
+
+	k = ETimedLoopNext();
+     }
+
+   for (i = 0; i < num; i++)
+      EobjMove(peo[i], xy[i].x + dx, xy[i].y + dy);
+
+   Efree(xy);
+}
+
+void
+EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty, int fw, int fh,
+		int tw, int th, int speed)
+{
+   int                 k, x, y, w, h;
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
+	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
+	h = ((fh * (1024 - k)) + (th * k)) >> 10;
+	EobjMoveResize(eo, x, y, w, h);
+
+	k = ETimedLoopNext();
+     }
+   EobjMoveResize(eo, tx, ty, tw, th);
+}
+
+/*
+ * EWin sliding functions
+ */
 
 void
 EwinSlideSizeTo(EWin * ewin, int tx, int ty, int tw, int th,

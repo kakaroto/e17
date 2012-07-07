@@ -37,6 +37,7 @@
 #include "menus.h"
 #include "screen.h"
 #include "settings.h"
+#include "slide.h"
 #include "tclass.h"
 #include "timers.h"
 #include "tooltips.h"

@@ -25,6 +25,7 @@
 #include "ewins.h"
 #include "hints.h"
 #include "screen.h"
+#include "slide.h"
 
 #define DEBUG_SIZE 0
 #if DEBUG_SIZE

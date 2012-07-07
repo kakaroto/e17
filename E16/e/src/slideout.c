@@ -32,6 +32,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "grabs.h"
+#include "slide.h"
 #include "xwin.h"
 
 #define SLIDEOUT_EVENT_MASK \
