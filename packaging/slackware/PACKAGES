@@ -3,8 +3,8 @@ eet
 evas
 evas_generic_loaders
 ecore
-embryo
 eio
+embryo
 edje
 efreet
 e_dbus
@@ -17,6 +17,7 @@ libeweather
 emap
 elementary
 exchange
+ephysics
 enlightenment
 terminology
 e17mod-alarm
@@ -31,6 +32,5 @@ e17mod-net
 e17mod-tclock
 edje_viewer
 emprint
-ephysics
 expedite
 exquisite
