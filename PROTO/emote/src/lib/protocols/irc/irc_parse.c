@@ -46,8 +46,6 @@ enum _IRC_COMMANDS
 
 /* local function prototypes */
 static void _irc_cleanup_irc_line(IRC_Line *line);
-static char *_irc_parse_utf8_to_markup(const char *text);
-static char *_irc_str_append(char *str, const char *txt, int *len, int *alloc);
 static int _irc_split_line(const char *line, IRC_Line *out);
 static void _irc_parse_line(char *line, const char *server, Emote_Protocol *m);
 static Eina_List *_irc_parse_split_input(Eina_Strbuf **input);
@@ -79,21 +77,10 @@ static void
 _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
 {
    Emote_Event *event;
-   Eina_List *p;
-   char *param;
    IRC_Line ln;
    int ncmd;
 
-//   printf("Parse Line: %s\n", line);
-
    if(!_irc_split_line(line, &ln)) return;
-
-//   printf("\tPrefix = %s\n\tSource = %s\n\tUser = %s\n\tHost = %s\n\tCmd: %s\n\tTrailing: %s\n",
-//          ln.prefix, ln.source, ln.user, ln.host, ln.cmd, ln.trailing);
-   EINA_LIST_FOREACH(ln.params, p, param)
-     {
-//        printf("\tParam: %s\n", param);
-     }
 
    ncmd = atoi(ln.cmd);
    event = NULL;
@@ -108,8 +95,8 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
             m,
             EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
             server,
-            _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-            _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1))
+            eina_list_nth(ln.params,0),
+            eina_list_nth(ln.params,1)
         );
      }
    else if (!strcmp(ln.cmd, "PRIVMSG"))
@@ -119,9 +106,9 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                m,
                EMOTE_EVENT_CHAT_MESSAGE_RECEIVED,
                server,
-               _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-               _irc_parse_utf8_to_markup(ln.source),
-               _irc_parse_utf8_to_markup(ln.trailing)
+               eina_list_nth(ln.params,0),
+               ln.source,
+               ln.trailing
             );
      }
    else if (!strcmp(ln.cmd, "JOIN"))
@@ -131,8 +118,8 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                m,
                EMOTE_EVENT_CHAT_JOINED,
                server,
-               _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-               _irc_parse_utf8_to_markup(ln.source)
+               eina_list_nth(ln.params,0),
+               ln.source
             );
      }
    else if (!strcmp(ln.cmd, "PART"))
@@ -142,8 +129,8 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                m,
                EMOTE_EVENT_CHAT_PARTED,
                server,
-               _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-               _irc_parse_utf8_to_markup(ln.source)
+               eina_list_nth(ln.params,0),
+               ln.source
             );
      }
    else if (!strcmp(ln.cmd, "NICK"))
@@ -153,8 +140,8 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                    m,
                    EMOTE_EVENT_SERVER_NICK_CHANGED,
                    server,
-                   _irc_parse_utf8_to_markup(ln.source),
-                   _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0))
+                   ln.source,
+                   eina_list_nth(ln.params,0)
                 );
      }
    else if (ncmd == RPL_TOPIC)
@@ -164,9 +151,9 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                    m,
                    EMOTE_EVENT_CHAT_TOPIC,
                    server,
-                   _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
+                   eina_list_nth(ln.params,1),
                    NULL,
-                   _irc_parse_utf8_to_markup(ln.trailing)
+                   ln.trailing
                 );
      }
    else if (!strcmp(ln.cmd, "TOPIC"))
@@ -176,9 +163,9 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                    m,
                    EMOTE_EVENT_CHAT_TOPIC,
                    server,
-                   _irc_parse_utf8_to_markup(eina_list_nth(ln.params,0)),
-                   _irc_parse_utf8_to_markup(ln.source),
-                   _irc_parse_utf8_to_markup(ln.trailing)
+                   eina_list_nth(ln.params,0),
+                   ln.source,
+                   ln.trailing
                 );
      }
    else if (ncmd ==  RPL_NAMREPLY)
@@ -188,9 +175,9 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                   m,
                   EMOTE_EVENT_CHAT_USERS,
                   server,
-                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,2)),
+                  eina_list_nth(ln.params,2),
                   NULL,
-                  _irc_parse_utf8_to_markup(ln.trailing)
+                  ln.trailing
                );
      }
    else if (ncmd == RPL_ENDOFNAMES)
@@ -200,7 +187,7 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
                   m,
                   EMOTE_EVENT_CHAT_USERS,
                   server,
-                  _irc_parse_utf8_to_markup(eina_list_nth(ln.params,1)),
+                  eina_list_nth(ln.params,1),
                   NULL,
                   NULL
                );
@@ -216,7 +203,7 @@ _irc_parse_line(char *line, const char *server, Emote_Protocol *m)
             EMOTE_EVENT_SERVER_MESSAGE_RECEIVED,
             server,
             NULL,
-            _irc_parse_utf8_to_markup(ln.param_str)
+            ln.param_str
         );
      }
 
@@ -454,61 +441,4 @@ _irc_split_line(const char *line, IRC_Line *out)
      }
 
   return 1;
-}
-
-static char *
-_irc_parse_utf8_to_markup(const char *text)
-{
-   char *str = NULL;
-   int str_len = 0, str_alloc = 0;
-   int ch, pos = 0, pos2 = 0;
-
-   if (!text) return NULL;
-   for (;;)
-     {
-        pos = pos2;
-        pos2 = evas_string_char_next_get((char *)(text), pos2, &ch);
-        if ((ch <= 0) || (pos2 <= 0)) break;
-        if (ch == '\n')
-           str = _irc_str_append(str, "<br>", &str_len, &str_alloc);
-        else if (ch == '\t')
-           str = _irc_str_append(str, "<\t>", &str_len, &str_alloc);
-        else if (ch == '<')
-           str = _irc_str_append(str, "&lt;", &str_len, &str_alloc);
-        else if (ch == '>')
-           str = _irc_str_append(str, "&gt;", &str_len, &str_alloc);
-        else if (ch == '&')
-           str = _irc_str_append(str, "&amp;", &str_len, &str_alloc);
-        else
-          {
-             char tstr[16];
-
-             strncpy(tstr, text + pos, pos2 - pos);
-             tstr[pos2 - pos] = 0;
-             str = _irc_str_append(str, tstr, &str_len, &str_alloc);
-          }
-     }
-   return str;
-}
-
-static char *
-_irc_str_append(char *str, const char *txt, int *len, int *alloc)
-{
-   int txt_len = strlen(txt);
-
-   if (txt_len <= 0) return str;
-   if ((*len + txt_len) >= *alloc)
-     {
-        char *str2;
-        int alloc2;
-
-        alloc2 = *alloc + txt_len + 128;
-        str2 = realloc(str, alloc2);
-        if (!str2) return str;
-        *alloc = alloc2;
-        str = str2;
-     }
-   strcpy(str + *len, txt);
-   *len += txt_len;
-   return str;
 }

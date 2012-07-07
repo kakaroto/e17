@@ -165,7 +165,7 @@ protocol_irc_user(const char *server, const char *nick)
    if (!ecore_con_server_connected_get(serv)) return 0;
    gethostname(host, 63);
    len = snprintf(buf, sizeof(buf), "USER %s %s %s :%s\r\n",
-		  nick, host, server, "Entourage Tester");
+		  nick, host, server, "Emote Tester");
    ecore_con_server_send(serv, buf, len);
    return 1;
 }
@@ -197,8 +197,6 @@ protocol_irc_command(const char *server, const char *message)
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
 
-   printf("Parsing Command %s\n", message);
-
    len = snprintf(buf, sizeof(buf), "%s\r\n", message);
    ecore_con_server_send(serv, buf, len);
    return 1;
@@ -215,8 +213,6 @@ protocol_irc_message(const char *server, const char *chan, const char *message)
    if (!(serv = eina_hash_find(_irc_servers, server))) return 0;
    if (!ecore_con_server_connected_get(serv)) return 0;
    len = snprintf(buf, sizeof(buf), "PRIVMSG %s :%s\r\n", chan, message);
-
-   printf("Sending %s\n", buf);
 
    ecore_con_server_send(serv, buf, len);
    return 1;
@@ -607,8 +603,6 @@ _irc_event_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
    if (EMOTE_EVENT_T(event)->protocol != m)
       return EINA_FALSE;
 
-   printf("%s Received Event %u\n", m->api->label, EMOTE_EVENT_T(event)->type);
-
    switch(EMOTE_EVENT_T(event)->type)
    {
       case EMOTE_EVENT_SERVER_CONNECT:
@@ -660,7 +654,7 @@ _irc_event_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
            break;
         }
       default:
-         printf("Unhandled Event!\n");
+         printf("Unhandled Event (%u)!\n", EMOTE_EVENT_T(event)->type);
          return EINA_FALSE;
    }
 

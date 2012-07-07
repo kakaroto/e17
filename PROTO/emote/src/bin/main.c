@@ -150,10 +150,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Server_Connect *d;
 
              d = event;
-             printf("Server %s from protocol %s is now connected.\n",
-                    EMOTE_EVENT_SERVER_T(d)->server, 
-                    EMOTE_EVENT_T(d)->protocol->api->label);
-             em_gui_server_add(EMOTE_EVENT_SERVER_T(d)->server, 
+             em_gui_server_add(EMOTE_EVENT_SERVER_T(d)->server,
                                EMOTE_EVENT_T(d)->protocol);
              em_gui_nick_update(EMOTE_EVENT_SERVER_T(d)->server, NULL, d->nick);
              break;
@@ -163,8 +160,6 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Server *d;
 
              d = event;
-             printf("Server %s from protocol %s is now disconnected.\n",
-                    d->server, EMOTE_EVENT_T(d)->protocol->api->label);
              em_gui_server_del(d->server, EMOTE_EVENT_T(d)->protocol);
              break;
           }
@@ -187,7 +182,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Server_Message *d;
 
              d = event;
-             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, 
+             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server,
                                 NULL, NULL, d->message);
              break;
           }
@@ -196,8 +191,8 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Chat_Message *d;
 
              d = event;
-             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server, 
-                                EMOTE_EVENT_CHAT_T(d)->channel, 
+             em_gui_message_add(EMOTE_EVENT_SERVER_T(d)->server,
+                                EMOTE_EVENT_CHAT_T(d)->channel,
                                 EMOTE_EVENT_CHAT_T(d)->user, d->message);
              break;
           }
@@ -206,7 +201,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Server_Message *d;
 
              d = event;
-             em_gui_nick_update(EMOTE_EVENT_SERVER_T(d)->server, 
+             em_gui_nick_update(EMOTE_EVENT_SERVER_T(d)->server,
                                 d->user, d->message);
              break;
           }
@@ -215,8 +210,8 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Chat_Message *d;
 
              d = event;
-             em_gui_topic_show(EMOTE_EVENT_SERVER_T(d)->server, 
-                               EMOTE_EVENT_CHAT_T(d)->channel, 
+             em_gui_topic_show(EMOTE_EVENT_SERVER_T(d)->server,
+                               EMOTE_EVENT_CHAT_T(d)->channel,
                                EMOTE_EVENT_CHAT_T(d)->user, d->message);
              break;
           }
@@ -225,7 +220,7 @@ _em_main_chat_events_handler(void *data __UNUSED__, int type __UNUSED__, void *e
              Emote_Event_Chat_Message *d;
 
              d = event;
-             em_gui_user_list_add(EMOTE_EVENT_SERVER_T(d)->server, 
+             em_gui_user_list_add(EMOTE_EVENT_SERVER_T(d)->server,
                                   EMOTE_EVENT_CHAT_T(d)->channel, d->message);
              break;
           }

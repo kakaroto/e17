@@ -15,7 +15,7 @@ static Evas_Object *_em_config_win;
 /* global variables */
 EM_INTERN Em_Config *em_config = NULL;
 
-EM_INTERN Eina_Bool 
+EM_INTERN Eina_Bool
 em_config_init(void)
 {
    _em_config_edd = EM_CONFIG_DD_NEW("Em_Config", Em_Config);
@@ -30,7 +30,7 @@ em_config_init(void)
    return EINA_TRUE;
 }
 
-EM_INTERN Eina_Bool 
+EM_INTERN Eina_Bool
 em_config_shutdown(void)
 {
    _em_config_cb_free();

@@ -1,6 +1,11 @@
-* Change channel selector to toolbar instead of hoversel?
-* Add way of doing channel/nick notification.  Probably easier with
-  toolbar.
-* User List (store as Eina Hash for quick add/delete, need to figure out
-  sorting as well as where to store it)
-* Nick Completion
+* Make interface look better.
+* Add support for selecting text in textgrid
+* Add support for colors/bold/underline/etc to textgrid
+* Add support for scrolling textgrid (scrollback is saved already)
+* Add urgent/notification support.
+* User list for channels.
+* Nick completion for channels.
+* Incorporate Eina logging/error reporting
+* Improve interface and library code to be more generic to allow for
+  common IM protocols (AIM, MSN, Jabber, etc).  Library is already
+  built in a way to allow for different protocols.

@@ -65,7 +65,7 @@ emote_protocol_load(const char *name)
    if (!(f = _emote_protocol_find(name))) return NULL;
 
    if (!(p = _emote_protocol_load_file(f)))
-     printf("Failed to load: %s\n", f);
+     printf("Failed to load protocol (%s)\n", f);
 
    if (f) free(f);
    return p;
@@ -125,7 +125,7 @@ _emote_protocol_load_file(const char *file)
 
    if (!(p->handle = dlopen(file, (RTLD_NOW | RTLD_GLOBAL))))
      {
-        printf("Cannot dlopen protocol: %s\n", dlerror());
+        printf("Cannot dlopen protocol (%s)\n", dlerror());
         emote_object_del(EMOTE_OBJECT(p));
         return NULL;
      }
