@@ -39,16 +39,10 @@
 #include <stdlib.h>
 #include <X11/keysym.h>
 
-#define USE_TIMER    0
-#define USE_ANIMATOR 1
-
 /* Magnifier window */
 typedef struct {
    EWin               *ewin;
    const char         *title;
-#if USE_TIMER
-   Timer              *timer;
-#endif
    int                 cx, cy;	/* Center */
    int                 stroke_cx, stroke_cy;
    int                 stroke_mx, stroke_my;
@@ -226,21 +220,6 @@ _MagwinUpdate(MagWindow * mw)
    return 1;
 }
 
-#if USE_TIMER
-static int
-_MagwinTimeout(int val __UNUSED__, void *data)
-{
-   MagWindow          *mw = (MagWindow *) data;
-   int                 again;
-
-   again = _MagwinUpdate(mw);
-   if (again)
-      return 1;
-
-   mw->timer = NULL;
-   return 0;
-}
-#elif USE_ANIMATOR
 static int
 _MagwinAnimator(void *data)
 {
@@ -248,7 +227,6 @@ _MagwinAnimator(void *data)
 
    return _MagwinUpdate(mw);
 }
-#endif
 
 static void
 _MagwinGrabSet(MagWindow * mw)
@@ -430,11 +408,7 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	   break;
 	mw->configured = 1;
 	_MagwinGrabSet(mw);
-#if USE_TIMER
-	TIMER_ADD(mw->timer, 50, _MagwinTimeout, 0, mw);
-#elif USE_ANIMATOR
 	AnimatorAdd(_MagwinAnimator, mw);
-#endif
 	break;
      }
 
@@ -523,9 +497,6 @@ MagwinCreate(const char *title, int width, int height)
 static void
 MagwinDestroy(MagWindow * mw)
 {
-#if USE_TIMER
-   TIMER_DEL(mw->timer);
-#endif
    Efree(mw);
 }
 
