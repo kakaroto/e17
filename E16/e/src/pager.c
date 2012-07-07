@@ -941,7 +941,7 @@ PagersUpdateEwin(EWin * ewin, int why)
    switch (why)
      {
      case PAGER_UPD_EWIN_GEOM:
-	if (!EoIsShown(ewin) || ewin->state.animated)
+	if (!EoIsShown(ewin))
 	   return;
 	break;
 
