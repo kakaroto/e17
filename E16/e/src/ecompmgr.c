@@ -2177,12 +2177,12 @@ ECompMgrStart(void)
 	XCompositeRedirectSubwindows(disp, WinGetXwin(VROOT),
 				     CompositeRedirectManual);
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
-	ESelectInputChange(WinGetXwin(VROOT), ExposureMask, 0);
+	ESelectInputChange(VROOT, ExposureMask, 0);
 #endif
 	break;
      case ECM_MODE_WINDOW:
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
-	ESelectInputChange(WinGetXwin(VROOT), ExposureMask, 0);
+	ESelectInputChange(VROOT, ExposureMask, 0);
 #endif
 	break;
      case ECM_MODE_AUTO:
