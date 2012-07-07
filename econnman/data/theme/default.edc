@@ -98,6 +98,7 @@ collections {
          image: "connman-wifi-bad.png" COMP;
          image: "connman-lock.png" COMP;
          image: "connman-favorite.png" COMP;
+         image: "connman-connected.png" COMP;
       }
       script {
          public message(Msg_Type:type, id, ...) {
@@ -172,6 +173,24 @@ collections {
             }
          }
 
+         part {
+            name: "connected";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "connman-connected.png";
+               visible: 0;
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+
          programs {
             program {
                signal: "elm,security,yes";
@@ -197,6 +216,19 @@ collections {
                source: "elm";
                action: STATE_SET "default" 0.0;
                target: "favorite";
+            }
+
+            program {
+               signal: "elm,connected,yes";
+               source: "elm";
+               action: STATE_SET "visible" 0.0;
+               target: "connected";
+            }
+            program {
+               signal: "elm,connected,none";
+               source: "elm";
+               action: STATE_SET "default" 0.0;
+               target: "connected";
             }
 
             program {

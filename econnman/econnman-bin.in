@@ -662,6 +662,9 @@ class ServicesList(object):
         ly.signal_emit("elm,roaming," + yesno(roaming), "elm")
         ly.signal_emit("elm,auto_connect," + yesno(auto_connect), "elm")
 
+        connected = (str(state) not in ("idle", "failure"))
+        ly.signal_emit("elm,connected," + yesno(connected), "elm")
+
         for s in security:
             ly.signal_emit("elm,security," + s, "elm")
         if security:

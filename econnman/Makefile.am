@@ -4,7 +4,8 @@ EXTRA_DIST = \
 	AUTHORS \
 	COPYING \
 	README \
-	autogen.sh
+	autogen.sh \
+	econnman-bin.in
 
 dist_bin_SCRIPTS = econnman-bin
 
@@ -29,7 +30,13 @@ am__v_EDJ_ = $(am__v_EDJ_$(AM_DEFAULT_VERBOSITY))
 am__v_EDJ_0 = @echo "  EDJ   " $@;
 
 THEME_IMAGES = \
+data/theme/connman-connected.png \
 data/theme/connman-ethernet.png \
+data/theme/connman-favorite.png \
+data/theme/connman-lock.png \
+data/theme/connman-tech-connected.png \
+data/theme/connman-tech-offline.png \
+data/theme/connman-tech-powered.png \
 data/theme/connman-wifi-bad.png \
 data/theme/connman-wifi-good.png \
 data/theme/connman-wifi-medium.png
@@ -47,6 +54,7 @@ data/theme/default.edj: $(top_builddir)/Makefile $(top_srcdir)/data/theme/defaul
 
 clean-local:
 	rm -f $(top_builddir)/data/theme/default.edj
+	rm -f $(top_builddir)/econnman-bin
 
 MAINTAINERCLEANFILES = \
 	aclocal.m4 \
