@@ -20,6 +20,7 @@ import dbus
 import dbus.service
 import logging
 import argparse
+import os.path
 
 dbus_ml = e_dbus.DBusEcoreMainLoop()
 bus = dbus.SystemBus(mainloop=dbus_ml)
@@ -1353,7 +1354,9 @@ if __name__ == "__main__":
     elm.init()
     elm.policy_set(elm.ELM_POLICY_QUIT, elm.ELM_POLICY_QUIT_LAST_WINDOW_CLOSED)
 
-    elm.theme_extension_add("./data/theme/default.edj")
+    for td in ("./data/theme/default.edj", "@PKGDATADIR@/theme/default.edj"):
+        if os.path.exists(td):
+            elm.theme_extension_add(td)
 
     win = elm.Window("econnman", elm.ELM_WIN_BASIC)
     win.title = "EConnMan"

@@ -8,6 +8,12 @@ EXTRA_DIST = \
 
 dist_bin_SCRIPTS = econnman-bin
 
+econnman-bin: $(top_srcdir)/econnman-bin.in $(top_builddir)/Makefile
+	rm -f $(top_builddir)/econnman-bin
+	sed -e 's:@PKGDATADIR@:$(pkgdatadir):g' \
+		$(top_srcdir)/econnman-bin.in > $(top_builddir)/econnman-bin
+	chmod +x $(top_builddir)/econnman-bin
+
 desktopdir = $(datadir)/applications
 desktop_DATA = data/desktop/econnman.desktop
 
