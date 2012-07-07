@@ -6,10 +6,6 @@
 #  - Proxy
 #  - Fix connman's PropertyChanged when changing off/manual -> dhcp,
 #    gateway is not updated.
-#  - Technology icon
-#  - Service icon
-#  - ServiceView should clear self.box contents and re-add items
-#    whenever visibility changes, otherwise there are some blank places
 
 import elementary as elm
 import evas
@@ -715,6 +711,28 @@ class ServiceView(ObjectView):
                    ("Gateway", "ipv4_gateway"),
                    )
 
+    top_widgets = (
+        "connect",
+        "disconnect",
+        "forget",
+        "error",
+        "auto_connect",
+        "roaming",
+        "strength",
+        "security",
+        "state",
+        "nameservers_label",
+        "nameservers_entry",
+        "timeservers_label",
+        "timeservers_entry",
+        "domains_label",
+        "domains_entry",
+        "ipv4_frame",
+        "proxy_frame",
+        "ethernet_frame",
+        "vpn_frame",
+        )
+
     def create_view(self, properties):
         self.type = str(properties.get("Type"))
         self.immutable = bool(properties.get("Immutable"))
@@ -744,12 +762,26 @@ class ServiceView(ObjectView):
         if self.type == "wifi":
             self.security = self.add_label(self.box, "Security:")
 
-        self.add_readwrite_list("Name Servers:", "Nameservers", properties)
-        self.add_readwrite_list("Time Servers:", "Timeservers", properties)
-        self.add_readwrite_list("Domain Names:", "Domains", properties)
+        self.state = self.add_label(self.box, properties.get("State"))
+
+        lb, en = self.add_readwrite_list("Name Servers:", "Nameservers",
+                                         properties)
+        self.nameservers_label = lb
+        self.nameservers_entry = en
+
+        lb, en = self.add_readwrite_list("Time Servers:", "Timeservers",
+                                         properties)
+        self.timeservers_label = lb
+        self.timeservers_entry = en
+
+        lb, en = self.add_readwrite_list("Domain Names:", "Domains",
+                                         properties)
+        self.domains_label = lb
+        self.domains_entry = en
 
         self.ipv4_properties = {"IPv4": {}, "IPv4.Configuration": {}}
         fr, bx = self.add_frame_and_box(self.box, "IPv4")
+        self.ipv4_frame = fr
         self.ipv4_box = bx
         options = ("Automatic", "Manual", "Off")
         self.ipv4_method, self.ipv4_method_items = self.add_segment_control(
@@ -766,6 +798,7 @@ class ServiceView(ObjectView):
 
         self.proxy_properties = {"Proxy": {}, "Proxy.Configuration": {}}
         fr, bx = self.add_frame_and_box(self.box, "Proxy")
+        self.proxy_frame = fr
         self.proxy_box = bx
         options = ("Direct", "Automatic", "Manual")
         self.proxy_method, self.proxy_method_items = self.add_segment_control(
@@ -779,9 +812,11 @@ class ServiceView(ObjectView):
         #  - manual: servers, excludes
 
         if self.type in ("wifi", "ethernet", "wimax", "bluetooth", "cellular"):
-            self.add_readonly_section("Ethernet", self.eth_fields)
+            fr, bx = self.add_readonly_section("Ethernet", self.eth_fields)
+            self.ethernet_frame = fr
         elif self.type == "vpn":
-            self.add_readonly_section("VPN", self.vpn_fields)
+            fr, bx = self.add_readonly_section("VPN", self.vpn_fields)
+            self.vpn_frame = fr
 
     def add_readonly_section(self, title, fields):
         fr, bx = self.add_frame_and_box(self.box, title)
@@ -789,6 +824,7 @@ class ServiceView(ObjectView):
             lb, en = self.add_label_and_entry(bx, "%s:" % (name,))
             en.editable = False
             setattr(self, attr, en)
+        return fr, bx
 
     def populate_fields(self, fields, value):
         for n, a in fields:
@@ -831,6 +867,7 @@ class ServiceView(ObjectView):
         en.callback_unfocused_add(on_unfocused)
         self.readwrite_list_widget[name] = en
         self.reload_readwrite_list(name)
+        return lb, en
 
     def reload_readwrite_list(self, name):
         used_value = self.readwrite_list_properties[name]
@@ -852,6 +889,9 @@ class ServiceView(ObjectView):
 
     def on_property_changed(self, name, value):
         log.debug("Changed %s: %s=%s", self.path, name, value)
+
+        visibility_changed = False
+
         if name == "Type":
             self.type = str(value)
         elif name == "Immutable":
@@ -868,13 +908,23 @@ class ServiceView(ObjectView):
         elif name == "Favorite":
             value = bool(value)
             if hasattr(self, "forget"):
-                self.forget.visible = value
+                if self.forget.visible != value:
+                    self.forget.visible = value
+                    visibility_changed = True
         elif name == "State":
             value = str(value)
-            self.error.visible = (value == "failure")
+            visible = (value == "failure")
+            self.state.text = "State: %s" % (value,)
+            if self.error.visible != visible:
+                self.error.visible = visible
+                visibility_changed = True
             connected = (value not in ("idle", "failure"))
-            self.disconnect.visible = connected
-            self.connect.visible = not connected
+            if self.disconnect.visible != connected:
+                self.disconnect.visible = connected
+                visibility_changed = True
+            if self.connect.visible == connected:
+                self.connect.visible = not connected
+                visibility_changed = True
         elif name == "Error":
             self.error.text = "Error: %s" % value
         elif name == "AutoConnect":
@@ -943,6 +993,15 @@ class ServiceView(ObjectView):
                 log.error("Unknown method: %s", method)
         elif name in self.readwrite_list_properties:
             self.update_readwrite_list(name, value)
+
+        if visibility_changed:
+            self.box.unpack_all()
+            for attr in self.top_widgets:
+                if hasattr(self, attr):
+                    wid = getattr(self, attr)
+                    if wid.visible:
+                        self.box.pack_end(wid)
+
 
     def _disconnect(self, obj):
         def on_reply():
