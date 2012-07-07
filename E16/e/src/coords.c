@@ -98,9 +98,10 @@ _CoordsShow(EWin * ewin, int mode)
 	  {
 	     switch (md)
 	       {
-	       case 0:
-	       case 1:
-	       case 2:
+	       case MR_OPAQUE:
+	       case MR_TECHNICAL:
+	       case MR_BOX:
+	       case MR_TECH_OPAQUE:
 		  EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 		  w = (ewin->state.shaded) ?
 		     EoGetW(ewin) : ewin->shape_w + bl + br;
