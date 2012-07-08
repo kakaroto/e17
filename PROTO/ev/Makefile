@@ -1,5 +1,5 @@
 PREFIX ?= /usr/local
-DOCDIR ?= $(PREFIX)/share/doc
+DOCDIR ?= $(PREFIX)/share/doc/ev
 
 CC     ?= gcc
 CFLAGS ?= -O0 -pipe -Wall -Wextra -g
