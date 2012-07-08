@@ -233,6 +233,20 @@ _clang_load_highlighting(Edi_File *ef)
                    case CXCursor_ContinueStmt:
                    case CXCursor_BreakStmt:
                    case CXCursor_ReturnStmt:
+                   case CXCursor_AsmStmt:
+                   case CXCursor_ObjCAtTryStmt:
+                   case CXCursor_ObjCAtCatchStmt:
+                   case CXCursor_ObjCAtFinallyStmt:
+                   case CXCursor_ObjCAtThrowStmt:
+                   case CXCursor_ObjCAtSynchronizedStmt:
+                   case CXCursor_ObjCAutoreleasePoolStmt:
+                   case CXCursor_ObjCForCollectionStmt:
+                   case CXCursor_CXXCatchStmt:
+                   case CXCursor_CXXTryStmt:
+                   case CXCursor_CXXForRangeStmt:
+                   case CXCursor_SEHTryStmt:
+                   case CXCursor_SEHExceptStmt:
+                   case CXCursor_SEHFinallyStmt:
                       color = EDI_COLOR_FOREGROUND_KEYWORD_STMT;
                       break;
                    default:
