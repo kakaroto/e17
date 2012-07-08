@@ -30,7 +30,7 @@
 #define CRI(...)            EINA_LOG_DOM_CRIT(_ev_log_dom, __VA_ARGS__)
 
 static int _ev_log_dom = -1;
-static Elm_Genlist_Item_Class itc;;
+static Elm_Genlist_Item_Class itc;
 static Evas_Object *img, *list = NULL;
 
 static void
@@ -59,7 +59,7 @@ _title(Evas_Object *win)
    const char *f, *s;
 
    evas_object_geometry_get(img, NULL, NULL, &ww, &wh);
-   elm_icon_file_get(img, &f, NULL);
+   elm_image_file_get(img, &f, NULL);
    s = strrchr(f, '/');
    s = s ? s + 1 : f;
    snprintf(buf, sizeof(buf), "%s (%ux%u)", s, ww, wh);
@@ -74,7 +74,7 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *ev)
    Evas_Coord w, h;
 
    DBG("pick");
-   elm_icon_file_get(img, &f, &p);
+   elm_image_file_get(img, &f, &p);
    file = elm_object_item_data_get(ev);
    if (f && (!strcmp(file, f))) return;
 
@@ -83,9 +83,9 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *ev)
         ERR("Image loader for %s not detected", file);
         return;
      }
-   elm_icon_file_set(img, file, NULL);
+   elm_image_file_set(img, file, NULL);
    win = elm_object_parent_widget_get(img);
-   ic = elm_icon_object_get(img);
+   ic = elm_image_object_get(img);
    evas_object_image_size_get(ic, &w, &h);
    evas_object_resize(win, w, h);
    _title(win);
@@ -186,7 +186,7 @@ main(int argc, char *argv[])
         printf("Usage: %s filename filename directory fileglob*\n", argv[0]);
         exit(1);
      }
-   //eina_log_domain_level_set("ev", EINA_LOG_LEVEL_DBG);
+   /* eina_log_domain_level_set("ev", EINA_LOG_LEVEL_DBG); */
 
    win = elm_win_add(NULL, NULL, ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
@@ -200,8 +200,8 @@ main(int argc, char *argv[])
    evas_object_size_hint_weight_set(img, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(img, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_win_resize_object_add(win, img);
-   elm_icon_animated_set(img, EINA_TRUE);
-   elm_icon_aspect_fixed_set(img, EINA_TRUE);
+   elm_image_animated_set(img, EINA_TRUE);
+   elm_image_aspect_fixed_set(img, EINA_TRUE);
    elm_image_fill_outside_set(img, EINA_FALSE);
    evas_object_show(img);
    evas_object_show(win);
