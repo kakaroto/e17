@@ -76,9 +76,12 @@ void PrintCursor(CXCursor Cursor) {
         }
         printf("]");
       } else {
+        CXFile cfile;
         CXSourceLocation Loc = clang_getCursorLocation(Referenced);
-        clang_getSpellingLocation(Loc, 0, &line, &column, 0);
-        printf(":%d:%d", line, column);
+        clang_getSpellingLocation(Loc, &cfile, &line, &column, 0);
+        CXString str = clang_getFileName(cfile);
+        printf(":%s:%d:%d", clang_getCString(str), line, column);
+        clang_disposeString(str);
       }
     }
 
