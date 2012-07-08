@@ -91,6 +91,9 @@ Eina_Bool PlayerChar ::Move(eMoveDir dir, unsigned int velocity)
          break;
      }
 
+   if (cur_dir != dir)
+     Character ::cur_dir = dir;
+
    evas_object_move(this->img, Object ::pos.x, Object ::pos.y);
 
    return EINA_TRUE;

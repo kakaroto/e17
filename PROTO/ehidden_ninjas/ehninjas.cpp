@@ -31,6 +31,7 @@
 
 using namespace ehninjas;
 
+static Eina_Bool g_mouse_btns = 0;
 
 static void _win_del_cb(void *data,
                         Evas *e,
@@ -72,6 +73,68 @@ static void _key_down_cb(void *data,
 
 
 
+static Eina_Bool _mouse_down_cb(void *data,
+                                int type,
+                                void *event)
+{
+   App *app = static_cast<App *>(data);
+   assert(app);
+
+   Ecore_Event_Mouse_Button *ev = static_cast<Ecore_Event_Mouse_Button *>(event);
+   assert(ev);
+
+   if (ev->buttons == 0x03)
+     g_mouse_btns |= MOUSE_BUTTON2;
+   else if (ev->buttons == 0x01)
+     g_mouse_btns |= MOUSE_BUTTON1;
+
+   app->DispatchMouseDown();
+
+   return ECORE_CALLBACK_PASS_ON;
+
+}
+
+
+
+static Eina_Bool _mouse_move_cb(void *data,
+                                int type,
+                                void *event)
+{
+   App *app = static_cast<App *>(data);
+   assert(app);
+
+   Ecore_Event_Mouse_Move *ev = static_cast<Ecore_Event_Mouse_Move *>(event);
+   assert(ev);
+
+   app->DispatchMouseMove(ev->root.x, ev->root.y, g_mouse_btns);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+
+
+static Eina_Bool _mouse_up_cb(void *data,
+                              int type,
+                              void *event)
+{
+   App *app = static_cast<App *>(data);
+   assert(app);
+
+   Ecore_Event_Mouse_Button *ev = static_cast<Ecore_Event_Mouse_Button *>(event);
+   assert(ev);
+
+   if (ev->buttons == 0x03)
+     g_mouse_btns ^= MOUSE_BUTTON2;
+   else if (ev->buttons == 0x01)
+     g_mouse_btns ^= MOUSE_BUTTON1;
+
+   app->DispatchMouseUp();
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+
+
 void App ::DispatchKeyDown(const char * const keyname)
 {
    assert(keyname);
@@ -93,7 +156,6 @@ void App ::DispatchKeyDown(const char * const keyname)
 
    if (!strcmp(keyname, "d"))
      this->pc->Move(Character ::Right, 20);
-
 }
 
 
@@ -102,6 +164,30 @@ void App ::DispatchKeyUp(const char * const keyname)
 {
    assert(keyname);
    PRINT_DBG(keyname);
+}
+
+
+
+void App ::DispatchMouseDown()
+{
+}
+
+
+
+void App ::DispatchMouseMove(int x, int y, int buttons)
+{
+   if ((buttons & MOUSE_BUTTON2) != MOUSE_BUTTON2)
+     return;
+
+   //TODO: Calc direction
+   printf("MOVE %d %d\n", x, y);
+}
+
+
+
+void App ::DispatchMouseUp()
+{
+
 }
 
 
@@ -212,6 +298,17 @@ Eina_Bool App ::Initialize(int argc, char **argv)
                                   EVAS_CALLBACK_KEY_UP,
                                   _key_up_cb,
                                   this);
+
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
+                           _mouse_down_cb,
+                           this);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE,
+                           _mouse_move_cb,
+                           this);
+   ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP,
+                           _mouse_up_cb,
+                           this);
+
    if (!this->InitPlayerChar())
      {
         PRINT_DBG("Failed to init player character!");

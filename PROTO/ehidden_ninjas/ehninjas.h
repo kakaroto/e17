@@ -46,5 +46,8 @@ namespace ehninjas
          Eina_Bool Terminate();
          void DispatchKeyDown(const char * const);
          void DispatchKeyUp(const char *const);
+         void DispatchMouseDown();
+         void DispatchMouseUp();
+         void DispatchMouseMove(int, int, int);
      };
 }

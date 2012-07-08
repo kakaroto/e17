@@ -41,7 +41,9 @@
 #define GRID_SIZE        50
 #define MEMPOOL_SIZE     (sizeof(int) * 10000)
 
-
+//MOUSE BUTTON FIELDS
+#define MOUSE_BUTTON1 0x01
+#define MOUSE_BUTTON2 0x02
 
 typedef float ELEMENT_TYPE;
 

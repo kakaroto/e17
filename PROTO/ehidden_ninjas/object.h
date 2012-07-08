@@ -63,11 +63,16 @@ namespace ehninjas
    class Character : public Object
      {
       public:
-         enum eMoveDir{Left, Right, Up, Down };
+         enum eMoveDir{Left, Right, Up, Down};
 
-         Character(const std ::string name, unsigned int id) : Object(name, id)
+         Character(const std ::string name, unsigned int id) : Object(name, id),
+                                                               cur_dir(Down)
          {}
          virtual Eina_Bool Move(eMoveDir, unsigned int) = 0;
+
+      protected:
+         eMoveDir cur_dir;
+
      };
 
    class NonPlayerChar : public Character
