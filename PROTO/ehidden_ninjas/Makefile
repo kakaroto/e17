@@ -4,8 +4,8 @@ BINARY=ehninjas
 PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
 
-CXXFLAGS += $(shell pkg-config --cflags eina evas ecore elementary evas)
-LIBS += $(shell pkg-config --libs eina evas ecore elementary)
+CXXFLAGS += $(shell pkg-config --cflags eina evas ecore ecore-input elementary evas)
+LIBS += $(shell pkg-config --libs eina evas ecore ecore-input elementary)
 CXXFLAGS += -g -Wall -Wundef -O2 -DEINA_MEMPOOL -DMPDIR=\"${PREFIX}/lib/eina\"
 
 $(BINARY): memmgr.o ehninjas.o
