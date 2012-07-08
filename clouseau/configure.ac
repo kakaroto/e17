@@ -57,7 +57,6 @@ PKG_CHECK_MODULES([EFL],
    ecore >= 1.0.0
    ecore-ipc >= 1.0.0
    edje >= 1.0.0
-  ])
    ]
  )
 
