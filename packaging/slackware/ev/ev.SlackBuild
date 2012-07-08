@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# Begin ev.SlackBuild
+
+NAME=ev
+BUILD=1jp
+CWD=$(pwd)
+
+# Get functions
+. ../functions
+set_env
+
+# Go to source code
+cd ../../../PROTO/${NAME}
+VERSION=r`svn info | grep Revision | cut -d ' ' -f2`
+
+# Configure
+make CFLAGS="${SCFLAGS}"
+strip -s ${NAME}
+
+# Install
+make PREFIX=/usr DOCDIR=/usr/doc/${NAME}-${VERSION} DESTDIR="${PKG}" install
+install_doc AUTHORS COPYING README
+
+# Build the package
+make clean
+pack_slack
+
+# End ev.SlackBuild
