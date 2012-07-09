@@ -1,0 +1,20 @@
+[Desktop Entry]
+Name=ev
+GenericName=Image Viewer
+GenericName[ca]=Visor d'imatges
+GenericName[cs]=Prohlížeč obrázků
+GenericName[de]=Bildbetrachter
+GenericName[es]=Visor de imagenes
+GenericName[fr]=Visualisateur d'images
+GenericName[nl]=Afbeeldingen-viewer
+GenericName[pt_BR]=Visualizador de imagens
+GenericName[ro]=Viewer imagini
+GenericName[ru]=Программа просмотра изображений
+GenericName[sr]=Разгледач слика
+GenericName[sr@latin]=Razgledač slika
+Exec=ev %F
+Icon=ev
+Type=Application
+Terminal=false
+Categories=Graphics;Viewer;
+Mimetype=image/jpeg;image/gif;image/png;image/x-png;image/tiff;image/bmp;image/x-bmp;image/x-MS-bmp;image/svg;image/svg+xml;image/x-portable-graymap;image/x-portable-bitmap;image/x-portable-pixmap;image/x-portable-anymap;image/x-portable-bitmap;image/xpm;image/x-icon;image/x-xbitmap;image/x-xpixmap;image/x-tga;image/x-ico;image/vnd.wap.wbmp
