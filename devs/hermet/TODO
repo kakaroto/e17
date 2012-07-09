@@ -1,5 +1,4 @@
 <Evas>
-win32_gl - start hurry (vincent)  
 d3d_gl - start hurry (vincent)
 map - check rotation util inconsistency rotation
 map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
@@ -26,8 +25,15 @@ popup - let check the smart member relationship
 index - check the FIXEMEs
 conformant - how to skip the calc the size if the window is in background.
 glview - run the glview twice in elementary_test
+general - elm_policy_set/elm_policy_get Use Elm_Policy parameter.
+layout - signal_callback_add/del,call... not for common APIs?
+transit - consider mix the separate evas_map effects
+
+<Ecore>
+Ecore_X - Use Ecore_X_Error_Code for ecore_x_error_code_get() (pending to Ecore 2.0)
 
 <Eina>
 check random functions
 eina_log_level off
+
 
