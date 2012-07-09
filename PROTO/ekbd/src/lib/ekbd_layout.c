@@ -1132,11 +1132,22 @@ _ekbd_layout_tie_calc(Smart_Data *sd)
 
    rw = sd->w / (double)sd->layout.w;
    rh = sd->h / (double)sd->layout.h;
-   if (rw < rh) rr = rw;
-   else rr = rh;
+   if (rw < rh)
+     {
+        rr = rw;
+        if (sd->aspect_fixed)
+          rh = rr;
+     }
+   else
+     {
+        rr = rh;
+        if (sd->aspect_fixed)
+          rh = rr;
+     }
 
-   x = (kt->key->x + (kt->key->w / 2)) - ((rw * kt->w) / 2);
+   x = (kt->key->x + (kt->key->w / 2)) - ((rr * kt->w) / 2);
    y = kt->key->y - (rh * kt->h);
+
    if (y < sd->y)
      {
         y = kt->key->y + kt->key->h;
@@ -1165,32 +1176,16 @@ _ekbd_layout_tie_calc(Smart_Data *sd)
    x = x + ex;
    y = y + ey;
 
-   if (sd->aspect_fixed)
+   EINA_LIST_FOREACH(sd->down.tie->keys, l, ky)
      {
-        EINA_LIST_FOREACH(sd->down.tie->keys, l, ky)
-         {
-            ky->x = x + (rr * ky->orig_x);
-            ky->y = y + (rr * ky->orig_y);
-            ky->w = ky->orig_w * rr;
-            ky->h = ky->orig_h * rr;
-            edje_object_scale_set(ky->obj, rr);
-            evas_object_move(ky->obj, ky->x, ky->y);
-            evas_object_resize(ky->obj, ky->w, ky->h);
-          }
-       }
-   else
-     {
-       EINA_LIST_FOREACH(sd->down.tie->keys, l, ky)
-         {
-           ky->x = x + (rw * ky->orig_x);
-           ky->y = y + (rh * ky->orig_y);
-           ky->w = ky->orig_w * rw;
-           ky->h = ky->orig_h * rh;
-           edje_object_scale_set(ky->obj, rr);
-           evas_object_move(ky->obj, ky->x, ky->y);
-           evas_object_resize(ky->obj, ky->w, ky->h);
-        }
-    }
+        ky->x = x + (rw * ky->orig_x);
+        ky->y = y + (rh * ky->orig_y);
+        ky->w = ky->orig_w * rw;
+        ky->h = ky->orig_h * rh;
+        edje_object_scale_set(ky->obj, rr);
+        evas_object_move(ky->obj, ky->x, ky->y);
+        evas_object_resize(ky->obj, ky->w, ky->h);
+     }
 }
 
 
