@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([expedite], [1.2.99], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([expedite], [1.6.99], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
@@ -127,18 +127,18 @@ LT_PROG_RC
 
 case "$host_os" in
    mingw32*)
-      PKG_CHECK_MODULES([EVIL], [evil >= 1.0.0])
+      PKG_CHECK_MODULES([EVIL], [evil >= 1.6.99])
       AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if Evil library is installed])
       ;;
 esac
 
 # Eina
 
-PKG_CHECK_MODULES([EINA], eina >= 1.2.0)
+PKG_CHECK_MODULES([EINA], eina >= 1.6.99)
 
 # Evas
 
-PKG_CHECK_MODULES([EVAS], evas >= 1.2.0 eet >= 1.6.0)
+PKG_CHECK_MODULES([EVAS], evas >= 1.6.99 eet >= 1.6.99)
 
 # Xlib
 
