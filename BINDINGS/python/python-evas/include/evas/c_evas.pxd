@@ -248,6 +248,9 @@ cdef extern from "Evas.h":
         const_char_ptr type
     ctypedef Evas_Smart_Cb_Description const_Evas_Smart_Cb_Description "const Evas_Smart_Cb_Description"
 
+    ctypedef struct Evas_Smart_Interface
+    ctypedef Evas_Smart_Interface const_Evas_Smart_Interface "const Evas_Smart_Interface"
+
     ctypedef struct Evas_Smart_Class
     ctypedef Evas_Smart_Class const_Evas_Smart_Class "const Evas_Smart_Class"
     ctypedef struct Evas_Smart_Class:
@@ -267,6 +270,7 @@ cdef extern from "Evas.h":
         void (*member_del)(Evas_Object *o, Evas_Object *child)
         const_Evas_Smart_Class *parent
         Evas_Smart_Cb_Description *callbacks
+        const_Evas_Smart_Interface **interfaces
         const_void *data
 
     ctypedef struct Evas_Device

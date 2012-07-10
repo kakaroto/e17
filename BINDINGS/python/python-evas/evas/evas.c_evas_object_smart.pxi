@@ -251,6 +251,7 @@ cdef long _smart_object_class_new(char *name) except 0:
     cls_def.member_del = _smart_object_member_del
     cls_def.parent = NULL
     cls_def.callbacks = NULL
+    cls_def.interfaces = NULL
     cls_def.data = NULL
 
     cls = evas_smart_class_new(cls_def);
