@@ -21,6 +21,7 @@
 #include <string>
 #include <Evas.h>
 
+#include "maths.h"
 #include "defines.h"
 
 namespace ehninjas
@@ -41,7 +42,7 @@ namespace ehninjas
 
          std:: string& GetString() { return this->name; }
          unsigned int GetId() { return this->id; }
-         const VECTOR2 &Position() { return this->pos; }
+         VECTOR2 &Position() { return this->pos; }
          Evas_Coord_Point &Size() { return this->size; }
          virtual Eina_Bool Initialize() { return EINA_TRUE; }
          virtual Eina_Bool Release() { return EINA_TRUE; }
@@ -68,7 +69,7 @@ namespace ehninjas
          Character(const std ::string name, unsigned int id) : Object(name, id),
                                                                cur_dir(Down)
          {}
-         virtual Eina_Bool Move(eMoveDir, unsigned int) = 0;
+         virtual Eina_Bool Move(const VECTOR2&, ELEMENT_TYPE) = 0;
 
       protected:
          eMoveDir cur_dir;
@@ -83,7 +84,7 @@ namespace ehninjas
          Eina_Bool Release() { return EINA_TRUE; }
          Eina_Bool SetImgObj(Evas_Object*);
          const Evas_Object *GetImgObj();
-         Eina_Bool Move(eMoveDir, unsigned int) { return EINA_FALSE; };
+         Eina_Bool Move(const VECTOR2&, ELEMENT_TYPE) { return EINA_FALSE; };
      };
 
 }

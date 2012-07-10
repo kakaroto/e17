@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "maths.h"
 #include "defines.h"
 #include "player_char.h"
 
@@ -63,9 +64,9 @@ const Evas_Object *PlayerChar ::GetImgObj()
    return NULL;
 }
 
-Eina_Bool PlayerChar ::Move(eMoveDir dir, unsigned int velocity)
+Eina_Bool PlayerChar ::Move(const VECTOR2& dir, ELEMENT_TYPE velocity)
 {
-   switch (dir)
+/*   switch (dir)
      {
       case Left:
          --Object ::pos.x;
@@ -90,11 +91,19 @@ Eina_Bool PlayerChar ::Move(eMoveDir dir, unsigned int velocity)
            Object ::pos.y = 10000;
          break;
      }
+*/
+//   if (cur_dir != dir)
+//     Character ::cur_dir = dir;
+   Position() += VECTOR2(dir * velocity);
 
-   if (cur_dir != dir)
-     Character ::cur_dir = dir;
+   if (Position().x < 0) Position().x = 0;
+   if (Position().y < 0) Position().y = 0;
+   if (Position().x > SCRN_WIDTH) Position().x = SCRN_WIDTH;
+   if (Position().y > SCRN_HEIGHT) Position().y = SCRN_HEIGHT;
 
-   evas_object_move(this->img, Object ::pos.x, Object ::pos.y);
+   evas_object_move(this->img,
+                    static_cast<Evas_Coord>(Position().x),
+                    static_cast<Evas_Coord>(Position().y));
 
    return EINA_TRUE;
 }

@@ -45,19 +45,11 @@
 #define MOUSE_BUTTON1 0x01
 #define MOUSE_BUTTON2 0x02
 
+#define SCRN_WIDTH 800
+#define SCRN_HEIGHT 800
+
 typedef float ELEMENT_TYPE;
-
-//STRUCTURES
-template<typename T>
-struct Vector2
-{
-   T x;
-   T y;
-   Vector2<T>(): x(0), y(0) {}
-   Vector2<T>(T& x, T& y): x(x), y(y) {}
-   //TODO: override operators.
-};
-
+template<typename T> struct Vector2;
 typedef Vector2<ELEMENT_TYPE> VECTOR2;
 
 #endif

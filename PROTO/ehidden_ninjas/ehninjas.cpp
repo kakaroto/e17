@@ -21,6 +21,7 @@
 #include <Eina.h>
 #include <Elementary.h>
 #include <cassert>
+#include "maths.h"
 #include "defines.h"
 #include "singleton.h"
 #include "memmgr.h"
@@ -41,34 +42,36 @@ static void _win_del_cb(void *data,
    elm_exit();
 }
 
-static void _key_up_cb(void *data,
-                       Evas *e,
-                       Evas_Object *obj,
-                       void *event_info)
+static Eina_Bool _key_up_cb(void *data,
+                            int type,
+                            void *event)
 {
    App *app = static_cast<App *>(data);
    assert(app);
 
-   Evas_Event_Key_Up *ev = static_cast<Evas_Event_Key_Up *>(event_info);
+   Ecore_Event_Key *ev = static_cast<Ecore_Event_Key *>(event);
    assert(ev);
 
    app->DispatchKeyUp(ev->keyname);
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 
 
-static void _key_down_cb(void *data,
-                         Evas *e,
-                         Evas_Object *obj,
-                         void *event_info)
+static Eina_Bool _key_down_cb(void *data,
+                              int type,
+                              void *event)
 {
    App *app = static_cast<App *>(data);
    assert(app);
 
-   Evas_Event_Key_Down *ev = static_cast<Evas_Event_Key_Down *>(event_info);
+   Ecore_Event_Key *ev = static_cast<Ecore_Event_Key *>(event);
    assert(ev);
 
    app->DispatchKeyDown(ev->keyname);
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 
@@ -106,7 +109,7 @@ static Eina_Bool _mouse_move_cb(void *data,
    Ecore_Event_Mouse_Move *ev = static_cast<Ecore_Event_Mouse_Move *>(event);
    assert(ev);
 
-   app->DispatchMouseMove(ev->root.x, ev->root.y, g_mouse_btns);
+   app->DispatchMouseMove(ev->x, ev->y, g_mouse_btns);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -145,7 +148,7 @@ void App ::DispatchKeyDown(const char * const keyname)
      elm_exit();
 
    //Move Player Character
-   if (!strcmp(keyname, "w"))
+/*   if (!strcmp(keyname, "w"))
      this->pc->Move(Character ::Up, 20);
 
    if (!strcmp(keyname, "s"))
@@ -155,7 +158,7 @@ void App ::DispatchKeyDown(const char * const keyname)
      this->pc->Move(Character ::Left, 20);
 
    if (!strcmp(keyname, "d"))
-     this->pc->Move(Character ::Right, 20);
+     this->pc->Move(Character ::Right, 20); */
 }
 
 
@@ -179,8 +182,13 @@ void App ::DispatchMouseMove(int x, int y, int buttons)
    if ((buttons & MOUSE_BUTTON2) != MOUSE_BUTTON2)
      return;
 
-   //TODO: Calc direction
-   printf("MOVE %d %d\n", x, y);
+   //Calculate Direction
+   VECTOR2 dir(static_cast<float>(x), static_cast<float>(y));
+   dir -= this->pc->Position();
+   dir.Normalize();
+
+   printf("Direction: %f %f\n", dir.x, dir.y);
+   this->pc->Move(dir, 2);
 }
 
 
@@ -278,7 +286,7 @@ Eina_Bool App ::Initialize(int argc, char **argv)
      }
    memmgr->Initialize(MEMPOOL_SIZE);
 
-   if (!this->CreateWin("eHidden Ninjas", 400, 400))
+   if (!this->CreateWin("eHidden Ninjas", SCRN_WIDTH, SCRN_HEIGHT))
      {
         PRINT_DBG("Failed to create elm_win!");
         return EINA_FALSE;
@@ -290,15 +298,12 @@ Eina_Bool App ::Initialize(int argc, char **argv)
      }
 
    //Set key events callbacks to window
-   evas_object_event_callback_add(win,
-                                  EVAS_CALLBACK_KEY_DOWN,
-                                  _key_down_cb,
-                                  this);
-   evas_object_event_callback_add(win,
-                                  EVAS_CALLBACK_KEY_UP,
-                                  _key_up_cb,
-                                  this);
-
+   ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
+                           _key_down_cb,
+                           this);
+   ecore_event_handler_add(ECORE_EVENT_KEY_UP,
+                           _key_up_cb,
+                           this);
    ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
                            _mouse_down_cb,
                            this);

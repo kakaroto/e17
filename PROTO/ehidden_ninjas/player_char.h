@@ -39,6 +39,6 @@ namespace ehninjas
          Eina_Bool Release();
          Eina_Bool SetImgObj(Evas_Object*);
          const Evas_Object *GetImgObj();
-         Eina_Bool Move(eMoveDir, unsigned int);
+         Eina_Bool Move(const VECTOR2&, ELEMENT_TYPE);
      };
 }
