@@ -9,8 +9,8 @@
 <title><?php echo $title; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href="/theme/css/default.css">
-<!--[if lt IE 8]> <link rel="stylesheet" type="text/css" href="/theme/css/ie-lt8.css"> <![endif]-->
+<link rel="stylesheet" type="text/css" href="theme/css/default.css">
+<!--[if lt IE 8]> <link rel="stylesheet" type="text/css" href="theme/css/ie-lt8.css"> <![endif]-->
 <link rel="icon" href="favicon.png" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <link rel="icon" href="favicon.png" type="image/ico">
@@ -35,15 +35,14 @@ if (is_file("p/$page/$lang-rss"))
         <div class="layout">
 
             <ul class="menu">
-                <?php echo(nav_button("main1", ""));?>
-                <?php echo(nav_button("main2", ""));?>
-                <?php echo(nav_button("main3", ""));?>
-                <?php echo(nav_button("main4", ""));?>
-                <?php echo(nav_button("main5", ""));?>
-                <?php echo(nav_button("main6", ""));?>
-                <?php echo(nav_button("main7", ""));?>
+                <?php echo(nav_button("index", ""));?>
+                <?php echo(nav_button("news", ""));?>
+                <?php echo(nav_button("about", ""));?>
+                <?php echo(nav_button("download", ""));?>
+                <?php echo(nav_button("support", ""));?>
+                <?php echo(nav_button("contribute", ""));?>
+                <?php echo(nav_button("contact", ""));?>
                 <?php echo(nav_button("docs", ""));?>
-                <!-- <?php echo(nav_button("main8", "")); ?> -->
                 <li class="tracker"><a href="http://trac.enlightenment.org/e"><span>Tracker</span></a></li>
 		<li class="events"><a href="http://trac.enlightenment.org/e/wiki/Events"><span>Events</span></a></li>
             </ul>
