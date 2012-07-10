@@ -1,0 +1,18 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
+    <h1>Terminology</h1>
+
+    <span class="contentmain">
+     <p>
+     <center>
+       <?php img("efl.png", "EFL Diagram");?></a>
+     </center>
+     </p>
+     
+    </span>
+   </div>
+  </td>
+ </tr>
+</table>
