@@ -37,7 +37,7 @@
        <li>Works directly in the linux framebuffer (fbcon)</li>
        <li>Can be finger/touch controlled</li>
        <li>Scan scale by UI scaling factors</li>
-       <li>Can render using OpenGL or OpenGL-ES2<li>
+       <li>Can render using OpenGL or OpenGL-ES2 (or not. not a requirement - just an option)<li>
      </ul></p>
      <p>The above list of features and then then some work currently,
      with maybe some things not completely implemented yet. Much more
