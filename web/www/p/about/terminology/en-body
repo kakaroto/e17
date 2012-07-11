@@ -97,6 +97,12 @@
      <p>This project is not complete. It's barely a month old, but it
      has indications of where it will go. Try it out and see. Finally
      Enlightenment will have a terminal worth of calling its own.</p>
+     
+     <p>You can find the source at:</p>
+     <p><a href=http://trac.enlightenment.org/e/browser/trunk/terminology>here</a></p>
+     
+     <p>Or check out the code with:</p>
+     <pre>svn checkout http://svn.enlightenment.org/svn/e/trunk/terminology</pre>
 
     </span>
    </div>
