@@ -60,7 +60,7 @@ etam_packet_boolean_equal(Etam_Packets *packets, unsigned int block,
                   offset_internal++;
                   current_internal++;
                }
-             
+
              if (!c)
                {
                   idx_internal++;

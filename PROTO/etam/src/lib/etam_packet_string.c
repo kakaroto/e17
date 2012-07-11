@@ -50,7 +50,7 @@ etam_packet_string_equal(Etam_Packets *packets, unsigned int block,
      }
 
    eina_rwlock_release(&packets->lock);
-   
+
    return r;
 }
 
@@ -97,7 +97,7 @@ etam_packet_string_like(Etam_Packets *packets, unsigned int block,
      }
 
    eina_rwlock_release(&packets->lock);
-   
+
    return r;
 }
 

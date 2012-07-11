@@ -75,7 +75,7 @@ EAPI void etam_db_signal_callback_add(Etam_DB *db,
 				      const void *data);
 EAPI void etam_db_flush(Etam_DB *db);
 EAPI void etam_db_close(Etam_DB *db);
-  
+
 
 /* General manipulation of meta data collection */
 EAPI Etam_Collection *etam_collection_open(Etam_DB *db, const char *name, ...);
@@ -86,7 +86,7 @@ EAPI void etam_collection_callback_add(Etam_Collection *coll,
 EAPI void etam_collection_close(Etam_Collection *coll);
 
 EAPI Eina_Iterator *etam_collection_keys_iterator(Etam_Collection *coll);
-  
+
 /* Etam data descriptor for direct copy of memory data to the right place */
 typedef struct _Etam_Data_Descriptor Etam_Data_Descriptor;
 

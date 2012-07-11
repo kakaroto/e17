@@ -154,7 +154,7 @@ etam_packet_long_long_value_get(Etam_Packets *packets, int idx, Eina_Value *v)
    return ;
 
  on_error:
-   eina_value_set(v, 0);   
+   eina_value_set(v, 0);
 }
 
 void
@@ -186,7 +186,7 @@ on_error:
 }
 
 /* It is assumed that Eina_Value is a an initialized array of EINA_VALUE_TYPE_STRUCT and this function
- * will put a new entry in each struct.   
+ * will put a new entry in each struct.
  */
 void
 etam_packets_long_long_value_get(Etam_Packets *packets, unsigned int block, Etam_RLE_Bool *map, Eina_Value *v)

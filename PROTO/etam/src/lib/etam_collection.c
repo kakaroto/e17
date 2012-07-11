@@ -27,7 +27,7 @@ EAPI Eina_Iterator *
 etam_collection_keys_iterator(Etam_Collection *coll)
 {
 }
-  
+
 EAPI void
 etam_collection_entry_value_set(Etam_Collection *coll, const char *key, Eina_Value *value)
 {
