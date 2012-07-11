@@ -206,6 +206,8 @@ group {
       public drag = 0;
       public urgent = 0;
       public disable_live_preview = 0;
+      public mouse_in = 0;
+      public show_desk_names = 0;
    }
    parts {
       part {
@@ -360,8 +362,8 @@ group {
                state: "default" 0.0;
                rel1.to: "clip";
                rel2.to: "clip";
-            color: 255 255 255 255;
-            color3: DARKNESS_BLUE 32;
+               visible: 0;
+               color: 0 0 0 128;
                text {
                   font: "Sans:style=Bold";
                   size: 8;
@@ -372,7 +374,9 @@ group {
             description {
                state: "active" 0.0;
                inherit: "default" 0.0;
-               color: 0 0 0 128;
+               visible: 1;
+               color: 255 255 255 255;
+               color3: DARKNESS_BLUE 32;
             }
          }
    }
@@ -439,6 +443,48 @@ group {
             set_state(PART:"sel", "default", 0.0);
          }
          transition: LINEAR 0.3;
+      }
+      program {
+         name: "name_enable";
+         signal: "e,name,show";
+         source: "e";
+         script {
+            set_int(show_desk_names, 1);
+            set_state(PART:"e.text.label", "active", 0.0);
+         }
+      }
+      program {
+         name: "name_disable";
+         signal: "e,name,hide";
+         source: "e";
+         script {
+            set_int(show_desk_names, 0);
+            if (!get_int(mouse_in))
+              set_state(PART:"e.text.label", "default", 0.0);
+         }
+      }
+      program {
+         name: "name_show";
+         signal: "mouse,in";
+         source: "overlay";
+         script {
+            if (get_int(show_desk_names) != 1)
+              set_state(PART:"e.text.label", "active", 0.0);
+            set_int(mouse_in, 1);
+         }
+         transition: SINUSOIDAL 0.1;
+      }
+      program {
+         name: "name_hide";
+         signal: "mouse,out";
+         source: "overlay";
+         script {
+            if (get_int(show_desk_names) != 1)
+              set_state(PART:"e.text.label", "default", 0.0);
+            set_int(mouse_in, 0);
+         }
+
+         transition: SINUSOIDAL 0.2;
       }
       program {
          name:   "drag_in";
