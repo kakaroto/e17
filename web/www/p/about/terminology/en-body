@@ -5,12 +5,99 @@
     <h1>Terminology</h1>
 
     <span class="contentmain">
-     <p>
-     <center>
-       <?php img("efl.png", "EFL Diagram");?></a>
-     </center>
-     </p>
+     <p><center><?php img("terminology.png", "Terminology");?></center></p>
      
+     <h3>What is it?</h3>
+     <p>Terminology is a new terminal emulator. In fact as of the 12th
+     of July 2012, it is only 1 month old, so all you see here is the
+     result of some off-and-on work over approximately a month (so not
+     full-time effort). This is an indicator of what is possible to do
+     with EFL with some knowledge and effort in a fairly short space of
+     time. This time included having to learn how terminal emulation
+     works, pty's, escapes and so on and actually make a large selection
+     of terminal applications work, so it's not perfect, but it's
+     getting there.</p>
+     
+     <h3>What does it do?</h3>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/V0C3Y7AFwIk" frameborder="0" allowfullscreen></iframe></p>
+     <p>It emulates a slightly extended vt100 with some extensions and 
+     bling thrown in.</p>
+     <p><ul>
+       <li>Most escapes supported by xterm, rxvt etc. work</li>
+       <li>Xterm 256 color escapes work</li>
+       <li>Backgrounds (bitmap, scalable/vector, animated gif, videos)</li>
+       <li>Transparency</li>
+       <li>Bitmap and scalable fonts</li>
+       <li>Themes for the layout and design</li>
+       <li>URL, file path and email address detection and link-handling</li>
+       <li>Inline display of link content</li>
+       <li>Multiple copy and paste selections and buffer support</li>
+       <li>Works in X11</li>
+       <li>Works in Wayland</li>
+       <li>Works directly in the linux framebuffer (fbcon)</li>
+       <li>Can be finger/touch controlled</li>
+       <li>Scan scale by UI scaling factors</li>
+       <li>Can render using OpenGL or OpenGL-ES2<li>
+     </ul></p>
+     <p>The above list of features and then then some work currently,
+     with maybe some things not completely implemented yet. Much more
+     has yet to come, so this is not done by any means.</p>
+
+     <h3>Features</h3>
+     <p>There are quite a range of nice features already supported,
+     ranging from the basic ones you'd expect, to things you never expected
+     of a terminal.</p>
+     
+     <p>There is a visual bell designed to get your attention. It's
+     totally able to be customized by the theme to do almost anything your
+     imagination desires.</p>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/BqFYIciDVjw" frameborder="0" allowfullscreen></iframe></p>
+     
+     <p>You can set a background (command-line only right now) that
+     can be anything you like. Far beyond most terminal emulators as
+     scalable vector graphics (PDF, PS and SVG) work, animated GIFs, Edje
+     files and of course even videos</p>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/iEJt-qfg0js" frameborder="0" allowfullscreen></iframe></p>
+     
+     <p>ANSI colors as well as the 256 mode Xterm colors are supported
+     for making sure your terminal text always looks bright and
+     interesting.</p>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/AD-BJThtNnc" frameborder="0" allowfullscreen></iframe></p>
+     
+     <p>You can change fonts and sizes on the fly, with bitmap fonts
+     supported (and shipped by default), as well as the usual scalable font
+     support you'd expect.</p>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/BYYfQrlXlcM" frameborder="0" allowfullscreen></iframe></p>
+     
+     <p>Links, full file paths and email addresses are "detected" in
+     the terminal when your mouse overs over them, providing a nice
+     underline allowing you to click and either have an external
+     application handle the link, or have Terminology handle it internally
+     for your viewing pleasure.</p>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/xhfN_RkLNVI" frameborder="0" allowfullscreen></iframe></p>
+
+     <p>There are even other handy options to customize on the fly and
+     be automatically saved for the next time you need them.</p>
+     <p><iframe width="420" height="315" src="http://www.youtube.com/embed/Y92mPVyQMwc" frameborder="0" allowfullscreen></iframe></p>
+     
+     <h3>Why use Terminology?</h3>
+     <p>If you like your terminals to look nice, then this is the
+     terminal for you. If you want to have a terminal that is
+     expanding usability by placing content right at your fingertips and
+     directly in-line without needing an external window popping up, then
+     this is for you. If you want the same terminal you know and love
+     to work in the framebuffer when away from X11, then this is for
+     you. The mouse even works, as does video and animation, framebuffer, X11
+     or in Wayland. If you like a terminal that scrolls more than 10
+     times faster than gnome-terminal, much faster than Xterm or Konsole
+     and as fast as URXVT, then this is for you. If you like to save
+     memory compared to the big-desktop terminals (gnome-terminal and
+     Konsole) then this is for you.</p>
+     
+     <p>This project is not complete. It's barely a month old, but it
+     has indications of where it will go. Try it out and see. Finally
+     Enlightenment will have a terminal worth of calling its own.</p>
+
     </span>
    </div>
   </td>
