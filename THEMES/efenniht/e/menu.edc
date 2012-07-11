@@ -413,6 +413,7 @@ collections {
             description { state: "default" 0.0;
                min: 16 16;
                max: 16 16;
+               fixed: 1 1;
                rel1.to: "over_clipper";
                rel2.to: "over_clipper";
                image.normal: "check_over.png";
