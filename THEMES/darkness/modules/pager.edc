@@ -574,6 +574,9 @@ group {
 
 group {
    name: "e/modules/pager/window";
+   script {
+      public live_windows = 0;
+   }
    parts {
       part {
          name:          "overlay";
@@ -622,6 +625,7 @@ group {
          type:           SWALLOW;
          description {
             state:       "default" 0.0;
+            visible:     1;
             align:       1.0 1.0;
             max:         24  24;
             aspect:      1.0 1.0;
@@ -657,6 +661,61 @@ group {
                offset: 1 -2;
             }
          }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            rel1 {
+               to: "overlay";
+               offset: 2 2;
+            }
+            rel2 {
+               to: "overlay";
+               offset: -3 -3;
+            }
+         }
+         description {
+            state: "urgent" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               to: "overlay";
+               relative: -0.2 -0.2;
+               offset: -2  5;
+            }
+            rel2 {
+               to: "overlay";
+               relative: 1.2 1.2;
+               offset: -5 -2;
+            }
+         }
+         description {
+            state: "urgent2" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               to: "overlay";
+               relative: -0.2 -0.2;
+               offset: 4  5;
+            }
+            rel2 {
+               to: "overlay";
+               relative: 1.2 1.2;
+               offset: 1 -2;
+            }
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
       }
    }
    programs {
@@ -664,25 +723,37 @@ group {
          name:    "go_urgent_pre";
          signal:  "e,state,urgent";
          source:  "e";
-         action:  STATE_SET "default" 0.0;
-         target:  "overlay";
-         target:  "e.swallow.icon";
+         script {
+            if (get_int(live_windows) == 1)
+              set_state(PART:"e.swallow.content", "default", 0.0);
+            else
+              set_state(PART:"e.swallow.icon", "default", 0.0);
+            set_state(PART:"overlay", "default", 0.0);
+         }
          after:   "go_urgent";
       }
       program {
          name:    "go_urgent";
-         action:  STATE_SET "urgent" 0.0;
          transition: SINUSOIDAL 0.07;
-         target:  "overlay";
-         target:  "e.swallow.icon";
+         script {
+            if (get_int(live_windows) == 1)
+              set_state(PART:"e.swallow.content", "urgent", 0.0);
+            else
+              set_state(PART:"e.swallow.icon", "urgent", 0.0);
+            set_state(PART:"overlay", "urgent", 0.0);
+         }
          after:   "go_urgent2";
       }
       program {
          name:    "go_urgent2";
-         action:  STATE_SET "urgent2" 0.0;
          transition: SINUSOIDAL 0.07;
-         target:  "overlay";
-         target:  "e.swallow.icon";
+         script {
+            if (get_int(live_windows) == 1)
+              set_state(PART:"e.swallow.content", "urgent2", 0.0);
+            else
+              set_state(PART:"e.swallow.icon", "urgent2", 0.0);
+            set_state(PART:"overlay", "urgent2", 0.0);
+         }
          after:   "go_urgent";
       }
       program {
@@ -696,10 +767,34 @@ group {
       } 
       program {
          name:    "go_unurgent2";
-         action:  STATE_SET "default" 0.0;
          transition: SINUSOIDAL 0.3;
-         target:  "overlay";
-         target:  "e.swallow.icon";
+         script {
+            if (get_int(live_windows) == 1)
+              set_state(PART:"e.swallow.content", "default", 0.0);
+            else
+              set_state(PART:"e.swallow.icon", "default", 0.0);
+            set_state(PART:"overlay", "default", 0.0);
+         }
+      }
+      program {
+         name: "preview";
+         signal: "e,preview,on";
+         source: "e";
+         script {
+            set_int(live_windows, 1);
+            set_state(PART:"e.swallow.content", "default", 0.0);
+            set_state(PART:"e.swallow.icon", "hidden", 0.0);
+         }
+      }
+      program {
+         name: "preview_off";
+         signal: "e,preview,off";
+         source: "e";
+         script {
+            set_int(live_windows, 0);
+            set_state(PART:"e.swallow.content", "hidden", 0.0);
+            set_state(PART:"e.swallow.icon", "default", 0.0);
+         }
       }
    }
 }
