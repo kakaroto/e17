@@ -19,6 +19,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, withdrawn);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, urgent);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, demand_attention);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, modal);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, sticky);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -34,7 +35,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(withdrawn),
                   PROPERTY(urgent),
                   PROPERTY(demand_attention),
-                  PROPERTY(modal));
+                  PROPERTY(modal),
+                  PROPERTY(sticky));
 
 // Getters and Settters
 
@@ -191,6 +193,17 @@ void CElmWindow::modal_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_modal_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::sticky_get() const
+{
+   return Boolean::New(elm_win_sticky_get(eo));
+}
+
+void CElmWindow::sticky_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_sticky_set(eo, val->BooleanValue());
 }
 
 //---------------------

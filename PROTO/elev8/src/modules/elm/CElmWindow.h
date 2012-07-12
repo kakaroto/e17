@@ -62,6 +62,9 @@ public:
    Handle<Value> modal_get() const;
    void modal_set(Handle<Value> val);
 
+   Handle<Value> sticky_get() const;
+   void sticky_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
