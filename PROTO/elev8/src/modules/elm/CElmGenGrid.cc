@@ -34,6 +34,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenGrid, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_show);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_bring);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, prepend);
+GENERATE_METHOD_CALLBACKS(CElmGenGrid, realized_items_update);
 
 GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(item_size_horizontal),
@@ -63,7 +64,8 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   METHOD(update_item),
                   METHOD(page_show),
                   METHOD(page_bring),
-                  METHOD(prepend));
+                  METHOD(prepend),
+                  METHOD(realized_items_update));
 
 CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_gengrid_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -170,6 +172,12 @@ Handle<Value> CElmGenGrid::item_size_vertical_get() const
    Evas_Coord w;
    elm_gengrid_item_size_get(eo, &w, NULL);
    return Integer::New(w);
+}
+
+Handle<Value> CElmGenGrid::realized_items_update(const Arguments&)
+{
+   elm_gengrid_realized_items_update(eo);
+   return Undefined();
 }
 
 void CElmGenGrid::item_size_vertical_set(Handle<Value> value)
