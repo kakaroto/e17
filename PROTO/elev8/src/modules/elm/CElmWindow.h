@@ -47,6 +47,9 @@ public:
    Handle<Value> maximized_get() const;
    void maximized_set(Handle<Value> val);
 
+   Handle<Value> iconified_get() const;
+   void iconified_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
