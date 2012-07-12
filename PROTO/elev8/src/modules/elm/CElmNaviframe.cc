@@ -10,6 +10,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, event_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, prev_btn_auto_pushed);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, items);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, top_item);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, bottom_item);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
@@ -20,6 +21,7 @@ GENERATE_TEMPLATE(CElmNaviframe,
                   PROPERTY(prev_btn_auto_pushed),
                   PROPERTY_RO(items),
                   PROPERTY_RO(top_item),
+                  PROPERTY_RO(bottom_item),
                   METHOD(pop),
                   METHOD(push),
                   METHOD(promote));
@@ -165,6 +167,11 @@ Handle<Value> CElmNaviframe::items_get() const
 Handle<Value> CElmNaviframe::top_item_get() const
 {
    return External::Wrap(elm_naviframe_top_item_get(eo));
+}
+
+Handle<Value> CElmNaviframe::bottom_item_get() const
+{
+   return External::Wrap(elm_naviframe_bottom_item_get(eo));
 }
 
 }
