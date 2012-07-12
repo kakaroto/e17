@@ -19,6 +19,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, filled);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_relative);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, align);
+GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, group_item_size);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
@@ -38,6 +39,7 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(filled),
                   PROPERTY(page_relative),
                   PROPERTY(align),
+                  PROPERTY(group_item_size),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -303,6 +305,34 @@ void CElmGenGrid::align_set(Handle<Value> val)
 
    align.Dispose();
    align = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmGenGrid::group_item_size_get(void) const
+{
+   HandleScope scope;
+   Evas_Coord w, h;
+
+   elm_gengrid_group_item_size_get(eo,  &w, &h);
+   Local<Object> obj = Object::New();
+   obj->Set(String::New("w"), Number::New(w));
+   obj->Set(String::New("h"), Number::New(h));
+
+   return scope.Close(obj);
+}
+
+void CElmGenGrid::group_item_size_set(Handle<Value> val)
+{
+   HandleScope scope;
+
+   if (!val->IsObject())
+     return;
+
+   Local<Object> obj = val->ToObject();
+   Local<Value> w = obj->Get(String::New("w"));
+   Local<Value> h = obj->Get(String::New("h"));
+
+   if (w->IsInt32() && h->IsInt32())
+     elm_gengrid_group_item_size_set(eo, w->Int32Value(), h->Int32Value());
 }
 
 }

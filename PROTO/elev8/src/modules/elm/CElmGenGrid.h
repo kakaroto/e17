@@ -74,6 +74,9 @@ public:
    Handle<Value> align_get() const;
    void align_set(Handle<Value> value);
 
+   Handle<Value> group_item_size_get() const;
+   void group_item_size_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
 
