@@ -46,6 +46,9 @@ public:
    void horizontal_gravity_set(Handle<Value> val);
    Handle<Value> horizontal_gravity_get() const;
 
+   void vertical_gravity_set(Handle<Value> val);
+   Handle<Value> vertical_gravity_get() const;
+
    Handle<Value> page_bring_in(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmScroller>(const Arguments& args);
