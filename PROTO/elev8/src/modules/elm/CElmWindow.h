@@ -74,6 +74,9 @@ public:
    Handle<Value> focus_highlight_enabled_get() const;
    void focus_highlight_enabled_set(Handle<Value> val);
 
+   Handle<Value> keyboard_win_get() const;
+   void keyboard_win_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
