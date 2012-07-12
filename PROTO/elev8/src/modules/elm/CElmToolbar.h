@@ -53,6 +53,9 @@ public:
    Handle<Value> homogeneous_get() const;
    void homogeneous_set(Handle<Value> value);
 
+   Handle<Value> align_get() const;
+   void align_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 
