@@ -59,6 +59,9 @@ public:
    Handle<Value> demand_attention_get() const;
    void demand_attention_set(Handle<Value> val);
 
+   Handle<Value> modal_get() const;
+   void modal_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
