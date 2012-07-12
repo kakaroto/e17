@@ -33,6 +33,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_show);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_bring);
+GENERATE_METHOD_CALLBACKS(CElmGenGrid, prepend);
 
 GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(item_size_horizontal),
@@ -61,7 +62,8 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   METHOD(delete_item),
                   METHOD(update_item),
                   METHOD(page_show),
-                  METHOD(page_bring));
+                  METHOD(page_bring),
+                  METHOD(prepend));
 
 CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_gengrid_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -144,6 +146,23 @@ Handle<Value> CElmGenGrid::page_bring(const Arguments &args)
      elm_gengrid_page_bring_in (eo, args[0]->ToNumber()->Value(), args[1]->ToNumber()->Value());
 
    return Undefined();
+}
+
+Handle<Value> CElmGenGrid::prepend(const Arguments& args)
+{
+   if (!args[0]->IsString())
+     return Undefined();
+
+   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
+   if (klass.IsEmpty() || !klass->IsObject())
+     return Undefined();
+
+   ItemClass<CElmGenGrid> *item_class = static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
+   Item<CElmGenGrid> *item = new Item<CElmGenGrid>(item_class, args[1], args[2]);
+
+   item->object_item = elm_gengrid_item_prepend(eo, item_class->GetElmClass(), item, Item<CElmGenGrid>::OnSelect, item);
+
+   return External::Wrap(item);
 }
 
 Handle<Value> CElmGenGrid::item_size_vertical_get() const
