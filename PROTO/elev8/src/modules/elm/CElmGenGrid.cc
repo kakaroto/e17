@@ -15,6 +15,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, select_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, classes);
+GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
@@ -30,6 +31,7 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(reorder_mode),
                   PROPERTY(multi_select),
                   PROPERTY(classes),
+                  PROPERTY(horizontal),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -229,6 +231,17 @@ void CElmGenGrid::classes_set(Handle<Value> value)
 Handle<Value> CElmGenGrid::classes_get() const
 {
    return cached.classes;
+}
+
+Handle<Value> CElmGenGrid::horizontal_get() const
+{
+   return Boolean::New(elm_gengrid_horizontal_get(eo));
+}
+
+void CElmGenGrid::horizontal_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_gengrid_horizontal_set(eo, value->BooleanValue());
 }
 
 }
