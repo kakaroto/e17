@@ -32,6 +32,9 @@ public:
    Handle<Value> borderless_get() const;
    void borderless_set(Handle<Value> val);
 
+   Handle<Value> shaped_get() const;
+   void shaped_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
