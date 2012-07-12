@@ -41,6 +41,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, prop_focus_skip);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, focus);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, screen_position);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, screen_size);
 GENERATE_METHOD_CALLBACKS(CElmWindow, socket_listen);
 GENERATE_METHOD_CALLBACKS(CElmWindow, activate);
 GENERATE_METHOD_CALLBACKS(CElmWindow, lower);
@@ -84,6 +85,7 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(prop_focus_skip),
                   PROPERTY_RO(focus),
                   PROPERTY_RO(screen_position),
+                  PROPERTY_RO(screen_size),
                   METHOD(socket_listen),
                   METHOD(activate),
                   METHOD(lower),
@@ -599,6 +601,21 @@ Handle<Value> CElmWindow::screen_position_get() const
    Local<Object> obj = Object::New();
    obj->Set(String::NewSymbol("x"), Integer::New(x));
    obj->Set(String::NewSymbol("y"), Integer::New(y));
+
+   return obj;
+}
+
+Handle<Value> CElmWindow::screen_size_get() const
+{
+   int x, y, width, height;
+
+   elm_win_screen_size_get(eo, &x, &y, &width, &height);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::NewSymbol("x"), Integer::New(x));
+   obj->Set(String::NewSymbol("y"), Integer::New(y));
+   obj->Set(String::NewSymbol("width"), Integer::New(width));
+   obj->Set(String::NewSymbol("height"), Integer::New(height));
 
    return obj;
 }

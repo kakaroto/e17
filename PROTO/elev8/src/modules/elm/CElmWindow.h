@@ -130,6 +130,7 @@ public:
 
    Handle<Value> focus_get() const;
    Handle<Value> screen_position_get() const;
+   Handle<Value> screen_size_get() const;
 
    Handle<Value> socket_listen(const Arguments&);
    Handle<Value> activate(const Arguments&);
