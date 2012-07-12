@@ -36,6 +36,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, role);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_style);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, aspect);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_opacity);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -68,7 +69,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(role),
                   PROPERTY(focus_highlight_style),
                   PROPERTY(aspect),
-                  PROPERTY(indicator_mode));
+                  PROPERTY(indicator_mode),
+                  PROPERTY(indicator_opacity));
 
 // Getters and Settters
 
@@ -441,6 +443,36 @@ void CElmWindow::indicator_mode_set(Handle<Value> value)
      elm_win_indicator_mode_set(eo, ELM_WIN_INDICATOR_SHOW);
    else
      elm_win_indicator_mode_set(eo, ELM_WIN_INDICATOR_UNKNOWN);
+}
+
+Handle<Value> CElmWindow::indicator_opacity_get() const
+{
+   switch (elm_win_indicator_opacity_get(eo)) {
+     case ELM_WIN_INDICATOR_OPACITY_UNKNOWN:
+       return String::NewSymbol("opacityunknown");
+     case ELM_WIN_INDICATOR_OPAQUE:
+       return String::NewSymbol("opacity");
+     case ELM_WIN_INDICATOR_TRANSLUCENT:
+       return String::NewSymbol("translucent");
+     case ELM_WIN_INDICATOR_TRANSPARENT:
+       return String::NewSymbol("transparent");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmWindow::indicator_opacity_set(Handle<Value> value)
+{
+   String::Utf8Value mode_string(value->ToString());
+
+   if (!strcmp(*mode_string, "opacityunknown"))
+     elm_win_indicator_opacity_set(eo, ELM_WIN_INDICATOR_OPACITY_UNKNOWN);
+   else if (!strcmp(*mode_string, "opacity"))
+     elm_win_indicator_opacity_set(eo, ELM_WIN_INDICATOR_OPAQUE);
+   else if (!strcmp(*mode_string, "translucent"))
+     elm_win_indicator_opacity_set(eo, ELM_WIN_INDICATOR_TRANSLUCENT);
+   else if (!strcmp(*mode_string, "transparent"))
+     elm_win_indicator_opacity_set(eo, ELM_WIN_INDICATOR_TRANSPARENT);
 }
 
 //---------------------

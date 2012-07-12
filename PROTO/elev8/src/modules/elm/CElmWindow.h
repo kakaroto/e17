@@ -118,6 +118,9 @@ public:
    Handle<Value> indicator_mode_get() const;
    void indicator_mode_set(Handle<Value> val);
 
+   Handle<Value> indicator_opacity_get() const;
+   void indicator_opacity_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
