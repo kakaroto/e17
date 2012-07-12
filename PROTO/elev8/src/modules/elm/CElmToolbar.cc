@@ -7,10 +7,12 @@ using namespace v8;
 
 GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_order_lookup);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
-                  PROPERTY(icon_size));
+                  PROPERTY(icon_size),
+                  PROPERTY(icon_order_lookup));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -75,6 +77,30 @@ void CElmToolbar::icon_size_set(Handle<Value> value)
 {
    if (value->IsInt32())
      elm_toolbar_icon_size_set(eo, value->Int32Value());
+}
+
+Handle<Value> CElmToolbar::icon_order_lookup_get() const
+{
+   switch (elm_toolbar_icon_order_lookup_get(eo)) {
+     case ELM_ICON_LOOKUP_FDO_THEME:
+       return String::NewSymbol("freedektoptheme");
+     case ELM_ICON_LOOKUP_THEME_FDO:
+       return String::NewSymbol("themefreedektop");
+     case ELM_ICON_LOOKUP_FDO:
+       return String::NewSymbol("freedektop");
+     case ELM_ICON_LOOKUP_THEME:
+       return String::NewSymbol("theme");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmToolbar::icon_order_lookup_set(Handle<Value> value)
+{
+   if (!value->IsInt32())
+     return;
+
+   elm_toolbar_icon_order_lookup_set(eo, (Elm_Icon_Lookup_Order) value->Int32Value());
 }
 
 }

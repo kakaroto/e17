@@ -47,7 +47,10 @@ public:
    Handle<Value> icon_size_get() const;
    void icon_size_set(Handle<Value> value);
 
-  friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
+   Handle<Value> icon_order_lookup_get() const;
+   void icon_order_lookup_set(Handle<Value> value);
+
+   friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 
 }
