@@ -16,6 +16,9 @@ protected:
    CElmWindow(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
    static void quit(void *, Evas_Object *, void *);
+   ~CElmWindow();
+
+   Persistent<Value> size_step;
 
 public:
    static void Initialize(Handle<Object> target);
@@ -89,6 +92,9 @@ public:
 
    Handle<Value> quickpanel_zone_get() const;
    void quickpanel_zone_set(Handle<Value> val);
+
+   Handle<Value> size_step_get() const;
+   void size_step_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };

@@ -28,6 +28,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, rotation);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_major);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_minor);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel_zone);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_step);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -52,7 +53,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(rotation),
                   PROPERTY(priority_major),
                   PROPERTY(priority_minor),
-                  PROPERTY(quickpanel_zone));
+                  PROPERTY(quickpanel_zone),
+                  PROPERTY(size_step));
 
 // Getters and Settters
 
@@ -310,6 +312,25 @@ void CElmWindow::quickpanel_zone_set(Handle <Value> val)
      elm_win_quickpanel_zone_set(eo, val->ToInt32()->Value());
 }
 
+Handle<Value> CElmWindow::size_step_get() const
+{
+   return size_step;
+}
+
+void CElmWindow::size_step_set(Handle <Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> size = val->ToObject();
+   elm_win_size_step_set(eo,
+        size->Get(0)->ToNumber()->Value(),
+        size->Get(1)->ToNumber()->Value());
+
+   size_step.Dispose();
+   size_step = Persistent<Value>::New(val);
+}
+
 //---------------------
 
 CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
@@ -329,6 +350,11 @@ void CElmWindow::quit(void *, Evas_Object *, void *)
 {
    //TODO: check if his window has parent
    ecore_main_loop_quit();
+}
+
+CElmWindow::~CElmWindow()
+{
+   size_step.Dispose();
 }
 
 }
