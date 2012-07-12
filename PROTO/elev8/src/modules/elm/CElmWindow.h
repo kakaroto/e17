@@ -129,6 +129,7 @@ public:
    void prop_focus_skip_set(Handle<Value> val);
 
    Handle<Value> focus_get() const;
+   Handle<Value> screen_position_get() const;
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };

@@ -40,6 +40,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_opacity);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, prop_focus_skip);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, focus);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, screen_position);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -76,7 +77,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(indicator_opacity),
                   PROPERTY(keyboard_mode),
                   PROPERTY(prop_focus_skip),
-                  PROPERTY_RO(focus));
+                  PROPERTY_RO(focus),
+                  PROPERTY_RO(screen_position));
 
 // Getters and Settters
 
@@ -576,6 +578,19 @@ void CElmWindow::prop_focus_skip_set(Handle<Value> val)
 Handle<Value> CElmWindow::focus_get() const
 {
    return Boolean::New(elm_win_focus_get(eo));
+}
+
+Handle<Value> CElmWindow::screen_position_get() const
+{
+   int x, y;
+
+   elm_win_screen_position_get(eo, &x, &y);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::NewSymbol("x"), Integer::New(x));
+   obj->Set(String::NewSymbol("y"), Integer::New(y));
+
+   return obj;
 }
 
 //---------------------
