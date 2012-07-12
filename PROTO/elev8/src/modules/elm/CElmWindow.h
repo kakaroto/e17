@@ -134,6 +134,7 @@ public:
    Handle<Value> socket_listen(const Arguments&);
    Handle<Value> activate(const Arguments&);
    Handle<Value> lower(const Arguments&);
+   Handle<Value> raise(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };

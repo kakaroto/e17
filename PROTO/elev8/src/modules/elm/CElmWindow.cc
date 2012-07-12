@@ -44,6 +44,7 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, screen_position);
 GENERATE_METHOD_CALLBACKS(CElmWindow, socket_listen);
 GENERATE_METHOD_CALLBACKS(CElmWindow, activate);
 GENERATE_METHOD_CALLBACKS(CElmWindow, lower);
+GENERATE_METHOD_CALLBACKS(CElmWindow, raise);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -84,7 +85,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY_RO(screen_position),
                   METHOD(socket_listen),
                   METHOD(activate),
-                  METHOD(lower));
+                  METHOD(lower),
+                  METHOD(raise));
 
 // Getters and Settters
 
@@ -620,6 +622,12 @@ Handle<Value> CElmWindow::activate(const Arguments&)
 Handle<Value> CElmWindow::lower(const Arguments&)
 {
    elm_win_lower(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmWindow::raise(const Arguments&)
+{
+   elm_win_raise(eo);
    return Undefined();
 }
 
