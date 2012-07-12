@@ -20,6 +20,7 @@ protected:
    } cached;
 
    Persistent<Value> page_relative;
+   Persistent<Value> align;
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -69,6 +70,9 @@ public:
 
    Handle<Value> page_relative_get() const;
    void page_relative_set(Handle<Value> value);
+
+   Handle<Value> align_get() const;
+   void align_set(Handle<Value> value);
 
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };

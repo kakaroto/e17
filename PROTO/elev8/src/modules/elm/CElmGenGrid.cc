@@ -18,6 +18,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, classes);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, filled);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_relative);
+GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, align);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
@@ -36,6 +37,7 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(horizontal),
                   PROPERTY(filled),
                   PROPERTY(page_relative),
+                  PROPERTY(align),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -50,6 +52,7 @@ CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
 CElmGenGrid::~CElmGenGrid()
 {
    page_relative.Dispose();
+   align.Dispose();
 }
 
 void CElmGenGrid::Initialize(Handle<Object> target)
@@ -281,6 +284,25 @@ void CElmGenGrid::page_relative_set(Handle<Value> val)
 
    page_relative.Dispose();
    page_relative = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmGenGrid::align_get() const
+{
+   return align;
+}
+
+void CElmGenGrid::align_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> sizes = val->ToObject();
+   elm_gengrid_align_set(eo,
+        sizes->Get(0)->ToNumber()->Value(),
+        sizes->Get(1)->ToNumber()->Value());
+
+   align.Dispose();
+   align = Persistent<Value>::New(val);
 }
 
 }
