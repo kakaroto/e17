@@ -53,6 +53,9 @@ public:
    Handle<Value> withdrawn_get() const;
    void withdrawn_set(Handle<Value> val);
 
+   Handle<Value> urgent_get() const;
+   void urgent_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

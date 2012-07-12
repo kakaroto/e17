@@ -16,6 +16,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, fullscreen);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, maximized);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, iconified);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, withdrawn);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, urgent);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -28,7 +29,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(fullscreen),
                   PROPERTY(maximized),
                   PROPERTY(iconified),
-                  PROPERTY(withdrawn));
+                  PROPERTY(withdrawn),
+                  PROPERTY(urgent));
 
 // Getters and Settters
 
@@ -152,6 +154,17 @@ void CElmWindow::withdrawn_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_withdrawn_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::urgent_get() const
+{
+   return Boolean::New(elm_win_urgent_get(eo));
+}
+
+void CElmWindow::urgent_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_urgent_set(eo, val->BooleanValue());
 }
 
 //---------------------
