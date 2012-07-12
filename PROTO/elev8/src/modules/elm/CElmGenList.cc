@@ -27,6 +27,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, set_item_class);
+GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
 
 GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(homogeneous),
@@ -49,7 +50,8 @@ GENERATE_TEMPLATE(CElmGenList,
                   METHOD(clear),
                   METHOD(delete_item),
                   METHOD(set_item_class),
-                  METHOD(update_item));
+                  METHOD(update_item),
+                  METHOD(realized_items_update));
 
 CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -394,6 +396,12 @@ void CElmGenList::scroller_policy_set(Handle<Value> val)
 Handle<Value> CElmGenList::items_count_get() const
 {
    return Number::New(elm_genlist_items_count(eo));
+}
+
+Handle<Value> CElmGenList::realized_items_update(const Arguments&)
+{
+   elm_genlist_realized_items_update(eo);
+   return Undefined();
 }
 
 }

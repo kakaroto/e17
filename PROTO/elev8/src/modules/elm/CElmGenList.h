@@ -35,6 +35,7 @@ public:
    Handle<Value> delete_item(const Arguments& args);
    Handle<Value> update_item(const Arguments& args);
    Handle<Value> set_item_class(const Arguments& args);
+   Handle<Value> realized_items_update(const Arguments& args);
 
    Handle<Value> multi_select_get() const;
    void multi_select_set(Handle<Value> value);
