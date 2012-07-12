@@ -14,6 +14,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmSpinner, disabled);
 GENERATE_PROPERTY_CALLBACKS(CElmSpinner, special_value);
 GENERATE_PROPERTY_CALLBACKS(CElmSpinner, wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmSpinner, round);
+GENERATE_PROPERTY_CALLBACKS(CElmSpinner, base);
 
 GENERATE_TEMPLATE(CElmSpinner,
                   PROPERTY(label_format),
@@ -24,7 +25,8 @@ GENERATE_TEMPLATE(CElmSpinner,
                   PROPERTY(disabled),
                   PROPERTY(special_value),
                   PROPERTY(wrap),
-                  PROPERTY(round));
+                  PROPERTY(round),
+                  PROPERTY(base));
 
 CElmSpinner::CElmSpinner(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_spinner_add(parent->GetEvasObject()))
@@ -153,6 +155,17 @@ void CElmSpinner::round_set(Handle <Value> val)
 {
    if (val->IsInt32())
      elm_spinner_round_set(eo, val->ToInt32()->Value());
+}
+
+Handle<Value> CElmSpinner::base_get() const
+{
+   return Number::New(elm_spinner_base_get(eo));
+}
+
+void CElmSpinner::base_set(Handle <Value> val)
+{
+   if (val->IsNumber())
+     elm_spinner_base_set(eo, val->ToNumber()->Value());
 }
 
 }

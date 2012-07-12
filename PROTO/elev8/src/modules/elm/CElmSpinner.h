@@ -45,6 +45,9 @@ public:
    Handle<Value> round_get() const;
    void round_set(Handle<Value> val);
 
+   Handle<Value> base_get() const;
+   void base_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmSpinner>(const Arguments& args);
 };
 
