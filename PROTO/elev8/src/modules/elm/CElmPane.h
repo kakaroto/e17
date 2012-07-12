@@ -33,6 +33,9 @@ public:
    Handle<Value> right_get() const;
    void right_set(Handle<Value> val);
 
+   Handle<Value> fixed_get() const;
+   void fixed_set(Handle<Value> val);
+  
    friend Handle<Value> CElmObject::New<CElmPane>(const Arguments& args);
 };
 

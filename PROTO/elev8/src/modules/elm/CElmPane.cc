@@ -8,11 +8,13 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmPane, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, left);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, right);
+GENERATE_PROPERTY_CALLBACKS(CElmPane, fixed);
 
 GENERATE_TEMPLATE(CElmPane,
                   PROPERTY(horizontal),
                   PROPERTY(left),
-                  PROPERTY(right));
+                  PROPERTY(right),
+                  PROPERTY(fixed));
 
 CElmPane::CElmPane(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_panes_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -65,6 +67,17 @@ void CElmPane::right_set(Handle<Value> val)
    cached.right = Persistent<Value>::New(Realise(val, jsObject));
    elm_object_part_content_set(eo, "elm.swallow.right",
                                GetEvasObjectFromJavascript(cached.right));
+}
+
+Handle<Value> CElmPane::fixed_get() const
+{
+   return Boolean::New(elm_panes_fixed_get(eo));
+}
+
+void CElmPane::fixed_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_panes_fixed_set(eo, val->BooleanValue());
 }
 
 }
