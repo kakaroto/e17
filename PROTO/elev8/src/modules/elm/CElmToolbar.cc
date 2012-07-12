@@ -8,11 +8,13 @@ using namespace v8;
 GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_order_lookup);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
                   PROPERTY(icon_size),
-                  PROPERTY(icon_order_lookup));
+                  PROPERTY(icon_order_lookup),
+                  PROPERTY(homogeneous));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -101,6 +103,17 @@ void CElmToolbar::icon_order_lookup_set(Handle<Value> value)
      return;
 
    elm_toolbar_icon_order_lookup_set(eo, (Elm_Icon_Lookup_Order) value->Int32Value());
+}
+
+Handle<Value> CElmToolbar::homogeneous_get() const
+{
+   return Boolean::New(elm_toolbar_homogeneous_get(eo));
+}
+
+void CElmToolbar::homogeneous_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_toolbar_homogeneous_set(eo, value->BooleanValue());
 }
 
 }

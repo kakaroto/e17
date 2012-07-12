@@ -50,6 +50,9 @@ public:
    Handle<Value> icon_order_lookup_get() const;
    void icon_order_lookup_set(Handle<Value> value);
 
+   Handle<Value> homogeneous_get() const;
+   void homogeneous_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 
