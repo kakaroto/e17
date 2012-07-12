@@ -42,6 +42,9 @@ public:
    Handle<Value> wrap_get() const;
    void wrap_set(Handle<Value> val);
 
+   Handle<Value> round_get() const;
+   void round_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmSpinner>(const Arguments& args);
 };
 
