@@ -7,12 +7,14 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmFlip, front);
 GENERATE_PROPERTY_CALLBACKS(CElmFlip, back);
 GENERATE_PROPERTY_CALLBACKS(CElmFlip, perspective);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmFlip, front_visible);
 GENERATE_METHOD_CALLBACKS(CElmFlip, flip);
 
 GENERATE_TEMPLATE(CElmFlip,
                   PROPERTY(front),
                   PROPERTY(back),
                   PROPERTY(perspective),
+                  PROPERTY_RO(front_visible),
                   METHOD(flip));
 
 CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *parent)
@@ -84,4 +86,10 @@ void CElmFlip::perspective_set(Handle<Value> value)
    perspective.Dispose();
    perspective = Persistent<Value>::New(value);
 }
+
+Handle<Value> CElmFlip::front_visible_get() const
+{
+   return Boolean::New(elm_flip_front_visible_get(eo));
+}
+
 }

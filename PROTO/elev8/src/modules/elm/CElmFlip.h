@@ -40,6 +40,8 @@ public:
    Handle<Value> perspective_get() const;
    void perspective_set(Handle<Value> obj);
 
+   Handle<Value> front_visible_get() const;
+
    friend Handle<Value> CElmObject::New<CElmFlip>(const Arguments& args);
 };
 
