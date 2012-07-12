@@ -383,22 +383,21 @@ void CElmObject::hint_min_set(Handle<Value> val)
 
 Handle<Value> CElmObject::hint_max_get() const
 {
+   Local<Object> obj = Object::New();
    Evas_Coord w, h;
 
    evas_object_size_hint_max_get(eo, &w, &h);
-
-   Local<Object> obj = Object::New();
-   obj->Set(String::New("width"), Number::New(w));
-   obj->Set(String::New("height"), Number::New(h));
+   obj->Set(String::NewSymbol("width"), Number::New(w));
+   obj->Set(String::NewSymbol("height"), Number::New(h));
 
    return obj;
 }
 
 void CElmObject::hint_max_set(Handle<Value> val)
 {
-   Local<Object> obj = val->ToObject();
-   Local<Value> w = obj->Get(String::New("x"));
-   Local<Value> h = obj->Get(String::New("y"));
+   Local<Value> w = val->ToObject()->Get(String::NewSymbol("width"));
+   Local<Value> h = val->ToObject()->Get(String::NewSymbol("height"));
+
    if (w->IsInt32() && h->IsInt32())
      evas_object_size_hint_max_set(eo, w->Int32Value(), h->Int32Value());
 }
