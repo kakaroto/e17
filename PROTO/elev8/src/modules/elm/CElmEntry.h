@@ -100,6 +100,9 @@ public:
    Handle<Value> autocapital_type_get() const;
    void autocapital_type_set(Handle<Value> value);
 
+   Handle<Value> input_panel_language_get() const;
+   void input_panel_language_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;

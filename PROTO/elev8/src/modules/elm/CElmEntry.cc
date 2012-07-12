@@ -28,6 +28,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, prediction_allow);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, anchor_hover_style);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_layout);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, autocapital_type);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_language);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -84,6 +85,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(anchor_hover_style),
                   PROPERTY(input_panel_layout),
                   PROPERTY(autocapital_type),
+                  PROPERTY(input_panel_language),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -523,6 +525,28 @@ void CElmEntry::autocapital_type_set(Handle<Value> val)
      elm_entry_autocapital_type_set(eo, ELM_AUTOCAPITAL_TYPE_SENTENCE);
    else if (!strcmp(*mode_string, "allcharacter"))
      elm_entry_autocapital_type_set(eo, ELM_AUTOCAPITAL_TYPE_ALLCHARACTER);
+}
+
+Handle<Value> CElmEntry::input_panel_language_get() const
+{
+   switch (elm_entry_input_panel_language_get(eo)) {
+     case ELM_INPUT_PANEL_LANG_AUTOMATIC:
+       return String::NewSymbol("automatic");
+     case ELM_INPUT_PANEL_LANG_ALPHABET:
+       return String::NewSymbol("alphabet");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmEntry::input_panel_language_set(Handle<Value> val)
+{
+   String::Utf8Value mode_string(val->ToString());
+
+   if (!strcmp(*mode_string, "automatic"))
+     elm_entry_input_panel_language_set(eo, ELM_INPUT_PANEL_LANG_AUTOMATIC);
+   else if (!strcmp(*mode_string, "alphabet"))
+     elm_entry_input_panel_language_set(eo, ELM_INPUT_PANEL_LANG_ALPHABET);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
