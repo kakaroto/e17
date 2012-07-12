@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, zoom_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, horizontal_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, vertical_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, paused);
+GENERATE_METHOD_CALLBACKS(CElmPhotocam, image_region_bring_in);
 
 GENERATE_TEMPLATE(CElmPhotocam,
                   PROPERTY(file),
@@ -18,7 +19,8 @@ GENERATE_TEMPLATE(CElmPhotocam,
                   PROPERTY(zoom_mode),
                   PROPERTY(horizontal_bounce),
                   PROPERTY(vertical_bounce),
-                  PROPERTY(paused));
+                  PROPERTY(paused),
+                  METHOD(image_region_bring_in));
 
 CElmPhotocam::CElmPhotocam(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_photocam_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -143,6 +145,19 @@ void CElmPhotocam::paused_set(Handle<Value> val)
 Handle<Value> CElmPhotocam::paused_get() const
 {
    return Boolean::New(elm_photocam_paused_get(eo));
+}
+
+
+Handle<Value> CElmPhotocam::image_region_bring_in(const Arguments &args)
+{
+   for (int i = 0; i < 4; i++)
+     if (!args[i]->IsNumber())
+       return Undefined();
+
+   elm_photocam_image_region_bring_in(eo, args[0]->ToInt32()->Value(), args[1]->ToInt32()->Value(),
+       args[2]->ToInt32()->Value(), args[3]->ToInt32()->Value());
+
+   return Undefined();
 }
 
 }
