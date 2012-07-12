@@ -109,6 +109,9 @@ public:
    Handle<Value> role_get() const;
    void role_set(Handle<Value> val);
 
+   Handle<Value> focus_highlight_style_get() const;
+   void focus_highlight_style_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
