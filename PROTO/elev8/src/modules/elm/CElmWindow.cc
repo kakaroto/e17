@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, autodel);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, borderless);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, shaped);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, alpha);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, override);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -18,7 +19,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(autodel),
                   PROPERTY(borderless),
                   PROPERTY(shaped),
-                  PROPERTY(alpha));
+                  PROPERTY(alpha),
+                  PROPERTY(override));
 
 // Getters and Settters
 
@@ -87,6 +89,17 @@ void CElmWindow::alpha_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_alpha_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::override_get() const
+{
+   return Boolean::New(elm_win_override_get(eo));
+}
+
+void CElmWindow::override_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_override_set(eo, val->BooleanValue());
 }
 
 //---------------------

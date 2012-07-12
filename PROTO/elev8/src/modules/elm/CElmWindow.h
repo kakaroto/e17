@@ -38,6 +38,9 @@ public:
    Handle<Value> alpha_get() const;
    void alpha_set(Handle<Value> val);
 
+   Handle<Value> override_get() const;
+   void override_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
