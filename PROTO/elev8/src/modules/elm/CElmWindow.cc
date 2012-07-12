@@ -37,6 +37,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_style);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, aspect);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_opacity);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_mode);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -70,7 +71,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(focus_highlight_style),
                   PROPERTY(aspect),
                   PROPERTY(indicator_mode),
-                  PROPERTY(indicator_opacity));
+                  PROPERTY(indicator_opacity),
+                  PROPERTY(keyboard_mode));
 
 // Getters and Settters
 
@@ -473,6 +475,82 @@ void CElmWindow::indicator_opacity_set(Handle<Value> value)
      elm_win_indicator_opacity_set(eo, ELM_WIN_INDICATOR_TRANSLUCENT);
    else if (!strcmp(*mode_string, "transparent"))
      elm_win_indicator_opacity_set(eo, ELM_WIN_INDICATOR_TRANSPARENT);
+}
+
+Handle<Value> CElmWindow::keyboard_mode_get() const
+{
+   switch (elm_win_keyboard_mode_get(eo)) {
+     case ELM_WIN_KEYBOARD_OFF:
+       return String::NewSymbol("off");
+     case ELM_WIN_KEYBOARD_ON:
+       return String::NewSymbol("on");
+     case ELM_WIN_KEYBOARD_ALPHA:
+       return String::NewSymbol("alpha");
+     case ELM_WIN_KEYBOARD_NUMERIC:
+       return String::NewSymbol("numeric");
+     case ELM_WIN_KEYBOARD_PIN:
+       return String::NewSymbol("pin");
+     case ELM_WIN_KEYBOARD_PHONE_NUMBER:
+       return String::NewSymbol("phonenumber");
+     case ELM_WIN_KEYBOARD_HEX:
+       return String::NewSymbol("hex");
+     case ELM_WIN_KEYBOARD_TERMINAL:
+       return String::NewSymbol("terminal");
+     case ELM_WIN_KEYBOARD_PASSWORD:
+       return String::NewSymbol("password");
+     case ELM_WIN_KEYBOARD_IP:
+       return String::NewSymbol("ip");
+     case ELM_WIN_KEYBOARD_HOST:
+       return String::NewSymbol("host");
+     case ELM_WIN_KEYBOARD_FILE:
+       return String::NewSymbol("file");
+     case ELM_WIN_KEYBOARD_URL:
+       return String::NewSymbol("url");
+     case ELM_WIN_KEYBOARD_KEYPAD:
+       return String::NewSymbol("keypad");
+     case ELM_WIN_KEYBOARD_J2ME:
+       return String::NewSymbol("j2me");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmWindow::keyboard_mode_set(Handle<Value> value)
+{
+   String::Utf8Value mode_string(value->ToString());
+
+   if (!strcmp(*mode_string, "unknown"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_J2ME);
+   else if (!strcmp(*mode_string, "off"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_OFF);
+   else if (!strcmp(*mode_string, "on"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_ON);
+   else if (!strcmp(*mode_string, "alpha"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_ALPHA);
+   else if (!strcmp(*mode_string, "numeric"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_NUMERIC);
+   else if (!strcmp(*mode_string, "pin"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_PIN);
+   else if (!strcmp(*mode_string, "phonenumber"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_PHONE_NUMBER);
+   else if (!strcmp(*mode_string, "hex"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_HEX);
+   else if (!strcmp(*mode_string, "terminal"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_TERMINAL);
+   else if (!strcmp(*mode_string, "password"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_PASSWORD);
+   else if (!strcmp(*mode_string, "ip"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_IP);
+   else if (!strcmp(*mode_string, "host"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_HOST);
+   else if (!strcmp(*mode_string, "file"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_FILE);
+   else if (!strcmp(*mode_string, "url"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_URL);
+   else if (!strcmp(*mode_string, "keypad"))
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_KEYPAD);
+   else
+     elm_win_keyboard_mode_set(eo, ELM_WIN_KEYBOARD_UNKNOWN);
 }
 
 //---------------------
