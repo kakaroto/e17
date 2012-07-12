@@ -90,6 +90,9 @@ public:
    Handle<Value> vertical_current_page_get() const;
    Handle<Value> horizontal_current_page_get() const;
 
+   Handle<Value> vertical_last_page_get() const;
+   Handle<Value> horizontal_last_page_get() const;
+
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
 
