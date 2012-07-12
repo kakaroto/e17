@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, propagate_events);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, horizontal_gravity);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, vertical_gravity);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, region);
+GENERATE_METHOD_CALLBACKS(CElmScroller, region_show);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
 GENERATE_TEMPLATE(CElmScroller,
@@ -23,6 +24,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(horizontal_gravity),
                   PROPERTY(vertical_gravity),
                   PROPERTY_RO(region),
+                  METHOD(region_show),
                   METHOD(page_bring_in));
 
 CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
@@ -157,6 +159,18 @@ void CElmScroller::widget_base_theme_set(Handle<Value> val)
 
    widget_base_theme.Dispose();
    widget_base_theme = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmScroller::region_show(const Arguments &args)
+{
+   for (int i = 0; i < 4; i++)
+     if (!args[i]->IsNumber())
+       return Undefined();
+
+   elm_scroller_region_show(eo, args[0]->ToInt32()->Value(), args[1]->ToInt32()->Value(),
+       args[2]->ToInt32()->Value(), args[3]->ToInt32()->Value());
+
+   return Undefined();
 }
 
 
