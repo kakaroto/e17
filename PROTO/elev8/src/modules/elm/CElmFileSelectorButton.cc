@@ -67,9 +67,8 @@ void CElmFileSelectorButton::win_size_set(Handle<Value> val)
    if (!val->IsObject())
      return;
 
-   Local<Object> obj = val->ToObject();
-   Local<Value> w = obj->Get(String::New("w"));
-   Local<Value> h = obj->Get(String::New("h"));
+   Local<Value> w = val->ToObject()->Get(String::NewSymbol("width"));
+   Local<Value> h = val->ToObject()->Get(String::NewSymbol("height"));
 
    if (w->IsInt32() && h->IsInt32())
      elm_fileselector_button_window_size_set(eo, w->Int32Value(), h->Int32Value());
@@ -77,15 +76,14 @@ void CElmFileSelectorButton::win_size_set(Handle<Value> val)
 
 Handle<Value> CElmFileSelectorButton::win_size_get(void) const
 {
-   HandleScope scope;
+   Local<Object> obj = Object::New();
    Evas_Coord w, h;
 
    elm_fileselector_button_window_size_get(eo,  &w, &h);
-   Local<Object> obj = Object::New();
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   obj->Set(String::NewSymbol("width"), Number::New(w));
+   obj->Set(String::NewSymbol("height"), Number::New(h));
 
-   return scope.Close(obj);
+   return obj;
 }
 
 Handle<Value> CElmFileSelectorButton::expandable_get() const
