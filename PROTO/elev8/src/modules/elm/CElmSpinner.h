@@ -39,6 +39,9 @@ public:
    Handle<Value> special_value_get() const;
    void special_value_set(Handle<Value> val);
 
+   Handle<Value> wrap_get() const;
+   void wrap_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmSpinner>(const Arguments& args);
 };
 
