@@ -79,12 +79,13 @@ void CElmFileSelectorEntry::selected_set(Handle<Value> val)
 
 Handle<Value> CElmFileSelectorEntry::path_get() const
 {
-   return String::New(elm_fileselector_entry_path_get(eo));
+   const char *entry_path = elm_fileselector_entry_path_get(eo);
+   return entry_path ? String::New(entry_path) : Undefined();
 }
 
 void CElmFileSelectorEntry::path_set(Handle<Value> val)
 {
-   if (val->IsString() || val->IsNumber())
+   if (val->IsString())
      elm_fileselector_entry_path_set(eo, *String::Utf8Value(val));
 }
 
