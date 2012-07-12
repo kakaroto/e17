@@ -26,6 +26,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_disabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_autoenabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, prediction_allow);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, anchor_hover_style);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_layout);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -80,6 +81,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(input_panel_return_key_autoenabled),
                   PROPERTY(prediction_allow),
                   PROPERTY(anchor_hover_style),
+                  PROPERTY(input_panel_layout),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -427,6 +429,68 @@ void CElmEntry::anchor_hover_style_set(Handle<Value> val)
      return;
 
    elm_entry_anchor_hover_style_set(eo, *String::Utf8Value(val));
+}
+
+Handle<Value> CElmEntry::input_panel_layout_get() const
+{
+   switch (elm_entry_input_panel_layout_get(eo)) {
+     case ELM_INPUT_PANEL_LAYOUT_NORMAL:
+       return String::NewSymbol("default");
+     case ELM_INPUT_PANEL_LAYOUT_NUMBER:
+       return String::NewSymbol("number");
+     case ELM_INPUT_PANEL_LAYOUT_EMAIL:
+       return String::NewSymbol("email");
+     case ELM_INPUT_PANEL_LAYOUT_URL:
+       return String::NewSymbol("url");
+     case ELM_INPUT_PANEL_LAYOUT_PHONENUMBER:
+       return String::NewSymbol("phonenumber");
+     case ELM_INPUT_PANEL_LAYOUT_IP:
+       return String::NewSymbol("ip");
+     case ELM_INPUT_PANEL_LAYOUT_MONTH:
+       return String::NewSymbol("month");
+     case ELM_INPUT_PANEL_LAYOUT_NUMBERONLY:
+       return String::NewSymbol("numberonly");
+     case ELM_INPUT_PANEL_LAYOUT_INVALID:
+       return String::NewSymbol("invalid");
+     case ELM_INPUT_PANEL_LAYOUT_HEX:
+       return String::NewSymbol("hexadecimal");
+     case ELM_INPUT_PANEL_LAYOUT_TERMINAL:
+       return String::NewSymbol("terminal");
+     case ELM_INPUT_PANEL_LAYOUT_PASSWORD:
+       return String::NewSymbol("password");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmEntry::input_panel_layout_set(Handle<Value> val)
+{
+   String::Utf8Value mode_string(val->ToString());
+
+   if (!strcmp(*mode_string, "default"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_NORMAL);
+   else if (!strcmp(*mode_string, "number"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_NUMBER);
+   else if (!strcmp(*mode_string, "email"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_EMAIL);
+   else if (!strcmp(*mode_string, "url"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_URL);
+   else if (!strcmp(*mode_string, "phonenumber"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_PHONENUMBER);
+   else if (!strcmp(*mode_string, "ip"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_IP);
+   else if (!strcmp(*mode_string, "month"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_MONTH);
+   else if (!strcmp(*mode_string, "numberonly"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_NUMBERONLY);
+   else if (!strcmp(*mode_string, "invalid"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_INVALID);
+   else if (!strcmp(*mode_string, "hexadecimal"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_HEX);
+   else if (!strcmp(*mode_string, "terminal"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_TERMINAL);
+   else if (!strcmp(*mode_string, "password"))
+     elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_PASSWORD);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const

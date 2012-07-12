@@ -94,6 +94,9 @@ public:
    Handle<Value> anchor_hover_style_get() const;
    void anchor_hover_style_set(Handle<Value> value);
 
+   Handle<Value> input_panel_layout_get() const;
+   void input_panel_layout_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;
