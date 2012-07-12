@@ -617,12 +617,12 @@ void CElmObject::resize_set(Handle<Value> val)
 
 Handle<Value> CElmObject::pointer_get() const
 {
+   Local<Object> obj = Object::New();
    Evas_Coord x, y;
 
    evas_pointer_canvas_xy_get(evas_object_evas_get(eo), &x, &y);
-   Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), Integer::New(x));
-   obj->Set(String::New("y"), Integer::New(y));
+   obj->Set(String::NewSymbol("x"), Integer::New(x));
+   obj->Set(String::NewSymbol("y"), Integer::New(y));
 
    return obj;
 }
