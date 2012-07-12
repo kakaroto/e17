@@ -30,6 +30,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_layout);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, autocapital_type);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_language);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_type);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, cnp_mode);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -88,6 +89,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(autocapital_type),
                   PROPERTY(input_panel_language),
                   PROPERTY(input_panel_return_key_type),
+                  PROPERTY(cnp_mode),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -595,6 +597,32 @@ void CElmEntry::input_panel_return_key_type_set(Handle<Value> val)
      elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH);
    else if (!strcmp(*mode_string, "send"))
      elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND);
+}
+
+Handle<Value> CElmEntry::cnp_mode_get() const
+{
+   switch (elm_entry_cnp_mode_get(eo)) {
+     case ELM_CNP_MODE_MARKUP:
+       return String::NewSymbol("markup");
+     case ELM_CNP_MODE_NO_IMAGE:
+       return String::NewSymbol("noimage");
+     case ELM_CNP_MODE_PLAINTEXT:
+       return String::NewSymbol("plaintext");
+      default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmEntry::cnp_mode_set(Handle<Value> val)
+{
+   String::Utf8Value mode_string(val->ToString());
+
+   if (!strcmp(*mode_string, "markup"))
+     elm_entry_cnp_mode_set(eo, ELM_CNP_MODE_MARKUP);
+   else if (!strcmp(*mode_string, "noimage"))
+     elm_entry_cnp_mode_set(eo, ELM_CNP_MODE_NO_IMAGE);
+   else if (!strcmp(*mode_string, "plaintext"))
+     elm_entry_cnp_mode_set(eo, ELM_CNP_MODE_PLAINTEXT);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
