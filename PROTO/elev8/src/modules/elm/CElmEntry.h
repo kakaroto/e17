@@ -137,6 +137,8 @@ public:
 
    Handle<Value> calc_force(const Arguments&);
 
+   Handle<Value> select_none(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
