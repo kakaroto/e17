@@ -100,6 +100,9 @@ public:
    Handle<Value> size_base_get() const;
    void size_base_set(Handle<Value> val);
 
+   Handle<Value> layer_get() const;
+   void layer_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

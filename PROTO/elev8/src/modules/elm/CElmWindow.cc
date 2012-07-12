@@ -30,6 +30,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_minor);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel_zone);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_step);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_base);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, layer);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -56,7 +57,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(priority_minor),
                   PROPERTY(quickpanel_zone),
                   PROPERTY(size_step),
-                  PROPERTY(size_base));
+                  PROPERTY(size_base),
+                  PROPERTY(layer));
 
 // Getters and Settters
 
@@ -350,6 +352,17 @@ void CElmWindow::size_base_set(Handle <Value> val)
 
    size_base.Dispose();
    size_base = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmWindow::layer_get() const
+{
+   return Integer::New(elm_win_layer_get(eo));
+}
+
+void CElmWindow::layer_set(Handle <Value> val)
+{
+   if (val->IsInt32())
+     elm_win_layer_set(eo, val->ToInt32()->Value());
 }
 
 //---------------------
