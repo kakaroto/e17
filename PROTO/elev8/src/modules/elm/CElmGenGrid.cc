@@ -32,6 +32,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_show);
+GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_bring);
 
 GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(item_size_horizontal),
@@ -59,7 +60,8 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   METHOD(clear),
                   METHOD(delete_item),
                   METHOD(update_item),
-                  METHOD(page_show));
+                  METHOD(page_show),
+                  METHOD(page_bring));
 
 CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_gengrid_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -132,6 +134,14 @@ Handle<Value> CElmGenGrid::page_show(const Arguments &args)
 {
    if ((args[0]->IsInt32()) && (args[1]->IsInt32()))
      elm_gengrid_page_show (eo, args[0]->ToNumber()->Value(), args[1]->ToNumber()->Value());
+
+   return Undefined();
+}
+
+Handle<Value> CElmGenGrid::page_bring(const Arguments &args)
+{
+   if ((args[0]->IsInt32()) && (args[1]->IsInt32()))
+     elm_gengrid_page_bring_in (eo, args[0]->ToNumber()->Value(), args[1]->ToNumber()->Value());
 
    return Undefined();
 }
