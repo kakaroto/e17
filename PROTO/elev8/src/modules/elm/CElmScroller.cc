@@ -214,8 +214,8 @@ Handle<Value> CElmScroller::region_get() const
    Local<Object> obj = Object::New();
    obj->Set(String::NewSymbol("x"), Number::New(x));
    obj->Set(String::NewSymbol("y"), Number::New(y));
-   obj->Set(String::NewSymbol("w"), Number::New(w));
-   obj->Set(String::NewSymbol("h"), Number::New(h));
+   obj->Set(String::NewSymbol("width"), Number::New(w));
+   obj->Set(String::NewSymbol("height"), Number::New(h));
 
    return scope.Close(obj);
 }
@@ -326,8 +326,8 @@ Handle<Value> CElmScroller::size_child_get() const
    elm_scroller_child_size_get(eo, &w, &h);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::NewSymbol("w"), Number::New(w));
-   obj->Set(String::NewSymbol("h"), Number::New(h));
+   obj->Set(String::NewSymbol("width"), Number::New(w));
+   obj->Set(String::NewSymbol("height"), Number::New(h));
 
    return scope.Close(obj);
 }

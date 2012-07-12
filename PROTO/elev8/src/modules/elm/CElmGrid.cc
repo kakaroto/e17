@@ -48,8 +48,8 @@ void CElmGrid::pack(Handle<Object> obj)
 
    x = obj->Get(String::NewSymbol("x"))->IntegerValue();
    y = obj->Get(String::NewSymbol("y"))->IntegerValue();
-   w = obj->Get(String::NewSymbol("w"))->IntegerValue();
-   h = obj->Get(String::NewSymbol("h"))->IntegerValue();
+   w = obj->Get(String::NewSymbol("width"))->IntegerValue();
+   h = obj->Get(String::NewSymbol("height"))->IntegerValue();
 
    elm_grid_pack(GetEvasObject(), GetEvasObjectFromJavascript(element), x, y, w, h);
 }
@@ -97,8 +97,8 @@ Handle<Value> CElmGrid::Unpack(Handle<Value> item)
    Handle<Object> result = Object::New();
    result->Set(String::NewSymbol("x"), Integer::New(x));
    result->Set(String::NewSymbol("y"), Integer::New(y));
-   result->Set(String::NewSymbol("w"), Integer::New(w));
-   result->Set(String::NewSymbol("h"), Integer::New(h));
+   result->Set(String::NewSymbol("width"), Integer::New(w));
+   result->Set(String::NewSymbol("height"), Integer::New(h));
    result->Set(String::NewSymbol("element"), item);
    elm_grid_unpack(eo, obj->GetEvasObject());
 
