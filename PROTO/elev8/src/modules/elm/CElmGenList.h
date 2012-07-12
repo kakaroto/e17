@@ -39,6 +39,7 @@ public:
    Handle<Value> prepend(const Arguments& args);
    Handle<Value> tooltip_unset(const Arguments& args);
    Handle<Value> promote_item(const Arguments& args);
+   Handle<Value> demote_item(const Arguments& args);
 
    Handle<Value> multi_select_get() const;
    void multi_select_set(Handle<Value> value);

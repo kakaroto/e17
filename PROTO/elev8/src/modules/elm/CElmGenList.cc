@@ -31,6 +31,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
 GENERATE_METHOD_CALLBACKS(CElmGenList, prepend);
 GENERATE_METHOD_CALLBACKS(CElmGenList, tooltip_unset);
 GENERATE_METHOD_CALLBACKS(CElmGenList, promote_item);
+GENERATE_METHOD_CALLBACKS(CElmGenList, demote_item);
 
 GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(homogeneous),
@@ -57,7 +58,8 @@ GENERATE_TEMPLATE(CElmGenList,
                   METHOD(realized_items_update),
                   METHOD(prepend),
                   METHOD(tooltip_unset),
-                  METHOD(promote_item));
+                  METHOD(promote_item),
+                  METHOD(demote_item));
 
 CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -212,6 +214,24 @@ Handle<Value> CElmGenList::promote_item(const Arguments &args)
 
    if (item->object_item)
      elm_genlist_item_promote(item->object_item);
+
+   return Undefined();
+}
+
+Handle<Value> CElmGenList::demote_item(const Arguments &args)
+{
+   Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
+   if (!item)
+     return Undefined();
+
+   if (!args[1]->IsUndefined())
+     {
+        item->data.Dispose();
+        item->data = Persistent<Value>::New(args[1]);
+     }
+
+   if (item->object_item)
+     elm_genlist_item_demote(item->object_item);
 
    return Undefined();
 }
