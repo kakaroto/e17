@@ -8,6 +8,7 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, title_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, event_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, prev_btn_auto_pushed);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, items);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
@@ -16,6 +17,7 @@ GENERATE_TEMPLATE(CElmNaviframe,
                   PROPERTY(title_visible),
                   PROPERTY(event_enabled),
                   PROPERTY(prev_btn_auto_pushed),
+                  PROPERTY_RO(items),
                   METHOD(pop),
                   METHOD(push),
                   METHOD(promote));
@@ -141,6 +143,21 @@ void CElmNaviframe::prev_btn_auto_pushed_set(Handle<Value> val)
 Handle<Value> CElmNaviframe::prev_btn_auto_pushed_get() const
 {
    return Boolean::New(elm_naviframe_prev_btn_auto_pushed_get(eo));
+}
+
+Handle<Value> CElmNaviframe::items_get() const
+{
+   Eina_List *l = elm_naviframe_items_get(eo);
+   Local<Object> arr = Array::New(eina_list_count(l));
+
+   void *d;
+   int i = 0;
+   EINA_LIST_FREE(l, d)
+     {
+        arr->Set(i, External::Wrap(d)); ++i;
+     }
+
+   return arr;
 }
 
 }

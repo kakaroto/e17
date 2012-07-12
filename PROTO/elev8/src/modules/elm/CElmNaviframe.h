@@ -35,6 +35,8 @@ public:
    void prev_btn_auto_pushed_set(Handle<Value> val);
    Handle<Value> prev_btn_auto_pushed_get() const;
 
+   Handle<Value> items_get() const;
+
    friend Handle<Value> CElmObject::New<CElmNaviframe>(const Arguments &args);
 };
 
