@@ -21,6 +21,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, classes);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_longpress);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, scroller_policy);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmGenList, items_count);
 GENERATE_METHOD_CALLBACKS(CElmGenList, append);
 GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
@@ -43,6 +44,7 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(classes),
                   PROPERTY(on_longpress),
                   PROPERTY(scroller_policy),
+                  PROPERTY_RO(items_count),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -387,6 +389,11 @@ void CElmGenList::scroller_policy_set(Handle<Value> val)
 
    scroller_policy.Dispose();
    scroller_policy = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmGenList::items_count_get() const
+{
+   return Number::New(elm_genlist_items_count(eo));
 }
 
 }
