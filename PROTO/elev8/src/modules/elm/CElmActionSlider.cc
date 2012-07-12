@@ -58,8 +58,20 @@ void CElmActionSlider::labels_set(Handle<Value> val)
 
 Handle<Value> CElmActionSlider::labels_get() const
 {
-   // FIXME: implement
-   return Undefined();
+   Local<Object> labels = Object::New();
+
+   const char *left = elm_object_part_text_get(eo, "left");
+   const char *center = elm_object_part_text_get(eo, "center");
+   const char *right = elm_object_part_text_get(eo, "right");
+
+   if (left)
+     labels->Set(String::NewSymbol("left"), String::New(left));
+   if (center)
+     labels->Set(String::NewSymbol("center"), String::New(center));
+   if (right)
+     labels->Set(String::NewSymbol("right"), String::New(right));
+
+   return labels;
 }
 
 bool CElmActionSlider::position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos)
