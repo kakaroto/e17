@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, propagate_events);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, horizontal_gravity);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, vertical_gravity);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, relative_page_size);
+GENERATE_PROPERTY_CALLBACKS(CElmScroller, page_size);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, limit_minimum_size);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, region);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, current_page);
@@ -31,6 +32,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(horizontal_gravity),
                   PROPERTY(vertical_gravity),
                   PROPERTY(relative_page_size),
+                  PROPERTY(page_size),
                   PROPERTY(limit_minimum_size),
                   PROPERTY_RO(region),
                   PROPERTY_RO(current_page),
@@ -56,6 +58,7 @@ CElmScroller::~CElmScroller()
    cached.content.Dispose();
    widget_base_theme.Dispose();
    relative_page_size.Dispose();
+   page_size.Dispose();
    limit_minimum_size.Dispose();
 }
 
@@ -349,6 +352,28 @@ void CElmScroller::relative_page_size_set(Handle<Value> val)
 
    relative_page_size.Dispose();
    relative_page_size = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmScroller::page_size_get() const
+{
+   return page_size;
+}
+
+void CElmScroller::page_size_set(Handle<Value> val)
+{
+   if (!val->IsObject())
+     return;
+
+   Local<Value> horizontal = val->ToObject()->Get(String::NewSymbol("horizontal"));
+   Local<Value> vertical = val->ToObject()->Get(String::NewSymbol("vertical"));
+
+   if (!horizontal->IsNumber() || !vertical->IsNumber())
+     return;
+
+   elm_scroller_page_size_set(eo, horizontal->IntegerValue(), vertical->IntegerValue());
+
+   page_size.Dispose();
+   page_size = Persistent<Value>::New(val);
 }
 
 Handle<Value> CElmScroller::limit_minimum_size_get() const

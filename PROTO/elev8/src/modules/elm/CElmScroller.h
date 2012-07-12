@@ -26,6 +26,7 @@ protected:
 
    Persistent<Value> widget_base_theme;
    Persistent<Value> relative_page_size;
+   Persistent<Value> page_size;
    Persistent<Value> limit_minimum_size;
 public:
    static void Initialize(Handle<Object> val);
@@ -54,6 +55,8 @@ public:
    void relative_page_size_set(Handle<Value> val);
    Handle<Value> relative_page_size_get() const;
 
+   void page_size_set(Handle<Value> val);
+   Handle<Value> page_size_get() const;
 
    void limit_minimum_size_set(Handle<Value> val);
    Handle<Value> limit_minimum_size_get() const;
