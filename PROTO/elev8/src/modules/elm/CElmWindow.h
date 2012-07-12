@@ -132,6 +132,7 @@ public:
    Handle<Value> screen_position_get() const;
 
    Handle<Value> socket_listen(const Arguments&);
+   Handle<Value> activate(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };

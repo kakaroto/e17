@@ -42,6 +42,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, prop_focus_skip);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, focus);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, screen_position);
 GENERATE_METHOD_CALLBACKS(CElmWindow, socket_listen);
+GENERATE_METHOD_CALLBACKS(CElmWindow, activate);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -80,7 +81,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(prop_focus_skip),
                   PROPERTY_RO(focus),
                   PROPERTY_RO(screen_position),
-                  METHOD(socket_listen));
+                  METHOD(socket_listen),
+                  METHOD(activate));
 
 // Getters and Settters
 
@@ -604,6 +606,12 @@ Handle<Value> CElmWindow::socket_listen(const Arguments& args)
                               args[1]->ToInt32()->Value(),
                               args[2]->BooleanValue()));
 
+   return Undefined();
+}
+
+Handle<Value> CElmWindow::activate(const Arguments&)
+{
+   elm_win_activate(eo);
    return Undefined();
 }
 
