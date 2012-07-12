@@ -401,14 +401,11 @@ Handle<Value> CElmGenGrid::page_size_get(void) const
 
 void CElmGenGrid::page_size_set(Handle<Value> val)
 {
-   HandleScope scope;
-
    if (!val->IsObject())
      return;
 
-   Local<Object> obj = val->ToObject();
-   Local<Value> w = obj->Get(String::New("w"));
-   Local<Value> h = obj->Get(String::New("h"));
+   Local<Value> w = val->ToObject()->Get(String::NewSymbol("width"));
+   Local<Value> h = val->ToObject()->Get(String::NewSymbol("height"));
 
    if (w->IsInt32() && h->IsInt32())
      elm_gengrid_page_size_set(eo, w->Int32Value(), h->Int32Value());
