@@ -23,6 +23,8 @@ protected:
       Persistent<Value> longpress;
    } cb;
 
+   Persistent<Value> scroller_policy;
+
    static Handle<FunctionTemplate> GetTemplate();
 
 public:
@@ -77,6 +79,9 @@ public:
    static void OnLongPressWrapper(void *data, Evas_Object *, void *event_info);
    Handle<Value> on_longpress_get() const;
    void on_longpress_set(Handle<Value> val);
+
+   Handle<Value> scroller_policy_get() const;
+   void scroller_policy_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmGenList>(const Arguments&);
 };

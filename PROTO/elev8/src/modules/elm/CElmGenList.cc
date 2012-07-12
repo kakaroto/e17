@@ -20,6 +20,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, classes);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_longpress);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, scroller_policy);
 GENERATE_METHOD_CALLBACKS(CElmGenList, append);
 GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
@@ -41,6 +42,7 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(multi_select),
                   PROPERTY(classes),
                   PROPERTY(on_longpress),
+                  PROPERTY(scroller_policy),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -54,6 +56,7 @@ CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
 
 CElmGenList::~CElmGenList()
 {
+   scroller_policy.Dispose();
    on_longpress_set(Undefined());
 }
 
@@ -365,6 +368,25 @@ void CElmGenList::on_longpress_set(Handle<Value> val)
 
    cb.longpress = Persistent<Value>::New(val);
    evas_object_smart_callback_add(eo, "longpressed", &OnLongPressWrapper, this);
+}
+
+Handle<Value> CElmGenList::scroller_policy_get() const
+{
+   return scroller_policy;
+}
+
+void CElmGenList::scroller_policy_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> policy = val->ToObject();
+   elm_genlist_scroller_policy_set (eo,
+        (Elm_Scroller_Policy) policy->Get(0)->ToNumber()->Value(),
+        (Elm_Scroller_Policy) policy->Get(1)->ToNumber()->Value());
+
+   scroller_policy.Dispose();
+   scroller_policy = Persistent<Value>::New(val);
 }
 
 }
