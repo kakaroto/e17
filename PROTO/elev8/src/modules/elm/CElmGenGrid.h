@@ -21,6 +21,7 @@ protected:
 
    Persistent<Value> page_relative;
    Persistent<Value> align;
+   Persistent<Value> page_size;
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -76,6 +77,10 @@ public:
 
    Handle<Value> group_item_size_get() const;
    void group_item_size_set(Handle<Value> value);
+
+   Handle<Value> page_size_get() const;
+   void page_size_set(Handle<Value> value);
+
 
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
