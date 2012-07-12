@@ -51,6 +51,9 @@ public:
    Handle<Value> interval_get() const;
    void interval_set(Handle<Value> val);
 
+   Handle<Value> value_get() const;
+   void value_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmSpinner>(const Arguments& args);
 };
 
