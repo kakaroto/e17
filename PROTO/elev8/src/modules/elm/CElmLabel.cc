@@ -8,12 +8,14 @@ GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap_width);
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, ellipsis);
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, slide);
+GENERATE_PROPERTY_CALLBACKS(CElmLabel, slide_duration);
 
 GENERATE_TEMPLATE(CElmLabel,
                   PROPERTY(wrap),
                   PROPERTY(wrap_width),
                   PROPERTY(ellipsis),
                   PROPERTY(slide),
+                  PROPERTY(slide_duration));
 
 CElmLabel::CElmLabel(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_label_add(parent->GetEvasObject()))
@@ -86,6 +88,17 @@ void CElmLabel::slide_set(Handle<Value> value)
 Handle<Value> CElmLabel::slide_get() const
 {
    return Boolean::New(elm_label_slide_get(eo));
+}
+
+void CElmLabel::slide_duration_set(Handle<Value> value)
+{
+   if (value->IsNumber())
+     elm_label_slide_duration_set(eo, value->ToNumber()->Value());
+}
+
+Handle<Value> CElmLabel::slide_duration_get() const
+{
+   return Number::New(elm_label_slide_duration_get(eo));
 }
 
 }

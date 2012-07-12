@@ -31,6 +31,9 @@ public:
    void slide_set(Handle<Value> value);
    Handle<Value> slide_get() const;
 
+   void slide_duration_set(Handle<Value> value);
+   Handle<Value> slide_duration_get() const;
+
    friend Handle<Value> CElmObject::New<CElmLabel>(const Arguments& args);
 };
 
