@@ -12,7 +12,7 @@ w = elm.realise(elm.Window({
         if (label === 'Content') {
           w.elements.popup.message({
             content: elm.Button({
-              label: 'Button in content area',
+              label: 'This text will be changed as soon as this button is realized',
               icon: elm.Icon({ image: 'starred' })
             })
           });
@@ -27,7 +27,8 @@ w = elm.realise(elm.Window({
               { text: 'Offline', icon: elm.Icon({ image: 'user-offline'}) },
               'Only text',
               { text: 'Only text in an object' }
-            ]
+            ],
+            orientation: 'left'
           });
         }
       },
@@ -43,6 +44,9 @@ w = elm.realise(elm.Window({
       on_timeout: function() {
         print("Popup closed by timeout! New popup in one second.");
         setTimeout(newPopup, 1000);
+      },
+      on_realize_content: function(content) {
+        content.label = 'Button in content area';
       }
     })
   }

@@ -5,12 +5,13 @@ namespace elm {
 
 using namespace v8;
 
-GENERATE_METHOD_CALLBACKS(CElmPopup, toast);
-GENERATE_METHOD_CALLBACKS(CElmPopup, message);
-GENERATE_PROPERTY_CALLBACKS(CElmPopup, on_button_press);
+GENERATE_METHOD_CALLBACKS(CElmPopup, toast)
+GENERATE_METHOD_CALLBACKS(CElmPopup, message)
+GENERATE_PROPERTY_CALLBACKS(CElmPopup, on_button_press)
 GENERATE_PROPERTY_CALLBACKS(CElmPopup, on_dismiss)
 GENERATE_PROPERTY_CALLBACKS(CElmPopup, on_item_select)
 GENERATE_PROPERTY_CALLBACKS(CElmPopup, on_timeout)
+GENERATE_PROPERTY_CALLBACKS(CElmPopup, on_realize_content)
 
 GENERATE_TEMPLATE(CElmPopup,
                   METHOD(toast),
@@ -18,7 +19,8 @@ GENERATE_TEMPLATE(CElmPopup,
                   PROPERTY(on_button_press),
                   PROPERTY(on_dismiss),
                   PROPERTY(on_item_select),
-                  PROPERTY(on_timeout));
+                  PROPERTY(on_timeout),
+                  PROPERTY(on_realize_content));
 
 CElmPopup::CElmPopup(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject,
@@ -35,6 +37,7 @@ CElmPopup::~CElmPopup()
    cb.item_select.Dispose();
    cb.dismiss.Dispose();
    cb.timeout.Dispose();
+   cb.realize_content.Dispose();
    cached.content.Dispose();
    cached.items.Dispose();
 }
@@ -42,6 +45,20 @@ CElmPopup::~CElmPopup()
 void CElmPopup::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Popup"), GetTemplate()->GetFunction());
+}
+
+void CElmPopup::on_realize_content_set(Handle<Value> val)
+{
+   cb.realize_content.Dispose();
+   cb.realize_content.Clear();
+
+   if (val->IsFunction())
+     cb.realize_content = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmPopup::on_realize_content_get(void) const
+{
+   return cb.realize_content;
 }
 
 void CElmPopup::on_button_press_set(Handle<Value> val)
@@ -149,6 +166,15 @@ void CElmPopup::Hide()
    evas_object_del(eo);
    eo = elm_popup_add(popup_parent);
    evas_object_data_set(eo, "this", this);
+}
+
+void CElmPopup::DidRealizeContent()
+{
+   if (cb.realize_content.IsEmpty() || !cb.realize_content->IsFunction())
+     return;
+   Handle<Function> callback(Function::Cast(*cb.realize_content));
+   Handle<Value> args[1] = { cached.content };
+   callback->Call(jsObject, 1, args);
 }
 
 static void _timeout_cb(void *data, Evas_Object *, void *)
@@ -271,6 +297,7 @@ Handle<Value> CElmPopup::message(const Arguments &args)
         cached.content.Dispose();
         cached.content = Persistent<Value>::New(Realise(o->Get(String::NewSymbol("content")->ToObject()), jsObject));
         elm_object_content_set(eo, GetEvasObjectFromJavascript(cached.content));
+        DidRealizeContent();
      }
    else if (o->Has(String::NewSymbol("items")))
      {
