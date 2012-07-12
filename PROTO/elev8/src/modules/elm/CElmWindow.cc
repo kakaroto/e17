@@ -27,6 +27,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_win);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, rotation);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_major);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_minor);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel_zone);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -50,7 +51,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(keyboard_win),
                   PROPERTY(rotation),
                   PROPERTY(priority_major),
-                  PROPERTY(priority_minor));
+                  PROPERTY(priority_minor),
+                  PROPERTY(quickpanel_zone));
 
 // Getters and Settters
 
@@ -295,6 +297,17 @@ void CElmWindow::priority_minor_set(Handle <Value> val)
 {
    if (val->IsInt32())
      elm_win_quickpanel_priority_minor_set(eo, val->ToInt32()->Value());
+}
+
+Handle<Value> CElmWindow::quickpanel_zone_get() const
+{
+   return Integer::New(elm_win_quickpanel_zone_get(eo));
+}
+
+void CElmWindow::quickpanel_zone_set(Handle <Value> val)
+{
+   if (val->IsInt32())
+     elm_win_quickpanel_zone_set(eo, val->ToInt32()->Value());
 }
 
 //---------------------

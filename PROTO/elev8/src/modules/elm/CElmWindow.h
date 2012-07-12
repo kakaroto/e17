@@ -87,6 +87,9 @@ public:
    Handle<Value> priority_minor_get() const;
    void priority_minor_set(Handle<Value> val);
 
+   Handle<Value> quickpanel_zone_get() const;
+   void quickpanel_zone_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
