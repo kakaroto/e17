@@ -50,6 +50,9 @@ public:
    Handle<Value> iconified_get() const;
    void iconified_set(Handle<Value> val);
 
+   Handle<Value> withdrawn_get() const;
+   void withdrawn_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
