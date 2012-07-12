@@ -24,6 +24,7 @@ protected:
    static Elm_Scroller_Policy policy_from_string(Handle<Value> val);
    static Local<Value> string_from_policy(Elm_Scroller_Policy policy);
 
+   Persistent<Value> widget_base_theme;
 public:
    static void Initialize(Handle<Object> val);
 
@@ -35,6 +36,9 @@ public:
 
    void content_set(Handle<Value> val);
    Handle<Value> content_get() const;
+
+   void widget_base_theme_set(Handle<Value> val);
+   Handle<Value> widget_base_theme_get() const;
 
    Handle<Value> page_bring_in(const Arguments& args);
 

@@ -7,12 +7,14 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, policy);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, content);
+GENERATE_PROPERTY_CALLBACKS(CElmScroller, widget_base_theme);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
 GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(bounce),
                   PROPERTY(policy),
                   PROPERTY(content),
+                  PROPERTY(widget_base_theme),
                   METHOD(page_bring_in));
 
 CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
@@ -28,6 +30,7 @@ void CElmScroller::Initialize(Handle<Object> target)
 CElmScroller::~CElmScroller()
 {
    cached.content.Dispose();
+   widget_base_theme.Dispose();
 }
 
 void CElmScroller::bounce_set(Handle<Value> val)
@@ -126,6 +129,26 @@ void CElmScroller::content_set(Handle<Value> val)
 Handle<Value> CElmScroller::content_get() const
 {
    return cached.content;
+}
+
+Handle<Value> CElmScroller::widget_base_theme_get() const
+{
+   return widget_base_theme;
+}
+
+void CElmScroller::widget_base_theme_set(Handle<Value> val)
+{
+   if (!val->IsObject())
+     return;
+
+   Local<Value> widget = val->ToObject()->Get(String::NewSymbol("widget"));
+   Local<Value> base = val->ToObject()->Get(String::NewSymbol("base"));
+
+   elm_scroller_custom_widget_base_theme_set(eo, *(String::Utf8Value(widget)),
+                                             *(String::Utf8Value(base)));
+
+   widget_base_theme.Dispose();
+   widget_base_theme = Persistent<Value>::New(val);
 }
 
 Handle<Value> CElmScroller::page_bring_in(const Arguments &args)
