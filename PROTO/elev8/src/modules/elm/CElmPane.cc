@@ -9,12 +9,14 @@ GENERATE_PROPERTY_CALLBACKS(CElmPane, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, left);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, right);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, fixed);
+GENERATE_PROPERTY_CALLBACKS(CElmPane, size_right_content);
 
 GENERATE_TEMPLATE(CElmPane,
                   PROPERTY(horizontal),
                   PROPERTY(left),
                   PROPERTY(right),
-                  PROPERTY(fixed));
+                  PROPERTY(fixed),
+                  PROPERTY(size_right_content));
 
 CElmPane::CElmPane(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_panes_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -80,5 +82,15 @@ void CElmPane::fixed_set(Handle<Value> val)
      elm_panes_fixed_set(eo, val->BooleanValue());
 }
 
+Handle<Value> CElmPane::size_right_content_get() const
+{
+   return Number::New(elm_panes_content_right_size_get(eo));
+}
+
+void CElmPane::size_right_content_set(Handle<Value> val)
+{
+   if (val->IsNumber())
+     elm_panes_content_right_size_set(eo, val->NumberValue());
+}
 }
 

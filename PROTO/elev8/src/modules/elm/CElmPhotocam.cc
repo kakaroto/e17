@@ -106,14 +106,14 @@ void CElmPhotocam::vertical_bounce_set(Handle<Value> val)
      return;
 
    Eina_Bool horizontal_bounce;
-   elm_scroller_bounce_get(eo, &horizontal_bounce, NULL);
-   elm_scroller_bounce_set(eo, horizontal_bounce, val->ToBoolean()->Value());
+   elm_photocam_bounce_get(eo, &horizontal_bounce, NULL);
+   elm_photocam_bounce_set(eo, horizontal_bounce, val->ToBoolean()->Value());
 }
 
 Handle<Value> CElmPhotocam::vertical_bounce_get() const
 {
    Eina_Bool vertical_bounce;
-   elm_scroller_bounce_get(eo, NULL, &vertical_bounce);
+   elm_photocam_bounce_get(eo, NULL, &vertical_bounce);
    return Boolean::New(vertical_bounce);
 }
 
@@ -123,14 +123,14 @@ void CElmPhotocam::horizontal_bounce_set(Handle<Value> val)
      return;
 
    Eina_Bool vertical_bounce;
-   elm_scroller_bounce_get(eo, NULL, &vertical_bounce);
-   elm_scroller_bounce_set(eo, val->ToBoolean()->Value(), vertical_bounce);
+   elm_photocam_bounce_get(eo, NULL, &vertical_bounce);
+   elm_photocam_bounce_set(eo, val->ToBoolean()->Value(), vertical_bounce);
 }
 
 Handle<Value> CElmPhotocam::horizontal_bounce_get() const
 {
    Eina_Bool horizontal_bounce;
-   elm_scroller_bounce_get(eo, &horizontal_bounce, NULL);
+   elm_photocam_bounce_get(eo, &horizontal_bounce, NULL);
    return Boolean::New(horizontal_bounce);
 }
 
