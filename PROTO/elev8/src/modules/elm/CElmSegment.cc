@@ -6,9 +6,11 @@ namespace elm {
 using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmSegment, items);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmSegment, items_count);
 
 GENERATE_TEMPLATE(CElmSegment,
-                  PROPERTY(items));
+                  PROPERTY(items),
+                  PROPERTY_RO(items_count));
 
 CElmSegment::CElmSegment(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_segment_control_add(parent->GetEvasObject()))
@@ -59,6 +61,11 @@ void CElmSegment::items_set(Handle<Value> val)
 Handle<Value> CElmSegment::items_get() const
 {
    return cached.items;
+}
+
+Handle<Value> CElmSegment::items_count_get() const
+{
+  return Number::New(elm_segment_control_item_count_get(eo));
 }
 
 }

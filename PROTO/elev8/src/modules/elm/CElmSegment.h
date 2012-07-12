@@ -26,6 +26,8 @@ public:
    Handle<Value> items_get() const;
    void items_set(Handle<Value> val);
 
+   Handle<Value> items_count_get() const;
+
    friend Handle<Value> CElmObject::New<CElmSegment>(const Arguments& args);
 };
 
