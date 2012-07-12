@@ -24,6 +24,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, screen_constrain);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_win);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, rotation);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -44,7 +45,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(quickpanel),
                   PROPERTY(screen_constrain),
                   PROPERTY(focus_highlight_enabled),
-                  PROPERTY(keyboard_win));
+                  PROPERTY(keyboard_win),
+                  PROPERTY(rotation));
 
 // Getters and Settters
 
@@ -256,6 +258,23 @@ void CElmWindow::keyboard_win_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_keyboard_win_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::rotation_get() const
+{
+   return Integer::New(elm_win_rotation_get(eo));
+}
+
+void CElmWindow::rotation_set(Handle <Value> val)
+{
+   if (val->IsInt32())
+     elm_win_rotation_set(eo, val->ToInt32()->Value());
+}
+
+void CElmWindow::rotation_with_resize_set(Handle <Value> val)
+{
+   if (val->IsInt32())
+     elm_win_rotation_with_resize_set(eo, val->ToInt32()->Value());
 }
 
 //---------------------

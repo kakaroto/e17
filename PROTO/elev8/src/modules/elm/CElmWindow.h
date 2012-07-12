@@ -77,6 +77,10 @@ public:
    Handle<Value> keyboard_win_get() const;
    void keyboard_win_set(Handle<Value> val);
 
+   Handle<Value> rotation_get() const;
+   void rotation_set(Handle<Value> val);
+   void rotation_with_resize_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
