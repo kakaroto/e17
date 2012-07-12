@@ -7,11 +7,13 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, policy);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, content);
+GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
 GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(bounce),
                   PROPERTY(policy),
-                  PROPERTY(content));
+                  PROPERTY(content),
+                  METHOD(page_bring_in));
 
 CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_scroller_add(parent->GetEvasObject()))
@@ -124,6 +126,17 @@ void CElmScroller::content_set(Handle<Value> val)
 Handle<Value> CElmScroller::content_get() const
 {
    return cached.content;
+}
+
+Handle<Value> CElmScroller::page_bring_in(const Arguments &args)
+{
+   for (int i = 0; i < 2; i++)
+     if (!args[i]->IsNumber())
+       return Undefined();
+
+   elm_scroller_page_show(eo, args[0]->ToInt32()->Value(), args[1]->ToInt32()->Value());
+
+   return Undefined();
 }
 
 }
