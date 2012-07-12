@@ -61,6 +61,9 @@ public:
    Handle<Value> horizontal_get() const;
    void horizontal_set(Handle<Value> value);
 
+   Handle<Value> filled_get() const;
+   void filled_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
 
