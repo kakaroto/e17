@@ -35,6 +35,8 @@ public:
    void paused_set(Handle<Value> val);
    Handle<Value> paused_get() const;
    
+  
+   Handle<Value> image_region_get() const;
 
    Handle<Value> image_region_show(const Arguments &args);
    
