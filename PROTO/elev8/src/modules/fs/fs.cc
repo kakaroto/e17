@@ -21,7 +21,8 @@ static int log_domain;
 
 class ListFiles {
 public:
-   ListFiles(const Arguments& args, const Local<Object>& thisObj_) {
+   ListFiles(const Arguments& args, const Local<Object>& thisObj_)
+   {
       obj = Persistent<Object>::New(ListFiles::GetTemplate()->GetFunction()->NewInstance());
       obj->SetPointerInInternalField(0, this);
       obj.MakeWeak(this, ListFiles::Delete);
@@ -58,9 +59,9 @@ public:
              {
                 batchSize = tmp->NumberValue();
                 if (batchSize > 4096)
-                   batchSize = 4096;
+                  batchSize = 4096;
                 if (batchSize < 0)
-                   batchSize = 1024;
+                  batchSize = 1024;
              }
 
            tmp = kwargs->Get(String::NewSymbol("allow_hidden"));
@@ -86,14 +87,16 @@ public:
 
       lastTimeout = ecore_loop_time_get();
       eio = (recursive ? eio_dir_stat_ls : eio_file_stat_ls)(*String::Utf8Value(args[0]),
-                   filter, onFile, onDone, onError, this);
+                                                             filter, onFile, onDone, onError, this);
    }
 
-   Handle<Object> ToObject() {
+   Handle<Object> ToObject()
+   {
       return obj;
    }
 
-   void Stop() {
+   void Stop()
+   {
       if (eio)
         eio_file_cancel(eio);
       eio = NULL;
@@ -119,7 +122,8 @@ public:
       return Undefined();
    }
 
-   static Persistent<FunctionTemplate> GetTemplate() {
+   static Persistent<FunctionTemplate> GetTemplate()
+   {
       if (ListFiles::tmpl.IsEmpty())
         {
            ListFiles::tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New(listFiles));
@@ -131,7 +135,8 @@ public:
       return ListFiles::tmpl;
    }
 
-   ~ListFiles() {
+   ~ListFiles()
+   {
       HandleScope scope;
 
       if (eio) eio_file_cancel(eio);
@@ -161,7 +166,8 @@ private:
 
    static Persistent<FunctionTemplate> tmpl;
 
-   static void Delete(Persistent<Value> obj, void *data) {
+   static void Delete(Persistent<Value> obj, void *data)
+   {
       HandleScope scope;
 
       if (!obj->ToObject()->Has(String::NewSymbol("disposed_already")))
@@ -241,7 +247,7 @@ private:
 
       Local<Array> batchTemp = Array::New(batchLen);
       for (int item = batchLen - 1; item >= 0; --item)
-         batchTemp->Set(item, batch->Get(item));
+        batchTemp->Set(item, batch->Get(item));
 
       Handle<Value> args[3] = {
         batchTemp,
@@ -253,7 +259,7 @@ private:
       func->Call(thisObj, 3, args);
 
       for (int item = batch->Length() - 1; item >= 0; --item)
-         batch->Delete(item);
+        batch->Delete(item);
       batchLen = 0;
    }
 };
@@ -262,22 +268,22 @@ Persistent<FunctionTemplate> ListFiles::tmpl;
 
 extern "C" {
 
-void RegisterModule(Handle<Object> target);
+  void RegisterModule(Handle<Object> target);
 
-void RegisterModule(Handle<Object> target)
-{
-   log_domain = eina_log_domain_register("elev8-fs", EINA_COLOR_ORANGE);
-   if (!log_domain)
-     {
-        ERR("could not register elev8-fs log domain.");
-        log_domain = EINA_LOG_DOMAIN_GLOBAL;
-     }
+  void RegisterModule(Handle<Object> target)
+  {
+     log_domain = eina_log_domain_register("elev8-fs", EINA_COLOR_ORANGE);
+     if (!log_domain)
+       {
+          ERR("could not register elev8-fs log domain.");
+          log_domain = EINA_LOG_DOMAIN_GLOBAL;
+       }
 
-   INF("elev8-fs Logging initialized. %d", log_domain);
+     INF("elev8-fs Logging initialized. %d", log_domain);
 
-   eio_init();
-   target->Set(String::NewSymbol("listFiles"), ListFiles::GetTemplate()->GetFunction());
-}
+     eio_init();
+     target->Set(String::NewSymbol("listFiles"), ListFiles::GetTemplate()->GetFunction());
+  }
 }
 
 }
