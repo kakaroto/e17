@@ -55,6 +55,8 @@ public:
 
    Handle<Value> current_page_get() const;
 
+   Handle<Value> size_child_get() const;
+
    Handle<Value> region_show(const Arguments& args);
    Handle<Value> region_bring_in(const Arguments& args);
 
