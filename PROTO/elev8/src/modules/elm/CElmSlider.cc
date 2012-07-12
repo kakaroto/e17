@@ -16,6 +16,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmSlider, min);
 GENERATE_PROPERTY_CALLBACKS(CElmSlider, max);
 GENERATE_PROPERTY_CALLBACKS(CElmSlider, inverted);
 GENERATE_PROPERTY_CALLBACKS(CElmSlider, horizontal);
+GENERATE_PROPERTY_CALLBACKS(CElmSlider, indicator_show);
 
 GENERATE_TEMPLATE(CElmSlider,
                   PROPERTY(on_change),
@@ -28,7 +29,8 @@ GENERATE_TEMPLATE(CElmSlider,
                   PROPERTY(min),
                   PROPERTY(max),
                   PROPERTY(inverted),
-                  PROPERTY(horizontal));
+                  PROPERTY(horizontal),
+                  PROPERTY(indicator_show));
 
 CElmSlider::CElmSlider(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_slider_add(parent->GetEvasObject()))
@@ -183,6 +185,17 @@ void CElmSlider::horizontal_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_slider_horizontal_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmSlider::indicator_show_get() const
+{
+   return Boolean::New(elm_slider_indicator_show_get(eo));
+}
+
+void CElmSlider::indicator_show_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_slider_indicator_show_set(eo, value->BooleanValue());
 }
 
 void CElmSlider::OnChange(void *)

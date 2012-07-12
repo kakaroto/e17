@@ -70,6 +70,9 @@ public:
    Handle<Value> horizontal_get() const;
    void horizontal_set(Handle<Value> value);
 
+   Handle<Value> indicator_show_get() const;
+   void indicator_show_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmSlider>(const Arguments& args);
 };
 
