@@ -65,6 +65,9 @@ public:
    Handle<Value> sticky_get() const;
    void sticky_set(Handle<Value> val);
 
+   Handle<Value> quickpanel_get() const;
+   void quickpanel_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
