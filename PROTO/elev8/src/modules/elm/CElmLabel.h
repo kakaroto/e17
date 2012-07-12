@@ -28,6 +28,9 @@ public:
    void ellipsis_set(Handle<Value> value);
    Handle<Value> ellipsis_get() const;
 
+   void slide_set(Handle<Value> value);
+   Handle<Value> slide_get() const;
+
    friend Handle<Value> CElmObject::New<CElmLabel>(const Arguments& args);
 };
 

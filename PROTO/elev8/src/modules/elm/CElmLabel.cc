@@ -7,11 +7,13 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap_width);
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, ellipsis);
+GENERATE_PROPERTY_CALLBACKS(CElmLabel, slide);
 
 GENERATE_TEMPLATE(CElmLabel,
                   PROPERTY(wrap),
                   PROPERTY(wrap_width),
                   PROPERTY(ellipsis),
+                  PROPERTY(slide),
 
 CElmLabel::CElmLabel(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_label_add(parent->GetEvasObject()))
@@ -75,5 +77,15 @@ Handle<Value> CElmLabel::ellipsis_get() const
    return Boolean::New(elm_label_ellipsis_get(eo));
 }
 
+void CElmLabel::slide_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_label_slide_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmLabel::slide_get() const
+{
+   return Boolean::New(elm_label_slide_get(eo));
+}
 
 }
