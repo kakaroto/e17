@@ -54,6 +54,7 @@ public:
    Handle<Value> region_show(const Arguments& args);
    Handle<Value> region_bring_in(const Arguments& args);
 
+   Handle<Value> page_show(const Arguments& args);
    Handle<Value> page_bring_in(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmScroller>(const Arguments& args);
