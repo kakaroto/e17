@@ -21,6 +21,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, demand_attention);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, modal);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, sticky);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, screen_constrain);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -38,7 +39,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(demand_attention),
                   PROPERTY(modal),
                   PROPERTY(sticky),
-                  PROPERTY(quickpanel));
+                  PROPERTY(quickpanel),
+                  PROPERTY(screen_constrain));
 
 // Getters and Settters
 
@@ -217,6 +219,17 @@ void CElmWindow::quickpanel_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_quickpanel_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::screen_constrain_get() const
+{
+   return Boolean::New(elm_win_screen_constrain_get(eo));
+}
+
+void CElmWindow::screen_constrain_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_screen_constrain_set(eo, val->BooleanValue());
 }
 
 //---------------------

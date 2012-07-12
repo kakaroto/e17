@@ -68,6 +68,9 @@ public:
    Handle<Value> quickpanel_get() const;
    void quickpanel_set(Handle<Value> val);
 
+   Handle<Value> screen_constrain_get() const;
+   void screen_constrain_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
