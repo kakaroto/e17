@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, widget_base_theme);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, propagate_events);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, horizontal_gravity);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, vertical_gravity);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, region);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
 GENERATE_TEMPLATE(CElmScroller,
@@ -21,6 +22,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(propagate_events),
                   PROPERTY(horizontal_gravity),
                   PROPERTY(vertical_gravity),
+                  PROPERTY_RO(region),
                   METHOD(page_bring_in));
 
 CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
@@ -155,6 +157,23 @@ void CElmScroller::widget_base_theme_set(Handle<Value> val)
 
    widget_base_theme.Dispose();
    widget_base_theme = Persistent<Value>::New(val);
+}
+
+
+Handle<Value> CElmScroller::region_get() const
+{
+   HandleScope scope;
+
+   int x, y, w, h;
+   elm_scroller_region_get(eo, &x, &y, &w, &h);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::New("x"), Number::New(x));
+   obj->Set(String::New("y"), Number::New(y));
+   obj->Set(String::New("w"), Number::New(w));
+   obj->Set(String::New("h"), Number::New(h));
+
+   return scope.Close(obj);
 }
 
 Handle<Value> CElmScroller::page_bring_in(const Arguments &args)
