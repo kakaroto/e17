@@ -7,11 +7,13 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, icon);
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, group);
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, value);
+GENERATE_PROPERTY_CALLBACKS(CElmRadio, group_value);
 
 GENERATE_TEMPLATE(CElmRadio,
    PROPERTY(icon),
    PROPERTY(group),
-   PROPERTY(value));
+   PROPERTY(value),
+   PROPERTY(group_value));
 
 CElmRadio::CElmRadio(Local<Object> _jsObject, CElmObject *_parent)
    : CElmObject(_jsObject, elm_radio_add(_parent->GetEvasObject()))
@@ -80,6 +82,17 @@ void CElmRadio::value_set(Handle<Value> value)
 {
    if (value->IsNumber())
      elm_radio_state_value_set(eo, value->Int32Value());
+}
+
+Handle<Value> CElmRadio::group_value_get() const
+{
+   return Integer::New(elm_radio_value_get(eo));
+}
+
+void CElmRadio::group_value_set(Handle<Value> value)
+{
+   if (value->IsNumber())
+     elm_radio_value_set(eo, value->Int32Value());
 }
 
 }
