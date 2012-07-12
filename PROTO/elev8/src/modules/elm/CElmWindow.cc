@@ -22,6 +22,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, modal);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, sticky);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, screen_constrain);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_enabled);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -40,7 +41,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(modal),
                   PROPERTY(sticky),
                   PROPERTY(quickpanel),
-                  PROPERTY(screen_constrain));
+                  PROPERTY(screen_constrain),
+                  PROPERTY(focus_highlight_enabled));
 
 // Getters and Settters
 
@@ -230,6 +232,17 @@ void CElmWindow::screen_constrain_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_screen_constrain_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::focus_highlight_enabled_get() const
+{
+   return Boolean::New(elm_win_focus_highlight_enabled_get(eo));
+}
+
+void CElmWindow::focus_highlight_enabled_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_focus_highlight_enabled_set(eo, val->BooleanValue());
 }
 
 //---------------------

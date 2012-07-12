@@ -71,6 +71,9 @@ public:
    Handle<Value> screen_constrain_get() const;
    void screen_constrain_set(Handle<Value> val);
 
+   Handle<Value> focus_highlight_enabled_get() const;
+   void focus_highlight_enabled_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
