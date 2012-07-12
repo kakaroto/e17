@@ -29,6 +29,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_major);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_minor);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel_zone);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_step);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_base);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -54,7 +55,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(priority_major),
                   PROPERTY(priority_minor),
                   PROPERTY(quickpanel_zone),
-                  PROPERTY(size_step));
+                  PROPERTY(size_step),
+                  PROPERTY(size_base));
 
 // Getters and Settters
 
@@ -331,6 +333,25 @@ void CElmWindow::size_step_set(Handle <Value> val)
    size_step = Persistent<Value>::New(val);
 }
 
+Handle<Value> CElmWindow::size_base_get() const
+{
+   return size_base;
+}
+
+void CElmWindow::size_base_set(Handle <Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> size = val->ToObject();
+   elm_win_size_base_set(eo,
+        size->Get(0)->ToNumber()->Value(),
+        size->Get(1)->ToNumber()->Value());
+
+   size_base.Dispose();
+   size_base = Persistent<Value>::New(val);
+}
+
 //---------------------
 
 CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
@@ -355,6 +376,7 @@ void CElmWindow::quit(void *, Evas_Object *, void *)
 CElmWindow::~CElmWindow()
 {
    size_step.Dispose();
+   size_base.Dispose();
 }
 
 }

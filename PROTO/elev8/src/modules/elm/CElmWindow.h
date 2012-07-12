@@ -19,6 +19,7 @@ protected:
    ~CElmWindow();
 
    Persistent<Value> size_step;
+   Persistent<Value> size_base;
 
 public:
    static void Initialize(Handle<Object> target);
@@ -95,6 +96,9 @@ public:
 
    Handle<Value> size_step_get() const;
    void size_step_set(Handle<Value> val);
+
+   Handle<Value> size_base_get() const;
+   void size_base_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
