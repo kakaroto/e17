@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, zoom_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, horizontal_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, vertical_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, paused);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmPhotocam, image_size);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmPhotocam, image_region);
 GENERATE_METHOD_CALLBACKS(CElmPhotocam, image_region_show);
 GENERATE_METHOD_CALLBACKS(CElmPhotocam, image_region_bring_in);
@@ -22,6 +23,7 @@ GENERATE_TEMPLATE(CElmPhotocam,
                   PROPERTY(horizontal_bounce),
                   PROPERTY(vertical_bounce),
                   PROPERTY(paused),
+                  PROPERTY_RO(image_size),
                   PROPERTY_RO(image_region),
                   METHOD(image_region_show),
                   METHOD(image_region_bring_in));
@@ -168,6 +170,19 @@ Handle<Value> CElmPhotocam::image_region_get() const
    return scope.Close(obj);
 }
 
+Handle<Value> CElmPhotocam::image_size_get() const
+{
+   HandleScope scope;
+
+   int w, h;
+   elm_photocam_image_size_get(eo, &w, &h);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::New("w"), Number::New(w));
+   obj->Set(String::New("h"), Number::New(h));
+
+   return scope.Close(obj);
+}
 
 Handle<Value> CElmPhotocam::image_region_show(const Arguments &args)
 {
