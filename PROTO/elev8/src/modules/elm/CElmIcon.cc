@@ -8,12 +8,14 @@ GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_up);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_down);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, prescale);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, image);
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, lookup_order);
 
 GENERATE_TEMPLATE(CElmIcon,
    PROPERTY(resizable_up),
    PROPERTY(resizable_down),
    PROPERTY(prescale),
-   PROPERTY(image));
+   PROPERTY(image),
+   PROPERTY(lookup_order));
 
 CElmIcon::CElmIcon(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_icon_add(parent->GetEvasObject()))
@@ -99,6 +101,40 @@ Handle<Value> CElmIcon::image_get(void) const
      return String::New(file);
 
    return Null();
+}
+
+Handle<Value> CElmIcon::lookup_order_get() const
+{
+  switch (elm_icon_order_lookup_get(eo))
+    {
+      case ELM_ICON_LOOKUP_FDO_THEME:
+        return String::NewSymbol("fdo,theme");
+      case ELM_ICON_LOOKUP_THEME_FDO:
+        return String::NewSymbol("theme,fdo");
+      case ELM_ICON_LOOKUP_FDO:
+        return String::NewSymbol("fdo");
+      case ELM_ICON_LOOKUP_THEME:
+        return String::NewSymbol("theme");
+      default:
+        return String::NewSymbol("unknown");
+   }
+}
+
+void CElmIcon::lookup_order_set(Handle<Value> val)
+{
+  if (!val->IsString())
+    return;
+
+  String::Utf8Value lookup_order(val->ToString());
+
+  if (!strcmp(*lookup_order, "fdo,theme"))
+    elm_icon_order_lookup_set(eo, ELM_ICON_LOOKUP_FDO_THEME);
+  else if (!strcmp(*lookup_order, "theme,fdo"))
+    elm_icon_order_lookup_set(eo, ELM_ICON_LOOKUP_THEME_FDO);
+  else if (!strcmp(*lookup_order, "fdo"))
+    elm_icon_order_lookup_set(eo, ELM_ICON_LOOKUP_FDO);
+  else if (!strcmp(*lookup_order, "theme"))
+    elm_icon_order_lookup_set(eo, ELM_ICON_LOOKUP_THEME);
 }
 
 }

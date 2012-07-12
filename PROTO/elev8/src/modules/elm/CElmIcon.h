@@ -27,6 +27,9 @@ public:
    virtual void image_set(Handle<Value> val);
    virtual Handle<Value> image_get(void) const;
 
+   Handle<Value> lookup_order_get() const;
+   void lookup_order_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmIcon>(const Arguments& args);
 };
 
