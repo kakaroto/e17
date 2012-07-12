@@ -59,6 +59,9 @@ public:
    Handle<Value> shrink_mode_get() const;
    void shrink_mode_set(Handle<Value> value);
 
+   Handle<Value> horizontal_get() const;
+   void horizontal_set(Handle<Value> value);
+
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 

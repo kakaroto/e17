@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_order_lookup);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, align);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, shrink_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, horizontal);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
@@ -18,7 +19,8 @@ GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(icon_order_lookup),
                   PROPERTY(homogeneous),
                   PROPERTY(align),
-                  PROPERTY(shrink_mode));
+                  PROPERTY(shrink_mode),
+                  PROPERTY(horizontal));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -167,6 +169,17 @@ void CElmToolbar::shrink_mode_set(Handle<Value> value)
      elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_EXPAND);
    else if (!strcmp(*mode_string, "last"))
      elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_LAST);
+}
+
+void CElmToolbar::horizontal_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+      elm_toolbar_horizontal_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmToolbar::horizontal_get() const
+{
+   return Boolean::New(elm_toolbar_horizontal_get(eo));
 }
 
 }
