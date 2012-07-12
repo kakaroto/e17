@@ -29,6 +29,9 @@ public:
    Handle<Value> autodel_get() const;
    void autodel_set(Handle<Value> val);
 
+   Handle<Value> borderless_get() const;
+   void borderless_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

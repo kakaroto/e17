@@ -8,11 +8,13 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, title);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, conformant);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, autodel);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, borderless);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
                   PROPERTY(conformant),
-                  PROPERTY(autodel));
+                  PROPERTY(autodel),
+                  PROPERTY(borderless));
 
 // Getters and Settters
 
@@ -48,6 +50,17 @@ void CElmWindow::autodel_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_autodel_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::borderless_get() const
+{
+   return Boolean::New(elm_win_borderless_get(eo));
+}
+
+void CElmWindow::borderless_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_borderless_set(eo, val->BooleanValue());
 }
 
 //---------------------
