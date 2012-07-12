@@ -25,8 +25,6 @@ public:
    {
       obj = Persistent<Object>::New(ListFiles::GetTemplate()->GetFunction()->NewInstance());
       obj->SetPointerInInternalField(0, this);
-      obj.MakeWeak(this, ListFiles::Delete);
-
       thisObj = Persistent<Object>::New(thisObj_);
       callback = Persistent<Value>::New(args[1]);
 
@@ -97,8 +95,11 @@ public:
 
    void Stop()
    {
-      if (eio)
-        eio_file_cancel(eio);
+      if (!eio)
+        return;
+
+      eio_file_cancel(eio);
+      obj.MakeWeak(this, ListFiles::Delete);
       eio = NULL;
    }
 
@@ -148,8 +149,6 @@ public:
       for (int top = batch->Length() - 1; top >= 0; --top)
         batch->Delete(top);
       batch.Dispose();
-
-      obj->Set(String::NewSymbol("disposed_already"), Boolean::New(true));
    }
 
 private:
@@ -170,7 +169,7 @@ private:
    {
       HandleScope scope;
 
-      if (!obj->ToObject()->Has(String::NewSymbol("disposed_already")))
+      if (obj.IsNearDeath())
         delete static_cast<ListFiles *>(data);
 
       obj.Clear();
@@ -261,6 +260,9 @@ private:
       for (int item = batch->Length() - 1; item >= 0; --item)
         batch->Delete(item);
       batchLen = 0;
+
+      if (isDone)
+        obj.MakeWeak(this, ListFiles::Delete);
    }
 };
 
