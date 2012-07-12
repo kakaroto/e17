@@ -28,6 +28,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, set_item_class);
 GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
+GENERATE_METHOD_CALLBACKS(CElmGenList, prepend);
 
 GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(homogeneous),
@@ -51,7 +52,8 @@ GENERATE_TEMPLATE(CElmGenList,
                   METHOD(delete_item),
                   METHOD(set_item_class),
                   METHOD(update_item),
-                  METHOD(realized_items_update));
+                  METHOD(realized_items_update),
+                  METHOD(prepend));
 
 CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -130,6 +132,25 @@ Handle<Value> CElmGenList::update_item(const Arguments &args)
      elm_genlist_item_update(item->object_item);
 
    return Undefined();
+}
+
+Handle<Value> CElmGenList::prepend(const Arguments& args)
+{
+   if (!args[0]->IsString())
+     return Undefined();
+
+   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
+   if (klass.IsEmpty() || !klass->IsObject())
+     return Undefined();
+
+   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
+   Item<CElmGenList> *item = new Item<CElmGenList>(item_class, args[1], args[2]);
+
+   item->object_item = elm_genlist_item_prepend(eo, item_class->GetElmClass(), item, NULL,
+          ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
+   elm_object_item_data_set(item->object_item, item);
+
+   return External::Wrap(item);
 }
 
 Handle<Value> CElmGenList::set_item_class(const Arguments &args)
