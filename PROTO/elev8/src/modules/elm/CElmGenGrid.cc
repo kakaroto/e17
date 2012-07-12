@@ -23,6 +23,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, group_item_size);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_size);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, scroller_policy);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, items_count);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, vertical_current_page);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, horizontal_current_page);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
@@ -46,6 +48,8 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(page_size),
                   PROPERTY(scroller_policy),
                   PROPERTY_RO(items_count),
+                  PROPERTY_RO(horizontal_current_page),
+                  PROPERTY_RO(vertical_current_page),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -388,6 +392,20 @@ void CElmGenGrid::scroller_policy_set(Handle<Value> val)
 Handle<Value> CElmGenGrid::items_count_get() const
 {
    return Number::New(elm_gengrid_items_count(eo));
+}
+
+Handle<Value> CElmGenGrid::vertical_current_page_get() const
+{
+   int v;
+   elm_gengrid_current_page_get(eo, NULL, &v);
+   return Number::New(v);
+}
+
+Handle<Value> CElmGenGrid::horizontal_current_page_get() const
+{
+   int h;
+   elm_gengrid_current_page_get(eo, &h, NULL);
+   return Number::New(h);
 }
 
 }
