@@ -62,6 +62,8 @@ public:
    Handle<Value> horizontal_get() const;
    void horizontal_set(Handle<Value> value);
 
+   Handle<Value> items_count_get() const;
+
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 

@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, align);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, shrink_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, horizontal);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmToolbar, items_count);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
@@ -20,7 +21,8 @@ GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(homogeneous),
                   PROPERTY(align),
                   PROPERTY(shrink_mode),
-                  PROPERTY(horizontal));
+                  PROPERTY(horizontal),
+                  PROPERTY_RO(items_count));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -180,6 +182,11 @@ void CElmToolbar::horizontal_set(Handle<Value> value)
 Handle<Value> CElmToolbar::horizontal_get() const
 {
    return Boolean::New(elm_toolbar_horizontal_get(eo));
+}
+
+Handle<Value> CElmToolbar::items_count_get() const
+{
+   return Number::New(elm_toolbar_items_count(eo));
 }
 
 }
