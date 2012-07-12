@@ -466,10 +466,10 @@ Handle<Value> CElmObject::padding_get() const
    evas_object_size_hint_padding_get (eo, &l, &r, &t, &b);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("left"), Number::New(l));
-   obj->Set(String::New("right"), Number::New(r));
-   obj->Set(String::New("top"), Number::New(t));
-   obj->Set(String::New("bottom"), Number::New(b));
+   obj->Set(String::NewSymbol("left"), Number::New(l));
+   obj->Set(String::NewSymbol("right"), Number::New(r));
+   obj->Set(String::NewSymbol("top"), Number::New(t));
+   obj->Set(String::NewSymbol("bottom"), Number::New(b));
 
    return obj;
 }
@@ -478,11 +478,11 @@ void CElmObject::padding_set(Handle<Value> val)
 {
    if (!val->IsObject())
      return;
-   Local<Object> obj = val->ToObject();
-   Local<Value> left = obj->Get(String::New("left"));
-   Local<Value> right = obj->Get(String::New("right"));
-   Local<Value> top = obj->Get(String::New("top"));
-   Local<Value> bottom = obj->Get(String::New("bottom"));
+
+   Local<Value> left = val->ToObject()->Get(String::NewSymbol("left"));
+   Local<Value> right = val->ToObject()->Get(String::NewSymbol("right"));
+   Local<Value> top = val->ToObject()->Get(String::NewSymbol("top"));
+   Local<Value> bottom = val->ToObject()->Get(String::NewSymbol("bottom"));
    evas_object_size_hint_padding_set (eo, left->Int32Value(),
                                       right->Int32Value(), top->Int32Value(),
                                       bottom->Int32Value());
