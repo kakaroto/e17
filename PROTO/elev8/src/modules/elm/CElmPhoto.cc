@@ -7,11 +7,13 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, size);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, fill);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, image);
+GENERATE_PROPERTY_CALLBACKS(CElmPhoto, fixed_aspect);
 
 GENERATE_TEMPLATE(CElmPhoto,
                   PROPERTY(size),
                   PROPERTY(fill),
-                  PROPERTY(image));
+                  PROPERTY(image),
+                  PROPERTY(fixed_aspect));
 
 CElmPhoto::CElmPhoto(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_photo_add(parent->GetEvasObject()))
@@ -65,6 +67,16 @@ void CElmPhoto::fill_set(Handle <Value> val)
 {
    if (val->IsBoolean())
      elm_photo_fill_inside_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmPhoto::fixed_aspect_get() const
+{
+   return Boolean::New(elm_photo_aspect_fixed_get(eo));
+}
+
+void CElmPhoto::fixed_aspect_set(Handle<Value> val){
+   if (val->IsBoolean())
+     elm_photo_aspect_fixed_set(eo, val->BooleanValue());
 }
 
 }

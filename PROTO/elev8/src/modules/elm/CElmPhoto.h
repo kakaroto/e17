@@ -28,6 +28,9 @@ public:
    Handle<Value> fill_get() const;
    void fill_set(Handle<Value> val);
 
+   Handle<Value> fixed_aspect_get() const;
+   void fixed_aspect_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmPhoto>(const Arguments& args);
 };
 
