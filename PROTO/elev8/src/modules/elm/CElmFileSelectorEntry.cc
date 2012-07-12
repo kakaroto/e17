@@ -95,21 +95,22 @@ void CElmFileSelectorEntry::win_size_set(Handle<Value> val)
    if (!val->IsObject())
      return;
 
-   Local<Object> obj = val->ToObject();
-   Local<Value> w = obj->Get(String::New("w"));
-   Local<Value> h = obj->Get(String::New("h"));
+   Local<Value> h = val->ToObject()->Get(String::NewSymbol("height"));
+   Local<Value> w = val->ToObject()->Get(String::NewSymbol("width"));
 
    if (w->IsInt32() && h->IsInt32())
-     elm_fileselector_entry_window_size_set(eo,  w->Int32Value(), h->Int32Value());
+     elm_fileselector_entry_window_size_set(eo, w->Int32Value(), h->Int32Value());
 }
 
 Handle<Value> CElmFileSelectorEntry::win_size_get(void) const
 {
-   Evas_Coord w, h;
-   elm_fileselector_entry_window_size_get  (eo,  &w, &h);
    Local<Object> obj = Object::New();
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   Evas_Coord w, h;
+
+   elm_fileselector_entry_window_size_get  (eo,  &w, &h);
+   obj->Set(String::New("width"), Number::New(w));
+   obj->Set(String::New("height"), Number::New(h));
+
    return obj;
 }
 
