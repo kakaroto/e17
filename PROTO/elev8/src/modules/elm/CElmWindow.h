@@ -26,6 +26,9 @@ public:
    Handle<Value> conformant_get() const;
    void conformant_set(Handle<Value> val);
 
+   Handle<Value> autodel_get() const;
+   void autodel_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
