@@ -10,13 +10,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_order_lookup);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, align);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, shrink_mode);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   METHOD(append),
                   PROPERTY(icon_size),
                   PROPERTY(icon_order_lookup),
                   PROPERTY(homogeneous),
-                  PROPERTY(align));
+                  PROPERTY(align),
+                  PROPERTY(shrink_mode));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -127,6 +129,44 @@ void CElmToolbar::align_set(Handle<Value> value)
 {
    if (value->IsNumber())
      elm_toolbar_align_set(eo, value->NumberValue());
+}
+
+Handle<Value> CElmToolbar::shrink_mode_get() const
+{
+   switch (elm_toolbar_shrink_mode_get(eo)) {
+     case ELM_TOOLBAR_SHRINK_NONE:
+       return String::NewSymbol("none");
+     case ELM_TOOLBAR_SHRINK_HIDE:
+       return String::NewSymbol("hide");
+     case ELM_TOOLBAR_SHRINK_SCROLL:
+       return String::NewSymbol("scroll");
+     case ELM_TOOLBAR_SHRINK_MENU:
+       return String::NewSymbol("menu");
+     case ELM_TOOLBAR_SHRINK_EXPAND:
+       return String::NewSymbol("expand");
+     case ELM_TOOLBAR_SHRINK_LAST:
+       return String::NewSymbol("last");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmToolbar::shrink_mode_set(Handle<Value> value)
+{
+   String::Utf8Value mode_string(value->ToString());
+
+   if (!strcmp(*mode_string, "none"))
+     elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_NONE);
+   else if (!strcmp(*mode_string, "hide"))
+     elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_HIDE);
+   else if (!strcmp(*mode_string, "scroll"))
+     elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_SCROLL);
+   else if (!strcmp(*mode_string, "menu"))
+     elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_MENU);
+   else if (!strcmp(*mode_string, "expand"))
+     elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_EXPAND);
+   else if (!strcmp(*mode_string, "last"))
+     elm_toolbar_shrink_mode_set(eo, ELM_TOOLBAR_SHRINK_LAST);
 }
 
 }
