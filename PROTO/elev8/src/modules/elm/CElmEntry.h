@@ -23,6 +23,7 @@ protected:
    Persistent<Value> icon_visible;
    Persistent<Value> end_visible;
    Persistent<Value> enabled_status;
+   Persistent<Value> scrollbar_policy;
 
 public:
    static void Initialize(Handle<Object> val);
@@ -108,6 +109,9 @@ public:
 
    Handle<Value> cnp_mode_get() const;
    void cnp_mode_set(Handle<Value> value);
+
+   Handle<Value> scrollbar_policy_get() const;
+   void scrollbar_policy_set(Handle<Value> value);
 
    Handle<Value> is_empty_get() const;
 

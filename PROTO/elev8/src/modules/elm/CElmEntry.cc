@@ -31,6 +31,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, autocapital_type);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_language);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_type);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cnp_mode);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, scrollbar_policy);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -90,6 +91,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(input_panel_language),
                   PROPERTY(input_panel_return_key_type),
                   PROPERTY(cnp_mode),
+                  PROPERTY(scrollbar_policy),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -133,6 +135,7 @@ CElmEntry::~CElmEntry()
    icon_visible.Dispose();
    end_visible.Dispose();
    enabled_status.Dispose();
+   scrollbar_policy.Dispose();
 }
 
 void CElmEntry::Initialize(Handle<Object> target)
@@ -623,6 +626,25 @@ void CElmEntry::cnp_mode_set(Handle<Value> val)
      elm_entry_cnp_mode_set(eo, ELM_CNP_MODE_NO_IMAGE);
    else if (!strcmp(*mode_string, "plaintext"))
      elm_entry_cnp_mode_set(eo, ELM_CNP_MODE_PLAINTEXT);
+}
+
+Handle<Value> CElmEntry::scrollbar_policy_get() const
+{
+   return scrollbar_policy;
+}
+
+void CElmEntry::scrollbar_policy_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> policy = val->ToObject();
+   elm_entry_scrollbar_policy_set(eo,
+        (Elm_Scroller_Policy) policy->Get(0)->ToNumber()->Value(),
+        (Elm_Scroller_Policy) policy->Get(1)->ToNumber()->Value());
+
+   scrollbar_policy.Dispose();
+   scrollbar_policy = Persistent<Value>::New(val);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
