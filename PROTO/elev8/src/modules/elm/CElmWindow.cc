@@ -41,6 +41,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, prop_focus_skip);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, focus);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, screen_position);
+GENERATE_METHOD_CALLBACKS(CElmWindow, socket_listen);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -78,7 +79,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(keyboard_mode),
                   PROPERTY(prop_focus_skip),
                   PROPERTY_RO(focus),
-                  PROPERTY_RO(screen_position));
+                  PROPERTY_RO(screen_position),
+                  METHOD(socket_listen));
 
 // Getters and Settters
 
@@ -591,6 +593,18 @@ Handle<Value> CElmWindow::screen_position_get() const
    obj->Set(String::NewSymbol("y"), Integer::New(y));
 
    return obj;
+}
+
+//Methods
+Handle<Value> CElmWindow::socket_listen(const Arguments& args)
+{
+   if((args[0]->IsString()) && (args[1]->IsInt32()) && (args[1]->IsBoolean()))
+     return Boolean::New(elm_win_socket_listen(eo,
+                              *String::Utf8Value(args[0]),
+                              args[1]->ToInt32()->Value(),
+                              args[2]->BooleanValue()));
+
+   return Undefined();
 }
 
 //---------------------
