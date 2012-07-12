@@ -14,6 +14,7 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, bottom_item);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
+GENERATE_METHOD_CALLBACKS(CElmNaviframe, item_promote);
 
 GENERATE_TEMPLATE(CElmNaviframe,
                   PROPERTY(title_visible),
@@ -24,7 +25,8 @@ GENERATE_TEMPLATE(CElmNaviframe,
                   PROPERTY_RO(bottom_item),
                   METHOD(pop),
                   METHOD(push),
-                  METHOD(promote));
+                  METHOD(promote),
+                  METHOD(item_promote));
 
 CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_naviframe_add(parent->GetEvasObject()))
@@ -107,6 +109,13 @@ Handle<Value> CElmNaviframe::promote(const Arguments& args)
 {
    elm_naviframe_item_simple_promote(eo, GetEvasObjectFromJavascript(args[0]));
    title_visible_eval();
+   return Undefined();
+}
+
+Handle<Value> CElmNaviframe::item_promote(const Arguments& args)
+{
+   Elm_Object_Item *it = static_cast<Elm_Object_Item *>(External::Unwrap(args[0]->ToObject()));
+   elm_naviframe_item_promote(it);
    return Undefined();
 }
 

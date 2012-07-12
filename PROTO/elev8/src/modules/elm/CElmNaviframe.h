@@ -25,6 +25,7 @@ public:
    Handle<Value> pop(const Arguments& args);
    Handle<Value> push(const Arguments& args);
    Handle<Value> promote(const Arguments& args);
+   Handle<Value> item_promote(const Arguments& args);
 
    void title_visible_set(Handle<Value> val);
    Handle<Value> title_visible_get() const;
