@@ -6,9 +6,11 @@ namespace elm {
 using namespace v8;
 
 GENERATE_METHOD_CALLBACKS(CElmToolbar, append);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 
 GENERATE_TEMPLATE(CElmToolbar,
-                  METHOD(append));
+                  METHOD(append),
+                  PROPERTY(icon_size));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
@@ -62,6 +64,17 @@ void CElmToolbar::OnSelect(void *data, Evas_Object *, void *)
 void CElmToolbar::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Toolbar"), GetTemplate()->GetFunction());
+}
+
+Handle<Value> CElmToolbar::icon_size_get() const
+{
+   return Number::New(elm_toolbar_icon_size_get(eo));
+}
+
+void CElmToolbar::icon_size_set(Handle<Value> value)
+{
+   if (value->IsInt32())
+     elm_toolbar_icon_size_set(eo, value->Int32Value());
 }
 
 }

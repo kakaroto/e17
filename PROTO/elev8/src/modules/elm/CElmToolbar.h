@@ -44,7 +44,10 @@ public:
 
    static void OnSelect(void *data, Evas_Object *, void *);
 
-   friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
+   Handle<Value> icon_size_get() const;
+   void icon_size_set(Handle<Value> value);
+
+  friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };
 
 }
