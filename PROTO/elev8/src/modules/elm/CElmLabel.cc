@@ -21,13 +21,32 @@ void CElmLabel::Initialize(Handle<Object> target)
 
 void CElmLabel::wrap_set(Handle<Value> wrap)
 {
-   if (wrap->IsNumber())
-     elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
+   String::Utf8Value mode_string(wrap->ToString());
+
+   if (!strcmp(*mode_string, "none"))
+     elm_label_line_wrap_set(eo, ELM_WRAP_NONE);
+   else if (!strcmp(*mode_string, "char"))
+     elm_label_line_wrap_set(eo, ELM_WRAP_CHAR);
+   else if (!strcmp(*mode_string, "word"))
+     elm_label_line_wrap_set(eo, ELM_WRAP_WORD);
+   else if (!strcmp(*mode_string, "mixed"))
+     elm_label_line_wrap_set(eo, ELM_WRAP_MIXED);
 }
 
 Handle<Value> CElmLabel::wrap_get() const
 {
-   return Integer::New(elm_label_line_wrap_get(eo));
+   switch (elm_label_line_wrap_get(eo)) {
+     case ELM_WRAP_NONE:
+       return String::NewSymbol("none");
+     case ELM_WRAP_CHAR:
+       return String::NewSymbol("char");
+     case ELM_WRAP_WORD:
+       return String::NewSymbol("word");
+     case ELM_WRAP_MIXED:
+       return String::NewSymbol("mixed");
+     default:
+       return String::NewSymbol("unknown");
+   }
 }
 
 }
