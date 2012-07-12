@@ -97,6 +97,8 @@ public:
    Handle<Value> vertical_last_page_get() const;
    Handle<Value> horizontal_last_page_get() const;
 
+   Handle<Value> realized_items_get() const;
+
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
 
