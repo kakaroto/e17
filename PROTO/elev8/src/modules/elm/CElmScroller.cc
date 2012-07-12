@@ -64,8 +64,8 @@ CElmScroller::~CElmScroller()
 
 void CElmScroller::bounce_set(Handle<Value> val)
 {
-   Handle<Value> x = val->ToObject()->Get(String::New("x"));
-   Handle<Value> y = val->ToObject()->Get(String::New("y"));
+   Handle<Value> x = val->ToObject()->Get(String::NewSymbol("x"));
+   Handle<Value> y = val->ToObject()->Get(String::NewSymbol("y"));
 
    if ((!x->IsBoolean()) || (!y->IsBoolean()))
      return;
@@ -80,8 +80,8 @@ Handle<Value> CElmScroller::bounce_get() const
    elm_scroller_bounce_get(eo, &x, &y);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), Boolean::New(x));
-   obj->Set(String::New("y"), Boolean::New(y));
+   obj->Set(String::NewSymbol("x"), Boolean::New(x));
+   obj->Set(String::NewSymbol("y"), Boolean::New(y));
 
    return obj;
 }
@@ -109,22 +109,22 @@ Local<Value> CElmScroller::string_from_policy(Elm_Scroller_Policy policy)
 {
    switch (policy) {
    case ELM_SCROLLER_POLICY_AUTO:
-       return String::New("auto");
+       return String::NewSymbol("auto");
    case ELM_SCROLLER_POLICY_ON:
-       return String::New("on");
+       return String::NewSymbol("on");
    case ELM_SCROLLER_POLICY_OFF:
-       return String::New("off");
+       return String::NewSymbol("off");
    case ELM_SCROLLER_POLICY_LAST:
-       return String::New("last");
+       return String::NewSymbol("last");
    default:
-       return String::New("unknown");
+       return String::NewSymbol("unknown");
    }
 }
 
 void CElmScroller::policy_set(Handle<Value> val)
 {
-   Local<Value> x = val->ToObject()->Get(String::New("x"));
-   Local<Value> y = val->ToObject()->Get(String::New("y"));
+   Local<Value> x = val->ToObject()->Get(String::NewSymbol("x"));
+   Local<Value> y = val->ToObject()->Get(String::NewSymbol("y"));
 
    if ((!x->IsString()) || (!y->IsString()))
      return;
@@ -142,8 +142,8 @@ Handle<Value> CElmScroller::policy_get() const
    elm_scroller_policy_get(eo, &x_policy, &y_policy);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), string_from_policy(x_policy));
-   obj->Set(String::New("y"), string_from_policy(y_policy));
+   obj->Set(String::NewSymbol("x"), string_from_policy(x_policy));
+   obj->Set(String::NewSymbol("y"), string_from_policy(y_policy));
 
    return obj;
 }
@@ -212,10 +212,10 @@ Handle<Value> CElmScroller::region_get() const
    elm_scroller_region_get(eo, &x, &y, &w, &h);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), Number::New(x));
-   obj->Set(String::New("y"), Number::New(y));
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   obj->Set(String::NewSymbol("x"), Number::New(x));
+   obj->Set(String::NewSymbol("y"), Number::New(y));
+   obj->Set(String::NewSymbol("w"), Number::New(w));
+   obj->Set(String::NewSymbol("h"), Number::New(h));
 
    return scope.Close(obj);
 }
@@ -296,8 +296,8 @@ Handle<Value> CElmScroller::current_page_get() const
    elm_scroller_current_page_get(eo, &h_pagenumber, &v_pagenumber);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("horizontal"), Number::New(h_pagenumber));
-   obj->Set(String::New("vertical"), Number::New(v_pagenumber));
+   obj->Set(String::NewSymbol("horizontal"), Number::New(h_pagenumber));
+   obj->Set(String::NewSymbol("vertical"), Number::New(v_pagenumber));
 
    return scope.Close(obj);
 }
@@ -311,8 +311,8 @@ Handle<Value> CElmScroller::last_page_get() const
    elm_scroller_last_page_get(eo, &h_pagenumber, &v_pagenumber);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("horizontal"), Number::New(h_pagenumber));
-   obj->Set(String::New("vertical"), Number::New(v_pagenumber));
+   obj->Set(String::NewSymbol("horizontal"), Number::New(h_pagenumber));
+   obj->Set(String::NewSymbol("vertical"), Number::New(v_pagenumber));
 
    return scope.Close(obj);
 }
@@ -326,8 +326,8 @@ Handle<Value> CElmScroller::size_child_get() const
    elm_scroller_child_size_get(eo, &w, &h);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   obj->Set(String::NewSymbol("w"), Number::New(w));
+   obj->Set(String::NewSymbol("h"), Number::New(h));
 
    return scope.Close(obj);
 }

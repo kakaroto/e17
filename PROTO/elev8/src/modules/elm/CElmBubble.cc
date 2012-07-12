@@ -42,8 +42,8 @@ void CElmBubble::text_part_set(Handle<Value> val)
    }
 
    Local<Object> obj = val->ToObject();
-   Local<Value> it = obj->Get(String::New("item"));
-   Local<Value> text = obj->Get(String::New("text"));
+   Local<Value> it = obj->Get(String::NewSymbol("item"));
+   Local<Value> text = obj->Get(String::NewSymbol("text"));
 
    elm_object_part_text_set(eo, *String::Utf8Value(it),
                             *String::Utf8Value(text));

@@ -162,8 +162,8 @@ Handle<Value> CElmImage::object_size_get() const
    elm_image_object_size_get(eo, &w, &h);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   obj->Set(String::NewSymbol("w"), Number::New(w));
+   obj->Set(String::NewSymbol("h"), Number::New(h));
 
    return scope.Close(obj);
 }

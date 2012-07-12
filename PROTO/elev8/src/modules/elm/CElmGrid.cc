@@ -69,7 +69,7 @@ Handle<Value> CElmGrid::pack(const Arguments &args)
 
    Local<Object> obj = desc->Clone();
    obj->Set(String::NewSymbol("element"),
-            Realise(desc->Get(String::New("element")), jsObject));
+            Realise(desc->Get(String::NewSymbol("element")), jsObject));
    pack(obj);
 
    return Undefined();
@@ -84,7 +84,7 @@ Handle<Value> CElmGrid::Pack(Handle<Value> obj)
 Handle<Value> CElmGrid::Unpack(Handle<Value> item)
 {
    HandleScope scope;
-   Handle<Value> element = item->ToObject()->Get(String::New("element"));
+   Handle<Value> element = item->ToObject()->Get(String::NewSymbol("element"));
 
    if (element->IsUndefined())
      return Undefined();
@@ -128,8 +128,8 @@ Handle<Value> CElmGrid::size_get() const
    elm_grid_size_get (eo, &x, &y);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), Number::New(x));
-   obj->Set(String::New("y"), Number::New(y));
+   obj->Set(String::NewSymbol("x"), Number::New(x));
+   obj->Set(String::NewSymbol("y"), Number::New(y));
 
    return scope.Close(obj);
 }

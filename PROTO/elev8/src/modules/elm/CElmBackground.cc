@@ -127,17 +127,17 @@ Handle<Value> CElmBackground::option_get() const
 {
    switch (elm_bg_option_get(eo)) {
      case ELM_BG_OPTION_CENTER:
-       return String::New("center");
+       return String::NewSymbol("center");
      case ELM_BG_OPTION_SCALE:
-       return String::New("scale");
+       return String::NewSymbol("scale");
      case ELM_BG_OPTION_STRETCH:
-       return String::New("stretch");
+       return String::NewSymbol("stretch");
      case ELM_BG_OPTION_TILE:
-       return String::New("tile");
+       return String::NewSymbol("tile");
      case ELM_BG_OPTION_LAST:
-       return String::New("last");
+       return String::NewSymbol("last");
      default:
-       return String::New("unknown");
+       return String::NewSymbol("unknown");
     }
 }
 

@@ -108,8 +108,8 @@ Handle<Value> CElmFileSelectorEntry::win_size_get(void) const
    Evas_Coord w, h;
 
    elm_fileselector_entry_window_size_get  (eo,  &w, &h);
-   obj->Set(String::New("width"), Number::New(w));
-   obj->Set(String::New("height"), Number::New(h));
+   obj->Set(String::NewSymbol("width"), Number::New(w));
+   obj->Set(String::NewSymbol("height"), Number::New(h));
 
    return obj;
 }

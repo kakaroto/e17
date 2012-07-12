@@ -47,8 +47,8 @@ void CElmLayout::file_set(Handle<Value> val)
      return;
 
    Local<Object> obj = val->ToObject();
-   Local<Value> fileParam = obj->Get(String::New("name"));
-   Local<Value> groupParam = obj->Get(String::New("group"));
+   Local<Value> fileParam = obj->Get(String::NewSymbol("name"));
+   Local<Value> groupParam = obj->Get(String::NewSymbol("group"));
 
    elm_layout_file_set(eo,
                        *String::Utf8Value(fileParam),
@@ -67,9 +67,9 @@ void CElmLayout::theme_set(Handle <Value> val)
      return;
 
    Local<Object> obj = val->ToObject();
-   Local<Value> classParam = obj->Get(String::New("class"));
-   Local<Value> groupParam = obj->Get(String::New("group"));
-   Local<Value> styleParam = obj->Get(String::New("style"));
+   Local<Value> classParam = obj->Get(String::NewSymbol("class"));
+   Local<Value> groupParam = obj->Get(String::NewSymbol("group"));
+   Local<Value> styleParam = obj->Get(String::NewSymbol("style"));
 
    elm_layout_theme_set(eo,
                         *String::Utf8Value(classParam),

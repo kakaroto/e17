@@ -55,7 +55,7 @@ void CElmRadio::group_set(Handle<Value> value)
      return;
 
    Handle<Object> js_parent = parent->GetJSObject();
-   Local<Value> groups = js_parent->GetHiddenValue(String::New("elm::radio::groups"));
+   Local<Value> groups = js_parent->GetHiddenValue(String::NewSymbol("elm::radio::groups"));
 
    if (groups.IsEmpty())
      {

@@ -52,10 +52,10 @@ Handle<Value> CElmCtxPopup::direction_priority_get() const
    Elm_Ctxpopup_Direction f, s, q, t;
    elm_ctxpopup_direction_priority_get(eo, &f, &s, &t, &q);
    Local<Object> obj = Object::New();
-   obj->Set(String::New("first"), Number::New(f));
-   obj->Set(String::New("second"), Number::New(s));
-   obj->Set(String::New("third"), Number::New(t));
-   obj->Set(String::New("fourth"), Number::New(q));
+   obj->Set(String::NewSymbol("first"), Number::New(f));
+   obj->Set(String::NewSymbol("second"), Number::New(s));
+   obj->Set(String::NewSymbol("third"), Number::New(t));
+   obj->Set(String::NewSymbol("fourth"), Number::New(q));
    return handle_scope.Close(obj);
 }
 

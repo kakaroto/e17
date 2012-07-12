@@ -174,10 +174,10 @@ Handle<Value> CElmPhotocam::image_region_get() const
    elm_photocam_image_region_get(eo, &x, &y, &w, &h);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("x"), Number::New(x));
-   obj->Set(String::New("y"), Number::New(y));
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   obj->Set(String::NewSymbol("x"), Number::New(x));
+   obj->Set(String::NewSymbol("y"), Number::New(y));
+   obj->Set(String::NewSymbol("w"), Number::New(w));
+   obj->Set(String::NewSymbol("h"), Number::New(h));
 
    return scope.Close(obj);
 }
@@ -190,8 +190,8 @@ Handle<Value> CElmPhotocam::image_size_get() const
    elm_photocam_image_size_get(eo, &w, &h);
 
    Local<Object> obj = Object::New();
-   obj->Set(String::New("w"), Number::New(w));
-   obj->Set(String::New("h"), Number::New(h));
+   obj->Set(String::NewSymbol("w"), Number::New(w));
+   obj->Set(String::NewSymbol("h"), Number::New(h));
 
    return scope.Close(obj);
 }
