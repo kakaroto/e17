@@ -103,6 +103,9 @@ public:
    Handle<Value> layer_get() const;
    void layer_set(Handle<Value> val);
 
+   Handle<Value> icon_name_get() const;
+   void icon_name_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

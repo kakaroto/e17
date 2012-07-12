@@ -31,6 +31,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel_zone);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_step);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_base);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, layer);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, icon_name);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -58,7 +59,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(quickpanel_zone),
                   PROPERTY(size_step),
                   PROPERTY(size_base),
-                  PROPERTY(layer));
+                  PROPERTY(layer),
+                  PROPERTY(icon_name));
 
 // Getters and Settters
 
@@ -363,6 +365,17 @@ void CElmWindow::layer_set(Handle <Value> val)
 {
    if (val->IsInt32())
      elm_win_layer_set(eo, val->ToInt32()->Value());
+}
+
+Handle<Value> CElmWindow::icon_name_get() const
+{
+   return String::New(elm_win_icon_name_get(eo));
+}
+
+void CElmWindow::icon_name_set(Handle <Value> val)
+{
+   if (val->IsString())
+     elm_win_icon_name_set(eo, *String::Utf8Value(val));
 }
 
 //---------------------
