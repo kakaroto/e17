@@ -8,6 +8,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, policy);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, content);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, widget_base_theme);
+GENERATE_PROPERTY_CALLBACKS(CElmScroller, propagate_events);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
 GENERATE_TEMPLATE(CElmScroller,
@@ -15,6 +16,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(policy),
                   PROPERTY(content),
                   PROPERTY(widget_base_theme),
+                  PROPERTY(propagate_events),
                   METHOD(page_bring_in));
 
 CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
@@ -160,6 +162,17 @@ Handle<Value> CElmScroller::page_bring_in(const Arguments &args)
    elm_scroller_page_show(eo, args[0]->ToInt32()->Value(), args[1]->ToInt32()->Value());
 
    return Undefined();
+}
+
+void CElmScroller::propagate_events_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_scroller_propagate_events_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmScroller::propagate_events_get() const
+{
+   return Boolean::New(elm_scroller_propagate_events_get(eo));
 }
 
 }
