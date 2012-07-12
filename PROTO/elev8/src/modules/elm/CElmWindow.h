@@ -20,6 +20,7 @@ protected:
 
    Persistent<Value> size_step;
    Persistent<Value> size_base;
+   Persistent<Value> prop_focus;
 
 public:
    static void Initialize(Handle<Object> target);
@@ -123,6 +124,9 @@ public:
 
    Handle<Value> keyboard_mode_get() const;
    void keyboard_mode_set(Handle<Value> val);
+
+   Handle<Value> prop_focus_skip_get() const;
+   void prop_focus_skip_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
