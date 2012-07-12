@@ -25,6 +25,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, screen_constrain);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_win);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, rotation);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_major);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -46,7 +47,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(screen_constrain),
                   PROPERTY(focus_highlight_enabled),
                   PROPERTY(keyboard_win),
-                  PROPERTY(rotation));
+                  PROPERTY(rotation),
+                  PROPERTY(priority_major));
 
 // Getters and Settters
 
@@ -271,10 +273,15 @@ void CElmWindow::rotation_set(Handle <Value> val)
      elm_win_rotation_set(eo, val->ToInt32()->Value());
 }
 
-void CElmWindow::rotation_with_resize_set(Handle <Value> val)
+Handle<Value> CElmWindow::priority_major_get() const
+{
+   return Integer::New(elm_win_quickpanel_priority_major_get(eo));
+}
+
+void CElmWindow::priority_major_set(Handle <Value> val)
 {
    if (val->IsInt32())
-     elm_win_rotation_with_resize_set(eo, val->ToInt32()->Value());
+     elm_win_quickpanel_priority_major_set(eo, val->ToInt32()->Value());
 }
 
 //---------------------

@@ -81,6 +81,9 @@ public:
    void rotation_set(Handle<Value> val);
    void rotation_with_resize_set(Handle<Value> val);
 
+   Handle<Value> priority_major_get() const;
+   void priority_major_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
