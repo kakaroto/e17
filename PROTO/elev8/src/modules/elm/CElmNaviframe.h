@@ -19,6 +19,8 @@ protected:
    static Handle<FunctionTemplate> GetTemplate();
 
    void title_visible_eval();
+
+   Persistent<Value> item_style;
 public:
    static void Initialize(Handle<Object> target);
 
@@ -36,6 +38,9 @@ public:
 
    void prev_btn_auto_pushed_set(Handle<Value> val);
    Handle<Value> prev_btn_auto_pushed_get() const;
+
+   void item_style_set(Handle<Value> val);
+   Handle<Value> item_style_get() const;
 
    Handle<Value> items_get() const;
    Handle<Value> top_item_get() const;
