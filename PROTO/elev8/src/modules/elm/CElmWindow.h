@@ -44,6 +44,9 @@ public:
    Handle<Value> fullscreen_get() const;
    void fullscreen_set(Handle<Value> val);
 
+   Handle<Value> maximized_get() const;
+   void maximized_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

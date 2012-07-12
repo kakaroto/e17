@@ -13,6 +13,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, shaped);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, alpha);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, override);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, fullscreen);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, maximized);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -22,7 +23,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(shaped),
                   PROPERTY(alpha),
                   PROPERTY(override),
-                  PROPERTY(fullscreen));
+                  PROPERTY(fullscreen),
+                  PROPERTY(maximized));
 
 // Getters and Settters
 
@@ -113,6 +115,17 @@ void CElmWindow::fullscreen_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_fullscreen_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::maximized_get() const
+{
+   return Boolean::New(elm_win_maximized_get(eo));
+}
+
+void CElmWindow::maximized_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_maximized_set(eo, val->BooleanValue());
 }
 
 //---------------------
