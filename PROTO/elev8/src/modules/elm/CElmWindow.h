@@ -128,6 +128,8 @@ public:
    Handle<Value> prop_focus_skip_get() const;
    void prop_focus_skip_set(Handle<Value> val);
 
+   Handle<Value> focus_get() const;
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

@@ -39,6 +39,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_opacity);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, keyboard_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, prop_focus_skip);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmWindow, focus);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -74,7 +75,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(indicator_mode),
                   PROPERTY(indicator_opacity),
                   PROPERTY(keyboard_mode),
-                  PROPERTY(prop_focus_skip));
+                  PROPERTY(prop_focus_skip),
+                  PROPERTY_RO(focus));
 
 // Getters and Settters
 
@@ -568,6 +570,12 @@ void CElmWindow::prop_focus_skip_set(Handle<Value> val)
    elm_win_prop_focus_skip_set(eo, val->BooleanValue());
    prop_focus.Dispose();
    prop_focus = Persistent<Value>::New(val);
+}
+
+//Property Read Only
+Handle<Value> CElmWindow::focus_get() const
+{
+   return Boolean::New(elm_win_focus_get(eo));
 }
 
 //---------------------
