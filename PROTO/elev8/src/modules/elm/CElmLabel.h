@@ -22,6 +22,9 @@ public:
    virtual void wrap_set(Handle<Value> wrap);
    virtual Handle<Value> wrap_get() const;
 
+   void wrap_width_set(Handle<Value> value);
+   Handle<Value> wrap_width_get() const;
+
    friend Handle<Value> CElmObject::New<CElmLabel>(const Arguments& args);
 };
 

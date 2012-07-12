@@ -5,9 +5,11 @@ namespace elm {
 using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap);
+GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap_width);
 
 GENERATE_TEMPLATE(CElmLabel,
-                  PROPERTY(wrap));
+                  PROPERTY(wrap),
+                  PROPERTY(wrap_width),
 
 CElmLabel::CElmLabel(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_label_add(parent->GetEvasObject()))
@@ -47,6 +49,17 @@ Handle<Value> CElmLabel::wrap_get() const
      default:
        return String::NewSymbol("unknown");
    }
+}
+
+void CElmLabel::wrap_width_set(Handle<Value> value)
+{
+   if (value->IsNumber())
+     elm_label_wrap_width_set(eo, value->IntegerValue());
+}
+
+Handle<Value> CElmLabel::wrap_width_get() const
+{
+   return Integer::New(elm_label_wrap_width_get(eo));
 }
 
 }
