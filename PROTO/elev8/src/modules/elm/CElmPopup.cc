@@ -242,7 +242,7 @@ static void _item_selected_cb(void *data, Evas_Object *popup, void *)
 {
    CElmPopup *self = static_cast<CElmPopup *>(evas_object_data_get(popup, "this"));
    if (self)
-     self->ItemSelected((int)data);
+     self->ItemSelected((int)(long)data);
 }
 
 Handle<Value> CElmPopup::message(const Arguments &args)
@@ -317,10 +317,10 @@ Handle<Value> CElmPopup::message(const Arguments &args)
                   Evas_Object *eo_icon = (!icon.IsEmpty() && icon->IsObject()) ?
                      GetEvasObjectFromJavascript(Realise(icon->ToObject(), jsObject)) : NULL;
 
-                   elm_popup_item_append(eo, *String::Utf8Value(text->ToString()), eo_icon, _item_selected_cb, (void *)i);
+                   elm_popup_item_append(eo, *String::Utf8Value(text->ToString()), eo_icon, _item_selected_cb, (void *)(long)i);
                }
              else
-               elm_popup_item_append(eo, *String::Utf8Value(item->ToString()), NULL, _item_selected_cb, (void *)i);
+               elm_popup_item_append(eo, *String::Utf8Value(item->ToString()), NULL, _item_selected_cb, (void *)(long)i);
           }
      }
 
