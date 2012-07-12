@@ -85,6 +85,8 @@ public:
    Handle<Value> scroller_policy_get() const;
    void scroller_policy_set(Handle<Value> value);
 
+   Handle<Value> items_count_get() const;
+
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
 
