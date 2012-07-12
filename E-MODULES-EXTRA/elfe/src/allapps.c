@@ -320,7 +320,7 @@ elfe_allapps_add(Evas_Object *parent)
 				  _obj_del_cb, allapps);
 
    elm_gengrid_multi_select_set(allapps->grid, EINA_FALSE);
-   elm_gengrid_bounce_set(allapps->grid, EINA_FALSE, EINA_TRUE);
+   elm_scroller_bounce_set(allapps->grid, EINA_FALSE, EINA_TRUE);
 
    evas_object_size_hint_weight_set(allapps->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(allapps->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);

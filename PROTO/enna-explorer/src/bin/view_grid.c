@@ -274,7 +274,7 @@ enna_grid_add(Evas_Object * parent)
    //elm_gengrid_horizontal_set(sd->o_grid, EINA_TRUE);
    elm_gengrid_multi_select_set(sd->o_grid, EINA_FALSE);
    elm_gengrid_align_set(sd->o_grid, 0, 0);
-   elm_gengrid_bounce_set(sd->o_grid, EINA_FALSE, EINA_TRUE);
+   elm_scroller_bounce_set(sd->o_grid, EINA_FALSE, EINA_TRUE);
 
    evas_object_data_set(sd->o_grid, "sd", sd);
    evas_object_smart_callback_add(sd->o_grid, "realized", _item_realized_cb, sd);

@@ -942,7 +942,7 @@ create_main_win(App *app)
    elm_gengrid_align_set(app->grid, 0.5, 0.0);
    elm_gengrid_horizontal_set(app->grid, EINA_FALSE);
    elm_gengrid_multi_select_set(app->grid, EINA_FALSE);
-   elm_gengrid_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
+   elm_scroller_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
    evas_object_smart_callback_add(app->grid, "clicked,double", grid_item_db_double_clicked,
                                   app);
    evas_object_smart_callback_add(app->grid, "realized", grid_item_realized,

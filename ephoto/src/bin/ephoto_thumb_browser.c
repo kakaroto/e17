@@ -547,7 +547,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_size_hint_align_set(tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    elm_gengrid_align_set(tb->grid, 0.0, 0.0);
-   elm_gengrid_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
+   elm_scroller_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
    evas_object_size_hint_align_set
      (tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set
