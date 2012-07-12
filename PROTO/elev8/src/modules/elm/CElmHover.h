@@ -68,6 +68,10 @@ public:
    void middle_set(Handle<Value> val);
    Handle<Value> middle_get() const;
 
+   Handle<Value> dismiss(const Arguments&);
+
+   Handle<Value> best_content_location_get(const Arguments& args);
+
    friend Handle<Value> CElmObject::New<CElmHover>(const Arguments &args);
 };
 

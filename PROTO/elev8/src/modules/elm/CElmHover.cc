@@ -20,6 +20,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmHover, bottom_right);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, left);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, right);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, middle);
+GENERATE_METHOD_CALLBACKS(CElmHover, dismiss);
+GENERATE_METHOD_CALLBACKS(CElmHover, best_content_location_get);
 
 GENERATE_TEMPLATE(CElmHover,
                   PROPERTY(top),
@@ -30,7 +32,9 @@ GENERATE_TEMPLATE(CElmHover,
                   PROPERTY(bottom_right),
                   PROPERTY(left),
                   PROPERTY(right),
-                  PROPERTY(middle));
+                  PROPERTY(middle),
+                  METHOD(dismiss),
+                  METHOD(best_content_location_get));
 
 CElmHover::CElmHover(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_hover_add(parent->GetEvasObject()))
@@ -158,4 +162,28 @@ Handle<Value> CElmHover::middle_get() const
    return cached.content[MIDDLE];
 }
 
+Handle<Value> CElmHover::dismiss(const Arguments&)
+{
+  elm_hover_dismiss(eo);
+  return Undefined();
+}
+
+Handle<Value> CElmHover::best_content_location_get(const Arguments& args)
+{
+  if (!args[0]->IsString())
+    return Undefined();
+
+  String::Utf8Value pref_axis(args[0]->ToString());
+
+  if (!strcmp(*pref_axis, "none"))
+    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_NONE));
+  if (!strcmp(*pref_axis, "horizontal"))
+    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_HORIZONTAL));
+  if (!strcmp(*pref_axis, "vertical"))
+    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_VERTICAL));
+  if (!strcmp(*pref_axis, "both"))
+    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_BOTH));
+
+  return String::NewSymbol("undefined");
+}
 }
