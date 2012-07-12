@@ -13,6 +13,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, horizontal_gravity);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, vertical_gravity);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, region);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, current_page);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, last_page);
 GENERATE_METHOD_CALLBACKS(CElmScroller, region_show);
 GENERATE_METHOD_CALLBACKS(CElmScroller, region_bring_in);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_show);
@@ -28,6 +29,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(vertical_gravity),
                   PROPERTY_RO(region),
                   PROPERTY_RO(current_page),
+                  PROPERTY_RO(last_page),
                   METHOD(region_show),
                   METHOD(region_bring_in),
                   METHOD(page_show),
@@ -281,6 +283,21 @@ Handle<Value> CElmScroller::current_page_get() const
    int h_pagenumber, v_pagenumber;
 
    elm_scroller_current_page_get(eo, &h_pagenumber, &v_pagenumber);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::New("horizontal"), Number::New(h_pagenumber));
+   obj->Set(String::New("vertical"), Number::New(v_pagenumber));
+
+   return scope.Close(obj);
+}
+
+Handle<Value> CElmScroller::last_page_get() const
+{
+   HandleScope scope;
+
+   int h_pagenumber, v_pagenumber;
+
+   elm_scroller_last_page_get(eo, &h_pagenumber, &v_pagenumber);
 
    Local<Object> obj = Object::New();
    obj->Set(String::New("horizontal"), Number::New(h_pagenumber));

@@ -51,6 +51,8 @@ public:
 
    Handle<Value> region_get() const;
 
+   Handle<Value> last_page_get() const;
+
    Handle<Value> current_page_get() const;
 
    Handle<Value> region_show(const Arguments& args);
