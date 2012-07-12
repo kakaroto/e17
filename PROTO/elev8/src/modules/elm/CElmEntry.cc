@@ -55,6 +55,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, text_style_user_pop);
 GENERATE_METHOD_CALLBACKS(CElmEntry, text_style_user_push);
 GENERATE_METHOD_CALLBACKS(CElmEntry, calc_force);
 GENERATE_METHOD_CALLBACKS(CElmEntry, select_none);
+GENERATE_METHOD_CALLBACKS(CElmEntry, select_all);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -106,7 +107,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(text_style_user_pop),
                   METHOD(text_style_user_push),
                   METHOD(calc_force),
-                  METHOD(select_none));
+                  METHOD(select_none),
+                  METHOD(select_all));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -594,6 +596,12 @@ Handle<Value> CElmEntry::calc_force(const Arguments&)
 Handle<Value> CElmEntry::select_none(const Arguments&)
 {
    elm_entry_select_none(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::select_all(const Arguments&)
+{
+   elm_entry_select_all(eo);
    return Undefined();
 }
 
