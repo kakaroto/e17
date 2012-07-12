@@ -6,12 +6,14 @@ namespace elm {
 using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, title_visible);
+GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, event_enabled);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
 
 GENERATE_TEMPLATE(CElmNaviframe,
                   PROPERTY(title_visible),
+                  PROPERTY(event_enabled),
                   METHOD(pop),
                   METHOD(push),
                   METHOD(promote));
@@ -115,6 +117,17 @@ void CElmNaviframe::title_visible_set(Handle<Value> val)
 Handle<Value> CElmNaviframe::title_visible_get() const
 {
    return Boolean::New(title_visible);
+}
+
+void CElmNaviframe::event_enabled_set(Handle<Value> val)
+{
+   if(val->IsBoolean())
+     elm_naviframe_event_enabled_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmNaviframe::event_enabled_get() const
+{
+   return Boolean::New(elm_naviframe_event_enabled_get(eo));
 }
 
 }

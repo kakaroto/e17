@@ -29,6 +29,9 @@ public:
    void title_visible_set(Handle<Value> val);
    Handle<Value> title_visible_get() const;
 
+   void event_enabled_set(Handle<Value> val);
+   Handle<Value> event_enabled_get() const;
+
    friend Handle<Value> CElmObject::New<CElmNaviframe>(const Arguments &args);
 };
 
