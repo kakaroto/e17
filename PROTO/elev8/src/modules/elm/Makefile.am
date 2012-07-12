@@ -44,8 +44,9 @@ libelm_la_SOURCES = \
 	CElmNotify.cc \
 	CElmObject.cc \
 	CElmPane.cc \
-	CElmPhoto.cc \
 	CElmPhotocam.cc \
+	CElmPhoto.cc \
+	CElmPopup.cc \
 	CElmProgressBar.cc \
 	CElmRadio.cc \
 	CElmScroller.cc \
