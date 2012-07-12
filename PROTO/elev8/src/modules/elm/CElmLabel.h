@@ -25,6 +25,9 @@ public:
    void wrap_width_set(Handle<Value> value);
    Handle<Value> wrap_width_get() const;
 
+   void ellipsis_set(Handle<Value> value);
+   Handle<Value> ellipsis_get() const;
+
    friend Handle<Value> CElmObject::New<CElmLabel>(const Arguments& args);
 };
 

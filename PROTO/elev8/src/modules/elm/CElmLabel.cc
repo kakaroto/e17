@@ -6,10 +6,12 @@ using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmLabel, wrap_width);
+GENERATE_PROPERTY_CALLBACKS(CElmLabel, ellipsis);
 
 GENERATE_TEMPLATE(CElmLabel,
                   PROPERTY(wrap),
                   PROPERTY(wrap_width),
+                  PROPERTY(ellipsis),
 
 CElmLabel::CElmLabel(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_label_add(parent->GetEvasObject()))
@@ -61,5 +63,17 @@ Handle<Value> CElmLabel::wrap_width_get() const
 {
    return Integer::New(elm_label_wrap_width_get(eo));
 }
+
+void CElmLabel::ellipsis_set(Handle<Value> value)
+{
+   if (value->IsBoolean())
+     elm_label_ellipsis_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmLabel::ellipsis_get() const
+{
+   return Boolean::New(elm_label_ellipsis_get(eo));
+}
+
 
 }
