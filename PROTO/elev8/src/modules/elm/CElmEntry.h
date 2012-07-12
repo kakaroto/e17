@@ -140,6 +140,8 @@ public:
    Handle<Value> select_none(const Arguments&);
    Handle<Value> select_all(const Arguments&);
 
+   Handle<Value> file_save(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
