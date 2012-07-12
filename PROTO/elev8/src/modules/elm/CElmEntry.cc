@@ -29,6 +29,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, anchor_hover_style);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_layout);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, autocapital_type);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_language);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_type);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -86,6 +87,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(input_panel_layout),
                   PROPERTY(autocapital_type),
                   PROPERTY(input_panel_language),
+                  PROPERTY(input_panel_return_key_type),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -547,6 +549,52 @@ void CElmEntry::input_panel_language_set(Handle<Value> val)
      elm_entry_input_panel_language_set(eo, ELM_INPUT_PANEL_LANG_AUTOMATIC);
    else if (!strcmp(*mode_string, "alphabet"))
      elm_entry_input_panel_language_set(eo, ELM_INPUT_PANEL_LANG_ALPHABET);
+}
+
+Handle<Value> CElmEntry::input_panel_return_key_type_get() const
+{
+   switch (elm_entry_input_panel_return_key_type_get(eo)) {
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_DEFAULT:
+       return String::NewSymbol("default");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_DONE:
+       return String::NewSymbol("done");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_GO:
+       return String::NewSymbol("go");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_JOIN:
+       return String::NewSymbol("join");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_LOGIN:
+       return String::NewSymbol("login");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_NEXT:
+       return String::NewSymbol("next");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH:
+       return String::NewSymbol("search");
+     case ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND:
+       return String::NewSymbol("send");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmEntry::input_panel_return_key_type_set(Handle<Value> val)
+{
+   String::Utf8Value mode_string(val->ToString());
+
+   if (!strcmp(*mode_string, "default"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_DEFAULT);
+   else if (!strcmp(*mode_string, "done"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_DONE);
+   else if (!strcmp(*mode_string, "go"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_GO);
+   else if (!strcmp(*mode_string, "join"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_JOIN);
+   else if (!strcmp(*mode_string, "login"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_LOGIN);
+   else if (!strcmp(*mode_string, "next"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_NEXT);
+   else if (!strcmp(*mode_string, "search"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEARCH);
+   else if (!strcmp(*mode_string, "send"))
+     elm_entry_input_panel_return_key_type_set(eo, ELM_INPUT_PANEL_RETURN_KEY_TYPE_SEND);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const
