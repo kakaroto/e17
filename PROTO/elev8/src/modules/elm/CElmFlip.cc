@@ -6,11 +6,13 @@ using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmFlip, front);
 GENERATE_PROPERTY_CALLBACKS(CElmFlip, back);
+GENERATE_PROPERTY_CALLBACKS(CElmFlip, perspective);
 GENERATE_METHOD_CALLBACKS(CElmFlip, flip);
 
 GENERATE_TEMPLATE(CElmFlip,
                   PROPERTY(front),
                   PROPERTY(back),
+                  PROPERTY(perspective),
                   METHOD(flip));
 
 CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *parent)
@@ -22,6 +24,7 @@ CElmFlip::~CElmFlip()
 {
    cached.front.Dispose();
    cached.back.Dispose();
+   perspective.Dispose();
 }
 
 void CElmFlip::Initialize(Handle<Object> target)
@@ -62,4 +65,23 @@ void CElmFlip::back_set(Handle<Value> object)
                                GetEvasObjectFromJavascript(cached.back));
 }
 
+Handle<Value> CElmFlip::perspective_get() const
+{
+   return perspective;
+}
+
+void CElmFlip::perspective_set(Handle<Value> value)
+{
+   if(!value->IsArray())
+     return;
+
+   Local<Object> sizes = value->ToObject();
+   elm_flip_perspective_set(eo,
+        sizes->Get(0)->ToNumber()->Value(),
+        sizes->Get(1)->ToNumber()->Value(),
+        sizes->Get(2)->ToNumber()->Value());
+
+   perspective.Dispose();
+   perspective = Persistent<Value>::New(value);
+}
 }

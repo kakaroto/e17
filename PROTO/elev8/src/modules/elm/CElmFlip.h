@@ -21,6 +21,8 @@ protected:
       Persistent<Value> back;
    } cached;
 
+   Persistent<Value> perspective;
+
    static Handle<FunctionTemplate> GetTemplate();
 
 public:
@@ -34,6 +36,9 @@ public:
 
    Handle<Value> back_get() const;
    void back_set(Handle<Value> obj);
+
+   Handle<Value> perspective_get() const;
+   void perspective_set(Handle<Value> obj);
 
    friend Handle<Value> CElmObject::New<CElmFlip>(const Arguments& args);
 };
