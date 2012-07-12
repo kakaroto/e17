@@ -133,6 +133,7 @@ public:
 
    Handle<Value> text_style_user_peek(const Arguments&);
    Handle<Value> text_style_user_pop(const Arguments&);
+   Handle<Value> text_style_user_push(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };

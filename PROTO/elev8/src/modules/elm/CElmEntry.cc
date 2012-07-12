@@ -52,6 +52,7 @@ GENERATE_METHOD_CALLBACKS(CElmEntry, text_style_user_peek);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_line_begin);
 GENERATE_METHOD_CALLBACKS(CElmEntry, cursor_line_end);
 GENERATE_METHOD_CALLBACKS(CElmEntry, text_style_user_pop);
+GENERATE_METHOD_CALLBACKS(CElmEntry, text_style_user_push);
 
 GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(password),
@@ -100,7 +101,8 @@ GENERATE_TEMPLATE(CElmEntry,
                   METHOD(text_style_user_peek),
                   METHOD(cursor_line_begin),
                   METHOD(cursor_line_end),
-                  METHOD(text_style_user_pop));
+                  METHOD(text_style_user_pop),
+                  METHOD(text_style_user_push));
 
 CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_entry_add(parent->GetEvasObject()))
@@ -568,6 +570,14 @@ Handle<Value> CElmEntry::cursor_line_end(const Arguments&)
 Handle<Value> CElmEntry::text_style_user_pop(const Arguments&)
 {
    elm_entry_text_style_user_pop(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmEntry::text_style_user_push(const Arguments& args)
+{
+   if (!args[0]->IsString())
+     elm_entry_text_style_user_push(eo, *String::Utf8Value(args[0]));
+
    return Undefined();
 }
 
