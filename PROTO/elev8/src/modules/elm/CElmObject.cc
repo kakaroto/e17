@@ -558,11 +558,11 @@ void CElmObject::size_hint_aspect_set(Handle<Value> val)
      return;
 
    Local<Object> obj = val->ToObject();
-   Local<Value> w = obj->Get(String::New("width"));
-   Local<Value> h = obj->Get(String::New("height"));
+   Local<Value> w = obj->Get(String::NewSymbol("width"));
+   Local<Value> h = obj->Get(String::NewSymbol("height"));
 
    Evas_Aspect_Control aspect;
-   Local<Value> aspectValue = obj->Get(String::New("aspect"));
+   Local<Value> aspectValue = obj->Get(String::NewSymbol("aspect"));
    if (!aspectValue->IsString())
      aspect = EVAS_ASPECT_CONTROL_NONE;
    else
