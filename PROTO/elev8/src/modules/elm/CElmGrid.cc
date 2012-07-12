@@ -23,6 +23,8 @@ void CElmGrid::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Grid"), GetTemplate()->GetFunction());
 }
 
+//FIXME If elm_grid_clear is called, it will delete the efl objects, but the 
+//javascript wrappers will still be in memory.
 Handle<Value> CElmGrid::clear(const Arguments&)
 {
    return Undefined();
