@@ -22,6 +22,7 @@ protected:
    Persistent<Value> page_relative;
    Persistent<Value> align;
    Persistent<Value> page_size;
+   Persistent<Value> scroller_policy;
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -81,6 +82,8 @@ public:
    Handle<Value> page_size_get() const;
    void page_size_set(Handle<Value> value);
 
+   Handle<Value> scroller_policy_get() const;
+   void scroller_policy_set(Handle<Value> value);
 
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };

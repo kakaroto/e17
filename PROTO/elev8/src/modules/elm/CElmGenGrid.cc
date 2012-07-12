@@ -21,6 +21,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_relative);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, align);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, group_item_size);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_size);
+GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, scroller_policy);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
@@ -42,6 +43,7 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(align),
                   PROPERTY(group_item_size),
                   PROPERTY(page_size),
+                  PROPERTY(scroller_policy),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -58,6 +60,7 @@ CElmGenGrid::~CElmGenGrid()
    page_relative.Dispose();
    align.Dispose();
    page_size.Dispose();
+   scroller_policy.Dispose();
 }
 
 void CElmGenGrid::Initialize(Handle<Object> target)
@@ -359,6 +362,25 @@ void CElmGenGrid::page_size_set(Handle<Value> val)
 
    page_size.Dispose();
    page_size = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmGenGrid::scroller_policy_get() const
+{
+   return scroller_policy;
+}
+
+void CElmGenGrid::scroller_policy_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> policy = val->ToObject();
+   elm_gengrid_scroller_policy_set (eo,
+        (Elm_Scroller_Policy) policy->Get(0)->ToNumber()->Value(),
+        (Elm_Scroller_Policy) policy->Get(1)->ToNumber()->Value());
+
+   scroller_policy.Dispose();
+   scroller_policy = Persistent<Value>::New(val);
 }
 
 }
