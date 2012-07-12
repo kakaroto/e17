@@ -1,0 +1,14 @@
+etam: metadata storing on top of eet library.
+
+The purpose of this library is to offer an easy way
+to store metadata linked with a key in an eet library
+with a completly asynchronous API.
+
+Their is still a huge amount of work to do it right.
+I have been focusing myself on the backend. There is
+no documentation, don't expect it at this point. I am
+dropping this code at an early unusable point so that
+some people can start helping me advance it. It is point
+less for anyone to try and compile this code actually.
+
+The targeted users of this library are enna and enki.
