@@ -106,6 +106,9 @@ public:
    Handle<Value> icon_name_get() const;
    void icon_name_set(Handle<Value> val);
 
+   Handle<Value> role_get() const;
+   void role_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 

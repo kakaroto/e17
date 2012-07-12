@@ -32,6 +32,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_step);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_base);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, layer);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, icon_name);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, role);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -60,7 +61,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(size_step),
                   PROPERTY(size_base),
                   PROPERTY(layer),
-                  PROPERTY(icon_name));
+                  PROPERTY(icon_name),
+                  PROPERTY(role));
 
 // Getters and Settters
 
@@ -376,6 +378,17 @@ void CElmWindow::icon_name_set(Handle <Value> val)
 {
    if (val->IsString())
      elm_win_icon_name_set(eo, *String::Utf8Value(val));
+}
+
+Handle<Value> CElmWindow::role_get() const
+{
+   return String::New(elm_win_role_get(eo));
+}
+
+void CElmWindow::role_set(Handle <Value> val)
+{
+   if (val->IsString())
+     elm_win_role_set(eo, *String::Utf8Value(val));
 }
 
 //---------------------
