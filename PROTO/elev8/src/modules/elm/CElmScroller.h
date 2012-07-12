@@ -25,6 +25,7 @@ protected:
    static Local<Value> string_from_policy(Elm_Scroller_Policy policy);
 
    Persistent<Value> widget_base_theme;
+   Persistent<Value> limit_minimum_size;
 public:
    static void Initialize(Handle<Object> val);
 
@@ -48,6 +49,10 @@ public:
 
    void vertical_gravity_set(Handle<Value> val);
    Handle<Value> vertical_gravity_get() const;
+
+
+   void limit_minimum_size_set(Handle<Value> val);
+   Handle<Value> limit_minimum_size_get() const;
 
    Handle<Value> region_get() const;
 
