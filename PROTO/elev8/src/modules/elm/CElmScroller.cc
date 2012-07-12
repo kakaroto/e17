@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, propagate_events);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, horizontal_gravity);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, vertical_gravity);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, region);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmScroller, current_page);
 GENERATE_METHOD_CALLBACKS(CElmScroller, region_show);
 GENERATE_METHOD_CALLBACKS(CElmScroller, region_bring_in);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_show);
@@ -26,6 +27,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(horizontal_gravity),
                   PROPERTY(vertical_gravity),
                   PROPERTY_RO(region),
+                  PROPERTY_RO(current_page),
                   METHOD(region_show),
                   METHOD(region_bring_in),
                   METHOD(page_show),
@@ -270,6 +272,21 @@ Handle<Value> CElmScroller::horizontal_gravity_get() const
    double horizontal_gravity;
    elm_scroller_gravity_get(eo, &horizontal_gravity, NULL);
    return Number::New(horizontal_gravity);
+}
+
+Handle<Value> CElmScroller::current_page_get() const
+{
+   HandleScope scope;
+
+   int h_pagenumber, v_pagenumber;
+
+   elm_scroller_current_page_get(eo, &h_pagenumber, &v_pagenumber);
+
+   Local<Object> obj = Object::New();
+   obj->Set(String::New("horizontal"), Number::New(h_pagenumber));
+   obj->Set(String::New("vertical"), Number::New(v_pagenumber));
+
+   return scope.Close(obj);
 }
 
 }
