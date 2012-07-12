@@ -42,6 +42,9 @@ public:
    void item_style_set(Handle<Value> val);
    Handle<Value> item_style_get() const;
 
+   void content_preserve_on_pop_set(Handle<Value> val);
+   Handle<Value> content_preserve_on_pop_get() const;
+
    Handle<Value> items_get() const;
    Handle<Value> top_item_get() const;
    Handle<Value> bottom_item_get() const;

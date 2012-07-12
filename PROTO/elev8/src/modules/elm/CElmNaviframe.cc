@@ -9,6 +9,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, title_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, event_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, prev_btn_auto_pushed);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, item_style);
+GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, content_preserve_on_pop);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, items);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, top_item);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, bottom_item);
@@ -23,6 +24,7 @@ GENERATE_TEMPLATE(CElmNaviframe,
                   PROPERTY(event_enabled),
                   PROPERTY(prev_btn_auto_pushed),
                   PROPERTY(item_style),
+                  PROPERTY(content_preserve_on_pop),
                   PROPERTY_RO(items),
                   PROPERTY_RO(top_item),
                   PROPERTY_RO(bottom_item),
@@ -187,6 +189,17 @@ void CElmNaviframe::item_style_set(Handle<Value> val)
 Handle<Value> CElmNaviframe::item_style_get() const
 {
    return item_style->ToObject()->Get(1)->ToString();
+}
+
+void CElmNaviframe::content_preserve_on_pop_set(Handle<Value> val)
+{
+   if(val->IsBoolean())
+     elm_naviframe_content_preserve_on_pop_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmNaviframe::content_preserve_on_pop_get() const
+{
+   return Boolean::New(elm_naviframe_content_preserve_on_pop_get(eo));
 }
 
 Handle<Value> CElmNaviframe::items_get() const
