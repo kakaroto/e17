@@ -43,6 +43,9 @@ public:
    void propagate_events_set(Handle<Value> val);
    Handle<Value> propagate_events_get() const;
 
+   void horizontal_gravity_set(Handle<Value> val);
+   Handle<Value> horizontal_gravity_get() const;
+
    Handle<Value> page_bring_in(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmScroller>(const Arguments& args);

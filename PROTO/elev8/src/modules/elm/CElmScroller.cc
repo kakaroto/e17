@@ -9,6 +9,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmScroller, policy);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, content);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, widget_base_theme);
 GENERATE_PROPERTY_CALLBACKS(CElmScroller, propagate_events);
+GENERATE_PROPERTY_CALLBACKS(CElmScroller, horizontal_gravity);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
 GENERATE_TEMPLATE(CElmScroller,
@@ -17,6 +18,7 @@ GENERATE_TEMPLATE(CElmScroller,
                   PROPERTY(content),
                   PROPERTY(widget_base_theme),
                   PROPERTY(propagate_events),
+                  PROPERTY(horizontal_gravity),
                   METHOD(page_bring_in));
 
 CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
@@ -173,6 +175,24 @@ void CElmScroller::propagate_events_set(Handle<Value> val)
 Handle<Value> CElmScroller::propagate_events_get() const
 {
    return Boolean::New(elm_scroller_propagate_events_get(eo));
+}
+
+
+void CElmScroller::horizontal_gravity_set(Handle<Value> val)
+{
+   if (!val->IsNumber())
+     return;
+
+   double vertical_gravity;
+   elm_scroller_gravity_get(eo, NULL, &vertical_gravity);
+   elm_scroller_gravity_set(eo, val->ToNumber()->Value(), vertical_gravity);
+}
+
+Handle<Value> CElmScroller::horizontal_gravity_get() const
+{
+   double horizontal_gravity;
+   elm_scroller_gravity_get(eo, &horizontal_gravity, NULL);
+   return Number::New(horizontal_gravity);
 }
 
 }
