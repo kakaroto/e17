@@ -135,6 +135,7 @@ public:
    Handle<Value> activate(const Arguments&);
    Handle<Value> lower(const Arguments&);
    Handle<Value> raise(const Arguments&);
+   Handle<Value> center(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };

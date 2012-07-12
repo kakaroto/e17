@@ -45,6 +45,7 @@ GENERATE_METHOD_CALLBACKS(CElmWindow, socket_listen);
 GENERATE_METHOD_CALLBACKS(CElmWindow, activate);
 GENERATE_METHOD_CALLBACKS(CElmWindow, lower);
 GENERATE_METHOD_CALLBACKS(CElmWindow, raise);
+GENERATE_METHOD_CALLBACKS(CElmWindow, center);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -86,7 +87,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   METHOD(socket_listen),
                   METHOD(activate),
                   METHOD(lower),
-                  METHOD(raise));
+                  METHOD(raise),
+                  METHOD(center));
 
 // Getters and Settters
 
@@ -628,6 +630,14 @@ Handle<Value> CElmWindow::lower(const Arguments&)
 Handle<Value> CElmWindow::raise(const Arguments&)
 {
    elm_win_raise(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmWindow::center(const Arguments& args)
+{
+   if((args[0]->IsBoolean()) && (args[1]->IsBoolean()))
+     elm_win_center(eo, args[0]->BooleanValue(), args[1]->BooleanValue());
+
    return Undefined();
 }
 
