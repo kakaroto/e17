@@ -27,6 +27,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_return_key_autoenabled);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, prediction_allow);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, anchor_hover_style);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, input_panel_layout);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, autocapital_type);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, is_empty);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, selection);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmEntry, cursor_content);
@@ -82,6 +83,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(prediction_allow),
                   PROPERTY(anchor_hover_style),
                   PROPERTY(input_panel_layout),
+                  PROPERTY(autocapital_type),
                   PROPERTY_RO(is_empty),
                   PROPERTY_RO(selection),
                   PROPERTY_RO(cursor_content),
@@ -491,6 +493,36 @@ void CElmEntry::input_panel_layout_set(Handle<Value> val)
      elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_TERMINAL);
    else if (!strcmp(*mode_string, "password"))
      elm_entry_input_panel_layout_set(eo, ELM_INPUT_PANEL_LAYOUT_PASSWORD);
+}
+
+Handle<Value> CElmEntry::autocapital_type_get() const
+{
+   switch (elm_entry_autocapital_type_get(eo)) {
+     case ELM_AUTOCAPITAL_TYPE_NONE:
+       return String::NewSymbol("none");
+     case ELM_AUTOCAPITAL_TYPE_WORD:
+       return String::NewSymbol("word");
+     case ELM_AUTOCAPITAL_TYPE_SENTENCE:
+       return String::NewSymbol("sentence");
+     case ELM_AUTOCAPITAL_TYPE_ALLCHARACTER:
+       return String::NewSymbol("allcharacter");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmEntry::autocapital_type_set(Handle<Value> val)
+{
+   String::Utf8Value mode_string(val->ToString());
+
+   if (!strcmp(*mode_string, "none"))
+     elm_entry_autocapital_type_set(eo, ELM_AUTOCAPITAL_TYPE_NONE);
+   else if (!strcmp(*mode_string, "word"))
+     elm_entry_autocapital_type_set(eo, ELM_AUTOCAPITAL_TYPE_WORD);
+   else if (!strcmp(*mode_string, "sentence"))
+     elm_entry_autocapital_type_set(eo, ELM_AUTOCAPITAL_TYPE_SENTENCE);
+   else if (!strcmp(*mode_string, "allcharacter"))
+     elm_entry_autocapital_type_set(eo, ELM_AUTOCAPITAL_TYPE_ALLCHARACTER);
 }
 
 Handle<Value> CElmEntry::is_empty_get() const

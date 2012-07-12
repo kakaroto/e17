@@ -97,6 +97,9 @@ public:
    Handle<Value> input_panel_layout_get() const;
    void input_panel_layout_set(Handle<Value> value);
 
+   Handle<Value> autocapital_type_get() const;
+   void autocapital_type_set(Handle<Value> value);
+
    Handle<Value> is_empty_get() const;
 
    Handle<Value> selection_get() const;
