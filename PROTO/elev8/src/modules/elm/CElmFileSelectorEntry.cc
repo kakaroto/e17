@@ -67,12 +67,13 @@ void CElmFileSelectorEntry::win_title_set(Handle<Value> val)
 
 Handle<Value> CElmFileSelectorEntry::selected_get() const
 {
-   return String::New(elm_fileselector_entry_selected_get(eo));
+   const char *entry_selected = elm_fileselector_entry_selected_get(eo);
+   return entry_selected ? String::New(entry_selected) : Undefined();
 }
 
 void CElmFileSelectorEntry::selected_set(Handle<Value> val)
 {
-   if (val->IsString() || val->IsNumber())
+   if (val->IsString())
      elm_fileselector_entry_selected_set(eo, *String::Utf8Value(val));
 }
 
