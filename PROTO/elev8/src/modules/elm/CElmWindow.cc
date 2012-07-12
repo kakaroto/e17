@@ -34,6 +34,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, layer);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, icon_name);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, role);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_style);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, aspect);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -64,7 +65,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(layer),
                   PROPERTY(icon_name),
                   PROPERTY(role),
-                  PROPERTY(focus_highlight_style));
+                  PROPERTY(focus_highlight_style),
+                  PROPERTY(aspect));
 
 // Getters and Settters
 
@@ -402,6 +404,17 @@ void CElmWindow::focus_highlight_style_set(Handle <Value> val)
 {
    if (val->IsString())
      elm_win_focus_highlight_style_set(eo, *String::Utf8Value(val));
+}
+
+Handle<Value> CElmWindow::aspect_get() const
+{
+   return Integer::New(elm_win_aspect_get(eo));
+}
+
+void CElmWindow::aspect_set(Handle <Value> val)
+{
+   if (val->IsInt32())
+     elm_win_aspect_set(eo, val->ToInt32()->Value());
 }
 
 //---------------------
