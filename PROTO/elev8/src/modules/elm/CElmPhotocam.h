@@ -35,6 +35,8 @@ public:
    void paused_set(Handle<Value> val);
    Handle<Value> paused_get() const;
    
+   void gesture_enabled_set(Handle<Value> val);
+   Handle<Value> gesture_enabled_get() const;
  
    Handle<Value> image_size_get() const;
   

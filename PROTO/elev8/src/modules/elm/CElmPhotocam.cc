@@ -11,6 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, zoom_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, horizontal_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, vertical_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, paused);
+GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, gesture_enabled);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmPhotocam, image_size);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmPhotocam, image_region);
 GENERATE_METHOD_CALLBACKS(CElmPhotocam, image_region_show);
@@ -23,6 +24,7 @@ GENERATE_TEMPLATE(CElmPhotocam,
                   PROPERTY(horizontal_bounce),
                   PROPERTY(vertical_bounce),
                   PROPERTY(paused),
+                  PROPERTY(gesture_enabled),
                   PROPERTY_RO(image_size),
                   PROPERTY_RO(image_region),
                   METHOD(image_region_show),
@@ -153,6 +155,16 @@ Handle<Value> CElmPhotocam::paused_get() const
    return Boolean::New(elm_photocam_paused_get(eo));
 }
 
+void CElmPhotocam::gesture_enabled_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_photocam_gesture_enabled_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmPhotocam::gesture_enabled_get() const
+{
+   return Boolean::New(elm_photocam_gesture_enabled_get(eo));
+}
 
 Handle<Value> CElmPhotocam::image_region_get() const
 {
