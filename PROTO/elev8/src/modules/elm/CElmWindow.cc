@@ -35,6 +35,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, icon_name);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, role);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_style);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, aspect);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, indicator_mode);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
@@ -66,7 +67,8 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(icon_name),
                   PROPERTY(role),
                   PROPERTY(focus_highlight_style),
-                  PROPERTY(aspect));
+                  PROPERTY(aspect),
+                  PROPERTY(indicator_mode));
 
 // Getters and Settters
 
@@ -415,6 +417,30 @@ void CElmWindow::aspect_set(Handle <Value> val)
 {
    if (val->IsInt32())
      elm_win_aspect_set(eo, val->ToInt32()->Value());
+}
+
+Handle<Value> CElmWindow::indicator_mode_get() const
+{
+   switch (elm_win_indicator_mode_get(eo)) {
+     case ELM_WIN_INDICATOR_HIDE:
+       return String::NewSymbol("hide");
+     case ELM_WIN_INDICATOR_SHOW:
+       return String::NewSymbol("show");
+     default:
+       return String::NewSymbol("unknown");
+   }
+}
+
+void CElmWindow::indicator_mode_set(Handle<Value> value)
+{
+   String::Utf8Value mode_string(value->ToString());
+
+   if (!strcmp(*mode_string, "hide"))
+     elm_win_indicator_mode_set(eo, ELM_WIN_INDICATOR_HIDE);
+   else if (!strcmp(*mode_string, "show"))
+     elm_win_indicator_mode_set(eo, ELM_WIN_INDICATOR_SHOW);
+   else
+     elm_win_indicator_mode_set(eo, ELM_WIN_INDICATOR_UNKNOWN);
 }
 
 //---------------------
