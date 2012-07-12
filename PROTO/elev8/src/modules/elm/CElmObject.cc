@@ -316,12 +316,14 @@ void CElmObject::align_set(Handle<Value> value)
 
 Handle<Value> CElmObject::weight_get() const
 {
+   Local<Object> weight = Object::New();
    double x, y;
+
    evas_object_size_hint_weight_get(eo, &x, &y);
-   Local<Object> align = Object::New();
-   align->Set(String::NewSymbol("x"), Number::New(x));
-   align->Set(String::NewSymbol("y"), Number::New(y));
-   return align;
+   weight->Set(String::NewSymbol("x"), Number::New(x));
+   weight->Set(String::NewSymbol("y"), Number::New(y));
+
+   return weight;
 }
 
 void CElmObject::weight_set(Handle<Value> value)
@@ -329,10 +331,10 @@ void CElmObject::weight_set(Handle<Value> value)
    if (!value->IsObject())
      return;
 
-   Local<Object> align = value->ToObject();
+   Local<Object> weight = value->ToObject();
    evas_object_size_hint_weight_set(eo,
-        align->Get(String::NewSymbol("x"))->ToNumber()->Value(),
-        align->Get(String::NewSymbol("y"))->ToNumber()->Value());
+        weight->Get(String::NewSymbol("x"))->ToNumber()->Value(),
+        weight->Get(String::NewSymbol("y"))->ToNumber()->Value());
 }
 
 Handle<Value> CElmObject::visible_get() const
