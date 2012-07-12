@@ -10,13 +10,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, conformant);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, autodel);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, borderless);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, shaped);
+GENERATE_PROPERTY_CALLBACKS(CElmWindow, alpha);
 
 GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(title),
                   PROPERTY(conformant),
                   PROPERTY(autodel),
                   PROPERTY(borderless),
-                  PROPERTY(shaped));
+                  PROPERTY(shaped),
+                  PROPERTY(alpha));
 
 // Getters and Settters
 
@@ -74,6 +76,17 @@ void CElmWindow::shaped_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_win_shaped_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmWindow::alpha_get() const
+{
+   return Boolean::New(elm_win_alpha_get(eo));
+}
+
+void CElmWindow::alpha_set(Handle<Value> val)
+{
+   if (val->IsBoolean())
+     elm_win_alpha_set(eo, val->BooleanValue());
 }
 
 //---------------------

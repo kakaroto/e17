@@ -35,6 +35,9 @@ public:
    Handle<Value> shaped_get() const;
    void shaped_set(Handle<Value> val);
 
+   Handle<Value> alpha_get() const;
+   void alpha_set(Handle<Value> val);
+
    friend Handle<Value> CElmObject::New<CElmWindow>(const Arguments& args);
 };
 
