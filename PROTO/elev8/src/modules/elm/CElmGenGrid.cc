@@ -17,6 +17,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, classes);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, filled);
+GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_relative);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
@@ -34,6 +35,7 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(classes),
                   PROPERTY(horizontal),
                   PROPERTY(filled),
+                  PROPERTY(page_relative),
                   METHOD(append),
                   METHOD(clear),
                   METHOD(delete_item),
@@ -43,6 +45,11 @@ CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_gengrid_add(elm_object_top_widget_get(parent->GetEvasObject())))
 {
    elm_gengrid_item_size_set(eo, 64, 64);
+}
+
+CElmGenGrid::~CElmGenGrid()
+{
+   page_relative.Dispose();
 }
 
 void CElmGenGrid::Initialize(Handle<Object> target)
@@ -255,6 +262,25 @@ void CElmGenGrid::filled_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_gengrid_filled_set(eo, value->BooleanValue());
+}
+
+Handle<Value> CElmGenGrid::page_relative_get() const
+{
+   return page_relative;
+}
+
+void CElmGenGrid::page_relative_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Local<Object> sizes = val->ToObject();
+   elm_gengrid_page_relative_set(eo,
+        sizes->Get(0)->ToNumber()->Value(),
+        sizes->Get(1)->ToNumber()->Value());
+
+   page_relative.Dispose();
+   page_relative = Persistent<Value>::New(val);
 }
 
 }

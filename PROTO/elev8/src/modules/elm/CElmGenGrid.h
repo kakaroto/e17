@@ -13,10 +13,13 @@ private:
 
 protected:
    CElmGenGrid(Local<Object> _jsObject, CElmObject *parent);
+   ~CElmGenGrid();
 
    struct {
       Persistent<Object> classes;
    } cached;
+
+   Persistent<Value> page_relative;
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -63,6 +66,9 @@ public:
 
    Handle<Value> filled_get() const;
    void filled_set(Handle<Value> value);
+
+   Handle<Value> page_relative_get() const;
+   void page_relative_set(Handle<Value> value);
 
    friend Handle<Value> CElmObject::New<CElmGenGrid>(const Arguments&);
 };
