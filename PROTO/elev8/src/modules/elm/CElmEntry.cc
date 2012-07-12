@@ -341,7 +341,7 @@ void CElmEntry::h_bounce_set(Handle<Value> value)
 Handle<Value> CElmEntry::v_bounce_get() const
 {
    Eina_Bool vertical;
-   elm_entry_bounce_get(eo, &vertical, NULL);
+   elm_entry_bounce_get(eo, NULL, &vertical);
    return Boolean::New(vertical);
 }
 
