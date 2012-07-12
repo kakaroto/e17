@@ -135,6 +135,8 @@ public:
    Handle<Value> text_style_user_pop(const Arguments&);
    Handle<Value> text_style_user_push(const Arguments& args);
 
+   Handle<Value> calc_force(const Arguments&);
+
    friend Handle<Value> CElmObject::New<CElmEntry>(const Arguments& args);
 };
 
