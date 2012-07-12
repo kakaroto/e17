@@ -41,8 +41,8 @@ public:
    Handle<Value> on_select_get() const;
    void on_select_set(Handle<Value> val);
 
-   void enabled_set(Handle<Value> val);
-   Handle<Value> enabled_get() const;
+   void enabled_pos_set(Handle<Value> val);
+   Handle<Value> enabled_pos_get() const;
 
    friend Handle<Value> CElmObject::New<CElmActionSlider>(const Arguments& args);
 };
