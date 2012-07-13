@@ -156,6 +156,7 @@ collections {
 #include "e/icons.edc"
 #include "e/pointer.edc"
 #include "e/shelf.edc"
+#include "e/splash.edc"
 #include "e/sys.edc"
 #include "e/theme_about.edc"
 #include "e/toolbar.edc"
