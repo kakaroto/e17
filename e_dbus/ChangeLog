@@ -69,3 +69,4 @@
 2012-07-13 José Roberto de Souza
 
         * Fix properties handling
+        * Check if interface already exists before attaching

@@ -304,8 +304,20 @@ e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set
 EAPI void
 e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
 {
+  E_DBus_Interface *iface_added;
+  Eina_List *l;
   EINA_SAFETY_ON_NULL_RETURN(obj);
   EINA_SAFETY_ON_NULL_RETURN(iface);
+
+  EINA_LIST_FOREACH(obj->interfaces, l, iface_added)
+    {
+       if (strcmp(iface->name, iface_added->name) == 0)
+         {
+            ERR("This object(%s) already have this interface name(%s) attached",
+                obj->path, iface->name);
+            return;
+         }
+    }
 
   e_dbus_interface_ref(iface);
   obj->interfaces = eina_list_append(obj->interfaces, iface);
