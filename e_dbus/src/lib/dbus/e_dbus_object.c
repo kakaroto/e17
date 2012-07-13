@@ -115,10 +115,11 @@ cb_properties_get(E_DBus_Object *obj, DBusMessage *msg)
   DBusError err;
   int type;
   void *value;
-  char *property;
+  char *property, *interface;
 
   dbus_error_init(&err);
-  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
+  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &interface, DBUS_TYPE_STRING,
+                        &property, DBUS_TYPE_INVALID);
 
   if (dbus_error_is_set(&err))
   {
@@ -134,7 +135,7 @@ cb_properties_get(E_DBus_Object *obj, DBusMessage *msg)
   if (dbus_type_is_basic(type))
   {
     reply = dbus_message_new_method_return(msg);
-    dbus_message_iter_init_append(msg, &iter);
+    dbus_message_iter_init_append(reply, &iter);
     if (dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, e_dbus_basic_type_as_string(type), &sub))
     {
       dbus_message_iter_append_basic(&sub, type, &value);
@@ -158,10 +159,13 @@ cb_properties_set(E_DBus_Object *obj, DBusMessage *msg)
   DBusMessageIter iter, sub;
   int type;
   void *value;
-  char *property;
+  char *property, *interface;
 
   dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_get_basic(&iter, &interface);
+  dbus_message_iter_next(&iter);
   dbus_message_iter_get_basic(&iter, &property);
+  dbus_message_iter_next(&iter);
   dbus_message_iter_recurse(&iter, &sub);
   type = dbus_message_iter_get_arg_type(&sub);
   if (dbus_type_is_basic(type))
@@ -198,8 +202,8 @@ e_dbus_object_init(void)
   }
 
   e_dbus_interface_method_add(introspectable_interface, "Introspect", "", "s", cb_introspect);
-  e_dbus_interface_method_add(properties_interface, "Get", "s", "v", cb_properties_get);
-  e_dbus_interface_method_add(properties_interface, "Set", "sv", "", cb_properties_set);
+  e_dbus_interface_method_add(properties_interface, "Get", "ss", "v", cb_properties_get);
+  e_dbus_interface_method_add(properties_interface, "Set", "ssv", "", cb_properties_set);
   return 1;
 }
 

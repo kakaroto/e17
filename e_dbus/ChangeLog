@@ -65,3 +65,7 @@
 
         * Use idler instead of idle_enterer for processing messages
         * Listen and update the 'sender unique name' of signals
+
+2012-07-13 José Roberto de Souza
+
+        * Fix properties handling
