@@ -235,7 +235,8 @@ cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg)
   {
     if ((!sh->cb_signal) || (sh->delete_me)) continue;
 
-    if (sh->owner && !dbus_message_has_sender(msg, sh->owner)) continue;
+    if (sh->get_name_owner_pending ||
+        (sh->owner && !dbus_message_has_sender(msg, sh->owner))) continue;
     if (sh->path && !dbus_message_has_path(msg, sh->path)) continue;
     if (sh->interface && !dbus_message_has_interface(msg, sh->interface)) continue;
     if (sh->member && !dbus_message_has_member(msg, sh->member)) continue;
