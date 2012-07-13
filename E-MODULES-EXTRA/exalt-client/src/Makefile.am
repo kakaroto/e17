@@ -3,8 +3,8 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I. \
 	   -I$(top_srcdir) \
 	   -I$(includedir) \
-	   -I$(includedir)/exalt \
-	   -I$(includedir)/exalt_dbus \
+	   @EXALT_CFLAGS@ \
+	   @EXALT_DBUS_CFLAGS@ \
 	   @E_CFLAGS@
 
 pkgdir = $(datadir)/$(MODULE_ARCH)
