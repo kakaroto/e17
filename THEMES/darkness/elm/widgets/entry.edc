@@ -641,7 +641,7 @@
          }
          program {
             name: "cursor_hide_timer";
-            in: 0.25 0.0;
+            in: 0.5 0.0;
             after: "cursor_show";
          }
          program {
