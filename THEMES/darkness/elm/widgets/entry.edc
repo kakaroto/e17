@@ -580,151 +580,79 @@
          }
       }
    }
-
-   group { name: "elm/entry/cursor/default";
+   group {
+      name: "elm/entry/cursor/default";
+      min: 1 0;
       images {
-         image: "cur_box.png" COMP;
-         image: "cur_hi.png" COMP;
-         image: "cur_shad.png" COMP;
-         image: "cur_shine.png" COMP;
-         image: "cur_glow.png" COMP;
+         image: "entry_cursor.png" COMP;
       }
       parts {
-         part { name: "clip2";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1.to: "clip";
-               rel2.to: "clip";
+         part {
+            name: "cursor";
+            mouse_events:  0;
+            description {
+               state: "default" 0.0;
                visible: 0;
+               min: 5 12;
+               rel1.offset: 0 -3;
+               rel2.offset: 0 -2;
+               image {
+                  normal: "entry_cursor.png";
+               }
+               fill {
+                  smooth: 1;
+               }
             }
-            description { state: "focused" 0.0;
+            description {
+               state: "visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
             }
          }
-         part { name: "clip";
-            type: RECT;
-            mouse_events: 0;
-            clip_to: "clip2";
-            description { state: "default" 0.0;
-               rel1.offset: -10 0;
-               rel2.offset: 9 9;
-            }
-            description { state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
-            }
-         }
-         part { name: "bg";
-            mouse_events: 0;
-            clip_to: "clip";
-            description { state: "default" 0.0;
-               rel1.to: "base";
-               rel1.offset: -2 0;
-               rel2.to: "base";
-               rel2.offset: 1 1;
-               image.border: 2 2 2 2;
-               image.normal: "cur_shad.png";
-            }
-         }
-         part { name: "base";
-            mouse_events: 0;
-            scale: 1;
-            clip_to: "clip";
-            description { state: "default" 0.0;
-               min: 2 2;
-               align: 0.5 1.0;
-               rel1.relative: 0.0 1.0;
-               rel1.offset: 0 -1;
-               rel2.relative: 1.0 1.0;
-               rel2.offset: -1 -1;
-               image.normal: "cur_box.png";
-            }
-         }
-         part { name: "hi";
-            mouse_events: 0;
-            clip_to: "clip";
-            description { state: "default" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
-               rel2.relative: 1.0 0.5;
-               image.normal: "cur_hi.png";
-            }
-         }
-         part { name: "shine";
-            mouse_events: 0;
-            clip_to: "clip";
-            clip_to: "clip2";
-            description { state: "default" 0.0;
-               rel1.to: "base";
-               rel2.to: "base";
-               rel2.relative: 1.0 0.75;
-               image.border: 2 2 1 0;
-               image.normal: "cur_shine.png";
-               fill.smooth: 0;
-            }
-         }
-         part { name: "glow";
-            mouse_events: 0;
-            clip_to: "clip2";
-            description { state: "default" 0.0;
-               rel1.to: "base";
-               rel1.relative: 0.0 -2.0;
-               rel1.offset: -2 0;
-               rel2.to: "base";
-               rel2.relative: 1.0 0.0;
-               rel2.offset: 1 1;
-               image.border: 2 2 0 4;
-               image.normal: "cur_glow.png";
-               fill.smooth: 0;
-            }
-            description { state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               color: 255 255 255 0;
-            }
-         }
       }
       programs {
-         program { name: "show";
-            signal: "show";
-            source: "";
-            action: STATE_SET "hidden" 0.0;
+         program {
+            name: "on_cursor_show";
+            signal:  "elm,action,focus";
+            source:  "elm";
+            action: ACTION_STOP;
+            target: "cursor_show";
+            target: "cursor_hide";
+            target: "cursor_show_timer";
+            target: "cursor_hide_timer";
+            after: "cursor_show";
+         }
+         program {
+            name: "cursor_show";
+            action: STATE_SET "visible" 0.0;
+            target: "cursor";
+            after: "cursor_show_timer";
+         }
+         program {
+            name: "cursor_hide";
+            action: STATE_SET "default" 0.0;
+            target: "cursor";
+            after: "cursor_hide_timer";
+         }
+         program {
+            name: "cursor_show_timer";
             in: 1.0 0.0;
-            transition: DECELERATE 2.0;
-            target: "glow";
-            after: "show2";
+            after: "cursor_hide";
          }
-         program { name: "show2";
-            action: STATE_SET "hidden" 0.0;
-            in: 0.2 0.0;
-            target: "clip";
-            after: "show3";
+         program {
+            name: "cursor_hide_timer";
+            in: 0.25 0.0;
+            after: "cursor_show";
          }
-         program { name: "show3";
-            action: STATE_SET "default" 0.0;
-            in: 0.5 0.0;
-            target: "clip";
-            after: "show4";
-         }
-         program { name: "show4";
-            action: STATE_SET "default" 0.0;
-            in: 0.5 0.0;
-            transition: DECELERATE 0.5;
-            target: "glow";
-            after: "show";
-         }
-         program { name: "focused";
-            signal: "elm,action,focus";
-            source: "elm";
-            action: STATE_SET "focused" 0.0;
-            target: "clip2";
-         }
-         program { name: "unfocused";
-            signal: "elm,action,unfocus";
-            source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "clip2";
+         program {
+            name: "focus_out";
+            signal:  "elm,action,focus";
+            source:  "elm";
+            action: ACTION_STOP;
+            target: "cursor_show";
+            target: "cursor_hide";
+            target: "cursor_show_timer";
+            target: "cursor_hide_timer";
          }
       }
    }
