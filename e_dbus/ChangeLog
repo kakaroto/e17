@@ -70,3 +70,4 @@
 
         * Fix properties handling
         * Check if interface already exists before attaching
+        * Fix missing DBus.Properties attach

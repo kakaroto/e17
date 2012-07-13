@@ -292,12 +292,18 @@ e_dbus_object_interfaces_get(E_DBus_Object *obj)
 EAPI void
 e_dbus_object_property_get_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Get_Cb func)
 {
+  EINA_SAFETY_ON_NULL_RETURN(obj);
+  if (obj->cb_property_get == NULL && obj->cb_property_set == NULL)
+    e_dbus_object_interface_attach(obj, properties_interface);
   obj->cb_property_get = func;
 }
 
 EAPI void
 e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set_Cb func)
 {
+  EINA_SAFETY_ON_NULL_RETURN(obj);
+  if (obj->cb_property_get == NULL && obj->cb_property_set == NULL)
+    e_dbus_object_interface_attach(obj, properties_interface);
   obj->cb_property_set = func;
 }
 
