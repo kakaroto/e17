@@ -5,7 +5,7 @@
       }
       parts {
          part { name: "whole";
-                 type: RECT;
+            type: RECT;
             description {
                state: "default" 0.0;
                visible: 1;
@@ -13,6 +13,7 @@
             }
          }
          part { name: "image_1_whole";
+            type: RECT;
             description {
                state: "default" 0.0;
                color: 255 255 255 255;
@@ -79,6 +80,7 @@
             }
          }
          part { name: "image_2_whole";
+            type: RECT;
             description {
                state: "default" 0.0;
                visible: 1;
