@@ -126,6 +126,11 @@ cb_properties_get(E_DBus_Object *obj, DBusMessage *msg)
     return dbus_message_new_error(msg, err.name, err.message);
   }
 
+  /*
+   * FIXME: there's no way to pass interface the interface here - this shall be
+   * fixed by another callback function, since fixing it here would break the
+   * API.
+   */
   obj->cb_property_get(obj, property, &type, &value);
   if (type == DBUS_TYPE_INVALID)
   {
@@ -171,6 +176,12 @@ cb_properties_set(E_DBus_Object *obj, DBusMessage *msg)
   if (dbus_type_is_basic(type))
   {
     dbus_message_iter_get_basic(&sub, &value);
+
+    /*
+     * FIXME: there's no way to pass interface the interface here - this shall
+     * be fixed by another callback function, since fixing it here would break
+     * the API.
+     */
     if (obj->cb_property_set(obj, property, type, value))
     {
       return dbus_message_new_method_return(msg);
