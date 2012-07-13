@@ -67,6 +67,7 @@ BORDER_BUTTON_ADV(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,OF
       } \
       part { \
          name:          NAME"_detail"; \
+         type: IMAGE; \
          mouse_events:  0; \
          description { \
             state:    "default" 0.0; \
@@ -88,21 +89,8 @@ BORDER_BUTTON_ADV(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,OF
          } \
          description { \
             state:    "active" 0.0; \
-            max:      18 18; \
-            rel1 { \
-               relative: 0.0  0.0; \
-               offset:   3    3; \
-               to:       NAME"_bg"; \
-            } \
-            rel2 { \
-               relative: 1.0  1.0; \
-               offset:   -4    -4; \
-               to:       NAME"_bg"; \
-            } \
+            inherit: "default" 0.0; \
             color:    182 65 142 255; \
-            image { \
-               normal: "button_detail_"TYPE".png"; \
-            } \
          } \
       } \
       part { \
@@ -396,17 +384,7 @@ BORDER_BUTTON_ADV(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,OF
          } \
          description { \
             state:    "active" 0.0; \
-            max:      18 18; \
-            rel1 { \
-               relative: 0.0  0.0; \
-               offset:   3    3; \
-               to:       NAME"_bg"; \
-            } \
-            rel2 { \
-               relative: 1.0  1.0; \
-               offset:   -4    -4; \
-               to:       NAME"_bg"; \
-            } \
+            inherit: "default" 0.0; \
             color:   DARKNESS_BUTTON_BLUE 200; \
          } \
       } \
@@ -814,7 +792,7 @@ group { \
             inherit: "default" 0.0; \
             color: 255 255 255 100; \
          } \
-      } \
+      }
 
 #define LOWER_BORDER_PARTS \
       part { \
