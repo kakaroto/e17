@@ -542,6 +542,7 @@ group {
          description { state: "default" 0.0;
             max: 999 15;
             min: 100 15;
+            fixed: 1 1;
             rel1.relative: 0.5 0.0;
             rel2.relative: 0.5 1.0;
             image {
