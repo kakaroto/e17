@@ -189,6 +189,7 @@ elm_main(int argc, char **argv)
           edje_object_part_text_set(o, "e.text.title", "Envision");
           edje_object_part_text_set(o, "e.text.version", PACKAGE_VERSION);
           edje_object_part_text_set(o, "e.text.status", "Right click to open file");
+          evas_object_layer_set(o, -1);
           elm_win_resize_object_add(envision->win, o);
           evas_object_show(o);
         }

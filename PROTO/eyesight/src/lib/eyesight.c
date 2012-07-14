@@ -22,6 +22,8 @@
 # include <config.h>
 #endif
 
+#include <Efreet_Mime.h>
+
 #include "Eyesight.h"
 #include "eyesight_private.h"
 
@@ -65,7 +67,7 @@ struct _Smart_Data
    Eyesight_Module *module;
    void            *backend;
 
-   char            *module_filename;
+   char            *module_name;
 
    void            *doc;
    char            *filename;
@@ -129,6 +131,7 @@ _eyesight_module_open(const char *name, Evas *evas, Evas_Object **obj, Eyesight_
      name = _eyesight_backend_priority[i++];
 
    plugin = eina_hash_find(_eyesight_backends, name);
+   printf(" * plugin %s : %p\n", name, plugin);
    if (!plugin)
      {
         if (i != 0 && i < (sizeof (_eyesight_backend_priority) / sizeof (char*)))
@@ -143,6 +146,7 @@ _eyesight_module_open(const char *name, Evas *evas, Evas_Object **obj, Eyesight_
         if (*module)
           {
              (*module)->plugin = plugin;
+             printf(" * module found !! %s\n", name);
              return name;
           }
      }
@@ -198,99 +202,88 @@ eyesight_object_add(Evas *evas)
    return evas_object_smart_add(evas, smart);
 }
 
-EAPI Eyesight_Backend
-eyesight_object_init(Evas_Object *obj, const char *module_filename)
-{
-   Smart_Data *sd;
-   char *filename;
-   const char *modulename;
-
-   E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, EINA_FALSE);
-
-   DBG("module filename=%s", module_filename);
-
-   if ((sd->module_filename) && module_filename && (!strcmp(sd->module_filename, module_filename)))
-     goto backend_success;
-
-   if (sd->module_filename)
-     {
-        free(sd->module_filename);
-        sd->module_filename = NULL;
-     }
-
-   filename = sd->filename;
-   sd->filename = NULL;
-
-   _eyesight_module_close(sd->module, sd->backend);
-   sd->module = NULL;
-   sd->backend = NULL;
-
-   modulename = _eyesight_module_open(module_filename, evas_object_evas_get(obj), &sd->obj, &sd->module, &sd->backend);
-   if (!modulename)
-     return EYESIGHT_BACKEND_NONE;
-
-   evas_object_smart_member_add(sd->obj, obj);
-   evas_object_smart_data_set(obj, sd);
-   evas_object_event_callback_add(sd->obj, EVAS_CALLBACK_RESIZE, _eyesight_resize_cb, obj);
-
-   sd->module_filename = strdup(modulename);
-   if (!sd->module_filename)
-     return EYESIGHT_BACKEND_NONE;
-
-   if (filename)
-     {
-        eyesight_object_file_set(obj, filename);
-        free(filename);
-     }
-
- backend_success:
-   if (strcmp(sd->module_filename, "img") == 0)
-     return EYESIGHT_BACKEND_IMG;
-   if (strcmp(sd->module_filename, "pdf") == 0)
-     return EYESIGHT_BACKEND_PDF;
-   if (strcmp(sd->module_filename, "ps") == 0)
-     return EYESIGHT_BACKEND_PS;
-   if (strcmp(sd->module_filename, "txt") == 0)
-     return EYESIGHT_BACKEND_TXT;
-}
-
-EAPI void *
+EAPI Eina_Bool
 eyesight_object_file_set(Evas_Object *obj, const char *filename)
 {
+   char file[PATH_MAX];
    Smart_Data *sd;
+   const char *mime;
+   const char *module_name = NULL;
+
+   if (!filename || !*filename)
+     return EINA_FALSE;
 
    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, EINA_FALSE);
 
    DBG("filename=%s", filename);
 
-   if (!sd->module)
-     return NULL;
+   realpath(filename, file);
+   if (sd->filename && (!strcmp(file, sd->filename)))
+     return EINA_TRUE;
 
-   if ((filename) && (sd->filename) && (!strcmp(filename, sd->filename)))
-     return sd->doc;
-
-   if (filename && *filename)
+   mime = efreet_mime_type_get(file);
+   if (mime)
      {
-        free(sd->filename);
-        sd->filename = strdup(filename);
-        if (!sd->filename)
-          return NULL;
-
-        sd->module->file_close(sd->backend);
-        if (!(sd->doc = sd->module->file_open(sd->backend, sd->filename)))
-          return NULL;
+        if (strcmp(mime, "application/pdf") == 0)
+          module_name = "pdf";
+        else if (strcmp(mime, "application/postscript") == 0)
+          module_name = "ps";
+        else if (strcmp(mime, "text/plain") == 0)
+          module_name = "txt";
+        else if ((strcmp(mime, "application/x-cba") == 0) ||
+                 (strcmp(mime, "application/x-cbr") == 0) ||
+                 (strcmp(mime, "application/x-cbt") == 0) ||
+                 (strcmp(mime, "application/x-cbz") == 0) ||
+                 (strcmp(mime, "application/x-cb7") == 0) ||
+                 (strcmp(mime, "image/bmp") == 0) ||
+                 (strcmp(mime, "image/gif") == 0) ||
+                 (strcmp(mime, "image/jpeg") == 0) ||
+                 (strcmp(mime, "image/pjpeg") == 0) ||
+                 (strcmp(mime, "image/png") == 0) ||
+                 (strcmp(mime, "image/x-png") == 0) ||
+                 (strcmp(mime, "image/x-portable-pixmap") == 0) || /* ppm */
+                 (strcmp(mime, "image/svg+xml") == 0) ||
+                 (strcmp(mime, "image/x-tga") == 0) ||
+                 (strcmp(mime, "image/tiff") == 0) ||
+                 (strcmp(mime, "image/x-xpixmap") == 0)) /* xpm */
+          module_name = "png";
      }
-   else
+
+   if ((sd->module_name) && module_name && (!strcmp(sd->module_name, module_name)))
+     return EINA_TRUE;
+
+   if (sd->module_name)
      {
-        if (sd->backend && sd->module)
-          {
-             sd->module->file_close(sd->backend);
-          }
-        free(sd->filename);
-        sd->filename = NULL;
+        free(sd->module_name);
+        sd->module_name = NULL;
      }
 
-   return sd->doc;
+   if (sd->filename)
+     free(sd->filename);
+   sd->filename = strdup(file);
+
+   _eyesight_module_close(sd->module, sd->backend);
+   sd->module = NULL;
+   sd->backend = NULL;
+
+   module_name = _eyesight_module_open(module_name, evas_object_evas_get(obj), &sd->obj, &sd->module, &sd->backend);
+   if (!module_name)
+     return EINA_FALSE;
+
+   sd->module_name = strdup(module_name);
+   if (!sd->module_name)
+     return EINA_FALSE;
+
+   evas_object_smart_member_add(sd->obj, obj);
+   evas_object_smart_data_set(obj, sd);
+   evas_object_event_callback_add(sd->obj, EVAS_CALLBACK_RESIZE, _eyesight_resize_cb, obj);
+
+   sd->module->file_close(sd->backend);
+   sd->doc = sd->module->file_open(sd->backend, sd->filename);
+   if (!sd->doc)
+     return EINA_FALSE;
+
+   return EINA_TRUE;
 }
 
 EAPI const char *
@@ -301,6 +294,16 @@ eyesight_object_file_get(Evas_Object *obj)
    E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, NULL);
 
    return sd->filename;
+}
+
+EAPI void *
+eyesight_object_document_get(Evas_Object *obj)
+{
+   Smart_Data *sd;
+
+   E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, NULL);
+
+   return sd->doc;
 }
 
 EAPI const Eina_List *
@@ -587,11 +590,15 @@ _smart_init(void)
         goto shutdown_eina;
      }
 
-
    _eyesight_backends = eina_hash_string_small_new(free);
    if (!_eyesight_backends)
      {
         goto unregister_log_domain;
+     }
+
+   if (!efreet_mime_init())
+     {
+        goto free_backends;
      }
 
    _eyesight_modules = eina_module_list_get(NULL, PACKAGE_LIB_DIR "/eyesight/", 0, NULL, NULL);
@@ -611,7 +618,7 @@ _smart_init(void)
    if (!_eyesight_modules)
      {
         ERR("No module found!");
-        goto free_backends;
+        goto shutdown_efreet;
      }
 
    eina_module_list_load(_eyesight_modules);
@@ -649,6 +656,8 @@ _smart_init(void)
 
    return;
 
+ shutdown_efreet:
+   efreet_mime_shutdown();
  free_backends:
    eina_hash_free(_eyesight_backends);
  unregister_log_domain:
@@ -684,9 +693,10 @@ _smart_del(Evas_Object * obj)
    _eyesight_module_close(sd->module, sd->backend);
    evas_object_del(sd->obj);
    free(sd->filename);
-   free(sd->module_filename);
+   free(sd->module_name);
    free(sd);
 
+   efreet_mime_shutdown();
    eina_log_domain_unregister(_eyesight_log_domain);
    _eyesight_log_domain = -1;
    eina_shutdown();
@@ -771,4 +781,3 @@ _smart_clip_unset(Evas_Object * obj)
 
    evas_object_clip_unset(sd->obj);
 }
-

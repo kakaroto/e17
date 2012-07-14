@@ -90,7 +90,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-requirement_eyesight="eina >= 1.0.0, evas >= 1.0.0"
+requirement_eyesight="eina >= 1.2.0, evas >= 1.2.0 efreet-mime >= 1.2.0"
 
 EYESIGHT_CHECK_MODULE([PDF], [${want_pdf}])
 EYESIGHT_CHECK_MODULE([Postscript], [${want_postscript}])
@@ -100,7 +100,7 @@ EYESIGHT_CHECK_MODULE([Img], [${want_img}])
 PKG_CHECK_MODULES([EYESIGHT], [${requirement_eyesight}])
 
 if test "x${have_eyesight}" = "xyes" ; then
-   PKG_CHECK_MODULES([EYESIGHT_BIN], [ecore-input elementary >= 1.0.0],
+   PKG_CHECK_MODULES([EYESIGHT_BIN], [elementary >= 1.0.0 ecore-input >= 1.2.0],
       [build_eyesight_bin="yes"], [build_eyesight_bin="no"])
 fi
 

@@ -1001,7 +1001,7 @@ collections {
                new val;
                val = get_int(is_ready);
                if (val == 1)
-                  run_program(PROGRAM:"exit1"); 
+                  run_program(PROGRAM:"exit1");
                else
                   set_int(do_end, 1);
             }
@@ -1025,4 +1025,110 @@ collections {
          }
       }
    }
+
+   group {
+      name: "envision/thumbs";
+
+      parts {
+
+         part {
+            name, "envision.swallow.content";
+            type, RECT;
+            mouse_events, 1;
+            description {
+               state, "default" 0.0;
+               color, 255 0 0 255;
+               rel1 {
+                  relative, -0.25 0.0;
+                  offset, 6 0;
+               }
+               rel2 {
+                  relative, 0.0 1.0;
+                  offset, 6 0;
+               }
+            }
+            description {
+               state, "shown" 0.0;
+               color, 255 0 0 255;
+               rel1 {
+                  relative, 0.0 0.0;
+                  offset, 0 0;
+               }
+               rel2 {
+                  relative, 0.25 1.0;
+                  offset, 0 0;
+               }
+            }
+         } /* part "envision.swallow.content" */
+
+         part {
+            name, "envision.event";
+            type, RECT;
+            mouse_events, 1;
+            description {
+               state, "default" 0.0;
+               color, 255 255 0 255;
+               rel1.to, "envision.swallow.content";
+               rel2.to, "envision.swallow.content";
+            }
+            description {
+               state, "hide" 0.0;
+               color, 0 255 0 255;
+               rel1.relative, 0.0 1.0;
+               rel2.relative, 0.0 1.0;
+            }
+         } /* part "envision.event" */
+
+      } /* parts */
+
+      programs {
+
+         program {
+            name, "envision.swallow.content_in";
+            signal, "mouse,in";
+            source, "envision.event";
+            action, ACTION_STOP;
+            target, "envision.event_hide";
+            target, "envision.swallow.content_show";
+            after, "envision.event_hide";
+         }
+         program {
+            name: "envision.swallow.content_show";
+            action, STATE_SET "shown" 0.0;
+            transition, ACCELERATE 0.35;
+            target, "envision.swallow.content";
+         }
+         program {
+            name, "envision.event_hide";
+            in: 0.1 0;
+            action, STATE_SET "hide" 0.0;
+            target, "envision.event";
+            after: "envision.swallow.content_show";
+         }
+         program {
+            name, "envision.swallow.content_out";
+            signal, "mouse,out";
+            source, "envision.swallow.content";
+            action, ACTION_STOP;
+            target, "envision.event_show";
+            target, "envision.swallow.content_hide";
+            after, "envision.event_show";
+         }
+         program {
+            name, "envision.swallow.content_hide";
+            action, STATE_SET "default" 0.0;
+            transition, DECELERATE 0.35;
+            target, "envision.swallow.content";
+         }
+         program {
+            name, "envision.event_show";
+            in: 0.1 0;
+            action, STATE_SET "default" 0.0;
+            target, "envision.event";
+            after, "envision.swallow.content_hide";
+         }
+
+      } /* programs */
+
+   } /* group "envision/thumbs" */
 }
