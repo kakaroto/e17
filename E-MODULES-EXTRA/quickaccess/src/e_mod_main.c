@@ -239,7 +239,7 @@ _e_quick_access_border_eval_pre_post_fetch_cb(void *data __UNUSED__, void *borde
    E_Border *bd = border;
    E_Quick_Access_Entry *entry;
 
-   if ((!bd->new_client) || (bd->internal) || (bd->remember)) return;
+   if ((!bd->new_client) || (bd->internal)) return;
    if ((!bd->client.icccm.class) || (bd->client.icccm.class[0] == '\0')) return;
    if ((!bd->client.icccm.name) || (bd->client.icccm.name[0] == '\0')) return;
 
