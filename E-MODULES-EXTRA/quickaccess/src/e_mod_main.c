@@ -82,11 +82,11 @@ _e_quick_access_entry_find_match_stringshared(const char *name, const char *clas
    const Eina_List *n;
    EINA_LIST_FOREACH(_e_quick_access_entries, n, entry)
      {
-	if (entry->class != class) continue;
-	/* no entry name matches all */
-	if ((entry->name) && (entry->name != name)) continue;
+        if (entry->class != class) continue;
+        /* no entry name matches all */
+        if ((entry->name) && (entry->name != name)) continue;
 
-	return entry;
+        return entry;
      }
 
    return NULL;
@@ -117,7 +117,7 @@ _e_quick_access_entry_border_get(const E_Quick_Access_Entry *entry)
 static void
 _e_quick_access_entry_border_associate(E_Quick_Access_Entry *entry, E_Border *bd)
 {
-   if (entry->exe) entry->exe = NULL; /* not waiting anymore */
+   if (entry->exe) entry->exe = NULL;  /* not waiting anymore */
 
    entry->border = bd;
 
@@ -171,10 +171,10 @@ _e_quick_access_border_new(E_Quick_Access_Entry *entry)
 
    if (entry->exe)
      {
-	INF("already waiting '%s' to start for '%s' (name=%s, class=%s), "
-	    "run request ignored.",
-	    entry->cmd, entry->id, entry->name, entry->class);
-	return;
+        INF("already waiting '%s' to start for '%s' (name=%s, class=%s), "
+            "run request ignored.",
+            entry->cmd, entry->id, entry->name, entry->class);
+        return;
      }
 
    INF("start quick access '%s' (name=%s, class=%s), "
@@ -184,8 +184,8 @@ _e_quick_access_border_new(E_Quick_Access_Entry *entry)
    ei = e_exec(NULL, NULL, entry->cmd, NULL, NULL);
    if ((!ei) || (!ei->exe))
      {
-	ERR("could not execute '%s'", entry->cmd);
-	return;
+        ERR("could not execute '%s'", entry->cmd);
+        return;
      }
 
    entry->exe = ei->exe;
@@ -199,8 +199,8 @@ _e_quick_access_toggle_cb(E_Object *obj __UNUSED__, const char *params)
 
    if (!params)
      {
-	ERR("%s got params == NULL", _act_toggle);
-	return;
+        ERR("%s got params == NULL", _act_toggle);
+        return;
      }
    /* params is stringshared according to e_bindings.c */
    DBG("%s %s (stringshared=%p)", _act_toggle, params, params);
@@ -208,28 +208,28 @@ _e_quick_access_toggle_cb(E_Object *obj __UNUSED__, const char *params)
    entry = _e_quick_access_entry_find(params);
    if (!entry)
      {
-	ERR("unknown quick access identifier: '%s'", params);
-	return;
+        ERR("unknown quick access identifier: '%s'", params);
+        return;
      }
 
    bd = _e_quick_access_entry_border_get(entry);
    if (bd)
      {
-	if (bd->focused)
-	  {
-	     _e_quick_access_border_deactivate(bd);
-	     return;
-	  }
+        if (bd->focused)
+          {
+             _e_quick_access_border_deactivate(bd);
+             return;
+          }
 
-	DBG("activate border for identifier '%s' (name=%s, class=%s).",
-	    entry->id, entry->name, entry->class);
-	_e_quick_access_border_activate(bd);
+        DBG("activate border for identifier '%s' (name=%s, class=%s).",
+            entry->id, entry->name, entry->class);
+        _e_quick_access_border_activate(bd);
      }
    else
      {
-	DBG("no border known for identifier '%s' (name=%s, class=%s).",
-	    entry->id, entry->name, entry->class);
-	_e_quick_access_border_new(entry);
+        DBG("no border known for identifier '%s' (name=%s, class=%s).",
+            entry->id, entry->name, entry->class);
+        _e_quick_access_border_new(entry);
      }
 }
 
@@ -286,7 +286,7 @@ _e_quick_access_event_exe_del_cb(void *data __UNUSED__, int type __UNUSED__, voi
    E_Quick_Access_Entry *entry = _e_quick_access_entry_find_exe(ev->exe);
 
    if (entry)
-     entry->exe = NULL; /* not waiting/running anymore */
+     entry->exe = NULL;  /* not waiting/running anymore */
 
    return 1;
 }
@@ -305,51 +305,51 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    _e_quick_access_log_dom = eina_log_domain_register
-     ("quick_access", EINA_COLOR_ORANGE);
+       ("quick_access", EINA_COLOR_ORANGE);
    if (_e_quick_access_log_dom < 0)
      {
-	EINA_LOG_CRIT("could not register logging domain quick_access");
-	return NULL;
+        EINA_LOG_CRIT("could not register logging domain quick_access");
+        return NULL;
      }
 
    _e_quick_access_toggle = e_action_add(_act_toggle);
    if (!_e_quick_access_toggle)
      {
-	CRIT("could not register %s E_Action", _act_toggle);
-	goto failed_action;
+        CRIT("could not register %s E_Action", _act_toggle);
+        goto failed_action;
      }
 
    _e_quick_access_toggle->func.go = _e_quick_access_toggle_cb;
    e_action_predef_name_set
      (_(_e_quick_access_Name), _(_lbl_toggle),
-      _act_toggle, NULL, _("quick access name/identifier"), 1);
+     _act_toggle, NULL, _("quick access name/identifier"), 1);
 
-#define CB(id, func)							\
-   h = e_border_hook_add						\
-     (E_BORDER_HOOK_##id,						\
-      _e_quick_access_border_##func##_cb, NULL);			\
-   if (!h)								\
-     {									\
-	CRIT("could not add E_BORDER_HOOK_"#id" border hook.");		\
-	goto failed_hook;						\
-     }									\
-   _e_quick_access_border_hooks = eina_list_append			\
-     (_e_quick_access_border_hooks, h)
+#define CB(id, func)                                             \
+  h = e_border_hook_add                                          \
+      (E_BORDER_HOOK_##id,                                       \
+      _e_quick_access_border_##func##_cb, NULL);                 \
+  if (!h)                                                        \
+    {                                                            \
+       CRIT("could not add E_BORDER_HOOK_" #id " border hook."); \
+       goto failed_hook;                                         \
+    }                                                            \
+  _e_quick_access_border_hooks = eina_list_append                \
+      (_e_quick_access_border_hooks, h)
 
    CB(EVAL_PRE_POST_FETCH, eval_pre_post_fetch);
    CB(EVAL_POST_BORDER_ASSIGN, eval_post_border_assign);
 #undef CB
 
-#define CB(id, func)							\
-   eh = ecore_event_handler_add						\
-     (id, _e_quick_access_event_##func##_cb, NULL);			\
-   if (!eh)								\
-     {									\
-	CRIT("could not add "#id" event handler.");			\
-	goto failed_event_handler;					\
-     }									\
-   _e_quick_access_event_handlers = eina_list_append			\
-     (_e_quick_access_event_handlers, eh)
+#define CB(id, func)                                 \
+  eh = ecore_event_handler_add                       \
+      (id, _e_quick_access_event_##func##_cb, NULL); \
+  if (!eh)                                           \
+    {                                                \
+       CRIT("could not add " #id " event handler."); \
+       goto failed_event_handler;                    \
+    }                                                \
+  _e_quick_access_event_handlers = eina_list_append  \
+      (_e_quick_access_event_handlers, eh)
 
    CB(E_EVENT_BORDER_FOCUS_OUT, border_focus_out);
    CB(E_EVENT_BORDER_REMOVE, border_remove);
@@ -372,15 +372,15 @@ e_modapi_init(E_Module *m)
 
    return m;
 
- failed_event_handler:
+failed_event_handler:
    EINA_LIST_FREE(_e_quick_access_event_handlers, eh)
      ecore_event_handler_del(eh);
 
- failed_hook:
+failed_hook:
    EINA_LIST_FREE(_e_quick_access_border_hooks, h)
      e_border_hook_del(h);
 
- failed_action:
+failed_action:
    eina_log_domain_unregister(_e_quick_access_log_dom);
    _e_quick_access_log_dom = -1;
    return NULL;
@@ -404,10 +404,10 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
 
    if (_e_quick_access_toggle)
      {
-	e_action_predef_name_del(_(_e_quick_access_Name), _(_lbl_toggle));
+        e_action_predef_name_del(_(_e_quick_access_Name), _(_lbl_toggle));
 
-	e_action_del(_act_toggle);
-	_e_quick_access_toggle = NULL;
+        e_action_del(_act_toggle);
+        _e_quick_access_toggle = NULL;
      }
 
    INF("unloaded quick_access module, unregistered %s action.", _act_toggle);
@@ -422,3 +422,4 @@ e_modapi_save(E_Module *m __UNUSED__)
    // TODO: save entries in config file
    return 1;
 }
+
