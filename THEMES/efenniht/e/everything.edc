@@ -1785,6 +1785,7 @@ collections {
          SHELF_HILIGHT_ITEM("event", SHELF_HILIGHT_OVER)
          part {
             name: "clip";
+            type: RECT;
             mouse_events: 0;
             description {
                state: "default" 0.0;
@@ -1853,6 +1854,7 @@ collections {
          SHELF_OVER_ITEM("event", SHELF_OVER_OVER)
          SHELF_HILIGHT_ITEM("event", SHELF_HILIGHT_OVER)
          part { name: "clip";
+            type: RECT;
             mouse_events: 0;
             description { state: "default" 0.0;
                rel1.relative: 0.05 0.0;
