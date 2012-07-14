@@ -60,6 +60,11 @@ typedef struct E_Quick_Access_Entry
 
 
 extern int _e_quick_access_log_dom;
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+#undef CRIT
 #define DBG(...) EINA_LOG_DOM_DBG(_e_quick_access_log_dom, __VA_ARGS__)
 #define INF(...) EINA_LOG_DOM_INFO(_e_quick_access_log_dom, __VA_ARGS__)
 #define WRN(...) EINA_LOG_DOM_WARN(_e_quick_access_log_dom, __VA_ARGS__)
