@@ -3,6 +3,7 @@
 
 struct _E_Config_Dialog_Data
 {
+   int display_mode;
    char *display_name;
    char *icon_path;
    char *status_cmd;
@@ -77,6 +78,7 @@ _fill_data(Config_Item * ci, E_Config_Dialog_Data * cfdata)
    cfdata->okstate_exitcode = strdup(buf);
    snprintf (buf, sizeof(buf), "%d", ci->okstate_lines);
    cfdata->okstate_lines = strdup(buf);
+   cfdata->display_mode = ci->display_mode;
    cfdata->okstate_mode = ci->okstate_mode;
    cfdata->refresh_after_dblclk_cmd = ci->refresh_after_dblclk_cmd;
    cfdata->poll_time_hours = ci->poll_time_hours / 3600;
@@ -111,80 +113,96 @@ _free_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data * cfdata)
 {
-   Evas_Object *o, *of, *ob;
+   Evas_Object *o, *ob, *otb;
    E_Radio_Group *rg;
 
-   o = e_widget_list_add(evas, 0, 0);
+   otb = e_widget_toolbook_add(evas, (48 * e_scale), (48 * e_scale));
 
-   of = e_widget_frametable_add(evas, "Status Command Settings", 0);
 
-   ob = e_widget_label_add(evas, "Status Command");
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+   o = e_widget_table_add(evas, 0);
+
+   ob = e_widget_label_add(evas, D_("Command"));
+   e_widget_table_object_append(o, ob, 0, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->status_cmd, NULL, NULL, NULL);
    e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(o, ob, 1, 0, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("(Example: ping -c 5 127.0.0.1)"));
+   e_widget_table_object_append(o, ob, 1, 1, 2, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, "(Example: ping -c 5 127.0.0.1)");
-   e_widget_frametable_object_append(of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
-
-   rg = e_widget_radio_group_new (&(cfdata->okstate_mode));
-   ob = e_widget_radio_add (evas, "Expected Exitcode", 0, rg);
-   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->okstate_exitcode, NULL, NULL, NULL);
-   e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
-
-   ob = e_widget_radio_add (evas, "Expected String", 1, rg);
-   e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->okstate_string, NULL, NULL, NULL);
-   e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
-
-   ob = e_widget_radio_add (evas, "Expected Lines", 2, rg);
-   e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->okstate_lines, NULL, NULL, NULL);
-   e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 0, 1, 0);
-
-   ob = e_widget_label_add(evas, "Poll Time");
-   e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, "%2.0f hours", 0.0, 24.0, 1.0, 0,
+   ob = e_widget_label_add(evas, D_("Poll Time"));
+   e_widget_table_object_append(o, ob, 0, 2, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f hours"), 0.0, 24.0, 1.0, 0,
 			  &(cfdata->poll_time_hours), NULL, 40);
-   e_widget_frametable_object_append(of, ob, 1, 5, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, "%2.0f mins", 0.0, 59.0, 1.0, 0,
+   e_widget_table_object_append(o, ob, 1, 2, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f mins"), 0.0, 59.0, 1.0, 0,
 			  &(cfdata->poll_time_mins), NULL, 40);
-   e_widget_frametable_object_append(of, ob, 1, 6, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, "%2.0f secs", 0.0, 59.0, 1.0, 0,
+   e_widget_table_object_append(o, ob, 1, 3, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f secs"), 0.0, 59.0, 1.0, 0,
 			  &(cfdata->poll_time_secs), NULL, 40);
-   e_widget_frametable_object_append(of, ob, 1, 7, 2, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(o, ob, 1, 4, 2, 1, 1, 0, 1, 0);
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-   of = e_widget_frametable_add(evas, "Icon Settings", 0);
-
-   ob = e_widget_label_add(evas, "Display Name");
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->display_name, NULL, NULL, NULL);
-   e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-
-   ob = e_widget_label_add(evas, "Icon Path");
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->icon_path, NULL, NULL, NULL);
-   e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
-
-   ob = e_widget_label_add(evas, "Doubleclick Command");
-   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("Doubleclick Command"));
+   e_widget_table_object_append(o, ob, 0, 5, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->dblclk_cmd, NULL, NULL, NULL);
    e_widget_size_min_set(ob, 150, 1);
-   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(o, ob, 1, 5, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_check_add(evas, D_("Refresh after Execution"), &(cfdata->refresh_after_dblclk_cmd));
+   e_widget_table_object_append(o, ob, 1, 6, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_check_add(evas, "Refresh after Command", &(cfdata->refresh_after_dblclk_cmd));
-   e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
+   e_widget_toolbook_page_append(otb, NULL, D_("Command"), o, 1, 0, 1, 0, 0.5, 0.0);
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   return o;
+   o = e_widget_table_add(evas, 0);
+
+   ob = e_widget_label_add(evas, D_("Title"));
+   e_widget_table_object_append(o, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->display_name, NULL, NULL, NULL);
+   e_widget_size_min_set(ob, 150, 1);
+   e_widget_table_object_append(o, ob, 1, 0, 1, 1, 1, 0, 1, 0);
+
+   ob = e_widget_label_add(evas, D_("Mode"));
+   e_widget_table_object_append(o, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+   rg = e_widget_radio_group_new (&(cfdata->display_mode));
+   ob = e_widget_radio_add (evas, D_("Evaluate Command Result"), 0, rg);
+   e_widget_table_object_append(o, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_radio_add (evas, D_("Show Command Output"), 1, rg);
+   e_widget_table_object_append(o, ob, 1, 2, 1, 1, 1, 0, 1, 0);
+
+   ob = e_widget_label_add(evas, D_("Custom Icon"));
+   e_widget_table_object_append(o, ob, 0, 3, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->icon_path, NULL, NULL, NULL);
+   e_widget_size_min_set(ob, 150, 1);
+   e_widget_table_object_append(o, ob, 1, 3, 1, 1, 1, 0, 1, 0);
+
+   e_widget_toolbook_page_append(otb, NULL, D_("Display"), o, 1, 0, 1, 0, 0.5, 0.0);
+
+
+   o = e_widget_table_add(evas, 0);
+
+   rg = e_widget_radio_group_new (&(cfdata->okstate_mode));
+   ob = e_widget_radio_add (evas, D_("Expected Exitcode"), 0, rg);
+   e_widget_table_object_append(o, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->okstate_exitcode, NULL, NULL, NULL);
+   e_widget_size_min_set(ob, 150, 1);
+   e_widget_table_object_append(o, ob, 1, 0, 1, 1, 1, 0, 1, 0);
+
+   ob = e_widget_radio_add (evas, D_("Expected String"), 1, rg);
+   e_widget_table_object_append(o, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->okstate_string, NULL, NULL, NULL);
+   e_widget_size_min_set(ob, 150, 1);
+   e_widget_table_object_append(o, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+
+   ob = e_widget_radio_add (evas, D_("Expected Lines"), 2, rg);
+   e_widget_table_object_append(o, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->okstate_lines, NULL, NULL, NULL);
+   e_widget_size_min_set(ob, 150, 1);
+   e_widget_table_object_append(o, ob, 1, 2, 1, 1, 1, 0, 1, 0);
+
+   e_widget_toolbook_page_append(otb, NULL, D_("Evaluation"), o, 1, 0, 1, 0, 0.5, 0.0);
+
+
+   e_widget_toolbook_page_show(otb, 0);
+   return otb;
 }
 
 static int
@@ -222,6 +240,7 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
      ci->okstate_exitcode = atoi (cfdata->okstate_exitcode);
    if (strlen(cfdata->okstate_lines))
      ci->okstate_lines = atoi (cfdata->okstate_lines);
+   ci->display_mode = cfdata->display_mode;
    ci->okstate_mode = cfdata->okstate_mode;
    ci->refresh_after_dblclk_cmd = cfdata->refresh_after_dblclk_cmd;
    ci->poll_time_hours = cfdata->poll_time_hours * 3600;

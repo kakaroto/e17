@@ -13,7 +13,7 @@ group \
      { \
 	part \
 	  { \
-	     name: "icon"; \
+	     name: "icon_status"; \
 	     description \
 	       { \
 		  state: "default" 0.0; \
@@ -26,13 +26,22 @@ group \
      } \
 }
 
+styles
+{
+   style
+     {
+        name: "cmd_style";
+        base: "font=Sans:style=Mono font_size=10 text_class=tb_plain align=left color=#fff style=outline_soft_shadow shadow_color=#00000032 wrap=word";
+        tag:  "br" "\n";
+     }
+}
+
 collections
 {
    group
      {
 	name: "modules/execwatch/main";
         min: 40 40;
-        max: 128 128;
 	parts
 	  {
 	     part
@@ -50,7 +59,7 @@ collections
 	       }
 	     part
 	       {
-		  name: "custom_icon";
+		  name: "icon_custom";
 		  type: SWALLOW;
 		  mouse_events: 0;
 		  description
@@ -60,18 +69,24 @@ collections
 		    }
 		  description
 		    {
-		      state: "small" 0.0;
-		      visible: 1;
+		       state: "display_icon_custom" 0.0;
+		       visible: 1;
+		    }
+		  description
+		    {
+		       state: "display_command_output" 0.0;
+		       visible: 0;
 		    }
 	       }
 	     part
 	       {
-		  name: "icon";
+		  name: "icon_status";
 		  type: SWALLOW;
 		  mouse_events: 0;
 		  description
 		    {
 		       state: "default" 0.0;
+		       visible: 1;
 		       aspect_preference: BOTH;
 		       align: 0.0 0.0;
 		       rel1
@@ -87,7 +102,8 @@ collections
 		    }
 		  description
 		    {
-		       state: "small" 0.0;
+		       state: "display_icon_custom" 0.0;
+		       visible: 1;
 		       aspect_preference: BOTH;
 		       rel1
 			 {
@@ -100,10 +116,78 @@ collections
 			    offset:   -1  -1;
 			 }
 		    }
+		  description
+		    {
+		       state: "display_command_output" 0.0;
+		       visible: 0;
+		    }
 	       }
 	     part
 	       {
-		  name: "e.text.display_name";
+                  name: "command_output_background";
+                  type: RECT;
+                  mouse_events: 0;
+                  description
+                    {
+                       state: "default" 0.0;
+                       visible: 0;
+                    }
+                  description
+                    {
+                       state: "display_command_output" 0.0;
+                       visible: 1;
+                       color: 0 0 0 50;
+		       aspect_preference: BOTH;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset:   0   0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset:   -1  -1;
+			 }
+                    }
+               }
+	     part
+	       {
+                  name: "command_output";
+                  type: TEXTBLOCK;
+                  effect: OUTLINE_SOFT_SHADOW;
+                  mouse_events: 0;
+                  description
+                    {
+                       state: "default" 0.0;
+                       visible: 0;
+                    }
+                  description
+                    {
+                       state: "display_command_output" 0.0;
+                       visible: 1;
+		       aspect_preference: BOTH;
+		       rel1
+			 {
+			    relative: 0.0 0.0;
+			    offset:   0   0;
+			 }
+		       rel2
+			 {
+			    relative: 1.0 1.0;
+			    offset:   -1  -1;
+			 }
+
+                       text
+                         {
+                            style: "cmd_style";
+                            min: 0 1;
+                         }
+                    }
+
+               }
+	     part
+	       {
+		  name: "display_name";
 		  type: TEXT;
 		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
@@ -141,21 +225,36 @@ collections
 	  {
 	     program
 	       {
-		  name: "set_icon_small";
-		  signal: "e,visibility,small";
+		  name: "display_icon_status";
+		  signal: "e,visibility,display_icon_status";
 		  source: "e";
-		  action: STATE_SET "small" 0.0;
-		  target: "icon";
-		  target: "custom_icon";
+		  action: STATE_SET "default" 0.0;
+		  target: "icon_status";
+		  target: "icon_custom";
+		  target: "command_output_background";
+		  target: "command_output";
 	       }
 	     program
 	       {
-		  name: "set_icon_big";
-		  signal: "e,visibility,big";
+		  name: "display_icon_custom";
+		  signal: "e,visibility,display_icon_custom";
 		  source: "e";
-		  action: STATE_SET "default" 0.0;
-		  target: "icon";
-		  target: "custom_icon";
+		  action: STATE_SET "display_icon_custom" 0.0;
+		  target: "icon_status";
+		  target: "icon_custom";
+		  target: "command_output_background";
+		  target: "command_output";
+	       }
+	     program
+	       {
+		  name: "display_command_output";
+		  signal: "e,visibility,display_cmd_output";
+		  source: "e";
+		  action: STATE_SET "display_command_output" 0.0;
+		  target: "icon_status";
+		  target: "icon_custom";
+		  target: "command_output_background";
+		  target: "command_output";
 	       }
 	  }
      }

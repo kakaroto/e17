@@ -20,6 +20,8 @@ struct _Instance
 
    Config_Item     *ci;
    E_Gadcon_Popup  *popup;
+
+   char            *status_exe_result;
 };
 
 struct _Execwatch 
@@ -37,7 +39,7 @@ static const char *_gc_label(E_Gadcon_Client_Class *client_class);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Config_Item *_config_item_get(const char *id);
-static void _execwatch_icon(Instance *inst, char *icon);
+static void _execwatch_display(Instance *inst, char *icon);
 static Eina_Bool  _execwatch_status_cmd_exec(void *data);
 static int  _execwatch_status_cmd_exit(void *data, int type, void *event);
 static void _execwatch_popup_content_create(Instance *inst);
@@ -103,7 +105,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				  _cb_mouse_down, inst);
 
    if (inst->ci->display_name)
-     edje_object_part_text_set(execwatch->execwatch_obj, "e.text.display_name",
+     edje_object_part_text_set(execwatch->execwatch_obj, "display_name",
 			       inst->ci->display_name);
    if (inst->ci->status_cmd && strlen(inst->ci->status_cmd) &&
        (inst->ci->poll_time_hours || inst->ci->poll_time_mins || inst->ci->poll_time_secs))
@@ -113,7 +115,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	_execwatch_status_cmd_exec(inst);
      }	
    else
-     _execwatch_icon(inst, "cmd_edit");
+     _execwatch_display(inst, "cmd_edit");
 
    return gcc;
 }
@@ -212,6 +214,7 @@ _config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
+   ci->display_mode = 0; // default: show icon
    ci->display_name = eina_stringshare_add("Edit!");
    ci->icon_path = eina_stringshare_add("");
    ci->status_cmd = eina_stringshare_add("");
@@ -222,18 +225,134 @@ _config_item_get(const char *id)
    ci->okstate_lines = 0;
    ci->refresh_after_dblclk_cmd = 0;
    ci->poll_time_hours = 0.0;
-   ci->poll_time_mins = 0.0;
+   ci->poll_time_mins = 1.0;
    ci->poll_time_secs = 0.0;
 
    execwatch_config->items = eina_list_append(execwatch_config->items, ci);
    return ci;
 }
 
+static void  
+_execwatch_cmd_output_prepare(Instance *inst)
+{
+   char *d;
+   const char *p;
+   int textlen=0;
+
+   if (!inst) return;
+   if (inst->status_exe_result)
+     E_FREE(inst->status_exe_result);
+   if (inst->read && inst->read->lines)
+     {
+        Ecore_Exe_Event_Data_Line *lines;
+        int i=0;
+
+	lines = inst->read->lines;
+	for (i=0; lines[i].line; i++)
+           {	
+              if (inst->ci->display_mode)
+	        {
+                   if (i > 0)
+                     textlen += 4; // <br>
+                   /* replace special stringparts
+                    * '\t' -> "        "
+                    * '<'  -> "&lt;"
+                    * '>'  -> "&gt;"
+                    * '&'  -> "&amp;"
+                    */
+                   for (p = lines[i].line; *p != 0; p++)
+                     {
+                        if (*p == '\t')     textlen += 4; // '    '
+                        else if (*p == '<') textlen += 4; // '&lt;'
+                        else if (*p == '>') textlen += 4; // '&gt;'
+                        else if (*p == '&') textlen += 5; // '&amp;'
+                        else textlen++;
+                     }
+                }
+              else
+                {
+                   if (i > 0)
+                     textlen += lines[i].size + 1; // \n
+                   else
+                     textlen += lines[i].size;
+                }
+           }
+        textlen++; // \0
+
+        inst->status_exe_result = calloc(1, textlen);
+        if (!inst->status_exe_result) return;
+
+        inst->status_exe_result[0] = '\0';
+	d = inst->status_exe_result;
+	for (i = 0; lines[i].line; i++)
+	  {
+             if (inst->ci->display_mode)
+               {
+                  if (i > 0)
+                    {
+                       strcpy(d, "<br>");
+                       d += 4;
+                    }
+                  for (p = lines[i].line; *p != 0; p++)
+                    {
+                       if (*p == '\t')
+                         {
+                            strcpy(d, "    ");
+                            d += 4;
+                         }
+                       else if (*p == '<')
+                         {
+                            strcpy(d, "&lt;");
+                            d += 4;
+                         }
+                       else if (*p == '>')
+                         {
+                            strcpy(d, "&gt;");
+                            d += 4;
+                         }
+                       else if (*p == '&')
+                         {
+                            strcpy(d, "&amp;");
+                            d += 5;
+                         }
+                       else
+                         {
+                            *d = *p;
+                            d++;
+                         }
+                    }
+               }
+             else
+	       {
+                  if (i > 0)
+                    strcat(inst->status_exe_result, "\n");
+                  strcat(inst->status_exe_result, lines[i].line);
+               }
+	  }   
+     }
+   else
+     {
+        char *nodata_text = D_("--- no data received ---");
+
+        textlen = strlen (nodata_text);
+        textlen++; // \0
+
+        inst->status_exe_result = calloc(1, textlen);
+        if (!inst->status_exe_result) return;
+        inst->status_exe_result[0] = '\0';
+        strcat(inst->status_exe_result, nodata_text);
+     }
+
+   inst->status_exe_result[textlen] = '\0';
+   edje_object_part_text_set(inst->execwatch->execwatch_obj, "command_output", inst->status_exe_result);
+}
+
 static void
-_execwatch_icon(Instance *inst, char *icon)
+_execwatch_display(Instance *inst, char *icon)
 {
    Execwatch *execwatch;
    char m[4096], buf[4096];
+   char *text;
 
    if (!inst) return;
    execwatch = inst->execwatch;
@@ -243,18 +362,22 @@ _execwatch_icon(Instance *inst, char *icon)
    snprintf (buf, sizeof(buf), "modules/execwatch/icons/%s", icon);
    if (!e_theme_edje_object_set(execwatch->icon_obj,
 				"base/theme/modules/execwatch/icons", buf))
-     edje_object_file_set(execwatch->icon_obj, m, buf);
-   edje_object_part_swallow(execwatch->execwatch_obj, "icon", execwatch->icon_obj);
+   edje_object_file_set(execwatch->icon_obj, m, buf);
+   edje_object_part_swallow(execwatch->execwatch_obj, "icon_status", execwatch->icon_obj);
    
-   if (inst->ci->icon_path && ecore_file_exists(inst->ci->icon_path))
+   if (inst->ci->display_mode)
      {
-	e_icon_file_set(execwatch->icon_custom_obj, inst->ci->icon_path);
-	edje_object_part_swallow(execwatch->execwatch_obj, "custom_icon", execwatch->icon_custom_obj);
-	edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,small","e");
+        edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,display_cmd_output","e");
+     }
+   else if (inst->ci->icon_path && ecore_file_exists(inst->ci->icon_path))
+     {
+        e_icon_file_set(execwatch->icon_custom_obj, inst->ci->icon_path);
+        edje_object_part_swallow(execwatch->execwatch_obj, "icon_custom", execwatch->icon_custom_obj);
+        edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,display_icon_custom","e");
      }
    else
      {
-	edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,big","e");
+        edje_object_signal_emit(execwatch->execwatch_obj,"e,visibility,display_icon_status","e");
      }
 }
 
@@ -271,7 +394,7 @@ _execwatch_status_cmd_exec(void *data)
    if (inst->status_exe) return EINA_TRUE;
    if (!inst->ci->status_cmd || !strlen(inst->ci->status_cmd)) return EINA_TRUE;
 
-   _execwatch_icon(inst, "cmd_exec");
+   _execwatch_display(inst, "cmd_exec");
    inst->status_exe = ecore_exe_pipe_run(inst->ci->status_cmd,
 				  ECORE_EXE_PIPE_AUTO | ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR |
 				  ECORE_EXE_PIPE_READ_LINE_BUFFERED | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED,
@@ -299,46 +422,50 @@ _execwatch_cmd_exit(void *data, int type, void *event)
 
    if (!strcmp(ecore_exe_tag_get(ev->exe), STATUS_EXE_TAG))
      {
+        _execwatch_cmd_output_prepare(inst);
+
 	inst->read = ecore_exe_event_data_get(ev->exe, ECORE_EXE_PIPE_READ);
 	inst->status_exe = NULL;
 
 	if (!inst->ci->okstate_mode)
 	  {
+             // check exitcode
 	     if (ev->exit_code == inst->ci->okstate_exitcode)
-	       _execwatch_icon(inst, "cmd_ok");
+	       _execwatch_display(inst, "cmd_ok");
 	     else
-	       _execwatch_icon(inst, "cmd_error");
+	       _execwatch_display(inst, "cmd_error");
 	  }
-	else
-	  {
-	     if (inst->read && inst->read->lines)
-	       {
-		  int icon_set = 0;
+	else if (inst->read && inst->read->lines)
+          {
+             int icon_set = 0;
 
-		  lines = inst->read->lines;
-		  for (i = 0; lines[i].line; i++)
-		    {
-		       if (inst->ci->okstate_mode == 1)
-			 {
-			    if (strstr(lines[i].line, inst->ci->okstate_string))
-			      {
-				 _execwatch_icon(inst, "cmd_ok");
-				 icon_set = 1;
-				 break;
-			      }
-			 }
-		    }
-		  if (inst->ci->okstate_mode == 2)
-		    if (i == inst->ci->okstate_lines)
-		      {
-			 _execwatch_icon(inst, "cmd_ok");
-			 icon_set = 1;
-		      }
-		  if (!icon_set) _execwatch_icon(inst, "cmd_error");
-	       }
-	     else
-	       _execwatch_icon(inst, "cmd_error");
-	  }
+             lines = inst->read->lines;
+             for (i = 0; lines[i].line; i++)
+                {
+                   if (inst->ci->okstate_mode == 1)
+                     {
+                        // check lines and compare with string
+                        if (strstr(lines[i].line, inst->ci->okstate_string))
+                          {
+                             _execwatch_display(inst, "cmd_ok");
+                             icon_set = 1;
+                             break;
+                          }
+                     }
+                   else if (inst->ci->okstate_mode == 2)
+                     {
+                        // check number of returned lines
+                        if (i == inst->ci->okstate_lines)
+                          {
+                             _execwatch_display(inst, "cmd_ok");
+                             icon_set = 1;
+                          }
+                     }
+                   if (!icon_set) _execwatch_display(inst, "cmd_error");
+                }
+          }
+        else
+          _execwatch_display(inst, "cmd_error");
 
 	if (inst->popup)
 	  {
@@ -376,30 +503,7 @@ _execwatch_popup_content_create(Instance *inst)
 
    if (!inst->ci->status_cmd || !strlen(inst->ci->status_cmd)) return;
 
-   if (inst->read && inst->read->lines)
-     {
-	lines = inst->read->lines;
-	for (i = 0; lines[i].line; i++)
-	  textlen += lines[i].size + 1;
-	text = alloca(textlen + 1);
-	if (!text) return;
-
-	text[0] = '\0';
-	for (i = 0; lines[i].line; i++)
-	  {
-	     strcat(text, lines[i].line);
-	     strcat(text, "\n");
-	  }
-     }
-   else
-     {
-	textlen = 32;
-	text = alloca(textlen);
-	if (!text) return;
-	snprintf(text, textlen, "--- no data received ---\n");
-     }
-
-   if (inst->popup) _execwatch_popup_destroy(inst);
+   if (inst->popup) _execwatch_popup_destroy(inst);	// FIXME: reopen popup after content recreation
    inst->popup = e_gadcon_popup_new(inst->gcc);
 
    current_time = time (NULL);
@@ -412,7 +516,8 @@ _execwatch_popup_content_create(Instance *inst)
 							  inst->ci->display_name);
    of = e_widget_framelist_add (evas, buf, 0);
    ob = e_widget_textblock_add(evas);
-   e_widget_textblock_plain_set(ob, text);
+   if (inst->status_exe_result)
+     e_widget_textblock_plain_set(ob, inst->status_exe_result);
    e_widget_size_min_set(ob, 240, 120);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -441,7 +546,8 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (!(inst = data)) return;
 
-   e_gadcon_popup_show(inst->popup);
+   if (!inst->ci->display_mode)
+     e_gadcon_popup_show(inst->popup);
 }
 
 static void
@@ -551,7 +657,7 @@ _execwatch_config_updated(Config_Item *ci)
 	if (inst->poll_timer) ecore_timer_del(inst->poll_timer);
 	if (inst->status_exe) ecore_exe_terminate (inst->status_exe);
 	if (inst->ci->display_name)
-	  edje_object_part_text_set(inst->execwatch->execwatch_obj, "e.text.display_name",
+	  edje_object_part_text_set(inst->execwatch->execwatch_obj, "display_name",
 				    inst->ci->display_name);
 	inst->poll_timer = ecore_timer_add((inst->ci->poll_time_hours + inst->ci->poll_time_mins + inst->ci->poll_time_secs),
 					    _execwatch_status_cmd_exec, inst);
@@ -574,6 +680,7 @@ e_modapi_init(E_Module *m)
    #define T Config_Item
    #undef D
    #define D conf_item_edd
+   E_CONFIG_VAL(D, T, display_mode, INT);
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, display_name, STR);
    E_CONFIG_VAL(D, T, icon_path, STR);
@@ -602,6 +709,7 @@ e_modapi_init(E_Module *m)
 	execwatch_config = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
 	ci->id = eina_stringshare_add("0");
+	ci->display_mode = 0; // default: show icon
 	ci->display_name = eina_stringshare_add("Edit!");
 	ci->icon_path = eina_stringshare_add("");
 	ci->status_cmd = eina_stringshare_add("");
@@ -612,7 +720,7 @@ e_modapi_init(E_Module *m)
 	ci->okstate_lines = 0;
 	ci->refresh_after_dblclk_cmd = 0;
 	ci->poll_time_hours = 0.0;
-	ci->poll_time_mins = 0.0;
+	ci->poll_time_mins = 1.0;
 	ci->poll_time_secs = 0.0;
 	
 	execwatch_config->items = eina_list_append(execwatch_config->items, ci);

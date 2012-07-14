@@ -27,6 +27,7 @@ struct _Config_Item
 {
    const char *id;
 
+   int display_mode;
    const char *display_name;
    const char *icon_path;
    const char *status_cmd;
