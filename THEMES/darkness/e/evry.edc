@@ -1476,7 +1476,7 @@
                   offset: 2 -12;
                   relative: 0.0 1.0;
                }
-               rel2.offset: -2 -4;
+               rel2.offset: -2 -8;
                color: DARKNESS_TEXT 255;
                color3: 0 0 0 0;
                text {
