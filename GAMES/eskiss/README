@@ -28,21 +28,21 @@ Chipmunk is available here: http://code.google.com/p/chipmunk-physics/
 Installation Instructions
 =========================
 
-Eskiss is using waf to build everything. Here's how to use it:
+Eskiss is using autotools to build everything. Here's how to use it:
 
 1. Go to the directory containing the sources
 
 2. Configuration
 
-        ./waf configure
+        ./configure
 
 3. Build
 
-        ./waf
+        make
 
 4. Install
 
-        ./waf install
+        make install
 
 Now just type "eskiss" in a terminal to start the game.
 
