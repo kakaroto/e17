@@ -53,7 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_libdir}/%{name}
 %{_datadir}/%{name}
-%{_datadir}/locale/*/*
+%{_datadir}/locale/*/*/*
 %{_datadir}/applications/*
 %{_datadir}/xsessions/*
 %{_datadir}/gnome-session/sessions/*
