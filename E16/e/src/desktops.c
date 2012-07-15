@@ -354,6 +354,8 @@ DeskConfigure(Desk * dsk)
    bg = BackgroundGetForDesk(dsk->num);
    DeskBackgroundSet(dsk, bg);
 
+   dsk->bg.pixel = 0xffffffff;
+
    if (dsk->num > 0)
      {
 	EoMove(dsk, WinGetW(VROOT), 0);
