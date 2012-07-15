@@ -1047,8 +1047,6 @@ EwinShade(EWin * ewin)
 
    SoundPlay(SOUND_SHADE);
 
-   DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
-
    esd = EMALLOC(_ewin_shade_data, 1);
    esd->ewin = ewin;
    _EwinShadeStart(esd);
@@ -1255,8 +1253,6 @@ EwinUnShade(EWin * ewin)
       return;
 
    SoundPlay(SOUND_UNSHADE);
-
-   DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
 
    esd = EMALLOC(_ewin_shade_data, 1);
    esd->ewin = ewin;
