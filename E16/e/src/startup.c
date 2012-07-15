@@ -125,25 +125,23 @@ static int
 doStartupWindowsOpen(void *data __UNUSED__)
 {
    static int          kk = 0;
-   int                 k, x, y, xOffset, yOffset, ty;
+   int                 k, x, y, xOffset, yOffset;
 
    k = kk;
 
    if (bg_sideways)
      {				/* so we can have two different slide methods */
-	ty = (WinGetW(VROOT) / 2);
-	xOffset = (ty * k) >> 10;
-	x = ty;
-	yOffset = 0;
+	x = WinGetW(VROOT) / 2;
+	xOffset = (x * k) >> 10;
 	y = 0;
+	yOffset = 0;
      }
    else
      {
-	ty = (WinGetH(VROOT) / 2);
-	xOffset = 0;
 	x = 0;
-	yOffset = (ty * k) >> 10;
-	y = ty;
+	xOffset = 0;
+	y = WinGetH(VROOT) / 2;
+	yOffset = (y * k) >> 10;
      }
 
    EobjMove(init_win1, -x - xOffset, -y - yOffset);
