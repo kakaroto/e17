@@ -88,6 +88,7 @@ examples_files = \
 	tests/test.py \
 	tests/test.edj \
 	tests/cursors.edj \
+	tests/external.edj \
 	tests/test_3d.py \
 	tests/test_actionslider.py \
 	tests/test_bg.py \
@@ -103,6 +104,7 @@ examples_files = \
 	tests/test_dayselector.py \
 	tests/test_diskselector.py \
 	tests/test_entry.py \
+	tests/test_external.py \
 	tests/test_fileselector.py \
 	tests/test_flip.py \
 	tests/test_flipselector.py \
@@ -182,9 +184,12 @@ examples_images_files = \
 	tests/images/sky_03.jpg \
 	tests/images/sky_04.jpg \
 	tests/images/wood_01.jpg \
-	tests/images/icon_right_arrow.png
-	tests/images/mystrale.jpg
-	tests/images/mystrale_2.jpg
+	tests/images/icon_right_arrow.png \
+	tests/images/mystrale.jpg \
+	tests/images/mystrale_2.jpg \
+	tests/images/clo.png \
+	tests/images/under.png \
+	tests/images/sky.jpg
 
 tests_files =
 
