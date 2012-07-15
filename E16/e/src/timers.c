@@ -25,8 +25,6 @@
 #include "e16-ecore_list.h"
 #include "timers.h"
 
-#define DEBUG_TIMERS 0
-
 struct _timer {
    unsigned int        in_time;
    unsigned int        at_time;
@@ -49,11 +47,9 @@ _TimerSet(Timer * timer)
 {
    Timer              *ptr, *pptr;
 
-#if DEBUG_TIMERS
-   if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("_TimerSet %p: func=%p data=%p\n", timer, timer->func,
+   if (EDebug(EDBUG_TYPE_TIMERS) > 1)
+      Eprintf("%s %p: func=%p data=%p\n", __func__, timer, timer->func,
 	      timer->data);
-#endif
 
    /* if there is no queue it becomes the queue */
    if (!q_first)
@@ -80,11 +76,9 @@ _TimerSet(Timer * timer)
 static void
 _TimerDel(Timer * timer)
 {
-#if DEBUG_TIMERS
    if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("_TimerDel %p: func=%p data=%p\n", timer, timer->func,
+      Eprintf("%s %p: func=%p data=%p\n", __func__, timer, timer->func,
 	      timer->data);
-#endif
    Efree(timer);
 }
 
@@ -103,7 +97,7 @@ TimerAdd(int dt_ms, int (*func) (void *data), void *data)
    timer->data = data;
 
    if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("TimerAdd %p: func=%p data=%p: %8d\n", timer,
+      Eprintf("%s %p: func=%p data=%p: %8d\n", __func__, timer,
 	      timer->func, timer->data, dt_ms);
 
    _TimerSet(timer);		/* Add to timer queue */
@@ -115,23 +109,21 @@ unsigned int
 TimersRun(unsigned int t_ms)
 {
    Timer              *timer, *q_old, *q_run;
-   unsigned int        t, tn;
+   unsigned int        tn;
 
    timer = q_first;
    if (!timer)
       return 0;			/* No timers pending */
 
-   t = t_ms;
-
    q_run = q_old = timer;
    for (; timer; timer = q_first)
      {
-	if (tdiff(timer->at_time, t) > 0)
+	if (tdiff(timer->at_time, t_ms) > 0)
 	   break;
 
 	if (EDebug(EDBUG_TYPE_TIMERS))
-	   Eprintf("TimersRun - run %p: func=%p data=%p: %8d\n", timer,
-		   timer->func, timer->data, timer->at_time - t);
+	   Eprintf("%s - run %p: func=%p data=%p: %8d\n", __func__, timer,
+		   timer->func, timer->data, timer->at_time - t_ms);
 
 	q_first = timer->next;
 
@@ -164,8 +156,9 @@ TimersRun(unsigned int t_ms)
    if (EDebug(EDBUG_TYPE_TIMERS) > 1)
      {
 	for (timer = q_first; timer; timer = timer->next)
-	   Eprintf("TimersRun - pend %p: func=%p data=%p: %8d\n",
-		   timer, timer->func, timer->data, timer->at_time - t);
+	   Eprintf("%s - pend %p: func=%p data=%p: %8d (%d)\n", __func__,
+		   timer, timer->func, timer->data, timer->at_time - t_ms,
+		   timer->in_time);
      }
 
    timer = q_first;
@@ -176,12 +169,12 @@ TimersRun(unsigned int t_ms)
     * The (mean) amount of work done in a timer function should of course not
     * exceed the timeout time. */
    if (timer)
-      tn = (int)(timer->at_time - t) > 0 ? timer->at_time - t : 1;
+      tn = (int)(timer->at_time - t_ms) > 0 ? timer->at_time - t_ms : 1;
    else
       tn = 0;
 
    if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("TimersRun - next in %8u\n", tn);
+      Eprintf("%s - next in %8u\n", __func__, tn);
 
    return tn;
 }
@@ -267,7 +260,7 @@ void
 IdlersRun(void)
 {
    if (EDebug(EDBUG_TYPE_IDLERS))
-      Eprintf("IdlersRun\n");
+      Eprintf("%s\n", __func__);
 
    ecore_list_for_each(idler_list, _IdlerRun, NULL);
 }
