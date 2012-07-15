@@ -958,8 +958,8 @@ EventsMain(void)
 	Mode.events.time_ms = time1 = time2;
 	/* dt = time spent since we last were here */
 
-	/* Run all expired timers, get time to first non-expired (0. means none) */
-	time2 = TimersRun(time2);
+	/* Run all expired timers */
+	TimersRun(time2);
 
 	/* Run idlers */
 	IdlersRun();
@@ -983,6 +983,8 @@ EventsMain(void)
 	  }
 	fdsize++;
 
+	/* Get time to first non-expired (0 means none) */
+	time2 = TimersRunNextIn(time2);
 	if (time2 > 0.)
 	  {
 	     tval.tv_sec = (long)time2 / 1000;

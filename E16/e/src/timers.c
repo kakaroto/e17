@@ -105,15 +105,14 @@ TimerAdd(int dt_ms, int (*func) (void *data), void *data)
    return timer;
 }
 
-unsigned int
+void
 TimersRun(unsigned int t_ms)
 {
    Timer              *timer, *q_old, *q_run;
-   unsigned int        tn;
 
    timer = q_first;
    if (!timer)
-      return 0;			/* No timers pending */
+      return;			/* No timers pending */
 
    q_run = q_old = timer;
    for (; timer; timer = q_first)
@@ -160,6 +159,13 @@ TimersRun(unsigned int t_ms)
 		   timer, timer->func, timer->data, timer->at_time - t_ms,
 		   timer->in_time);
      }
+}
+
+unsigned int
+TimersRunNextIn(unsigned int t_ms)
+{
+   Timer              *timer;
+   unsigned int        tn;
 
    timer = q_first;
 

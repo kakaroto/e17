@@ -29,7 +29,8 @@
 Timer              *TimerAdd(int dt_ms, int (*func) (void *data), void *data);
 void                TimerDel(Timer * timer);
 void                TimerSetInterval(Timer * timer, int dt_ms);
-unsigned int        TimersRun(unsigned int t_ms);
+void                TimersRun(unsigned int t_ms);
+unsigned int        TimersRunNextIn(unsigned int t_ms);
 
 #define TIMER_ADD(timer, in, func, prm) \
    timer = TimerAdd(in, func, prm)
