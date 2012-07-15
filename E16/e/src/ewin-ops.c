@@ -885,11 +885,6 @@ _EwinShadeStart(_ewin_shade_data * esd)
 
    EwinBorderMinShadeSize(ewin, &minw, &minh);
 
-#if 0
-   Eprintf("EwinShade-B %d\n", ewin->border->shadedir);
-   EGrabServer();
-#endif
-
    switch (ewin->border->shadedir)
      {
      default:
@@ -939,11 +934,6 @@ _EwinShadeEnd(_ewin_shade_data * esd)
 
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
 		  ewin->client.w, ewin->client.h, MRF_KEEP_MAXIMIZED);
-
-#if 0
-   EUngrabServer();
-   Eprintf("EwinShade-E\n");
-#endif
 
    ewin->state.shading = 0;
 
@@ -1092,11 +1082,6 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
 
    clx = cly = 0;
 
-#if 0
-   Eprintf("EwinUnShade-B %d\n", ewin->border->shadedir);
-   EGrabServer();
-#endif
-
    switch (ewin->border->shadedir)
      {
      default:
@@ -1170,11 +1155,6 @@ _EwinUnshadeEnd(_ewin_shade_data * esd)
 
    EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin),
 		  ewin->client.w, ewin->client.h, MRF_KEEP_MAXIMIZED);
-
-#if 0
-   EUngrabServer();
-   Eprintf("EwinUnShade-E\n");
-#endif
 
    ewin->state.shading = 0;
 
