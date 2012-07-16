@@ -62,6 +62,7 @@ group {
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				rel1 {
@@ -150,6 +151,7 @@ group {
 			name: "confine"; /* overlap */
 			type: RECT;
 			mouse_events: 0;
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
@@ -184,44 +186,8 @@ group {
 		}
 
 		part {
-			name: "e.dragable.cursor";
-			dragable {
-				x: 1 1 0;
-				y: -1 1 0;
-				confine: "confine";
-			}
-			description {
-				state: "default" 0.0;
-				min: 11 9;
-				max: 11 9;
-				fixed: 1 1;
-				rel1 { 
-					to: "e.swallow.content"; 
-					relative: 0.5 0.0; 
-					offset: 0 0; 
-				}
-				rel2 { 
-					to: "e.swallow.content"; 
-					relative: 0.5 1.0; 
-					offset: -1 -1; 
-				}
-				image {
-					normal: "images/spectrum_im2.png";
-				}
-			}
-			description {
-				state: "vertical" 0.0;
-				inherit: "default" 0.0;
-				min: 9 1;
-				max: 9 1;
-				image {
-					normal: "images/spectrum_im3.png";
-				}
-			}
-		}
-
-		part {
 			name: "vert.dragable.cursor.part1";
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				min: 9 5;
@@ -251,6 +217,7 @@ group {
 
 		part {
 			name: "vert.dragable.cursor.part2";
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				min: 9 5;
@@ -280,6 +247,7 @@ group {
 
 		part {
 			name: "opposite.e.dragable.cursor.top";
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				min: 9 5;
@@ -309,6 +277,7 @@ group {
 
 		part {
 			name: "opposite.e.dragable.cursor.middle";
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				min: 9 1;
@@ -339,6 +308,7 @@ group {
 
 		part {
 			name: "opposite.e.dragable.cursor.bottom";
+                        repeat_events: 1;
 			description {
 				state: "default" 0.0;
 				min: 9 5;
@@ -366,6 +336,53 @@ group {
 				visible: 1;
 			}
 		}
+
+		part {
+			name: "e.dragable.cursor";
+                        repeat_events: 1;
+			dragable {
+				x: 1 1 0;
+				y: -1 1 0;
+				confine: "confine";
+			}
+			description {
+				state: "default" 0.0;
+				min: 11 9;
+				max: 11 0;
+				fixed: 1 1;
+				rel1 { 
+					to: "e.swallow.content"; 
+					relative: 0.5 0.0; 
+					offset: 0 0; 
+				}
+				rel2 { 
+					to: "e.swallow.content"; 
+					relative: 0.5 1.0; 
+					offset: -1 -1; 
+				}
+				image {
+					normal: "images/spectrum_im2.png";
+				}
+			}
+			description {
+				state: "vertical" 0.0;
+				inherit: "default" 0.0;
+				min: 9 11;
+				max: 9 11;
+                                rel1 {
+                                        to: "e.swallow.content";
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2 {
+                                        to: "e.swallow.content";
+                                        relative: 1.0 0.0;
+                                        offset: -1 -1;
+                                }
+                                color: 0 0 0 0;
+			}
+		}
+
 	}
 	programs {
 		program {
