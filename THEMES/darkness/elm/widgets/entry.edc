@@ -594,8 +594,8 @@
                state: "default" 0.0;
                visible: 0;
                min: 5 12;
-               rel1.offset: 0 -3;
-               rel2.offset: 0 -2;
+               rel1.offset: -2 -3;
+               rel2.offset: -2 -2;
                image {
                   normal: "entry_cursor.png";
                }
