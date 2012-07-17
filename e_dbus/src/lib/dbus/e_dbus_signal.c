@@ -221,7 +221,7 @@ cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg)
 
        EINA_LIST_FOREACH(conn->signal_handlers, l, sh)
          {
-            if (!sh->delete_me && strcmp(sh->sender, bus) == 0)
+            if (!sh->delete_me && sh->sender && strcmp(sh->sender, bus) == 0)
               {
                  free(sh->owner);
                  sh->owner = NULL;
