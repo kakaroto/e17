@@ -11,7 +11,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmPhoto, fixed_aspect);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, editable);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, thumb);
 
-GENERATE_TEMPLATE(CElmPhoto,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmPhoto,
                   PROPERTY(size),
                   PROPERTY(fill),
                   PROPERTY(image),
