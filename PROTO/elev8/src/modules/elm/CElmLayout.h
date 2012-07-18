@@ -13,10 +13,6 @@ class CElmLayout : public CElmContainer {
 private:
    static Persistent<FunctionTemplate> tmpl;
    CElmLayout(Local<Object> _jsObject, CElmObject *parent);
-   CElmLayout(Local<Object> _jsObject, Evas_Object *child);
-   ~CElmLayout();
-
-   static Handle<FunctionTemplate> GetTemplate();
 
    Persistent<Value> fileused;
    Persistent<Value> chosentheme;
@@ -24,7 +20,13 @@ private:
    Persistent<Value> cursor_style;
    Persistent<Value> cursor_engine;
 
+protected:
+   CElmLayout(Local<Object> _jsObject, Evas_Object *child);
+   static Handle<FunctionTemplate> GetTemplate();
+   ~CElmLayout();
+
 public:
+
    virtual Handle<Value> contents_get() const;
    virtual void contents_set(Handle<Value> val);
 
@@ -34,5 +36,7 @@ public:
    virtual Handle<Value> theme_get() const;
    virtual void theme_set(Handle<Value> val);
 };
+
+}
 
 #endif // C_ELM_LAYOUT_H

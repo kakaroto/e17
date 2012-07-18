@@ -75,8 +75,9 @@ void CElmGenList::Initialize(Handle<Object> target)
 
 Handle<Value> CElmGenList::Pack(Handle<Value> value, Handle<Value> replace)
 {
-   HandleScope scope;
    Item<CElmGenList> *item = new Item<CElmGenList>(value, jsObject);
+   if (!item)
+     return Undefined();
    Local<Value> next;
 
    if (replace->IsObject())
@@ -94,13 +95,14 @@ Handle<Value> CElmGenList::Pack(Handle<Value> value, Handle<Value> replace)
                                                         Item<CElmGenList>::OnSelect, item);
 
    elm_object_item_data_set(item->object_item, item);
-   return scope.Close(item->jsObject);
+   return item->jsObject;
 }
 
 Handle<Value> CElmGenList::Unpack(Handle<Value> value)
 {
-   HandleScope scope;
    Item<CElmGenList> *item = Item<CElmGenList>::Unwrap(value);
+   if (!item)
+     return Undefined();
    Handle<Value> attrs = value->ToObject()->GetHiddenValue(Item<CElmGenList>::str_attrs);
    if (!attrs.IsEmpty())
      {
@@ -109,13 +111,14 @@ Handle<Value> CElmGenList::Unpack(Handle<Value> value)
           attrs->ToObject()->SetHiddenValue(Item<CElmGenList>::str_next, External::Wrap(next));
      }
    delete item;
-   return scope.Close(attrs);
+   return attrs;
 }
 
 void CElmGenList::UpdateItem(Handle<Value> value)
 {
    Item<CElmGenList> *item = Item<CElmGenList>::Unwrap(value);
-   elm_genlist_item_item_class_update(item->object_item, item->GetElmClass());
+   if (item)
+     elm_genlist_item_item_class_update(item->object_item, item->GetElmClass());
 }
 
 Handle<Value> CElmGenList::tooltip_unset(const Arguments &args)
