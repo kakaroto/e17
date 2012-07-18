@@ -4,23 +4,17 @@ namespace elm {
 
 using namespace v8;
 
-GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_up);
-GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_down);
-GENERATE_PROPERTY_CALLBACKS(CElmIcon, prescale);
-GENERATE_PROPERTY_CALLBACKS(CElmIcon, image);
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, file);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, lookup_order);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, thumb);
 
-GENERATE_TEMPLATE(CElmIcon,
-   PROPERTY(resizable_up),
-   PROPERTY(resizable_down),
-   PROPERTY(prescale),
-   PROPERTY(image),
+GENERATE_TEMPLATE_FULL(CElmImage, CElmIcon,
+   PROPERTY(file),
    PROPERTY(lookup_order),
    PROPERTY(thumb));
 
 CElmIcon::CElmIcon(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_icon_add(parent->GetEvasObject()))
+   : CElmImage(_jsObject, elm_icon_add(parent->GetEvasObject()))
 {
 }
 
@@ -35,52 +29,7 @@ void CElmIcon::Initialize(Handle<Object> target)
                GetTemplate()->GetFunction());
 }
 
-void CElmIcon::resizable_up_set(Handle<Value> val)
-{
-   if (val->IsBoolean())
-     {
-        Eina_Bool down;
-        elm_image_resizable_get(eo, NULL, &down);
-        elm_image_resizable_set(eo, val->BooleanValue(), down);
-     }
-}
-
-Handle<Value> CElmIcon::resizable_up_get() const
-{
-   Eina_Bool up;
-   elm_image_resizable_get(eo, &up, NULL);
-   return Boolean::New(up);
-}
-
-void CElmIcon::resizable_down_set(Handle<Value> val)
-{
-   if (val->IsBoolean())
-     {
-        Eina_Bool up;
-        elm_image_resizable_get(eo, &up, NULL);
-        elm_image_resizable_set(eo, up, val->BooleanValue());
-     }
-}
-
-Handle<Value> CElmIcon::resizable_down_get() const
-{
-   Eina_Bool down;
-   elm_image_resizable_get(eo, NULL, &down);
-   return Boolean::New(down);
-}
-
-Handle<Value> CElmIcon::prescale_get() const
-{
-   return Integer::New(elm_image_prescale_get(eo));
-}
-
-void CElmIcon::prescale_set(Handle<Value> val)
-{
-   if (val->IsNumber())
-     elm_image_prescale_set(eo, val->IntegerValue());
-}
-
-void CElmIcon::image_set(Handle<Value> val)
+void CElmIcon::file_set(Handle<Value> val)
 {
    if (!val->IsString())
      return;
@@ -99,7 +48,7 @@ void CElmIcon::image_set(Handle<Value> val)
    ELM_ERR("warning: can't read standard or file icon %s", *str);
 }
 
-Handle<Value> CElmIcon::image_get(void) const
+Handle<Value> CElmIcon::file_get(void) const
 {
    const char *file = NULL, *group = NULL;
 
