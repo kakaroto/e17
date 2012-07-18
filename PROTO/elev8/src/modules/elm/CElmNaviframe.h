@@ -2,11 +2,12 @@
 #define C_ELM_NAVIFRAME_H
 
 #include "elm.h"
+#include "CElmLayout.h"
 #include "CElmObject.h"
 
 namespace elm {
 
-class CElmNaviframe : public CElmObject {
+class CElmNaviframe : public CElmLayout {
 private:
    bool title_visible;
    static Persistent<FunctionTemplate> tmpl;

@@ -19,7 +19,7 @@ GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, item_promote);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop_to);
 
-GENERATE_TEMPLATE(CElmNaviframe,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmNaviframe,
                   PROPERTY(title_visible),
                   PROPERTY(event_enabled),
                   PROPERTY(prev_btn_auto_pushed),
@@ -35,7 +35,7 @@ GENERATE_TEMPLATE(CElmNaviframe,
                   METHOD(pop_to));
 
 CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_naviframe_add(parent->GetEvasObject()))
+   : CElmLayout(_jsObject, elm_naviframe_add(parent->GetEvasObject()))
    , title_visible(true)
    , stack(Persistent<Array>::New(Array::New()))
 {
