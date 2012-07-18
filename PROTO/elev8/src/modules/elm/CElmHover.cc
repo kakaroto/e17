@@ -20,6 +20,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmHover, bottom_right);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, left);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, right);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, middle);
+GENERATE_PROPERTY_CALLBACKS(CElmHover, target);
 GENERATE_PROPERTY_CALLBACKS(CElmHover, parent);
 GENERATE_METHOD_CALLBACKS(CElmHover, dismiss);
 GENERATE_METHOD_CALLBACKS(CElmHover, best_content_location_get);
@@ -34,6 +35,7 @@ GENERATE_TEMPLATE(CElmHover,
                   PROPERTY(left),
                   PROPERTY(right),
                   PROPERTY(middle),
+                  PROPERTY(target),
                   PROPERTY(parent),
                   METHOD(dismiss),
                   METHOD(best_content_location_get));
@@ -48,6 +50,7 @@ CElmHover::~CElmHover()
    for (unsigned i = 0; i < N_POSITIONS; i++)
       cached.content[i].Dispose();
 
+   target.Dispose();
    hover_parent.Dispose();
 }
 
@@ -189,6 +192,22 @@ Handle<Value> CElmHover::best_content_location_get(const Arguments& args)
     return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_BOTH));
 
   return String::NewSymbol("undefined");
+}
+
+Handle<Value> CElmHover::target_get() const
+{
+  return target;
+}
+
+void CElmHover::target_set(Handle<Value> val)
+{
+  if (val->IsObject())
+    {
+      elm_hover_target_set(eo, GetEvasObjectFromJavascript(val));
+
+      target.Dispose();
+      target = Persistent<Value>::New(val);
+    }
 }
 
 Handle<Value> CElmHover::parent_get() const
