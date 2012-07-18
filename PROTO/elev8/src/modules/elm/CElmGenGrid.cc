@@ -35,7 +35,7 @@ GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_show);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_bring);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, realized_items_update);
 
-GENERATE_TEMPLATE(CElmGenGrid,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmGenGrid,
                   PROPERTY(item_size_horizontal),
                   PROPERTY(item_size_vertical),
                   PROPERTY(highlight_mode),
