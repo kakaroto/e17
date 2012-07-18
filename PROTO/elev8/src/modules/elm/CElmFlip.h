@@ -2,13 +2,14 @@
 #define C_ELM_FLIP_H
 
 #include "elm.h"
+#include "CElmContainer.h"
 #include "CElmObject.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmFlip : public CElmObject {
+class CElmFlip : public CElmContainer {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

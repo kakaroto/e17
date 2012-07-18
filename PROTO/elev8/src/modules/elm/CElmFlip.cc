@@ -10,7 +10,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmFlip, perspective);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmFlip, front_visible);
 GENERATE_METHOD_CALLBACKS(CElmFlip, flip);
 
-GENERATE_TEMPLATE(CElmFlip,
+GENERATE_TEMPLATE_FULL(CElmContainer, CElmFlip,
                   PROPERTY(front),
                   PROPERTY(back),
                   PROPERTY(perspective),
@@ -18,7 +18,7 @@ GENERATE_TEMPLATE(CElmFlip,
                   METHOD(flip));
 
 CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_flip_add(parent->GetEvasObject()))
+   : CElmContainer(_jsObject, elm_flip_add(parent->GetEvasObject()))
 {
 }
 
