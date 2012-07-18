@@ -14,12 +14,13 @@ static int log_domain;
 #define ERR(...) EINA_LOG_DOM_ERR(log_domain, __VA_ARGS__)
 #define CRT(...) EINA_LOG_DOM_CRITICAL(log_domain, __VA_ARGS__)
 
+static void clearInterval(Handle<Value> val);
+
 class Timer {
 public:
    Timer(double interval_, Handle<Value> callback_, bool repeat_, const Local<Object>& thisObj_) {
-      obj = Persistent<Object>::New(Timer::GetTemplate()->GetFunction()->NewInstance());
-      obj->SetPointerInInternalField(0, this);
-      obj.MakeWeak(this, Timer::Delete);
+      obj = Persistent<Object>::New(Object::New());
+      obj->SetHiddenValue(String::NewSymbol("elev8::timer"), External::Wrap(this));
 
       timer = ecore_timer_add(interval_, Timer::OnInterval, this);
       thisObj = Persistent<Object>::New(thisObj_);
@@ -31,25 +32,12 @@ public:
       return obj;
    }
 
-   static Persistent<FunctionTemplate> GetTemplate() {
-      if (Timer::tmpl.IsEmpty())
-        {
-           Timer::tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
-           Timer::tmpl->InstanceTemplate()->SetInternalFieldCount(1);
-           Timer::tmpl->SetClassName(String::NewSymbol("Timer"));
-        }
-
-      return Timer::tmpl;
-   }
-
    ~Timer() {
-      HandleScope scope;
-
+      obj->DeleteHiddenValue(String::NewSymbol("elev8::timer"));
       ecore_timer_del(timer);
+      obj.Dispose();
       thisObj.Dispose();
       callback.Dispose();
-
-      obj->Set(String::NewSymbol("disposed_already"), Boolean::New(true));
    }
 
 private:
@@ -61,34 +49,29 @@ private:
 
    static Persistent<FunctionTemplate> tmpl;
 
-   static void Delete(Persistent<Value> obj, void *data) {
-      HandleScope scope;
-
-      if (!obj->ToObject()->Has(String::NewSymbol("disposed_already")))
-        delete static_cast<Timer *>(data);
-
-      obj.Clear();
-      obj.Dispose();
-   }
-
    static Eina_Bool OnInterval(void *data)
    {
       HandleScope scope;
       Timer *t = static_cast<Timer *>(data);
       Handle<Function> func(Function::Cast(*t->callback));
+      Handle<Value> obj = t->obj;
       Eina_Bool repeat = t->repeat;
       func->Call(t->thisObj, 0, NULL);
 
-      return repeat;
+      if (repeat)
+        return ECORE_CALLBACK_RENEW;
+
+      clearInterval(obj);
+      return ECORE_CALLBACK_CANCEL;
    }
 };
-
-Persistent<FunctionTemplate> Timer::tmpl;
 
 static void clearInterval(Handle<Value> val)
 {
    HandleScope scope;
-   delete static_cast<Timer *>(val->ToObject()->GetPointerFromInternalField(0));
+   val = val->ToObject()->GetHiddenValue(String::NewSymbol("elev8::timer"));
+   if (val.IsEmpty()) return;
+   delete static_cast<Timer *>(External::Unwrap(val));
 }
 
 static Handle<Value> New(const Arguments& args, bool repeat)
@@ -104,8 +87,7 @@ static Handle<Value> New(const Arguments& args, bool repeat)
 
 static Handle<Value> clearInterval(const Arguments& args)
 {
-   if (Timer::GetTemplate()->HasInstance(args[0]))
-      clearInterval(args[0]);
+   clearInterval(args[0]);
    return Undefined();
 }
 
