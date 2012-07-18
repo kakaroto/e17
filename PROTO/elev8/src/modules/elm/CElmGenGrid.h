@@ -28,6 +28,7 @@ protected:
 
 public:
    static void Initialize(Handle<Object> target);
+   static void UpdateItem(Handle<Value> value);
 
    Handle<Value> clear(const Arguments& args);
    Handle<Value> append(const Arguments& args);
@@ -37,6 +38,9 @@ public:
    Handle<Value> page_bring(const Arguments& args);
    Handle<Value> prepend(const Arguments& args);
    Handle<Value> realized_items_update(const Arguments& args);
+
+   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Unpack(Handle<Value>);
 
    Handle<Value> multi_select_get() const;
    void multi_select_set(Handle<Value> value);

@@ -88,52 +88,43 @@ void CElmGenGrid::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Gengrid"), GetTemplate()->GetFunction());
 }
 
-Handle<Value> CElmGenGrid::clear(const Arguments&)
+Handle<Value> CElmGenGrid::Pack(Handle<Value> value)
 {
-   /* FIXME: Properly dispose of resources */
-   elm_gengrid_clear(eo);
-   return Undefined();
+   HandleScope scope;
+   Item<CElmGenGrid> *item = new Item<CElmGenGrid>(value, jsObject);
+   Local<Value> next = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_next);
+
+   if (next.IsEmpty())
+     item->object_item = elm_gengrid_item_append(eo, item->GetElmClass(), item,
+                                                 Item<CElmGenGrid>::OnSelect, item);
+   else
+     item->object_item = elm_gengrid_item_insert_before(eo, item->GetElmClass(), item,
+                                                        (Elm_Object_Item *)External::Unwrap(next),
+                                                        Item<CElmGenGrid>::OnSelect, item);
+
+   elm_object_item_data_set(item->object_item, item);
+   return scope.Close(item->jsObject);
 }
 
-Handle<Value> CElmGenGrid::append(const Arguments& args)
+Handle<Value> CElmGenGrid::Unpack(Handle<Value> value)
 {
-   if (!args[0]->IsString())
-     return Undefined();
-
-   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
-   if (klass.IsEmpty() || !klass->IsObject())
-     return Undefined();
-
-   ItemClass<CElmGenGrid> *item_class = static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
-   Item<CElmGenGrid> *item = new Item<CElmGenGrid>(item_class, args[1], args[2]);
-
-   item->object_item = elm_gengrid_item_append(eo, item_class->GetElmClass(), item, Item<CElmGenGrid>::OnSelect, item);
-
-   return External::Wrap(item);
-}
-
-Handle<Value> CElmGenGrid::delete_item(const Arguments &args)
-{
-   static_cast<Item<CElmGenGrid> *>(External::Unwrap(args[0]))->Destroy();
-   return Undefined();
-}
-
-Handle<Value> CElmGenGrid::update_item(const Arguments &args)
-{
-   Item<CElmGenGrid> *item = static_cast<Item<CElmGenGrid> *>(External::Unwrap(args[0]));
-   if (!item)
-     return Undefined();
-
-   if (!args[1]->IsUndefined())
+   HandleScope scope;
+   Item<CElmGenGrid> *item = Item<CElmGenGrid>::Unwrap(value);
+   Handle<Value> attrs = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_attrs);
+   if (!attrs.IsEmpty())
      {
-        item->data.Dispose();
-        item->data = Persistent<Value>::New(args[1]);
+        Elm_Object_Item *next = elm_gengrid_item_next_get(item->object_item);
+        if (next)
+          attrs->ToObject()->SetHiddenValue(Item<CElmGenGrid>::str_next, External::Wrap(next));
      }
+   delete item;
+   return scope.Close(attrs);
+}
 
-   if (item->object_item)
-     elm_gengrid_item_update(item->object_item);
-
-   return Undefined();
+void CElmGenGrid::UpdateItem(Handle<Value> value)
+{
+   Item<CElmGenGrid> *item = Item<CElmGenGrid>::Unwrap(value);
+   elm_gengrid_item_item_class_update(item->object_item, item->GetElmClass());
 }
 
 Handle<Value> CElmGenGrid::page_show(const Arguments &args)

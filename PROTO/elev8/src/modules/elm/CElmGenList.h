@@ -16,10 +16,6 @@ protected:
    ~CElmGenList();
 
    struct {
-      Persistent<Object> classes;
-   } cached;
-
-   struct {
       Persistent<Value> longpress;
    } cb;
 
@@ -29,6 +25,7 @@ protected:
 
 public:
    static void Initialize(Handle<Object> target);
+   static void UpdateItem(Handle<Value> value);
 
    Handle<Value> clear(const Arguments& args);
    Handle<Value> append(const Arguments& args);
@@ -40,6 +37,9 @@ public:
    Handle<Value> tooltip_unset(const Arguments& args);
    Handle<Value> promote_item(const Arguments& args);
    Handle<Value> demote_item(const Arguments& args);
+
+   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Unpack(Handle<Value>);
 
    Handle<Value> multi_select_get() const;
    void multi_select_set(Handle<Value> value);
@@ -76,9 +76,6 @@ public:
 
    Handle<Value> homogeneous_get() const;
    void homogeneous_set(Handle<Value> value);
-
-   Handle<Value> classes_get() const;
-   void classes_set(Handle<Value> value);
 
    void OnLongPress(void *event_info);
    static void OnLongPressWrapper(void *data, Evas_Object *, void *event_info);

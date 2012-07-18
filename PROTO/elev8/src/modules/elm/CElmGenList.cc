@@ -18,7 +18,6 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, select_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
-GENERATE_PROPERTY_CALLBACKS(CElmGenList, classes);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_longpress);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, scroller_policy);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenList, items_count);
@@ -77,67 +76,40 @@ void CElmGenList::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Genlist"), GetTemplate()->GetFunction());
 }
 
-Handle<Value> CElmGenList::clear(const Arguments&)
+Handle<Value> CElmGenList::Pack(Handle<Value> value)
 {
-   /* FIXME: Properly dispose of resources */
-   elm_genlist_clear(eo);
-   return Undefined();
-}
+   HandleScope scope;
+   Item<CElmGenList> *item = new Item<CElmGenList>(value, jsObject);
+   Local<Value> next = value->ToObject()->GetHiddenValue(Item<CElmGenList>::str_next);
 
-Handle<Value> CElmGenList::append(const Arguments& args)
-{
-   if (!args[0]->IsString())
-     return Undefined();
+   if (next.IsEmpty())
+     item->object_item = elm_genlist_item_append(eo, item->GetElmClass(),
+                                                 item, NULL,ELM_GENLIST_ITEM_NONE,
+                                                 Item<CElmGenList>::OnSelect, item);
+   else
+     item->object_item = elm_genlist_item_insert_before(eo, item->GetElmClass(),
+                                                        item, NULL,
+                                                        (Elm_Object_Item *)External::Unwrap(next),
+                                                        ELM_GENLIST_ITEM_NONE,
+                                                        Item<CElmGenList>::OnSelect, item);
 
-   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
-   if (klass.IsEmpty() || !klass->IsObject())
-     return Undefined();
-
-   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
-   Item<CElmGenList> *item = new Item<CElmGenList>(item_class, args[1], args[2]);
-
-   item->object_item = elm_genlist_item_append(eo, item_class->GetElmClass(), item, NULL,
-          ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
    elm_object_item_data_set(item->object_item, item);
-
-   Persistent<Value> wrappedItem = Persistent<Value>::New(External::Wrap(item));
-   wrappedItem.MakeWeak(item, Item<CElmGenList>::DestroyFromGarbageCollector);
-
-   return wrappedItem;
+   return scope.Close(item->jsObject);
 }
 
-Handle<Value> CElmGenList::delete_item(const Arguments &args)
+Handle<Value> CElmGenList::Unpack(Handle<Value> value)
 {
-   Persistent<Value> wrappedItem = Persistent<Value>(args[0]);
-
-   // Call Destroy() on Item<>: this immediately remove the item from the GenList
-   // and frees up the memory used by the Item<> structure.
-   static_cast<Item<CElmGenList> *>(External::Unwrap(wrappedItem))->Destroy();
-
-   // Dispose the Handle; GC will kick in later, so also Clear the handle
-   // so that we're protected from double frees when that happens.
-   wrappedItem.Dispose();
-   wrappedItem.Clear();
-
-   return Undefined();
-}
-
-Handle<Value> CElmGenList::update_item(const Arguments &args)
-{
-   Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
-   if (!item)
-     return Undefined();
-
-   if (!args[1]->IsUndefined())
+   HandleScope scope;
+   Item<CElmGenList> *item = Item<CElmGenList>::Unwrap(value);
+   Handle<Value> attrs = value->ToObject()->GetHiddenValue(Item<CElmGenList>::str_attrs);
+   if (!attrs.IsEmpty())
      {
-        item->data.Dispose();
-        item->data = Persistent<Value>::New(args[1]);
+        Elm_Object_Item *next = elm_genlist_item_next_get(item->object_item);
+        if (next)
+          attrs->ToObject()->SetHiddenValue(Item<CElmGenList>::str_next, External::Wrap(next));
      }
-
-   if (item->object_item)
-     elm_genlist_item_update(item->object_item);
-
-   return Undefined();
+   delete item;
+   return scope.Close(attrs);
 }
 
 Handle<Value> CElmGenList::prepend(const Arguments& args)
@@ -159,27 +131,10 @@ Handle<Value> CElmGenList::prepend(const Arguments& args)
    return External::Wrap(item);
 }
 
-Handle<Value> CElmGenList::set_item_class(const Arguments &args)
+void CElmGenList::UpdateItem(Handle<Value> value)
 {
-   Handle<Value> klass = cached.classes->Get(args[1]->ToString());
-   if (klass.IsEmpty() || !klass->IsObject())
-     return Undefined();
-
-   Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
-   if (!item->object_item) // Item deleted from Elm side... nothing to do.
-     return Undefined();
-
-   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
-   if (!item->klass) // Unexpected inconsistency... nothing to do.
-     return Undefined();
-
-   if (item->klass == item_class) // Only update class if needed.
-     return Undefined();
-
-   item->klass = item_class;
-   elm_genlist_item_item_class_update(item->object_item, item_class->GetElmClass());
-
-   return Undefined();
+   Item<CElmGenList> *item = Item<CElmGenList>::Unwrap(value);
+   elm_genlist_item_item_class_update(item->object_item, item->GetElmClass());
 }
 
 Handle<Value> CElmGenList::tooltip_unset(const Arguments &args)
@@ -389,43 +344,12 @@ void CElmGenList::homogeneous_set(Handle<Value> value)
      elm_genlist_homogeneous_set(eo, value->IntegerValue());
 }
 
-void CElmGenList::classes_set(Handle<Value> value)
-{
-   Local<Object> classes = value->ToObject();
-   Local<Array> properties = classes->GetOwnPropertyNames();
-
-   if (!cached.classes.IsEmpty())
-     {
-        for (unsigned int i = 0; i < properties->Length(); ++i)
-          {
-             Local<String> class_name = properties->Get(i)->ToString();
-             Local<Object> class_desc = classes->Get(class_name)->ToObject();
-             delete static_cast<ItemClass<CElmGenList> *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
-          }
-     }
-   cached.classes.Dispose();
-
-   cached.classes = Persistent<Object>::New(classes);
-   for (unsigned int i = 0; i < properties->Length(); ++i)
-     {
-        Local<String> class_name = properties->Get(i)->ToString();
-        Local<Object> class_desc = classes->Get(class_name)->ToObject();
-        ItemClass<CElmGenList> *item_class = new ItemClass<CElmGenList>(this, class_name, class_desc);
-        class_desc->SetHiddenValue(String::NewSymbol("genlist::itemclass"), External::Wrap(item_class));
-     }
-}
-
-Handle<Value> CElmGenList::classes_get() const
-{
-   return cached.classes;
-}
-
 void CElmGenList::OnLongPress(void *event_info)
 {
    Handle<Function> callback(Function::Cast(*cb.longpress));
    Item<CElmGenList> *item = static_cast< Item<CElmGenList> *>
       (elm_object_item_data_get((Elm_Object_Item *)event_info));
-   Handle<Value> args[2] = { item->data, External::Wrap(item) };
+   Handle<Value> args[2] = { item->jsObject, External::Wrap(item) };
    callback->Call(jsObject, 2, args);
 }
 
