@@ -1,3 +1,4 @@
+#include "elm.h"
 #include "CElmLayout.h"
 
 namespace elm {
@@ -94,30 +95,123 @@ void CElmLayout::theme_set(Handle <Value> val)
    chosentheme = Persistent<Value>::New(val);
 }
 
-Handle<Value> CElmLayout::contents_get() const
+Handle<Value> CElmLayout::part_cursor_get() const
 {
-   HandleScope scope;
-
-   return scope.Close(the_contents);
+   Local<Object> cursor = part_cursor->ToObject();
+   return String::New(elm_layout_part_cursor_get(eo,
+                           *String::Utf8Value(cursor->Get(0))));
 }
 
-void CElmLayout::contents_set(Handle<Value> val)
+void CElmLayout::part_cursor_set(Handle<Value> val)
 {
-   if (!val->IsObject())
+   if (!val->IsArray())
      return;
 
-   Handle<Object> contents = val->ToObject();
-   Handle<Array> properties = contents->GetPropertyNames();
-   for (unsigned int i = 0; i <properties->Length(); i++)
-     {
-        Handle<Value> element = properties->Get(Integer::New(i));
-        CEvasObject *child = make_or_get(this, contents->Get(element->ToString()));
-        if (child)
-          {
-             elm_object_part_content_set(eo, *String::Utf8Value(element), child->get());
-             the_contents->Set(element, child->get_object());
-          }
-     }
+   Eina_Bool status;
+   Local<Object> cursor = val->ToObject();
+   status = elm_layout_part_cursor_set(eo,
+                 *String::Utf8Value(cursor->Get(0)),
+                 *String::Utf8Value(cursor->Get(1)));
+
+   if(!status)
+     return;
+
+   part_cursor.Dispose();
+   part_cursor = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmLayout::cursor_style_get() const
+{
+   Local<Object> cursor = cursor_style->ToObject();
+   return String::New(elm_layout_part_cursor_style_get(eo,
+                           *String::Utf8Value(cursor->Get(0))));
+}
+
+void CElmLayout::cursor_style_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Eina_Bool status;
+   Local<Object> cursor = val->ToObject();
+   status = elm_layout_part_cursor_style_set(eo,
+                 *String::Utf8Value(cursor->Get(0)),
+                 *String::Utf8Value(cursor->Get(1)));
+
+   if(!status)
+     return;
+
+   cursor_style.Dispose();
+   cursor_style = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmLayout::cursor_engine_get() const
+{
+   Local<Object> cursor = cursor_engine->ToObject();
+   return Boolean::New(elm_layout_part_cursor_engine_only_get(eo,
+                           *String::Utf8Value(cursor->Get(0))));
+}
+
+void CElmLayout::cursor_engine_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Eina_Bool status;
+   Local<Object> cursor = val->ToObject();
+   status = elm_layout_part_cursor_engine_only_set(eo,
+                 *String::Utf8Value(cursor->Get(0)),
+                 cursor->Get(1)->BooleanValue());
+
+   if(!status)
+     return;
+
+   cursor_engine.Dispose();
+   cursor_engine = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmLayout::part_cursor_unset(const Arguments&)
+{
+   Local<Object> cursor = part_cursor->ToObject();
+   return Boolean::New(elm_layout_part_cursor_unset(eo,
+                           *String::Utf8Value(cursor->Get(0))));
+}
+
+Handle<Value> CElmLayout::sizing_eval(const Arguments&)
+{
+   elm_layout_sizing_eval(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmLayout::box_remove_all(const Arguments& args)
+{
+   if((args[0]->IsUndefined()) && (args[1]->IsBoolean()))
+     return Boolean::New(elm_layout_box_remove_all(eo,
+                              *String::Utf8Value(args[0]),
+                              args[1]->BooleanValue()));
+   return Undefined();
+}
+
+Handle<Value> CElmLayout::signal_emit(const Arguments& args)
+{
+   if((args[0]->IsUndefined()) && (args[1]->IsUndefined()))
+     elm_layout_signal_emit(eo, *String::Utf8Value(args[0]), *String::Utf8Value(args[1]));
+
+   return Undefined();
+}
+
+Handle<Value> CElmLayout::table_clear(const Arguments& args)
+{
+   if((args[0]->IsUndefined()) && (args[1]->IsBoolean()))
+     return Boolean::New(elm_layout_table_clear(eo,
+                              *String::Utf8Value(args[0]),
+                              args[1]->BooleanValue()));
+   return Undefined();
+}
+
+void CElmLayout::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("Layout"), GetTemplate()->GetFunction());
 }
 
 }

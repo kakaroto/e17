@@ -41,6 +41,7 @@ libelm_la_SOURCES = \
 	CElmImage.cc \
 	CElmInwin.cc \
 	CElmLabel.cc \
+	CElmLayout.cc \
 	CElmNaviframe.cc \
 	CElmNotify.cc \
 	CElmObject.cc \
