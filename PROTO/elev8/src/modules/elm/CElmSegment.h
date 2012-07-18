@@ -2,11 +2,11 @@
 #define C_ELM_SEGMENT_H
 
 #include "elm.h"
-#include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
-class CElmSegment : public CElmObject {
+class CElmSegment : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

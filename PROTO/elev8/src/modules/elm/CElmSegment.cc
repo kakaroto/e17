@@ -8,12 +8,12 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmSegment, items);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmSegment, items_count);
 
-GENERATE_TEMPLATE(CElmSegment,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmSegment,
                   PROPERTY(items),
                   PROPERTY_RO(items_count));
 
-CElmSegment::CElmSegment(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_segment_control_add(parent->GetEvasObject()))
+CElmSegment::CElmSegment(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_segment_control_add(_parent->GetEvasObject()))
 {
 }
 
