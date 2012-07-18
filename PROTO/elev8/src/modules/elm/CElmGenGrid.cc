@@ -86,8 +86,10 @@ void CElmGenGrid::Initialize(Handle<Object> target)
 
 Handle<Value> CElmGenGrid::Pack(Handle<Value> value, Handle<Value> replace)
 {
-   HandleScope scope;
    Item<CElmGenGrid> *item = new Item<CElmGenGrid>(value, jsObject);
+   if (!item)
+     return Undefined();
+
    Local<Value> next;
 
    if (replace->IsObject())
@@ -102,13 +104,16 @@ Handle<Value> CElmGenGrid::Pack(Handle<Value> value, Handle<Value> replace)
                                                         Item<CElmGenGrid>::OnSelect, item);
 
    elm_object_item_data_set(item->object_item, item);
-   return scope.Close(item->jsObject);
+   return item->jsObject;
 }
 
 Handle<Value> CElmGenGrid::Unpack(Handle<Value> value)
 {
-   HandleScope scope;
    Item<CElmGenGrid> *item = Item<CElmGenGrid>::Unwrap(value);
+
+   if (!item)
+     return Undefined();
+
    Handle<Value> attrs = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_attrs);
    if (!attrs.IsEmpty())
      {
@@ -117,13 +122,15 @@ Handle<Value> CElmGenGrid::Unpack(Handle<Value> value)
           attrs->ToObject()->SetHiddenValue(Item<CElmGenGrid>::str_next, External::Wrap(next));
      }
    delete item;
-   return scope.Close(attrs);
+
+   return attrs;
 }
 
 void CElmGenGrid::UpdateItem(Handle<Value> value)
 {
    Item<CElmGenGrid> *item = Item<CElmGenGrid>::Unwrap(value);
-   elm_gengrid_item_item_class_update(item->object_item, item->GetElmClass());
+   if (item)
+     elm_gengrid_item_item_class_update(item->object_item, item->GetElmClass());
 }
 
 Handle<Value> CElmGenGrid::page_show(const Arguments &args)
