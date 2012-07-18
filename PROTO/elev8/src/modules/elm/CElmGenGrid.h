@@ -80,8 +80,8 @@ public:
    Handle<Value> page_relative_get() const;
    void page_relative_set(Handle<Value> value);
 
-   Handle<Value> align_get() const;
-   void align_set(Handle<Value> value);
+   Handle<Value> item_align_get() const;
+   void item_align_set(Handle<Value> value);
 
    Handle<Value> group_item_size_get() const;
    void group_item_size_set(Handle<Value> value);

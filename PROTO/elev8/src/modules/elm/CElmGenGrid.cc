@@ -17,7 +17,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, filled);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_relative);
-GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, align);
+GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, item_align);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, group_item_size);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_size);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, scroller_policy);
@@ -47,7 +47,7 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(horizontal),
                   PROPERTY(filled),
                   PROPERTY(page_relative),
-                  PROPERTY(align),
+                  PROPERTY(item_align),
                   PROPERTY(group_item_size),
                   PROPERTY(page_size),
                   PROPERTY(scroller_policy),
@@ -295,12 +295,12 @@ void CElmGenGrid::page_relative_set(Handle<Value> val)
    page_relative = Persistent<Value>::New(val);
 }
 
-Handle<Value> CElmGenGrid::align_get() const
+Handle<Value> CElmGenGrid::item_align_get() const
 {
    return align;
 }
 
-void CElmGenGrid::align_set(Handle<Value> val)
+void CElmGenGrid::item_align_set(Handle<Value> val)
 {
    if (!val->IsArray())
      return;
