@@ -6,7 +6,7 @@ using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmGrid, size);
 
-GENERATE_TEMPLATE(CElmGrid,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmGrid,
                   PROPERTY(size));
 
 CElmGrid::CElmGrid(Local<Object> _jsObject, CElmObject *parent)
@@ -32,8 +32,8 @@ Handle<Value> CElmGrid::Pack(Handle<Value> value, Handle<Value> _replace)
    } str = {
         String::NewSymbol("x"),
         String::NewSymbol("y"),
-        String::NewSymbol("w"),
-        String::NewSymbol("h"),
+        String::NewSymbol("width"),
+        String::NewSymbol("height"),
         String::NewSymbol("element"),
    };
 
