@@ -102,7 +102,7 @@ extern int log_domain;
       return Undefined(); \
    }
 
-#define GENERATE_TEMPLATE_FULL(super_class_,this_class_,...) \
+#define GENERATE_TEMPLATE(super_class_,this_class_,...) \
    Handle<FunctionTemplate> this_class_::GetTemplate() \
    { \
       if (!tmpl.IsEmpty()) return tmpl; \
@@ -117,9 +117,6 @@ extern int log_domain;
       return scope.Close(tmpl); \
    } \
    Persistent<FunctionTemplate> this_class_::tmpl
-
-#define GENERATE_TEMPLATE(this_class_,...) \
-   GENERATE_TEMPLATE_FULL(CElmObject, this_class_, ##__VA_ARGS__)
 
 
 #endif
