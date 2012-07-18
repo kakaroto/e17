@@ -66,9 +66,10 @@ protected:
 public:
 
    template <class T>
-   static Handle<Value> ElementSet(T item, Local<Value> value, const AccessorInfo& info)
+   static Handle<Value> ElementSet(T item, Local<Value> _value, const AccessorInfo& info)
      {
         HandleScope scope;
+        Handle<Value> value = _value;
         Local<Object> obj = info.This()->ToObject();
         Local<Object> items = obj->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
         Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
@@ -82,20 +83,16 @@ public:
         if (!element->IsUndefined())
           {
              element = packer->Unpack(element);
-             Local<Array> props = element->ToObject()->GetOwnPropertyNames();
+             Local<Array> props = value->ToObject()->GetOwnPropertyNames();
              for (unsigned int i = 0; i < props->Length(); i++)
                {
                   Local<String> key = props->Get(i)->ToString();
-                  if (!value->ToObject()->Has(key))
-                    value->ToObject()->Set(key, element->ToObject()->Get(key));
+                  element->ToObject()->Set(key, value->ToObject()->Get(key));
                }
+             value = element;
           }
 
-        if (tmpl->HasInstance(value))
-          packer->Pack(value);
-        else
-          value = Realise(value, parent);
-
+        value = Realise(value, parent);
         items->Set(item, value);
         return scope.Close(value);
      }
@@ -116,26 +113,15 @@ public:
 
         Local<Object> obj = info.This()->ToObject();
         Local<Object> items = obj->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
-        Local<Value> self = items->Get(item);
+        Handle<Value> self = items->Get(item);
 
         if (self->IsUndefined())
           return scope.Close(Boolean::New(false));
 
-        Local<Object> selfObj = self->ToObject();
+        Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
+        GetObjectFromJavascript(parent)->Unpack(self);
 
         items->Delete(item);
-        if (tmpl->HasInstance(self))
-          delete GetObjectFromJavascript(selfObj);
-        else
-          {
-             Local<Array> props = selfObj->GetOwnPropertyNames();
-             for (unsigned int i = 0; i < props->Length(); i++)
-               {
-                  Local<String> key = props->Get(i)->ToString();
-                  if (tmpl->HasInstance(selfObj->Get(key)))
-                    delete GetObjectFromJavascript(selfObj->Get(key));
-               }
-          }
         return scope.Close(Boolean::New(true));
      }
 
@@ -253,7 +239,7 @@ public:
 
    static Handle<Value> Realise(const Arguments& args);
 
-   static Local<Object> Realise(Handle<Value> desc, Handle<Value> parent);
+   static Handle<Value> Realise(Handle<Value> desc, Handle<Value> parent);
 };
 
 }

@@ -68,7 +68,7 @@ Handle<Value> CElmNaviframe::pop(const Arguments&)
 
 Handle<Value> CElmNaviframe::push(const Arguments& args)
 {
-   Local<Value> prev_btn, next_btn, content;
+   Handle<Value> prev_btn, next_btn, content;
 
    if (!args[0]->IsObject())
      return ThrowException(Exception::Error(String::New("Parameter 1 should be an object description or an elm.widget")));

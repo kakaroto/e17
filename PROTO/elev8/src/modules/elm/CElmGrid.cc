@@ -38,7 +38,7 @@ void CElmGrid::DidRealiseElement(Local<Value> val)
 void CElmGrid::pack(Handle<Object> obj)
 {
    int x, y, w, h;
-   Local<Value> element = obj->Get(String::NewSymbol("element"));
+   Handle<Value> element = obj->Get(String::NewSymbol("element"));
 
    if (element->IsUndefined())
      return;

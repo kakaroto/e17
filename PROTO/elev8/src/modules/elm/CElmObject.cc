@@ -745,45 +745,43 @@ void CElmObject::on_key_down_set(Handle<Value> val)
                                   &OnKeyDownWrapper, this);
 }
 
-Local<Object> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
+Handle<Value> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
    HandleScope scope;
 
    Local<String> type_str = String::NewSymbol("type");
    Local<Object> desc = descValue->ToObject();
-   Local<Object> realised;
+   Handle<Value> realised;
 
    if (tmpl->HasInstance(desc))
      return scope.Close(desc);
 
    if (desc->GetHiddenValue(type_str).IsEmpty())
      {
-        realised = desc->Clone();
+        Local<Object> obj = GetObjectFromJavascript(parent)->Pack(desc->Clone())->ToObject();
+        obj->SetHiddenValue(String::NewSymbol("elm::packer"), parent);
+        return scope.Close(obj);
      }
-   else
+
+   Handle<Value> params[] = { desc, parent };
+   Local<Value> func = desc->GetHiddenValue(type_str);
+   realised = Local<Function>::Cast(func)->NewInstance(2, params);
+
+   Local<Object> obj = realised->ToObject();
+   Local<Array> props = desc->GetOwnPropertyNames();
+
+   for (unsigned int i = 0; i < props->Length(); i++)
      {
-        Handle<Value> params[] = { desc, parent };
-        Local<Value> func = desc->GetHiddenValue(type_str);
-        realised = Local<Function>::Cast(func)->NewInstance(2, params);
-
-        Local<Array> props = desc->GetOwnPropertyNames();
-        for (unsigned int i = 0; i < props->Length(); i++)
-          {
-             Local<String> key = props->Get(i)->ToString();
-             Local<Value> val = desc->Get(key);
-             realised->Set(key, val);
-          }
-
-        Local<String> visible = String::NewSymbol("visible");
-        if (desc->Get(visible)->IsUndefined())
-          realised->Set(visible, Boolean::New(true));
+        Local<String> key = props->Get(i)->ToString();
+        obj->Set(key, desc->Get(key));
      }
+
+   Local<String> visible = String::NewSymbol("visible");
+   if (desc->Get(visible)->IsUndefined())
+     obj->Set(visible, Boolean::New(true));
 
    if (!parent->IsUndefined())
-     {
-        realised->SetHiddenValue(String::NewSymbol("elm::packer"), parent);
-        GetObjectFromJavascript(parent)->DidRealiseElement(realised);
-     }
+     GetObjectFromJavascript(parent)->DidRealiseElement(obj);
 
    return scope.Close(realised);
 }
