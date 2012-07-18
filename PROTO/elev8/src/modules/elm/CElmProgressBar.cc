@@ -13,7 +13,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, pulser);
 GENERATE_PROPERTY_CALLBACKS(CElmProgressBar, value);
 GENERATE_METHOD_CALLBACKS(CElmProgressBar, pulse);
 
-GENERATE_TEMPLATE(CElmProgressBar,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmProgressBar,
                   PROPERTY(icon),
                   PROPERTY(inverted),
                   PROPERTY(horizontal),
@@ -31,7 +31,7 @@ Handle<Value> CElmProgressBar::pulse(const Arguments& args)
 }
 
 CElmProgressBar::CElmProgressBar(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_progressbar_add(parent->GetEvasObject()))
+   : CElmLayout(_jsObject, elm_progressbar_add(parent->GetEvasObject()))
 {
 }
 

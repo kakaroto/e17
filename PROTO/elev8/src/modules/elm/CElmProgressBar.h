@@ -2,13 +2,14 @@
 #define C_ELM_PROGRESS_BAR_H
 
 #include "elm.h"
+#include "CElmLayout.h"
 #include "CElmObject.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmProgressBar : public CElmObject {
+class CElmProgressBar : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
