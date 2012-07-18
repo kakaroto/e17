@@ -125,6 +125,14 @@ public:
         return scope.Close(Boolean::New(true));
      }
 
+   template <class T>
+   static Handle<Integer> ElementHas(T item, const AccessorInfo &info)
+     {
+        HandleScope scope;
+        Local<Object> items = info.This()->ToObject()->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
+        return scope.Close(items->HasOwnProperty(item) ? Integer::New(None) : Handle<Integer>());
+     }
+
    static Handle<Array> ElementEnum(const AccessorInfo& info)
      {
         HandleScope scope;

@@ -63,7 +63,8 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
    Local<ObjectTemplate> tmpl = ObjectTemplate::New();
    tmpl->SetNamedPropertyHandler(CElmObject::ElementGet< Local<String> >,
                                  CElmObject::ElementSet< Local<String> >,
-                                 NULL, CElmObject::ElementDel< Local<String> >,
+                                 CElmObject::ElementHas< Local<String> >,
+                                 CElmObject::ElementDel< Local<String> >,
                                  CElmObject::ElementEnum);
 
    tmpl->SetIndexedPropertyHandler(CElmObject::ElementGet<uint32_t>,
