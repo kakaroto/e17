@@ -38,6 +38,8 @@ public:
    Handle<Value> group_value_get() const;
    void group_value_set(Handle<Value> value);
 
+   Handle<Value> group_selected_get() const;
+
    friend Handle<Value> CElmObject::New<CElmRadio>(const Arguments& args);
 };
 

@@ -8,12 +8,14 @@ GENERATE_PROPERTY_CALLBACKS(CElmRadio, icon);
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, group);
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, value);
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, group_value);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmRadio, group_selected);
 
 GENERATE_TEMPLATE(CElmRadio,
    PROPERTY(icon),
    PROPERTY(group),
    PROPERTY(value),
-   PROPERTY(group_value));
+   PROPERTY(group_value),
+   PROPERTY_RO(group_selected));
 
 CElmRadio::CElmRadio(Local<Object> _jsObject, CElmObject *_parent)
    : CElmObject(_jsObject, elm_radio_add(_parent->GetEvasObject()))
@@ -93,6 +95,15 @@ void CElmRadio::group_value_set(Handle<Value> value)
 {
    if (value->IsNumber())
      elm_radio_value_set(eo, value->Int32Value());
+}
+
+Handle<Value> CElmRadio::group_selected_get() const
+{
+   Evas_Object *selected_item = elm_radio_selected_object_get(eo);
+
+   CElmObject *selected = (CElmObject*)evas_object_data_get(selected_item, "this");
+
+   return selected->GetJSObject();
 }
 
 }
