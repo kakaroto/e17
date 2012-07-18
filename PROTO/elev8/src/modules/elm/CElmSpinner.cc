@@ -18,7 +18,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmSpinner, base);
 GENERATE_PROPERTY_CALLBACKS(CElmSpinner, interval);
 GENERATE_PROPERTY_CALLBACKS(CElmSpinner, value);
 
-GENERATE_TEMPLATE(CElmSpinner,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmSpinner,
                   PROPERTY(label_format),
                   PROPERTY(step),
                   PROPERTY(min),
@@ -33,7 +33,7 @@ GENERATE_TEMPLATE(CElmSpinner,
                   PROPERTY(value));
 
 CElmSpinner::CElmSpinner(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_spinner_add(parent->GetEvasObject()))
+   : CElmLayout(_jsObject, elm_spinner_add(parent->GetEvasObject()))
 {
 }
 

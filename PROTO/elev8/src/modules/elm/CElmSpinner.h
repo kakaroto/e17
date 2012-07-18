@@ -2,11 +2,12 @@
 #define C_ELM_SPINNER_H
 
 #include "elm.h"
+#include "CElmLayout.h"
 #include "CElmObject.h"
 
 namespace elm {
 
-class CElmSpinner : public CElmObject {
+class CElmSpinner : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
