@@ -8,12 +8,12 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmBox, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmBox, homogeneous);
 
-GENERATE_TEMPLATE(CElmBox,
-                  PROPERTY(horizontal),
-                  PROPERTY(homogeneous));
+GENERATE_TEMPLATE_FULL(CElmObject, CElmBox,
+                       PROPERTY(horizontal),
+                       PROPERTY(homogeneous));
 
 CElmBox::CElmBox(Local <Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_box_add(parent->GetEvasObject()))
+    : CElmObject(_jsObject, elm_box_add(parent->GetEvasObject()))
 {
 }
 
