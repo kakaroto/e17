@@ -298,6 +298,13 @@ debug_message_handler()
    ecore_idler_add(debug_message_handler_idler_cb, NULL);
 }
 
+static Eina_Bool
+flush_garbage_collector(void *, int , void *)
+{
+   V8::LowMemoryNotification();
+   return ECORE_CALLBACK_DONE;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -354,6 +361,7 @@ main(int argc, char *argv[])
    if (!run_script(argv[script_arg]))
      goto end;
 
+   ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, flush_garbage_collector, NULL);
    ecore_main_loop_begin();
 
 end:
