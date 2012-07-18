@@ -30,7 +30,6 @@ GENERATE_PROPERTY_CALLBACKS(CElmWindow, priority_minor);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, quickpanel_zone);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_step);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, size_base);
-GENERATE_PROPERTY_CALLBACKS(CElmWindow, layer);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, icon_name);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, role);
 GENERATE_PROPERTY_CALLBACKS(CElmWindow, focus_highlight_style);
@@ -48,7 +47,7 @@ GENERATE_METHOD_CALLBACKS(CElmWindow, lower);
 GENERATE_METHOD_CALLBACKS(CElmWindow, raise);
 GENERATE_METHOD_CALLBACKS(CElmWindow, center);
 
-GENERATE_TEMPLATE(CElmWindow,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmWindow,
                   PROPERTY(title),
                   PROPERTY(conformant),
                   PROPERTY(autodel),
@@ -74,7 +73,6 @@ GENERATE_TEMPLATE(CElmWindow,
                   PROPERTY(quickpanel_zone),
                   PROPERTY(size_step),
                   PROPERTY(size_base),
-                  PROPERTY(layer),
                   PROPERTY(icon_name),
                   PROPERTY(role),
                   PROPERTY(focus_highlight_style),
@@ -386,17 +384,6 @@ void CElmWindow::size_base_set(Handle <Value> val)
    size_base = Persistent<Value>::New(val);
 }
 
-Handle<Value> CElmWindow::layer_get() const
-{
-   return Integer::New(elm_win_layer_get(eo));
-}
-
-void CElmWindow::layer_set(Handle <Value> val)
-{
-   if (val->IsInt32())
-     elm_win_layer_set(eo, val->ToInt32()->Value());
-}
-
 Handle<Value> CElmWindow::icon_name_get() const
 {
    return String::New(elm_win_icon_name_get(eo));
@@ -658,7 +645,6 @@ Handle<Value> CElmWindow::center(const Arguments& args)
    return Undefined();
 }
 
-//---------------------
 
 CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_win_add(parent ? parent->GetEvasObject() : NULL, "main", ELM_WIN_BASIC))
