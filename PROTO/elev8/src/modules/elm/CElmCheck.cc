@@ -12,15 +12,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmCheck, icon);
 GENERATE_PROPERTY_CALLBACKS(CElmCheck, onlabel);
 GENERATE_PROPERTY_CALLBACKS(CElmCheck, offlabel);
 
-GENERATE_TEMPLATE(CElmCheck,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmCheck,
                   PROPERTY(on_change),
                   PROPERTY(state),
                   PROPERTY(icon),
                   PROPERTY(onlabel),
                   PROPERTY(offlabel));
 
-CElmCheck::CElmCheck(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_check_add(parent->GetEvasObject()))
+CElmCheck::CElmCheck(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_check_add(_parent->GetEvasObject()))
 {
 }
 
