@@ -8,7 +8,7 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_size);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, icon_order_lookup);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, homogeneous);
-GENERATE_PROPERTY_CALLBACKS(CElmToolbar, align);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_align);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, shrink_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, standard_priority);
@@ -18,7 +18,7 @@ GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(icon_size),
                   PROPERTY(icon_order_lookup),
                   PROPERTY(homogeneous),
-                  PROPERTY(align),
+                  PROPERTY(item_align),
                   PROPERTY(shrink_mode),
                   PROPERTY(horizontal),
                   PROPERTY(standard_priority),
@@ -150,12 +150,12 @@ void CElmToolbar::homogeneous_set(Handle<Value> value)
      elm_toolbar_homogeneous_set(eo, value->BooleanValue());
 }
 
-Handle<Value> CElmToolbar::align_get() const
+Handle<Value> CElmToolbar::item_align_get() const
 {
    return Number::New(elm_toolbar_align_get(eo));
 }
 
-void CElmToolbar::align_set(Handle<Value> value)
+void CElmToolbar::item_align_set(Handle<Value> value)
 {
    if (value->IsNumber())
      elm_toolbar_align_set(eo, value->NumberValue());

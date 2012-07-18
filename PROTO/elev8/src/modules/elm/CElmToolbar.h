@@ -51,8 +51,8 @@ public:
    Handle<Value> homogeneous_get() const;
    void homogeneous_set(Handle<Value> value);
 
-   Handle<Value> align_get() const;
-   void align_set(Handle<Value> value);
+   Handle<Value> item_align_get() const;
+   void item_align_set(Handle<Value> value);
 
    Handle<Value> shrink_mode_get() const;
    void shrink_mode_set(Handle<Value> value);
