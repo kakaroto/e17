@@ -38,6 +38,7 @@ protected:
 
    void content_set(CElmHover::Position, Handle<Value> val);
 
+   Persistent<Value> hover_parent;
 public:
    static void Initialize(Handle<Object> val);
 
@@ -67,6 +68,9 @@ public:
 
    void middle_set(Handle<Value> val);
    Handle<Value> middle_get() const;
+
+   void parent_set(Handle<Value> val);
+   Handle<Value> parent_get() const;
 
    Handle<Value> dismiss(const Arguments&);
 
