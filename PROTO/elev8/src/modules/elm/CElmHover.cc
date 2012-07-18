@@ -25,7 +25,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmHover, parent);
 GENERATE_METHOD_CALLBACKS(CElmHover, dismiss);
 GENERATE_METHOD_CALLBACKS(CElmHover, best_content_location_get);
 
-GENERATE_TEMPLATE(CElmHover,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmHover,
                   PROPERTY(top),
                   PROPERTY(top_left),
                   PROPERTY(top_right),
@@ -40,8 +40,8 @@ GENERATE_TEMPLATE(CElmHover,
                   METHOD(dismiss),
                   METHOD(best_content_location_get));
 
-CElmHover::CElmHover(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_hover_add(parent->GetEvasObject()))
+CElmHover::CElmHover(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_hover_add(_parent->GetEvasObject()))
 {
 }
 
