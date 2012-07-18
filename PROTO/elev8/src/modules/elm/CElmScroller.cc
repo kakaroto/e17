@@ -23,7 +23,7 @@ GENERATE_METHOD_CALLBACKS(CElmScroller, region_bring_in);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_show);
 GENERATE_METHOD_CALLBACKS(CElmScroller, page_bring_in);
 
-GENERATE_TEMPLATE(CElmScroller,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmScroller,
                   PROPERTY(bounce),
                   PROPERTY(policy),
                   PROPERTY(content),
@@ -43,8 +43,13 @@ GENERATE_TEMPLATE(CElmScroller,
                   METHOD(page_show),
                   METHOD(page_bring_in));
 
-CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_scroller_add(parent->GetEvasObject()))
+CElmScroller::CElmScroller(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_scroller_add(_parent->GetEvasObject()))
+{
+}
+
+CElmScroller::CElmScroller(Local<Object> _jsObject, Evas_Object *child)
+   : CElmLayout(_jsObject, child)
 {
 }
 

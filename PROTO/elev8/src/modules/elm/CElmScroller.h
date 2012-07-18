@@ -3,17 +3,19 @@
 
 #include "elm.h"
 #include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmScroller : public CElmObject {
+class CElmScroller : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
 protected:
    CElmScroller(Local<Object> _jsObject, CElmObject *parent);
+   CElmScroller(Local<Object> _jsObject, Evas_Object *child);
    virtual ~CElmScroller();
 
    struct {
