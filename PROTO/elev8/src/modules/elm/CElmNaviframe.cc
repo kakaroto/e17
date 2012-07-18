@@ -205,7 +205,7 @@ Handle<Value> CElmNaviframe::content_preserve_on_pop_get() const
 Handle<Value> CElmNaviframe::items_get() const
 {
    Eina_List *l = elm_naviframe_items_get(eo);
-   Local<Object> arr = Array::New(eina_list_count(l));
+   Handle<Array> arr = Array::New(eina_list_count(l));
 
    void *d;
    int i = 0;

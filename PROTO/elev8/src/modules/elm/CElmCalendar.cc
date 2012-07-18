@@ -134,7 +134,7 @@ Handle<Value> CElmCalendar::on_change_get(void) const
 
 Handle<Value> CElmCalendar::weekday_names_get(void) const
 {
-   Local<Object> obj = Array::New(7);
+   Handle<Array> obj = Array::New(7);
    const char **weekdays = elm_calendar_weekdays_names_get(eo);
    for (int i = 0; i < 7; i++)
      obj->Set(i, String::New(weekdays[i]));

@@ -413,7 +413,7 @@ Handle<Value> CElmGenGrid::horizontal_last_page_get() const
 Handle<Value> CElmGenGrid::realized_items_get() const
 {
    Eina_List *l = elm_gengrid_realized_items_get(eo);
-   Local<Object> arr = Array::New(eina_list_count(l));
+   Handle<Array> arr = Array::New(eina_list_count(l));
 
    void *d;
    int i = 0;
