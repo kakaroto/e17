@@ -3,12 +3,13 @@
 
 #include "elm.h"
 #include "CElmObject.h"
+#include "CElmButton.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmFileSelectorButton : public CElmObject {
+class CElmFileSelectorButton : public CElmButton {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

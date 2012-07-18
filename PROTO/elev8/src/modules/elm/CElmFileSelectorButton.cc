@@ -13,7 +13,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, is_save);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, inwin_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelectorButton, on_file_choose);
 
-GENERATE_TEMPLATE(CElmFileSelectorButton,
+GENERATE_TEMPLATE_FULL(CElmButton, CElmFileSelectorButton,
                   PROPERTY(win_title),
                   PROPERTY(win_size),
                   PROPERTY(path),
@@ -23,8 +23,8 @@ GENERATE_TEMPLATE(CElmFileSelectorButton,
                   PROPERTY(inwin_mode),
                   PROPERTY(on_file_choose));
 
-CElmFileSelectorButton::CElmFileSelectorButton(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_fileselector_button_add(parent->GetEvasObject()))
+CElmFileSelectorButton::CElmFileSelectorButton(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmButton(_jsObject, elm_fileselector_button_add(_parent->GetEvasObject()))
 {
 }
 
