@@ -36,13 +36,13 @@ public:
 
    Handle<Value> fixed_get() const;
    void fixed_set(Handle<Value> val);
-  
+
    Handle<Value> size_left_content_get() const;
    void size_left_content_set(Handle<Value> val);
-  
+
    Handle<Value> size_right_content_get() const;
    void size_right_content_set(Handle<Value> val);
- 
+
    friend Handle<Value> CElmObject::New<CElmPane>(const Arguments& args);
 };
 
