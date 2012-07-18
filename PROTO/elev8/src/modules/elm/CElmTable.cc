@@ -7,7 +7,7 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmTable, homogeneous);
 GENERATE_PROPERTY_CALLBACKS(CElmTable, padding);
 
-GENERATE_TEMPLATE(CElmTable,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmTable,
                   PROPERTY(homogeneous),
                   PROPERTY(padding));
 
