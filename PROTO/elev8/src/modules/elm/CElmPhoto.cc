@@ -9,13 +9,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmPhoto, fill);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, image);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, fixed_aspect);
 GENERATE_PROPERTY_CALLBACKS(CElmPhoto, editable);
+GENERATE_PROPERTY_CALLBACKS(CElmPhoto, thumb);
 
 GENERATE_TEMPLATE(CElmPhoto,
                   PROPERTY(size),
                   PROPERTY(fill),
                   PROPERTY(image),
                   PROPERTY(fixed_aspect),
-                  PROPERTY(editable));
+                  PROPERTY(editable),
+                  PROPERTY(thumb));
 
 CElmPhoto::CElmPhoto(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_photo_add(parent->GetEvasObject()))
@@ -24,6 +26,7 @@ CElmPhoto::CElmPhoto(Local<Object> _jsObject, CElmObject *parent)
 
 CElmPhoto::~CElmPhoto(){
    editable.Dispose();
+   thumb.Dispose();
 }
 
 void CElmPhoto::Initialize(Handle<Object> target)
@@ -99,6 +102,28 @@ void CElmPhoto::editable_set(Handle<Value> val){
 
    editable.Dispose();
    editable = Persistent<Value>::New(val); 
+}
+
+Handle<Value> CElmPhoto::thumb_get() const
+{
+   return thumb;
+}
+
+void CElmPhoto::thumb_set(Handle<Value> val)
+{
+   if (!val->IsObject())
+     return;
+
+   Local<Value> file = val->ToObject()->Get(String::NewSymbol("file"));
+   Local<Value> group = val->ToObject()->Get(String::NewSymbol("group"));
+
+   if (!file->IsString() || !group->IsString())
+     return;
+
+   elm_photo_thumb_set(eo, *String::Utf8Value(file), *String::Utf8Value(group));
+
+   thumb.Dispose();
+   thumb = Persistent<Value>::New(val);
 }
 
 }

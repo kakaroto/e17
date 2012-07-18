@@ -18,6 +18,7 @@ protected:
    ~CElmPhoto();
 
    Persistent<Value> editable;
+   Persistent<Value> thumb;
 public:
    static void Initialize(Handle<Object> target);
 
@@ -35,6 +36,9 @@ public:
 
    Handle<Value> editable_get() const;
    void editable_set(Handle<Value> val);
+
+   Handle<Value> thumb_get() const;
+   void thumb_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmPhoto>(const Arguments& args);
 };
