@@ -7,11 +7,11 @@ using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmConform, content);
 
-GENERATE_TEMPLATE(CElmConform,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmConform,
                   PROPERTY(content));
 
-CElmConform::CElmConform(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_conformant_add(parent->GetEvasObject()))
+CElmConform::CElmConform(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_conformant_add(_parent->GetEvasObject()))
 {
 }
 
