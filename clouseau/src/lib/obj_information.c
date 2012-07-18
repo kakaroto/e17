@@ -530,7 +530,9 @@ clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *
           {
              _clouseau_information_string_to_tree(main_tit, "Filename", oinfo->extra_props.u.image.file);
              _clouseau_information_string_to_tree(main_tit, "File key", oinfo->extra_props.u.image.key);
-             _clouseau_information_string_to_tree(main_tit, "Source", oinfo->extra_props.u.image.source);
+             snprintf(buf, sizeof(buf), "Source: %p", oinfo->extra_props.u.image.source);
+             _clouseau_information_buffer_to_tree(main_tit, buf);
+
              _clouseau_information_string_to_tree(main_tit, "Load error", oinfo->extra_props.u.image.load_err);
           }
         else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_EDJE)
