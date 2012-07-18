@@ -15,7 +15,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmCalendar, year);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, interval);
 GENERATE_PROPERTY_CALLBACKS(CElmCalendar, marks);
 
-GENERATE_TEMPLATE(CElmCalendar,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmCalendar,
                   PROPERTY(weekday_names),
                   PROPERTY(min_year),
                   PROPERTY(max_year),
@@ -26,8 +26,8 @@ GENERATE_TEMPLATE(CElmCalendar,
                   PROPERTY(interval),
                   PROPERTY(marks));
 
-CElmCalendar::CElmCalendar(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_calendar_add(parent->GetEvasObject()))
+CElmCalendar::CElmCalendar(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_calendar_add(_parent->GetEvasObject()))
 {
 }
 

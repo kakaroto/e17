@@ -3,12 +3,13 @@
 
 #include "elm.h"
 #include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmCalendar : public CElmObject {
+class CElmCalendar : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
