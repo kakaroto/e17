@@ -16,6 +16,9 @@ protected:
    CElmIcon(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
 
+   ~CElmIcon();
+
+   Persistent<Value> thumb;
 public:
    static void Initialize(Handle<Object> target);
    virtual void resizable_up_set(Handle<Value> val);
@@ -29,6 +32,9 @@ public:
 
    Handle<Value> lookup_order_get() const;
    void lookup_order_set(Handle<Value> val);
+
+   Handle<Value> thumb_get() const;
+   void thumb_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmIcon>(const Arguments& args);
 };

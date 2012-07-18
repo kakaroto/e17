@@ -9,17 +9,24 @@ GENERATE_PROPERTY_CALLBACKS(CElmIcon, resizable_down);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, prescale);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, image);
 GENERATE_PROPERTY_CALLBACKS(CElmIcon, lookup_order);
+GENERATE_PROPERTY_CALLBACKS(CElmIcon, thumb);
 
 GENERATE_TEMPLATE(CElmIcon,
    PROPERTY(resizable_up),
    PROPERTY(resizable_down),
    PROPERTY(prescale),
    PROPERTY(image),
-   PROPERTY(lookup_order));
+   PROPERTY(lookup_order),
+   PROPERTY(thumb));
 
 CElmIcon::CElmIcon(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_icon_add(parent->GetEvasObject()))
 {
+}
+
+CElmIcon::~CElmIcon()
+{
+  thumb.Dispose();
 }
 
 void CElmIcon::Initialize(Handle<Object> target)
@@ -135,6 +142,28 @@ void CElmIcon::lookup_order_set(Handle<Value> val)
     elm_icon_order_lookup_set(eo, ELM_ICON_LOOKUP_FDO);
   else if (!strcmp(*lookup_order, "theme"))
     elm_icon_order_lookup_set(eo, ELM_ICON_LOOKUP_THEME);
+}
+
+Handle<Value> CElmIcon::thumb_get() const
+{
+   return thumb;
+}
+
+void CElmIcon::thumb_set(Handle<Value> val)
+{
+   if (!val->IsObject())
+     return;
+
+   Local<Value> file = val->ToObject()->Get(String::NewSymbol("file"));
+   Local<Value> group = val->ToObject()->Get(String::NewSymbol("group"));
+
+   if (!file->IsString() || !group->IsString())
+     return;
+
+   elm_icon_thumb_set(eo, *String::Utf8Value(file), *String::Utf8Value(group));
+
+   thumb.Dispose();
+   thumb = Persistent<Value>::New(val);
 }
 
 }
