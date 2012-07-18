@@ -2,13 +2,13 @@
 #define C_ELM_FILE_SELECTOR_H
 
 #include "elm.h"
-#include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmFileSelector : public CElmObject {
+class CElmFileSelector : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

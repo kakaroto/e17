@@ -27,7 +27,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, selected);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, on_done);
 GENERATE_PROPERTY_CALLBACKS(CElmFileSelector, buttons);
 
-GENERATE_TEMPLATE(CElmFileSelector,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmFileSelector,
                   PROPERTY(path),
                   PROPERTY(expandable),
                   PROPERTY(folder_only),
@@ -37,8 +37,8 @@ GENERATE_TEMPLATE(CElmFileSelector,
                   PROPERTY(on_done),
                   PROPERTY(buttons));
 
-CElmFileSelector::CElmFileSelector(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_fileselector_add(parent->GetEvasObject()))
+CElmFileSelector::CElmFileSelector(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_fileselector_add(_parent->GetEvasObject()))
 {
 }
 
