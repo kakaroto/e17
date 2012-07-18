@@ -123,8 +123,8 @@ private:
       Local<Value> callback = klass->ToObject()->Get(func);
       if (!callback->IsFunction()) return Undefined();
       if (!part) return Function::Cast(*callback)->Call(item->jsObject, 0, NULL);
-      Handle<Value> args[1] = { String::New(part) };
-      return Function::Cast(*callback)->Call(item->jsObject, 1, args);
+      Handle<Value> args[2] = { String::New(part), item->jsObject };
+      return Function::Cast(*callback)->Call(item->jsObject, 2, args);
    }
 
    static char *GetTextWrapper(void *item, Evas_Object *, const char *part)
