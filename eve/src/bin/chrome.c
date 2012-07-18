@@ -985,7 +985,7 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    if (old_icon) evas_object_del(old_icon);
    if (url)
      {
-        favicon = ewk_settings_icon_database_icon_object_add(url, canvas);
+        favicon = ewk_settings_icon_database_icon_object_get(url, canvas);
         if (favicon)
            elm_object_part_content_set(text_url, "icon", favicon);
      }
@@ -2456,7 +2456,7 @@ more_content_get(void *data, Evas_Object *obj, const char *part)
           {
              Evas_Object *chrome = evas_object_data_get(obj, "chrome");
              Evas *canvas = evas_object_evas_get(chrome);
-             icon = ewk_settings_icon_database_icon_object_add(mmi->next, canvas);
+             icon = ewk_settings_icon_database_icon_object_get(mmi->next, canvas);
           }
         return icon;
      }
