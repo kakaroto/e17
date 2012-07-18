@@ -173,7 +173,7 @@ void CElmEntry::OnChangeWrapper(void *data, Evas_Object *, void *)
 void CElmEntry::OnChange()
 {
    Handle<Function> callback(Function::Cast(*cb.on_change));
-   Handle<Value> args[1] = jsObject;
+   Handle<Value> args[1] = { jsObject };
    callback->Call(jsObject, 1, args);
 }
 
