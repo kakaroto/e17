@@ -17,8 +17,8 @@ GENERATE_TEMPLATE_FULL(CElmContainer, CElmFlip,
                   PROPERTY_RO(front_visible),
                   METHOD(flip));
 
-CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *parent)
-   : CElmContainer(_jsObject, elm_flip_add(parent->GetEvasObject()))
+CElmFlip::CElmFlip(Local<Object> _jsObject, CElmObject *p)
+   : CElmContainer(_jsObject, elm_flip_add(p->GetEvasObject()))
 {
 }
 

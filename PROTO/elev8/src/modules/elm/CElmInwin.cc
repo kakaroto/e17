@@ -11,9 +11,9 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmInwin,
                   PROPERTY(content),
                   METHOD(activate));
 
-CElmInwin::CElmInwin(Local<Object> _jsObject, CElmObject *parent)
+CElmInwin::CElmInwin(Local<Object> _jsObject, CElmObject *p)
    : CElmLayout(_jsObject,
-                elm_win_inwin_add(elm_object_top_widget_get(parent->GetEvasObject())))
+                elm_win_inwin_add(elm_object_top_widget_get(p->GetEvasObject())))
 {
 }
 

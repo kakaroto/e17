@@ -21,8 +21,6 @@ protected:
 
    Persistent<Value> page_relative;
    Persistent<Value> align;
-   Persistent<Value> page_size;
-   Persistent<Value> scroller_policy;
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -34,8 +32,6 @@ public:
    Handle<Value> append(const Arguments& args);
    Handle<Value> delete_item(const Arguments& args);
    Handle<Value> update_item(const Arguments& args);
-   Handle<Value> page_show(const Arguments& args);
-   Handle<Value> page_bring(const Arguments& args);
    Handle<Value> realized_items_update(const Arguments& args);
 
    virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
@@ -52,12 +48,6 @@ public:
 
    Handle<Value> block_count_get() const;
    void block_count_set(Handle<Value> value);
-
-   void vertical_bounce_set(Handle<Value> val);
-   Handle<Value> vertical_bounce_get() const;
-
-   void horizontal_bounce_set(Handle<Value> val);
-   Handle<Value> horizontal_bounce_get() const;
 
    Handle<Value> highlight_mode_get() const;
    void highlight_mode_set(Handle<Value> value);
@@ -77,28 +67,13 @@ public:
    Handle<Value> filled_get() const;
    void filled_set(Handle<Value> value);
 
-   Handle<Value> page_relative_get() const;
-   void page_relative_set(Handle<Value> value);
-
    Handle<Value> item_align_get() const;
    void item_align_set(Handle<Value> value);
 
    Handle<Value> group_item_size_get() const;
    void group_item_size_set(Handle<Value> value);
 
-   Handle<Value> page_size_get() const;
-   void page_size_set(Handle<Value> value);
-
-   Handle<Value> scroller_policy_get() const;
-   void scroller_policy_set(Handle<Value> value);
-
    Handle<Value> items_count_get() const;
-
-   Handle<Value> vertical_current_page_get() const;
-   Handle<Value> horizontal_current_page_get() const;
-
-   Handle<Value> vertical_last_page_get() const;
-   Handle<Value> horizontal_last_page_get() const;
 
    Handle<Value> realized_items_get() const;
 

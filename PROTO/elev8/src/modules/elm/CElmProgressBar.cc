@@ -30,8 +30,8 @@ Handle<Value> CElmProgressBar::pulse(const Arguments& args)
    return Undefined();
 }
 
-CElmProgressBar::CElmProgressBar(Local<Object> _jsObject, CElmObject *parent)
-   : CElmLayout(_jsObject, elm_progressbar_add(parent->GetEvasObject()))
+CElmProgressBar::CElmProgressBar(Local<Object> _jsObject, CElmObject *p)
+   : CElmLayout(_jsObject, elm_progressbar_add(p->GetEvasObject()))
 {
 }
 

@@ -20,8 +20,8 @@ GENERATE_TEMPLATE_FULL(CElmContainer, CElmPane,
                   PROPERTY(size_left_content),
                   PROPERTY(size_right_content));
 
-CElmPane::CElmPane(Local<Object> _jsObject, CElmObject *parent)
-   : CElmContainer(_jsObject, elm_panes_add(elm_object_top_widget_get(parent->GetEvasObject())))
+CElmPane::CElmPane(Local<Object> _jsObject, CElmObject *p)
+   : CElmContainer(_jsObject, elm_panes_add(elm_object_top_widget_get(p->GetEvasObject())))
 {
 }
 

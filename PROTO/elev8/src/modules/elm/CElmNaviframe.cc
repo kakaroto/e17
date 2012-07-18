@@ -34,8 +34,8 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmNaviframe,
                   METHOD(item_promote),
                   METHOD(pop_to));
 
-CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *parent)
-   : CElmLayout(_jsObject, elm_naviframe_add(parent->GetEvasObject()))
+CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *p)
+   : CElmLayout(_jsObject, elm_naviframe_add(p->GetEvasObject()))
    , title_visible(true)
    , stack(Persistent<Array>::New(Array::New()))
 {

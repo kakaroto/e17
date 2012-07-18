@@ -7,9 +7,7 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmGrid, size);
 
 GENERATE_TEMPLATE_FULL(CElmObject, CElmGrid,
-                  PROPERTY(size),
-                  METHOD(pack),
-                  METHOD(clear));
+                  PROPERTY(size));
 
 CElmGrid::CElmGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_grid_add(parent->GetEvasObject()))

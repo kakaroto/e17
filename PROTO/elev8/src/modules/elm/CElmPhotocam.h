@@ -26,12 +26,6 @@ public:
    Handle<Value> zoom_mode_get() const;
    void zoom_mode_set(Handle<Value> value);
 
-   void vertical_bounce_set(Handle<Value> val);
-   Handle<Value> vertical_bounce_get() const;
-
-   void horizontal_bounce_set(Handle<Value> val);
-   Handle<Value> horizontal_bounce_get() const;
-
    void paused_set(Handle<Value> val);
    Handle<Value> paused_get() const;
 

@@ -32,8 +32,8 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmSlider,
                   PROPERTY(horizontal),
                   PROPERTY(indicator_show));
 
-CElmSlider::CElmSlider(Local<Object> _jsObject, CElmObject *parent)
-   : CElmLayout(_jsObject, elm_slider_add(parent->GetEvasObject()))
+CElmSlider::CElmSlider(Local<Object> _jsObject, CElmObject *p)
+   : CElmLayout(_jsObject, elm_slider_add(p->GetEvasObject()))
 {
 }
 

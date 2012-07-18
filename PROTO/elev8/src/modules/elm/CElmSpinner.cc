@@ -32,8 +32,8 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmSpinner,
                   PROPERTY(interval),
                   PROPERTY(value));
 
-CElmSpinner::CElmSpinner(Local<Object> _jsObject, CElmObject *parent)
-   : CElmLayout(_jsObject, elm_spinner_add(parent->GetEvasObject()))
+CElmSpinner::CElmSpinner(Local<Object> _jsObject, CElmObject *p)
+   : CElmLayout(_jsObject, elm_spinner_add(p->GetEvasObject()))
 {
 }
 

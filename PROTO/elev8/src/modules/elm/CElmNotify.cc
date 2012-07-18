@@ -19,9 +19,9 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmNotify,
                   PROPERTY(allow_events),
                   PROPERTY(parent));
 
-CElmNotify::CElmNotify(Local<Object> _jsObject, CElmObject *parent)
+CElmNotify::CElmNotify(Local<Object> _jsObject, CElmObject *p)
    : CElmLayout(_jsObject,
-		elm_notify_add(elm_object_top_widget_get(parent->GetEvasObject())))
+		elm_notify_add(elm_object_top_widget_get(p->GetEvasObject())))
 {
 }
 

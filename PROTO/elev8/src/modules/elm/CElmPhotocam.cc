@@ -8,8 +8,6 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, file);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, zoom);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, zoom_mode);
-GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, horizontal_bounce);
-GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, vertical_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, paused);
 GENERATE_PROPERTY_CALLBACKS(CElmPhotocam, gesture_enabled);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmPhotocam, image_size);
@@ -21,8 +19,6 @@ GENERATE_TEMPLATE_FULL(CElmObject, CElmPhotocam,
                   PROPERTY(file),
                   PROPERTY(zoom),
                   PROPERTY(zoom_mode),
-                  PROPERTY(horizontal_bounce),
-                  PROPERTY(vertical_bounce),
                   PROPERTY(paused),
                   PROPERTY(gesture_enabled),
                   PROPERTY_RO(image_size),
@@ -108,40 +104,6 @@ void CElmPhotocam::zoom_mode_set(Handle<Value> value)
       new_mode = ELM_PHOTOCAM_ZOOM_MODE_MANUAL;
 
    elm_photocam_zoom_mode_set(eo, new_mode);
-}
-
-void CElmPhotocam::vertical_bounce_set(Handle<Value> val)
-{
-   if (!val->IsBoolean())
-     return;
-
-   Eina_Bool horizontal_bounce;
-   elm_photocam_bounce_get(eo, &horizontal_bounce, NULL);
-   elm_photocam_bounce_set(eo, horizontal_bounce, val->ToBoolean()->Value());
-}
-
-Handle<Value> CElmPhotocam::vertical_bounce_get() const
-{
-   Eina_Bool vertical_bounce;
-   elm_photocam_bounce_get(eo, NULL, &vertical_bounce);
-   return Boolean::New(vertical_bounce);
-}
-
-void CElmPhotocam::horizontal_bounce_set(Handle<Value> val)
-{
-   if (!val->IsBoolean())
-     return;
-
-   Eina_Bool vertical_bounce;
-   elm_photocam_bounce_get(eo, NULL, &vertical_bounce);
-   elm_photocam_bounce_set(eo, val->ToBoolean()->Value(), vertical_bounce);
-}
-
-Handle<Value> CElmPhotocam::horizontal_bounce_get() const
-{
-   Eina_Bool horizontal_bounce;
-   elm_photocam_bounce_get(eo, &horizontal_bounce, NULL);
-   return Boolean::New(horizontal_bounce);
 }
 
 void CElmPhotocam::paused_set(Handle<Value> val)

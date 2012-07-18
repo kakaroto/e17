@@ -170,6 +170,8 @@ Handle<Value> CElmScroller::widget_base_theme_get() const
    return widget_base_theme;
 }
 
+const char *elm_widget_style_get(const Evas_Object *obj);
+
 void CElmScroller::widget_base_theme_set(Handle<Value> val)
 {
    if (!val->IsObject())
@@ -178,8 +180,8 @@ void CElmScroller::widget_base_theme_set(Handle<Value> val)
    Local<Value> widget = val->ToObject()->Get(String::NewSymbol("widget"));
    Local<Value> base = val->ToObject()->Get(String::NewSymbol("base"));
 
-   elm_scroller_custom_widget_base_theme_set(eo, *(String::Utf8Value(widget)),
-                                             *(String::Utf8Value(base)));
+   elm_layout_theme_set(eo, *String::Utf8Value(widget),
+             *String::Utf8Value(base), elm_widget_style_get(eo));
 
    widget_base_theme.Dispose();
    widget_base_theme = Persistent<Value>::New(val);
