@@ -15,7 +15,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmThumb, on_generate_error);
 GENERATE_PROPERTY_CALLBACKS(CElmThumb, on_load_error);
 GENERATE_METHOD_CALLBACKS(CElmThumb, reload);
 
-GENERATE_TEMPLATE(CElmThumb,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmThumb,
                   METHOD(reload),
                   PROPERTY(file),
                   PROPERTY(path),
