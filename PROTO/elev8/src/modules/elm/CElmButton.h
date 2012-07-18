@@ -3,15 +3,17 @@
 
 #include "elm.h"
 #include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
-class CElmButton : public CElmObject {
+class CElmButton : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
 protected:
    CElmButton(Local<Object> _jsObject, CElmObject *parent);
+   CElmButton(Local<Object> _jsObject, Evas_Object *child);
    virtual ~CElmButton();
 
    struct {

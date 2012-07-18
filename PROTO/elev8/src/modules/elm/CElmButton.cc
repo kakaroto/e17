@@ -11,13 +11,18 @@ GENERATE_PROPERTY_CALLBACKS(CElmButton, autorepeat);
 GENERATE_PROPERTY_CALLBACKS(CElmButton, autorepeat_initial_timeout);
 GENERATE_PROPERTY_CALLBACKS(CElmButton, autorepeat_gap_timeout);
 
-GENERATE_TEMPLATE(CElmButton,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmButton,
                   PROPERTY(icon),
                   PROPERTY(autorepeat),
                   PROPERTY(autorepeat_initial_timeout),
                   PROPERTY(autorepeat_gap_timeout));
-CElmButton::CElmButton(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_button_add(parent->GetEvasObject()))
+CElmButton::CElmButton(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_button_add(_parent->GetEvasObject()))
+{
+}
+
+CElmButton::CElmButton(Local<Object> _jsObject, Evas_Object *child)
+   : CElmLayout(_jsObject, child)
 {
 }
 
