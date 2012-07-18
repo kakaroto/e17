@@ -34,18 +34,18 @@ public:
 
    void paused_set(Handle<Value> val);
    Handle<Value> paused_get() const;
-   
+
    void gesture_enabled_set(Handle<Value> val);
    Handle<Value> gesture_enabled_get() const;
- 
+
    Handle<Value> image_size_get() const;
-  
+
    Handle<Value> image_region_get() const;
 
    Handle<Value> image_region_show(const Arguments &args);
-   
+
    Handle<Value> image_region_bring_in(const Arguments &args);
-   
+
    friend Handle<Value> CElmObject::New<CElmPhotocam>(const Arguments &args);
 };
 
