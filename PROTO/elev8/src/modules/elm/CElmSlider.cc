@@ -18,7 +18,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmSlider, inverted);
 GENERATE_PROPERTY_CALLBACKS(CElmSlider, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmSlider, indicator_show);
 
-GENERATE_TEMPLATE(CElmSlider,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmSlider,
                   PROPERTY(on_change),
                   PROPERTY(units),
                   PROPERTY(indicator),
@@ -33,7 +33,7 @@ GENERATE_TEMPLATE(CElmSlider,
                   PROPERTY(indicator_show));
 
 CElmSlider::CElmSlider(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_slider_add(parent->GetEvasObject()))
+   : CElmLayout(_jsObject, elm_slider_add(parent->GetEvasObject()))
 {
 }
 

@@ -2,11 +2,12 @@
 #define C_ELM_SLIDER_H
 
 #include "elm.h"
+#include "CElmLayout.h"
 #include "CElmObject.h"
 
 namespace elm {
 
-class CElmSlider : public CElmObject {
+class CElmSlider : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
