@@ -6,16 +6,10 @@ using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmTable, homogeneous);
 GENERATE_PROPERTY_CALLBACKS(CElmTable, padding);
-GENERATE_METHOD_CALLBACKS(CElmTable, pack);
-GENERATE_METHOD_CALLBACKS(CElmTable, unpack);
-GENERATE_METHOD_CALLBACKS(CElmTable, clear);
 
 GENERATE_TEMPLATE(CElmTable,
                   PROPERTY(homogeneous),
-                  PROPERTY(padding),
-                  METHOD(pack),
-                  METHOD(unpack),
-                  METHOD(clear));
+                  PROPERTY(padding));
 
 CElmTable::CElmTable(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_table_add(parent->GetEvasObject()))
@@ -27,26 +21,46 @@ void CElmTable::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Table"), GetTemplate()->GetFunction());
 }
 
-void CElmTable::DidRealiseElement(Local<Value> val)
+Handle<Value> CElmTable::Pack(Handle<Value> _value, Handle<Value> _replace)
 {
-   pack(val->ToObject());
-}
+   HandleScope scope;
 
-void CElmTable::pack(Handle<Object> obj)
-{
-   Local<Value> x, y, colspan, rowspan;
-   Handle<Value> element = obj->Get(String::NewSymbol("element"));
+   struct {
+        Local<String> col;
+        Local<String> row;
+        Local<String> colspan;
+        Local<String> rowspan;
+        Local<String> element;
+   } str = {
+        String::NewSymbol("col"),
+        String::NewSymbol("row"),
+        String::NewSymbol("colspan"),
+        String::NewSymbol("rowspan"),
+        String::NewSymbol("element"),
+   };
+
+   Local<Object> value = _value->ToObject()->Clone();
+   Local<Object> replace = _replace->IsUndefined() ? Object::New() : _replace->ToObject();
+   Local<Value> element = value->Get(str.element);
 
    if (element->IsUndefined())
-     return;
+     return scope.Close(value);
 
-   element = Realise(obj->Get(String::NewSymbol("element")), jsObject);
-   obj->Set(String::NewSymbol("element"), element);
+   Local<Value> col = value->Get(str.col);
+   if (col->IsUndefined())
+     col = replace->Get(str.col);
 
-   x = obj->Get(String::NewSymbol("col"));
-   y = obj->Get(String::NewSymbol("row"));
-   colspan = obj->Get(String::NewSymbol("colspan"));
-   rowspan = obj->Get(String::NewSymbol("rowspan"));
+   Local<Value> row = value->Get(str.row);
+   if (row->IsUndefined())
+     row = replace->Get(str.row);
+
+   Local<Value> colspan = value->Get(str.colspan);
+   if (colspan->IsUndefined())
+     colspan = replace->Get(str.colspan);
+
+   Local<Value> rowspan = value->Get(str.rowspan);
+   if (rowspan->IsUndefined())
+     rowspan = replace->Get(str.rowspan);
 
    if (colspan.IsEmpty() || !colspan->IsNumber())
      colspan = Integer::New(1);
@@ -54,80 +68,30 @@ void CElmTable::pack(Handle<Object> obj)
    if (rowspan.IsEmpty() || !rowspan->IsNumber())
      rowspan = Integer::New(1);
 
-   if (!x->IsNumber() || !y->IsNumber())
+   if (!col->IsNumber() || !row->IsNumber())
      {
         ELM_ERR("Coordinates not set or not a number? elem=%s x=%d, y=%d, w=%d or h=%d",
-                *String::Utf8Value(obj), x->IsNumber(), y->IsNumber(),
+                *String::Utf8Value(element), col->IsNumber(), row->IsNumber(),
                 colspan->IsNumber(), rowspan->IsNumber());
-        return;
+        return scope.Close(value);
      }
 
-   elm_table_pack(GetEvasObject(), GetEvasObjectFromJavascript(element),
-                  x->IntegerValue(), y->IntegerValue(),
+   Handle<Value> realised = Realise(element, GetJSObject());
+   elm_table_pack(GetEvasObject(),
+                  GetEvasObjectFromJavascript(realised),
+                  col->IntegerValue(), row->IntegerValue(),
                   colspan->IntegerValue(), rowspan->IntegerValue());
-}
 
-Handle<Value> CElmTable::pack(const Arguments &args)
-{
-   if (!args[0]->IsObject())
-     return Undefined();
-
-   Local<Object> desc = args[0]->ToObject();
-
-   if (!desc->Has(String::NewSymbol("element")))
-     {
-        ELM_ERR("Need an elm element to be packed");
-        return Undefined();
-     }
-
-   Local<Object> obj = desc->Clone();
-   obj->Set(String::NewSymbol("element"),
-            Realise(desc->Get(String::NewSymbol("element")), jsObject));
-   pack(obj);
-
-   return Undefined();
-}
-
-Handle<Value> CElmTable::Pack(Handle<Value> obj)
-{
-   pack(obj->ToObject());
-   return obj;
+   value->Set(str.element, realised);
+   return scope.Close(value);
 }
 
 Handle<Value> CElmTable::Unpack(Handle<Value> item)
 {
    HandleScope scope;
-   Handle<Value> element = item->ToObject()->Get(String::NewSymbol("element"));
-
-   if (element->IsUndefined())
-     return Undefined();
-
-   CElmObject *obj = GetObjectFromJavascript(element);
-
-   int col, row, colspan, rowspan;
-
-   elm_table_pack_get(obj->GetEvasObject(), &col, &row, &colspan, &rowspan);
-   Handle<Object> result = Object::New();
-   result->Set(String::NewSymbol("col"), Integer::New(col));
-   result->Set(String::NewSymbol("row"), Integer::New(row));
-   result->Set(String::NewSymbol("colspan"), Integer::New(colspan));
-   result->Set(String::NewSymbol("rowspan"), Integer::New(rowspan));
-   result->Set(String::NewSymbol("element"), item);
-   elm_table_unpack(eo, obj->GetEvasObject());
-
-   return scope.Close(result);
-}
-
-Handle<Value> CElmTable::unpack(const Arguments&)
-{
-   ELM_DBG("unpack");
-   return Undefined();
-}
-
-Handle<Value> CElmTable::clear(const Arguments&)
-{
-   ELM_DBG("clear");
-   return Undefined();
+   Handle<Value> element = item->ToObject()->Get(String::New("element"));
+   delete GetObjectFromJavascript(element);
+   return scope.Close(item);
 }
 
 void CElmTable::homogeneous_set(Handle<Value> val)

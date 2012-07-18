@@ -5,13 +5,9 @@ namespace elm {
 using namespace v8;
 
 GENERATE_PROPERTY_CALLBACKS(CElmGrid, size);
-GENERATE_METHOD_CALLBACKS(CElmGrid, clear);
-GENERATE_METHOD_CALLBACKS(CElmGrid, pack);
 
 GENERATE_TEMPLATE(CElmGrid,
-                  PROPERTY(size),
-                  METHOD(pack),
-                  METHOD(clear));
+                  PROPERTY(size));
 
 CElmGrid::CElmGrid(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_grid_add(parent->GetEvasObject()))
@@ -23,86 +19,69 @@ void CElmGrid::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Grid"), GetTemplate()->GetFunction());
 }
 
-//FIXME If elm_grid_clear is called, it will delete the efl objects, but the 
-//javascript wrappers will still be in memory.
-Handle<Value> CElmGrid::clear(const Arguments&)
+Handle<Value> CElmGrid::Pack(Handle<Value> value, Handle<Value> _replace)
 {
-   return Undefined();
-}
+   HandleScope scope;
 
-void CElmGrid::DidRealiseElement(Local<Value> val)
-{
-   pack(val->ToObject());
-}
+   struct {
+        Local<String> x;
+        Local<String> y;
+        Local<String> w;
+        Local<String> h;
+        Local<String> element;
+   } str = {
+        String::NewSymbol("x"),
+        String::NewSymbol("y"),
+        String::NewSymbol("w"),
+        String::NewSymbol("h"),
+        String::NewSymbol("element"),
+   };
 
-void CElmGrid::pack(Handle<Object> obj)
-{
-   int x, y, w, h;
-   Handle<Value> element = obj->Get(String::NewSymbol("element"));
+   if (!value->IsObject())
+     return Undefined();
+
+   Handle<Object> obj = value->ToObject()->Clone();
+   Handle<Value> element = obj->Get(str.element);
+   Handle<Object> replace = _replace->IsObject() ? _replace->ToObject() : Object::New();
 
    if (element->IsUndefined())
-     return;
+     return Undefined();
+
+   Local<Value> x = obj->Get(str.x);
+   if (x->IsUndefined())
+     x = replace->Get(str.x);
+
+   Local<Value> y = obj->Get(str.y);
+   if (y->IsUndefined())
+     y = replace->Get(str.y);
+
+   Local<Value> w = obj->Get(str.w);
+   if (w->IsUndefined())
+     w = replace->Get(str.w);
+
+   Local<Value> h = obj->Get(str.h);
+   if (h->IsUndefined())
+     h = replace->Get(str.h);
 
    element = Realise(element, jsObject);
    obj->Set(String::NewSymbol("element"), element);
 
-   x = obj->Get(String::NewSymbol("x"))->IntegerValue();
-   y = obj->Get(String::NewSymbol("y"))->IntegerValue();
-   w = obj->Get(String::NewSymbol("width"))->IntegerValue();
-   h = obj->Get(String::NewSymbol("height"))->IntegerValue();
+   elm_grid_pack(GetEvasObject(),
+                 GetEvasObjectFromJavascript(element),
+                 x->IntegerValue(),
+                 y->IntegerValue(),
+                 w->IntegerValue(),
+                 h->IntegerValue());
 
-   elm_grid_pack(GetEvasObject(), GetEvasObjectFromJavascript(element), x, y, w, h);
-}
-
-Handle<Value> CElmGrid::pack(const Arguments &args)
-{
-   if (!args[0]->IsObject())
-     return Undefined();
-
-   Local<Object> desc = args[0]->ToObject();
-
-   if (!desc->Has(String::NewSymbol("element")))
-     {
-        ELM_ERR("Need an elm element to be packed");
-        return Undefined();
-     }
-
-   Local<Object> obj = desc->Clone();
-   obj->Set(String::NewSymbol("element"),
-            Realise(desc->Get(String::NewSymbol("element")), jsObject));
-   pack(obj);
-
-   return Undefined();
-}
-
-Handle<Value> CElmGrid::Pack(Handle<Value> obj)
-{
-   pack(obj->ToObject());
-   return obj;
+   return scope.Close(obj);
 }
 
 Handle<Value> CElmGrid::Unpack(Handle<Value> item)
 {
    HandleScope scope;
-   Handle<Value> element = item->ToObject()->Get(String::NewSymbol("element"));
-
-   if (element->IsUndefined())
-     return Undefined();
-
-   CElmObject *obj = GetObjectFromJavascript(element);
-
-   int x, y, w, h;
-
-   elm_grid_pack_get(obj->GetEvasObject(), &x, &y, &w, &h);
-   Handle<Object> result = Object::New();
-   result->Set(String::NewSymbol("x"), Integer::New(x));
-   result->Set(String::NewSymbol("y"), Integer::New(y));
-   result->Set(String::NewSymbol("width"), Integer::New(w));
-   result->Set(String::NewSymbol("height"), Integer::New(h));
-   result->Set(String::NewSymbol("element"), item);
-   elm_grid_unpack(eo, obj->GetEvasObject());
-
-   return scope.Close(result);
+   Handle<Value> element = item->ToObject()->Get(String::New("element"));
+   delete GetObjectFromJavascript(element);
+   return scope.Close(item);
 }
 
 void CElmGrid::size_set(Handle<Value> val)

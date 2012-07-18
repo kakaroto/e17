@@ -27,7 +27,6 @@ GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, set_item_class);
 GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
-GENERATE_METHOD_CALLBACKS(CElmGenList, prepend);
 GENERATE_METHOD_CALLBACKS(CElmGenList, tooltip_unset);
 GENERATE_METHOD_CALLBACKS(CElmGenList, promote_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, demote_item);
@@ -45,7 +44,6 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(mode),
                   PROPERTY(reorder_mode),
                   PROPERTY(multi_select),
-                  PROPERTY(classes),
                   PROPERTY(on_longpress),
                   PROPERTY(scroller_policy),
                   PROPERTY_RO(items_count),
@@ -55,7 +53,6 @@ GENERATE_TEMPLATE(CElmGenList,
                   METHOD(set_item_class),
                   METHOD(update_item),
                   METHOD(realized_items_update),
-                  METHOD(prepend),
                   METHOD(tooltip_unset),
                   METHOD(promote_item),
                   METHOD(demote_item));
@@ -76,11 +73,14 @@ void CElmGenList::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Genlist"), GetTemplate()->GetFunction());
 }
 
-Handle<Value> CElmGenList::Pack(Handle<Value> value)
+Handle<Value> CElmGenList::Pack(Handle<Value> value, Handle<Value> replace)
 {
    HandleScope scope;
    Item<CElmGenList> *item = new Item<CElmGenList>(value, jsObject);
-   Local<Value> next = value->ToObject()->GetHiddenValue(Item<CElmGenList>::str_next);
+   Local<Value> next;
+
+   if (replace->IsObject())
+      next  = replace->ToObject()->GetHiddenValue(Item<CElmGenList>::str_next);
 
    if (next.IsEmpty())
      item->object_item = elm_genlist_item_append(eo, item->GetElmClass(),
@@ -112,25 +112,6 @@ Handle<Value> CElmGenList::Unpack(Handle<Value> value)
    return scope.Close(attrs);
 }
 
-Handle<Value> CElmGenList::prepend(const Arguments& args)
-{
-   if (!args[0]->IsString())
-     return Undefined();
-
-   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
-   if (klass.IsEmpty() || !klass->IsObject())
-     return Undefined();
-
-   ItemClass<CElmGenList> *item_class = static_cast<ItemClass<CElmGenList> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("genlist::itemclass"))));
-   Item<CElmGenList> *item = new Item<CElmGenList>(item_class, args[1], args[2]);
-
-   item->object_item = elm_genlist_item_prepend(eo, item_class->GetElmClass(), item, NULL,
-          ELM_GENLIST_ITEM_NONE, Item<CElmGenList>::OnSelect, item);
-   elm_object_item_data_set(item->object_item, item);
-
-   return External::Wrap(item);
-}
-
 void CElmGenList::UpdateItem(Handle<Value> value)
 {
    Item<CElmGenList> *item = Item<CElmGenList>::Unwrap(value);
@@ -142,12 +123,6 @@ Handle<Value> CElmGenList::tooltip_unset(const Arguments &args)
    Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
    if (!item)
      return Undefined();
-
-   if (!args[1]->IsUndefined())
-     {
-        item->data.Dispose();
-        item->data = Persistent<Value>::New(args[1]);
-     }
 
    if (item->object_item)
      elm_genlist_item_tooltip_unset(item->object_item);
@@ -161,12 +136,6 @@ Handle<Value> CElmGenList::promote_item(const Arguments &args)
    if (!item)
      return Undefined();
 
-   if (!args[1]->IsUndefined())
-     {
-        item->data.Dispose();
-        item->data = Persistent<Value>::New(args[1]);
-     }
-
    if (item->object_item)
      elm_genlist_item_promote(item->object_item);
 
@@ -178,12 +147,6 @@ Handle<Value> CElmGenList::demote_item(const Arguments &args)
    Item<CElmGenList> *item = static_cast<Item<CElmGenList> *>(External::Unwrap(args[0]));
    if (!item)
      return Undefined();
-
-   if (!args[1]->IsUndefined())
-     {
-        item->data.Dispose();
-        item->data = Persistent<Value>::New(args[1]);
-     }
 
    if (item->object_item)
      elm_genlist_item_demote(item->object_item);

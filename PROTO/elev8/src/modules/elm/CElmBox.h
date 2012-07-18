@@ -19,9 +19,7 @@ protected:
 public:
    static void Initialize(Handle<Object> target);
 
-   virtual void DidRealiseElement(Local<Value> obj);
-
-   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);
 
    void horizontal_set(Handle<Value> val);

@@ -19,9 +19,7 @@ protected:
 public:
    static void Initialize(Handle<Object> target);
 
-   virtual void DidRealiseElement(Local<Value>);
-
-   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);
 
    void homogeneous_set(Handle<Value> val);
@@ -29,13 +27,6 @@ public:
 
    void padding_set(Handle<Value> val);
    Handle<Value> padding_get() const;
-
-   void pack(Handle<Object> obj);
-   Handle<Value> pack(const Arguments&);
-
-   Handle<Value> unpack(const Arguments&);
-
-   Handle<Value> clear(const Arguments&);
 
    friend Handle<Value> CElmObject::New<CElmTable>(const Arguments& args);
 };

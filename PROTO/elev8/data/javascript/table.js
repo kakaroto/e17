@@ -41,11 +41,8 @@ var win = elm.realise(elm.Window({
                             on_click: function(me) {
                                 print("click: " + me.label);
                                 if (win.elements.the_table.elements.e1.element == this) {
-                                    var temp = win.elements.the_table.elements.e1.element;
                                     win.elements.the_table.elements.e1 =
                                         {element: elm.Label({label: "I was the one"})};
-                                    temp.visible = false;
-                                    delete temp;
                                 }
                             }
                         })
@@ -64,12 +61,7 @@ var win = elm.realise(elm.Window({
                         element: elm.Button({
                             label: "Pack outlier",
                             on_click: function(me) {
-                                var temp = win.elements.the_table.elements['outlier'];
                                 win.elements.the_table.elements['outlier'] = outlier;
-                                if (temp) {
-                                   temp.element.visible = false;
-                                   delete temp;
-                                }
                             }
                         }),
                     },

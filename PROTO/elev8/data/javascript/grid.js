@@ -42,7 +42,7 @@ var my_window = elm.realise(elm.Window({
                         element : elm.Button ({
                             label : "I am the one.",
                             on_click : function() {
-                                my_window.elements.the_grid.pack(yellow);
+                                my_window.elements.the_grid.elements.yellow = yellow;
                             },
                         }),
                         x : 50,
@@ -54,7 +54,7 @@ var my_window = elm.realise(elm.Window({
                         element : elm.Button ({
                             label : "Dodge Bullets",
                             on_click : function() {
-                                my_window.elements.the_grid.clear();
+                                delete my_window.elements.the_grid.elements.yellow;
                             },
                         }),
                         x : 60,
@@ -67,7 +67,8 @@ var my_window = elm.realise(elm.Window({
                             label : "Kill'em All",
                             on_click : function () {
                                 for (var i in my_window.elements.the_grid.elements)
-                                    delete my_window.elements.the_grid.elements[i];
+                                    if (my_window.elements.the_grid.elements.hasOwnProperty(i))
+                                        delete my_window.elements.the_grid.elements[i];
                             }
                         }),
                         x : 40,
@@ -80,11 +81,8 @@ var my_window = elm.realise(elm.Window({
                             type : "button",
                             label : "Astala Vista Baby",
                             on_click : function () {
-                                var temp = my_window.elements.the_grid.elements[3];
                                 my_window.elements.the_grid.elements[3] =
                                         {element: elm.Label({label: "Bye!"})};
-                                temp.element.visible = false;
-                                delete temp;
                             }
                         }),
                         x : 10,

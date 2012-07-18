@@ -45,42 +45,40 @@ static Handle<Value> Callback_elements_get(Local<String>, const AccessorInfo &in
 static void Callback_elements_set(Local<String>, Local<Value> value, const AccessorInfo &info)
 {
    HandleScope scope;
+   static Persistent<ObjectTemplate> tmpl;
+
+   if (tmpl.IsEmpty())
+     {
+        tmpl = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
+        tmpl->SetNamedPropertyHandler(CElmObject::ElementGet< Local<String> >,
+                                      CElmObject::ElementSet< Local<String> >,
+                                      CElmObject::ElementHas< Local<String> >,
+                                      CElmObject::ElementDel< Local<String> >,
+                                      CElmObject::ElementEnum);
+
+        tmpl->SetIndexedPropertyHandler(CElmObject::ElementGet<uint32_t>,
+                                        CElmObject::ElementSet<uint32_t>,
+                                        NULL, CElmObject::ElementDel<uint32_t>,
+                                        CElmObject::ElementEnum);
+     }
+
+   Handle<Object> elements = tmpl->NewInstance();
+   elements->SetHiddenValue(String::NewSymbol("elm::items"), Object::New());
+   elements->SetHiddenValue(String::NewSymbol("elm::parent"), info.This());
+   info.This()->SetHiddenValue(String::NewSymbol("elm::elements"), elements);
 
    Local<Object> obj = value->ToObject();
    Local<Array> props = obj->GetOwnPropertyNames();
 
-   Handle<Object> items = Object::New();
-
    for (unsigned int i = 0; i < props->Length(); i++)
      {
-        HandleScope handle_scope;
         Local<String> key = props->Get(i)->ToString();
-        Local<Object> val = obj->Get(key)->ToObject();
-
-        items->Set(key, CElmObject::Realise(val, info.This()));
+        elements->Set(key, obj->Get(key));
      }
-
-   Local<ObjectTemplate> tmpl = ObjectTemplate::New();
-   tmpl->SetNamedPropertyHandler(CElmObject::ElementGet< Local<String> >,
-                                 CElmObject::ElementSet< Local<String> >,
-                                 CElmObject::ElementHas< Local<String> >,
-                                 CElmObject::ElementDel< Local<String> >,
-                                 CElmObject::ElementEnum);
-
-   tmpl->SetIndexedPropertyHandler(CElmObject::ElementGet<uint32_t>,
-                                   CElmObject::ElementSet<uint32_t>,
-                                   NULL, CElmObject::ElementDel<uint32_t>,
-                                   CElmObject::ElementEnum);
-
-   Handle<Object> elements = tmpl->NewInstance();
-   elements->SetHiddenValue(String::NewSymbol("elm::items"), items);
-   elements->SetHiddenValue(String::NewSymbol("elm::parent"), info.This());
-   info.This()->SetHiddenValue(String::NewSymbol("elm::elements"), elements);
 }
 
 void CElmObject::EvasFreeEvent(void *data, Evas *, void *)
 {
-
    CElmObject *self = static_cast<CElmObject *>(data);
    self->eo = NULL;
    delete self;
@@ -733,39 +731,28 @@ Handle<Value> CElmObject::Realise(Handle<Value> descValue, Handle<Value> parent)
 {
    HandleScope scope;
 
-   Local<String> type_str = String::NewSymbol("type");
+   if (!descValue->IsObject())
+     return scope.Close(descValue);
+
    Local<Object> desc = descValue->ToObject();
-   Handle<Value> realised;
+   Local<Value> type = desc->GetHiddenValue(String::NewSymbol("type"));
 
-   if (tmpl->HasInstance(desc))
-     return scope.Close(desc);
-
-   if (desc->GetHiddenValue(type_str).IsEmpty())
-     {
-        Local<Object> obj = GetObjectFromJavascript(parent)->Pack(desc->Clone())->ToObject();
-        obj->SetHiddenValue(String::NewSymbol("elm::packer"), parent);
-        return scope.Close(obj);
-     }
+   if (type.IsEmpty())
+      return scope.Close(descValue);
 
    Handle<Value> params[] = { desc, parent };
-   Local<Value> func = desc->GetHiddenValue(type_str);
-   realised = Local<Function>::Cast(func)->NewInstance(2, params);
-
-   Local<Object> obj = realised->ToObject();
+   Handle<Object> realised = Local<Function>::Cast(type)->NewInstance(2, params)->ToObject();
    Local<Array> props = desc->GetOwnPropertyNames();
 
    for (unsigned int i = 0; i < props->Length(); i++)
      {
         Local<String> key = props->Get(i)->ToString();
-        obj->Set(key, desc->Get(key));
+        realised->Set(key, desc->Get(key));
      }
 
    Local<String> visible = String::NewSymbol("visible");
    if (desc->Get(visible)->IsUndefined())
-     obj->Set(visible, Boolean::New(true));
-
-   if (!parent->IsUndefined())
-     GetObjectFromJavascript(parent)->DidRealiseElement(obj);
+     realised->Set(visible, Boolean::New(true));
 
    return scope.Close(realised);
 }

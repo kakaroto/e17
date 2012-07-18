@@ -21,19 +21,19 @@ var on_chart_complete = function(){
     my_window.elements.scroll.content.elements.the_chart.image = this.responseText ;
 }
 
-on_click = function(){
+on_click = function(item){
                 //get stock price
                 var req1 = new XMLHttpRequest();
                 req1.onreadystatechange = on_price_complete;
-                req1.open("GET", ps + this + pe);
-                print("URL = " +  ps + this + pe);
+                req1.open("GET", ps + item.data + pe);
+                print("URL = " +  ps + item.data + pe);
                 req1.send("");
 
                 //get stock chart
                 req2 = new XMLHttpRequest();
                 req2.onreadystatechange = on_chart_complete;
-                req2.open("GET", cs + this);
-                print("URL = " + cs + this);
+                req2.open("GET", cs + item.data);
+                print("URL = " + cs + item.data);
                 req2.send("");
                 
 }
@@ -77,10 +77,11 @@ var my_window = elm.realise(elm.Window({
                         the_list: elm.Genlist({
                             weight: EXPAND_BOTH,
                             align: FILL_BOTH,
+                            elements: {},
                             classes: {
                                 'default': {
-                                    text: function(arg) {
-                                        return arg.data;
+                                    text: function(part, item) {
+                                        return item.data;
                                     },
                                 },
                             }
@@ -103,6 +104,7 @@ var my_window = elm.realise(elm.Window({
         },
 }));
 
+var list = my_window.elements.scroll.content.elements.the_list;
 for (var i = 0; i < list_items.length; i++) {
-  my_window.elements.scroll.content.elements.the_list.append('default', list_items[i], on_click);
+  list.elements[i] = {class: list.classes['default'], data: list_items[i], on_select: on_click};
 }

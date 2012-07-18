@@ -33,12 +33,11 @@ public:
    Handle<Value> update_item(const Arguments& args);
    Handle<Value> set_item_class(const Arguments& args);
    Handle<Value> realized_items_update(const Arguments& args);
-   Handle<Value> prepend(const Arguments& args);
    Handle<Value> tooltip_unset(const Arguments& args);
    Handle<Value> promote_item(const Arguments& args);
    Handle<Value> demote_item(const Arguments& args);
 
-   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);
 
    Handle<Value> multi_select_get() const;

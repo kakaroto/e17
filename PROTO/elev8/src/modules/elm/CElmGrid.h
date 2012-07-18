@@ -18,16 +18,9 @@ protected:
 
 public:
    static void Initialize(Handle<Object> target);
-   virtual void DidRealiseElement(Local<Value>);
 
-   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);
-
-   static Handle<Value> add(const Arguments& args);
-   static Handle<Value> clear(const Arguments& args);
-
-   void pack(Handle<Object> obj);
-   Handle<Value> pack(const Arguments&);
 
    void size_set(Handle<Value> val);
    Handle<Value> size_get() const;

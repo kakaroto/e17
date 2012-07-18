@@ -36,10 +36,9 @@ public:
    Handle<Value> update_item(const Arguments& args);
    Handle<Value> page_show(const Arguments& args);
    Handle<Value> page_bring(const Arguments& args);
-   Handle<Value> prepend(const Arguments& args);
    Handle<Value> realized_items_update(const Arguments& args);
 
-   virtual Handle<Value> Pack(Handle<Value>);
+   virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);
 
    Handle<Value> multi_select_get() const;

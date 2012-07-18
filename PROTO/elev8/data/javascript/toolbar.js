@@ -46,14 +46,20 @@ function toolbar_cb(item) {
         elm.exit();
 }
 
-win.elements.toolbar.append('home', 'Home', 'HOME', toolbar_cb);
-win.elements.toolbar.append('chat', 'Chat', 'CHAT', toolbar_cb);
+win.elements.toolbar.elements.home = {icon: 'home', label: 'Home', data: 'HOME', on_select: toolbar_cb};
+win.elements.toolbar.elements.chat = {icon: 'chat', label: 'Chat', data: 'CHAT', on_select: toolbar_cb};
 
 win.elements.toolbar.elements.clock = {
     label : 'Clock',
     icon : 'clock',
     data : 'CLOCK',
-    on_select : toolbar_cb
+    on_select : function() {
+       win.elements.toolbar.elements.clock =  {
+          label : 'Blah',
+          icon : 'apps',
+          data : 'BLAH',
+       }
+    }
 };
 
 win.elements.toolbar.elements.close = {

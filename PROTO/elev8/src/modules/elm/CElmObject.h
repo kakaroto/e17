@@ -28,7 +28,6 @@ protected:
    Ecore_Animator *current_animator;
 
    CElmObject(Local<Object> _jsObject, Evas_Object *_eo);
-   virtual ~CElmObject();
 
    static Handle<FunctionTemplate> GetTemplate();
 
@@ -62,36 +61,28 @@ protected:
 
 public:
 
+   virtual ~CElmObject();
+
    template <class T>
-   static Handle<Value> ElementSet(T item, Local<Value> _value, const AccessorInfo& info)
+   static Handle<Value> ElementSet(T item, Local<Value> value, const AccessorInfo& info)
      {
         HandleScope scope;
-        Handle<Value> value = _value;
         Local<Object> obj = info.This()->ToObject();
         Local<Object> items = obj->GetHiddenValue(String::NewSymbol("elm::items"))->ToObject();
         Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
-        Handle<Value> element = items->Get(item);
-        CElmObject *packer = GetObjectFromJavascript(parent);
+        Handle<Value> replaced = items->Get(item);
 
         items->Delete(item);
+
+        if (!replaced->IsUndefined())
+          replaced = GetObjectFromJavascript(parent)->Unpack(replaced);
+
         if (value->IsNull() || value->IsUndefined())
-          return value;
+          return scope.Close(value);
 
-        if (!element->IsUndefined())
-          {
-             element = packer->Unpack(element);
-             Local<Array> props = value->ToObject()->GetOwnPropertyNames();
-             for (unsigned int i = 0; i < props->Length(); i++)
-               {
-                  Local<String> key = props->Get(i)->ToString();
-                  element->ToObject()->Set(key, value->ToObject()->Get(key));
-               }
-             value = element;
-          }
-
-        value = Realise(value, parent);
-        items->Set(item, value);
-        return scope.Close(value);
+        Handle<Value> realized = GetObjectFromJavascript(parent)->Pack(value, replaced);
+        items->Set(item, realized);
+        return scope.Close(realized);
      }
 
    template <class T>
@@ -143,7 +134,11 @@ public:
    Handle<Object> GetJSObject() const { return jsObject; }
    Evas_Object *GetEvasObject() const { return eo; }
    virtual void DidRealiseElement(Local<Value>) {}
-   virtual Handle<Value> Pack(Handle<Value>) { return Undefined(); }
+   virtual Handle<Value> Pack(Handle<Value> value, Handle<Value>)
+     {
+        return Realise(value, GetJSObject());
+     }
+
    virtual Handle<Value> Unpack(Handle<Value>) { return Undefined(); }
 
    Handle<Value> x_get() const;

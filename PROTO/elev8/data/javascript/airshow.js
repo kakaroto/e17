@@ -47,15 +47,13 @@ function choose_plane()
 {
 }
 
-var baby_alien = new Array();
-
 function make_alien_population()
 {
     for(var i = 0; i<50; i++)
     {
-        baby_alien[i] = my_win.add(alien);
-        baby_alien.x = (((i/10) + 1) * 10) + (i * 4)
-        baby_alien.y = (((i/10) + 1) * 10) + (i * 4);
+        my_win.elements[i] = alien;
+        my_win.elements[i].x = (((i/10) + 1) * 10) + (i * 4)
+        my_win.elements[i].y = (((i/10) + 1) * 10) + (i * 4);
     }
 }
 

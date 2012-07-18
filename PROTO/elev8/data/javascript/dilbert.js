@@ -12,13 +12,12 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var logo_icon_unscaled = elm.Icon({
     type : "icon",
-    image : elm.datadir + "logo_small.png",
+    image : elm.datadir + "data/images/logo_small.png",
     resizable_up : false,
     resizable_down : false,
 });
 
 request.onreadystatechange = function(){
-    my_window.elements.the_box.elements.the_photo.size = 200;
     my_window.elements.the_box.elements.the_photo.image = request.responseText;
 }
 
@@ -39,7 +38,6 @@ var my_window = elm.realise(elm.Window({
                 resize : true,
                 elements : {
                     the_photo : elm.Photo({
-                        size : 80,
                         weight : EXPAND_BOTH,
                         align : FILL_BOTH,
                         resize : true,
@@ -47,9 +45,8 @@ var my_window = elm.realise(elm.Window({
                         fill : true,
                     }),
                     icon_no_scale : elm.Button({
-                        label : "Fetch My Dilbert",
-                        weight : { x : -1.0, y : -1.0 },
                         icon : logo_icon_unscaled,
+                        label : "Fetch My Dilbert",
                         on_click : function() {
                             request.open("GET", url);
                             request.send("");

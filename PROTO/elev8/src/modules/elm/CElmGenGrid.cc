@@ -14,7 +14,6 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal_bounce);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, select_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, multi_select);
-GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, classes);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, filled);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, page_relative);
@@ -34,7 +33,6 @@ GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_show);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, page_bring);
-GENERATE_METHOD_CALLBACKS(CElmGenGrid, prepend);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, realized_items_update);
 
 GENERATE_TEMPLATE(CElmGenGrid,
@@ -46,7 +44,6 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   PROPERTY(select_mode),
                   PROPERTY(reorder_mode),
                   PROPERTY(multi_select),
-                  PROPERTY(classes),
                   PROPERTY(horizontal),
                   PROPERTY(filled),
                   PROPERTY(page_relative),
@@ -66,7 +63,6 @@ GENERATE_TEMPLATE(CElmGenGrid,
                   METHOD(update_item),
                   METHOD(page_show),
                   METHOD(page_bring),
-                  METHOD(prepend),
                   METHOD(realized_items_update));
 
 CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *parent)
@@ -88,11 +84,14 @@ void CElmGenGrid::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Gengrid"), GetTemplate()->GetFunction());
 }
 
-Handle<Value> CElmGenGrid::Pack(Handle<Value> value)
+Handle<Value> CElmGenGrid::Pack(Handle<Value> value, Handle<Value> replace)
 {
    HandleScope scope;
    Item<CElmGenGrid> *item = new Item<CElmGenGrid>(value, jsObject);
-   Local<Value> next = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_next);
+   Local<Value> next;
+
+   if (replace->IsObject())
+      next = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_next);
 
    if (next.IsEmpty())
      item->object_item = elm_gengrid_item_append(eo, item->GetElmClass(), item,
@@ -141,23 +140,6 @@ Handle<Value> CElmGenGrid::page_bring(const Arguments &args)
      elm_gengrid_page_bring_in (eo, args[0]->ToNumber()->Value(), args[1]->ToNumber()->Value());
 
    return Undefined();
-}
-
-Handle<Value> CElmGenGrid::prepend(const Arguments& args)
-{
-   if (!args[0]->IsString())
-     return Undefined();
-
-   Handle<Value> klass = cached.classes->Get(args[0]->ToString());
-   if (klass.IsEmpty() || !klass->IsObject())
-     return Undefined();
-
-   ItemClass<CElmGenGrid> *item_class = static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(klass->ToObject()->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
-   Item<CElmGenGrid> *item = new Item<CElmGenGrid>(item_class, args[1], args[2]);
-
-   item->object_item = elm_gengrid_item_prepend(eo, item_class->GetElmClass(), item, Item<CElmGenGrid>::OnSelect, item);
-
-   return External::Wrap(item);
 }
 
 Handle<Value> CElmGenGrid::item_size_vertical_get() const
@@ -270,37 +252,6 @@ void CElmGenGrid::highlight_mode_set(Handle<Value> value)
 {
    if (value->IsBoolean())
      elm_gengrid_highlight_mode_set(eo, value->BooleanValue());
-}
-
-void CElmGenGrid::classes_set(Handle<Value> value)
-{
-   Local<Object> classes = value->ToObject();
-   Local<Array> properties = classes->GetOwnPropertyNames();
-
-   if (!cached.classes.IsEmpty())
-     {
-        for (unsigned int i = 0; i < properties->Length(); ++i)
-          {
-             Local<String> class_name = properties->Get(i)->ToString();
-             Local<Object> class_desc = classes->Get(class_name)->ToObject();
-             delete static_cast<ItemClass<CElmGenGrid> *>(External::Unwrap(class_desc->GetHiddenValue(String::NewSymbol("gengrid::itemclass"))));
-          }
-     }
-   cached.classes.Dispose();
-
-   cached.classes = Persistent<Object>::New(classes);
-   for (unsigned int i = 0; i < properties->Length(); ++i)
-     {
-        Local<String> class_name = properties->Get(i)->ToString();
-        Local<Object> class_desc = classes->Get(class_name)->ToObject();
-        ItemClass<CElmGenGrid> *item_class = new ItemClass<CElmGenGrid>(this, class_name, class_desc);
-        class_desc->SetHiddenValue(String::NewSymbol("gengrid::itemclass"), External::Wrap(item_class));
-     }
-}
-
-Handle<Value> CElmGenGrid::classes_get() const
-{
-   return cached.classes;
 }
 
 Handle<Value> CElmGenGrid::horizontal_get() const
