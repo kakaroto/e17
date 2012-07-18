@@ -2,11 +2,11 @@
 #define C_ELM_DATE_TIME_H
 
 #include "elm.h"
-#include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
-class CElmDateTime : public CElmObject {
+class CElmDateTime : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

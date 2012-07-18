@@ -14,7 +14,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmDateTime, field_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmDateTime, on_change);
 GENERATE_PROPERTY_CALLBACKS(CElmDateTime, on_lang_change);
 
-GENERATE_TEMPLATE(CElmDateTime,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmDateTime,
                   PROPERTY(format),
                   PROPERTY(value_max),
                   PROPERTY(value_min),
@@ -24,8 +24,8 @@ GENERATE_TEMPLATE(CElmDateTime,
                   PROPERTY(on_change),
                   PROPERTY(on_lang_change));
 
-CElmDateTime::CElmDateTime(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_datetime_add(parent->GetEvasObject()))
+CElmDateTime::CElmDateTime(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_datetime_add(_parent->GetEvasObject()))
 {
 }
 
