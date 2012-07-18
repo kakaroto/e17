@@ -11,15 +11,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, magnet);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, on_select);
 GENERATE_PROPERTY_CALLBACKS(CElmActionSlider, enabled_pos);
 
-GENERATE_TEMPLATE(CElmActionSlider,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmActionSlider,
                   PROPERTY(labels),
                   PROPERTY(slider),
                   PROPERTY(magnet),
                   PROPERTY(on_select),
                   PROPERTY(enabled_pos));
 
-CElmActionSlider::CElmActionSlider(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_actionslider_add(parent->GetEvasObject()))
+CElmActionSlider::CElmActionSlider(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_actionslider_add(_parent->GetEvasObject()))
 {
 }
 

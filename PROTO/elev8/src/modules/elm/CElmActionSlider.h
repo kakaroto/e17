@@ -3,12 +3,13 @@
 
 #include "elm.h"
 #include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmActionSlider : public CElmObject {
+class CElmActionSlider : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
