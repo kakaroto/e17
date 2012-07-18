@@ -7,12 +7,12 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmInwin, content);
 GENERATE_METHOD_CALLBACKS(CElmInwin, activate);
 
-GENERATE_TEMPLATE(CElmInwin,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmInwin,
                   PROPERTY(content),
                   METHOD(activate));
 
 CElmInwin::CElmInwin(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject,
+   : CElmLayout(_jsObject,
                 elm_win_inwin_add(elm_object_top_widget_get(parent->GetEvasObject())))
 {
 }
