@@ -12,7 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmBackground, blue);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, load_size);
 GENERATE_PROPERTY_CALLBACKS(CElmBackground, option);
 
-GENERATE_TEMPLATE(CElmBackground,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmBackground,
                   PROPERTY(image),
                   PROPERTY(red),
                   PROPERTY(green),
@@ -20,8 +20,8 @@ GENERATE_TEMPLATE(CElmBackground,
                   PROPERTY(load_size),
                   PROPERTY(option));
 
-CElmBackground::CElmBackground(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_bg_add(parent->GetEvasObject()))
+CElmBackground::CElmBackground(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_bg_add(_parent->GetEvasObject()))
 {
 }
 
