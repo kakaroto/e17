@@ -75,7 +75,7 @@ find_module_file_name(char *module_name, const char *prefix, const char *type)
    char default_modpath[] = MODLOAD_ENV_DEFAULT_DIRS;
 
    if (!modpath) modpath = default_modpath;
-    
+
    for (char *token, *rest, *ptr = modpath;
              (token = strtok_r(ptr, ":", &rest));
              ptr = rest)
@@ -88,7 +88,7 @@ find_module_file_name(char *module_name, const char *prefix, const char *type)
          if (!access(full_path, R_OK))
              return strdup(full_path);
       }
-    
+
    return NULL;
 }
 
@@ -178,7 +178,7 @@ module_js_load(char *module_name, Handle<Object> name_space, ContextUseRule cont
         boom(try_catch);
         goto end;
      }
-    
+
    mod_script->Run();
    if (try_catch.HasCaught())
      {
@@ -234,7 +234,7 @@ static Handle<Value>
 load_module(Handle<String> module_name, ContextUseRule context_use_rule)
 {
    HandleScope scope;
-    
+
    if (module_cache->HasOwnProperty(module_name))
      return scope.Close(module_cache->Get(module_name));
 
