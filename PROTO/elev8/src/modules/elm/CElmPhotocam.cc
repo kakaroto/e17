@@ -17,7 +17,7 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmPhotocam, image_region);
 GENERATE_METHOD_CALLBACKS(CElmPhotocam, image_region_show);
 GENERATE_METHOD_CALLBACKS(CElmPhotocam, image_region_bring_in);
 
-GENERATE_TEMPLATE(CElmPhotocam,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmPhotocam,
                   PROPERTY(file),
                   PROPERTY(zoom),
                   PROPERTY(zoom_mode),
