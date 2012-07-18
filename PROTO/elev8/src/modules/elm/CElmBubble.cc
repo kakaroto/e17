@@ -8,13 +8,13 @@ GENERATE_PROPERTY_CALLBACKS(CElmBubble, text_part);
 GENERATE_PROPERTY_CALLBACKS(CElmBubble, corner);
 GENERATE_PROPERTY_CALLBACKS(CElmBubble, content);
 
-GENERATE_TEMPLATE(CElmBubble,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmBubble,
                   PROPERTY(text_part),
                   PROPERTY(corner),
                   PROPERTY(content));
 
-CElmBubble::CElmBubble(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_bubble_add(parent->GetEvasObject()))
+CElmBubble::CElmBubble(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_bubble_add(_parent->GetEvasObject()))
 {
    jsObject->SetHiddenValue(String::NewSymbol("content"), Undefined());
 }
