@@ -49,17 +49,14 @@ protected:
            GetObjectFromJavascript(args[1]);
 
         T *obj = new T(args.This(), parent);
-        obj->jsObject.MakeWeak(obj, T::Delete);
 
-        return Undefined();
+        return obj->jsObject;
      }
 
    static CElmObject *GetObjectFromJavascript(Handle<Value> obj)
      {
         return static_cast<CElmObject*>(obj->ToObject()->GetPointerFromInternalField(0));
      }
-
-   static void Delete(Persistent<Value>, void *parameter);
 
    static void EvasFreeEvent(void *data, Evas *e, void *event_info);
 

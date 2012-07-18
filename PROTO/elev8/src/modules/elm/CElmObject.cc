@@ -78,26 +78,12 @@ static void Callback_elements_set(Local<String>, Local<Value> value, const Acces
    info.This()->SetHiddenValue(String::NewSymbol("elm::elements"), elements);
 }
 
-void CElmObject::Delete(Persistent<Value>, void *parameter)
-{
-   CElmObject *self = static_cast<CElmObject *>(parameter);
-
-   evas_object_data_set(self->eo, "deleted-from-gc", (void *)1);
-   delete static_cast<CElmObject *>(self);
-}
-
 void CElmObject::EvasFreeEvent(void *data, Evas *, void *)
 {
+
    CElmObject *self = static_cast<CElmObject *>(data);
-
-   if (evas_object_data_get(self->eo, "deleted-from-gc"))
-     return;
-
-   ELM_DBG("Received EVAS_CALLBACK_FREE event for CElmObject @ %p (%s). " \
-           "Nullifying pointer to Evas_Object: expect breakage.",
-           data, *String::Utf8Value(self->jsObject->ObjectProtoToString()));
-
    self->eo = NULL;
+   delete self;
 }
 
 CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
@@ -112,16 +98,13 @@ CElmObject::CElmObject(Local<Object> _jsObject, Evas_Object *_eo)
 
 CElmObject::~CElmObject()
 {
+   HandleScope scope;
+
    on_animate_set(Undefined());
    on_click_set(Undefined());
    on_key_down_set(Undefined());
 
-   Local<Value> packer = jsObject->GetHiddenValue(String::NewSymbol("elm::packer"));
-
-   if (!packer.IsEmpty())
-     GetObjectFromJavascript(packer)->Unpack(jsObject);
-
-   evas_object_del(eo);
+   if (eo) evas_object_del(eo);
 
    jsObject.Dispose();
    jsObject.Clear();
