@@ -2,13 +2,14 @@
 #define C_ELM_RADIO_H
 
 #include "elm.h"
+#include "CElmLayout.h"
 #include "CElmObject.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmRadio : public CElmObject {
+class CElmRadio : public CElmLayout {
 private:
    CElmObject *parent;
    static Persistent<FunctionTemplate> tmpl;

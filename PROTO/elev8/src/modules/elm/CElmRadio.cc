@@ -10,7 +10,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmRadio, value);
 GENERATE_PROPERTY_CALLBACKS(CElmRadio, group_value);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmRadio, group_selected);
 
-GENERATE_TEMPLATE(CElmRadio,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmRadio,
    PROPERTY(icon),
    PROPERTY(group),
    PROPERTY(value),
@@ -18,7 +18,7 @@ GENERATE_TEMPLATE(CElmRadio,
    PROPERTY_RO(group_selected));
 
 CElmRadio::CElmRadio(Local<Object> _jsObject, CElmObject *_parent)
-   : CElmObject(_jsObject, elm_radio_add(_parent->GetEvasObject()))
+   : CElmLayout(_jsObject, elm_radio_add(_parent->GetEvasObject()))
    , parent(_parent)
 {
 }
