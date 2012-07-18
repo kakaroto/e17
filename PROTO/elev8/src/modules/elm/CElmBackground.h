@@ -2,7 +2,6 @@
 #define C_ELM_BACKGROUND_H
 
 #include "elm.h"
-#include "CElmObject.h"
 #include "CElmLayout.h"
 
 namespace elm {

@@ -2,7 +2,6 @@
 #define C_ELM_CLOCK_H
 
 #include "elm.h"
-#include "CElmObject.h"
 #include "CElmLayout.h"
 
 namespace elm {

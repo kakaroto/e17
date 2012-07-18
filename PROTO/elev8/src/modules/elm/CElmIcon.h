@@ -2,7 +2,6 @@
 #define C_ELM_ICON_H
 
 #include "elm.h"
-#include "CElmObject.h"
 #include "CElmImage.h"
 
 namespace elm {
