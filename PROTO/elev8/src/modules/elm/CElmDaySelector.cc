@@ -18,7 +18,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, week_start);
 GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, weekend_start);
 GENERATE_PROPERTY_CALLBACKS(CElmDaySelector, weekend_length);
 
-GENERATE_TEMPLATE(CElmDaySelector,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmDaySelector,
                   PROPERTY(on_change),
                   PROPERTY(on_lang_change),
                   PROPERTY(monday),
@@ -32,8 +32,8 @@ GENERATE_TEMPLATE(CElmDaySelector,
                   PROPERTY(weekend_start),
                   PROPERTY(weekend_length));
 
-CElmDaySelector::CElmDaySelector(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_dayselector_add(parent->GetEvasObject()))
+CElmDaySelector::CElmDaySelector(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_dayselector_add(_parent->GetEvasObject()))
 {
 }
 

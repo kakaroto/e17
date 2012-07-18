@@ -2,11 +2,11 @@
 #define C_ELM_DAY_SELECTOR_H
 
 #include "elm.h"
-#include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
-class CElmDaySelector : public CElmObject {
+class CElmDaySelector : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 
