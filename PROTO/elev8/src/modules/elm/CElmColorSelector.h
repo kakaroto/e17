@@ -3,10 +3,11 @@
 
 #include "elm.h"
 #include "CElmObject.h"
+#include "CElmLayout.h"
 
 namespace elm {
 
-class CElmColorSelector : public CElmObject {
+class CElmColorSelector : public CElmLayout {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

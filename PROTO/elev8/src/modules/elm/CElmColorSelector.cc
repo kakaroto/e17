@@ -12,7 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, blue);
 GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, alpha);
 GENERATE_PROPERTY_CALLBACKS(CElmColorSelector, palette_name);
 
-GENERATE_TEMPLATE(CElmColorSelector,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmColorSelector,
                   PROPERTY(on_change),
                   PROPERTY(red),
                   PROPERTY(green),
@@ -20,8 +20,8 @@ GENERATE_TEMPLATE(CElmColorSelector,
                   PROPERTY(alpha),
                   PROPERTY(palette_name));
 
-CElmColorSelector::CElmColorSelector(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_colorselector_add(parent->GetEvasObject()))
+CElmColorSelector::CElmColorSelector(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_colorselector_add(_parent->GetEvasObject()))
 {
 }
 
