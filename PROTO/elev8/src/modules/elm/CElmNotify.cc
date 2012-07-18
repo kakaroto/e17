@@ -12,7 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmNotify, allow_events);
 GENERATE_PROPERTY_CALLBACKS(CElmNotify, parent);
 
 
-GENERATE_TEMPLATE(CElmNotify,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmNotify,
                   PROPERTY(content),
                   PROPERTY(orient),
                   PROPERTY(timeout),
@@ -20,7 +20,7 @@ GENERATE_TEMPLATE(CElmNotify,
                   PROPERTY(parent));
 
 CElmNotify::CElmNotify(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject,
+   : CElmLayout(_jsObject,
 		elm_notify_add(elm_object_top_widget_get(parent->GetEvasObject())))
 {
 }

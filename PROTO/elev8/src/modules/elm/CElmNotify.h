@@ -2,13 +2,14 @@
 #define C_ELM_NOTIFY_H
 
 #include "elm.h"
+#include "CElmLayout.h"
 #include "CElmObject.h"
 
 namespace elm {
 
 using namespace v8;
 
-class CElmNotify : public CElmObject {
+class CElmNotify : public CElmLayout {
 private:
   static Persistent<FunctionTemplate> tmpl;
 
