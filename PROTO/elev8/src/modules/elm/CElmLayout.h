@@ -1,16 +1,29 @@
 #ifndef C_ELM_LAYOUT_H
 #define C_ELM_LAYOUT_H
 
-#include <v8.h>
-#include "CEvasObject.h"
+#include "elm.h"
+#include "CElmObject.h"
+#include "CElmContainer.h"
 
-class CElmLayout : public CEvasObject {
-   FACTORY(CElmLayout)
-protected:
-   Persistent<Object> the_contents;
-   CPropHandler<CElmLayout> prop_handler;
+namespace elm {
 
-   CElmLayout(CEvasObject *parent, Local<Object> obj);
+using namespace v8;
+
+class CElmLayout : public CElmContainer {
+private:
+   static Persistent<FunctionTemplate> tmpl;
+   CElmLayout(Local<Object> _jsObject, CElmObject *parent);
+   CElmLayout(Local<Object> _jsObject, Evas_Object *child);
+   ~CElmLayout();
+
+   static Handle<FunctionTemplate> GetTemplate();
+
+   Persistent<Value> fileused;
+   Persistent<Value> chosentheme;
+   Persistent<Value> part_cursor;
+   Persistent<Value> cursor_style;
+   Persistent<Value> cursor_engine;
+
 public:
    virtual Handle<Value> contents_get() const;
    virtual void contents_set(Handle<Value> val);

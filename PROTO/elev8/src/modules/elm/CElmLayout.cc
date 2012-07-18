@@ -1,12 +1,97 @@
 #include "CElmLayout.h"
 
-CElmLayout::CElmLayout(CEvasObject *parent, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+GENERATE_PROPERTY_CALLBACKS(CElmLayout, file);
+GENERATE_PROPERTY_CALLBACKS(CElmLayout, theme);
+GENERATE_PROPERTY_CALLBACKS(CElmLayout, part_cursor);
+GENERATE_PROPERTY_CALLBACKS(CElmLayout, cursor_style);
+GENERATE_PROPERTY_CALLBACKS(CElmLayout, cursor_engine);
+GENERATE_METHOD_CALLBACKS(CElmLayout, part_cursor_unset);
+GENERATE_METHOD_CALLBACKS(CElmLayout, sizing_eval);
+GENERATE_METHOD_CALLBACKS(CElmLayout, box_remove_all);
+GENERATE_METHOD_CALLBACKS(CElmLayout, signal_emit);
+GENERATE_METHOD_CALLBACKS(CElmLayout, table_clear);
+
+GENERATE_TEMPLATE_FULL(CElmContainer, CElmLayout,
+                  PROPERTY(file),
+                  PROPERTY(theme),
+                  PROPERTY(part_cursor),
+                  PROPERTY(cursor_style),
+                  PROPERTY(cursor_engine),
+                  METHOD(part_cursor_unset),
+                  METHOD(sizing_eval),
+                  METHOD(box_remove_all),
+                  METHOD(signal_emit),
+                  METHOD(table_clear));
+
+CElmLayout::CElmLayout(Local<Object> _jsObject, CElmObject *_parent)
+     : CElmContainer(_jsObject, elm_layout_add(_parent->GetEvasObject()))
 {
-   the_contents = Persistent <Object>::New(Object::New());
-   eo = elm_layout_add(parent->top_widget_get());
-   construct(eo, obj);
+}
+
+CElmLayout::CElmLayout(Local<Object> _jsObject, Evas_Object *child)
+     : CElmContainer(_jsObject, child)
+{
+}
+
+CElmLayout::~CElmLayout()
+{
+   fileused.Dispose();
+   chosentheme.Dispose();
+   part_cursor.Dispose();
+   cursor_style.Dispose();
+   cursor_engine.Dispose();
+}
+
+Handle<Value> CElmLayout::file_get() const
+{
+   return fileused;
+}
+
+void CElmLayout::file_set(Handle<Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Eina_Bool status;
+   Local<Object> file = val->ToObject();
+
+   status = elm_layout_file_set(eo,
+                 *String::Utf8Value(file->Get(0)),
+                 *String::Utf8Value(file->Get(1)));
+
+   if(!status)
+     return;
+
+   fileused.Dispose();
+   fileused = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmLayout::theme_get() const
+{
+   return chosentheme;
+}
+
+void CElmLayout::theme_set(Handle <Value> val)
+{
+   if (!val->IsArray())
+     return;
+
+   Eina_Bool status;
+   Local<Object> theme = val->ToObject();
+
+   status = elm_layout_theme_set(eo,
+                 *String::Utf8Value(theme->Get(0)),
+                 *String::Utf8Value(theme->Get(1)),
+                 *String::Utf8Value(theme->Get(2)));
+   if(!status)
+     return;
+
+   chosentheme.Dispose();
+   chosentheme = Persistent<Value>::New(val);
 }
 
 Handle<Value> CElmLayout::contents_get() const
@@ -35,51 +120,4 @@ void CElmLayout::contents_set(Handle<Value> val)
      }
 }
 
-Handle<Value> CElmLayout::file_get() const
-{
-   // FIXME: implement
-   return Undefined();
 }
-
-void CElmLayout::file_set(Handle<Value> val)
-{
-   if (!val->IsObject())
-     return;
-
-   Local<Object> obj = val->ToObject();
-   Local<Value> fileParam = obj->Get(String::NewSymbol("name"));
-   Local<Value> groupParam = obj->Get(String::NewSymbol("group"));
-
-   elm_layout_file_set(eo,
-                       *String::Utf8Value(fileParam),
-                       *String::Utf8Value(groupParam));
-}
-
-Handle <Value> CElmLayout::theme_get() const
-{
-   // FIXME: implement
-   return Undefined();
-}
-
-void CElmLayout::theme_set(Handle <Value> val)
-{
-   if (!val->IsObject())
-     return;
-
-   Local<Object> obj = val->ToObject();
-   Local<Value> classParam = obj->Get(String::NewSymbol("class"));
-   Local<Value> groupParam = obj->Get(String::NewSymbol("group"));
-   Local<Value> styleParam = obj->Get(String::NewSymbol("style"));
-
-   elm_layout_theme_set(eo,
-                        *String::Utf8Value(classParam),
-                        *String::Utf8Value(groupParam),
-                        *String::Utf8Value(styleParam));
-}
-
-PROPERTIES_OF(CElmLayout) = {
-   PROP_HANDLER(CElmLayout, file),
-   PROP_HANDLER(CElmLayout, theme),
-   PROP_HANDLER(CElmLayout, contents),
-   { NULL }
-};
