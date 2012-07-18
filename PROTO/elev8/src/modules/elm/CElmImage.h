@@ -12,6 +12,7 @@ private:
 
 protected:
    CElmImage(Local<Object> _jsObject, CElmObject *parent);
+   CElmImage(Local<Object> _jsObject, Evas_Object *child);
    ~CElmImage();
 
    static Handle<FunctionTemplate> GetTemplate();

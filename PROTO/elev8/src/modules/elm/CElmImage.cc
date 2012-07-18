@@ -22,7 +22,7 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmImage, object_size);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmImage, animated_available);
 
 
-GENERATE_TEMPLATE(CElmObject, CElmImage,
+GENERATE_TEMPLATE_FULL(CElmObject, CElmImage,
                   PROPERTY(file),
                   PROPERTY(smooth),
                   PROPERTY(no_scale),
@@ -41,6 +41,11 @@ GENERATE_TEMPLATE(CElmObject, CElmImage,
 
 CElmImage::CElmImage(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_image_add(parent->GetEvasObject()))
+{
+}
+
+CElmImage::CElmImage(Local<Object> _jsObject, Evas_Object *child)
+   : CElmObject(_jsObject, child)
 {
 }
 
