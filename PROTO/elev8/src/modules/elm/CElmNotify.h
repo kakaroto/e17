@@ -22,6 +22,7 @@ protected:
 
    static Handle<FunctionTemplate> GetTemplate();
 
+   Persistent<Value> notify_parent;
 public:
    static void  Initialize(Handle<Object> target);
 
@@ -36,6 +37,9 @@ public:
 
    Handle<Value> allow_events_get() const;
    void allow_events_set(Handle<Value> val);
+
+   Handle<Value> parent_get() const;
+   void parent_set(Handle<Value> val);
 
    friend Handle<Value> CElmObject::New<CElmNotify>(const Arguments& args);
 };

@@ -9,13 +9,15 @@ GENERATE_PROPERTY_CALLBACKS(CElmNotify, content);
 GENERATE_PROPERTY_CALLBACKS(CElmNotify, orient);
 GENERATE_PROPERTY_CALLBACKS(CElmNotify, timeout);
 GENERATE_PROPERTY_CALLBACKS(CElmNotify, allow_events);
+GENERATE_PROPERTY_CALLBACKS(CElmNotify, parent);
 
 
 GENERATE_TEMPLATE(CElmNotify,
                   PROPERTY(content),
                   PROPERTY(orient),
                   PROPERTY(timeout),
-                  PROPERTY(allow_events));
+                  PROPERTY(allow_events),
+                  PROPERTY(parent));
 
 CElmNotify::CElmNotify(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject,
@@ -26,6 +28,7 @@ CElmNotify::CElmNotify(Local<Object> _jsObject, CElmObject *parent)
 CElmNotify::~CElmNotify()
 {
    cached.content.Dispose();
+   notify_parent.Dispose();
 }
 
 void CElmNotify::Initialize(Handle<Object> target)
@@ -76,6 +79,22 @@ void CElmNotify::allow_events_set(Handle<Value> val)
 {
    if (val->IsBoolean())
      elm_notify_allow_events_set(eo, val->BooleanValue());
+}
+
+Handle<Value> CElmNotify::parent_get() const
+{
+   return notify_parent;
+}
+
+void CElmNotify::parent_set(Handle<Value> val)
+{
+   if (val->IsObject())
+     {
+       elm_notify_parent_set(eo, GetEvasObjectFromJavascript(val));
+
+       notify_parent.Dispose();
+       notify_parent = Persistent<Value>::New(val);
+     }
 }
 
 }
