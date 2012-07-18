@@ -22,7 +22,7 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmImage, object_size);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmImage, animated_available);
 
 
-GENERATE_TEMPLATE(CElmImage,
+GENERATE_TEMPLATE(CElmObject, CElmImage,
                   PROPERTY(file),
                   PROPERTY(smooth),
                   PROPERTY(no_scale),
