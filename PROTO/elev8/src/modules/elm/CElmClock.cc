@@ -13,7 +13,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmClock, second);
 GENERATE_PROPERTY_CALLBACKS(CElmClock, edit);
 GENERATE_PROPERTY_CALLBACKS(CElmClock, first_interval);
 
-GENERATE_TEMPLATE(CElmClock,
+GENERATE_TEMPLATE_FULL(CElmLayout, CElmClock,
                   PROPERTY(show_am_pm),
                   PROPERTY(show_seconds),
                   PROPERTY(hour),
@@ -22,8 +22,8 @@ GENERATE_TEMPLATE(CElmClock,
                   PROPERTY(edit),
                   PROPERTY(first_interval));
 
-CElmClock::CElmClock(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_clock_add(parent->GetEvasObject()))
+CElmClock::CElmClock(Local<Object> _jsObject, CElmObject *_parent)
+   : CElmLayout(_jsObject, elm_clock_add(_parent->GetEvasObject()))
 {
 }
 
