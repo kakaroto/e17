@@ -2,11 +2,12 @@
 #define C_ELM_PANE_H
 
 #include "elm.h"
+#include "CElmContainer.h"
 #include "CElmObject.h"
 
 namespace elm {
 
-class CElmPane : public CElmObject {
+class CElmPane : public CElmContainer {
 private:
    static Persistent<FunctionTemplate> tmpl;
 

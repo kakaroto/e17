@@ -12,7 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmPane, fixed);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, size_left_content);
 GENERATE_PROPERTY_CALLBACKS(CElmPane, size_right_content);
 
-GENERATE_TEMPLATE(CElmPane,
+GENERATE_TEMPLATE_FULL(CElmContainer, CElmPane,
                   PROPERTY(horizontal),
                   PROPERTY(left),
                   PROPERTY(right),
@@ -21,7 +21,7 @@ GENERATE_TEMPLATE(CElmPane,
                   PROPERTY(size_right_content));
 
 CElmPane::CElmPane(Local<Object> _jsObject, CElmObject *parent)
-   : CElmObject(_jsObject, elm_panes_add(elm_object_top_widget_get(parent->GetEvasObject())))
+   : CElmContainer(_jsObject, elm_panes_add(elm_object_top_widget_get(parent->GetEvasObject())))
 {
 }
 
