@@ -6905,6 +6905,7 @@ collections {
         }
         parts {
             part { name: "whole";
+                type: RECT;
                 description { state: "default" 0.0;
                 }
             }
@@ -6967,6 +6968,7 @@ collections {
         }
         parts {
             part { name: "whole";
+                type: RECT;
                 description { state: "default" 0.0;
                 }
             }
@@ -7028,6 +7030,7 @@ collections {
         }
         parts {
             part { name: "whole";
+                type: RECT;
                 description { state: "default" 0.0;
                 }
             }
@@ -7083,6 +7086,7 @@ collections {
         }
     parts {
     part { name: "clipper";
+        type: RECT;
         mouse_events:  1;
         description { state: "default" 0.0;
           color: 255 255 255 0;

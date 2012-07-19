@@ -140,6 +140,7 @@ group {
 	    }
 	    part {
 	        name: "text_clip";
+            type: RECT;
 	        description {
 	            state: "default" 0.0;
 	            rel1.to_x: "camera";
