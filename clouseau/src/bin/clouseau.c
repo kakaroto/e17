@@ -1192,7 +1192,13 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
    Clouseau_Tree_Item *treeit = elm_object_item_data_get(event_info);
    const Elm_Object_Item *parent;
    const Elm_Object_Item *prt = elm_genlist_item_parent_get(event_info);
-   if ((!prt) || (!do_highlight))
+   if (!prt)
+     return;
+
+   /* Populate object information, then do highlight */
+   clouseau_obj_information_list_populate(treeit, g->lb);
+
+   if (!do_highlight)
      return;
 
    /* START - replacing libclouseau_highlight(obj); */
@@ -1232,8 +1238,6 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
                                   &treeit->info->evas_props, v->data);
      }
    /* END   - replacing clouseau_object_highlight(obj); */
-
-   clouseau_obj_information_list_populate(treeit, gui->lb);
 }
 
 static int
