@@ -519,12 +519,14 @@ module_close(Eyesight_Module *module, void *backend)
 Eina_Bool
 ps_module_init(void)
 {
+  printf(" * %s\n", __FUNCTION__);
    return _eyesight_module_register("ps", module_open, module_close);
 }
 
 void
 ps_module_shutdown(void)
 {
+  printf(" * %s\n", __FUNCTION__);
    _eyesight_module_unregister("ps");
 }
 

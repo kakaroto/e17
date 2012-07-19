@@ -170,6 +170,9 @@ struct _Eyesight_Link
   } dest;
 };
 
+EAPI int eyesight_init(void);
+EAPI int eyesight_shutdown(void);
+
 EAPI Evas_Object         *eyesight_object_add(Evas *evas);
 EAPI Eina_Bool            eyesight_object_file_set(Evas_Object *obj,
                                                    const char *filename);

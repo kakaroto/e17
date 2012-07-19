@@ -124,8 +124,9 @@ case "$host_os" in
       EFL_EYESIGHT_BUILD="-DEFL_EYESIGHT_BUILD"
    ;;
 esac
-AC_SUBST(EFL_EYESIGHT_BUILD)
+AC_SUBST([EFL_EYESIGHT_BUILD])
 
+EFL_CHECK_COMPILER_FLAGS([eyesight], [-Wall -Wextra -Wshadow])
 
 
 ### Checks for linker characteristics
@@ -142,6 +143,7 @@ AC_SUBST([lt_enable_auto_import])
 
 
 ### Checks for library functions
+
 
 AC_SUBST([requirement_eyesight])
 

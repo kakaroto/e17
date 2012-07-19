@@ -27,12 +27,23 @@
 #include "Eyesight.h"
 #include "eyesight_private.h"
 
+/*============================================================================*
+ *                                  Local                                     *
+ *============================================================================*/
+
+/**
+ * @cond LOCAL
+ */
+
+/**** Debug macro ****/
+
 #define DBG(...) EINA_LOG_DOM_DBG(_eyesight_log_domain, __VA_ARGS__)
 #define INF(...) EINA_LOG_DOM_INFO(_eyesight_log_domain, __VA_ARGS__)
 #define WRN(...) EINA_LOG_DOM_WARN(_eyesight_log_domain, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(_eyesight_log_domain, __VA_ARGS__)
 #define CRIT(...) EINA_LOG_DOM_CRIT(_eyesight_log_domain, __VA_ARGS__)
 
+/**** Smart object ****/
 
 #define E_SMART_OBJ_GET(smart, o, type)               \
    {                                                  \
@@ -75,18 +86,6 @@ struct _Smart_Data
 };
 
 static Evas_Smart  *smart = NULL; /* The smart object */
-static Eina_Hash  *_eyesight_backends = NULL; /* the list of backends */
-static Eina_Array *_eyesight_modules = NULL; /* the list of shared lib corresponding to a backend */
-static int _eyesight_log_domain = -1;
-
-static const char *_eyesight_backend_priority[] = {
-  "img",
-  "pdf",
-  "ps",
-  "dvi",
-  "rtf",
-  "txt"
-};
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
   {NULL, NULL}
@@ -102,6 +101,25 @@ static void _smart_hide(Evas_Object * obj);
 static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a);
 static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip);
 static void _smart_clip_unset(Evas_Object * obj);
+
+
+/**** Private variables ****/
+
+static int         _eyesight_count = 0;
+static int         _eyesight_log_domain = -1;
+static Eina_Hash  *_eyesight_backends = NULL; /* the list of backends */
+static Eina_Array *_eyesight_modules = NULL; /* the list of shared lib corresponding to a backend */
+static const char *_eyesight_backend_priority[] = {
+  "img",
+  "pdf",
+  "ps",
+  "dvi",
+  "rtf",
+  "txt"
+};
+
+
+/**** Private functions ****/
 
 static void
 _eyesight_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -172,6 +190,34 @@ _eyesight_module_close(Eyesight_Module *module, void *backend)
     */
 }
 
+/**
+ * @endcond
+ */
+
+
+/*============================================================================*
+ *                                 Global                                     *
+ *============================================================================*/
+
+
+/**** Static modules ****/
+
+#ifdef EINA_STATIC_BUILD_IMG
+Eina_Bool img_module_init(void);
+#endif
+
+#ifdef EINA_STATIC_BUILD_PDF
+Eina_Bool pdf_module_init(void);
+#endif
+
+#ifdef EINA_STATIC_BUILD_POSTSCRIPT
+Eina_Bool ps_module_init(void);
+#endif
+
+#ifdef EINA_STATIC_BUILD_TXT
+Eina_Bool txt_module_init(void);
+#endif
+
 EAPI Eina_Bool
  _eyesight_module_register(const char *name, Eyesight_Module_Open m_open, Eyesight_Module_Close m_close)
 {
@@ -193,11 +239,133 @@ _eyesight_module_unregister(const char *name)
 }
 
 
-/* API */
+/*============================================================================*
+ *                                   API                                      *
+ *============================================================================*/
+
+EAPI int
+eyesight_init(void)
+{
+   char *path;
+
+   if (++_eyesight_count != 1)
+      return _eyesight_count;
+
+   if (!eina_init())
+     {
+        fprintf(stderr, "Could not initialize Eina.\n");
+        return --_eyesight_count;
+     }
+
+   _eyesight_log_domain = eina_log_domain_register("eyesight", EINA_COLOR_LIGHTCYAN);
+   if (_eyesight_log_domain < 0)
+     {
+        EINA_LOG_CRIT("Could not register log domain 'eyesight'");
+        goto shutdown_eina;
+     }
+
+   if (!efreet_mime_init())
+     {
+        ERR("Could not initialize Efreet.");
+        goto unregister_log_domain;
+     }
+
+   _eyesight_backends = eina_hash_string_small_new(free);
+   if (!_eyesight_backends)
+     {
+        ERR("Could not allocate backends hash table.");
+        goto shutdown_efreet;
+     }
+
+   _eyesight_modules = eina_module_list_get(NULL, PACKAGE_LIB_DIR "/eyesight/", 0, NULL, NULL);
+   if (!_eyesight_modules)
+     {
+        ERR("Could not allocate modules array.");
+        goto free_backends;
+     }
+
+   path = eina_module_environment_path_get("HOME", "/.eyesight/");
+   printf("%s path 1 : %s\n", __FUNCTION__, path);
+   _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
+   if (path) free(path);
+
+   path = eina_module_environment_path_get("EYESIGHT_MODULES_DIR", "/eyesight/");
+   printf("%s path 2 : %s\n", __FUNCTION__, path);
+   _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
+   if (path) free(path);
+
+   path = eina_module_symbol_path_get(eyesight_object_add, "/eyesight/");
+   printf("%s path 3 : %s\n", __FUNCTION__, path);
+   _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
+   if (path) free(path);
+
+   if (!_eyesight_modules)
+     {
+        ERR("No module found!");
+        goto free_modules;
+     }
+
+   eina_module_list_load(_eyesight_modules);
+
+#ifdef EYESIGHT_STATIC_BUILD_IMG
+   img_module_init();
+#endif
+
+#ifdef EYESIGHT_STATIC_BUILD_POPPLER
+   pdf_module_init();
+#endif
+
+#ifdef EYESIGHT_STATIC_BUILD_POSTSCRIPT
+   ps_module_init();
+#endif
+
+#ifdef EYESIGHT_STATIC_BUILD_TXT
+   txt_module_init();
+#endif
+
+   return _eyesight_count;
+
+ free_modules:
+   eina_array_free(_eyesight_modules);
+ free_backends:
+   eina_hash_free(_eyesight_backends);
+ shutdown_efreet:
+   efreet_mime_shutdown();
+ unregister_log_domain:
+   eina_log_domain_unregister(_eyesight_log_domain);
+   _eyesight_log_domain = -1;
+ shutdown_eina:
+   eina_shutdown();
+
+   return --_eyesight_count;
+}
+
+EAPI int
+eyesight_shutdown(void)
+{
+   if (_eyesight_count <= 0)
+     {
+        ERR("Init count not greater than 0 in shutdown.");
+        return 0;
+     }
+
+   if (--_eyesight_count != 0)
+     return _eyesight_count;
+
+   eina_array_free(_eyesight_modules);
+   eina_hash_free(_eyesight_backends);
+   efreet_mime_shutdown();
+   eina_log_domain_unregister(_eyesight_log_domain);
+   _eyesight_log_domain = -1;
+   eina_shutdown();
+
+   return _eyesight_count;
+}
 
 EAPI Evas_Object *
 eyesight_object_add(Evas *evas)
 {
+  printf("%s\n", __FUNCTION__);
    _smart_init();
    return evas_object_smart_add(evas, smart);
 }
@@ -209,6 +377,7 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
    Smart_Data *sd;
    const char *mime;
    const char *module_name = NULL;
+  printf("%s\n", __FUNCTION__);
 
    if (!filename || !*filename)
      return EINA_FALSE;
@@ -222,6 +391,7 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
      return EINA_TRUE;
 
    mime = efreet_mime_type_get(file);
+   printf("mime : %s\n", mime);
    if (mime)
      {
         if (strcmp(mime, "application/pdf") == 0)
@@ -248,6 +418,11 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
                  (strcmp(mime, "image/x-xpixmap") == 0)) /* xpm */
           module_name = "png";
      }
+   printf("module_name : %s\n", module_name);
+
+   if (sd->filename)
+     free(sd->filename);
+   sd->filename = strdup(file);
 
    if ((sd->module_name) && module_name && (!strcmp(sd->module_name, module_name)))
      return EINA_TRUE;
@@ -257,10 +432,6 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
         free(sd->module_name);
         sd->module_name = NULL;
      }
-
-   if (sd->filename)
-     free(sd->filename);
-   sd->filename = strdup(file);
 
    _eyesight_module_close(sd->module, sd->backend);
    sd->module = NULL;
@@ -556,88 +727,12 @@ eyesight_object_page_links_get(Evas_Object *obj)
 /* Internal smart object required routines */
 /*******************************************/
 
-#ifdef EINA_STATIC_BUILD_IMG
-Eina_Bool img_module_init(void);
-#endif
-
-#ifdef EINA_STATIC_BUILD_PDF
-Eina_Bool pdf_module_init(void);
-#endif
-
-#ifdef EINA_STATIC_BUILD_POSTSCRIPT
-Eina_Bool ps_module_init(void);
-#endif
-
-#ifdef EINA_STATIC_BUILD_TXT
-Eina_Bool txt_module_init(void);
-#endif
-
 static void
 _smart_init(void)
 {
    static Evas_Smart_Class sc = EVAS_SMART_CLASS_INIT_NAME_VERSION(E_OBJ_NAME);
-   char *path;
 
    if (smart) return;
-
-   if (!eina_init())
-     return;
-
-   _eyesight_log_domain = eina_log_domain_register("eyesight", EINA_COLOR_LIGHTCYAN);
-   if (_eyesight_log_domain < 0)
-     {
-        EINA_LOG_CRIT("Could not register log domain 'eyesight'");
-        goto shutdown_eina;
-     }
-
-   _eyesight_backends = eina_hash_string_small_new(free);
-   if (!_eyesight_backends)
-     {
-        goto unregister_log_domain;
-     }
-
-   if (!efreet_mime_init())
-     {
-        goto free_backends;
-     }
-
-   _eyesight_modules = eina_module_list_get(NULL, PACKAGE_LIB_DIR "/eyesight/", 0, NULL, NULL);
-
-   path = eina_module_environment_path_get("HOME", "/.eyesight/");
-   _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
-   if (path) free(path);
-
-   path = eina_module_environment_path_get("EYESIGHT_MODULES_DIR", "/eyesight/");
-   _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
-   if (path) free(path);
-
-   path = eina_module_symbol_path_get(eyesight_object_add, "/eyesight/");
-   _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
-   if (path) free(path);
-
-   if (!_eyesight_modules)
-     {
-        ERR("No module found!");
-        goto shutdown_efreet;
-     }
-
-   eina_module_list_load(_eyesight_modules);
-
-#ifdef EYESIGHT_STATIC_BUILD_IMG
-   img_module_init();
-#endif
-
-#ifdef EYESIGHT_STATIC_BUILD_POPPLER
-   pdf_module_init();
-#endif
-
-#ifdef EYESIGHT_STATIC_BUILD_POSTSCRIPT
-   ps_module_init();
-#endif
-
-#ifdef EYESIGHT_STATIC_BUILD_TXT
-   txt_module_init();
-#endif
 
    if (!sc.add)
      {
@@ -655,16 +750,6 @@ _smart_init(void)
    smart = evas_smart_class_new(&sc);
 
    return;
-
- shutdown_efreet:
-   efreet_mime_shutdown();
- free_backends:
-   eina_hash_free(_eyesight_backends);
- unregister_log_domain:
-   eina_log_domain_unregister(_eyesight_log_domain);
-   _eyesight_log_domain = -1;
- shutdown_eina:
-   eina_shutdown();
 }
 
 static void
@@ -695,11 +780,6 @@ _smart_del(Evas_Object * obj)
    free(sd->filename);
    free(sd->module_name);
    free(sd);
-
-   efreet_mime_shutdown();
-   eina_log_domain_unregister(_eyesight_log_domain);
-   _eyesight_log_domain = -1;
-   eina_shutdown();
 }
 
 static void

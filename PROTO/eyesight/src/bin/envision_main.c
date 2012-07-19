@@ -96,6 +96,12 @@ elm_main(int argc, char **argv)
     ECORE_GETOPT_VALUE_NONE
   };
 
+  if (!eyesight_init())
+    {
+      fprintf(stderr, "Could not initialize Eyesight\n");
+      return EXIT_FAILURE;
+    }
+
   args = ecore_getopt_parse(&options, values, argc, argv);
   if (args < 0)
     {
@@ -204,6 +210,7 @@ elm_main(int argc, char **argv)
   ecore_event_handler_del(handler_key_up);
   _env_free(envision);
  success:
+  eyesight_shutdown();
   elm_shutdown();
   return EXIT_SUCCESS;
 
@@ -212,6 +219,8 @@ elm_main(int argc, char **argv)
  free_envision:
   _env_free(envision);
  failure:
+  eyesight_shutdown();
+
   return EXIT_FAILURE;
 }
 ELM_MAIN()
