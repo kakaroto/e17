@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<maintainer>
+<email>enlightenment@gentoo.org</email>
+</maintainer>
+<longdescription lang="en">
+JavaScript bindings for EFL (<pkg>media-libs/elementary</pkg>,
+<pkg>dev-libs/ecore</pkg> et al) using <pkg>dev-lang/v8</pkg>.
+</longdescription>
+</pkgmetadata>
+
