@@ -57,6 +57,7 @@ static Eina_List *bmp_req = NULL; /* List of (bmp_node *)     */
 
 static Elm_Genlist_Item_Class itc;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
+static Eina_Bool do_highlight = EINA_TRUE;
 static Ecore_Ipc_Server *svr = NULL;
 static Eina_Bool _add_callback_called = EINA_FALSE;
 static void _cancel_bt_clicked(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
@@ -1191,7 +1192,7 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
    Clouseau_Tree_Item *treeit = elm_object_item_data_get(event_info);
    const Elm_Object_Item *parent;
    const Elm_Object_Item *prt = elm_genlist_item_parent_get(event_info);
-   if (!prt)
+   if ((!prt) || (!do_highlight))
      return;
 
    /* START - replacing libclouseau_highlight(obj); */
@@ -1291,6 +1292,13 @@ _show_clippers_check_changed(void *data, Evas_Object *obj,
 {
    list_show_clippers = elm_check_state_get(obj);
    _load_list(data);
+}
+
+static void
+_highlight_check_check_changed(EINA_UNUSED void *data, Evas_Object *obj,
+      void *event_info EINA_UNUSED)
+{
+   do_highlight = elm_check_state_get(obj);
 }
 
 static void
@@ -1601,7 +1609,9 @@ _ofl_bt_clicked(void *data,
 EAPI int
 elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
 {  /* Create Client Window */
-   Evas_Object *win, *bg, *panes, *show_hidden_check, *show_clippers_check;
+   Evas_Object *win, *bg, *panes,
+               *show_hidden_check, *show_clippers_check, *highlight_check;
+
 
    /* For inwin popup */
    Evas_Object *lb, *bxx, *bt_bx, *bt_ok, *bt_cancel;
@@ -1659,6 +1669,12 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
         elm_check_state_set(show_clippers_check, list_show_clippers);
         elm_box_pack_end(gui->hbx, show_clippers_check);
         evas_object_show(show_clippers_check);
+
+        highlight_check = elm_check_add(gui->hbx);
+        elm_object_text_set(highlight_check , "Highlight");
+        elm_check_state_set(highlight_check , do_highlight);
+        elm_box_pack_end(gui->hbx, highlight_check);
+        evas_object_show(highlight_check);
      }
 
    panes = elm_panes_add(gui->bx);
@@ -1682,6 +1698,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
               _show_hidden_check_changed, gui);
         evas_object_smart_callback_add(show_clippers_check, "changed",
               _show_clippers_check_changed, gui);
+        evas_object_smart_callback_add(highlight_check, "changed",
+              _highlight_check_check_changed, gui);
 
         itc.item_style = "default";
         itc.func.text_get = item_text_get;
