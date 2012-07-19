@@ -43,9 +43,6 @@ struct Item {
    {
       jsObject->DeleteHiddenValue(str_item);
       jsObject.Dispose();
-
-      if (object_item)
-         elm_object_item_del(object_item);
    }
 
    Elm_Gen_Item_Class *GetElmClass()
@@ -159,6 +156,7 @@ private:
    {
       HandleScope scope;
       Call(item, str_delete, NULL);
+      delete static_cast<Item<T> *>(item);
    }
 
    static void Destroy(Persistent<Value>, void *self)

@@ -96,8 +96,7 @@ Handle<Value> CElmGenGrid::Unpack(Handle<Value> value)
         if (next)
           attrs->ToObject()->SetHiddenValue(Item<CElmGenGrid>::str_next, External::Wrap(next));
      }
-   delete item;
-
+   elm_object_item_del(item->object_item);
    return attrs;
 }
 

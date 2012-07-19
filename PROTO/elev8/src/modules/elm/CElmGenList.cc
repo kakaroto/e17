@@ -110,7 +110,7 @@ Handle<Value> CElmGenList::Unpack(Handle<Value> value)
         if (next)
           attrs->ToObject()->SetHiddenValue(Item<CElmGenList>::str_next, External::Wrap(next));
      }
-   delete item;
+   elm_object_item_del(item->object_item);
    return attrs;
 }
 
