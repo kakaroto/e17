@@ -571,7 +571,8 @@ _forecasts_cb_check(void *data)
      inst->server =
        ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, inst->ci->host, 80, inst);
 
-   if (!inst->server) return EINA_FALSE; return EINA_TRUE;
+   if (!inst->server) return EINA_FALSE;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
