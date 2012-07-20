@@ -141,6 +141,24 @@ group
                   }
                }
             }
+          part {
+             name: "selection";
+             type: GROUP;
+             mouse_events: 0;
+             clip_to: "passwd_entry_clip";
+             source: "e/widgets/entry/selection";
+             description {
+                state: "default" 0.0;
+                visible: 0;
+                rel1.to: "e.text.password";
+                rel2.to: "e.text.password";
+             }
+             description {
+                state: "visible" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+             }
+          }
           part
             {
                name: "cursor";
@@ -194,6 +212,20 @@ group
                     color: 255 255 255 50;
                  }
             }
+      }
+      program {
+         name: "select";
+         signal: "e,state,selected";
+         source: "e";
+         action: STATE_SET "visible" 0.0;
+         target: "selection";
+      }
+      program {
+         name: "unselect";
+         signal: "e,state,unselected";
+         source: "e";
+         action: STATE_SET "default" 0.0;
+         target: "selection";
       }
   }
 
