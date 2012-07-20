@@ -241,22 +241,13 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	     sh *= Conf.desks.areas_ny;
 	  }
 
-	if (ewin->state.shaded)
-	  {
-	     /* Keep shaded windows entirely on-screen */
-	     dx = EoGetW(ewin);
-	     dy = EoGetH(ewin);
-	  }
-	else
-	  {
-	     /* Keep at least 8 pixels on-screen */
-	     dx = EoGetW(ewin) / 4;
-	     if (dx > 8)
-		dx = 8;
-	     dy = EoGetH(ewin) / 4;
-	     if (dy > 8)
-		dy = 8;
-	  }
+	/* Keep at least 8 pixels (or window dimension) on-screen */
+	dx = 8;
+	if (dx > EoGetW(ewin))
+	   dx = EoGetW(ewin);
+	dy = 8;
+	if (dy > EoGetH(ewin))
+	   dy = EoGetH(ewin);
 
 	if (x < xo - EoGetW(ewin) + dx)
 	   x = xo - EoGetW(ewin) + dx;
