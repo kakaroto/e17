@@ -50,12 +50,12 @@ _gl_header_icon_get(void *data, Evas_Object *obj, const char *part)
    if (strcmp(part, "elm.swallow.icon")) return NULL;
 
    if ((int) data == LIBRARY)
-      elm_icon_file_set(icon, Theme, "icons/menu");
+      elm_image_file_set(icon, Theme, "icons/menu");
    else if ((int) data == ALBUMS)
-      elm_icon_file_set(icon, Theme, "icons/albums");
+      elm_image_file_set(icon, Theme, "icons/albums");
    else if ((int) data == COLLECTIONS)
-      elm_icon_file_set(icon, Theme, "icons/collections");
-   else if ((int) data == TAGS) elm_icon_file_set(icon, Theme, "icons/tags");
+      elm_image_file_set(icon, Theme, "icons/collections");
+   else if ((int) data == TAGS) elm_image_file_set(icon, Theme, "icons/tags");
 
    return icon;
 }

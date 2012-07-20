@@ -43,7 +43,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
                                              "object.geocaching.panel.icon");
    snprintf(buf, PATH_MAX, "icons/geocaching/%s",
             enlil_geocaching_gp_type_get(geocaching));
-   elm_icon_file_set(ic, Theme, buf);
+   elm_image_file_set(ic, Theme, buf);
 
    snprintf(buf, PATH_MAX, "<b><font_size=14>%s</font_size></b>",
             enlil_geocaching_url_name_get(geocaching));
@@ -59,7 +59,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
 
    ic = edje_object_part_external_object_get(edje,
                                              "object.geocaching.panel.icon2");
-   elm_icon_file_set(ic, Theme, "icons/geocaching/geocaching");
+   elm_image_file_set(ic, Theme, "icons/geocaching/geocaching");
 
    //header
    snprintf(buf, PATH_MAX, "terrain,%s",
@@ -207,7 +207,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
 
       o = elm_icon_add(obj);
       snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_log_type_get(log));
-      elm_icon_file_set(o, Theme, buf);
+      elm_image_file_set(o, Theme, buf);
       elm_object_part_content_set(bb, "icon", o);
       evas_object_show(o);
       evas_object_size_hint_weight_set(bb, EVAS_HINT_EXPAND, 0.0);
@@ -320,7 +320,7 @@ _map_icon_get(Evas_Object *obj, Elm_Map_Overlay *marker, void *data)
       snprintf(buf, PATH_MAX, "icons/geocaching/%s",
                enlil_geocaching_gp_type_get(gp));
 
-   elm_icon_file_set(icon, Theme, buf);
+   elm_image_file_set(icon, Theme, buf);
 
    evas_object_show(icon);
    return icon;

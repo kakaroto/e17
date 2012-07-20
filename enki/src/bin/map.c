@@ -351,7 +351,7 @@ _gp_marker_get(Evas_Object *obj, Elm_Map_Overlay *ovl, void *data)
    o = elm_icon_add(obj);
    snprintf(buf, sizeof(buf), "icons/geocaching/%s",
             enlil_geocaching_gp_type_get(gp));
-   elm_icon_file_set(o, Theme, buf);
+   elm_image_file_set(o, Theme, buf);
    elm_object_part_content_set(bt, "icon", o);
    evas_object_smart_callback_add(bt, "clicked", _bt_geocaching_cb, gp);
 
@@ -385,7 +385,7 @@ _gp_marker_icon_get(Evas_Object *obj, Elm_Map_Overlay *ovl, void *data)
       snprintf(buf, PATH_MAX, "icons/geocaching/%s",
                enlil_geocaching_gp_type_get(gp));
 
-   elm_icon_file_set(icon, Theme, buf);
+   elm_image_file_set(icon, Theme, buf);
 
    evas_object_show(icon);
    return icon;
@@ -397,7 +397,7 @@ _gp_group_icon_get(Evas_Object *obj)
    Evas_Object *icon;
 
    icon = elm_icon_add(obj);
-   elm_icon_file_set(icon, Theme, "icons/geocaching/geocaching");
+   elm_image_file_set(icon, Theme, "icons/geocaching/geocaching");
 
    evas_object_show(icon);
    return icon;

@@ -265,7 +265,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    Evas_Object *ic;
 #define ITEM(LABEL, ICON, CB)         \
   ic = elm_icon_add(panel_image->tb); \
-  elm_icon_file_set(ic, Theme, ICON); \
+  elm_image_file_set(ic, Theme, ICON); \
   evas_object_show(ic);               \
   elm_list_item_append(panel_image->tb, D_(LABEL), NULL, ic, CB, panel_image);
 
