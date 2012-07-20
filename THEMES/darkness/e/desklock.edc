@@ -56,7 +56,7 @@ group
             description {
                state: "default" 0.0;
                color: 0 0 0 255;
-               fixed: 0 1;
+               fixed: 1 1;
                align: 0.0 0.5;
                rel1 {
                     relative: 1.0 0.0;
@@ -113,7 +113,7 @@ group
                description {
                   state: "default" 0.0;
                   color: 0 0 0 255;
-                  fixed: 0 1;
+                  fixed: 1 1;
                   align: 0.0 0.5;
                 
                   rel1
@@ -132,7 +132,7 @@ group
                   color: 255 255 255 255;
                   color3: DARKNESS_BLUE 128;
                   text {
-                     text: "****";
+                     text: "**********";
                      font: "Sans:style=Bold";
                      size: 16;
                      align: 0.0 0.5;
