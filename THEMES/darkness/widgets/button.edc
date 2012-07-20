@@ -150,7 +150,7 @@ group {
             color2: DARKNESS_DARK_BLUE 255;
             color_class: "button_text";
             text {
-               text:     "OK";
+               text:     "Cancel";
                font:     "Sans:style=Bold";
                size:     10;
                min:      1 1;
