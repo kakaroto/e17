@@ -1,5 +1,7 @@
 #ifndef VIGRID_H_
-# define VIGRID_H_
+#define VIGRID_H_
+
+#include <Eina.h>
 
 #ifdef EAPI
 # undef EAPI
@@ -30,8 +32,6 @@
 #  define EAPI
 # endif
 #endif
-
-#include <Eina.h>
 
 typedef struct _Vigrid_Massif Vigrid_Massif;
 typedef struct _Vigrid_Massif_Snapshot Vigrid_Massif_Snapshot;

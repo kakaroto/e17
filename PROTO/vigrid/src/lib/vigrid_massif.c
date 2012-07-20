@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Eina.h>
 
 #include "Vigrid.h"
@@ -48,7 +52,7 @@ _vigrid_double_get(Eina_File_Lines *line, unsigned long long *offset)
    if (*offset < line->length && line->line.start[*offset] == '.')
      {
         unsigned long long saved = *offset;
-        
+
         below = _vigrid_int_get(line, offset);
         count = *offset - saved;
      }
@@ -243,7 +247,7 @@ _vigrid_massif_line_free(Vigrid_Massif_Line *l)
      }
 
    free(l);
-} 
+}
 
 EAPI void
 vigrid_massif_free(const Vigrid_Massif *massif)
@@ -273,7 +277,7 @@ vigrid_massif_alloc(const char *file)
 {
    Eina_File_Lines *line;
    Vigrid_Massif *ms = NULL;
-   Vigrid_Massif_Snapshot *vs;
+   Vigrid_Massif_Snapshot *vs = NULL;
    Eina_Iterator *it = NULL;
    Eina_File *f;
    Eina_Array vl;

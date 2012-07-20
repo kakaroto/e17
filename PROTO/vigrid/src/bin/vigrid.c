@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "Vigrid.h"
 
 static void
@@ -38,7 +42,7 @@ _vigrid_display_biggest(Eina_Array *stack)
               if (eina_array_count(&vl->u.detail.children))
                 _vigrid_display_biggest(&vl->u.detail.children);
               break;
-          }    
+          }
      }
    else
      {
@@ -47,7 +51,7 @@ _vigrid_display_biggest(Eina_Array *stack)
 }
 
 int
-main(int argc, char **argv)
+main(int argc, char *argv[])
 {
    const Vigrid_Massif *ms;
 
