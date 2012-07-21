@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: exquisite
+Description: Library and tools to build splash screen using edje
+@pkgconfig_requires_private@: @requirement_exquisite@
+Version: @VERSION@
+Libs: -L${libdir} -lexquisite
+Libs.private: @EXQUISITE_LIBS@
+Cflags: -I${includedir}/exquisite-@VMAJ@ @EFL_WINDOWS_VERSION_CFLAGS@

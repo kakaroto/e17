@@ -1,2 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = bin
+SUBDIRS = lib
+
+if BUILD_EXQUISITE_BINARIES
+SUBDIRS += bin
+endif
