@@ -93,7 +93,11 @@ exquisite_object_add(Evas *evas, const char *theme)
    o = edje_object_add(evas);
    if (o)
      {
-       edje_object_file_set(o, theme, "exquisite/theme");
+       if (!edje_object_file_set(o, theme, "exquisite/theme"))
+         {
+           evas_object_del (o);
+           return NULL;
+         }
        edje_object_signal_callback_add(o, "exquisite", "done",
            _exquisite_cb_exit_done, NULL);
        evas_object_event_callback_add(o, EVAS_CALLBACK_DEL,
