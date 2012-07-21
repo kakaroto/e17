@@ -18,7 +18,7 @@ MINIMAL_TOC="-mminimal-toc"
 DEBUG_CFLAGS="-g -O3"
 CONFIGURE=1
 CLEAN_RULE="clean"
-FSELF="make_fself"
+FSELF="make_self"
 
 GCC_VERSION=$(powerpc64-ps3-elf-gcc --version | head -n 1 | awk '{print $3}')
 
@@ -34,8 +34,8 @@ SET(CMAKE_SYSTEM_VERSION 1)
 
 SET(CMAKE_SYSTEM_PROCESSOR powerpc64)
 
-SET(PS3DEV /usr/local/ps3dev)
-SET(PSL1GHT ${PS3DEV}/psl1ght)
+#SET(PS3DEV /usr/local/ps3dev)
+#SET(PSL1GHT ${PS3DEV}/psl1ght)
 
 # specify the cross compiler
 SET(CMAKE_C_COMPILER ppu-gcc)
@@ -244,7 +244,7 @@ function chipmunk {
         rm -rf build && \
         mkdir build && \
         cd build  && \
-        cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ps3dev/portlibs/ppu/ -DBUILD_SHARED=OFF -DBUILD_DEMOS=OFF -DCMAKE_TOOLCHAIN_FILE=$(pwd)/../../Toolchain-ps3.cmake .. && \
+        cmake -DCMAKE_INSTALL_PREFIX=$PS3DEV/portlibs/ppu/ -DBUILD_SHARED=OFF -DBUILD_DEMOS=OFF -DCMAKE_TOOLCHAIN_FILE=$(pwd)/../../Toolchain-ps3.cmake .. && \
         make && \
         ps3-smi && \
         cd ../..
