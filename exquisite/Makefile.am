@@ -10,6 +10,7 @@ aclocal.m4 \
 compile \
 config.guess \
 config.h.in \
+config.h.in~ \
 config.sub \
 configure \
 depcomp \
@@ -26,4 +27,15 @@ m4/ltoptions.m4 \
 m4/ltsugar.m4 \
 m4/ltversion.m4
 
-EXTRA_DIST = README AUTHORS COPYING
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = exquisite.pc
+
+EXTRA_DIST = \
+autogen.sh \
+README \
+AUTHORS \
+COPYING \
+autogen.sh \
+exquisite.pc.in \
+m4/efl_binary.m4 \
+m4/efl_path_max.m4
