@@ -20,6 +20,8 @@ CONFIGURE=1
 CLEAN_RULE="clean"
 FSELF="make_fself"
 
+GCC_VERSION=$(powerpc64-ps3-elf-gcc --version | head -n 1 | awk '{print $3}')
+
 alias ps3-configure='AR="powerpc64-ps3-elf-ar" CC="powerpc64-ps3-elf-gcc" RANLIB="powerpc64-ps3-elf-ranlib" CFLAGS="$DEBUG_CFLAGS -Wall -I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include $MINIMAL_TOC $MYCFLAGS" CPPFLAGS="-I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include" CXXFLAGS="-I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include"  LDFLAGS="-L$PSL1GHT/ppu/lib -L$PS3DEV/portlibs/ppu/lib" PKG_CONFIG_LIBDIR="$PSL1GHT/ppu/lib/pkgconfig" PKG_CONFIG_PATH="$PS3DEV/portlibs/ppu/lib/pkgconfig"  PKG_CONFIG="pkg-config --static" ./configure   --prefix="$PS3DEV/portlibs/ppu"   --host=powerpc64-ps3-elf    --includedir="$PS3DEV/portlibs/ppu/include"   --libdir="$PS3DEV/portlibs/ppu/lib" '
 alias ps3-smi='sudo -E PATH=$PATH make install'
 
@@ -92,7 +94,7 @@ function escape {
     cd escape || cd PROTO/escape || return 1
 
     if [ $CONFIGURE == "1" ]; then
-        MYCFLAGS="-I$PS3DEV/ppu/lib/gcc/powerpc64-ps3-elf/4.5.2/plugin/include/" ps3-configure || return 1
+        MYCFLAGS="-I$PS3DEV/ppu/lib/gcc/powerpc64-ps3-elf/${GCC_VERSION}/plugin/include/" ps3-configure || return 1
     fi
     make $CLEAN_RULE all && \
         ps3-smi && \
