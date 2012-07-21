@@ -23,7 +23,7 @@ typedef struct _Exquisite_Text_Line Exquisite_Text_Line;
 struct _Exquisite_Text_Line {
   const char* message;
   const char* status_text;
-  int status;
+  Exquisite_Status_Type status;
 };
 
 static void
@@ -48,17 +48,25 @@ _exquisite_text_update(Evas_Object *obj, Eina_List *messages, int signal)
    for(l = messages, i = 0; l && i < 8192; l = l->next)
      {
        t = (Exquisite_Text_Line*)l->data;
-       snprintf(p, strlen(t->message)+8, "<p>%s</p>", t->message);
+       snprintf(p, sizeof(buf)-strlen(buf), "<p>%s</p>", t->message);
        p = buf+strlen(buf);
 
        if(!t->status_text)
-         snprintf(s, 5, "<br>");
+         snprintf(s, sizeof(buf2)-strlen(buf2), "<br>");
        else
          {
-           if(t->status != -1)
-             snprintf(s, strlen(t->status_text)+8, "<%i>%s</%i>", t->status, t->status_text, t->status);
-           else
-             snprintf(s, strlen(t->status_text)+5, "%s<br/>", t->status_text);
+           switch(t->status) {
+             case EXQUISITE_STATUS_TYPE_SUCCESS:
+               snprintf(s, sizeof(buf2)-strlen(buf2), "<success>%s</success>", t->status_text);
+               break;
+             case EXQUISITE_STATUS_TYPE_FAILURE:
+               snprintf(s, sizeof(buf2)-strlen(buf2), "<failure>%s</failure>", t->status_text);
+               break;
+             case EXQUISITE_STATUS_TYPE_NORMAL:
+             default:
+               snprintf(s, sizeof(buf2)-strlen(buf2), "%s<br/>", t->status_text);
+               break;
+           }
          }
 
        s = buf2+strlen(buf2);
@@ -188,7 +196,7 @@ exquisite_object_text_add(Evas_Object *obj, const char *txt)
    t = malloc(sizeof(Exquisite_Text_Line));
    t->message = eina_stringshare_add(txt);
    t->status_text = NULL;
-   t->status = -1;
+   t->status = EXQUISITE_STATUS_TYPE_NORMAL;
 
    messages = eina_list_append(messages, t);
    evas_object_data_set (obj, "exquisite-messages", messages);
@@ -198,7 +206,7 @@ exquisite_object_text_add(Evas_Object *obj, const char *txt)
 }
 
 EAPI void
-exquisite_object_status_set(Evas_Object *obj, const char *txt, int type)
+exquisite_object_status_set(Evas_Object *obj, const char *txt, Exquisite_Status_Type type)
 {
    Exquisite_Text_Line *t = NULL;
    Eina_List *messages = NULL;

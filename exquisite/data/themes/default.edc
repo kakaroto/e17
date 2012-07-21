@@ -37,10 +37,10 @@ styles {
     name: "status";
     base: "font=Edje-Vera-Mono-Bold font_size=8 color=#fff align=1.0 valign=0.5 style=soft_outline outline_color=#aaa";
     
-    tag:  "1"   "+ outline_color=#0c0";
-    tag:  "/1"  "- \n";
-    tag:  "0"      "+ outline_color=#c00";
-    tag:  "/0"  "- \n";
+    tag:  "success"   "+ outline_color=#0c0";
+    tag:  "/success"  "- \n";
+    tag:  "failure"      "+ outline_color=#c00";
+    tag:  "/failure"  "- \n";
     tag:  "br"        "+ \n";
   }
 }
@@ -61,7 +61,7 @@ collections {
            get_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
            get_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
            
-           y = y - 8;
+           y = y - 13;
            
            set_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
            set_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
@@ -76,10 +76,10 @@ collections {
            new y;
            
            get_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
-           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x2, y);
+           get_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
            
            set_state_val(PART:"textarea", STATE_REL1_OFFSET, x, 0);
-           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x2, 0);
+           set_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, 0);
          }
       }
       
