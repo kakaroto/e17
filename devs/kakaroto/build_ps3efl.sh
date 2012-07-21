@@ -77,7 +77,7 @@ make_pkg() {
         $FSELF $name.elf $name.self && \
         mkdir -p pkg/USRDIR && cp $logo pkg/ICON0.PNG && \
         make_self_npdrm $name.elf pkg/USRDIR/EBOOT.BIN $contentid && \
-        sfo.py --title $title --appid $appid -f ps3sfo.xml pkg/PARAM.SFO  && \
+        sfo.py --title "$title" --appid "$appid" -f ps3sfo.xml pkg/PARAM.SFO  && \
         make install DESTDIR=`pwd`/temp_install && \
         cp -rf temp_install/$datadir/* pkg/USRDIR/  && \
         rm -rf temp_install && \
