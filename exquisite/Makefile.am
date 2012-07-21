@@ -31,7 +31,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = exquisite.pc
 
 EXTRA_DIST = \
-autogen.sh \
 README \
 AUTHORS \
 COPYING \
