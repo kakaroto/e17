@@ -183,13 +183,13 @@ exquisite_object_pulsate(Evas_Object *obj)
    edje_object_signal_emit(obj, "exquisite", "pulsate");
 }
 
-EAPI void
+EAPI int
 exquisite_object_text_add(Evas_Object *obj, const char *txt)
 {
    Exquisite_Text_Line *t = NULL;
    Eina_List *messages = NULL;
 
-   if(!txt || (txt[0] == 0)) return;
+   if(!txt || (txt[0] == 0)) return -1;
 
    messages = evas_object_data_get (obj, "exquisite-messages");
 
@@ -203,23 +203,28 @@ exquisite_object_text_add(Evas_Object *obj, const char *txt)
 
    /*A 1 means that a text update signal will be sent*/
    _exquisite_text_update(obj, messages, 1);
+
+   return eina_list_count (messages) - 1;
 }
 
 EAPI void
-exquisite_object_status_set(Evas_Object *obj, const char *txt, Exquisite_Status_Type type)
+exquisite_object_status_set(Evas_Object *obj, int text,
+    const char *status, Exquisite_Status_Type type)
 {
    Exquisite_Text_Line *t = NULL;
    Eina_List *messages = NULL;
 
    messages = evas_object_data_get (obj, "exquisite-messages");
 
-   if(!txt || (txt[0] == 0) || !messages) return;
+   if(text < 0 || !status || (status[0] == 0) || !messages) return;
 
-   t = (Exquisite_Text_Line *)(eina_list_last(messages)->data);
+   t = (Exquisite_Text_Line *)eina_list_nth(messages, text);
+
+   if (t == NULL) return;
 
    t->status = type;
    if(t->status_text) eina_stringshare_del(t->status_text);
-   t->status_text = eina_stringshare_add(txt);
+   t->status_text = eina_stringshare_add(status);
    evas_object_data_set (obj, "exquisite-messages", messages);
 
    /*A 2 means that a status update signal will be sent*/

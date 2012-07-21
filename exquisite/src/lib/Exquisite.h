@@ -203,7 +203,7 @@ EAPI void exquisite_object_pulsate(Evas_Object *obj);
  * @see exquisite_object_status_set()
  *
  */
-EAPI void exquisite_object_text_add(Evas_Object *obj, const char *txt);
+EAPI int exquisite_object_text_add(Evas_Object *obj, const char *txt);
 
 /**
  * @brief Sets a status text on the last text box entry
@@ -219,8 +219,8 @@ EAPI void exquisite_object_text_add(Evas_Object *obj, const char *txt);
  * @see exquisite_object_text_add()
  *
  */
-EAPI void exquisite_object_status_set(Evas_Object *obj, const char *txt,
-    Exquisite_Status_Type type);
+EAPI void exquisite_object_status_set(Evas_Object *obj, int text,
+      const char *status, Exquisite_Status_Type type);
 
 /**
  * @brief Clears the text box

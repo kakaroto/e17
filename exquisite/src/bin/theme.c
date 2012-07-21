@@ -4,6 +4,7 @@
 #include "main.h"
 
 static Evas_Object *o_bg = NULL;
+static int last_text_id = -1;
 
 void
 theme_init(const char *theme)
@@ -94,13 +95,13 @@ theme_pulsate(void)
 void
 theme_text_add(const char *txt)
 {
-  exquisite_object_text_add(o_bg, txt);
+  last_text_id = exquisite_object_text_add(o_bg, txt);
 }
 
 void
 theme_status_set(const char *txt, int type)
 {
-  exquisite_object_status_set(o_bg, txt, type);
+  exquisite_object_status_set(o_bg, last_text_id, txt, type);
 }
 
 void
