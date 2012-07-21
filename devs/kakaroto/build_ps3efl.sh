@@ -237,6 +237,18 @@ function edje {
         cd ..
 }
 
+# exquisite
+function exquisite {
+    cd exquisite || return 1
+    if [ $CONFIGURE == "1" ]; then
+        ps3-configure --disable-exquisite-binaries || return 1
+    fi
+    make $CLEAN_RULE all EDJE_CC=$(which edje_cc) && \
+        ps3-smi && \
+        cd ..
+}
+
+
 # Chipmunk
 function chipmunk {
     generate_cmake_toolchain || return 1
@@ -257,7 +269,7 @@ function eskiss {
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --datadir=$ESKISS_DATADIR || return 1
     fi
-    make $CLEAN_RULE all EDJE_CC=edje_cc && \
+    make $CLEAN_RULE all EDJE_CC=$(which edje_cc) && \
         make_pkg eskiss "data/edje/title.png" "$ESKISS_TITLE" "$ESKISS_APPID" "$ESKISS_DATADIR" && \
         cd ..
 }
@@ -269,7 +281,7 @@ function elementary {
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --disable-quick-launch || return 1
     fi
-    make $CLEAN_RULE all EDJE_CC=edje_cc EET_EET=eet && \
+    make $CLEAN_RULE all EDJE_CC=$(which edje_cc) EET_EET=eet && \
         ps3-smi && \
         cp src/bin/elementary_config elementary_config.elf && \
         sprxlinker elementary_config.elf && \
@@ -330,6 +342,7 @@ if test -z $1 ; then
     build embryo
     build lua
     build edje
+    build exquisite
     build chipmunk
     build eskiss
     build elementary
