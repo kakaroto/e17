@@ -1,0 +1,6 @@
+- ecore-input: Add joystick support
+- ecore-psl1ght: add joystick support
+- elementary: finish the port, do it properly, clean it.
+- find a way to add elementary/externals into edje
+- Fix resize issues with elm_win
+- evas: get the gl_psl1ght engine written/working
