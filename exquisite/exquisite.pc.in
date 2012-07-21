@@ -9,4 +9,4 @@ Description: Library and tools to build splash screen using edje
 Version: @VERSION@
 Libs: -L${libdir} -lexquisite
 Libs.private: @EXQUISITE_LIBS@
-Cflags: -I${includedir}/exquisite-@VMAJ@ @EFL_WINDOWS_VERSION_CFLAGS@
+Cflags: -I${includedir}/exquisite-@VMAJ@
