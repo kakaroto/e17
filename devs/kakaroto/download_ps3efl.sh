@@ -4,7 +4,7 @@ set -e
 function efl {
     if test ! -d e17_src ; then
         git clone git://github.com/kakaroto/e17.git e17_src
-        ln -s e17_src/PROTO/escape escape
+        ln -s e17_src/escape escape
         ln -s e17_src/eina eina
         ln -s e17_src/eet eet
         ln -s e17_src/evas evas
@@ -24,7 +24,7 @@ function expat {
     fi
 }
 function fontconfig {
-    if test ! -d expat-2.0.1 ; then
+    if test ! -d fontconfig-2.8.0 ; then
         wget http://freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz  && \
             tar -xzf fontconfig-2.8.0.tar.gz 
     fi
