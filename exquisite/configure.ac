@@ -18,9 +18,6 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-# get rid of that stupid cache mechanism
-rm -f config.cache
-
 AC_INIT([exquisite], [1.0.0], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -38,10 +35,9 @@ AH_BOTTOM([
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-AM_PROG_CC_STDC
-AM_PROG_CC_C_O
-
 AC_LIBTOOL_WIN32_DLL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
@@ -61,17 +57,41 @@ AC_SUBST(release_info)
 VMAJ=v_maj
 AC_SUBST(VMAJ)
 
-### Checks for linker characteristics
 
-# use --enable-auto-import on Windows
+### Needed information
 
-lt_enable_auto_import=""
+AC_CANONICAL_HOST
+
+EFL_EXQUISITE_BUILD=""
 case "$host_os" in
    mingw*)
-      lt_enable_auto_import="-Wl,--enable-auto-import"
-      ;;
+      EFL_EXQUISITE_BUILD="-DEFL_EXQUISITE_BUILD"
+   ;;
 esac
-AC_SUBST([lt_enable_auto_import])
+AC_SUBST([EFL_EXQUISITE_BUILD])
+
+
+### Checks for programs
+
+AM_PROG_CC_STDC
+AM_PROG_CC_C_O
+
+# pkg-config
+PKG_PROG_PKG_CONFIG
+
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST([pkgconfig_requires_private])
+
+# for cross compilation
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+
+
+### Checks for libraries
 
 requirements_exquisite="\
    evas >= 1.0.0 \
@@ -85,6 +105,7 @@ requirements_exquisite_bin="\
    ecore-evas >= 1.0.0 \
    ecore-con >= 1.0.0 \
    edje >= 1.0.0"
+
 requirements_exquisite_write="\
    ecore >= 1.0.0 \
    ecore-con >= 1.0.0"
@@ -106,9 +127,23 @@ if test "x${have_exquisite_binaries}" = "xyes"; then
 fi
 PKG_CHECK_MODULES([EXQUISITE], [${requirements_exquisite}])
 
-EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+
+### Checks for compiler characteristics
 
 EFL_CHECK_PATH_MAX
+
+
+### Checks for linker characteristics
+
+# use --enable-auto-import on Windows
+
+lt_enable_auto_import=""
+case "$host_os" in
+   mingw*)
+      lt_enable_auto_import="-Wl,--enable-auto-import"
+      ;;
+esac
+AC_SUBST([lt_enable_auto_import])
 
 AC_SUBST(requirements_exquisite)
 
