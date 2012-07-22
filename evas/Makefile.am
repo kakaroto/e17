@@ -43,6 +43,7 @@ evas-software-ddraw.pc.in \
 evas-direct3d.pc.in \
 evas-software-16-wince.pc.in \
 evas-psl1ght.pc.in \
+evas-gl-psl1ght.pc.in \
 evas-wayland-shm.pc.in \
 evas-wayland-egl.pc.in \
 evas.spec.in \
@@ -122,6 +123,10 @@ endif
 
 if BUILD_ENGINE_PSL1GHT
 pkgconfig_DATA += evas-psl1ght.pc
+endif
+
+if BUILD_ENGINE_GL_PSL1GHT
+pkgconfig_DATA += evas-gl-psl1ght.pc
 endif
 
 if BUILD_ENGINE_WAYLAND_SHM

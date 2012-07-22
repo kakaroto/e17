@@ -19,23 +19,29 @@
 # include <OpenGL/gl.h>
 # include <OpenGL/glext.h>
 #else
-# ifdef _EVAS_ENGINE_SDL_H
-#  if defined(GLES_VARIETY_S3C6410) || defined(GLES_VARIETY_SGX)
-#   include <SDL/SDL_opengles.h>
-#  else
-#   include <SDL/SDL_opengl.h>
-#  endif
+# ifdef BUILD_ENGINE_GL_PSL1GHT
+#  define GL3_PROTOTYPES
+#  include <GL3/gl3.h>
+#  include <GL3/gl3ext.h>
 # else
-#  if defined (GLES_VARIETY_S3C6410) || defined (GLES_VARIETY_SGX)
-#   if defined(GLES_VARIETY_S3C6410)
-#    include <GLES2/gl2.h>
-#   elif defined(GLES_VARIETY_SGX)
-#    include <GLES2/gl2.h>
-#    include <GLES2/gl2ext.h>
+#  ifdef _EVAS_ENGINE_SDL_H
+#   if defined(GLES_VARIETY_S3C6410) || defined(GLES_VARIETY_SGX)
+#    include <SDL/SDL_opengles.h>
+#   else
+#    include <SDL/SDL_opengl.h>
 #   endif
 #  else
-#   include <GL/gl.h>
-#   include <GL/glext.h>
+#   if defined (GLES_VARIETY_S3C6410) || defined (GLES_VARIETY_SGX)
+#    if defined(GLES_VARIETY_S3C6410)
+#     include <GLES2/gl2.h>
+#    elif defined(GLES_VARIETY_SGX)
+#     include <GLES2/gl2.h>
+#     include <GLES2/gl2ext.h>
+#    endif
+#   else
+#    include <GL/gl.h>
+#    include <GL/glext.h>
+#   endif
 #  endif
 # endif
 #endif
