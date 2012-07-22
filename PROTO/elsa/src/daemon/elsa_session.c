@@ -110,6 +110,7 @@ _elsa_session_begin(struct passwd *pwd, const char *cookie)
    elsa_pam_env_set("DISPLAY", ":0.0");
    elsa_pam_env_set("MAIL", "");
    elsa_pam_env_set("XAUTHORITY", cookie);
+   elsa_pam_env_set("XDG_SESSION_CLASS", "greeter");
 #endif
    return EINA_TRUE;
 }
