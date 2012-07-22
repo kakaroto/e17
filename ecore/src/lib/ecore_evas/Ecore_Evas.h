@@ -100,6 +100,7 @@ extern "C" {
 #define HAVE_ECORE_EVAS_WINCE 1
 #define HAVE_ECORE_EVAS_EWS 1
 #define HAVE_ECORE_EVAS_PSL1GHT 1
+#define HAVE_ECORE_EVAS_GL_PSL1GHT 1
 #define HAVE_ECORE_EVAS_WAYLAND_SHM 1
 #define HAVE_ECORE_EVAS_WAYLAND_EGL 1
 
@@ -127,7 +128,8 @@ typedef enum _Ecore_Evas_Engine_Type
    ECORE_EVAS_ENGINE_EWS,
    ECORE_EVAS_ENGINE_PSL1GHT,
    ECORE_EVAS_ENGINE_WAYLAND_SHM,
-   ECORE_EVAS_ENGINE_WAYLAND_EGL
+   ECORE_EVAS_ENGINE_WAYLAND_EGL,
+   ECORE_EVAS_ENGINE_GL_PSL1GHT
 } Ecore_Evas_Engine_Type;
 
 typedef enum _Ecore_Evas_Avoid_Damage_Type
@@ -1179,6 +1181,7 @@ EAPI Ecore_Evas *ecore_evas_cocoa_new(Ecore_Cocoa_Window *parent,
 				      int h);
 
 EAPI Ecore_Evas *ecore_evas_psl1ght_new(const char* name, int w, int h);
+EAPI Ecore_Evas *ecore_evas_gl_psl1ght_new(const char* name, int w, int h);
 
 
 /* generic manipulation calls */

@@ -169,6 +169,7 @@ want_ecore_evas_software_sdl="no"
 want_ecore_evas_gl_sdl="no"
 want_ecore_evas_gl_cocoa="no"
 want_ecore_evas_psl1ght="no"
+want_ecore_evas_gl_psl1ght="no"
 want_ecore_evas_directfb="no"
 want_ecore_evas_fb="no"
 want_ecore_evas_software_16_wince="no"
@@ -476,6 +477,7 @@ case "$host_vendor" in
       requirements_ecore_sdl="escape ${requirements_ecore_sdl}"
       want_ecore_psl1ght="yes"
       want_ecore_evas_psl1ght="yes"
+      want_ecore_evas_gl_psl1ght="yes"
       ;;
 esac
 
@@ -560,7 +562,7 @@ requirements_ecore_input_evas="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_eco
 requirements_ecore_ipc="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_ipc}"
 requirements_ecore_cocoa="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_cocoa}"
 requirements_ecore_sdl="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_sdl}"
-requirements_ecore_psl1ght="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_sdl}"
+requirements_ecore_psl1ght="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_psl1ght}"
 requirements_ecore_win32="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_win32}"
 requirements_ecore_wince="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_wince}"
 requirements_ecore_x="ecore >= 1.6.99 eina >= 1.6.99 ${requirements_ecore_x}"
@@ -1960,6 +1962,14 @@ ECORE_EVAS_CHECK_MODULE([psl1ght],
    [${have_ecore_psl1ght}],
    [requirements_ecore_evas="ecore-psl1ght >= 1.6.99 ${requirements_ecore_evas}"])
 
+# ecore_evas_gl_psl1ght
+
+ECORE_EVAS_CHECK_MODULE([gl-psl1ght],
+   [${want_ecore_evas_gl_psl1ght}],
+   [GL_PSL1GHT],
+   [${have_ecore_psl1ght}],
+   [requirements_ecore_evas="ecore-psl1ght >= 1.6.99 ${requirements_ecore_evas}"])
+
 ### WAYLAND
 
 ecore_wayland_deps="no"
@@ -2240,6 +2250,7 @@ if test "x${have_ecore_evas}" = "xyes" ; then
   echo "    OpenGL Cocoa...............: $have_ecore_evas_opengl_cocoa"
   echo "    DirectFB...................: $have_ecore_evas_directfb"
   echo "    PSL1GHT....................: $have_ecore_evas_psl1ght"
+  echo "    RSXGL PSL1GHT..............: $have_ecore_evas_gl_psl1ght"
   echo "    Software Framebuffer.......: $have_ecore_evas_fb"
   echo "    Software 8bit grayscale XCB: $have_ecore_evas_software_8_x11"
   echo "    Software 16bit X11.........: $have_ecore_evas_software_16_x11"
