@@ -144,7 +144,7 @@ proxy_text_random.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
 expedite_CXXFLAGS = @EXPEDITE_CXXFLAGS@
-expedite_LDADD = @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @d3d_libs@ @wince_16_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVAS_LIBS@ @EINA_LIBS@ @EVIL_LIBS@ @gl_cocoa_libs@ -lm
+expedite_LDADD = @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @d3d_libs@ @wince_16_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVAS_LIBS@ @EINA_LIBS@ @EVIL_LIBS@ @gl_psl1ght_libs@ @gl_cocoa_libs@ -lm
 expedite_LDFLAGS = @lt_enable_auto_import@
 
 if BUILD_SOFTWARE_XLIB
@@ -200,6 +200,11 @@ endif
 if BUILD_PSL1GHT
 expedite_SOURCES += \
 engine_psl1ght.c
+endif
+
+if BUILD_GL_PSL1GHT
+expedite_SOURCES += \
+engine_gl_psl1ght.c
 endif
 
 if BUILD_FB

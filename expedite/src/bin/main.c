@@ -1176,6 +1176,9 @@ static const Expedite_Engine engines[] = {
 #if HAVE_EVAS_PSL1GHT
   { "psl1ght",    engine_psl1ght_args, engine_psl1ght_loop, engine_psl1ght_shutdown },
 #endif
+#if HAVE_EVAS_GL_PSL1GHT
+  { "gl-psl1ght",    engine_gl_psl1ght_args, engine_gl_psl1ght_loop, engine_gl_psl1ght_shutdown },
+#endif
 #if HAVE_EVAS_SOFTWARE_16_X11
   { "x11-16",engine_software_16_x11_args, engine_software_16_x11_loop, engine_software_16_x11_shutdown },
 #endif
