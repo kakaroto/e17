@@ -34,6 +34,7 @@ h	- Add specialized task for each match automate case
 	- Add virtual part and program support.
 	- Merge edje parser and edje preprocessor.
 	- Move the parser into edje and expose an Edje AST API.
+	- Detect when file change on disk and send a signal to the app.
 
 * Elixir
 h	- add eet -> js object
@@ -88,6 +89,7 @@ d	- make it possible to get current dirfd inside eio_*_ls operation
 	batch, a list of data instead of creating one ecore_thread per data)
 	- add ecore_thread_reschedule_after.
 h	- use eina_lock
+h	- use eina_lockrw
 h	- add ecore_thread_ugly_run (better name: ecore_thread_message_run ?).
 	- make it possible to send message async/sync from thread to main loop (for msg_run).
 	- make it possible to make async/sync call from thread to main loop (for msg_run).
@@ -96,15 +98,15 @@ h	- add ecore_thread_ugly_run (better name: ecore_thread_message_run ?).
 	- make it possible to raise priority of a worker job.
 	- make it possible to create another worker job from a worker job.
 d	- add ecore_timer_dump to help track timer allocator and reduce number of wakeup.
-	- add ecore_pipe_wait.
+d	- add ecore_pipe_wait.
 
 * ethumb
 	- make it possible to have one slave per available CPU.
 
 * enlil
-	- use eio
-	- improve use of multi cpu
-	- make sync faster
+h	- use eio
+h	- improve use of multi cpu
+h	- make sync faster
 
 * enm
 	- describe protocol
