@@ -176,7 +176,7 @@ function evas {
         NOCONFIGURE=1 ./autogen.sh
     fi
     if [ $CONFIGURE == "1" ]; then
-        ps3-configure --disable-async-events --disable-async-preload --enable-software-sdl=static --enable-software-16-sdl=static --disable-shared --enable-buffer=static --enable-image-loader-eet=static --enable-font-loader-eet --enable-image-loader-gif=static --enable-image-loader-jpeg=static  --enable-image-loader-png=static  --enable-image-loader-tiff=static --enable-image-loader-bmp=static --enable-image-loader-xpm=static  --enable-image-loader-psd=static --enable-image-loader-pmaps=static  --enable-image-loader-ico=static --enable-image-loader-wbmp=static --enable-image-loader-tga=static --enable-static-software-generic --enable-static-software-16 --enable-psl1ght=static --enable-fontconfig || return 1
+        ps3-configure --disable-async-events --disable-async-preload --enable-software-sdl=static --enable-software-16-sdl=static --disable-shared --enable-buffer=static --enable-image-loader-eet=static --enable-font-loader-eet --enable-image-loader-gif=static --enable-image-loader-jpeg=static  --enable-image-loader-png=static  --enable-image-loader-tiff=static --enable-image-loader-bmp=static --enable-image-loader-xpm=static  --enable-image-loader-psd=static --enable-image-loader-pmaps=static  --enable-image-loader-ico=static --enable-image-loader-wbmp=static --enable-image-loader-tga=static --enable-static-software-generic --enable-static-software-16 --enable-psl1ght=static --enable-gl-psl1ght=static --enable-fontconfig || return 1
     fi
     make $CLEAN_RULE all && \
         ps3-smi && \

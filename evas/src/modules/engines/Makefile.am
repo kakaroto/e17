@@ -21,6 +21,9 @@ endif
 if !EVAS_STATIC_BUILD_PSL1GHT
 SUBDIRS += psl1ght
 endif
+if !EVAS_STATIC_BUILD_GL_PSL1GHT
+SUBDIRS += gl_psl1ght
+endif
 
 if !EVAS_STATIC_BUILD_GL_COMMON
 SUBDIRS += gl_common

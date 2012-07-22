@@ -111,6 +111,7 @@ want_evas_engine_direct3d="no"
 want_evas_engine_fb="no"
 want_evas_engine_directfb="no"
 want_evas_engine_psl1ght="no"
+want_evas_engine_gl_psl1ght="no"
 want_evas_engine_wayland_shm="no"
 want_evas_engine_wayland_egl="no"
 
@@ -170,6 +171,7 @@ esac
 case "$host_vendor" in
   ps3*)
       want_evas_engine_psl1ght="static"
+      want_evas_engine_gl_psl1ght="static"
       ;;
 esac
 
@@ -753,6 +755,8 @@ EVAS_CHECK_ENGINE([direct3d], [${want_evas_engine_direct3d}], [no], [Direct3D])
 
 EVAS_CHECK_ENGINE([psl1ght], [${want_evas_engine_psl1ght}], [no], [PSL1GHT])
 
+EVAS_CHECK_ENGINE([gl-psl1ght], [${want_evas_engine_gl_psl1ght}], [no], [GL_PSL1GHT])
+
 EVAS_CHECK_ENGINE([gl-sdl], [${want_evas_engine_gl_sdl}], [no], [OpenGL SDL])
 
 EVAS_CHECK_ENGINE([gl-cocoa], [${want_evas_engine_gl_cocoa}], [no], [OpenGL Cocoa])
@@ -933,7 +937,8 @@ if test "x$have_evas_engine_gl_xlib" = "xstatic" \
    || test "x$have_evas_engine_gl_xcb" = "xstatic" \
    || test "x$have_evas_engine_gl_sdl" = "xstatic" \
    || test "x$have_evas_engine_gl_cocoa" = "xstatic" \
-   || test "x$have_evas_engine_wayland_egl" = "xstatic"; then
+   || test "x$have_evas_engine_wayland_egl" = "xstatic" \
+   || test "x$have_evas_engine_gl_psl1ght" = "xstatic"; then
    have_evas_engine_gl_common="yes"
    have_static_evas_engine_gl_common="yes"
 fi
@@ -1829,6 +1834,7 @@ evas-direct3d.pc
 evas-software-16-wince.pc
 evas-software-sdl.pc
 evas-psl1ght.pc
+evas-gl-psl1ght.pc
 evas-wayland-shm.pc
 evas-wayland-egl.pc
 evas.pc
@@ -1882,6 +1888,7 @@ src/modules/engines/gl_common/Makefile
 src/modules/engines/gl_x11/Makefile
 src/modules/engines/gl_sdl/Makefile
 src/modules/engines/gl_cocoa/Makefile
+src/modules/engines/gl_psl1ght/Makefile
 src/modules/engines/psl1ght/Makefile
 src/modules/engines/software_8/Makefile
 src/modules/engines/software_8_x11/Makefile
@@ -1975,6 +1982,7 @@ echo "  OpenGL Cocoa...............: $have_evas_engine_gl_cocoa"
 echo "  Software Framebuffer.......: $have_evas_engine_fb"
 echo "  DirectFB...................: $have_evas_engine_directfb"
 echo "  PSL1GHT....................: $have_evas_engine_psl1ght"
+echo "  RSXGL PSL1GHT..............: $have_evas_engine_gl_psl1ght"
 echo "  Software 8bit grayscale....: $have_evas_engine_software_8"
 # FIXME: kill software 16bit
 echo "  Software 16bit ............: $have_evas_engine_software_16"

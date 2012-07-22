@@ -3,7 +3,8 @@
 #ifdef HAVE_DLSYM
 # include <dlfcn.h>      /* dlopen,dlclose,etc */
 #else
-# error gl_common should not get compiled if dlsym is not found on the system!
+/* If we can't find the symbols, let's assume they don't exist */
+#define dlsym(...) NULL
 #endif
 
 #define PRG_INVALID 0xffffffff
@@ -54,6 +55,18 @@ gl_symbols(void)
 {
    if (sym_done) return;
    sym_done = 1;
+
+#ifdef __lv2ppu__
+   glsym_glGenFramebuffers = glGenFramebuffers;
+   glsym_glBindFramebuffer = glBindFramebuffer;
+   glsym_glFramebufferTexture2D = glFramebufferTexture2D;
+   glsym_glDeleteFramebuffers = glDeleteFramebuffers;
+   glsym_glGetProgramBinary = NULL;
+   glsym_glProgramBinary = NULL;
+   glsym_glProgramParameteri = NULL;
+   glsym_glReleaseShaderCompiler = glReleaseShaderCompiler;
+   return;
+#endif
 
    /* FIXME: If using the SDL engine, we should use SDL_GL_GetProcAddress
     * instead of dlsym
