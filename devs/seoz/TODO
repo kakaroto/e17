@@ -30,5 +30,10 @@
 * PROTO/ev
 	- Break it down!
 
+* Enki
+	- Fix issued raised by Wido.
+	This are the errors that throws when it starts: http://pastebin.com/Yr2LUkBd
+	When segfaults, the error is this: http://pastebin.com/DmJpHXY9
+
 * Private
 	- Spank raster!
