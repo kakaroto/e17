@@ -76,6 +76,10 @@ AC_SUBST(d3d_libs)
 # PSL1GHT
 EXPEDITE_CHECK_ENGINE([psl1ght], [PSL1GHT], "yes")
 
+# RSXGL PSL1GHT
+EXPEDITE_CHECK_ENGINE([gl-psl1ght], [GL_PSL1GHT], "yes", [gl_psl1ght_libs="-lGL -lEGL"])
+AC_SUBST(gl_psl1ght_libs)
+
 # GL SDL
 EXPEDITE_CHECK_ENGINE([opengl-sdl], [OpenGL SDL], "yes")
 
@@ -177,6 +181,9 @@ fi
 # PSL1GHT
 AM_CONDITIONAL(BUILD_PSL1GHT, test "x$have_psl1ght" = "xyes")
 
+# RSXGL PSL1GHT
+AM_CONDITIONAL(BUILD_GL_PSL1GHT, test "x$have_gl_psl1ght" = "xyes")
+
 # DirectFB
 
 if test "x$have_directfb" = "xyes"; then
@@ -269,6 +276,7 @@ echo "    Open GL Cocoa................: ${have_opengl_cocoa}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
 echo "    PSL1GHT......................: ${have_psl1ght}"
+echo "    RSXGL PSL1GHT................: ${have_gl_psl1ght}"
 echo "    Software X11 16 bits.........: ${have_software_16_x11}"
 echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"
 echo

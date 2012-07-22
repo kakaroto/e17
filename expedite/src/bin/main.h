@@ -71,6 +71,9 @@
 #if HAVE_EVAS_PSL1GHT
 #include "engine_psl1ght.h"
 #endif
+#if HAVE_EVAS_PSL1GHT
+#include "engine_gl_psl1ght.h"
+#endif
 #if HAVE_EVAS_SOFTWARE_16_X11
 #include "engine_software_16_x11.h"
 #endif
