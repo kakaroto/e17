@@ -201,6 +201,12 @@ ecore_evas_engine_type_supported_get(Ecore_Evas_Engine_Type engine)
 #else
         return EINA_FALSE;
 #endif
+     case ECORE_EVAS_ENGINE_GL_PSL1GHT:
+#ifdef BUILD_ECORE_EVAS_GL_PSL1GHT
+        return EINA_TRUE;
+#else
+        return EINA_FALSE;
+#endif
      case ECORE_EVAS_ENGINE_WAYLAND_SHM:
 #ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
         return EINA_TRUE;
@@ -601,6 +607,22 @@ _ecore_evas_constructor_psl1ght(int x __UNUSED__, int y __UNUSED__, int w, int h
 }
 #endif
 
+#ifdef BUILD_ECORE_EVAS_GL_PSL1GHT
+static Ecore_Evas *
+_ecore_evas_constructor_gl_psl1ght(int x __UNUSED__, int y __UNUSED__, int w, int h, const char *extra_options)
+{
+   Ecore_Evas *ee;
+   char *name = NULL;
+
+   _ecore_evas_parse_extra_options_str(extra_options, "name=", &name);
+   ee = ecore_evas_gl_psl1ght_new(name, w, h);
+   free(name);
+
+   if (ee) ecore_evas_move(ee, x, y);
+   return ee;
+}
+#endif
+
 #ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
 static Ecore_Evas *
 _ecore_evas_constructor_wayland_shm(int x, int y, int w, int h, const char *extra_options)
@@ -770,6 +792,9 @@ static const struct ecore_evas_engine _engines[] = {
 #endif
 
   /* PS3 support */
+#ifdef BUILD_ECORE_EVAS_PSL1GHT
+  {"gl_psl1ght", _ecore_evas_constructor_gl_psl1ght},
+#endif
 #ifdef BUILD_ECORE_EVAS_PSL1GHT
   {"psl1ght", _ecore_evas_constructor_psl1ght},
 #endif

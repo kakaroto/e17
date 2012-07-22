@@ -21,6 +21,7 @@ static Ecore_Event_Handler *ecore_evas_event_handlers[5] = {
 };
 
 static const char *ecore_evas_psl1ght_default = "EFL PSL1GHT";
+static const char *ecore_evas_gl_psl1ght_default = "EFL RSXGL PSL1GHT";
 static int _ecore_evas_fps_debug = 0;
 static Ecore_Poller *ecore_evas_event;
 
@@ -409,8 +410,8 @@ static Ecore_Evas_Engine_Func _ecore_psl1ght_engine_func =
    NULL  // screen_dpi_get
 };
 
-EAPI Ecore_Evas *
-ecore_evas_psl1ght_new(const char *name, int w, int h)
+static Ecore_Evas *
+_ecore_evas_psl1ght_new(const char *name, const char *engine, int w, int h)
 {
    void *einfo;
    Ecore_Evas *ee;
@@ -425,7 +426,7 @@ ecore_evas_psl1ght_new(const char *name, int w, int h)
 
    ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_psl1ght_engine_func;
 
-   ee->driver = "psl1ght";
+   ee->driver = engine;
    if (name) ee->name = strdup(name);
 
    if (w < 1) w = 1;
@@ -449,7 +450,7 @@ ecore_evas_psl1ght_new(const char *name, int w, int h)
    /* init evas here */
    ee->evas = evas_new();
    evas_data_attach_set(ee->evas, ee);
-   evas_output_method_set(ee->evas, evas_render_method_lookup("psl1ght"));
+   evas_output_method_set(ee->evas, evas_render_method_lookup(engine));
 
    evas_output_size_set(ee->evas, w, h);
    evas_output_viewport_set(ee->evas, 0, 0, w, h);
@@ -503,10 +504,29 @@ ecore_evas_psl1ght_new(const char *name, int w, int h)
    return ee;
 }
 
+EAPI Ecore_Evas *
+ecore_evas_psl1ght_new(const char *name, int w, int h)
+{
+  return _ecore_evas_psl1ght_new (name, "psl1ght", w, h);
+}
+
+EAPI Ecore_Evas *
+ecore_evas_gl_psl1ght_new(const char *name, int w, int h)
+{
+  return _ecore_evas_psl1ght_new (name, "gl_psl1ght", w, h);
+}
+
 #else /* BUILD_ECORE_EVAS_PSL1GHT */
 
 EAPI Ecore_Evas *
 ecore_evas_psl1ght_new(const char *name __UNUSED__, int w __UNUSED__, int h __UNUSED__)
+{
+   ERR("OUTCH !");
+   return NULL;
+}
+
+EAPI Ecore_Evas *
+ecore_evas_gl_psl1ght_new(const char *name __UNUSED__, int w __UNUSED__, int h __UNUSED__)
 {
    ERR("OUTCH !");
    return NULL;
