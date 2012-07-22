@@ -1,4 +1,6 @@
 * Genlist
+	[High - Release] elm - genlist 2 - resize down to be scrollable and sb show/hide - size wrong
+	[High - Release] elm - genlist decorate all mode on and scroll - garbage items left around
 	[High] Fix auto scroll jumping bug.
 	[High] Improve realize implementation on item adding.
 	[High] Fix Genlist edc for odd/even things.
@@ -13,6 +15,7 @@
 * Gengrid
 	- Fix gengrid with a large image. It covers the entire item. - discomfitor.
 	- Fix gengrid paging bug when the align is not 0.0.
+	- Merge to genlist.
 
 * Elementary
 	- Test all widgets.
@@ -22,13 +25,10 @@
 	- Add dnd for toolbar items. - discomfitor
 
 * Edje
-	- Add an API to reset all parts to default state.
+	- Add an API to reset all parts to default state. (Don't to size recale?)
 
 * PROTO/ev
 	- Break it down!
-
-* MARKETTING
-	- Refine cebit2011 presentation and move this to MARKETTING.
 
 * Private
 	- Spank raster!
