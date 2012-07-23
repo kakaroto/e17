@@ -1034,6 +1034,15 @@ group {
          }
       }
       part {
+         name: "e.swallow.entry";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
+      part {
          name:           "event";
          type:           RECT;
          description {
@@ -1372,6 +1381,15 @@ group {
          }
       }
       part {
+         name: "e.swallow.entry";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
+      part {
          name:           "event";
          type:           RECT;
          description {
@@ -1552,7 +1570,16 @@ group {
             state:      "default" 0.0;
             color:      0 0 0 0;
          }
-      }         
+      }
+      part {
+         name: "e.swallow.entry";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
    }
    programs {
       program {
@@ -1661,7 +1688,16 @@ group {
             state:      "default" 0.0;
             color:      0 0 0 0;
          }
-      }         
+      }
+      part {
+         name: "e.swallow.entry";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
    }
    programs {
       program {
