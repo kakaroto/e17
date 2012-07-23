@@ -1,4 +1,4 @@
-#include "eet_data.h"
+#include "clouseau_private.h"
 
 static int clouseau_init_count = 0;
 

@@ -1,4 +1,4 @@
-#include "libclouseau.h"
+#include "Clouseau.h"
 #include <dlfcn.h>
 #include <execinfo.h>
 
@@ -8,7 +8,7 @@
 #include <Elementary.h>
 #include <Ecore_X.h>
 
-#include "eet_data.h"
+#include "clouseau_private.h"
 
 static Eina_Bool _elm_is_init = EINA_FALSE;
 static const char *_my_app_name = NULL;

@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <Ecore_Ipc.h>
 
-#include "eet_data.h"
+#include "clouseau_private.h"
 
 #define RUNNING_DIR  "/tmp"
 #define LOCK_FILE ".clouseaud.lock"

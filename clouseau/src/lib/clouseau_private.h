@@ -1,6 +1,6 @@
 #ifndef EET_DATA_H
 #define EET_DATA_H
-#include "libclouseau.h"
+#include "Clouseau.h"
 /*  Global constants  */
 #define BMP_FIELD "bmp"
 

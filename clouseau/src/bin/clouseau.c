@@ -1,8 +1,8 @@
 #include <Elementary_Cursor.h>
-#include "libclouseau.h"
+#include "Clouseau.h"
 #include <Ecore_Ipc.h>
 
-#include "eet_data.h"
+#include "clouseau_private.h"
 
 #define CLIENT_NAME         "Clouseau Client"
 
