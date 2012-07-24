@@ -241,28 +241,28 @@ void CElmGenList::longpress_timeout_set(Handle<Value> value)
 void CElmGenList::vertical_bounce_set(Handle<Value> val)
 {
    Eina_Bool h;
-   elm_genlist_bounce_get(eo, &h, NULL);
-   elm_genlist_bounce_set(eo, h, val->IsBoolean() && val->BooleanValue());
+   elm_scroller_bounce_get(eo, &h, NULL);
+   elm_scroller_bounce_set(eo, h, val->IsBoolean() && val->BooleanValue());
 }
 
 Handle<Value> CElmGenList::vertical_bounce_get() const
 {
    Eina_Bool v;
-   elm_genlist_bounce_get(eo, NULL, &v);
+   elm_scroller_bounce_get(eo, NULL, &v);
    return Boolean::New(v);
 }
 
 void CElmGenList::horizontal_bounce_set(Handle<Value> val)
 {
    Eina_Bool v;
-   elm_genlist_bounce_get(eo, NULL, &v);
-   elm_genlist_bounce_set(eo, val->IsBoolean() && val->BooleanValue(), v);
+   elm_scroller_bounce_get(eo, NULL, &v);
+   elm_scroller_bounce_set(eo, val->IsBoolean() && val->BooleanValue(), v);
 }
 
 Handle<Value> CElmGenList::horizontal_bounce_get() const
 {
    Eina_Bool h;
-   elm_genlist_bounce_get(eo, &h, NULL);
+   elm_scroller_bounce_get(eo, &h, NULL);
    return Boolean::New(h);
 }
 
@@ -356,7 +356,7 @@ void CElmGenList::scroller_policy_set(Handle<Value> val)
      return;
 
    Local<Object> policy = val->ToObject();
-   elm_genlist_scroller_policy_set (eo,
+   elm_scroller_policy_set (eo,
         (Elm_Scroller_Policy) policy->Get(0)->ToNumber()->Value(),
         (Elm_Scroller_Policy) policy->Get(1)->ToNumber()->Value());
 
