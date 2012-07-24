@@ -1,9 +1,19 @@
-Tool for development, to help understand how evas_object are setup in an app
+An UI inspection tool for the EFL. This tool lets you inspect UI elements and get a lot of their properties, e.g position, size and weight.
+
+Clouseau consists of a client (clouseau_client) and launcher (clouseau_server). This design means we can:
+1. Run the application we are debugging on one device and the clouseau_client itself on another.
+2. Run the application we are debugging with a different environment/theme/etc compared to the clouseau client.
+
+Clouseau provides a wrapper script that automatically launches the application with clouseau support, and launches the client, the script is called "clouseau".
 
 Usage:
-Just run your wanted ecore/elm based app with "clouseau" e.g:
-clouseau elementary_test
-or
-clouseau elementary_test Entry
+1. Using the wrapper script:
+  "clouseau elementary_test" or "clouseau elementary_test Entry".
+2. Using the split client/server approach (different machines/environments/setups):
+  "clouseau_start elementary_test" and then "clouseau_client"
+  As mentioned above, this is done over the network, so it can be run from different machines
 
-Click "Load" and the rest is straightforward.
+Using the clouseau client:
+When the client opens you'll be asked to enter the server's IP address. That's the IP address of where you ran clouseau_start from. When in doubt, just use the default, 127.0.0.1.
+Then press "Ok" to connect to the server, and the rest should be fairly straightforward.
+TBD
