@@ -451,16 +451,16 @@ _remove_app(gui_elements *g, Variant_st *v)
 
    if (st)
      {  /* Remove from list and free all variants */
+        Eina_List *l;
         apps = eina_list_remove(apps, st);
         _free_app(st);
 
-        if (!elm_hoversel_expanded_get(g->dd_list))
-          {
-             Eina_List *l;
-             elm_hoversel_clear(g->dd_list);
-             EINA_LIST_FOREACH(apps, l , st)
-                _add_app_to_dd_list(g->dd_list, st);
-          }
+        if (elm_hoversel_expanded_get(g->dd_list))
+          elm_hoversel_hover_end(g->dd_list);
+
+        elm_hoversel_clear(g->dd_list);
+        EINA_LIST_FOREACH(apps, l , st)
+           _add_app_to_dd_list(g->dd_list, st);
      }
 
    clouseau_variant_free(v);
