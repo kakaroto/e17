@@ -210,6 +210,7 @@ EFL_ENABLE_BIN([edbus-notify-test], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-ofono-test], [${enable_eofono}])
 EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
 EFL_ENABLE_BIN([edbus-performance-test], [${enable_performance_test}])
+EFL_ENABLE_BIN([edbus-async-test], ["yes"])
 
 if test "x${have_edbus_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_TEST],
@@ -281,6 +282,12 @@ if test "x${have_edbus_performance_test}" = "xyes" ; then
       [have_edbus_performance_test="no"])
 fi
 
+if test "x${have_edbus_async_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_ASYNC_TEST],
+      [ecore >= 1.6.99 dbus-1 >= 0.62],
+      [have_edbus_async_test="yes"],
+      [have_edbus_async_test="no"])
+fi
 
 ### Checks for header files
 
@@ -387,6 +394,7 @@ echo "  Binaries:"
 echo
 echo "    EDbus test.........: $have_edbus_test"
 echo "    EDbus client test..: $have_edbus_test_client"
+echo "    EDbus async test...: $have_edbus_async_test"
 echo "    EDbus performance..: $have_edbus_performance_test"
 echo "    EBluez test........: $have_edbus_bluez_test"
 echo "    EConnman (0.7x)test: $have_edbus_connman0_7x_test"
