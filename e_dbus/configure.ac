@@ -124,6 +124,11 @@ AC_ARG_ENABLE([eukit],
    [enable_eukit=$enableval],
    [enable_eukit="${want_eukit}"])
 
+AC_ARG_ENABLE([performance_test],
+   [AC_HELP_STRING([--disable-performance_test], [Disable performance build])],
+   [enable_performance_test=$enableval],
+   [enable_performance_test="${want_eukit}"])
+
 
 ### Checks for programs
 
@@ -191,6 +196,7 @@ AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_EOFONO],   [test "x${enable_eofono}"   = "xyes"])
 AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
+AM_CONDITIONAL([BUILD_PERFORMANCE_TEST],    [test "x${enable_performance_test}"    = "xyes"])
 
 # Dependencies for the binaries
 
@@ -203,6 +209,7 @@ EFL_ENABLE_BIN([edbus-notify-send], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-notify-test], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-ofono-test], [${enable_eofono}])
 EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
+EFL_ENABLE_BIN([edbus-performance-test], [${enable_performance_test}])
 
 if test "x${have_edbus_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_TEST],
@@ -265,6 +272,13 @@ if test "x${have_edbus_ukit_test}" = "xyes" ; then
       [ecore >= 1.6.99 eina >= 1.6.99 dbus-1 >= 0.62],
       [have_edbus_ukit_test="yes"],
       [have_edbus_ukit_test="no"])
+fi
+
+if test "x${have_edbus_performance_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_PERFORMANCE_TEST],
+      [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62 ecore-evas >= 1.2.0 elementary],
+      [have_edbus_performance_test="yes"],
+      [have_edbus_performance_test="no"])
 fi
 
 
@@ -373,6 +387,7 @@ echo "  Binaries:"
 echo
 echo "    EDbus test.........: $have_edbus_test"
 echo "    EDbus client test..: $have_edbus_test_client"
+echo "    EDbus performance..: $have_edbus_performance_test"
 echo "    EBluez test........: $have_edbus_bluez_test"
 echo "    EConnman (0.7x)test: $have_edbus_connman0_7x_test"
 echo "    ENotify Daemon test: $have_edbus_notification_daemon_test"

@@ -43,6 +43,10 @@ if BUILD_EDBUS_UKIT_TEST
 bin_PROGRAMS += e_dbus_ukit_test
 endif
 
+if BUILD_EDBUS_PERFORMANCE_TEST
+bin_PROGRAMS += e_dbus_performance
+endif
+
 noinst_PROGRAMS =
 
 if BUILD_EDBUS_CONNMAN0_7X_TEST
@@ -167,3 +171,14 @@ $(top_builddir)/src/lib/dbus/libedbus.la \
 $(top_builddir)/src/lib/ukit/libeukit.la \
 @EDBUS_UKIT_TEST_LIBS@
 endif
+
+if BUILD_EDBUS_PERFORMANCE_TEST
+e_dbus_performance_SOURCES = performance.c
+e_dbus_performance_CFLAGS = \
+-I$(top_srcdir)/src/lib/dbus \
+@EDBUS_PERFORMANCE_TEST_CFLAGS@
+e_dbus_performance_LDADD = \
+$(top_builddir)/src/lib/dbus/libedbus.la \
+@EDBUS_PERFORMANCE_TEST_LIBS@
+endif
+
