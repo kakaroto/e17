@@ -148,6 +148,8 @@ data {
 
 #include "images/images.edc"
 
+data.item: "gtk-theme" "Tenebrific";
+
 collections {
 #include "e/background.edc"
 #include "e/desklock.edc"
