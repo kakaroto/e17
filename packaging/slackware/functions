@@ -28,7 +28,7 @@ function set_env {
   elif [ "${ARCH}" = "x86_64" ]; then
     SCFLAGS="${SCFLAGS} -fPIC ${DEBUG} ${ECFLAGS}"
     LIBDIR="/usr/lib64"
-    MFLAGS="-j3"
+    MFLAGS="-j5"
   fi
 
   if [ ! -d ${TMP} ]; then
