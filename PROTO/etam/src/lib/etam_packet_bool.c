@@ -9,13 +9,8 @@ etam_packet_boolean_equal(Etam_Packets *packets, unsigned int block,
 			  Eina_Bool value,
                           Etam_RLE_Bool *in, Etam_RLE_Bool *out)
 {
-   int idx_internal;
-   int idx_in;
-   int current_in;
-   int current_internal;
-   int offset_internal;
-   int tmp;
    Eina_Bool r = EINA_FALSE;
+   int tmp;
 
    if (packets->type != ETAM_T_BOOLEAN) return  EINA_FALSE;
 
@@ -34,69 +29,15 @@ etam_packet_boolean_equal(Etam_Packets *packets, unsigned int block,
         return EINA_FALSE;
      }
 
-   /* FIXME: This should really be implemented like an etam_rle_bool_and(out, in, packets->u.boolean[block]). */
-#if 0
-   idx_internal = 0;
-   offset_internal = 0;
-   current_internal = 0;
-
-   ETAM_RLE_BOOL_FOREACH(in, idx_in, current_in, tmp)
+   if (etam_rle_bool_and(out, in, &packets->u.boolean[block]))
      {
-        Eina_Bool v;
-        int c;
-
-        /* Let's check if we have some boolean to catch up */
-        while (current_internal < current_in - 1)
-          {
-             v = (packets->u.boolean[block].rle_value[idx_internal] & 1);
-             c = (packets->u.boolean[block].rle_value[idx_internal] >> 1);
-             c -= offset_internal;
-
-             /* All this part is false in 'in', so push 'value == false' */
-             while (c && current_internal < current_in - 1)
-               {
-                  etam_rle_bool_push(out, EINA_FALSE);
-                  c--;
-                  offset_internal++;
-                  current_internal++;
-               }
-
-             if (!c)
-               {
-                  idx_internal++;
-                  offset_internal = 0;
-
-                  if (!(idx_internal < packets->u.boolean[block].length))
-                    {
-                       /* we are at the end of the packet */
-                       goto end;
-                    }
-               }
-          }
-
-        v = (packets->u.boolean[block].rle_value[idx_internal] & 1);
-        c = (packets->u.boolean[block].rle_value[idx_internal] >> 1);
-        c -= ++offset_internal;
-        current_internal++;
-
-        etam_rle_bool_push(out, v == value);
-        r |= (v == value);
-
-        if (!c)
-          {
-             idx_internal++;
-             offset_internal = 0;
-
-             if (!(idx_internal < packets->u.boolean[block].length))
-               {
-                  /* we are at the end of the packet */
-                  goto end;
-               }
-          }
+        for (tmp = 0; tmp < out->length; tmp++)
+          if (out->rle_value[tmp] & 1)
+            {
+               r = EINA_TRUE;
+               break;
+            }
      }
-
- end:
-#endif
 
    eina_rwlock_release(&packets->lock);
 }

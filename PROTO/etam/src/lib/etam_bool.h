@@ -14,7 +14,7 @@ struct _Etam_RLE_Bool {
 static inline void etam_rle_bool_init(Etam_RLE_Bool *rle);
 static inline void etam_rle_bool_reset(Etam_RLE_Bool *rle);
 static inline void etam_rle_bool_copy(Etam_RLE_Bool *out, Etam_RLE_Bool *in);
-static inline void etam_rle_bool_push(Etam_RLE_Bool *rle, Eina_Bool add);
+static inline Eina_Bool etam_rle_bool_push(Etam_RLE_Bool *rle, Eina_Bool add);
 static inline void etam_rle_bool_set(Etam_RLE_Bool *rle, Eina_Bool v,
 				     int start, int length);
 
@@ -52,6 +52,26 @@ etam_rle_bool_copy(Etam_RLE_Bool *out, Etam_RLE_Bool *in)
      out->length = out->memsize = 0;
    else
      memcpy(out->rle_value, in->rle_value, out->length);
+}
+
+static inline Eina_Bool
+etam_rle_bool_growth(Etam_RLE_Bool *rle, unsigned int limit)
+{
+   unsigned char *tmp;
+
+   if (limit < rle->memsize) return EINA_TRUE;
+
+   rle->memsize += 8;
+
+   tmp = realloc(rle->rle_value, sizeof (unsigned char) * rle->memsize);
+   if (!tmp)
+     {
+        rle->memsize -= 8;
+        return EINA_FALSE;
+     }
+
+   rle->rle_value = tmp;
+   return EINA_TRUE;
 }
 
 static inline void
@@ -126,7 +146,7 @@ etam_rle_bool_set(Etam_RLE_Bool *rle, Eina_Bool v, int start, int length)
      }
 }
 
-static inline void
+static inline Eina_Bool
 etam_rle_bool_push(Etam_RLE_Bool *rle, Eina_Bool add)
 {
    if (rle->length == 0                                      /* - No previous value */
@@ -135,21 +155,8 @@ etam_rle_bool_push(Etam_RLE_Bool *rle, Eina_Bool add)
      {
         rle->length++;
 
-        if (rle->memsize < rle->length)
-          {
-             unsigned char *tmp;
-
-             rle->memsize += 32;
-
-             tmp = realloc(rle->rle_value, sizeof (unsigned char) * rle->memsize);
-             if (!tmp)
-               {
-                  rle->memsize -= 32;
-                  return ;
-               }
-
-             rle->rle_value = tmp;
-          }
+        if (!etam_rle_bool_growth(rle, rle->length))
+          return EINA_FALSE;
 
         rle->rle_value[rle->length - 1] = add ? 3 : 2;
      }
@@ -157,6 +164,83 @@ etam_rle_bool_push(Etam_RLE_Bool *rle, Eina_Bool add)
      {
         rle->rle_value[rle->length - 1] += 2;
      }
+
+   return EINA_TRUE;
+}
+
+static inline Eina_Bool
+etam_rle_bool_and(Etam_RLE_Bool *out, const Etam_RLE_Bool *a, const Etam_RLE_Bool *b)
+{
+   Eina_Bool ba, bb;
+   int ca, cb;
+   int oa, ob;
+   int cr, or;
+   int c;
+
+   oa = 0; ob = 0;
+   ca = 0;
+   cb = (b->rle_value[ob]) >> 1; bb = b->rle_value[ob] & 1;
+
+   while (oa < a->length && ob < b->length)
+     {
+        if (ca == 0)
+          {
+             ca = (a->rle_value[oa]) >> 1;
+             ba = a->rle_value[oa] & 1;
+          }
+        if (cb == 0)
+          {
+             cb = (b->rle_value[ob]) >> 1;
+             bb = b->rle_value[ob] & 1;
+          }
+
+        c = (ca < cb) ? ca : cb;
+
+        if (!etam_rle_bool_growth(out, or))
+          return EINA_FALSE;
+
+        out->rle_value[or++] = (c << 1) | (ba & bb);
+        ca -= c;
+        cb -= c;
+
+        if (ca == 0) oa++;
+        if (cb == 0) ob++;
+     }
+
+   if (ca || oa < a->length)
+     {
+        if (!etam_rle_bool_growth(out, or))
+          return EINA_FALSE;
+
+        out->rle_value[or++] = (ca << 1) | ba;
+
+        while (oa < a->length)
+          {
+             if (!etam_rle_bool_growth(out, or))
+               return EINA_FALSE;
+
+             out->rle_value[or++] = a->rle_value[oa++];
+          }
+     }
+   else if (cb || ob < b->length)
+     {
+        if (!etam_rle_bool_growth(out, or))
+          return EINA_FALSE;
+
+        out->rle_value[or++] = (cb << 1) | bb;
+
+        while (ob < b->length)
+          {
+             if (!etam_rle_bool_growth(out, or))
+               return EINA_FALSE;
+
+             out->rle_value[or++] = b->rle_value[ob++];
+          }
+     }
+
+   out->length = or;
+
+   return EINA_TRUE;
 }
 
 #endif
