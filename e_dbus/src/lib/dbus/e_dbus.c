@@ -231,7 +231,7 @@ e_dbus_timeout_handler(void *data)
 
   td = data;
 
-  if (dbus_timeout_get_enabled(td->timeout)) 
+  if (!dbus_timeout_get_enabled(td->timeout))
   {
     DBG("timeout_handler (not enabled, ending)");
     td->handler = NULL;
@@ -240,7 +240,7 @@ e_dbus_timeout_handler(void *data)
 
   DBG("timeout handler!");
   dbus_timeout_handle(td->timeout);
-  return ECORE_CALLBACK_RENEW;
+  return ECORE_CALLBACK_CANCEL;
 }
 
 static void
