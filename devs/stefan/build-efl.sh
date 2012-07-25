@@ -66,10 +66,10 @@ do_build_and_install()
 #		flags="--enable-debug-threads"
 		;;
 	evas)
-		flags="--enable-gl-x11 --enable-gl-xlib --enable-software-xcb"
+#		flags="--enable-gl-x11 --enable-gl-xlib --enable-software-xcb"
 		;;
 	ecore)
-		flags="--enable-ecore-evas-opengl-x11 --enable-ecore-x-xcb"
+#		flags="--enable-ecore-evas-opengl-x11 --enable-ecore-x-xcb"
 		;;
 	emotion)
 		flags="--disable-generic-vlc"
@@ -173,7 +173,7 @@ then
 	what="$defpkgs"
 fi
 
-if [ "$scan_build" == 1 ]
+if [ "$scan_build" = 1 ]
 then
    for e in $defcore
    do
