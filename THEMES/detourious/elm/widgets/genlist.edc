@@ -337,8 +337,6 @@ group { name: "elm/genlist/item/group_index/default";
 	//      data.item: "states" "";
 	images {
 		image: "bt_sm_base1.png" COMP;
-		image: "bt_sm_shine.png" COMP;
-		image: "bt_sm_hilight.png" COMP;
 		image: "ilist_item_shadow.png" COMP;
 		image: "group_index.png" COMP;
 	}

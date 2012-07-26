@@ -198,43 +198,6 @@
          color3: 0 0 0 64; \
       } \
    } \
-   part { name: "cit_"#_pos".fg1"; \
-      mouse_events: 0; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-         color: 255 255 255 0; \
-         rel1.to: "cit_"#_pos".bg"; \
-         rel2.relative: 1.0 0.5; \
-         rel2.to: "cit_"#_pos".bg"; \
-         image { \
-            normal: "bt_sm_hilight.png"; \
-            border: 6 6 6 0; \
-         } \
-      } \
-      description { state: "selected" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-         color: 255 255 255 255; \
-      } \
-   } \
-   part { name: "cit_"#_pos".fg2"; \
-      mouse_events: 0; \
-      description { state: "default" 0.0; \
-         visible: 0; \
-         color: 255 255 255 0; \
-         rel1.to: "cit_"#_pos".bg"; \
-         rel2.to: "cit_"#_pos".bg"; \
-         image { \
-            normal: "bt_sm_shine.png"; \
-            border: 6 6 6 0; \
-         } \
-      } \
-      description { state: "selected" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-         color: 255 255 255 255; \
-      } \
-   } \
    part { name: "cit_"#_pos".check"; \
       mouse_events: 0; \
       description { state: "default" 0.0; \
@@ -265,8 +228,6 @@
          source:  "elm"; \
          action:  STATE_SET "selected" 0.0; \
          target:  "cit_"#_pos".bg"; \
-         target:  "cit_"#_pos".fg1"; \
-         target:  "cit_"#_pos".fg2"; \
          target:  "cit_"#_pos".text"; \
       } \
       program { \
@@ -275,8 +236,6 @@
          source:  "elm"; \
          action:  STATE_SET "default" 0.0; \
          target:  "cit_"#_pos".bg"; \
-         target:  "cit_"#_pos".fg1"; \
-         target:  "cit_"#_pos".fg2"; \
          target:  "cit_"#_pos".text"; \
       } \
       program { \

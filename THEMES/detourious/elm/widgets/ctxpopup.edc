@@ -27,9 +27,7 @@ group { name: "elm/scroller/base/ctxpopup";
       }
    }
    images {
-      image: "bt_sm_base2.png" COMP;
-      image: "bt_sm_shine.png" COMP;
-      image: "bt_sm_hilight.png" COMP;
+      image: "bt_sm_base1.png" COMP;
       image: "sl_bt2_2.png" COMP;
    }
    parts {
@@ -116,32 +114,9 @@ group { name: "elm/scroller/base/ctxpopup";
             max: 10 99999;
             rel1 { relative: 0.5 0.5; to: "sb_vbar"; }
             rel2 { relative: 0.5  0.5; to: "sb_vbar"; }
-            image { normal: "bt_sm_base2.png";
+            image { normal: "bt_sm_base1.png";
                border: 6 6 6 6;
                middle: SOLID;
-            }
-         }
-      }
-      part { name: "sb_vbar_over1";
-         clip_to: "sb_vbar_clip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.dragable.vbar";
-            rel2.relative: 1.0 0.5;
-            rel2.to: "elm.dragable.vbar";
-            image { normal: "bt_sm_hilight.png";
-               border: 6 6 6 0;
-            }
-         }
-      }
-      part { name: "sb_vbar_over2";
-         clip_to: "sb_vbar_clip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.dragable.vbar";
-            rel2.to: "elm.dragable.vbar";
-            image { normal: "bt_sm_shine.png";
-               border: 6 6 6 0;
             }
          }
       }
@@ -196,32 +171,9 @@ group { name: "elm/scroller/base/ctxpopup";
             fixed: 1 1;
             rel1 { relative: 0.5  0.5; to: "sb_hbar"; }
             rel2 { relative: 0.5  0.5; to: "sb_hbar"; }
-            image { normal: "bt_sm_base2.png";
-               border: 4 4 4 4;
+            image { normal: "bt_sm_base1.png";
+               border: 6 6 6 6;
                middle: SOLID;
-            }
-         }
-      }
-      part { name: "sb_hbar_over1";
-         clip_to: "sb_hbar_clip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.dragable.hbar";
-            rel2.relative: 1.0 0.5;
-            rel2.to: "elm.dragable.hbar";
-            image { normal: "bt_sm_hilight.png";
-               border: 6 6 6 0;
-            }
-         }
-      }
-      part { name: "sb_hbar_over2";
-         clip_to: "sb_hbar_clip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.dragable.hbar";
-            rel2.to: "elm.dragable.hbar";
-            image { normal: "bt_sm_shine.png";
-               border: 6 6 6 0;
             }
          }
       }
