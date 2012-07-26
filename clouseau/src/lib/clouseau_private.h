@@ -149,7 +149,6 @@ typedef struct _data_desc data_desc;
 
 /* Function Declarations */
 Clouseau_Object *obj_information_get(Clouseau_Tree_Item *treeit);
-void obj_information_free(Clouseau_Object *oinfo);
 void item_tree_item_free(Clouseau_Tree_Item *parent);
 void _item_tree_item_string(Clouseau_Tree_Item *parent);
 data_desc *data_descriptors_init(void);
@@ -171,6 +170,9 @@ void libclouseau_lines_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA
 
 void clouseau_data_descriptors_init(void);
 void clouseau_data_descriptors_shutdown(void);
+
+Clouseau_Object *clouseau_object_information_get(Clouseau_Tree_Item *treeit);
+void clouseau_object_information_free(Clouseau_Object *oinfo);
 
 /* Exported function */
 int clouseau_init(void);

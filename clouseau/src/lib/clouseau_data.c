@@ -51,7 +51,7 @@ _clouseau_tree_item_free(Clouseau_Tree_Item *parent)
    EINA_LIST_FREE(parent->children, treeit)
      _clouseau_tree_item_free(treeit);
 
-   obj_information_free(parent->info);
+   clouseau_object_information_free(parent->info);
    eina_stringshare_del(parent->name);
    free(parent);
 }

@@ -139,10 +139,12 @@ struct _Clouseau_Tree_Item
    Eina_Bool is_visible;
 };
 
-Clouseau_Object *_obj_information_get(Clouseau_Tree_Item *treeit);
 Eet_Data_Descriptor *clouseau_object_desc_make(void);
 void clouseau_object_desc_shutdown(void);
 Evas_Object *clouseau_obj_information_list_add(Evas_Object *parent);
 void clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *lb);
-void clouseau_obj_information_list_clear();
+
+/* Public */
+void clouseau_object_information_list_clear(void);
+
 #endif

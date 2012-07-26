@@ -1187,7 +1187,7 @@ static void
 _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
       void *event_info)
 {
-   clouseau_obj_information_list_clear();
+   clouseau_object_information_list_clear();
    gui_elements *g = data;
    Clouseau_Tree_Item *treeit = elm_object_item_data_get(event_info);
    const Elm_Object_Item *parent;

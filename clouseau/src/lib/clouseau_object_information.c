@@ -95,13 +95,13 @@ clouseau_obj_information_list_add(Evas_Object *parent)
 }
 
 static void
-_item_tree_item_free(Inf_Clouseau_Tree_Item *parent)
+_clouseau_item_tree_item_free(Inf_Clouseau_Tree_Item *parent)
 {
    Inf_Clouseau_Tree_Item *treeit;
 
    EINA_LIST_FREE(parent->children, treeit)
      {
-        _item_tree_item_free(treeit);
+        _clouseau_item_tree_item_free(treeit);
      }
 
    eina_stringshare_del(parent->string);
@@ -109,18 +109,18 @@ _item_tree_item_free(Inf_Clouseau_Tree_Item *parent)
 }
 
 static void
-_item_tree_free(void)
+_clouseau_item_tree_free(void)
 {
    Inf_Clouseau_Tree_Item *treeit;
 
    EINA_LIST_FREE(information_tree, treeit)
      {
-        _item_tree_item_free(treeit);
+        _clouseau_item_tree_item_free(treeit);
      }
 }
 
 void
-obj_information_free(Clouseau_Object *oinfo)
+clouseau_object_information_free(Clouseau_Object *oinfo)
 {
    if (!oinfo)
      return;
@@ -128,47 +128,49 @@ obj_information_free(Clouseau_Object *oinfo)
    eina_stringshare_del(oinfo->evas_props.name);
    eina_stringshare_del(oinfo->evas_props.bt);
 
-   if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_ELM)
+   switch (oinfo->extra_props.type)
      {
-        eina_stringshare_del(oinfo->extra_props.u.elm.type);
-        eina_stringshare_del(oinfo->extra_props.u.elm.style);
-     }
-   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXT)
-     {
-        eina_stringshare_del(oinfo->extra_props.u.text.font);
-        eina_stringshare_del(oinfo->extra_props.u.text.source);
-        eina_stringshare_del(oinfo->extra_props.u.text.text);
-     }
-   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_IMAGE)
-     {
-        eina_stringshare_del(oinfo->extra_props.u.image.file);
-        eina_stringshare_del(oinfo->extra_props.u.image.key);
-        eina_stringshare_del(oinfo->extra_props.u.image.load_err);
-     }
-   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_EDJE)
-     {
-        eina_stringshare_del(oinfo->extra_props.u.edje.file);
-        eina_stringshare_del(oinfo->extra_props.u.edje.group);
+      case CLOUSEAU_OBJ_TYPE_ELM:
+         eina_stringshare_del(oinfo->extra_props.u.elm.type);
+         eina_stringshare_del(oinfo->extra_props.u.elm.style);
+         break;
+      case CLOUSEAU_OBJ_TYPE_TEXT:
+         eina_stringshare_del(oinfo->extra_props.u.text.font);
+         eina_stringshare_del(oinfo->extra_props.u.text.source);
+         eina_stringshare_del(oinfo->extra_props.u.text.text);
+         break;
+      case CLOUSEAU_OBJ_TYPE_IMAGE:
+         eina_stringshare_del(oinfo->extra_props.u.image.file);
+         eina_stringshare_del(oinfo->extra_props.u.image.key);
+         eina_stringshare_del(oinfo->extra_props.u.image.load_err);
+         break;
+      case CLOUSEAU_OBJ_TYPE_EDJE:
+         eina_stringshare_del(oinfo->extra_props.u.edje.file);
+         eina_stringshare_del(oinfo->extra_props.u.edje.group);
 
-        eina_stringshare_del(oinfo->extra_props.u.edje.load_err);
-     }
-   else if (oinfo->extra_props.type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
-     {
-        eina_stringshare_del(oinfo->extra_props.u.textblock.style);
-	eina_stringshare_del(oinfo->extra_props.u.textblock.text);
+         eina_stringshare_del(oinfo->extra_props.u.edje.load_err);
+         break;
+      case CLOUSEAU_OBJ_TYPE_TEXTBLOCK:
+         eina_stringshare_del(oinfo->extra_props.u.textblock.style);
+         eina_stringshare_del(oinfo->extra_props.u.textblock.text);
+         break;
+      case CLOUSEAU_OBJ_TYPE_UNKNOWN:
+      case CLOUSEAU_OBJ_TYPE_OTHER:
+         break;
      }
 
    free(oinfo);
 }
 
 Clouseau_Object *
-obj_information_get(Clouseau_Tree_Item *treeit)
+clouseau_object_information_get(Clouseau_Tree_Item *treeit)
 {
+   Clouseau_Object *oinfo;
+   Evas_Object *obj = (void*) (uintptr_t) treeit->ptr;
+
    if (!treeit->is_obj)
      return NULL;
 
-   Clouseau_Object *oinfo;
-   Evas_Object *obj = (void*) (uintptr_t) treeit->ptr;
    oinfo = calloc(1, sizeof(Clouseau_Object));
 
    oinfo->evas_props.pass_events = evas_object_pass_events_get(obj);
@@ -417,7 +419,7 @@ clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *
    char buf[1024];
    unsigned int i;
 
-   clouseau_obj_information_list_clear();
+   clouseau_object_information_list_clear();
 
    if (!treeit->is_obj)
       return;
@@ -586,8 +588,8 @@ clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *
 }
 
 void
-clouseau_obj_information_list_clear()
+clouseau_object_information_list_clear(void)
 {
-   _item_tree_free();
+   _clouseau_item_tree_free();
    elm_genlist_clear(prop_list);
 }

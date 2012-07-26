@@ -29,7 +29,7 @@ libclouseau_item_add(Evas_Object *o, Clouseau_Tree_Item *parent)
    treeit->name = eina_stringshare_add(evas_object_type_get(o));
    treeit->is_clipper = !!evas_object_clipees_get(o);
    treeit->is_visible = evas_object_visible_get(o);
-   treeit->info = obj_information_get(treeit);
+   treeit->info = clouseau_object_information_get(treeit);
 
    parent->children = eina_list_append(parent->children, treeit);
 
