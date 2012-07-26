@@ -29,6 +29,7 @@ struct _Config
 
    const char *fm;
    unsigned char auto_mount;
+   unsigned char boot_mount;
    unsigned char auto_open;
    unsigned char show_menu;
    unsigned char hide_header;

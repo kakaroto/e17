@@ -78,6 +78,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, version, INT);
    E_CONFIG_VAL(D, T, fm, STR);
    E_CONFIG_VAL(D, T, auto_mount, UCHAR);
+   E_CONFIG_VAL(D, T, boot_mount, UCHAR);
    E_CONFIG_VAL(D, T, auto_open, UCHAR);
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
    E_CONFIG_VAL(D, T, show_menu, UCHAR);

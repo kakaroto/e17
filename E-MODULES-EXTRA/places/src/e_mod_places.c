@@ -94,7 +94,8 @@ places_volume_add(const char *id, Eina_Bool first_time)
    v->drive_type = "";
    v->model = "";
    v->bus = "";
-   v->to_mount = (places_conf->auto_mount && !first_time);
+   v->to_mount = ((places_conf->auto_mount && !first_time) ||
+                  (first_time && places_conf->boot_mount));
    v->force_open = (places_conf->auto_open && !first_time);
 
    volumes = eina_list_append(volumes, v);
@@ -397,7 +398,7 @@ places_volume_mount(Volume *vol)
    Eina_List *opts = NULL;
    char buf[256];
 
-   if (!vol || !vol->mount_func)
+   if (!vol || !vol->mount_func || vol->mounted)
      return;
 
    if ((!strcmp(vol->fstype, "vfat")) || (!strcmp(vol->fstype, "ntfs")))

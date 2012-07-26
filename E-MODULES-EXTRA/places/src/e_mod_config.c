@@ -6,6 +6,7 @@
 struct _E_Config_Dialog_Data
 {
    int auto_mount;
+   int boot_mount;
    int auto_open;
    char *fm;
    int fm_chk;
@@ -80,6 +81,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 {
    /* load a temp copy of the config variables */
    cfdata->auto_mount = places_conf->auto_mount;
+   cfdata->boot_mount = places_conf->boot_mount;
    cfdata->auto_open = places_conf->auto_open;
 
    cfdata->show_menu = places_conf->show_menu;
@@ -110,10 +112,23 @@ void _custom_fm_click(void *data, Evas_Object *obj)
      }
 }
 
+void _mount_on_insert_click(void *data, Evas_Object *obj)
+{
+   Evas_Object *ow = data;
+
+   if (e_widget_check_checked_get(obj))
+     e_widget_disabled_set(ow, 0);
+   else
+     {
+        e_widget_check_checked_set(ow, 0);
+        e_widget_disabled_set(ow, 1);
+     }
+}
+
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o = NULL, *of = NULL, *ow = NULL;
+   Evas_Object *o = NULL, *of = NULL, *ow = NULL, *ow1 = NULL;
 
    o = e_widget_list_add(evas, 0, 0);
 
@@ -129,13 +144,20 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
                            &(cfdata->hide_header));
    e_widget_framelist_object_append(of, ow);
 
-   ow = e_widget_check_add(evas, D_("Mount volumes on insert"),
-                           &(cfdata->auto_mount));
+   ow = e_widget_check_add(evas, D_("Mount volumes at boot"),
+                           &(cfdata->boot_mount));
    e_widget_framelist_object_append(of, ow);
+
+   ow1 = e_widget_check_add(evas, D_("Mount volumes on insert"),
+                           &(cfdata->auto_mount));
+   e_widget_framelist_object_append(of, ow1);
 
    ow = e_widget_check_add(evas, D_("Open filemanager on insert"),
                            &(cfdata->auto_open));
    e_widget_framelist_object_append(of, ow);
+   e_widget_on_change_hook_set(ow1, _mount_on_insert_click, ow);
+   if (!cfdata->auto_mount)
+     e_widget_disabled_set(ow, 1);
 
    ow = e_widget_check_add(evas, D_("Use a custom file manager"), &(cfdata->fm_chk));
    e_widget_check_checked_set(ow, strlen(cfdata->fm) > 0 ? 1 : 0);
@@ -182,6 +204,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    places_conf->show_menu = cfdata->show_menu;
    places_conf->hide_header = cfdata->hide_header;
    places_conf->auto_mount = cfdata->auto_mount;
+   places_conf->boot_mount = cfdata->boot_mount;
    places_conf->auto_open = cfdata->auto_open;
    places_conf->show_home = cfdata->show_home;
    places_conf->show_desk = cfdata->show_desk;
