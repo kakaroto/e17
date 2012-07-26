@@ -236,6 +236,7 @@ group { name: "elm/genlist/item/default/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 1.0  0.0;
@@ -246,6 +247,10 @@ group { name: "elm/genlist/item/default/default";
 					relative: 1.0  1.0;
 					offset:   -1   -5;
 				}
+			}
+			description { state: "flip_enabled" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
 			}
 		}
 		part { name: "elm.swallow.end";
@@ -264,6 +269,10 @@ group { name: "elm/genlist/item/default/default";
 					relative: 1.0  1.0;
 					offset:   -5   -5;
 				}
+			}
+			description { state: "flip_enabled" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
 			}
 		}
 		part { name: "elm.text";
@@ -290,6 +299,20 @@ group { name: "elm/genlist/item/default/default";
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
 				TEXT_COLOR_SELECTED;
+			}
+		}
+		part { name: "elm.text.flip";
+			clip_to: "disclip";
+			type: SWALLOW;
+			scale: 1;
+			description { state: "default" 0.0;
+				visible: 0;
+				rel1.to_y: "elm.text";
+				rel2.to_y: "elm.text";
+			}
+			description { state: "flip_enabled" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
 			}
 		}
 	}
@@ -417,6 +440,7 @@ group { name: "elm/genlist/item/group_index/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 1.0 0.0;
@@ -677,6 +701,7 @@ group { name: "elm/genlist/item_compress/default/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 1.0  0.0;
@@ -822,6 +847,7 @@ group { name: "elm/genlist/tree/default/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "arrow";
 					relative: 1.0  0.0;
@@ -1019,6 +1045,7 @@ group { name: "elm/genlist/tree_compress/default/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "arrow";
 					relative: 1.0  0.0;
@@ -1197,6 +1224,7 @@ group { name: "elm/genlist/item/default_style/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 1.0  0.0;
@@ -1340,6 +1368,7 @@ group { name: "elm/genlist/tree/default_style/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "arrow";
 					relative: 1.0  0.0;
@@ -1477,6 +1506,7 @@ group { name: "elm/genlist/item/double_label/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 1.0  0.0;
@@ -1614,6 +1644,7 @@ group { name: "elm/genlist/item_compress/double_label/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 1.0  0.0;
@@ -1779,6 +1810,7 @@ group { name: "elm/genlist/tree/double_label/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "arrow";
 					relative: 1.0  0.0;
@@ -1963,6 +1995,7 @@ group { name: "elm/genlist/tree_compress/double_label/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.0 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "arrow";
 					relative: 1.0  0.0;
@@ -2119,6 +2152,7 @@ group { name: "elm/genlist/item/icon_top_text_bottom/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.5 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "elm.swallow.pad";
 					relative: 0.0  0.0;
@@ -2236,6 +2270,7 @@ group { name: "elm/genlist/tree/icon_top_text_bottom/default";
 			description { state: "default" 0.0;
 				fixed: 1 0;
 				align: 0.5 0.5;
+				aspect: 1.0 1.0;
 				rel1 {
 					to_x: "arrow";
 					relative: 1.0  0.0;
