@@ -393,7 +393,7 @@ collections {
                         font: "Sans:style=Mono";                \
                         size: 10;                               \
                         min: 1 1;                               \
-                        fit: 1 1;                               \
+                        fit: 0 1;                               \
                         align: 0.5 0.5;                         \
                         text:  _letter;                         \
                         text_class: "klok_letter";              \
@@ -427,7 +427,7 @@ collections {
                         font: "Sans:style=Mono";                \
                         size: 10;                               \
                         min: 1 1;                               \
-                        fit: 1 1;                               \
+                        fit: 0 1;                               \
                         align: 0.5 0.5;                         \
                         text:  _letter;                         \
                         text_class: "klok_letter";              \
