@@ -140,7 +140,7 @@ images {
 }
 styles {
 	style { name: "textblock_style";
-		base: "font="FONT" font_size=9 color=#000 text_class=label";
+		base: "font="FONT" font_size=9 color=#3c3c3c text_class=label";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "hilight" "+ font_weight=Bold";
@@ -156,7 +156,7 @@ styles {
 		tag:  "tab" "\t";
 	}
 	style { name: "entry_textblock_style";
-		base: "font="FONT" font_size=9 color=#000 wrap=word text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c wrap=word text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
@@ -166,17 +166,17 @@ styles {
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_textblock_disabled_style";
-		base: "font="FONT" font_size=9 color=#00000080 wrap=word text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c80 wrap=word text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
 		tag:  "em" "+ font_style=Oblique";
 		tag:  "b" "+ font_weight=Bold";
-		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "link" "+ color=#3c3c3c80 underline=on underline_color=#3c3c3c80";
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_textblock_style_mixedwrap";
-		base: "font="FONT" font_size=9 color=#000 wrap=mixed text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c wrap=mixed text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
@@ -186,17 +186,17 @@ styles {
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_textblock_disabled_style_mixedwrap";
-		base: "font="FONT" font_size=9 color=#00000080 wrap=char text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c80 wrap=char text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
 		tag:  "em" "+ font_style=Oblique";
 		tag:  "b" "+ font_weight=Bold";
-		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "link" "+ color=#3c3c3c80 underline=on underline_color=#3c3c3c80";
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_textblock_style_charwrap";
-		base: "font="FONT" font_size=9 color=#000 wrap=char text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c wrap=char text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
@@ -206,17 +206,17 @@ styles {
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_textblock_disabled_style_charwrap";
-		base: "font="FONT" font_size=9 color=#00000080 wrap=char text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c80 wrap=char text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
 		tag:  "em" "+ font_style=Oblique";
 		tag:  "b" "+ font_weight=Bold";
-		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "link" "+ color=#3c3c3c80 underline=on underline_color=#3c3c3c80";
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_single_textblock_style";
-		base: "font="FONT" font_size=9 color=#000 wrap=none text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c wrap=none text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
@@ -226,13 +226,13 @@ styles {
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "entry_single_textblock_disabled_style";
-		base: "font="FONT" font_size=9 color=#00000080 wrap=none text_class=entry";
+		base: "font="FONT" font_size=9 color=#3c3c3c80 wrap=none text_class=entry";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
 		tag:  "em" "+ font_style=Oblique";
 		tag:  "b" "+ font_weight=Bold";
-		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "link" "+ color=#3c3c3c80 underline=on underline_color=#3c3c3c80";
 		tag:  "hilight" "+ font_weight=Bold";
 	}
 	style { name: "tooltip_style";
@@ -243,7 +243,7 @@ styles {
 		tag:  "tab" "\t";
 	}
 	style { name: "genlist_textblock_style";
-		base: "font="FONT" font_size=9 color=#000 wrap=char text_class=list_item";
+		base: "font="FONT" font_size=9 color=#3c3c3c wrap=char text_class=list_item";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "tab" "\t";
@@ -255,7 +255,7 @@ styles {
 		tag:  "tab" "\t";
 	}
 	style { name: "gengrid_style";
-		base: "font="FONT" font_size=9 align=left valign=0.5 color=#000 text_class=grid_item";
+		base: "font="FONT" font_size=9 align=left valign=0.5 color=#3c3c3c text_class=grid_item";
 		tag:  "br" "\n";
 		tag:  "ps" "ps";
 		tag:  "hilight" "+ font_weight=Bold";
