@@ -791,7 +791,7 @@ places_generate_menu(void *data, E_Menu *em)
      {
         mi = e_menu_item_new(em);
         e_menu_item_label_set(mi, D_("Trash"));
-        e_util_menu_item_theme_icon_set(mi, "folder");
+        e_util_menu_item_theme_icon_set(mi, "user-trash");
         e_menu_item_callback_set(mi, _places_run_fm, "trash:///");
      }
 
