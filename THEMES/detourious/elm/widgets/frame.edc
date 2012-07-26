@@ -23,14 +23,14 @@ group { name: "elm/frame/base/default";
 				fixed: 0 1;
 				rel1 {
 					relative: 0.0 0.0;
-					offset: 6 6;
+					offset: 12 6;
 				}
 				rel2 {
 					relative: 1.0 0.0;
-					offset: -7 6;
+					offset: -13 6;
 				}
-				TEXT_COLOR;			
-				TEXT_BOLD2("", 0.0 0.0, 1 1, 1 1);
+				TEXT_COLOR;
+				TEXT_BOLD2("label", 0.0 0.0, 1 1, 1 1);
 			}
 		}
       part {
