@@ -69,6 +69,7 @@ want_ehal="yes"
 want_enotify="yes"
 want_eofono="yes"
 want_eukit="yes"
+want_performance_test="yes"
 
 case "$host_os" in
    mingw*)
@@ -78,6 +79,7 @@ case "$host_os" in
       want_enotify="no"
       want_eofono="no"
       want_eukit="no"
+      want_performance_test="no"
       ;;
 esac
 
@@ -127,7 +129,7 @@ AC_ARG_ENABLE([eukit],
 AC_ARG_ENABLE([performance_test],
    [AC_HELP_STRING([--disable-performance_test], [Disable performance build])],
    [enable_performance_test=$enableval],
-   [enable_performance_test="${want_eukit}"])
+   [enable_performance_test="${want_performance_test}"])
 
 
 ### Checks for programs
@@ -277,7 +279,7 @@ fi
 
 if test "x${have_edbus_performance_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_PERFORMANCE_TEST],
-      [ecore >= 1.2.0 eina >= 1.2.0 dbus-1 >= 0.62 ecore-evas >= 1.2.0 elementary],
+      [ecore >= 1.6.99 eina >= 1.6.99 dbus-1 >= 0.62 ecore-evas >= 1.6.99 elementary >= 1.6.99],
       [have_edbus_performance_test="yes"],
       [have_edbus_performance_test="no"])
 fi
