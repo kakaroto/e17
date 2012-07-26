@@ -158,7 +158,7 @@ group { name: "elm/check/base/default";
 				rel2.relative: 1.0 1.0;
 				rel2.offset: -2 -2;
 				TEXT_COLOR;
-				TEXT_NORMAL("", -1.0 0.5, 0 1);
+				TEXT_NORMAL("label", -1.0 0.5, 0 1);
 			}
 			description { state: "visible" 0.0;
 				inherit: "default" 0.0;

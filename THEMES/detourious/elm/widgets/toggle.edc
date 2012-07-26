@@ -1,6 +1,6 @@
 group { name: "elm/check/base/toggle";
-	alias: "elm/toggle/base/default";
 	images {
+		image: "tog_base.png" COMP;
 		image: "bt_basew.png" COMP;
 		image: "bt_bases.png" COMP;
 		image: "bt_hilightw.png" COMP;
@@ -11,6 +11,8 @@ group { name: "elm/check/base/toggle";
 	}
 	script {
 		public is_rtl;
+		public was_drag;
+		public is_drag;
 	}
 	parts {
 		part { name: "bg";
@@ -26,7 +28,7 @@ group { name: "elm/check/base/toggle";
 				max: 96 16;
 				aspect: 4.0 4.0;
 				aspect_preference: VERTICAL;
-				color: 255 255 255 255;
+				color: 255 255 255 0;
 			}
 		}
 		part { name: "clipper";
@@ -51,9 +53,7 @@ group { name: "elm/check/base/toggle";
 			description { state: "default" 0.0;
 				fixed: 1 1;
 				rel1.to: "bg";
-				rel1.offset: 1 1;
 				rel2.to: "bg";
-				rel2.offset: -2 -2;
 				min: 16 16;
 				max: 16 16;
 				aspect: 1.0 1.0;
@@ -68,10 +68,10 @@ group { name: "elm/check/base/toggle";
 			}
 			description { state: "default" 0.0;
 				rel1.to_x: "bg";
-				/* rel1.offset: 1 1; */
+				rel1.offset: 0 0;
 				rel1.relative: 0.0 0.0;
 				rel2.to_x: "bg";
-				/* rel2.offset: -2 -2; */
+				rel2.offset: -1 -1;
 				rel2.relative: 1.0 1.0;
 				color: 0 0 0 0;
 			}
@@ -87,10 +87,12 @@ group { name: "elm/check/base/toggle";
 				rel2.to: "button";
 				rel2.relative: 0.5 1.0;
 				image.normal: "tog_base_on.png";
+				color_class: "selected";
 			}
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				image.normal: "tog_dis_base_on.png";
+				color_class: "selected_disabled";
 			}
 		}
 		part { name: "offrect";
@@ -120,23 +122,18 @@ group { name: "elm/check/base/toggle";
 				rel1.to_x: "button";
 				rel1.relative: 1.0 0.0;
 				rel2.to_x: "offrect";
-				color: 0 0 0 255;
-				text {
-					font:     "Sans,Edje-Vera";
-					size:     10;
-					min:      0 1;
-					align:    0.5 0.5;
-					text:     "OFF";
-				}
+				TEXT_COLOR;
+				TEXT_NORMAL("", 0.5 0.5, 0 1);
+				text.text: "OFF";
 			}
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
-				color: 128 128 128 128;
+				TEXT_COLOR_DISABLED;
 			}
 		}
 		part { name: "elm.ontext";
 			type: TEXT;
-			effect: SOFT_SHADOW;
+			effect: SHADOW;
 			mouse_events:  0;
 			scale: 1;
 			clip_to: "clipper";
@@ -147,45 +144,32 @@ group { name: "elm/check/base/toggle";
 				rel2.to_x: "button";
 				rel2.offset: 0 0;
 				rel2.relative: 0.0 1.0;
-				color: 224 224 224 255;
-				color3: 0 0 0 64;
-				text {
-					font:     "Sans,Edje-Vera";
-					size:     10;
-					min:      0 1;
-					align:    0.5 0.5;
-					text:     "ON";
-				}
+				TEXT_NORMAL("", 0.5 0.5, 0 1);
+				text.text: "ON";
+				color_class: "selected_text";
 			}
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
-				color: 128 128 128 128;
-				color3: 0 0 0 24;
+				color_class: "selected_text_disabled";
 			}
 		}
-		part { name: "overlay";
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				rel1 {
-					to: "bg";
-					offset: -1 -1;
-					relative: 0.0 0.0;
-				}
-				rel2 {
-					to: "bg";
-					relative: 1.0 1.0;
-					offset: 0 0;
-				}
+		part { name: "conf_over";
+			mouse_events:  0;
+			description { state: "default" 0.0;
+				rel1.offset: -1 -1;
+				rel1.to: "bg";
+				rel2.offset: 0 0;
+				rel2.to: "bg";
 				image {
-					normal: "images/scrollframe_over.png";
-					border: 5 5 5 6;
+					normal: "tog_base.png";
+					border: 3 3 3 3;
+					middle: 0;
 				}
+				fill.smooth : 0;
 			}
 		}
 		part { name: "button0";
 			mouse_events:  0;
-			clip_to: "clipper";
 			description { state: "default" 0.0;
 				rel1.to: "button2";
 				rel1.offset: -4 -4;
@@ -201,12 +185,11 @@ group { name: "elm/check/base/toggle";
 		}
 		part { name: "button2";
 			mouse_events:  0;
-			clip_to: "clipper";
 			description { state: "default" 0.0;
 				rel1.to: "button";
-				rel1.offset: -2 -2;
+				rel1.offset: -3 -3;
 				rel2.to: "button";
-				rel2.offset: 1 1;
+				rel2.offset: 2 2;
 				image {
 					normal: "bt_basew.png";
 					border: 7 7 7 7;
@@ -265,14 +248,9 @@ group { name: "elm/check/base/toggle";
 				rel1.offset: 0 4;
 				rel2.to_x: "bg";
 				rel2.relative: 0.0 1.0;
-				rel2.offset: -5 -5;
-				color: 0 0 0 255;
-				text {
-					font: "Sans,Edje-Vera";
-					size: 10;
-					min: 0 0;
-					align: 0.0 0.5;
-				}
+				rel2.offset: -7 -5;
+				TEXT_COLOR;
+				TEXT_NORMAL("label", -1.0 0.5, 0 1);
 			}
 			description { state: "visible" 0.0;
 				inherit: "default" 0.0;
@@ -281,11 +259,11 @@ group { name: "elm/check/base/toggle";
 			}
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;
-				color: 128 128 128 128;
+				TEXT_COLOR_DISABLED;
 			}
 			description { state: "disabled_visible" 0.0;
 				inherit: "default" 0.0;
-				color: 128 128 128 128;
+				TEXT_COLOR_DISABLED;
 				visible: 1;
 				text.min: 1 1;
 			}
@@ -302,7 +280,43 @@ group { name: "elm/check/base/toggle";
 			}
 		}
 	}
+
 	programs {
+		program {
+			signal: "mouse,clicked,1";
+			source: "button";
+			script {
+				new Float:dx, Float:dy;
+				get_drag(PART:"button", dx, dy);
+
+				if (!get_int(was_drag)) {
+					if (dx > 0.5)
+						set_drag(PART:"button", 0.0, 0.0);
+					else
+						set_drag(PART:"button", 1.0, 0.0);
+					if (((get_int(is_rtl) == 1) && (dx <= 0.5)) ||
+						(get_int(is_rtl) == 0) && (dx > 0.5))
+						emit("elm,action,check,off", "");
+					else
+						emit("elm,action,check,on", "");
+				}
+			}
+		}
+		program {
+			signal: "drag";
+			source: "button";
+			script {
+				set_int(is_drag, 1);
+			}
+		}
+		program {
+			signal: "mouse,down,1";
+			source: "button";
+			script {
+				set_int(was_drag, 0);
+				set_int(is_drag, 0);
+			}
+		}
 		program { name:   "drag_end";
 			signal: "mouse,up,1";
 			source: "button";
@@ -324,10 +338,12 @@ group { name: "elm/check/base/toggle";
 				else {
 					emit("elm,action,check,off", "");
 				}
-
+				set_int(was_drag, get_int(is_drag));
+				set_int(is_drag, 0);
 			}
 		}
-		program { name: "toggle_on";
+
+		program { name: "check_on";
 			signal: "elm,state,check,on";
 			source: "elm";
 			script {
@@ -341,7 +357,7 @@ group { name: "elm/check/base/toggle";
 				set_drag(PART:"button", drag, 0.0);
 			}
 		}
-		program { name: "toggle_off";
+		program { name: "check_off";
 			signal: "elm,state,check,off";
 			source: "elm";
 			script {

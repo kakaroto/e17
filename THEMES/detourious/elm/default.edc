@@ -72,6 +72,26 @@ color_class: "text_disabled";
 	color3: 7 7 7 64;
 
 
+color_classes {
+   color_class {
+      name: "selected_text";
+      TEXT_COLOR_SELECTED;
+   }
+   color_class {
+      name: "selected_text_disabled";
+      color: 220 220 220 255;
+      color3: 7 7 7 64;
+   }
+   color_class {
+      name: "selected";
+      color: COLOR_SELECTED;
+   }
+   color_class {
+      name: "selected_disabled";
+      color: COLOR_SELECTED_FADE;
+   }
+}
+
 images {
 	image: "thumb_shadow.png" COMP;
 	image: "icon_folder.png" COMP;
