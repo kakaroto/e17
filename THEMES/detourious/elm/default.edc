@@ -658,6 +658,7 @@ collections {
 #include "widgets/gengrid.edc"
 #include "widgets/photocam.edc"
 #include "widgets/map.edc"
+#include "widgets/naviframe.edc"
 #include "widgets/panes.edc"
 #include "widgets/panel.edc"
 #include "widgets/conformant.edc"
