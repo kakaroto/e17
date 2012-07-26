@@ -46,7 +46,7 @@ struct _Volume
 void places_init(void);
 void places_shutdown(void);
 
-Volume *places_volume_add(const char *id, int dont_auto_mount, int dont_auto_open);
+Volume *places_volume_add(const char *id, Eina_Bool first_time);
 void places_volume_del(Volume *v);
 void places_volume_update(Volume *vol);
 Volume *places_volume_by_id_get(const char *id);

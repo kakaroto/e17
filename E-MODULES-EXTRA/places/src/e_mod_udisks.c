@@ -24,7 +24,7 @@ static void _places_udisks_all_devices_cb(void *user_data, void *reply_data, DBu
 static void _places_udisks_vol_prop_cb(void *data, void *reply_data, DBusError *error);
 static void _places_udisks_sto_prop_cb(void *data, void *reply_data, DBusError *error);
 
-static Volume* _places_udisks_volume_add(const char *udi);
+static Volume* _places_udisks_volume_add(const char *udi, Eina_Bool first_time);
 static void _places_udisks_mount_func(Volume *vol, Eina_List *opts);
 static void _places_udisks_unmount_func(Volume *vol, Eina_List *opts);
 static void _places_udisks_eject_func(Volume *vol, Eina_List *opts);
@@ -173,7 +173,7 @@ _places_udisks_all_devices_cb(void *user_data, void *reply_data, DBusError *err)
 
    EINA_LIST_FOREACH(udisks_ret->strings, l, udi)
    {
-      v = _places_udisks_volume_add(udi);
+      v = _places_udisks_volume_add(udi, EINA_TRUE);
       e_udisks_get_all_properties(_places_udisks_conn, udi,
                                   _places_udisks_vol_prop_cb, v);
    }
@@ -198,7 +198,7 @@ _places_udisks_device_add_cb(void *data, DBusMessage *msg)
      }
 
    printf("PLACES udisks: DeviceAdded [%s]\n", udi);
-   v = _places_udisks_volume_add(udi);
+   v = _places_udisks_volume_add(udi, EINA_FALSE);
    e_udisks_get_all_properties(_places_udisks_conn, udi,
                                _places_udisks_vol_prop_cb, v);
 }
@@ -425,7 +425,10 @@ _places_udisks_sto_prop_cb(void *data, void *reply_data, DBusError *error)
         v->valid = EINA_TRUE;
         // trigger a full redraw, the only way to show a new device
         places_update_all_gadgets();
-        places_print_volume(v); // JUST FOR DEBUG will remove sooner or later
+        // the update is needed to trigger auto_mount/auto_open
+        places_volume_update(v);
+        // TODO JUST FOR DEBUG will remove sooner or later
+        places_print_volume(v);
      }
    else
      {
@@ -436,11 +439,11 @@ _places_udisks_sto_prop_cb(void *data, void *reply_data, DBusError *error)
 
 /* Internals */
 static Volume*
-_places_udisks_volume_add(const char *udi)
+_places_udisks_volume_add(const char *udi, Eina_Bool first_time)
 {
    Volume *v;
 
-   v = places_volume_add(udi, EINA_FALSE, EINA_FALSE);
+   v = places_volume_add(udi, first_time);
    if (!v) return NULL;
 
    v->mount_func = _places_udisks_mount_func;

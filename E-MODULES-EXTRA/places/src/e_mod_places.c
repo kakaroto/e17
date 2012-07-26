@@ -19,6 +19,7 @@ static void _places_volume_object_update(Volume *vol, Evas_Object *obj);
 static void _places_run_fm(void *data, E_Menu *m, E_Menu_Item *mi);
 
 
+
 /* Edje callbacks */
 void _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_custom_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
@@ -72,8 +73,9 @@ places_volume_list_get(void)
 {
    return volumes;
 }
+
 Volume *
-places_volume_add(const char *id, int dont_auto_mount, int dont_auto_open)
+places_volume_add(const char *id, Eina_Bool first_time)
 {
    Volume *v;
    if (!id) return NULL;
@@ -92,12 +94,8 @@ places_volume_add(const char *id, int dont_auto_mount, int dont_auto_open)
    v->drive_type = "";
    v->model = "";
    v->bus = "";
-
-   if (places_conf->auto_mount && !dont_auto_mount)
-     v->to_mount = EINA_TRUE;
-
-   if (places_conf->auto_open && !dont_auto_open)
-     v->force_open = EINA_TRUE;
+   v->to_mount = (places_conf->auto_mount && !first_time);
+   v->force_open = (places_conf->auto_open && !first_time);
 
    volumes = eina_list_append(volumes, v);
 
@@ -188,6 +186,13 @@ places_volume_update(Volume *vol)
 
    EINA_LIST_FOREACH(vol->objs, l, obj)
      _places_volume_object_update(vol, obj);
+
+   // mount the volume if needed
+   if (vol->to_mount && !vol->mounted)
+   {
+      places_volume_mount(vol);
+      vol->to_mount = EINA_FALSE;
+   }
 
    // the volume has been mounted as requested, open the fm
    if (vol->force_open && vol->mounted && vol->mount_point)
@@ -387,7 +392,7 @@ places_empty_box(Evas_Object *box)
 }
 
 void
-places_mount_volume(Volume *vol)
+places_volume_mount(Volume *vol)
 {
    Eina_List *opts = NULL;
    char buf[256];
@@ -676,7 +681,7 @@ _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, cons
    else
      {
         vol->force_open = EINA_TRUE;
-        places_mount_volume(vol);
+        places_volume_mount(vol);
      }
 }
 
