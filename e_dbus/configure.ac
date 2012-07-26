@@ -279,7 +279,7 @@ fi
 
 if test "x${have_edbus_performance_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_PERFORMANCE_TEST],
-      [ecore >= 1.6.99 eina >= 1.6.99 dbus-1 >= 0.62 ecore-evas >= 1.6.99 elementary >= 1.6.99],
+      [ecore >= 1.6.99 eina >= 1.6.99 dbus-1 >= 0.62 ecore-evas >= 1.6.99 elementary >= 1.6.99 evas >= 1.6.99],
       [have_edbus_performance_test="yes"],
       [have_edbus_performance_test="no"])
 fi
