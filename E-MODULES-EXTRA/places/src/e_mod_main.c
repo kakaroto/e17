@@ -26,6 +26,7 @@ static void _places_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 /* Local Variables */
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
+static E_Int_Menu_Augmentation *maug = NULL;
 Eina_List *instances = NULL;
 Config *places_conf = NULL;
 extern Eina_List *volumes;
@@ -137,17 +138,10 @@ e_modapi_init(E_Module *m)
    e_gadcon_provider_register(&_gc_class);
    places_init();
 
-   if (places_conf->show_menu)
-     {
-       E_Int_Menu_Augmentation *maug;
-       maug = e_int_menus_menu_augmentation_add("main/1",
-                                                places_augmentation,
-                                                NULL, NULL, NULL);
-     }
+   places_menu_augmentation();
 
    return m;
 }
-
 
 EAPI int
 e_modapi_shutdown(E_Module *m)
@@ -160,6 +154,13 @@ e_modapi_shutdown(E_Module *m)
    /* Kill the config dialog */
    if (places_conf->cfd) e_object_del(E_OBJECT(places_conf->cfd));
    places_conf->cfd = NULL;
+
+   /* Remove the main menu item */
+   if (maug)
+     {
+        e_int_menus_menu_augmentation_del("main/1", maug);
+        maug = NULL;
+     }
 
    /* Tell E the module is now unloaded. Gets removed from shelves, etc. */
    places_conf->module = NULL;
@@ -177,6 +178,19 @@ e_modapi_save(E_Module *m)
 {
    e_config_domain_save("module.places", conf_edd, places_conf);
    return 1;
+}
+
+void
+places_menu_augmentation(void)
+{
+   if (places_conf->show_menu && (!maug))
+     maug = e_int_menus_menu_augmentation_add("main/1", places_augmentation,
+                                              NULL, NULL, NULL);
+   else if ((!places_conf->show_menu) && maug)
+     {
+        e_int_menus_menu_augmentation_del("main/1", maug);
+        maug = NULL;
+     }
 }
 
 /* Gadcon Functions */

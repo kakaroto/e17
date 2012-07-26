@@ -196,5 +196,6 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    e_config_save_queue();
    places_update_all_gadgets();
+   places_menu_augmentation();
    return 1;
 }
