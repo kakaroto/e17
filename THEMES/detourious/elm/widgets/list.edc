@@ -809,8 +809,6 @@ group { name: "elm/list/h_item_compress_odd/default";
 	data.item: "selectraise" "on";
 	images {
 		image: "bt_sm_base1.png" COMP;
-		image: "bt_sm_shine.png" COMP;
-		image: "bt_sm_hilight.png" COMP;
 		image: "ilist_2_h.png" COMP;
 	}
 	parts {
