@@ -1,6 +1,5 @@
 * Genlist
 	[High - Release] elm - genlist 2 - resize down to be scrollable and sb show/hide - size wrong
-	[High - Release] elm - genlist decorate all mode on and scroll - garbage items left around
 	[High] Fix auto scroll jumping bug.
 	[High] Improve realize implementation on item adding.
 	[High] Fix Genlist edc for odd/even things.
