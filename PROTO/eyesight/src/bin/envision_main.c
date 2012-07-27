@@ -11,8 +11,6 @@
 #include "envision_load.h"
 #include "envision_win.h"
 
-#define __UNUSED__
-
 /********** Local **********/
 
 int _envision_log_domain = -1;
@@ -163,7 +161,7 @@ elm_main(int argc, char **argv)
 
   win = env_win_add();
   evas_object_smart_callback_add(win, "delete,request", _env_win_del, NULL);
-  envision->win = win;
+  envision->gui.window = win;
 
   evas = evas_object_evas_get(win);
 
@@ -196,7 +194,7 @@ elm_main(int argc, char **argv)
           edje_object_part_text_set(o, "e.text.version", PACKAGE_VERSION);
           edje_object_part_text_set(o, "e.text.status", "Right click to open file");
           evas_object_layer_set(o, -1);
-          elm_win_resize_object_add(envision->win, o);
+          elm_win_resize_object_add(envision->gui.window, o);
           evas_object_show(o);
         }
     }

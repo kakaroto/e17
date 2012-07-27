@@ -7,6 +7,7 @@
 #include "Eyesight.h"
 #include "envision.h"
 #include "envision_win.h"
+#include "envision_load.h"
 
 #define ENV_SCALE_STEP 1.414213562
 
@@ -27,11 +28,11 @@ env_input_key_cb(void *data, int type, void *event)
           elm_exit();
           return ECORE_CALLBACK_DONE;
         }
-      if (!strcmp(ev->keyname, "p"))
+      if (!strcmp(ev->keyname, "Left"))
         {
           if (envision->page_nbr > 0) envision->page_nbr--;
         }
-      if (!strcmp(ev->keyname, "n"))
+      if (!strcmp(ev->keyname, "Right"))
         {
           if (envision->page_nbr < (eyesight_object_page_count(envision->obj) - 1)) envision->page_nbr++;
         }
@@ -101,13 +102,13 @@ env_input_mouse_cb(void *data, int type, void *event)
             {
               Evas_Object *fs;
 
-              fs = elm_fileselector_add(envision->win);
+              fs = elm_fileselector_add(envision->gui.window);
               elm_fileselector_is_save_set(fs, EINA_TRUE);
               elm_fileselector_expandable_set(fs, EINA_FALSE);
               elm_fileselector_path_set(fs, getenv("HOME"));
               evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
               evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
-              elm_win_resize_object_add(envision->win, fs);
+              elm_win_resize_object_add(envision->gui.window, fs);
               evas_object_show(fs);
               evas_object_smart_callback_add(fs, "done", _env_file_select_cb, envision);
             }

@@ -38,6 +38,7 @@
 #define CRIT(...) EINA_LOG_DOM_CRIT(_eyesight_pdf_log_domain, __VA_ARGS__)
 
 
+static int _eyesight_pdf_count = 0;
 static int _eyesight_pdf_log_domain = -1;
 
 static char *
@@ -303,8 +304,6 @@ em_init(Evas *evas, Evas_Object **obj, void **eyesight_backend)
 {
   Eyesight_Backend_Pdf *ebp;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eyesight_backend)
     return EINA_FALSE;
 
@@ -341,8 +340,6 @@ em_shutdown(void *eb)
 {
   Eyesight_Backend_Pdf *ebp;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eb)
     return;
 
@@ -364,8 +361,6 @@ em_file_open(void *eb, const char *filename)
   fz_bbox bbox;
   fz_error error;
   int fd;
-
-  printf(" * %s\n", __FUNCTION__);
 
   if (!eb || !filename || !*filename)
     return NULL;
@@ -485,8 +480,6 @@ em_file_close(void *eb)
 {
   Eyesight_Backend_Pdf *ebp;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eb)
     return;
 
@@ -533,8 +526,6 @@ em_toc_get(void *eb)
   Eyesight_Backend_Pdf *ebp;
   pdf_outline *outline;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eb)
     return NULL;
 
@@ -572,8 +563,6 @@ em_page_set(void *eb, int page)
   fz_matrix ctm;
   fz_bbox bbox;
   fz_error error;
-
-  printf(" * %s\n", __FUNCTION__);
 
   if (!eb || (page < 0))
     return;
@@ -622,8 +611,6 @@ em_page_get(void *eb)
 {
   Eyesight_Backend_Pdf *ebp;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eb)
     return 0;
 
@@ -636,8 +623,6 @@ static void
 em_page_scale_set(void *eb, double hscale, double vscale)
 {
   Eyesight_Backend_Pdf *ebp;
-
-  printf(" * %s\n", __FUNCTION__);
 
   if (!eb)
     return;
@@ -654,8 +639,6 @@ static void
 em_page_scale_get(void *eb, double *hscale, double *vscale)
 {
   Eyesight_Backend_Pdf *ebp;
-
-  printf(" * %s\n", __FUNCTION__);
 
   if (!eb)
     {
@@ -674,8 +657,6 @@ em_page_orientation_set(void *eb, Eyesight_Orientation orientation)
 {
   Eyesight_Backend_Pdf *ebp;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eb)
     return;
 
@@ -691,8 +672,6 @@ em_page_orientation_get(void *eb)
 {
   Eyesight_Backend_Pdf *ebp;
 
-  printf(" * %s\n", __FUNCTION__);
-
   if (!eb)
     return EYESIGHT_ORIENTATION_PORTRAIT;
 
@@ -705,8 +684,6 @@ static void
 em_page_size_get(void *eb, int *width, int *height)
 {
   Eyesight_Backend_Pdf *ebp;
-
-  printf(" * %s\n", __FUNCTION__);
 
   if (!eb)
     {
@@ -733,8 +710,6 @@ em_page_render(void *eb)
   fz_pixmap *image;
   int width;
   int height;
-
-  printf(" * %s\n", __FUNCTION__);
 
   if (!eb)
     return;
@@ -832,26 +807,30 @@ static Eyesight_Module _eyesight_module_pdf =
 static Eina_Bool
 module_open(Evas *evas, Evas_Object **obj, const Eyesight_Module **module, void **backend)
 {
-
-  printf(" * %s\n", __FUNCTION__);
    if (!module)
       return EINA_FALSE;
 
-   if (_eyesight_pdf_log_domain < 0)
+   if (_eyesight_pdf_count == 0)
      {
-        _eyesight_pdf_log_domain = eina_log_domain_register("eyesight-pdf", EINA_COLOR_LIGHTCYAN);
-        if (_eyesight_pdf_log_domain < 0)
-          {
-             EINA_LOG_CRIT("Could not register log domain 'eyesight-pdf'");
-             return EINA_FALSE;
-          }
+       if (_eyesight_pdf_log_domain < 0)
+         {
+           _eyesight_pdf_log_domain = eina_log_domain_register("eyesight-pdf", EINA_COLOR_LIGHTCYAN);
+           if (_eyesight_pdf_log_domain < 0)
+             {
+               EINA_LOG_CRIT("Could not register log domain 'eyesight-pdf'");
+               return EINA_FALSE;
+             }
+         }
      }
+
+   _eyesight_pdf_count++;
 
    if (!_eyesight_module_pdf.init(evas, obj, backend))
      {
         ERR("Could not initialize module");
         eina_log_domain_unregister(_eyesight_pdf_log_domain);
         _eyesight_pdf_log_domain = -1;
+        _eyesight_pdf_count--;
        return EINA_FALSE;
      }
 
@@ -862,26 +841,24 @@ module_open(Evas *evas, Evas_Object **obj, const Eyesight_Module **module, void 
 static void
 module_close(Eyesight_Module *module, void *backend)
 {
-
-  printf(" * %s\n", __FUNCTION__);
-   eina_log_domain_unregister(_eyesight_pdf_log_domain);
-   _eyesight_pdf_log_domain = -1;
+  _eyesight_pdf_count--;
+  if (_eyesight_pdf_count == 0)
+    {
+      eina_log_domain_unregister(_eyesight_pdf_log_domain);
+      _eyesight_pdf_log_domain = -1;
+    }
    _eyesight_module_pdf.shutdown(backend);
 }
 
 Eina_Bool
 pdf_module_init(void)
 {
-
-  printf(" * %s\n", __FUNCTION__);
    return _eyesight_module_register("pdf", module_open, module_close);
 }
 
 void
 pdf_module_shutdown(void)
 {
-
-  printf(" * %s\n", __FUNCTION__);
    _eyesight_module_unregister("pdf");
 }
 

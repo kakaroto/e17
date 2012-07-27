@@ -14,14 +14,19 @@ typedef struct _Envision Envision;
 
 struct _Envision
 {
-  Evas_Object *win;
-  Evas_Object *bg;
-  Evas_Object *sc;
+  struct {
+    Evas_Object *window;
+    Evas_Object *background;
+    Evas_Object *box;
+    Evas_Object *scroller;
+    Evas_Object *genlist;
+  } gui;
   Evas_Object *obj;
   char        *file;
   int          page_nbr;
   double       scale;
   unsigned int start_with_file : 1;
+  unsigned int gui_built : 1;
 };
 
 #endif /* ENVISION_H */

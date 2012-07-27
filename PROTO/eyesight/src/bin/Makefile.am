@@ -24,11 +24,13 @@ endif
 envision_SOURCES = \
 envision_config.c \
 envision_load.c \
+envision_gui.c \
 envision_input.c \
 envision_main.c \
 envision_win.c \
 envision.h \
 envision_config.h \
+envision_gui.h \
 envision_input.h \
 envision_load.h \
 envision_win.h

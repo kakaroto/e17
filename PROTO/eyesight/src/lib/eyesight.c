@@ -22,6 +22,9 @@
 # include <config.h>
 #endif
 
+#include <limits.h>
+#include <stdlib.h>
+
 #include <Efreet_Mime.h>
 
 #include "Eyesight.h"
@@ -107,9 +110,9 @@ static void _smart_clip_unset(Evas_Object * obj);
 
 static int         _eyesight_count = 0;
 static int         _eyesight_log_domain = -1;
-static Eina_Hash  *_eyesight_backends = NULL; /* the list of backends */
+static Eina_Hash  *_eyesight_plugins = NULL; /* the table of plugin */
 static Eina_Array *_eyesight_modules = NULL; /* the list of shared lib corresponding to a backend */
-static const char *_eyesight_backend_priority[] = {
+static const char *_eyesight_plugin_priority[] = {
   "img",
   "pdf",
   "ps",
@@ -122,7 +125,7 @@ static const char *_eyesight_backend_priority[] = {
 /**** Private functions ****/
 
 static void
-_eyesight_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_eyesight_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
   int w;
   int h;
@@ -137,25 +140,24 @@ _eyesight_module_open(const char *name, Evas *evas, Evas_Object **obj, Eyesight_
    Eyesight_Plugin *plugin = NULL;
    unsigned int     i = 0;
 
-   if (!_eyesight_backends)
+   if (!_eyesight_plugins)
      {
-        ERR("No backend loaded");
+        ERR("No plugin loaded");
         return NULL;
      }
 
-   /* FIXME: Always look for a working backend. */
+   /* FIXME: Always look for a working plugin. */
  retry:
    if (!name || i > 0)
-     name = _eyesight_backend_priority[i++];
+     name = _eyesight_plugin_priority[i++];
 
-   plugin = eina_hash_find(_eyesight_backends, name);
-   printf(" * plugin %s : %p\n", name, plugin);
+   plugin = eina_hash_find(_eyesight_plugins, name);
    if (!plugin)
      {
-        if (i != 0 && i < (sizeof (_eyesight_backend_priority) / sizeof (char*)))
+        if (i != 0 && i < (sizeof (_eyesight_plugin_priority) / sizeof (char*)))
           goto retry;
 
-        ERR("No backend loaded");
+        ERR("No plugin loaded");
         return NULL;
      }
 
@@ -164,15 +166,14 @@ _eyesight_module_open(const char *name, Evas *evas, Evas_Object **obj, Eyesight_
         if (*module)
           {
              (*module)->plugin = plugin;
-             printf(" * module found !! %s\n", name);
              return name;
           }
      }
 
-   if (i != 0 && i < (sizeof (_eyesight_backend_priority) / sizeof (char*)))
+   if (i != 0 && i < (sizeof (_eyesight_plugin_priority) / sizeof (char*)))
      goto retry;
 
-   ERR("Unable to load module: %s", name);
+   ERR("Unable to load plugin: %s", name);
 
    return NULL;
 }
@@ -229,13 +230,13 @@ EAPI Eina_Bool
    plugin->m_open = m_open;
    plugin->m_close = m_close;
 
-   return eina_hash_add(_eyesight_backends, name, plugin);
+   return eina_hash_add(_eyesight_plugins, name, plugin);
 }
 
 EAPI Eina_Bool
 _eyesight_module_unregister(const char *name)
 {
-   return eina_hash_del(_eyesight_backends, name, NULL);
+   return eina_hash_del(_eyesight_plugins, name, NULL);
 }
 
 
@@ -270,10 +271,10 @@ eyesight_init(void)
         goto unregister_log_domain;
      }
 
-   _eyesight_backends = eina_hash_string_small_new(free);
-   if (!_eyesight_backends)
+   _eyesight_plugins = eina_hash_string_small_new(free);
+   if (!_eyesight_plugins)
      {
-        ERR("Could not allocate backends hash table.");
+        ERR("Could not allocate plugins hash table.");
         goto shutdown_efreet;
      }
 
@@ -281,21 +282,18 @@ eyesight_init(void)
    if (!_eyesight_modules)
      {
         ERR("Could not allocate modules array.");
-        goto free_backends;
+        goto free_plugins;
      }
 
    path = eina_module_environment_path_get("HOME", "/.eyesight/");
-   printf("%s path 1 : %s\n", __FUNCTION__, path);
    _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
    if (path) free(path);
 
    path = eina_module_environment_path_get("EYESIGHT_MODULES_DIR", "/eyesight/");
-   printf("%s path 2 : %s\n", __FUNCTION__, path);
    _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
    if (path) free(path);
 
    path = eina_module_symbol_path_get(eyesight_object_add, "/eyesight/");
-   printf("%s path 3 : %s\n", __FUNCTION__, path);
    _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
    if (path) free(path);
 
@@ -327,8 +325,8 @@ eyesight_init(void)
 
  free_modules:
    eina_array_free(_eyesight_modules);
- free_backends:
-   eina_hash_free(_eyesight_backends);
+ free_plugins:
+   eina_hash_free(_eyesight_plugins);
  shutdown_efreet:
    efreet_mime_shutdown();
  unregister_log_domain:
@@ -353,7 +351,7 @@ eyesight_shutdown(void)
      return _eyesight_count;
 
    eina_array_free(_eyesight_modules);
-   eina_hash_free(_eyesight_backends);
+   eina_hash_free(_eyesight_plugins);
    efreet_mime_shutdown();
    eina_log_domain_unregister(_eyesight_log_domain);
    _eyesight_log_domain = -1;
@@ -365,7 +363,6 @@ eyesight_shutdown(void)
 EAPI Evas_Object *
 eyesight_object_add(Evas *evas)
 {
-  printf("%s\n", __FUNCTION__);
    _smart_init();
    return evas_object_smart_add(evas, smart);
 }
@@ -377,7 +374,7 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
    Smart_Data *sd;
    const char *mime;
    const char *module_name = NULL;
-  printf("%s\n", __FUNCTION__);
+   char *res;
 
    if (!filename || !*filename)
      return EINA_FALSE;
@@ -386,12 +383,13 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
 
    DBG("filename=%s", filename);
 
-   realpath(filename, file);
+   res = realpath(filename, file);
+   if (!res)
+     return EINA_FALSE;
    if (sd->filename && (!strcmp(file, sd->filename)))
      return EINA_TRUE;
 
    mime = efreet_mime_type_get(file);
-   printf("mime : %s\n", mime);
    if (mime)
      {
         if (strcmp(mime, "application/pdf") == 0)
@@ -418,7 +416,6 @@ eyesight_object_file_set(Evas_Object *obj, const char *filename)
                  (strcmp(mime, "image/x-xpixmap") == 0)) /* xpm */
           module_name = "png";
      }
-   printf("module_name : %s\n", module_name);
 
    if (sd->filename)
      free(sd->filename);
@@ -550,7 +547,7 @@ EAPI void
 eyesight_object_page_scale_get(Evas_Object *obj, double *hscale, double *vscale)
 {
    Smart_Data *sd;
-   char *_e_smart_str;
+   char *_smart_str;
 
    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
 
@@ -567,14 +564,14 @@ eyesight_object_page_scale_get(Evas_Object *obj, double *hscale, double *vscale)
        if (vscale) *vscale = 1.0;
        return;
      }
-   _e_smart_str = (char *)evas_object_type_get(obj);
-   if (!_e_smart_str)
+   _smart_str = (char *)evas_object_type_get(obj);
+   if (!_smart_str)
      {
        if (hscale) *hscale = 1.0;
        if (vscale) *vscale = 1.0;
        return;
      }
-   if (strcmp(_e_smart_str, E_OBJ_NAME))
+   if (strcmp(_smart_str, E_OBJ_NAME))
      {
        if (hscale) *hscale = 1.0;
        if (vscale) *vscale = 1.0;
@@ -625,7 +622,7 @@ eyesight_object_page_size_get(Evas_Object *obj,
                               int *height)
 {
    Smart_Data *sd;
-   char *_e_smart_str;
+   char *_smart_str;
 
    E_SMART_OBJ_GET(sd, obj, E_OBJ_NAME);
 
@@ -642,14 +639,14 @@ eyesight_object_page_size_get(Evas_Object *obj,
        if (height) *height = 0;
        return;
      }
-   _e_smart_str = (char *)evas_object_type_get(obj);
-   if (!_e_smart_str)
+   _smart_str = (char *)evas_object_type_get(obj);
+   if (!_smart_str)
      {
        if (width) *width = 0;
        if (height) *height = 0;
        return;
      }
-   if (strcmp(_e_smart_str, E_OBJ_NAME))
+   if (strcmp(_smart_str, E_OBJ_NAME))
      {
        if (width) *width = 0;
        if (height) *height = 0;

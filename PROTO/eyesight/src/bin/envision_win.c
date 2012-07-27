@@ -49,5 +49,5 @@ env_win_title_set(Envision *envision)
   snprintf(buf, sizeof(buf) - 1, "Envision - %s (%d/%d)",
            str, envision->page_nbr + 1,
            eyesight_object_page_count(envision->obj));
-  elm_win_title_set(envision->win, buf);
+  elm_win_title_set(envision->gui.window, buf);
 }

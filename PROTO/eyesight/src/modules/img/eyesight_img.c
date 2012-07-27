@@ -37,6 +37,7 @@
 #define CRIT(...) EINA_LOG_DOM_CRIT(_eyesight_img_log_domain, __VA_ARGS__)
 
 
+static int _eyesight_img_count = 0;
 static int _eyesight_img_log_domain = -1;
 
 
@@ -679,21 +680,27 @@ module_open(Evas *evas, Evas_Object **obj, const Eyesight_Module **module, void 
    if (!module)
       return EINA_FALSE;
 
-   if (_eyesight_img_log_domain < 0)
+   if (_eyesight_img_count == 0)
      {
-        _eyesight_img_log_domain = eina_log_domain_register("eyesight-img", EINA_COLOR_LIGHTCYAN);
-        if (_eyesight_img_log_domain < 0)
-          {
-             EINA_LOG_CRIT("Could not register log domain 'eyesight-img'");
-             return EINA_FALSE;
-          }
+       if (_eyesight_img_log_domain < 0)
+         {
+           _eyesight_img_log_domain = eina_log_domain_register("eyesight-img", EINA_COLOR_LIGHTCYAN);
+           if (_eyesight_img_log_domain < 0)
+             {
+               EINA_LOG_CRIT("Could not register log domain 'eyesight-img'");
+               return EINA_FALSE;
+             }
+         }
      }
+
+   _eyesight_img_count++;
 
    if (!_eyesight_module_img.init(evas, obj, backend))
      {
         ERR("Could not initialize module");
         eina_log_domain_unregister(_eyesight_img_log_domain);
         _eyesight_img_log_domain = -1;
+        _eyesight_img_count--;
        return EINA_FALSE;
      }
 
@@ -704,8 +711,12 @@ module_open(Evas *evas, Evas_Object **obj, const Eyesight_Module **module, void 
 static void
 module_close(Eyesight_Module *module, void *backend)
 {
-   eina_log_domain_unregister(_eyesight_img_log_domain);
-   _eyesight_img_log_domain = -1;
+  _eyesight_img_count--;
+  if (_eyesight_img_count == 0)
+    {
+      eina_log_domain_unregister(_eyesight_img_log_domain);
+      _eyesight_img_log_domain = -1;
+    }
    _eyesight_module_img.shutdown(backend);
 }
 

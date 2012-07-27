@@ -117,6 +117,7 @@ fi
 ### Checks for compiler characteristics
 AM_PROG_CC_C_O
 AC_PROG_CXX_C_O
+EFL_ATTRIBUTE_UNUSED
 
 EFL_EYESIGHT_BUILD=""
 case "$host_os" in
