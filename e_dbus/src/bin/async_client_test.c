@@ -1,4 +1,8 @@
-#include <E_DBus.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "E_DBus.h"
 #include <Ecore.h>
 
 #define DBUS_NAME "com.profusion"

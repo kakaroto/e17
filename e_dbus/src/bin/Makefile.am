@@ -82,18 +82,18 @@ if BUILD_EDBUS_ASYNC_TEST
 e_dbus_async_server_test_SOURCES = async_server_test.c
 e_dbus_async_server_test_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
-@EDBUS_TEST_CLIENT_CFLAGS@
+@EDBUS_ASYNC_TEST_CFLAGS@
 e_dbus_async_server_test_LDADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \
-@EDBUS_TEST_CLIENT_LIBS@
+@EDBUS_ASYNC_TEST_LIBS@
 
 e_dbus_async_client_test_SOURCES = async_client_test.c
 e_dbus_async_client_test_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
-@EDBUS_TEST_CLIENT_CFLAGS@
+@EDBUS_ASYNC_TEST_CFLAGS@
 e_dbus_async_client_test_LDADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \
-@EDBUS_TEST_CLIENT_LIBS@
+@EDBUS_ASYNC_TEST_LIBS@
 endif
 
 if BUILD_EDBUS_BLUEZ_TEST
