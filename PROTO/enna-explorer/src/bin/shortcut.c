@@ -179,7 +179,7 @@ _bookmark_content_get(void *data, Evas_Object *obj, const char *part)
 
    ic = elm_icon_add(obj);
    elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
-   elm_icon_smooth_set(ic, EINA_FALSE);
+   elm_image_smooth_set(ic, EINA_FALSE);
    if (!strcmp(label, _("Music")))
      elm_icon_standard_set(ic, "folder-music");
    else if (!strcmp(label, _("Videos")))
