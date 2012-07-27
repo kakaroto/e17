@@ -15,9 +15,9 @@ EAPI E_Module_Api e_modapi =
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static const char *_gc_label(E_Gadcon_Client_Class *client_class);
-static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static const char *_gc_label(const E_Gadcon_Client_Class *client_class);
+static Evas_Object *_gc_icon(const E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char *_gc_id_new(const E_Gadcon_Client_Class *client_class);
 static const E_Gadcon_Client_Class _gadcon_class =
    {
       GADCON_CLIENT_CLASS_VERSION,
@@ -180,13 +180,13 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 }
    
 static const char *
-_gc_label(E_Gadcon_Client_Class *client_class)
+_gc_label(const E_Gadcon_Client_Class *client_class)
 {
    return D_("Alarm");
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
+_gc_icon(const E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
    char buf[4096];
@@ -199,7 +199,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 }
 
 static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
+_gc_id_new(const E_Gadcon_Client_Class *client_class)
 {
    return _gadcon_class.name;
 }
@@ -1123,7 +1123,7 @@ e_modapi_init(E_Module *m)
    
    alarm_config->module = m;
 
-   e_gadcon_provider_register((E_Gadcon_Client_Class *)&_gadcon_class);
+   e_gadcon_provider_register((const E_Gadcon_Client_Class *)&_gadcon_class);
 
    return alarm_config;
 }
@@ -1131,7 +1131,7 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   e_gadcon_provider_unregister((E_Gadcon_Client_Class *)&_gadcon_class);
+   e_gadcon_provider_unregister((const E_Gadcon_Client_Class *)&_gadcon_class);
    
    if (alarm_config->alarms)
      {

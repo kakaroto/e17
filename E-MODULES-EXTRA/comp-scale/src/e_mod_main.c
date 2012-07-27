@@ -10,13 +10,13 @@
 static E_Gadcon_Client *_gc_init_scale(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static E_Gadcon_Client *_gc_init_scale_all(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static E_Gadcon_Client *_gc_init_pager(E_Gadcon *gc, const char *name, const char *id, const char *style);
-static const char *_gc_label_scale(E_Gadcon_Client_Class *client_class);
-static const char *_gc_label_scale_all(E_Gadcon_Client_Class *client_class);
-static const char *_gc_label_pager(E_Gadcon_Client_Class *client_class);
+static const char *_gc_label_scale(const E_Gadcon_Client_Class *client_class);
+static const char *_gc_label_scale_all(const E_Gadcon_Client_Class *client_class);
+static const char *_gc_label_pager(const E_Gadcon_Client_Class *client_class);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
-static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char *_gc_id_new(const E_Gadcon_Client_Class *client_class);
+static Evas_Object *_gc_icon(const E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static void _scale_conf_new(void);
 static void _scale_conf_free(void);
@@ -498,25 +498,25 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 }
 
 static const char *
-_gc_label_scale(E_Gadcon_Client_Class *client_class)
+_gc_label_scale(const E_Gadcon_Client_Class *client_class)
 {
    return D_("Scale Windows");
 }
 
 static const char *
-_gc_label_scale_all(E_Gadcon_Client_Class *client_class)
+_gc_label_scale_all(const E_Gadcon_Client_Class *client_class)
 {
    return D_("Scale all Windows");
 }
 
 static const char *
-_gc_label_pager(E_Gadcon_Client_Class *client_class)
+_gc_label_pager(const E_Gadcon_Client_Class *client_class)
 {
    return D_("Scale Pager");
 }
 
 static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
+_gc_id_new(const E_Gadcon_Client_Class *client_class)
 {
    Config_Item *ci = NULL;
 
@@ -525,7 +525,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
+_gc_icon(const E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o = NULL;
 

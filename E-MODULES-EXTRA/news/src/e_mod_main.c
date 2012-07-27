@@ -18,9 +18,9 @@ EAPI E_Module_Api e_modapi =
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void             _gc_shutdown(E_Gadcon_Client *gcc);
 static void             _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static const char      *_gc_label(E_Gadcon_Client_Class *client_class);
-static Evas_Object     *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
-static const char      *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static const char      *_gc_label(const E_Gadcon_Client_Class *client_class);
+static Evas_Object     *_gc_icon(const E_Gadcon_Client_Class *client_class, Evas *evas);
+static const char      *_gc_id_new(const E_Gadcon_Client_Class *client_class);
 static const E_Gadcon_Client_Class _gadcon_class =
    {
       GADCON_CLIENT_CLASS_VERSION,
@@ -55,7 +55,7 @@ e_modapi_init(E_Module *m)
    if (!news_viewer_init()) E_MOD_INIT_FAIL(m, D_("Viewer init failed"));
    if (!news_popup_init()) E_MOD_INIT_FAIL(m, D_("Popup subsystem init failed"));
 
-   e_gadcon_provider_register((E_Gadcon_Client_Class *)&_gadcon_class);
+   e_gadcon_provider_register((const E_Gadcon_Client_Class *)&_gadcon_class);
 
    DMAIN(("Initialisation END"));
 
@@ -69,7 +69,7 @@ e_modapi_shutdown(E_Module *m)
 
    DMAIN(("Shutdown"));
 
-   e_gadcon_provider_unregister((E_Gadcon_Client_Class *)&_gadcon_class);
+   e_gadcon_provider_unregister((const E_Gadcon_Client_Class *)&_gadcon_class);
 
    if (news->config_dialog)
      news_config_dialog_hide();
@@ -214,13 +214,13 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 }
    
 static const char *
-_gc_label(E_Gadcon_Client_Class *client_class)
+_gc_label(const E_Gadcon_Client_Class *client_class)
 {
    return D_("News");
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
+_gc_icon(const E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
 
@@ -230,7 +230,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 }
 
 static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
+_gc_id_new(const E_Gadcon_Client_Class *client_class)
 {
    News_Config_Item *nic;
 
