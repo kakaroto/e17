@@ -45,7 +45,12 @@
   <td class='main'>
    <div class="main">
     <center>
-     <?php img("logo.png", "E"); ?>
+     <h3>EFL Developer Day</h3>
+     <p><b>
+     <a href=http://www.enlightenment.org/p.php?p=news/show&news_id=49>EFL Developer Day</a>
+     is happening, November 5, 2012 in Barcelona. Come join us!
+     </b></p>
+     <!-- <?php img("logo.png", "E"); ?> -->
      <?php blink("i/dl.png", "DOWNLOAD E", "download"); ?>
     </center>
    </div>
