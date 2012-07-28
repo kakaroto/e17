@@ -461,7 +461,7 @@ static void
 _em_do_thumb(const char *filename) 
 {
    Ecore_Evas *ee, *sub_ee;
-   Evas *evas, *sub_evas;
+   Evas *sub_evas;
    Evas_Object *tmp, *img;
    char *ext = NULL;
    char buf[PATH_MAX];
@@ -470,7 +470,6 @@ _em_do_thumb(const char *filename)
    if (!filename) return;
 
    ee = ecore_evas_buffer_new(1, 1);
-   evas = ecore_evas_get(ee);
 
    tmp = ecore_evas_object_image_new(ee);
    sub_ee = evas_object_data_get(tmp, "Ecore_Evas");
