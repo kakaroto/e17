@@ -2,10 +2,10 @@ Login: devilhorns
 IRC Nick: devilhorns
 Cloak: developer/devilhorns
 Name: Christopher Michael
-Location: New Jersey, USA
+Location: Sunbury-On-Thames, UK
 E-Mail: devilhorns@comcast.net
 WWW: http://home.comcast.net/~devilhorns
-Managing: General E patch monkey, emprint, emodules, illume2
+Managing: General E patch monkey, emprint, emodules, illume2, evas, ecore, elementary, E17, EFL Wayland
 Group: Core, Applications, Libraries
 Platform: Gentoo/Sabayon
-GeoData:      39.8063 -74.7862
+GeoData:      51.4039 -0.4129
