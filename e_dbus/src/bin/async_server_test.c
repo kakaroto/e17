@@ -2,8 +2,8 @@
 #include "config.h"
 #endif
 
-#include "E_DBus.h"
 #include <Ecore.h>
+#include "E_DBus.h"
 
 #define DBUS_NAME "com.profusion"
 #define OBJECT_PATH "/com/profusion/test"
