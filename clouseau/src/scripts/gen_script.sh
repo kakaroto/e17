@@ -7,7 +7,7 @@ then
 else
 # Start clouseau daemon (will start single instance), then run app
    clouseaud
-   LD_PRELOAD="$1/libclouseau.so" \$*
+   LD_PRELOAD="$1/libclouseau.so" "\$@"
 fi
 ENDOFMESSAGE
 
@@ -16,7 +16,7 @@ cat <<-ENDOFMESSAGE>clouseau
 if [ \$# -gt 0 ]
 then
    # Start clouseau daemon (will start single instance), then run app
-   clouseau_start \$* &
+   clouseau_start "\$@" &
 fi
 
 clouseau_client
