@@ -69,7 +69,6 @@ want_ehal="yes"
 want_enotify="yes"
 want_eofono="yes"
 want_eukit="yes"
-want_performance_test="yes"
 
 case "$host_os" in
    mingw*)
@@ -79,7 +78,6 @@ case "$host_os" in
       want_enotify="no"
       want_eofono="no"
       want_eukit="no"
-      want_performance_test="no"
       ;;
 esac
 
@@ -125,12 +123,6 @@ AC_ARG_ENABLE([eukit],
    [AC_HELP_STRING([--disable-eukit], [Disable eukit build])],
    [enable_eukit=$enableval],
    [enable_eukit="${want_eukit}"])
-
-AC_ARG_ENABLE([performance_test],
-   [AC_HELP_STRING([--disable-performance_test], [Disable performance build])],
-   [enable_performance_test=$enableval],
-   [enable_performance_test="${want_performance_test}"])
-
 
 ### Checks for programs
 
@@ -198,7 +190,6 @@ AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_EOFONO],   [test "x${enable_eofono}"   = "xyes"])
 AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
-AM_CONDITIONAL([BUILD_PERFORMANCE_TEST],    [test "x${enable_performance_test}"    = "xyes"])
 
 # Dependencies for the binaries
 
@@ -211,7 +202,7 @@ EFL_ENABLE_BIN([edbus-notify-send], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-notify-test], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-ofono-test], [${enable_eofono}])
 EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
-EFL_ENABLE_BIN([edbus-performance-test], [${enable_performance_test}])
+EFL_ENABLE_BIN([edbus-performance-test], ["yes"])
 EFL_ENABLE_BIN([edbus-async-test], ["yes"])
 
 if test "x${have_edbus_test}" = "xyes" ; then
