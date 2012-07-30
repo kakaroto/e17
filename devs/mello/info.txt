@@ -1,0 +1,7 @@
+Login:		mello
+IRC Nick:	mello
+Name:		Fábio Mello
+Location:	Campinas, SP, Brazil
+E-Mail:		mello@profusion.mobi
+Contributing:	elev8
+Platform:	Arch Linux
