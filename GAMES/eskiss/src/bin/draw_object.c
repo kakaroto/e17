@@ -44,7 +44,6 @@ static Evas *evas = NULL;
 
 //Buffer evas for new object creation
 static Ecore_Evas *ee_buffer = NULL;
-static Evas_Object *image_buffer = NULL;
 
 //private functions
 static void _add_point(int x, int y);
@@ -238,16 +237,15 @@ Evas_Object *draw_object_create(Evas *e, Eina_List *point_list, BrushColor color
         _find_bouding_box(point_list, iw / 2, &bx, &by, &bw, &bh);
 
         ee_buffer = ecore_evas_buffer_new(bw, bh);
-        image_buffer = ecore_evas_object_image_new(ee_buffer);
+	ecore_evas_alpha_set(ee_buffer, 1);
 
-        evas_object_move(image_buffer, 0, 0);
-        evas_object_resize(image_buffer, bw, bh);
-        evas_object_image_fill_set(image_buffer, 0, 0, bw, bh);
-        evas_object_image_size_set(image_buffer, bw, bh);
-        evas_object_show(image_buffer);
+        Evas *evas_im = ecore_evas_get(ee_buffer);
 
-        Ecore_Evas *ee_im = (Ecore_Evas *)evas_object_data_get(image_buffer, "Ecore_Evas");
-        Evas *evas_im = ecore_evas_get(ee_im);
+	Evas_Object *background = evas_object_rectangle_add(evas_im);;
+	evas_object_move(background, 0, 0); 
+	evas_object_resize(background, bw, bh); 
+	evas_object_color_set(background, 0, 0, 0, 0);
+	evas_object_show(background);
 
         //create clipper
         Evas_Object *color_clip = evas_object_rectangle_add(evas_im);
@@ -278,9 +276,6 @@ Evas_Object *draw_object_create(Evas *e, Eina_List *point_list, BrushColor color
                 evas_object_show(image);
         }
 
-        //ecore_evas_buffer_pixels_get(ee_buffer);
-        //evas_object_image_save(image_buffer, "tmp.png", NULL, NULL);
-
         //it's time to save our buffer image to a new one on the current Evas surface
         Evas_Object *image = evas_object_image_add(e);
 
@@ -292,7 +287,6 @@ Evas_Object *draw_object_create(Evas *e, Eina_List *point_list, BrushColor color
         evas_object_image_data_copy_set(image, (void *)ecore_evas_buffer_pixels_get(ee_buffer));
         evas_object_show(image);
 
-        evas_object_del(image_buffer);
         ecore_evas_free(ee_buffer);
 
         INF("New object added to Evas");
@@ -514,16 +508,9 @@ static void _mouse_up_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
                 oy = bg_height - oy;
 
                 ee_buffer = ecore_evas_buffer_new(bbox_w, bbox_h);
-                image_buffer = ecore_evas_object_image_new(ee_buffer);
+		ecore_evas_alpha_set(ee_buffer, 1);
 
-                evas_object_move(image_buffer, 0, 0);
-                evas_object_resize(image_buffer, bbox_w, bbox_h);
-                evas_object_image_fill_set(image_buffer, 0, 0, bbox_w, bbox_h);
-                evas_object_image_size_set(image_buffer, bbox_w, bbox_h);
-                evas_object_show(image_buffer);
-
-                Ecore_Evas *ee_im = (Ecore_Evas *)evas_object_data_get(image_buffer, "Ecore_Evas");
-                Evas *evas_im = ecore_evas_get(ee_im);
+                Evas *evas_im = ecore_evas_get(ee_buffer);
 
                 //create clipper
                 Evas_Object *color_clip = evas_object_rectangle_add(evas_im);
@@ -566,9 +553,6 @@ static void _mouse_up_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
                         path_list = eina_list_append(path_list, p);
                 }
 
-                //ecore_evas_buffer_pixels_get(ee_buffer);
-                //evas_object_image_save(image_buffer, "tmp.png", NULL, NULL);
-
                 //it's time to save our buffer image to a new one on the current Evas surface
                 Evas_Object *image = evas_object_image_add(evas);
 
@@ -580,7 +564,6 @@ static void _mouse_up_cb(void *data, Evas *evas, Evas_Object *obj, void *event_i
                 evas_object_image_data_copy_set(image, (void *)ecore_evas_buffer_pixels_get(ee_buffer));
                 evas_object_show(image);
 
-                evas_object_del(image_buffer);
                 ecore_evas_free(ee_buffer);
 
                 //hide clipper
