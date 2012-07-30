@@ -1131,4 +1131,108 @@ collections {
       } /* programs */
 
    } /* group "envision/thumbs" */
+
+  group {
+    name, "envision/vlist";
+    min, 32 32;
+
+    parts {
+
+      part {
+        name, "envision/vlist/list";
+        type, SWALLOW;
+        mouse_events, 1;
+        description {
+          state, "default" 0.0;
+          min, 32 32;
+          rel1 {
+            relative, -0.24 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            relative, 0.0 1.0;
+            offset, 5 0;
+          }
+        }
+        description {
+          state, "shown" 0.0;
+          min, 32 32;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            relative, 0.24 1.0;
+            offset, 0 0;
+          }
+        }
+      }
+
+      part {
+         name, "envision/vlist/event";
+         type, RECT;
+         mouse_events, 1;
+         description {
+            state, "default" 0.0;
+            rel1.to, "envision/vlist/list";
+            rel2.to, "envision/vlist/list";
+
+         }
+         description {
+            state, "hide" 0.0;
+            rel1.relative, 0.0 1.0;
+            rel2.relative, 0.0 1.0;
+         }
+      }
+
+    } // parts
+
+    programs {
+      program {
+        name, "button_in";
+        signal, "mouse,in";
+        source, "envision/vlist/event";
+        action, ACTION_STOP;
+        target, "ev_button_hide";
+        target, "button_show";
+        after, "ev_button_hide";
+      }
+      program {
+        name: "button_show";
+        action, STATE_SET "shown" 0.0;
+        transition, ACCELERATE 0.7;
+        target, "envision/vlist/list";
+      }
+      program {
+        name, "ev_button_hide";
+        in: 0.1 0;
+        action, STATE_SET "hide" 0.0;
+        target, "envision/vlist/event";
+        after: "button_show";
+      }
+      program {
+        name, "button_out";
+        signal, "mouse,out";
+        source, "envision/vlist/list";
+        action, ACTION_STOP;
+        target, "ev_button_show";
+        target, "button_hide";
+        after, "ev_button_show";
+      }
+      program {
+        name, "button_hide";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE 0.7;
+        target, "envision/vlist/list";
+      }
+      program {
+        name, "ev_button_show";
+        in: 0.1 0;
+        action, STATE_SET "default" 0.0;
+        target, "envision/vlist/event";
+        after, "button_hide";
+      }
+    } // programs
+
+  } /* group "envision/vlist" */
 }

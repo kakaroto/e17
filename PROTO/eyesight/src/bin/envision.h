@@ -17,7 +17,6 @@ struct _Envision
   struct {
     Evas_Object *window;
     Evas_Object *background;
-    Evas_Object *box;
     Evas_Object *scroller;
     Evas_Object *genlist;
   } gui;

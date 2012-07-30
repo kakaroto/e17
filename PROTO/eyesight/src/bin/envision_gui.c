@@ -88,18 +88,11 @@ env_gui_build(Envision *envision)
   /* FIXME: modify theme for bg ? */
   envision->gui.background = o;
 
-  o = elm_box_add(envision->gui.window);
-  elm_box_horizontal_set(o, EINA_TRUE);
-  evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  elm_win_resize_object_add(envision->gui.window, o);
-  evas_object_show(o);
-  envision->gui.box = o;
-
   o = elm_scroller_add(envision->gui.window);
   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
   elm_scroller_bounce_set(o, EINA_TRUE, EINA_TRUE);
-  elm_box_pack_end(envision->gui.box, o);
+  elm_win_resize_object_add(envision->gui.window, o);
   evas_object_show(o);
   envision->gui.scroller = o;
 
@@ -111,13 +104,14 @@ env_gui_genlist_build(Envision *envision)
 {
   Genlist_Item *items;
   Evas_Object *o;
+  Evas_Object *layout;
   int page_count;
   int i;
 
   o = elm_genlist_add(envision->gui.window);
   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-  elm_box_pack_start(envision->gui.box, o);
+  elm_win_resize_object_add(envision->gui.window, o);
   evas_object_show(o);
   envision->gui.genlist = o;
 
@@ -138,4 +132,15 @@ env_gui_genlist_build(Envision *envision)
                                               items + i, NULL,
                                               ELM_GENLIST_ITEM_NONE, _env_genlist_select_cb, items + i);
     }
+
+  o = elm_layout_add(envision->gui.window);
+  printf("theme : %s\n", PACKAGE_DATA_DIR "/themes/default.edj");
+  elm_layout_file_set(o, PACKAGE_DATA_DIR "/themes/default.edj", "envision/vlist");
+/*   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL); */
+  elm_win_resize_object_add(envision->gui.window, o);
+  evas_object_show(o);
+  layout = o;
+
+  elm_object_part_content_set(layout, "envision/vlist/list", envision->gui.genlist);
 }
