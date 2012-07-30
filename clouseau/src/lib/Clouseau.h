@@ -15,6 +15,7 @@ typedef struct _Clouseau_Evas_Text_Props Clouseau_Evas_Text_Props;
 typedef struct _Clouseau_Evas_Image_Props Clouseau_Evas_Image_Props;
 typedef struct _Clouseau_Elm_Props Clouseau_Elm_Props;
 typedef struct _Clouseau_Edje_Props Clouseau_Edje_Props;
+typedef struct _Clouseau_Evas_Map_Point_Props Clouseau_Evas_Map_Point_Props;
 
 typedef struct _Clouseau_Extra_Props Clouseau_Extra_Props;
 typedef struct _Clouseau_Object Clouseau_Object;
@@ -45,6 +46,11 @@ typedef enum
    CLOUSEAU_OBJ_TYPE_TEXTBLOCK
 } Clouseau_Object_Type;
 
+struct _Clouseau_Evas_Map_Point_Props
+{
+   Evas_Coord x, y, z;
+};
+
 struct _Clouseau_Evas_Props
 {
    const char *name;
@@ -61,6 +67,8 @@ struct _Clouseau_Evas_Props
    Eina_Bool is_clipper;
    Eina_Bool is_visible;
    Evas_Object_Pointer_Mode mode;
+   Clouseau_Evas_Map_Point_Props *points;
+   int points_count;
 };
 
 struct _Clouseau_Evas_Text_Props

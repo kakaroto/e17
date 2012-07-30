@@ -21,6 +21,7 @@ static Eet_Data_Descriptor *clouseau_highlight_edd = NULL;
 static Eet_Data_Descriptor *clouseau_bmp_req_edd = NULL;
 static Eet_Data_Descriptor *clouseau_variant_edd = NULL;
 static Eet_Data_Descriptor *clouseau_protocol_edd = NULL;
+static Eet_Data_Descriptor *clouseau_map_point_props_edd = NULL;
 
 void
 clouseau_lines_free(bmp_info_st *st)
@@ -467,6 +468,24 @@ _clouseau_textblock_desc_make(void)
 }
 
 static void
+_clouseau_map_point_props_desc_make(void)
+{
+   Eet_Data_Descriptor_Class eddc;
+
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc,
+         Clouseau_Evas_Map_Point_Props);
+
+   clouseau_map_point_props_edd = eet_data_descriptor_stream_new(&eddc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC(clouseau_map_point_props_edd,
+         Clouseau_Evas_Map_Point_Props, "x", x, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(clouseau_map_point_props_edd,
+         Clouseau_Evas_Map_Point_Props, "y", y, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(clouseau_map_point_props_edd,
+         Clouseau_Evas_Map_Point_Props, "z", z, EET_T_INT);
+}
+
+static void
 _clouseau_object_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
@@ -539,6 +558,11 @@ _clouseau_object_desc_make(void)
    _clouseau_image_desc_make();
    _clouseau_edje_desc_make();
    _clouseau_textblock_desc_make();
+
+   _clouseau_map_point_props_desc_make();
+   EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY(clouseau_object_edd, Clouseau_Object,
+         "evas_props.points", evas_props.points,
+         clouseau_map_point_props_edd);
 
    /* for union */
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Clouseau_Extra_Props);
@@ -635,6 +659,7 @@ clouseau_data_descriptors_shutdown(void)
    eet_data_descriptor_free(clouseau_edje_edd);
    eet_data_descriptor_free(clouseau_textblock_edd);
    eet_data_descriptor_free(clouseau_union_edd);
+   eet_data_descriptor_free(clouseau_map_point_props_edd);
 }
 
 static void *

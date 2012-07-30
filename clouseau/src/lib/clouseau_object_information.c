@@ -128,6 +128,9 @@ clouseau_object_information_free(Clouseau_Object *oinfo)
    eina_stringshare_del(oinfo->evas_props.name);
    eina_stringshare_del(oinfo->evas_props.bt);
 
+   if (oinfo->evas_props.points)
+     free(oinfo->evas_props.points);
+
    switch (oinfo->extra_props.type)
      {
       case CLOUSEAU_OBJ_TYPE_ELM:
@@ -167,6 +170,7 @@ clouseau_object_information_get(Clouseau_Tree_Item *treeit)
 {
    Clouseau_Object *oinfo;
    Evas_Object *obj = (void*) (uintptr_t) treeit->ptr;
+   const Evas_Map *map = NULL;
 
    if (!treeit->is_obj)
      return NULL;
@@ -201,6 +205,25 @@ clouseau_object_information_get(Clouseau_Tree_Item *treeit)
 
    oinfo->evas_props.is_clipper = !!evas_object_clipees_get(obj);
    oinfo->evas_props.bt = eina_stringshare_ref(evas_object_data_get(obj, ".clouseau.bt"));
+
+   map = evas_object_map_get(obj);
+   if (map)
+     {  /* Save map coords count info if object has map */
+        oinfo->evas_props.points_count = evas_map_count_get(map);
+        if (oinfo->evas_props.points_count)
+          {
+             int i;
+             Clouseau_Evas_Map_Point_Props *p;
+             oinfo->evas_props.points = calloc(oinfo->evas_props.points_count,
+                   sizeof(Clouseau_Evas_Map_Point_Props));
+
+             for(i = 0 ; i < oinfo->evas_props.points_count; i++)
+               {
+                  p = &oinfo->evas_props.points[i];
+                  evas_map_point_coord_get(map, i, &p->x, &p->y, &p->z);
+               }
+          }
+     }
 
    if (elm_widget_is(obj))
      {
@@ -494,6 +517,19 @@ clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *
                                       oinfo->evas_props.pass_events);
    _clouseau_information_bool_to_tree(main_tit, "Has clipees",
                                       oinfo->evas_props.is_clipper);
+
+   if (oinfo->evas_props.points_count)
+     {
+        main_tit = _clouseau_type_to_parent(&information_tree, "Evas Map");
+        Clouseau_Evas_Map_Point_Props *p;
+        for(i = 0 ; (int) i < oinfo->evas_props.points_count; i++)
+          {
+             p = &oinfo->evas_props.points[i];
+
+             snprintf(buf, sizeof(buf), "Coords: %d %d %d", p->x, p->y, p->z);
+             _clouseau_information_buffer_to_tree(main_tit, buf);
+          }
+     }
 
    main_tit = _clouseau_type_to_parent(&information_tree,
                                        _clouseau_type_to_string(oinfo->extra_props.type));
