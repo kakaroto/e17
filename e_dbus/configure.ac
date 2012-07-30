@@ -275,6 +275,8 @@ if test "x${have_edbus_performance_test}" = "xyes" ; then
       [have_edbus_performance_test="no"])
 fi
 
+AM_CONDITIONAL([BUILD_EDBUS_PERFORMANCE_TEST], [test "x${have_edbus_performance_test}" = "xyes"])
+
 if test "x${have_edbus_async_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_ASYNC_TEST],
       [ecore >= 1.6.99 dbus-1 >= 0.62],
