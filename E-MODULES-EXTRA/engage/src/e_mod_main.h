@@ -129,6 +129,7 @@ struct _Ng
   Config_Item     *cfg;
 
   E_Zone          *zone;
+  E_Shelf        *es;
 
   Evas_Object     *o_bg;
   Evas_Object     *o_frame;

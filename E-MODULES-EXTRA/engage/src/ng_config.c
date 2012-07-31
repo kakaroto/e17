@@ -373,6 +373,11 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      {
         if (ci->autohide == AUTOHIDE_NORMAL)
           ng->hide = EINA_TRUE;
+        if (ng->es)
+          {
+             ng->es->cfg->autohide = ng->cfg->autohide;
+             ng->es->cfg->overlap = (ng->cfg->autohide == AUTOHIDE_OVERLAP);
+          }
 	ng->hide_step = 0;
 	ng->hide_state = show;
 	ngi_reposition(ng);
