@@ -3,23 +3,23 @@
 # list of "apps" and "latest versions"
 $apps = array
   (
-   "enlightenment"        => "0.16.999.65643",
-   "eina"                 => "1.1.0",
-   "eet"                  => "1.5.0",
-   "evas"                 => "1.1.0",
-   "ecore"                => "1.1.0",
-   "embryo"               => "1.1.0",
-   "edje"                 => "1.1.0",
-   "eeze"                 => "1.1.0",
-   "e_dbus"               => "1.1.0",
-   "efreet"               => "1.1.0",
-   "expedite"             => "1.1.0",
-   "evas_generic_loaders" => "1.1.0",
+   "enlightenment"        => "0.16.999.74598",
+   "eina"                 => "1.2.0",
+   "eet"                  => "1.6.0",
+   "evas"                 => "1.2.0",
+   "ecore"                => "1.2.0",
+   "embryo"               => "1.2.0",
+   "edje"                 => "1.2.0",
+   "eeze"                 => "1.2.0",
+   "e_dbus"               => "1.2.0",
+   "efreet"               => "1.2.0",
+   "expedite"             => "1.2.0",
+   "evas_generic_loaders" => "1.2.0",
    "evil"                 => "1.0.0",
-   "elementary"           => "0.8.0.65643",
-   "eio"                  => "0.1.0.65643",
-   "ethumb"               => "0.1.1.65643",
-   "emotion"              => "0.2.0.65643"
+   "elementary"           => "1.0.0",
+   "eio"                  => "1.0.0",
+   "ethumb"               => "1.0.0",
+   "emotion"              => "1.0.0"
    );
 #############################################################################
 
@@ -73,6 +73,20 @@ for ($l = 0; $l <= $linecount; $l++)
 		break;
 	    }
 	}
+
+	$fh = fopen("/var/www/web/web/www/e17-updates", "a");
+	if ($fh)
+	{
+	    fwrite($fh, date("Y/m/d-H:i:s"));
+	    fwrite($fh, " ");
+	    fwrite($fh, get_ip());
+	    fwrite($fh, " ");
+	    fwrite($fh, $app);
+	    fwrite($fh, " ");
+	    fwrite($fh, $version);
+	    fwrite($fh, "\n");
+	    fclose($fh);
+	}	    
     }
     ########################################################################
     ############ update check request
