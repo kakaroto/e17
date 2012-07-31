@@ -575,7 +575,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @type v_bounce: bool
 
         """
-        elm_list_bounce_set(self.obj, h, v)
+        elm_scroller_bounce_set(self.obj, h, v)
 
     def bounce_get(self):
         """Get the bouncing behaviour of the internal scroller.
@@ -591,7 +591,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         """
         cdef Eina_Bool h, v
-        elm_list_bounce_get(self.obj, &h, &v)
+        elm_scroller_bounce_get(self.obj, &h, &v)
         return (h, v)
 
     property bounce:
@@ -605,7 +605,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """
         def __set__(self, value):
             h, v = value
-            elm_list_bounce_set(self.obj, h, v)
+            elm_scroller_bounce_set(self.obj, h, v)
 
     def scroller_policy_set(self, policy_h, policy_v):
         """Set the scrollbar policy.
@@ -625,7 +625,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         @type policy_v: Elm_Scroller_Policy
 
         """
-        elm_list_scroller_policy_set(self.obj, policy_h, policy_v)
+        elm_scroller_policy_set(self.obj, policy_h, policy_v)
 
     def scroller_policy_get(self):
         """Get the scrollbar visibility policy.
@@ -637,7 +637,7 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
 
         """
         cdef Elm_Scroller_Policy policy_h, policy_v
-        elm_list_scroller_policy_get(self.obj, &policy_h, &policy_v)
+        elm_scroller_policy_get(self.obj, &policy_h, &policy_v)
         return (policy_h, policy_v)
 
     property scroller_policy:
@@ -657,11 +657,11 @@ cdef public class List(Object) [object PyElementaryList, type PyElementaryList_T
         """
         def __set__(self, value):
             policy_h, policy_v = value
-            elm_list_scroller_policy_set(self.obj, policy_h, policy_v)
+            elm_scroller_policy_set(self.obj, policy_h, policy_v)
 
         def __get__(self):
             cdef Elm_Scroller_Policy policy_h, policy_v
-            elm_list_scroller_policy_get(self.obj, &policy_h, &policy_v)
+            elm_scroller_policy_get(self.obj, &policy_h, &policy_v)
             return (policy_h, policy_v)
 
     def item_append(self, label, evasObject icon = None,

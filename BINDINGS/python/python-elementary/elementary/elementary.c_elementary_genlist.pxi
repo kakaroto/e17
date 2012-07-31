@@ -569,11 +569,11 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
         return elm_genlist_mode_get(self.obj)
 
     def bounce_set(self, h_bounce, v_bounce):
-        elm_genlist_bounce_set(self.obj, bool(h_bounce), bool(v_bounce))
+        elm_scroller_bounce_set(self.obj, bool(h_bounce), bool(v_bounce))
 
     def bounce_get(self):
         cdef Eina_Bool h_bounce, v_bounce
-        elm_genlist_bounce_get(self.obj, &h_bounce, &v_bounce)
+        elm_scroller_bounce_get(self.obj, &h_bounce, &v_bounce)
         return (h_bounce, v_bounce)
 
     def item_append(self,
@@ -843,11 +843,11 @@ cdef public class Genlist(Object) [object PyElementaryGenlist, type PyElementary
             return _object_item_to_python(elm_genlist_last_item_get(self.obj))
 
     def scroller_policy_set(self, policy_h, policy_v):
-        elm_genlist_scroller_policy_set(self.obj, policy_h, policy_v)
+        elm_scroller_policy_set(self.obj, policy_h, policy_v)
 
     def scroller_policy_get(self):
         cdef Elm_Scroller_Policy policy_h, policy_v
-        elm_genlist_scroller_policy_get(self.obj, &policy_h, &policy_v)
+        elm_scroller_policy_get(self.obj, &policy_h, &policy_v)
         return (policy_h, policy_v)
 
     def realized_items_update(self):

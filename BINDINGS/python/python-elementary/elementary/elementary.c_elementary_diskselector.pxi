@@ -219,10 +219,10 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
         """
         def __set__(self, bounce):
             h_bounce, v_bounce = bounce
-            elm_diskselector_bounce_set(self.obj, h_bounce, v_bounce)
+            elm_scroller_bounce_set(self.obj, h_bounce, v_bounce)
         def __get__(self):
             cdef Eina_Bool h_bounce, v_bounce
-            elm_diskselector_bounce_get(self.obj, &h_bounce, &v_bounce)
+            elm_scroller_bounce_get(self.obj, &h_bounce, &v_bounce)
             return (h_bounce, v_bounce)
 
     property scroller_policy:
@@ -241,11 +241,11 @@ cdef public class Diskselector(Object) [object PyElementaryDiskselector, type Py
         """
         def __get__(self):
             cdef Elm_Scroller_Policy h_policy, v_policy
-            elm_diskselector_scroller_policy_get(self.obj, &h_policy, &v_policy)
+            elm_scroller_policy_get(self.obj, &h_policy, &v_policy)
             return (h_policy, v_policy)
         def __set__(self, policy):
             h_policy, v_policy = policy
-            elm_diskselector_scroller_policy_set(self.obj, h_policy, v_policy)
+            elm_scroller_policy_set(self.obj, h_policy, v_policy)
 
     def clear(self):
         """Remove all diskselector's items.

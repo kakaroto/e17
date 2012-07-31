@@ -220,10 +220,10 @@ cdef public class Photocam(Object) [object PyElementaryPhotocam, type PyElementa
         """
         def __set__(self, value):
             h_bounce, v_bounce = value
-            elm_photocam_bounce_set(self.obj, h_bounce, v_bounce)
+            elm_scroller_bounce_set(self.obj, h_bounce, v_bounce)
         def __get__(self):
             cdef Eina_Bool h_bounce, v_bounce
-            elm_photocam_bounce_get(self.obj, &h_bounce, &v_bounce)
+            elm_scroller_bounce_get(self.obj, &h_bounce, &v_bounce)
             return (h_bounce, v_bounce)
 
     property gesture_enabled:
