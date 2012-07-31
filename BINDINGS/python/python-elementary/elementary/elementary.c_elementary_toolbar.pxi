@@ -23,7 +23,7 @@ cdef class ToolbarItemState(object):
     cdef Elm_Toolbar_Item_State *obj
     cdef object params
 
-    def __init__(self, ToolbarItem it, icon = None, label = None, callback = None, *args, **kwargs):
+    def __init__(self, ObjectItem it, icon = None, label = None, callback = None, *args, **kwargs):
         cdef Evas_Smart_Cb cb = NULL
 
         if callback:
