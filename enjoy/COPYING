@@ -2,7 +2,7 @@
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
- Enjoyryone is permitted to copy and distribute verbatim copies
+ Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
 
@@ -53,9 +53,9 @@ facility is invoked), then you may convey a copy of the modified
 version:
 
    a) under this License, provided that you make a good faith effort to
-   ensure that, in the enjoynt an Application does not supply the
+   ensure that, in the event an Application does not supply the
    function or data, the facility still operates, and performs
-   whatenjoyr part of its purpose remains meaningful, or
+   whatever part of its purpose remains meaningful, or
 
    b) under the GNU GPL, with none of the additional permissions of
    this License applicable to that copy.
@@ -80,7 +80,7 @@ layouts and accessors, or small macros, inline functions and templates
 
   You may convey a Combined Work under terms of your choice that,
 taken together, effectively do not restrict modification of the
-portions of the Library contained in the Combined Work and renjoyrse
+portions of the Library contained in the Combined Work and reverse
 engineering for debugging such modifications, if you also do each of
 the following:
 
@@ -156,7 +156,7 @@ conditions either of that published version or of any later version
 published by the Free Software Foundation. If the Library as you
 received it does not specify a version number of the GNU Lesser
 General Public License, you may choose any version of the GNU Lesser
-General Public License enjoyr published by the Free Software Foundation.
+General Public License ever published by the Free Software Foundation.
 
   If the Library as you received it specifies that a proxy can decide
 whether future versions of the GNU Lesser General Public License shall
