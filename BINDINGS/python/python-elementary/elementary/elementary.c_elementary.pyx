@@ -316,9 +316,6 @@ def coords_finger_size_adjust(times_w, w, times_h, h):
     height = h
     elm_coords_finger_size_adjust(times_w, &width, times_h, &height)
 
-def need_ethumb():
-    elm_need_ethumb()
-
 cdef object _elm_widget_type_mapping
 
 _elm_widget_type_mapping = {}
