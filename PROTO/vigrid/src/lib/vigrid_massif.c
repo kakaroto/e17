@@ -8,21 +8,21 @@
 
 #define EXPECTED_STR(Line, Str)                         \
   if ((Line->length < strlen(Str) + 1) ||               \
-      strncmp(Str, Line->line.start, strlen(Str)))      \
+      strncmp(Str, Line->start, strlen(Str)))      \
       goto on_error;
 
 #define PUSH_STRINGSHARE(Line, Space)           \
-  eina_stringshare_add_length(Line->line.start + Space, Line->length - Space);
+  eina_stringshare_add_length(Line->start + Space, Line->length - Space);
 
 #define VIGRID_NUMBER_SEARCH "0123456789"
 
 static long long int
-_vigrid_int_get(Eina_File_Lines *line, unsigned long long *offset)
+_vigrid_int_get(Eina_File_Line *line, unsigned long long *offset)
 {
    long long int n = 0;
    const char *s;
 
-   for (s = line->line.start + *offset; s < line->line.end; s++)
+   for (s = line->start + *offset; s < line->end; s++)
      {
         const char *convert = VIGRID_NUMBER_SEARCH;
         const char *r;
@@ -30,7 +30,7 @@ _vigrid_int_get(Eina_File_Lines *line, unsigned long long *offset)
         r = strchr(convert, *s);
         if (!r)
           {
-             *offset = s - line->line.start;
+             *offset = s - line->start;
              return n;
           }
         n = n * 10 + (r - convert);
@@ -41,7 +41,7 @@ _vigrid_int_get(Eina_File_Lines *line, unsigned long long *offset)
 }
 
 static double
-_vigrid_double_get(Eina_File_Lines *line, unsigned long long *offset)
+_vigrid_double_get(Eina_File_Line *line, unsigned long long *offset)
 {
    long long int over = 0;
    long long int below = 0;
@@ -49,7 +49,7 @@ _vigrid_double_get(Eina_File_Lines *line, unsigned long long *offset)
    double r;
 
    over = _vigrid_int_get(line, offset);
-   if (*offset < line->length && line->line.start[*offset] == '.')
+   if (*offset < line->length && line->start[*offset] == '.')
      {
         unsigned long long saved = *offset;
 
@@ -64,12 +64,12 @@ _vigrid_double_get(Eina_File_Lines *line, unsigned long long *offset)
 }
 
 static long long int
-_vigrid_hex_get(Eina_File_Lines *line, unsigned long long *offset)
+_vigrid_hex_get(Eina_File_Line *line, unsigned long long *offset)
 {
    long long int n = 0;
    const char *s;
 
-   for (s = line->line.start + *offset; s < line->line.end; s++)
+   for (s = line->start + *offset; s < line->end; s++)
      {
         const char *convert = "0123456789ABCDEF";
         const char *r;
@@ -77,7 +77,7 @@ _vigrid_hex_get(Eina_File_Lines *line, unsigned long long *offset)
         r = strchr(convert, *s);
         if (!r)
           {
-             *offset = s - line->line.start;
+             *offset = s - line->start;
              return n;
           }
         n = (n << 4) + (r - convert);;
@@ -88,9 +88,9 @@ _vigrid_hex_get(Eina_File_Lines *line, unsigned long long *offset)
 }
 
 static Eina_Bool
-_vigrid_int_search(Eina_File_Lines *line, unsigned long long *offset)
+_vigrid_int_search(Eina_File_Line *line, unsigned long long *offset)
 {
-   while (strchr(VIGRID_NUMBER_SEARCH, line->line.start[*offset]) == NULL &&
+   while (strchr(VIGRID_NUMBER_SEARCH, line->start[*offset]) == NULL &&
           *offset < line->length)
      (*offset)++;
 
@@ -99,7 +99,7 @@ _vigrid_int_search(Eina_File_Lines *line, unsigned long long *offset)
 }
 
 static Eina_Bool
-_vigrid_massif_parse_top(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigrid_Massif_Snapshot *vs)
+_vigrid_massif_parse_top(Eina_File_Line *line, Vigrid_Massif_Line *l, Vigrid_Massif_Snapshot *vs)
 {
    unsigned long long offset = 1;
    /* look like 'n16: 1686831 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.' */
@@ -110,7 +110,7 @@ _vigrid_massif_parse_top(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigrid_Ma
    l->type = VIGRID_MASSIF_TOP;
    l->children = _vigrid_int_get(line, &offset);
    if (offset == line->length ||
-       line->line.start[offset] != ':')
+       line->start[offset] != ':')
      return EINA_FALSE;
 
    if (!_vigrid_int_search(line, &offset))
@@ -125,7 +125,7 @@ _vigrid_massif_parse_top(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigrid_Ma
 }
 
 static Eina_Bool
-_vigrid_massif_parse_children(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigrid_Massif_Line *parent,
+_vigrid_massif_parse_children(Eina_File_Line *line, Vigrid_Massif_Line *l, Vigrid_Massif_Line *parent,
                               unsigned long long start)
 {
    unsigned long long offset = start + 1;
@@ -144,7 +144,7 @@ _vigrid_massif_parse_children(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigr
 
    l->children = _vigrid_int_get(line, &offset);
    if (offset == line->length ||
-       line->line.start[offset] != ':')
+       line->start[offset] != ':')
      return EINA_FALSE;
 
    if (!_vigrid_int_search(line, &offset))
@@ -153,7 +153,7 @@ _vigrid_massif_parse_children(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigr
    l->mem_usage = _vigrid_int_get(line, &offset);
    if (offset == line->length) return EINA_FALSE;
 
-   if (!strncmp(" 0x", line->line.start + offset, 3))
+   if (!strncmp(" 0x", line->start + offset, 3))
      {
         const char *r;
 
@@ -168,7 +168,7 @@ _vigrid_massif_parse_children(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigr
 
         /* Special case when no symbol information */
         if (offset + 3 == line->length &&
-            !strncmp("???", line->line.start + offset, 3))
+            !strncmp("???", line->start + offset, 3))
           {
              l->u.detail.function = eina_stringshare_add("???");
              l->u.detail.file = eina_stringshare_add("???");
@@ -177,32 +177,32 @@ _vigrid_massif_parse_children(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigr
           }
 
         /* Lookup for function name */
-        r = memchr(line->line.start + offset, ' ', line->length - offset);
+        r = memchr(line->start + offset, ' ', line->length - offset);
         if (!r) return EINA_FALSE;
-        l->u.detail.function = eina_stringshare_add_length(line->line.start + offset,
-                                                           r - (line->line.start + offset));
-        offset += r - (line->line.start + offset);
+        l->u.detail.function = eina_stringshare_add_length(line->start + offset,
+                                                           r - (line->start + offset));
+        offset += r - (line->start + offset);
         if (offset + 2 >= line->length) return EINA_FALSE;
         offset += 2;
 
         /* Special case for library */
         if (offset + 3 < line->length &&
-            !strncmp("in ", line->line.start + offset, 3))
+            !strncmp("in ", line->start + offset, 3))
           {
              offset += 3;
 
-             l->u.detail.file = eina_stringshare_add_length(line->line.start + offset,
+             l->u.detail.file = eina_stringshare_add_length(line->start + offset,
                                                             line->length - offset - 1);
              l->u.detail.line = -1;
              goto end;
           }
 
         /* Lookup for file name */
-        r = memchr(line->line.start + offset, ':', line->length - offset);
+        r = memchr(line->start + offset, ':', line->length - offset);
         if (!r) return EINA_FALSE;
-        l->u.detail.file = eina_stringshare_add_length(line->line.start + offset,
-                                                       r - (line->line.start + offset));
-        offset += r - (line->line.start + offset);
+        l->u.detail.file = eina_stringshare_add_length(line->start + offset,
+                                                       r - (line->start + offset));
+        offset += r - (line->start + offset);
         if (offset + 1 >= line->length) return EINA_FALSE;
         offset += 1;
 
@@ -210,7 +210,7 @@ _vigrid_massif_parse_children(Eina_File_Lines *line, Vigrid_Massif_Line *l, Vigr
         l->u.detail.line = _vigrid_int_get(line, &offset);
         if (offset == line->length) return EINA_FALSE;
      }
-   else if (!strncmp(" in", line->line.start + offset, 3))
+   else if (!strncmp(" in", line->start + offset, 3))
      {
         offset += 3;
         l->type = VIGRID_MASSIF_BELOW;
@@ -275,7 +275,7 @@ vigrid_massif_free(const Vigrid_Massif *massif)
 EAPI const Vigrid_Massif *
 vigrid_massif_alloc(const char *file)
 {
-   Eina_File_Lines *line;
+   Eina_File_Line *line;
    Vigrid_Massif *ms = NULL;
    Vigrid_Massif_Snapshot *vs = NULL;
    Eina_Iterator *it = NULL;
@@ -298,7 +298,7 @@ vigrid_massif_alloc(const char *file)
      {
         if (line->length == 0) continue;
 
-        switch (line->line.start[0])
+        switch (line->start[0])
           {
            case '#':
               /* Basically comment so don't care */
@@ -339,11 +339,11 @@ vigrid_massif_alloc(const char *file)
                 {
                    EXPECTED_STR(line, "time_unit: ");
 
-                   switch (line->line.start[11])
+                   switch (line->start[11])
                      {
                       case 'i': ms->time = VIGRID_INSTRUCTIONS; break;
                       default:
-                         fprintf(stderr, "Unknown time unit '%c'\n", line->line.start[12]);
+                         fprintf(stderr, "Unknown time unit '%c'\n", line->start[12]);
                          break;
                      }
                    ms->description = PUSH_STRINGSHARE(line, 11);
@@ -373,7 +373,7 @@ vigrid_massif_alloc(const char *file)
                 if (!vs) goto on_error;
 
 #define LINE_MATCH(Line, Str, Out)                                      \
-                if (Line->length > strlen(Str) && !strncmp(Str, Line->line.start, strlen(Str))) \
+                if (Line->length > strlen(Str) && !strncmp(Str, Line->start, strlen(Str))) \
                   Out = strlen(Str);
 
                 LINE_MATCH(line, "mem_heap_B=", length)
@@ -406,7 +406,7 @@ vigrid_massif_alloc(const char *file)
                 EXPECTED_STR(line, "heap_tree=");
 
 #define LINE_MATCH(Line, Str)                                           \
-                (Line->length == strlen(Str) && !strncmp(Str, Line->line.start, strlen(Str))) \
+                (Line->length == strlen(Str) && !strncmp(Str, Line->start, strlen(Str))) \
 
                 if (LINE_MATCH(line, "heap_tree=detailed"))
                   vs->heap_tree = EINA_TRUE;
@@ -426,7 +426,7 @@ vigrid_massif_alloc(const char *file)
 
                 if (!vs) goto on_error;
 
-                for (s = line->line.start; s < line->line.end && *s == ' '; ++s)
+                for (s = line->start; s < line->end && *s == ' '; ++s)
                   i++;
 
                 if (*s != 'n') goto on_error;

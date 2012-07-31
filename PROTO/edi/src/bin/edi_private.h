@@ -37,7 +37,7 @@ struct _Edi_File
 
 struct _Edi_Line
 {
-   Eina_File_Lines read_only;
+   Eina_File_Line read_only;
 };
 
 #endif

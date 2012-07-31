@@ -345,7 +345,7 @@ _edi_file_open(const char *filename)
    Edi_File *ef;
    Eina_File *f;
    Eina_Iterator *it;
-   Eina_File_Lines *l;
+   Eina_File_Line *l;
    void *m;
 
    f = eina_file_open(filename, EINA_FALSE);
@@ -438,7 +438,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
         el = eina_list_data_get(l);
         l = eina_list_next(l);
 
-        while ((y < h) && (s < el->read_only.line.index))
+        while ((y < h) && (s < el->read_only.index))
           {
              cells = evas_object_textgrid_cellrow_get(txtgrid, y);
              for (x = 0; x < w; x++)
@@ -459,7 +459,7 @@ _edi_file_fill(Evas_Object *txtgrid, Edi_File *f)
              Eina_Unicode u;
 
              /* FIXME: there is an overrun to fix here */
-             u = eina_unicode_utf8_get_next(el->read_only.line.start, &idx);
+             u = eina_unicode_utf8_get_next(el->read_only.start, &idx);
              cells[x].codepoint = u;
              cells[x].bg = EDI_COLOR_BACKGROUND_DEFAULT;
              cells[x].fg = EDI_COLOR_FOREGROUND_DEFAULT;
@@ -505,7 +505,7 @@ _move_to(Evas_Object *tgrid, Edi_File *f, int step)
         l = eina_list_data_get(eina_list_last(f->lines));
         if (l)
           {
-             while ((step < 0) && ((f->offset - step) >= (l->read_only.line.index - line + 1)))
+             while ((step < 0) && ((f->offset - step) >= (l->read_only.index - line + 1)))
                step++;
           }
 
@@ -514,7 +514,7 @@ _move_to(Evas_Object *tgrid, Edi_File *f, int step)
              Edi_Line *l2;
 
              l2 = eina_list_data_get(f->current);
-             while (step && (l2->read_only.line.index != f->offset))
+             while (step && (l2->read_only.index != f->offset))
                {
                   step++;
                   f->offset++;
@@ -541,7 +541,7 @@ _move_to(Evas_Object *tgrid, Edi_File *f, int step)
              Edi_Line *l;
 
              l = eina_list_data_get(f->current);
-             while (step && l->read_only.line.index != f->offset)
+             while (step && l->read_only.index != f->offset)
                {
                   step--;
                   f->offset--;
