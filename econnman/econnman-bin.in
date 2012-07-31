@@ -1436,7 +1436,8 @@ if __name__ == "__main__":
         manager = dbus.Interface(bus.get_object("net.connman", "/"),
                                  "net.connman.Manager")
     except dbus.exceptions.DBusException:
-        popup_fatal(win, "Failed to find ConnMan")
+        popup_fatal(win, "Failed to find ConnMan",
+                    "Check if ConnMan is running.")
         elm.run()
         elm.shutdown()
         raise
