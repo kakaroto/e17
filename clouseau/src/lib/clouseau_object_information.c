@@ -520,7 +520,7 @@ clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *
 
    if (oinfo->evas_props.points_count)
      {
-        main_tit = _clouseau_type_to_parent(&information_tree, "Evas Map");
+        main_tit = _clouseau_type_to_parent(&main_tit->children, "Evas Map");
         Clouseau_Evas_Map_Point_Props *p;
         for(i = 0 ; (int) i < oinfo->evas_props.points_count; i++)
           {
