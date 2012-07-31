@@ -33,19 +33,11 @@ if test -z "$SSH_AGENT_PID" -a "$sshagent" -a "x$sshagent" != "xno"; then
   kill_sshagent=1
 fi
 
-# Use dbus-launch if installed.
-if test x"$DBUS_SESSION_BUS_ADDRESS" = x""; then
-  dbuslaunch=`which dbus-launch`
-  if test x"$dbuslaunch" != x"" -a x"$dbuslaunch" != x"no"; then
-    eval `$dbuslaunch --sh-syntax --exit-with-session`
-  fi
-fi
-
 # Start the window manager:
 if [ -z "$DESKTOP_SESSION" -a -x /usr/bin/ck-launch-session ]; then
-  exec ck-launch-session /usr/bin/enlightenment_start
+  exec ck-launch-session dbus-launch --exit-with-session /usr/bin/enlightenment_start
 else
-  exec /usr/bin/enlightenment_start
+  exec dbus-launch --exit-with-session /usr/bin/enlightenment_start
 fi
 
 if test $kill_sshagent -eq 1; then
