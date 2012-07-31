@@ -305,6 +305,19 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         """
         elm_scroller_page_relative_set(self.obj, h_pagerel, v_pagerel)
 
+    def page_relative_get(self):
+        """Get scroll page size relative to viewport size.
+        @see: L{page_relative_set()}
+
+        @return: A tuple with horizontal and vertical page size relative to
+        viewport size.
+        @rtype: (float, float)
+
+        """
+        cdef double h_pagerel, v_pagerel
+        elm_scroller_page_relative_get(self.obj, &h_pagerel, &v_pagerel)
+        return (h_pagerel, v_pagerel)
+
     property page_relative:
         """Set scroll page size relative to viewport size.
 
@@ -325,6 +338,11 @@ cdef public class Scroller(Object) [object PyElementaryScroller, type PyElementa
         def __set__(self, value):
             h_pagerel, v_pagerel = value
             elm_scroller_page_relative_set(self.obj, h_pagerel, v_pagerel)
+
+        def __get__(self):
+            cdef double h_pagerel, v_pagerel
+            elm_scroller_page_relative_get(self.obj, &h_pagerel, &v_pagerel)
+            return (h_pagerel, v_pagerel)
 
     def page_size_set(self, h_pagesize, v_pagesize):
         """Set scroll page size.
