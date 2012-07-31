@@ -575,14 +575,14 @@ cdef public class Naviframe(LayoutClass) [object PyElementaryNaviframe, type PyE
         self._callback_add("transition,finished", func, *args, **kwargs)
 
     def callback_transition_finished_del(self, func):
-        self._callback_add("transition,finished", func)
+        self._callback_del("transition,finished", func)
 
     def callback_title_clicked_add(self, func, *args, **kwargs):
         """User clicked title area."""
         self._callback_add("title,clicked", func, *args, **kwargs)
 
-    def callback_title_clicked_add(self, func):
-        self._callback_add("title,clicked", func)
+    def callback_title_clicked_del(self, func):
+        self._callback_del("title,clicked", func)
 
 _elm_widget_type_register("naviframe", Naviframe)
 
