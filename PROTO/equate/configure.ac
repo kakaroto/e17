@@ -29,7 +29,7 @@ PKG_PROG_PKG_CONFIG
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES([EQUATE], [elementary edje ecore-evas ecore evas >= 1.0.0])
+PKG_CHECK_MODULES([EQUATE], [elementary edje ecore-evas ecore ecore-input evas >= 1.0.0])
 
 
 ### Checks for compiler characteristics
