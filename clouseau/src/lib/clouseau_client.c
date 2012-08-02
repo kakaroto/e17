@@ -139,7 +139,7 @@ _load_list(void)
    return tree;  /* User has to call clouseau_tree_free() */
 }
 
-Eina_Bool
+static Eina_Bool
 _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *ev)
 {
    void *p;
@@ -159,7 +159,7 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    return ECORE_CALLBACK_RENEW;
 }
 
-Eina_Bool
+static Eina_Bool
 _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *ev)
 {
    if (!ev->server)
@@ -177,7 +177,7 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Del *e
    return ECORE_CALLBACK_RENEW;
 }
 
-Eina_Bool
+static Eina_Bool
 _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data *ev)
 {
    Variant_st *v;
@@ -295,7 +295,7 @@ _connect_to_daemon(void)
 /* Hook on the elm_init
  * We only do something here if we didn't already go into elm_init,
  * which probably means we are not using elm. */
-int
+EAPI int
 elm_init(int argc, char **argv)
 {
    int (*_elm_init)(int, char **) = dlsym(RTLD_NEXT, "elm_init");
@@ -312,7 +312,7 @@ elm_init(int argc, char **argv)
 /* Hook on the main loop
  * We only do something here if we didn't already go into elm_init,
  * which probably means we are not using elm. */
-void
+EAPI void
 ecore_main_loop_begin(void)
 {
    void (*_ecore_main_loop_begin)(void) =
@@ -344,7 +344,7 @@ ecore_main_loop_begin(void)
 #define EINA_LOCK_DEBUG_BT_NUM 64
 typedef void (*Eina_Lock_Bt_Func) ();
 
-Evas_Object *
+EAPI Evas_Object *
 evas_object_new(Evas *e)
 {
    Eina_Lock_Bt_Func lock_bt[EINA_LOCK_DEBUG_BT_NUM];
@@ -374,7 +374,7 @@ evas_object_new(Evas *e)
    return r;
 }
 
-void
+EAPI void
 evas_object_free(Evas_Object *obj, int clean_layer)
 {
    void (*_evas_object_free)(Evas_Object *obj, int clean_layer) = dlsym(RTLD_NEXT, "evas_object_free");
