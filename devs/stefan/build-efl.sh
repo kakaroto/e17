@@ -18,16 +18,15 @@ defapps="ethumb terminology e ephoto rage expedite"
 
 defpkgs="$defcore $defapps"
 
-# Evas fails to build on x86-64 due to this bug.
-# https://bugs.launchpad.net/ubuntu/+source/libgcrypt11/+bug/751142
-# Hack around it as follows as root:
-# cd /lib/x86_64-linux-gnu/ ; ln -s /usr/lib/x86_64-linux-gnu/libgcrypt.la .
-
 # fail on errors
 set -e
 #set -x
 
 #COMPILER="CC=/usr/bin/clang"
+
+export CFLAGS="-O2 -Wall -g -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="-fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed"
 
 do_scan_build()
 {
@@ -118,12 +117,6 @@ The default mode of build is simple build and install.
 EOF
 exit 0
 }
-
-# Try to show many, many warnings :).
-CFLAGS="-O2 -Wall -g -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections"
-CXXFLAGS=$CFLAGS
-LDFLAGS="-fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed"
-
 
 # how many CPUs?
 if [ -f /proc/cpuinfo ]
