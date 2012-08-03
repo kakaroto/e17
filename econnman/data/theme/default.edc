@@ -1,62 +1,32 @@
 collections {
 
-   group {
-      name: "elm/icon/connman-tech-connected/default";
-      max: 128 128;
-      min: 16 16;
-      parts {
-         part {
-            name: "icon";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.image: "connman-tech-connected.png" COMP;
-               image.normal: "connman-tech-connected.png";
-            }
-         }
-      }
+#define ICO(name_, file_) \
+   group {                                                              \
+      name: "elm/icon/"##name_"/default";                               \
+      max: 128 128;                                                     \
+      min: 16 16;                                                       \
+      parts {                                                           \
+         part {                                                         \
+            name: "icon";                                               \
+            type: IMAGE;                                                \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               aspect: 1.0 1.0;                                         \
+               aspect_preference: BOTH;                                 \
+               image.image: file_ COMP;                                 \
+               image.normal: file_;                                     \
+            }                                                           \
+         }                                                              \
+      }                                                                 \
    }
-   group {
-      name: "elm/icon/connman-tech-powered/default";
-      max: 128 128;
-      min: 16 16;
-      parts {
-         part {
-            name: "icon";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.image: "connman-tech-powered.png" COMP;
-               image.normal: "connman-tech-powered.png";
-            }
-         }
-      }
-   }
-   group {
-      name: "elm/icon/connman-tech-offline/default";
-      max: 128 128;
-      min: 16 16;
-      parts {
-         part {
-            name: "icon";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.image: "connman-tech-offline.png" COMP;
-               image.normal: "connman-tech-offline.png";
-            }
-         }
-      }
-   }
+
+ICO("connman-tech-connected", "connman-tech-connected.png");
+ICO("connman-tech-powered", "connman-tech-powered.png");
+ICO("connman-tech-offline", "connman-tech-offline.png");
+ICO("connman-connected", "connman-connected.png");
+ICO("connman-security", "connman-lock.png");
+ICO("connman-security-favorite", "connman-favorite.png");
 
    // quite close to e17 icon
 
@@ -68,25 +38,9 @@ collections {
    // and also the following message:
    //    id=1, type=MSG_INT, description=strength (0-100)
 
-   group {
-      name: "elm/icon/ethernet/default";
-      max: 128 128;
-      min: 16 16;
-      parts {
-         part {
-            name: "icon";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.image: "connman-ethernet.png" COMP;
-               image.normal: "connman-ethernet.png";
-            }
-         }
-      }
-   }
+ICO("cellular", "connman-cellular.png");
+ICO("bluetooth", "connman-bluetooth.png");
+ICO("ethernet", "connman-ethernet.png");
 
    group {
       name: "elm/icon/wifi/default";
@@ -98,7 +52,6 @@ collections {
          image: "connman-wifi-bad.png" COMP;
          image: "connman-lock.png" COMP;
          image: "connman-favorite.png" COMP;
-         image: "connman-connected.png" COMP;
       }
       script {
          public message(Msg_Type:type, id, ...) {
@@ -137,100 +90,7 @@ collections {
             }
          }
 
-         part {
-            name: "security";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.normal: "connman-lock.png";
-               visible: 0;
-            }
-            description {
-               state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-
-         part {
-            name: "favorite";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.normal: "connman-favorite.png";
-               visible: 0;
-            }
-            description {
-               state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-
-         part {
-            name: "connected";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               aspect: 1.0 1.0;
-               aspect_preference: BOTH;
-               image.normal: "connman-connected.png";
-               visible: 0;
-            }
-            description {
-               state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
-
          programs {
-            program {
-               signal: "elm,security,yes";
-               source: "elm";
-               action: STATE_SET "visible" 0.0;
-               target: "security";
-            }
-            program {
-               signal: "elm,security,none";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               target: "security";
-            }
-
-            program {
-               signal: "elm,favorite,yes";
-               source: "elm";
-               action: STATE_SET "visible" 0.0;
-               target: "favorite";
-            }
-            program {
-               signal: "elm,favorite,none";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               target: "favorite";
-            }
-
-            program {
-               signal: "elm,connected,yes";
-               source: "elm";
-               action: STATE_SET "visible" 0.0;
-               target: "connected";
-            }
-            program {
-               signal: "elm,connected,none";
-               source: "elm";
-               action: STATE_SET "default" 0.0;
-               target: "connected";
-            }
-
             program {
                name: "strength,good";
                action: STATE_SET "default" 0.0;

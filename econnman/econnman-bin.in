@@ -623,17 +623,6 @@ class ServicesList(object):
         return t.get("Name", item_data[len("/net/connman/service/"):])
 
     def _item_content_get(self, obj, part, item_data):
-        if part == "elm.swallow.end":
-            ic = elm.Icon(obj)
-            ic.standard = "arrow_right"
-            bt = elm.Button(obj)
-            bt.content = ic
-            bt.callback_clicked_add(self._item_disclosure, item_data)
-            bt.propagate_events = False
-            return bt
-
-        if part != "elm.swallow.icon":
-            return
         s = self.services.get(item_data)
         if not s:
             return None
@@ -645,10 +634,53 @@ class ServicesList(object):
         favorite = s.get("Favorite")
         roaming = s.get("Roaming")
         auto_connect = s.get("AutoConnect")
+        connected = (str(state) not in ("idle", "failure"))
+
+        if part == "elm.swallow.end":
+            bx = elm.Box(obj)
+            bx.horizontal = True
+            bx.homogeneous = True
+            bx.padding = (2, 0)
+            bx.align = (1.0, 0.5)
+
+            if connected:
+                ic = elm.Icon(obj)
+                ic.standard = "connman-connected"
+                ic.size_hint_min = ic.size_hint_max = (32, 32)
+                ic.show()
+                bx.pack_end(ic)
+
+            if security and favorite:
+                ic = elm.Icon(obj)
+                ic.standard = "connman-security-favorite"
+                ic.size_hint_min = ic.size_hint_max = (32, 32)
+                ic.show()
+                bx.pack_end(ic)
+            elif security:
+                ic = elm.Icon(obj)
+                ic.standard = "connman-security"
+                ic.size_hint_min = ic.size_hint_max = (32, 32)
+                ic.show()
+                bx.pack_end(ic)
+
+            ic = elm.Icon(obj)
+            ic.standard = "arrow_right"
+            bt = elm.Button(obj)
+            bt.content = ic
+            bt.callback_clicked_add(self._item_disclosure, item_data)
+            bt.propagate_events = False
+            bt.show()
+            bt.size_hint_min = bt.size_hint_max = (32, 32)
+
+            bx.pack_end(bt)
+            return bx
+
+        if part != "elm.swallow.icon":
+            return
 
         ly = elm.Layout(obj)
         ly.theme_set("icon", type, "default")
-        ly.size_hint_min_set(48, 48)
+        ly.size_hint_min_set(32, 32)
 
         def yesno(val):
             return ("no", "yes")[bool(val)]
@@ -661,8 +693,6 @@ class ServicesList(object):
         ly.signal_emit("elm,favorite," + yesno(favorite), "elm")
         ly.signal_emit("elm,roaming," + yesno(roaming), "elm")
         ly.signal_emit("elm,auto_connect," + yesno(auto_connect), "elm")
-
-        connected = (str(state) not in ("idle", "failure"))
         ly.signal_emit("elm,connected," + yesno(connected), "elm")
 
         for s in security:

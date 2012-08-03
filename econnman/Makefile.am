@@ -39,7 +39,10 @@ data/theme/connman-tech-offline.png \
 data/theme/connman-tech-powered.png \
 data/theme/connman-wifi-bad.png \
 data/theme/connman-wifi-good.png \
-data/theme/connman-wifi-medium.png
+data/theme/connman-wifi-medium.png \
+data/theme/connman-bluetooth.png \
+data/theme/connman-cellular.png
+
 
 themedir = $(pkgdatadir)/theme
 theme_DATA = data/theme/default.edj
