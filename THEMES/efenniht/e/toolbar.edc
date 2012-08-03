@@ -90,11 +90,6 @@ collections {
                rel1.offset: -16 0;
                rel2.offset: -16 -1;
             }
-            program { name: "sb_left";
-               signal: "mouse,down,1";
-               source: "left_arrow";
-               action: SIGNAL_EMIT "e,action,prev" "e";
-            }
          }
          BUTTON_ICON("left","arrow_left","left_arrow")
          part { name: "sep_right";
@@ -146,11 +141,6 @@ collections {
                rel1.offset: 15 0;
                rel2.offset: 15 -1;
             }
-            program { name: "sb_right";
-               signal: "mouse,down,1";
-               source: "right_arrow";
-               action: SIGNAL_EMIT "e,action,next" "e";
-            }
          }
          BUTTON_ICON("right","arrow_right","right_arrow")
          part { name: "e.dragable.hbar";
@@ -195,6 +185,46 @@ collections {
             target: "right_arrow";
             target: "sep_left";
             target: "sep_right";
+         }
+         program {
+            name: "sb_left";
+            signal: "mouse,down,1";
+            source: "left_arrow";
+            action: SIGNAL_EMIT "e,action,prev" "e";
+            after: "sb_left_repeat";
+         }
+         program {
+            name: "sb_left_repeat";
+            action: SIGNAL_EMIT "e,action,prev" "e";
+            in: 0.3 0.0;
+            after: "sb_left_repeat";
+         }
+         program {
+            name: "sb_left_repeat_stop";
+            signal: "mouse,up,1";
+            source: "left_arrow";
+            action: ACTION_STOP;
+            target: "sb_left_repeat";
+         }
+         program {
+            name: "sb_right";
+            signal: "mouse,down,1";
+            source: "right_arrow";
+            action: SIGNAL_EMIT "e,action,next" "e";
+            after: "sb_right_repeat";
+         }
+         program {
+            name: "sb_right_repeat";
+            action: SIGNAL_EMIT "e,action,next" "e";
+            in: 0.3 0.0;
+            after: "sb_right_repeat";
+         }
+         program {
+            name: "sb_right_repeat_stop";
+            signal: "mouse,up,1";
+            source: "right_arrow";
+            action: ACTION_STOP;
+            target: "sb_right_repeat";
          }
       }
    }
