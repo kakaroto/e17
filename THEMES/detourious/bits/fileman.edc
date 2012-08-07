@@ -534,6 +534,15 @@ group {
                rel2.to: "e.text.label";
             }
          }
+         part {
+            name: "e.swallow.entry";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "e.text.label";
+               rel2.to: "e.text.label";
+            }
+         }
 	}
 	programs {
          program {
@@ -587,6 +596,15 @@ group {
         rel2.to: "e.text.label";
      }
   }
+         part {
+            name: "e.swallow.entry";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "e.text.label";
+               rel2.to: "e.text.label";
+            }
+         }
 	}
 	programs {
          program {
@@ -699,6 +717,15 @@ group {
         rel2.to: "e.text.label";
      }
   }
+         part {
+            name: "e.swallow.entry";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "e.text.label";
+               rel2.to: "e.text.label";
+            }
+         }
 	}
 	programs {
          program {
@@ -808,6 +835,15 @@ group {
             description {
                state: "default" 0.0;
                color: 0 0 0 0;
+               rel1.to: "e.text.label";
+               rel2.to: "e.text.label";
+            }
+         }
+         part {
+            name: "e.swallow.entry";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
                rel1.to: "e.text.label";
                rel2.to: "e.text.label";
             }
