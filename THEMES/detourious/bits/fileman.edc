@@ -521,8 +521,27 @@ group {
 		LIST_DND_ACTION;
 		LIST_VOL_STATE;
 		EVENT_RECT;
+         part {
+            name: "label_event";
+            type: RECT;
+            mouse_events: 1;
+            repeat_events: 1;
+            ignore_flags: ON_HOLD;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "e.text.label";
+               rel2.to: "e.text.label";
+            }
+         }
 	}
 	programs {
+         program {
+            name: "label_click";
+            signal: "mouse,clicked,1";
+            source: "label_event";
+            action: SIGNAL_EMIT "e,action,label,click" "e";
+         }
 		FILEMAN_THUMB_PROGS;
 		FILEMAN_LIST_PROGS;
 		FILEMAN_DND_PROGS;
@@ -555,8 +574,27 @@ group {
 		LIST_DND_ACTION;
 		LIST_VOL_STATE;
 		EVENT_RECT;
+  part {
+     name: "label_event";
+     type: RECT;
+     mouse_events: 1;
+     repeat_events: 1;
+     ignore_flags: ON_HOLD;
+     description {
+        state: "default" 0.0;
+        color: 0 0 0 0;
+        rel1.to: "e.text.label";
+        rel2.to: "e.text.label";
+     }
+  }
 	}
 	programs {
+         program {
+            name: "label_click";
+            signal: "mouse,clicked,1";
+            source: "label_event";
+            action: SIGNAL_EMIT "e,action,label,click" "e";
+         }
 		FILEMAN_LIST_PROGS;
 		FILEMAN_THUMB_PROGS;
 		FILEMAN_DND_PROGS;
