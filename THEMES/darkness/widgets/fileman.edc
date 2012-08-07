@@ -1050,8 +1050,27 @@ group {
             color: 0 0 0 0;
          }
       }
+      part {
+         name: "label_event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
    }
    programs {
+      program {
+         name: "label_click";
+         signal: "mouse,clicked,1";
+         source: "label_event";
+         action: SIGNAL_EMIT "e,action,label,click" "e";
+      }
       program {
          name:    "go_active_pre";
          signal:  "e,state,selected";
@@ -1397,8 +1416,27 @@ group {
             color: 0 0 0 0;
          }
       }
+      part {
+         name: "label_event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
    }
    programs {
+      program {
+         name: "label_click";
+         signal: "mouse,clicked,1";
+         source: "label_event";
+         action: SIGNAL_EMIT "e,action,label,click" "e";
+      }
       program {
          name:    "go_active_pre";
          signal:  "e,state,selected";
@@ -1572,6 +1610,19 @@ group {
          }
       }
       part {
+         name: "label_event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
+      part {
          name: "e.swallow.entry";
          type: SWALLOW;
          description {
@@ -1582,6 +1633,12 @@ group {
       }
    }
    programs {
+      program {
+         name: "label_click";
+         signal: "mouse,clicked,1";
+         source: "label_event";
+         action: SIGNAL_EMIT "e,action,label,click" "e";
+      }
       program {
          name:   "active"; 
          signal: "e,state,selected"; 
@@ -1690,6 +1747,19 @@ group {
          }
       }
       part {
+         name: "label_event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.to: "e.text.label";
+            rel2.to: "e.text.label";
+         }
+      }
+      part {
          name: "e.swallow.entry";
          type: SWALLOW;
          description {
@@ -1700,6 +1770,12 @@ group {
       }
    }
    programs {
+      program {
+         name: "label_click";
+         signal: "mouse,clicked,1";
+         source: "label_event";
+         action: SIGNAL_EMIT "e,action,label,click" "e";
+      }
       program {
          name:   "active"; 
          signal: "e,state,selected"; 

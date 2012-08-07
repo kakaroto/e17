@@ -7,7 +7,7 @@ group {
          name: "entry_bg";
          description {
             state: "default" 0.0;
-            color: 0 0 0 160;
+            color: 0 0 0 255;
             rel1.offset: 1 1;
             rel2.offset: -2  -2;
             image {
@@ -19,7 +19,7 @@ group {
           description {
             state: "focus" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 210;
+            color: 255 255 255 255;
          }
       }
 
