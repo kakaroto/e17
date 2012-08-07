@@ -7,7 +7,7 @@ clean:
 	rm -f tailor stock *.o
 
 tailor: client.o serialisation.o
-	gcc ${LDFLAGS} -o tailor client.o serialisation.o
+	gcc client.o serialisation.o ${LDFLAGS} -o tailor
 
 stock: server.o serialisation.o
-	gcc ${LDFLAGS} -o stock server.o serialisation.o
+	gcc server.o serialisation.o ${LDFLAGS} -o stock
