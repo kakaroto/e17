@@ -1154,6 +1154,11 @@ misc.dock.starty = 0
 # May cause major slowdowns in certain setups
 misc.hints.set_xroot_info_on_root_window = 0
 
+# [bool] Logging destination (0: stdout, 1: stderr)
+misc.log.dest = 0
+# [bool] Show differential time in debug output
+misc.log.difftime = 0
+
 # [int] Move mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid, 5: translucent)
 misc.movres.mode_move = 0
 # [int] Resize mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid)
@@ -1255,8 +1260,6 @@ misc.autosave = 1
 misc.memory_paranoia = 1
 # [bool] Use save-unders when appropriate
 misc.save_under = 0
-# [bool] Show differential time in debug output
-misc.difftime = 0
 
 # [bool] Enable pagers
 pagers.enable = 1

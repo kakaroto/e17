@@ -200,6 +200,10 @@ typedef struct {
       char                set_xroot_info_on_root_window;
    } hints;
    struct {
+      char                dest;
+      char                difftime;
+   } log;
+   struct {
       int                 zoom_res;
    } magwin;
    struct {
@@ -322,7 +326,6 @@ typedef struct {
    char                autosave;
    char                memory_paranoia;
    char                save_under;
-   char                difftime;
 } EConf;
 
 typedef struct {

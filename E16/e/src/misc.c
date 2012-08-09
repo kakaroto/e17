@@ -193,16 +193,19 @@ _tvdiff(struct timeval *tvd, const struct timeval *tv1,
 void
 Eprintf(const char *fmt, ...)
 {
+   FILE               *fprt;
    va_list             args;
    struct timeval      tv;
 
    if (tv0.tv_sec == 0)
       gettimeofday(&tv0, NULL);
 
+   fprt = Conf.log.dest ? stderr : stdout;
+
    gettimeofday(&tv, NULL);
    _tvdiff(&tv, &tv0, &tv);
 
-   if (Conf.difftime)
+   if (Conf.log.difftime)
      {
 	static struct timeval tv1 = { 0, 0 };
 	struct timeval      tvd;
@@ -212,17 +215,17 @@ Eprintf(const char *fmt, ...)
 	tv1 = tv;
 
 	nreq = (disp) ? NextRequest(disp) : 0;
-	fprintf(stdout, "[%d] %#8lx %4ld.%06ld [%3ld.%06ld]: ", getpid(), nreq,
+	fprintf(fprt, "[%d] %#8lx %4ld.%06ld [%3ld.%06ld]: ", getpid(), nreq,
 		(long)tv1.tv_sec, tv1.tv_usec, (long)tvd.tv_sec, tvd.tv_usec);
      }
    else
      {
-	fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(),
+	fprintf(fprt, "[%d] %4ld.%06ld: ", getpid(),
 		(long)tv.tv_sec, tv.tv_usec);
      }
 
    va_start(args, fmt);
-   vfprintf(stdout, fmt, args);
+   vfprintf(fprt, fmt, args);
    va_end(args);
 }
 

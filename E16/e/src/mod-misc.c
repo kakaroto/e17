@@ -150,6 +150,9 @@ static const CfgItem MiscCfgItems[] = {
 
    CFG_ITEM_BOOL(Conf, hints.set_xroot_info_on_root_window, 0),
 
+   CFG_ITEM_BOOL(Conf, log.difftime, 0),
+   CFG_ITEM_BOOL(Conf, log.dest, 0),
+
    CFG_ITEM_INT(Conf, magwin.zoom_res, 4),
 
    CFG_ITEM_INT(Conf, movres.mode_move, MR_OPAQUE),
@@ -215,7 +218,6 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, autosave, 1),
    CFG_ITEM_BOOL(Conf, memory_paranoia, 1),
    CFG_ITEM_BOOL(Conf, save_under, 0),
-   CFG_ITEM_BOOL(Conf, difftime, 0),
 };
 #define N_CFG_ITEMS ((int)(sizeof(MiscCfgItems)/sizeof(CfgItem)))
 
