@@ -1,0 +1,8 @@
+#: e_mod_main.c:85 e_mod_main.c:120
+msgid "Illume Winlist"
+msgstr ""
+
+#: e_mod_main.c:105
+#, c-format
+msgid "%s.%d"
+msgstr ""

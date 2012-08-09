@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Bodhi Shutdown
+Icon=e-module-bodhi-shutdown
+X-Enlightenment-ModuleType=core
+Comment=Gadget to provide quick access to the Shutdown menu.

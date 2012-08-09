@@ -1,0 +1,1 @@
+xgettext -a -o my-strings --omit-header *.c *.h
