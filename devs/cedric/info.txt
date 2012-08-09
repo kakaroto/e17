@@ -2,11 +2,11 @@ Login:		cedric
 IRC Nick:	cedric
 Cloak:          developer/cedric
 Name:		Cedric BAIL
-Location:	Paris, France
+Location:	Suwon, Korea
 E-Mail:		cedric.bail@free.fr
 WWW:		none
 Managing:	eina, eet, evas, edje, ecore, eio, emotion
 Contributing:	expedite, e, ephoto, eyelight, efreet
 Group:		Core, Libraries, Applications
-Platform:	Ubuntu (Linux), Buildroot (Linux)
+Platform:	Ubuntu, Arch (Linux), Buildroot (Linux)
 GeoData:	37.261707, 127.040264
