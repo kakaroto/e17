@@ -38,4 +38,10 @@ src/bin/Makefile.in
 src/bin/exquisite
 src/bin/exquisite-write
 stamp-h1
-
+compile
+exquisite.pc
+src/bin/.libs/
+src/lib/.deps/
+src/lib/.libs/
+src/lib/libexquisite.la
+src/lib/libexquisite_la-exquisite.lo
