@@ -27,7 +27,8 @@ export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage E-MODULES-EXTRA/everything-shotgun"
 export BUILD_ETC="terminology exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/efx PROTO/eyesight"
 export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
-export BUILD_ETC2="excessive enki ecrire espionnage evas_generic_loaders"
+export BUILD_ETC2="excessive enki espionnage evas_generic_loaders"
+export BUILD_WITH_CMAKE="ecrire"
 
 PWD=`pwd`
 LOG_WARN_FILE=$PWD"/warnings.txt"
@@ -56,6 +57,25 @@ function build()
 	done
 }
 
+function build_cmake()
+{
+	build_dir=$1
+	for I in $build_dir; do
+	pushd $I
+		echo "============ "$I" ============"
+		echo "" >> $LOG_WARN_FILE
+		echo "["$I"]" >> $LOG_WARN_FILE
+		mkdir build -p
+		pushd build
+			cmake ..
+			make 2>> $LOG_WARN_FILE 
+			sudo make install
+		popd
+		sudo ldconfig
+	popd
+	done
+}
+
 function uninstall()
 {
 	build_dir=$1
@@ -73,6 +93,7 @@ build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
 #build "$BUILD_CPP_BINDINGS"
 build "$BUILD_E_MODULES $BUILD_ETC $BUILD_EXAMPLE "
 #build "$BUILD_ETC2"
+build_cmake "$BUILD_WITH_CMAKE"
 
 #efenniht theme
 echo ""
