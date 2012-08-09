@@ -16,7 +16,7 @@ export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra" # -Wshadow"
 export CC="ccache gcc"
 alias make='make -j6'
 
-export BUILD_E_OPTION="eeze"
+export BUILD_E_OPTION="eeze ephysics"
 export BUILD_ETHUMB_OPTION="PROTO/epdf"
 export BUILD_ELM_OPTION="PROTO/emap"
 export BUILD_BASIC1="eina eet"
@@ -25,7 +25,7 @@ export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python
 export BUILD_CPP_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/edjexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage E-MODULES-EXTRA/everything-shotgun"
-export BUILD_ETC="terminology ephysics exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/efx PROTO/eyesight"
+export BUILD_ETC="terminology exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/efx PROTO/eyesight"
 export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
 export BUILD_ETC2="excessive enki ecrire espionnage evas_generic_loaders"
 
@@ -53,6 +53,16 @@ function build()
 
 		#ctags -h ".h.x.cpp.c" -R
   	popd
+	done
+}
+
+function uninstall()
+{
+	build_dir=$1
+	for I in $build_dir; do
+	pushd $I
+		sudo make uninstall
+	popd
 	done
 }
 
