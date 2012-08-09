@@ -1034,9 +1034,6 @@ ECompMgrWinFadeIn(EObj * eo)
    Eprintf("%s %#lx: %u/%u, %#x %#x->%#x\n", __func__, EobjGetXwin(eo),
 	   eo->fading, cw->fadeout, eo->opacity, 0x10000000, cw->opacity);
 #endif
-   if (eo->fading)
-      ECompMgrWinFadeEnd(eo, 0);
-
    ECompMgrWinFade(eo, 0x10000000, eo->opacity);
 }
 
