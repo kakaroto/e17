@@ -36,6 +36,92 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, on_animate);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_click);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, on_key_down);
 
+static Handle<Value> ContentSet(Local<String> item, Local<Value> value, const AccessorInfo& info)
+{
+   HandleScope scope;
+   Local<Object> obj = info.This()->ToObject();
+   Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
+   Handle<Value> realized = CElmObject::Realise(value, parent);
+
+   if (CElmObject::HasInstance(realized))
+     elm_object_part_content_set(GetEvasObjectFromJavascript(parent),
+                                 *String::Utf8Value(item),
+                                 GetEvasObjectFromJavascript(realized));
+   else if (realized->IsString())
+     elm_object_part_text_set(GetEvasObjectFromJavascript(parent),
+                              *String::Utf8Value(item),
+                              *String::Utf8Value(realized));
+
+   info.This()->ForceSet(item, realized);
+   return value;
+}
+
+static Handle<Value> ContentGet(Local<String>, const AccessorInfo&)
+{
+   return Handle<Value>();
+}
+
+static Handle<Boolean> ContentDel(Local<String> item, const AccessorInfo& info)
+{
+   HandleScope scope;
+   Local<Object> obj = info.This()->ToObject();
+   Local<Value> parent = obj->GetHiddenValue(String::NewSymbol("elm::parent"));
+   Local<Value> value = obj->Get(item);
+
+   if (value->IsUndefined())
+     return Boolean::New(true);
+
+   if (CElmObject::HasInstance(value))
+     {
+        elm_object_part_content_unset(GetEvasObjectFromJavascript(parent),
+                                      *String::Utf8Value(item));
+        delete CElmObject::GetObjectFromJavascript(value);
+     }
+   else if (value->IsString())
+     {
+        elm_object_part_text_set(GetEvasObjectFromJavascript(parent),
+                                 *String::Utf8Value(item), "");
+     }
+
+   info.This()->ForceDelete(item);
+   return Boolean::New(true);
+}
+
+static Handle<Value> Callback_content_get(Local<String>, const AccessorInfo &info)
+{
+   return info.This()->GetHiddenValue(String::NewSymbol("elm::content"));
+}
+
+static void Callback_content_set(Local<String>, Local<Value> value, const AccessorInfo &info)
+{
+   HandleScope scope;
+   static Persistent<FunctionTemplate> tmpl;
+
+   if (!value->IsObject())
+     return;
+
+   if (tmpl.IsEmpty())
+     {
+         tmpl = Persistent<FunctionTemplate>::New(FunctionTemplate::New());
+         tmpl->SetClassName(String::NewSymbol("Content"));
+         Local<ObjectTemplate> proto = tmpl->PrototypeTemplate();
+         proto->SetNamedPropertyHandler(ContentGet, ContentSet, NULL, ContentDel);
+     }
+
+   Handle<Object> content = tmpl->PrototypeTemplate()->NewInstance();
+   content->SetHiddenValue(String::NewSymbol("elm::parent"), info.This());
+   info.This()->SetHiddenValue(String::NewSymbol("elm::content"), content);
+
+   Local<Object> obj = value->ToObject();
+   Local<Array> props = obj->GetOwnPropertyNames();
+
+   for (unsigned int i = 0; i < props->Length(); i++)
+     {
+        Local<Value> key = props->Get(i);
+        content->Set(key, obj->Get(key));
+     }
+}
+
 static Handle<Value> Callback_elements_get(Local<String>, const AccessorInfo &info)
 {
    HandleScope scope;
@@ -166,6 +252,7 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(on_click),
                       PROPERTY(on_key_down),
                       PROPERTY(elements),
+                      PROPERTY(content),
                       NULL);
 
    return tmpl;
