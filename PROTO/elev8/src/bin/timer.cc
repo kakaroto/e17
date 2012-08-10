@@ -18,6 +18,9 @@ static void clearInterval(Handle<Value> val);
 
 class Timer {
 public:
+   Eina_Bool repeat;
+   Eina_Bool on_interval;
+
    Timer(double interval_, Handle<Value> callback_, bool repeat_, const Local<Object>& thisObj_) {
       obj = Persistent<Object>::New(Object::New());
       obj->SetHiddenValue(String::NewSymbol("elev8::timer"), External::Wrap(this));
@@ -45,7 +48,6 @@ private:
    Ecore_Timer *timer;
    Persistent<Object> thisObj;
    Persistent<Value> callback;
-   Eina_Bool repeat;
 
    static Persistent<FunctionTemplate> tmpl;
 
@@ -54,14 +56,14 @@ private:
       HandleScope scope;
       Timer *t = static_cast<Timer *>(data);
       Handle<Function> func(Function::Cast(*t->callback));
-      Handle<Value> obj = t->obj;
-      Eina_Bool repeat = t->repeat;
+      t->on_interval = true;
       func->Call(t->thisObj, 0, NULL);
+      t->on_interval = false;
 
-      if (repeat)
+      if (t->repeat)
         return ECORE_CALLBACK_RENEW;
 
-      clearInterval(obj);
+      clearInterval(t->ToObject());
       return ECORE_CALLBACK_CANCEL;
    }
 };
@@ -69,9 +71,20 @@ private:
 static void clearInterval(Handle<Value> val)
 {
    HandleScope scope;
-   val = val->ToObject()->GetHiddenValue(String::NewSymbol("elev8::timer"));
-   if (val.IsEmpty()) return;
-   delete static_cast<Timer *>(External::Unwrap(val));
+
+   if (!val->IsObject())
+     return;
+
+   Local<Value> timer = val->ToObject()->GetHiddenValue(String::NewSymbol("elev8::timer"));
+
+   if (timer.IsEmpty())
+     return;
+
+   Timer *t = static_cast<Timer *>(External::Unwrap(timer));
+   t->repeat = false;
+
+   if (!t->on_interval)
+     delete t;
 }
 
 static Handle<Value> New(const Arguments& args, bool repeat)
