@@ -17,6 +17,7 @@ protected:
    static Handle<FunctionTemplate> GetTemplate();
 
    struct {
+      Persistent<Value> on_activate;
       Persistent<Value> on_change;
    } cb;
 
@@ -27,6 +28,11 @@ protected:
 
 public:
    static void Initialize(Handle<Object> val);
+
+   Handle<Value> on_activate_get() const;
+   void on_activate_set(Handle<Value> value);
+   static void OnActivateWrapper(void *data, Evas_Object *, void *);
+   void OnActivate();
 
    Handle<Value> on_change_get() const;
    void on_change_set(Handle<Value> value);

@@ -10,6 +10,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmEntry, editable);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, line_wrap);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, scrollable);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, single_line);
+GENERATE_PROPERTY_CALLBACKS(CElmEntry, on_activate);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, on_change);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, entry);
 GENERATE_PROPERTY_CALLBACKS(CElmEntry, cursor_pos);
@@ -70,6 +71,7 @@ GENERATE_TEMPLATE(CElmEntry,
                   PROPERTY(line_wrap),
                   PROPERTY(scrollable),
                   PROPERTY(single_line),
+                  PROPERTY(on_activate),
                   PROPERTY(on_change),
                   PROPERTY(entry),
                   PROPERTY(cursor_pos),
@@ -131,6 +133,7 @@ CElmEntry::CElmEntry(Local<Object> _jsObject, CElmObject *parent)
 
 CElmEntry::~CElmEntry()
 {
+   on_activate_set(Undefined());
    on_change_set(Undefined());
    icon_visible.Dispose();
    end_visible.Dispose();
@@ -142,6 +145,39 @@ void CElmEntry::Initialize(Handle<Object> target)
 {
    target->Set(String::NewSymbol("Entry"),
                GetTemplate()->GetFunction());
+}
+
+void CElmEntry::on_activate_set(Handle<Value> val)
+{
+   if (!cb.on_activate.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "activated", &OnActivateWrapper);
+        cb.on_activate.Dispose();
+        cb.on_activate.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.on_activate = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "activated", &OnActivateWrapper, this);
+}
+
+Handle<Value> CElmEntry::on_activate_get() const
+{
+   return cb.on_activate;
+}
+
+void CElmEntry::OnActivate()
+{
+   Handle<Function> callback(Function::Cast(*cb.on_activate));
+   Handle<Value> args[1] = { entry_get() };
+   callback->Call(jsObject, 1, args);
+}
+
+void CElmEntry::OnActivateWrapper(void *data, Evas_Object *, void *)
+{
+   static_cast<CElmEntry *>(data)->OnActivate();
 }
 
 void CElmEntry::on_change_set(Handle<Value> val)
