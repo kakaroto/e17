@@ -68,6 +68,7 @@ var examples = new Array(
     ["stock","Stock Example"],
     ["table","Table Example"],
     ["thumb","Thumb Example"],
+    ["timer","Timer Example"],
     ["toolbar","Toolbar Example"]
     );
 

@@ -1,22 +1,67 @@
+#!/usr/local/bin/elev8
+
+var EXPAND_BOTH = { x : 1.0, y : 1.0 };
+var FILL_BOTH = { x : -1.0, y : -1.0 };
+var item_count = 0;
+
+function logEvent(info) {
+  var list = win.elements.box.elements.list;
+  list.elements[item_count] = {
+    data: info,
+    class: default_class,
+  };
+  item_count++;
+}
+
+var default_class = {
+   text: function(part) {
+      return this.data;
+   },
+};
+
+var win = elm.realise(elm.Window({
+    title : "Timer",
+    width : 320,
+    height : 530,
+    elements : {
+        background: elm.Background({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+        }),
+        box: elm.Box({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+            elements: {
+                list: elm.Genlist({
+                    weight: EXPAND_BOTH,
+                    align: FILL_BOTH,
+                    elements: {},
+                }),
+            }
+        })
+    },
+}));
+
 es = setInterval(function() {
-   print("Every Second");
+   logEvent("Every Second");
 }, 1000);
 
-setInterval(function() {
-   print("Every 2 Seconds");
+e2s = setInterval(function() {
+   logEvent("Every 2 Seconds");
 }, 2000);
 
 setTimeout(function() {
-   print("Stop 'Every Second' timer");
+   logEvent("Stop 'Every Second' timer");
    clearInterval(es);
 }, 5000);
 
 setTimeout(function() {
-   print("Say Goodbye!");
+   logEvent("Say Goodbye!");
 }, 9000);
 
 setTimeout(function() {
-   print("Goodbye!");
-   elm.exit();
+   logEvent("Goodbye!");
+   clearInterval(e2s);
 }, 11000);
-
