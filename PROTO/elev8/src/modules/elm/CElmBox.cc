@@ -39,7 +39,7 @@ Handle<Value> CElmBox::homogeneous_get() const
    return Boolean::New(elm_box_homogeneous_get(eo));
 }
 
-Handle<Value> CElmBox::Pack(Handle<Value> obj, Handle<Value>)
+Handle<Value> CElmBox::Pack(Handle<Value> obj, Handle<Value> replace)
 {
    Local<Value> before = obj->ToObject()->Get(String::NewSymbol("before"));
 
@@ -61,8 +61,20 @@ Handle<Value> CElmBox::Pack(Handle<Value> obj, Handle<Value>)
 
 Handle<Value> CElmBox::Unpack(Handle<Value> obj)
 {
+   Handle<Object> replace = Object::New();
+   Eina_List *list = elm_box_children_get(eo);
+   Eina_List *l = eina_list_data_find_list(list, GetEvasObjectFromJavascript(obj));
+   if ((l = eina_list_next(l)))
+     {
+        Evas_Object *_eo = (Evas_Object *)eina_list_data_get(l);
+        CElmObject *before = static_cast<CElmObject *>(evas_object_data_get(_eo, "this"));
+
+        if (before)
+          replace->Set(String::NewSymbol("before"), before->GetJSObject());
+     }
+   eina_list_free(list);
    delete GetObjectFromJavascript(obj);
-   return obj;
+   return replace;
 }
 
 void CElmBox::Initialize(Handle<Object> target)

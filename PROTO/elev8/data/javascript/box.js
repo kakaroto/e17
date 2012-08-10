@@ -51,6 +51,15 @@ var win = elm.realise(elm.Window({
                   icon_count++;
                 }
               }
+            }),
+            replace: elm.Button({
+              label: "Replace",
+              on_click: function() {
+                if (selected) {
+                  items.elements[selected.key] = icon(selected.key);
+                  icon_count++;
+                }
+              }
             })
           }
         }),
