@@ -12,6 +12,10 @@
 #include <math.h>
 #include <time.h>
 
+#if defined (HAVE_EVAS_SOFTWARE_XLIB) || defined (HAVE_EVAS_XRENDER_X11) ||defined (HAVE_EVAS_OPENGL_X11) || defined (HAVE_EVAS_SOFTWARE_16_X11)
+#include <X11/Xlib.h>
+#endif
+
 #ifndef _MSC_VER
 # include <sys/time.h>
 #endif
