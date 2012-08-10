@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include <X11/Xlib.h>
+#include <X11/XKBlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <Evas_Engine_GL_X11.h>
@@ -148,7 +149,7 @@ engine_gl_x11_loop(void)
 	evas_event_feed_mouse_out(evas, 0, NULL);
 	break;
       case KeyPress:
-	ks = XKeycodeToKeysym(ev.xkey.display, ev.xkey.keycode, 0);
+	ks = XkbKeycodeToKeysym(ev.xkey.display, ev.xkey.keycode, 0, 0);
 	kstr = XKeysymToString(ks);
 	if (kstr)
 	  {
@@ -189,7 +190,7 @@ engine_gl_x11_loop(void)
 	  }
 	break;
       case KeyRelease:
-	ks = XKeycodeToKeysym(ev.xkey.display, ev.xkey.keycode, 0);
+	ks = XkbKeycodeToKeysym(ev.xkey.display, ev.xkey.keycode, 0, 0);
 	kstr = XKeysymToString(ks);
 	if (kstr)
 	  {
