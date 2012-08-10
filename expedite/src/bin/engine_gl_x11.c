@@ -10,13 +10,12 @@ static Window win = 0;
 static int first_expose = 0;
 
 Eina_Bool
-engine_gl_x11_args(const char *engine, int width, int height)
+engine_gl_x11_args(const char *engine __UNUSED__, int width, int height)
 {
    XSetWindowAttributes attr;
    XClassHint chint;
    XSizeHints szhints;
    Evas_Engine_Info_GL_X11 *einfo;
-   int i;
 
    disp = XOpenDisplay(NULL);
    if (!disp) return EINA_FALSE;

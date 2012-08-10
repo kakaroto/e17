@@ -3,10 +3,9 @@
 #include <Evas_Engine_FB.h>
 
 Eina_Bool
-engine_fb_args(const char *engine, int width, int height)
+engine_fb_args(const char *engine __UNUSED__, int width __UNUSED__, int height __UNUSED__)
 {
    Evas_Engine_Info_FB *einfo;
-   int i;
 
    evas_output_method_set(evas, evas_render_method_lookup("fb"));
    einfo = (Evas_Engine_Info_FB *)evas_engine_info_get(evas);
