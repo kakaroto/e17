@@ -100,7 +100,7 @@ extern "C" {
 #endif
 
 #define E_DBUS_VERSION_MAJOR 1
-#define E_DBUS_VERSION_MINOR 6
+#define E_DBUS_VERSION_MINOR 7
 
    typedef struct _E_DBus_Version
      {
