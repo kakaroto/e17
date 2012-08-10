@@ -203,6 +203,26 @@ class XMLHttpRequest
         return Undefined();
      }
 
+   static Eina_Bool doOpen(XMLHttpRequest *self, Handle<String> method, Handle<String> url)
+     {
+        HandleScope scope;
+
+        String::Utf8Value m(method);
+        if (!strcmp(*m, "GET"))
+          self->method = METHOD_GET;
+        else if (!strcmp(*m, "POST"))
+          self->method = METHOD_POST;
+        else
+          return EINA_FALSE;
+
+        if (self->url)
+          ecore_con_url_free(self->url);
+        self->url = ecore_con_url_new(*String::Utf8Value(url->ToString()));
+        ecore_con_url_data_set(self->url, reinterpret_cast<void *>(self));
+
+        return EINA_TRUE;
+     }
+
    /* as of now we only support (method, url), user and password can be added later */
    /* args[2] is dummy for compliance with XMLHttpRequest */
    static Handle<Value> open(const Arguments& args)
@@ -214,19 +234,8 @@ class XMLHttpRequest
 
         XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
 
-        String::Utf8Value method(args[0]->ToString());
-        if (!strcmp(*method, "GET"))
-          self->method = METHOD_GET;
-        else if (!strcmp(*method, "POST"))
-          self->method = METHOD_POST;
-        else
-          return Undefined();
-
-        /* TODO - Add POST Method treatment */
-        if (self->url)
-          ecore_con_url_free(self->url);
-        self->url = ecore_con_url_new(*String::Utf8Value(args[1]->ToString()));
-        ecore_con_url_data_set(self->url, reinterpret_cast<void *>(self));
+        if (XMLHttpRequest::doOpen(self, args[0]->ToString(), args[1]->ToString()))
+          return args.This();
 
         return Undefined();
      }
@@ -296,13 +305,9 @@ class XMLHttpRequest
         return strdup(*String::Utf8Value(string));
      }
 
-   static Handle<Value> send(const Arguments& args)
+   static void doSend(XMLHttpRequest *self, Handle<Value> paramData)
      {
-        HandleScope scope;
-
-        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
-
-        /* TODO - Set readyState properly */
+         /* TODO - Set readyState properly */
         self->jsObject->Set(String::NewSymbol("readyState"), Integer::New(0));
 
         self->reset();
@@ -326,14 +331,14 @@ class XMLHttpRequest
           {
             char *data;
 
-            if (args[0]->IsNull() || args[0]->IsUndefined())
+            if (paramData->IsNull() || paramData->IsUndefined())
               data = NULL;
-            else if (args[0]->IsString())
-              data =  GetAssignableUtf8Value(args[0]->ToString());
-            else if (args[0]->IsObject())
-              data = JSObjectToURL(args[0]->ToObject());
+            else if (paramData->IsString())
+              data = GetAssignableUtf8Value(paramData->ToString());
+            else if (paramData->IsObject())
+              data = JSObjectToURL(paramData->ToObject());
             else
-              data = GetAssignableUtf8Value(UrlEncode(args[0]->ToString()));
+              data = GetAssignableUtf8Value(UrlEncode(paramData->ToString()));
 
             if (!ecore_con_url_post(self->url, data, data == NULL ? 0 : strlen(data), NULL))
               {
@@ -343,6 +348,30 @@ class XMLHttpRequest
 
             free(data);
           }
+     }
+
+   static Handle<Value> send(const Arguments& args)
+     {
+        HandleScope scope;
+
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+
+        XMLHttpRequest::doSend(self, args[0]);
+        return Undefined();
+     }
+
+   static Handle<Value> _do(const Arguments &args)
+     {
+        HandleScope scope;
+
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+
+        if (!args[0]->IsString() || !args[1]->IsString())
+          return Undefined();
+
+        XMLHttpRequest::doOpen(self, args[0]->ToString(), args[1]->ToString());
+        XMLHttpRequest::doSend(self, args[2]);
+
         return Undefined();
      }
 
@@ -360,6 +389,7 @@ class XMLHttpRequest
         it->SetInternalFieldCount(1);
         it->Set(String::NewSymbol("open"), FunctionTemplate::New(open));
         it->Set(String::NewSymbol("send"), FunctionTemplate::New(send));
+        it->Set(String::NewSymbol("do"), FunctionTemplate::New(_do));
         it->Set(String::NewSymbol("setRequestHeader"),
                 FunctionTemplate::New(setRequestHeader));
         it->Set(String::NewSymbol("getResponseHeader"),
