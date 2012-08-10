@@ -245,12 +245,7 @@ Handle<Value> CElmObject::text_get() const
 
 void CElmObject::text_set(Handle<Value> val)
 {
-   if (!val->IsString())
-     return;
-
-   char *text = elm_entry_utf8_to_markup(*String::Utf8Value(val));
-   elm_object_text_set(eo, text);
-   free(text);
+   elm_object_text_set(eo, *String::Utf8Value(val));
 }
 
 Handle<Value> CElmObject::scale_get() const
@@ -438,8 +433,7 @@ Handle<Value> CElmObject::label_get() const
 
 void CElmObject::label_set(Handle<Value> val)
 {
-   if (val->IsString() || val->IsNumber())
-     elm_object_text_set(eo, elm_entry_utf8_to_markup(*String::Utf8Value(val)));
+   elm_object_text_set(eo, *String::Utf8Value(val));
 }
 
 Handle<Value> CElmObject::padding_get() const
