@@ -1,5 +1,8 @@
 var fs = require('fs');
 
+var EXPAND_BOTH = { x : 1.0, y : 1.0 };
+var FILL_BOTH = { x : -1.0, y : -1.0 };
+
 function dumpTree(tree, indent) {
     if (indent == undefined)
         indent = 0;
@@ -11,9 +14,9 @@ function dumpTree(tree, indent) {
     for (var i = 0; i < tree.length; i++) {
         var n = tree[i];
         if (typeof n != "object")
-            print(prefix + n);
+            win.elements.box.elements.tree.text += prefix + n + "<br>";
         else {
-            print(prefix + n[0]);
+            win.elements.box.elements.tree.text += prefix + n[0] + "<br>";
             dumpTree(n[1], indent + 1);
         }
     }
@@ -54,13 +57,12 @@ function buildTree(path, patterns, onDone) {
 }
 
 function listFilesCb(files, isDone, isError) {
-    print("--- GOT FILES! ---");
-    print("isDone: " + isDone + ", isError: " + isError + ", count: "+ files.length);
+    win.elements.box.elements.tree.text += "--- GOT FILES! ---<br>";
+    win.elements.box.elements.tree.text += "isDone: " + isDone + ", isError: " + isError + ", count: "+ files.length + "<br>";
     for (var i = 0; i < files.length; i++)
-        print("   " + (files[i].isFile ? "file" : "dir") + ": " + files[i].path);
-    print("--- GOT FILES! ---");
+        win.elements.box.elements.tree.text += "   " + (files[i].isFile ? "file" : "dir") + ": " + files[i].path + "<br>";
+    win.elements.box.elements.tree.text += "--- GOT FILES! ---<br>";
 }
-
 
 var path = ".";
 var patterns = ["*.jpg", "*.png"];
@@ -70,3 +72,29 @@ var ls = fs.listFiles(path, listFilesCb, patterns, true, 0.5, false)
 buildTree(path, patterns, function (t) {
     dumpTree(t);
 })
+
+var win = elm.realise(elm.Window({
+    title : "Fs",
+    width : 320,
+    height : 480,
+    elements : {
+        background: elm.Background({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+        }),
+        box: elm.Box({
+            weight: EXPAND_BOTH,
+            resize: true,
+            elements: {
+                tree: elm.Entry ({
+                    text : "",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    editable : false,
+                    scrollable : true,
+                }),
+            }
+        })
+    },
+}));

@@ -47,6 +47,7 @@ var examples = new Array(
     ["fileselectorentry","File Selector Entry Example"],
     ["fileselector","File Selector Example"],
     ["flip","Flip Example"],
+    ["fs","Fs Example"],
     ["genlist","Genlist Example"],
     ["grid","Grid Example"],
     ["http_test","Simple HTTP Example"],
