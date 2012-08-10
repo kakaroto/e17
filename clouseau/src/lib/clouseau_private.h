@@ -28,16 +28,11 @@ enum _Clouseau_Message_Type
 };
 typedef enum _Clouseau_Message_Type Clouseau_Message_Type;
 
-struct _Variant_Type_st
+/* This is used for composing message and encoding/decoding with EET */
+struct _Variant_st
 {
    const char *type;
-   Eina_Bool   unknow : 1;
-};
-typedef struct _Variant_Type_st Variant_Type_st;
 
-struct _Variant_st
-{  /* This is used for composing message and encoding/decoding with EET */
-   Variant_Type_st t;
    void *data;
 };
 typedef struct _Variant_st Variant_st;

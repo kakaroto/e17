@@ -928,7 +928,7 @@ _data(void *data, int type EINA_UNUSED, void *event)
    v = packet_info_get(ev->data, ev->size);
    if (!v) return ECORE_CALLBACK_RENEW;
 
-   switch (clouseau_packet_mapping_type_get(v->t.type))
+   switch (clouseau_packet_mapping_type_get(v->type))
      {
       case CLOUSEAU_APP_ADD:            /* Add info to list of APPs  */
          _add_app(data, v);    /* v->data is (app_info_st *) */

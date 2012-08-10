@@ -108,33 +108,26 @@ _clouseau_packet_mapping_type_str_get(Clouseau_Message_Type t)
 }
 
 static const char *
-_clouseau_variant_type_get(const void *data, Eina_Bool *unknow)
+_clouseau_variant_type_get(const void *data, Eina_Bool *unknow EINA_UNUSED)
 {
-   const Variant_Type_st *type = data;
+   const char * const *type = data;
    int i;
 
-   if (unknow)
-     *unknow = type->unknow;
-
    for (i = 0; eet_mapping[i].name != NULL; ++i)
-     if (strcmp(type->type, eet_mapping[i].name) == 0)
+     if (strcmp(*type, eet_mapping[i].name) == 0)
        return eet_mapping[i].name;
 
-   if (unknow)
-     *unknow = EINA_FALSE;
-
-   return type->type;
+   return NULL;
 }
 
 static Eina_Bool
 _clouseau_variant_type_set(const char *type,
                            void       *data,
-                           Eina_Bool   unknow)
+                           Eina_Bool   unknow EINA_UNUSED)
 {
-   Variant_Type_st *vt = data;
+   const char **t = data;
 
-   vt->type = type;
-   vt->unknow = unknow;
+   *t = type;
    return EINA_TRUE;
 }
 
@@ -158,7 +151,7 @@ clouseau_variant_alloc(Clouseau_Message_Type t, size_t size, void *info)
    v =  malloc(sizeof(Variant_st));
    v->data = malloc(size);
    _clouseau_variant_type_set(_clouseau_packet_mapping_type_str_get(t),
-                              &v->t, EINA_FALSE);
+                              &v->type, EINA_FALSE);
    memcpy(v->data, info, size);
 
    return v;
@@ -635,7 +628,7 @@ clouseau_data_descriptors_init(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(clouseau_variant_edd,
                                    "BMP_DATA", clouseau_bmp_info_edd);
    EET_DATA_DESCRIPTOR_ADD_VARIANT(clouseau_protocol_edd, Variant_st,
-                                   "data", data, t, clouseau_variant_edd);
+                                   "data", data, type, clouseau_variant_edd);
 }
 
 void

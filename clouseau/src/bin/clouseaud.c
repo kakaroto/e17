@@ -218,7 +218,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
         return ECORE_CALLBACK_RENEW;
      }
 
-   switch(clouseau_packet_mapping_type_get(v->t.type))
+   switch(clouseau_packet_mapping_type_get(v->type))
      {
       case CLOUSEAU_APP_CLIENT_CONNECT:
         {  /* Register APP then notify GUI about it */

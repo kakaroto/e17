@@ -183,7 +183,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
    Variant_st *v;
 
    v = packet_info_get(ev->data, ev->size);
-   switch (clouseau_packet_mapping_type_get(v->t.type))
+   switch (clouseau_packet_mapping_type_get(v->type))
      {
       case CLOUSEAU_DATA_REQ:
         {  /* data req includes ptr to GUI, to tell which client asking */
