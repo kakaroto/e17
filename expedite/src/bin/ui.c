@@ -229,7 +229,7 @@ _ui_all(void)
    Eina_List *l;
    double fps = 0.0;
    double wfps = 0.0;
-   int t_count = 0;
+   unsigned int t_count = 0;
    unsigned int i;
    double avgw = 0.0;
 
