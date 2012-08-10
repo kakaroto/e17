@@ -59,6 +59,7 @@ libelm_la_SOURCES = \
 	CElmThumb.cc \
 	CElmToolbar.cc \
 	CElmVideo.cc \
+	CElmVideoControllers.cc \
 	CElmWindow.cc
 
 libelm_la_LIBADD = @ELEMENTARY_LIBS@ @V8_LIBS@
