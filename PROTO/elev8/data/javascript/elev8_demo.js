@@ -66,6 +66,7 @@ var examples = new Array(
     ["slider","Slider Example"],
     ["spinner","Spinner Example"],
     ["stock","Stock Example"],
+    ["storage","Storage Example"],
     ["table","Table Example"],
     ["thumb","Thumb Example"],
     ["timer","Timer Example"],

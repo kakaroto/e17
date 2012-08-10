@@ -1,31 +1,85 @@
-print("Setting... first = 1")
-localStorage.setItem("first", 1);
-print("Getting... first = ", localStorage.getItem("first"));
-print("Length: ", localStorage.length);
+elm = require('elm');
 
-print("Setting... second = 2")
-localStorage.setItem("second", 2);
-print("Getting... second = ", localStorage.getItem("second"));
-print("Length: ", localStorage.length);
+var EXPAND_BOTH = { x : 1.0, y : 1.0 };
+var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-print("Setting... third = 3")
-localStorage.setItem("third", 3);
-print("Getting... third = ", localStorage.getItem("third"));
-print("Length: ", localStorage.length);
-
-print("Remove... second")
-localStorage.removeItem("second");
-
-print("Printing...");
-for (var i = 0; i < localStorage.length; i++) {
-   var key = localStorage.key(i);
-   print(key, ' = ', localStorage.getItem(key));
+function saveItems(){
+    var elements = win.elements.box.elements;
+    localStorage.setItem("first", elements.first_name.text);
+    localStorage.setItem("last", elements.last_name.text);
+    localStorage.setItem("phone", elements.phone_number.text);
 }
 
-print("Length: ", localStorage.length);
+function loadItems(){
+    var elements = win.elements.box.elements;
+    elements.first_name.text = localStorage.getItem("first") || '';
+    elements.last_name.text = localStorage.getItem("last") || '';
+    elements.phone_number.text = localStorage.getItem("phone") || '';
+}
 
-print("== Cleaning ==");
-localStorage.clear();
-print("Length: ", localStorage.length);
+function clearItems(){
+    var elements = win.elements.box.elements;
+    localStorage.clear();
+    loadItems();
+}
 
-elm.exit();
+var win = elm.realise(elm.Window({
+    title : "Storage",
+    width : 320,
+    height : 530,
+    elements : {
+        background: elm.Background({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+        }),
+        box: elm.Box({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+            elements: {
+                first_name : elm.Entry ({
+                    text : "First Name",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    line_wrap : 3,
+                    editable : true,
+                }),
+                last_name : elm.Entry ({
+                    text : "Last Name",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    line_wrap : 3,
+                    editable : true,
+                }),
+                phone_number : elm.Entry ({
+                    text : "Phone Number",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    line_wrap : 3,
+                    editable : true,
+                }),
+                but_box: elm.Box({
+                    horizontal: true,
+                    elements: {
+                        save: elm.Button({
+                            label: "Save ",
+                            weight: EXPAND_BOTH,
+                            on_click: function() { saveItems(); }
+                        }),
+                        load: elm.Button({
+                            label: "Load",
+                            weight: EXPAND_BOTH,
+                            on_click: function() { loadItems(); }
+                        }),
+                        clear: elm.Button({
+                            label: 'Clear',
+                            weight: EXPAND_BOTH,
+                            on_click: function() { clearItems(); }
+                        }),
+                    }
+                })
+            }
+        })
+    },
+}));
