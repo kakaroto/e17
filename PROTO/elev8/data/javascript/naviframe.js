@@ -1,6 +1,7 @@
 elm = require('elm');
 
 elm.datadir += "/data/images/";
+var count = 0;
 
 var green = elm.Photo({
     size: 80,
@@ -46,12 +47,14 @@ function button_pop() {
 function button_push() {
     print("button_push");
     var naviframe = win.elements.box.elements.naviframe;
-    
-    naviframe.push({
-        "Orange": orange,
-        "Yellow": yellow,
-        "Green": green
-    }[this.label] || orange, this.label);
+    naviframe.elements[count++] = {
+        content: {
+            "Orange": orange,
+            "Yellow": yellow,
+            "Green": green
+        }[this.label] || orange,
+        title: this.label
+    };
 }
 
 win = elm.realise(elm.Window({
@@ -72,6 +75,7 @@ win = elm.realise(elm.Window({
                 naviframe: elm.Naviframe({
                     weight: EXPAND_BOTH,
                     align: FILL_BOTH,
+                    elements: {},
                     resize: true
                 }),
                 but_box: elm.Box({

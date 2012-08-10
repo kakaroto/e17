@@ -14,7 +14,6 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, items);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, top_item);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, bottom_item);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop);
-GENERATE_METHOD_CALLBACKS(CElmNaviframe, push);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, promote);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, item_promote);
 GENERATE_METHOD_CALLBACKS(CElmNaviframe, pop_to);
@@ -29,10 +28,12 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmNaviframe,
                   PROPERTY_RO(top_item),
                   PROPERTY_RO(bottom_item),
                   METHOD(pop),
-                  METHOD(push),
                   METHOD(promote),
                   METHOD(item_promote),
                   METHOD(pop_to));
+
+
+struct elm::CElmNaviframe::Item::Strings elm::CElmNaviframe::Item::str;
 
 CElmNaviframe::CElmNaviframe(Local<Object> _jsObject, CElmObject *p)
    : CElmLayout(_jsObject, elm_naviframe_add(p->GetEvasObject()))
@@ -56,61 +57,43 @@ void CElmNaviframe::Initialize(Handle<Object> target)
 
 Handle<Value> CElmNaviframe::pop(const Arguments&)
 {
-   if (!stack->Length())
-     return Undefined();
-
-   stack->Delete(stack->Length());
-   elm_naviframe_item_pop(eo);
-   title_visible_eval();
-
+   Local<Object> elements = GetJSObject()->Get(String::NewSymbol("elements"))->ToObject();
+   Local<Array> props = elements->GetOwnPropertyNames();
+   elements->Delete(props->Get(props->Length() - 1)->ToString());
    return Undefined();
 }
 
-Handle<Value> CElmNaviframe::push(const Arguments& args)
+Handle<Value> CElmNaviframe::Pack(Handle<Value> value, Handle<Value> replace)
 {
-   Handle<Value> prev_btn, next_btn, content;
+   HandleScope scope;
+   Elm_Object_Item *object_item = NULL;
+   Local<Object> obj = value->ToObject();
+   Local<Value> before = obj->Get(String::NewSymbol("before"));
 
-   if (!args[0]->IsObject())
-     return ThrowException(Exception::Error(String::New("Parameter 1 should be an object description or an elm.widget")));
+   if (before->IsUndefined() && !replace->IsUndefined())
+     before = replace->ToObject()->Get(String::NewSymbol("before"));
+   else if (before->IsString() || before->IsNumber())
+     before = GetJSObject()->Get(String::NewSymbol("elements"))->ToObject()->Get(before);
 
-   if (!args[1]->IsString())
-     return ThrowException(Exception::Error(String::New("Parameter 2 should be a string")));
-
-   if (args.Length() >= 3 && !args[2]->IsUndefined())
+   if (before->IsUndefined())
      {
-        if (!args[2]->IsObject())
-          return ThrowException(Exception::Error(String::New("Parameter 3 should either be undefined or an object description")));
-
-        prev_btn = Realise(args[2]->ToObject(), GetJSObject());
+        object_item = elm_naviframe_item_push(eo, NULL, NULL, NULL, NULL, 0);
+     }
+   else
+     {
+        Item *item = Item::Unwrap(before);
+        object_item = elm_naviframe_item_insert_before(eo, item->object_item,
+                                                       NULL, NULL, NULL, NULL, 0);
      }
 
-   if (args.Length() >= 4 && !args[3]->IsUndefined())
-     {
-        if (!args[3]->IsObject())
-          return ThrowException(Exception::Error(String::New("Parameter 4 should either be undefined or an object description")));
-
-        next_btn = Realise(args[3]->ToObject(), GetJSObject());
-     }
-
-   content = Realise(args[0]->ToObject(), GetJSObject());
-
-   Local<Object> stacked = Object::New();
-   if (!prev_btn.IsEmpty())
-     stacked->Set(String::NewSymbol("prev_btn"), prev_btn);
-   if (!next_btn.IsEmpty())
-     stacked->Set(String::NewSymbol("next_btn"), next_btn);
-   stacked->Set(String::NewSymbol("content"), content);
-   stack->Set(stack->Length() + 1, stacked);
-
-   String::Utf8Value titleParam(args[1]->ToString());
-   elm_naviframe_item_push(eo,
-                           *titleParam,
-                           prev_btn.IsEmpty() ? NULL : GetEvasObjectFromJavascript(prev_btn),
-                           next_btn.IsEmpty() ? NULL : GetEvasObjectFromJavascript(next_btn),
-                           GetEvasObjectFromJavascript(content),
-                           0);
    title_visible_eval();
-   return stacked;
+   return scope.Close((new Item(object_item, obj->ToObject(), GetJSObject()))->ToObject());
+}
+
+Handle<Value> CElmNaviframe::Unpack(Handle<Value> value)
+{
+   elm_naviframe_item_pop(eo);
+   return value;
 }
 
 Handle<Value> CElmNaviframe::promote(const Arguments& args)

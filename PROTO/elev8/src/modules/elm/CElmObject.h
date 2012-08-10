@@ -129,6 +129,8 @@ public:
         return scope.Close(items->ToObject()->GetOwnPropertyNames());
      }
 
+   static bool HasInstance(Handle<Value> value) { return tmpl->HasInstance(value); }
+
    static void Initialize(Handle<Object> target);
 
    Handle<Object> GetJSObject() const { return jsObject; }
