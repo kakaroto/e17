@@ -49,6 +49,7 @@ using namespace v8;
 #include "CElmToolbar.h"
 #include "CElmVideo.h"
 #include "CElmVideoControllers.h"
+#include "CElmWeb.h"
 #include "CElmWindow.h"
 
 namespace elm {
@@ -198,6 +199,7 @@ void RegisterModule(Handle<Object> target)
    CElmToolbar::Initialize(target);
    CElmVideo::Initialize(target);
    CElmVideoControllers::Initialize(target);
+   CElmWeb::Initialize(target);
    CElmWindow::Initialize(target);
 }
 
