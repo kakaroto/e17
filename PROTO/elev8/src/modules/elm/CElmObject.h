@@ -52,16 +52,16 @@ protected:
         return obj->jsObject;
      }
 
-   static CElmObject *GetObjectFromJavascript(Handle<Value> obj)
-     {
-        return static_cast<CElmObject*>(obj->ToObject()->GetPointerFromInternalField(0));
-     }
-
    static void EvasFreeEvent(void *data, Evas *e, void *event_info);
 
 public:
 
    virtual ~CElmObject();
+
+   static CElmObject *GetObjectFromJavascript(Handle<Value> obj)
+     {
+        return static_cast<CElmObject*>(obj->ToObject()->GetPointerFromInternalField(0));
+     }
 
    template <class T>
    static Handle<Value> ElementSet(T item, Local<Value> value, const AccessorInfo& info)
