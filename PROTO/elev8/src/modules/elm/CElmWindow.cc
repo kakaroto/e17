@@ -90,6 +90,7 @@ GENERATE_TEMPLATE_FULL(CElmObject, CElmWindow,
                   METHOD(raise),
                   METHOD(center));
 
+Evas_Object *CElmWindow::main = NULL;
 // Getters and Settters
 
 Handle<Value> CElmWindow::title_get() const
@@ -649,9 +650,15 @@ Handle<Value> CElmWindow::center(const Arguments& args)
 CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_win_add(parent ? parent->GetEvasObject() : NULL, "main", ELM_WIN_BASIC))
 {
+   if(!main)
+     {
+        main = GetEvasObject();
+        evas_object_smart_callback_add(main, "delete,request", &quit, NULL);
+     }
+
    evas_object_focus_set(eo, 1);
-   evas_object_smart_callback_add(eo, "delete,request", &quit, NULL);
    evas_object_show(eo);
+   elm_win_autodel_set(eo, true);
 }
 
 void CElmWindow::Initialize(Handle<Object> target)

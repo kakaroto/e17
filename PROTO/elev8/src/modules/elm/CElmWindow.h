@@ -11,6 +11,7 @@ using namespace v8;
 class CElmWindow : public CElmObject {
 private:
    static Persistent<FunctionTemplate> tmpl;
+   static Evas_Object *main;
 
 protected:
    CElmWindow(Local<Object> _jsObject, CElmObject *parent);
