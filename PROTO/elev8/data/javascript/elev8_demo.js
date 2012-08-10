@@ -1,166 +1,100 @@
 #!/usr/local/bin/elev8
 
-elm.datadir=elm.datadir + "/data/images/";
-
-var small_icon = {
-    type : "icon",
-    prescale : 20,
-    resizable_up : false,
-    image : elm.datadir + "logo_small.png",
-};
-var green = {
-    type : "icon",
-    hint_max : { w : 20, h : 20 },
-    hint_min : { w : 20, h : 20 },
-    width : 20,
-    height : 20,
-    image : elm.datadir + "green.png",
-};
-var yellow = {
-    type : "icon",
-    prescale : 20,
-    image : elm.datadir + "yellow.png",
-};
-var orange = {
-    type : "icon",
-    image : elm.datadir + "orange.png",
-};
-var maroon = {
-    type : "icon",
-    prescale : 20,
-    image : elm.datadir + "maroon.png",
-};
-var violet = {
-    type : "icon",
-    hint_max : { w : 20, h : 20 },
-    hint_min : { w : 20, h : 20 },
-    width : 20,
-    height : 20,
-    image : elm.datadir + "violet.png",
-};
-
-var logo_icon = {
-    type : "icon",
-    prescale : 20,
-    image : elm.datadir + "logo_small.png",
-};
-
-var logo_end = {
-    type : "icon",
-    prescale : 20,
-    image : elm.datadir + "bubble_bb.png",
-};
-
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
+var item_count = 0;
 
-var examples = new Array(
-                            [["actionslider"],["Action Slider Example"]],
-                            [["airshow"],["A simple game."]], 
-                            [["anim"],["Animator"]],
-                            [["background"],["Background Example"]],
-                            [["box_horiz"],["Box Horizontal Example"]],
-                            [["box_vert"],["Box Vertical Example"]],
-                            [["bubble"],["Bubble Example"]],
-                            [["button"],["Button Example"]],
-                            [["calculator"],["Calculator Example"]],
-                            [["calendar"],["Calendar Example"]],
-                            [["check"],["Check Example"]],
-                            [["clock"],["Clock Example"]],
-                            [["color"],["Color Example"]],
-                            [["dilbert"],["Dilbert Example"]],
-                            [["entry"],["Entry Example"]],
-                            [["flip"],["Flip Example"]],
-                            [["http_test"],["Simple HTTP Example"]],
-                            [["label"],["Label Example"]],
-                            [["list"],["List Example"]],
-                            [["menu"],["Menu Example"]],
-                            [["panes"],["Panes Example"]],
-                            [["photo"],["Photo Example"]],
-                            [["progressbar"],["Progress Bar Example"]],
-                            [["radio"],["Radio Example"]],
-                            [["segment"],["Segment Example"]],
-                            [["slider"],["Slider Example"]],
-                            [["spinner"],["Spinner Example"]],
-                            [["table"],["Table Example"]],
-                            [["twitter"],["Twitter Example"]]
-                            );
-
-var list_items = new Array();
-
-var win;
-
-function init_list(arg)
-{
-    for (i=0; i<examples.length; i++)
-    {
-        print("Checking : " + examples[i][0] + " " +  examples[i][1]);
-        list_items[i] = {
-                label : examples[i][0],
-                icon : violet,
-                end : green,
-                tooltip : examples[i][1],
-                on_clicked : function (arg) {
-                    print("List callback");
-                },
-        };
-        //win.elements.scroll.content.elements.the_list.append(list_items[i]);
+function createItem() {
+  var list = win.elements.box.elements.list;
+  list.elements[item_count] = {
+    data: examples[item_count],
+    class: default_class,
+    on_select: function(item) {
+      item_selected = item;
+      require("./" + item.data[0] + ".js");
     }
-    return list_items;
+  };
+  item_count++;
 }
 
+var default_class = {
+   text: function(part) {
+      return this.data[1];
+   },
+};
 
-win = new elm.window({
-    label : "Elev8 Demo",
+var examples = new Array(
+    ["actionslider","Action Slider Example"],
+    ["airshow","A simple game."],
+    ["anim","Animator"],
+    ["bg","Background Example"],
+    ["box_horiz","Box Horizontal Example"],
+    ["box","Box Example"],
+    ["box_vert","Box Vertical Example"],
+    ["bubble","Bubble Example"],
+    ["button","Button Example"],
+    ["calculator","Calculator Example"],
+    ["calendar","Calendar Example"],
+    ["check","Check Example"],
+    ["clock","Clock Example"],
+    ["colorselector","Color Selector Example"],
+    ["conform","Conform Example"],
+    ["datetime","Datetime Example"],
+    ["dayselector","Day Selector Example"],
+    ["dilbert","Dilbert Example"],
+    ["entry","Entry Example"],
+    ["fileselectorbutton","File Selector button Example"],
+    ["fileselectorentry","File Selector Entry Example"],
+    ["fileselector","File Selector Example"],
+    ["flip","Flip Example"],
+    ["genlist","Genlist Example"],
+    ["grid","Grid Example"],
+    ["http_test","Simple HTTP Example"],
+    ["inwin","Inwin Example"],
+    ["label","Label Example"],
+    ["naviframe","Naviframe Example"],
+    ["notepad","Notepad Example"],
+    ["notify","Notify Example"],
+    ["packing","Packing Example"],
+    ["panes","Panes Example"],
+    ["photocam","PhotoCam Example"],
+    ["photo","Photo Example"],
+    ["progressbar","Progress Bar Example"],
+    ["radio","Radio Example"],
+    ["segment","Segment Example"],
+    ["simple-button","Simple  Button Example"],
+    ["slider","Slider Example"],
+    ["spinner","Spinner Example"],
+    ["stock","Stock Example"],
+    ["table","Table Example"],
+    ["thumb","Thumb Example"],
+    ["toolbar","Toolbar Example"]
+    );
+
+var win = elm.realise(elm.Window({
+    title : "Elev8 Demo",
     width : 320,
     height : 480,
     elements : {
-        the_background : {
-            type : "background",
-            resize : true,
-            weight : EXPAND_BOTH,
-        },
-        scroll : {
-            type : "scroller",
-            bounce : { x : false, y : true },
-            policy : { x : "off", y : "auto" },
-            weight : EXPAND_BOTH,
-            resize : true,
-            content : {
-                type : "box",
-                weight : EXPAND_BOTH,
-                align : FILL_BOTH,
-                elements : {
-                    the_list : {
-                        type : "list",
-                        resize : true,
-                        weight : EXPAND_BOTH,
-                        align : { x: -1, y: -1 },
-                        items : init_list(),
-                    },
-                    the_box : {
-                        type : "box",
-                        weight : EXPAND_BOTH,
-                        resize : true,
-                        elements : {
-                            the_entry : {
-                                type : "entry",
-                                text : "http://165.213.220.149:8080/http_menu.js",
-                                weight : EXPAND_BOTH,
-                                align : FILL_BOTH,
-                                line_wrap : 3,
-                                editable : true,
-                            },
-                            click : {
-                                type : "button",
-                                label : "Run",
-                                on_clicked : init_list,
-                            },
-                        },
-                    },
-                },
-            },
-        },
+        background: elm.Background({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+        }),
+        box: elm.Box({
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            resize: true,
+            elements: {
+                list: elm.Genlist({
+                    weight: EXPAND_BOTH,
+                    align: FILL_BOTH,
+                    elements: {},
+                }),
+            }
+        })
     },
-});
+}));
 
+for (i = 0; i < (examples.length-1); i++)
+    createItem();
