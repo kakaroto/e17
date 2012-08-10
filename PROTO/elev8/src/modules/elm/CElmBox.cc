@@ -41,8 +41,21 @@ Handle<Value> CElmBox::homogeneous_get() const
 
 Handle<Value> CElmBox::Pack(Handle<Value> obj, Handle<Value>)
 {
+   Local<Value> before = obj->ToObject()->Get(String::NewSymbol("before"));
+
+   if (before->IsUndefined() && !replace->IsUndefined())
+     before = replace->ToObject()->Get(String::NewSymbol("before"));
+   else if (before->IsString() || before->IsNumber())
+     before = GetJSObject()->Get(String::NewSymbol("elements"))->ToObject()->Get(before);
+
    obj = Realise(obj, GetJSObject());
-   elm_box_pack_end(eo, GetEvasObjectFromJavascript(obj));
+
+   if (before->IsUndefined())
+      elm_box_pack_end(eo, GetEvasObjectFromJavascript(obj));
+   else
+      elm_box_pack_before(eo, GetEvasObjectFromJavascript(obj),
+                          GetEvasObjectFromJavascript(before));
+
    return obj;
 }
 
