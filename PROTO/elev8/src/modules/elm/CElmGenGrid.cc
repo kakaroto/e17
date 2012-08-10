@@ -65,17 +65,22 @@ Handle<Value> CElmGenGrid::Pack(Handle<Value> value, Handle<Value> replace)
    if (!item)
      return Undefined();
 
-   Local<Value> next;
+   Local<Value> before = item->jsObject->Get(Item<CElmGenGrid>::str_before);
 
-   if (replace->IsObject())
-      next = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_next);
+   if (before->IsUndefined() && replace->IsObject())
+     before  = replace->ToObject()->Get(Item<CElmGenGrid>::str_before);
 
-   if (next.IsEmpty())
+   if (before->IsString() || before->IsNumber())
+     before = GetJSObject()->Get(String::NewSymbol("elements"))->ToObject()->Get(before);
+
+    Item<CElmGenGrid> *before_item = Item<CElmGenGrid>::Unwrap(before);
+
+   if (!before_item)
      item->object_item = elm_gengrid_item_append(eo, item->GetElmClass(), item,
                                                  Item<CElmGenGrid>::OnSelect, item);
    else
      item->object_item = elm_gengrid_item_insert_before(eo, item->GetElmClass(), item,
-                                                        (Elm_Object_Item *)External::Unwrap(next),
+                                                        before_item->object_item,
                                                         Item<CElmGenGrid>::OnSelect, item);
 
    elm_object_item_data_set(item->object_item, item);
@@ -92,9 +97,17 @@ Handle<Value> CElmGenGrid::Unpack(Handle<Value> value)
    Handle<Value> attrs = value->ToObject()->GetHiddenValue(Item<CElmGenGrid>::str_attrs);
    if (!attrs.IsEmpty())
      {
-        Elm_Object_Item *next = elm_gengrid_item_next_get(item->object_item);
-        if (next)
-          attrs->ToObject()->SetHiddenValue(Item<CElmGenGrid>::str_next, External::Wrap(next));
+        Local<Object> obj = attrs->ToObject();
+        if (obj->Get(Item<CElmGenGrid>::str_before)->IsUndefined())
+          {
+             Elm_Object_Item *before = elm_gengrid_item_next_get(item->object_item);
+             if (before)
+               {
+                  Item<CElmGenGrid> *before_item = static_cast< Item<CElmGenGrid> *>
+                     (elm_object_item_data_get(before));
+                  obj->Set(Item<CElmGenGrid>::str_before, before_item->jsObject);
+               }
+          }
      }
    elm_object_item_del(item->object_item);
    return attrs;

@@ -27,19 +27,25 @@ var violet =  elm.Icon({
     image: elm.datadir + "violet.png"
 });
 
+function createItem(key, before) {
+  var list = win.elements.box.elements.list;
+  item_count++;
+  key = key || item_count;
+  list.elements[key] = {
+    key: key,
+    data: item_count,
+    before: before,
+    class: default_class,
+    on_select: function(item) {
+      print('Selected item with data: ' + item.data);
+      item_selected = item;
+    }
+  };
+}
+
 function append(n_items) {
-   var list = win.elements.box.elements.list;
-   n_items += item_count;
-   for (;item_count < n_items; item_count++)
-      list.elements[item_count] = {
-         key: item_count,
-         data: item_count,
-         class: default_class,
-         on_select: function(item) {
-            print('Selected item with data: ' + item.data);
-            item_selected = item;
-         }
-      };
+   for (; n_items; n_items--)
+    createItem();
 }
 
 var default_class = {
@@ -131,6 +137,18 @@ var win = elm.realise(elm.Window({
                             label: "+ 1",
                             weight: EXPAND_BOTH,
                             on_click: function() { append(1); }
+                        }),
+                        replace: elm.Button({
+                            icon: violet,
+                            label: 'Replace',
+                            weight: EXPAND_BOTH,
+                            on_click: function() { createItem(item_selected && item_selected.key); }
+                        }),
+                        appendBefore: elm.Button({
+                            icon: violet,
+                            label: 'Before',
+                            weight: EXPAND_BOTH,
+                            on_click: function() { createItem(null, item_selected.key); }
                         }),
                         incData: elm.Button({
                             icon: violet,

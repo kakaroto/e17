@@ -19,7 +19,7 @@ struct Item {
 
    static Persistent<String> str_item;
    static Persistent<String> str_data;
-   static Persistent<String> str_next;
+   static Persistent<String> str_before;
    static Persistent<String> str_attrs;
    static Persistent<String> str_class;
    static Persistent<String> str_parent;
@@ -85,7 +85,12 @@ struct Item {
 
    static Item<T> *Unwrap(Handle<Value> value)
    {
-      return static_cast<Item<T> *>(External::Unwrap(value->ToObject()->GetHiddenValue(str_item)));
+      if (!value->IsObject())
+        return NULL;
+      value = value->ToObject()->GetHiddenValue(str_item);
+      if (value.IsEmpty())
+        return NULL;
+      return static_cast<Item<T> *>(External::Unwrap(value));
    }
 };
 
@@ -98,7 +103,7 @@ Persistent<String> Item<T>::str_item = Persistent<String>::New(String::NewSymbol
 template <class T>
 Persistent<String> Item<T>::str_class = Persistent<String>::New(String::NewSymbol("class"));
 template <class T>
-Persistent<String> Item<T>::str_next = Persistent<String>::New(String::NewSymbol("next"));
+Persistent<String> Item<T>::str_before = Persistent<String>::New(String::NewSymbol("before"));
 template <class T>
 Persistent<String> Item<T>::str_data = Persistent<String>::New(String::NewSymbol("data"));
 

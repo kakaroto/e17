@@ -78,19 +78,24 @@ Handle<Value> CElmGenList::Pack(Handle<Value> value, Handle<Value> replace)
    Item<CElmGenList> *item = new Item<CElmGenList>(value, jsObject);
    if (!item)
      return Undefined();
-   Local<Value> next;
+   Local<Value> before = item->jsObject->Get(Item<CElmGenList>::str_before);
 
-   if (replace->IsObject())
-      next  = replace->ToObject()->GetHiddenValue(Item<CElmGenList>::str_next);
+   if (before->IsUndefined() && replace->IsObject())
+     before  = replace->ToObject()->Get(Item<CElmGenList>::str_before);
 
-   if (next.IsEmpty())
+   if (before->IsString() || before->IsNumber())
+     before = GetJSObject()->Get(String::NewSymbol("elements"))->ToObject()->Get(before);
+
+   Item<CElmGenList> *before_item = Item<CElmGenList>::Unwrap(before);
+
+   if (!before_item)
      item->object_item = elm_genlist_item_append(eo, item->GetElmClass(),
                                                  item, NULL,ELM_GENLIST_ITEM_NONE,
                                                  Item<CElmGenList>::OnSelect, item);
    else
      item->object_item = elm_genlist_item_insert_before(eo, item->GetElmClass(),
                                                         item, NULL,
-                                                        (Elm_Object_Item *)External::Unwrap(next),
+                                                        before_item->object_item,
                                                         ELM_GENLIST_ITEM_NONE,
                                                         Item<CElmGenList>::OnSelect, item);
 
@@ -106,9 +111,17 @@ Handle<Value> CElmGenList::Unpack(Handle<Value> value)
    Handle<Value> attrs = value->ToObject()->GetHiddenValue(Item<CElmGenList>::str_attrs);
    if (!attrs.IsEmpty())
      {
-        Elm_Object_Item *next = elm_genlist_item_next_get(item->object_item);
-        if (next)
-          attrs->ToObject()->SetHiddenValue(Item<CElmGenList>::str_next, External::Wrap(next));
+        Local<Object> obj = attrs->ToObject();
+        if (obj->Get(Item<CElmGenList>::str_before)->IsUndefined())
+          {
+             Elm_Object_Item *before = elm_genlist_item_next_get(item->object_item);
+             if (before)
+               {
+                  Item<CElmGenList> *before_item = static_cast< Item<CElmGenList> *>
+                     (elm_object_item_data_get(before));
+                  obj->Set(Item<CElmGenList>::str_before, before_item->jsObject);
+               }
+          }
      }
    elm_object_item_del(item->object_item);
    return attrs;
