@@ -30,6 +30,7 @@ using namespace v8;
 #include "CElmImage.h"
 #include "CElmInwin.h"
 #include "CElmLabel.h"
+#include "CElmLayout.h"
 #include "CElmNaviframe.h"
 #include "CElmNotify.h"
 #include "CElmObject.h"
@@ -176,6 +177,7 @@ void RegisterModule(Handle<Object> target)
    CElmImage::Initialize(target);
    CElmInwin::Initialize(target);
    CElmLabel::Initialize(target);
+   CElmLayout::Initialize(target);
    CElmNaviframe::Initialize(target);
    CElmNotify::Initialize(target);
    CElmObject::Initialize(target);

@@ -54,17 +54,14 @@ Handle<Value> CElmLayout::file_get() const
 
 void CElmLayout::file_set(Handle<Value> val)
 {
-   if (!val->IsArray())
+   Local<Object> obj = val->ToObject();
+   Local<Value> name = obj->Get(String::NewSymbol("name"));
+   Local<Value> group = obj->Get(String::NewSymbol("group"));
+
+   if (!name->IsString() || !group->IsString())
      return;
 
-   Eina_Bool status;
-   Local<Object> file = val->ToObject();
-
-   status = elm_layout_file_set(eo,
-                 *String::Utf8Value(file->Get(0)),
-                 *String::Utf8Value(file->Get(1)));
-
-   if(!status)
+   if (!elm_layout_file_set(eo, *String::Utf8Value(name), *String::Utf8Value(group)))
      return;
 
    fileused.Dispose();
@@ -78,18 +75,17 @@ Handle<Value> CElmLayout::theme_get() const
 
 void CElmLayout::theme_set(Handle <Value> val)
 {
-   if (!val->IsArray())
-     return;
+   Local<Object> obj = val->ToObject();
+   Local<Value> klass = obj->Get(String::NewSymbol("class"));
+   Local<Value> group = obj->Get(String::NewSymbol("group"));
+   Local<Value> style = obj->Get(String::NewSymbol("style"));
 
-   Eina_Bool status;
-   Local<Object> theme = val->ToObject();
-
-   status = elm_layout_theme_set(eo,
-                 *String::Utf8Value(theme->Get(0)),
-                 *String::Utf8Value(theme->Get(1)),
-                 *String::Utf8Value(theme->Get(2)));
-   if(!status)
-     return;
+   Eina_Bool success = elm_layout_theme_set(eo,
+                                            *String::Utf8Value(klass),
+                                            *String::Utf8Value(group),
+                                            *String::Utf8Value(style));
+   if (!success)
+        return;
 
    chosentheme.Dispose();
    chosentheme = Persistent<Value>::New(val);
