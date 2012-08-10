@@ -4,6 +4,9 @@
 #include <iostream>
 #include <fstream>
 
+#define METHOD_GET  1
+#define METHOD_POST 2
+
 using namespace v8;
 
 namespace elm {
@@ -35,6 +38,7 @@ class XMLHttpRequest
    Ecore_Event_Handler *complete_handler;
    Persistent<Value> onreadystatechange;
    Persistent<Object> jsObject;
+   int method;
    static Handle<FunctionTemplate> tmpl;
 
    XMLHttpRequest(Local<Object> _jsObject)
@@ -209,6 +213,15 @@ class XMLHttpRequest
           return Undefined();
 
         XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+
+        String::Utf8Value method(args[0]->ToString());
+        if (!strcmp(*method, "GET"))
+          self->method = METHOD_GET;
+        else if (!strcmp(*method, "POST"))
+          self->method = METHOD_POST;
+        else
+          return Undefined();
+
         /* TODO - Add POST Method treatment */
         if (self->url)
           ecore_con_url_free(self->url);
@@ -216,6 +229,71 @@ class XMLHttpRequest
         ecore_con_url_data_set(self->url, reinterpret_cast<void *>(self));
 
         return Undefined();
+     }
+
+   static Handle<String> UrlEncode(Handle<String> str)
+     {
+       HandleScope scope;
+
+       Handle<Object> global = Context::GetCurrent()->Global();
+       Handle<Value> value = global->Get(String::NewSymbol("encodeURIComponent"));
+       Handle<Function> func = Handle<Function>::Cast(value);
+       Handle<Value> args[1];
+       args[0] = str;
+       Handle<String> result = func->Call(global, 1, args)->ToString();
+
+       return scope.Close(result);
+     }
+
+   static void JSArrayToURL(Eina_Strbuf *out, Handle<Array> array, Handle<String> key)
+     {
+        HandleScope scope;
+
+        for (unsigned int i = 0; i < array->Length(); i++)
+          {
+            if (i > 0)
+              eina_strbuf_append(out, "&");
+            eina_strbuf_append(out, *String::Utf8Value(UrlEncode(key)));
+            eina_strbuf_append_printf(out, "%d=", i + 1);
+            eina_strbuf_append(out, *String::Utf8Value(UrlEncode(array->Get(i)->ToString())));
+          }
+
+     }
+
+   static char *JSObjectToURL(Handle<Object> object)
+     {
+        HandleScope scope;
+
+        Local<Array> properties = object->GetOwnPropertyNames();
+
+        Eina_Strbuf *out = eina_strbuf_new();
+        for (unsigned int i = 0; i < properties->Length(); i++)
+          {
+            Local<String> key = properties->Get(i)->ToString();
+            Local<Value> value = object->Get(key);
+
+            if (i > 0)
+              eina_strbuf_append(out, "&");
+
+            if (value->IsArray())
+              JSArrayToURL(out, Handle<Array>::Cast(value), key);
+            else
+              {
+                eina_strbuf_append(out, *String::Utf8Value(UrlEncode(key)));
+                eina_strbuf_append(out, "=");
+                eina_strbuf_append(out, *String::Utf8Value(UrlEncode(value->ToString())));
+              }
+          }
+
+        char *result = strdup(eina_strbuf_string_get(out));
+        eina_strbuf_free(out);
+
+        return result;
+     }
+
+   static char *GetAssignableUtf8Value(Handle<String> string)
+     {
+        return strdup(*String::Utf8Value(string));
      }
 
    static Handle<Value> send(const Arguments& args)
@@ -236,13 +314,35 @@ class XMLHttpRequest
         self->complete_handler = ecore_event_handler_add(ECORE_CON_EVENT_URL_COMPLETE,
                                                          XMLHttpRequest::CompletionCb,
                                                          reinterpret_cast<void *>(self));
-
-        if (!ecore_con_url_get(self->url))
+        if (self->method == METHOD_GET)
           {
-             HTTP_ERR( "Unable to send request");
-             self->reset();
+            if (!ecore_con_url_get(self->url))
+              {
+                 HTTP_ERR( "Unable to send request");
+                 self->reset();
+              }
           }
+        else
+          {
+            char *data;
 
+            if (args[0]->IsNull() || args[0]->IsUndefined())
+              data = NULL;
+            else if (args[0]->IsString())
+              data =  GetAssignableUtf8Value(args[0]->ToString());
+            else if (args[0]->IsObject())
+              data = JSObjectToURL(args[0]->ToObject());
+            else
+              data = GetAssignableUtf8Value(UrlEncode(args[0]->ToString()));
+
+            if (!ecore_con_url_post(self->url, data, data == NULL ? 0 : strlen(data), NULL))
+              {
+                 HTTP_ERR( "Unable to send request");
+                 self->reset();
+              }
+
+            free(data);
+          }
         return Undefined();
      }
 
