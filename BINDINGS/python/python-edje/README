@@ -3,14 +3,14 @@
 REQUIREMENTS
 ============
 
- * Edje >= 1.0.0
- * Eet >= 1.4.0          (indirect, Edje dependency)
- * Embryo >= 1.0.0       (indirect, Edje dependency)
- * Ecore >= 1.0.0        (indirect, Edje dependency)
- * Evas >= 1.0.0
- * Python-Evas >= 0.7.3
- * Cython >= 0.13
- * Python >= 2.4
+ * Edje >= 1.7.0
+ * Eet >= 1.7.0          (indirect, Edje dependency)
+ * Embryo >= 1.7.0       (indirect, Edje dependency)
+ * Ecore >= 1.7.0        (indirect, Edje dependency)
+ * Evas >= 1.7.0
+ * Python-Evas >= 1.7.0
+ * Cython >= 0.16  (not required with release tarballs)
+ * Python >= 2.7   (tested version, may work with older or newer)
 
 
 BUILDING AND INSTALLING
