@@ -3,13 +3,13 @@
 REQUIREMENTS
 ============
 
- * Emotion >= 0.2.0.52190
- * Evas >= 1.0.0  (indirect, Emotion dependency)
- * Ecore >= 1.0.0 (indirect, Emotion dependency)
- * Eina >= 1.0.0  (indirect, Emotion dependency)
- * Python-Evas >= 0.7.3
- * Cython >= 0.12.1
- * Python >= 2.4
+ * Emotion >= 1.7.0
+ * Evas >= 1.7.0        (indirect, Emotion dependency)
+ * Ecore >= 1.7.0       (indirect, Emotion dependency)
+ * Eina >= 1.7.0        (indirect, Emotion dependency)
+ * Python-Evas >= 1.7.0
+ * Cython >= 0.16       (not required with release tarballs)
+ * Python >= 2.7        (tested version, may work with older or newer)
 
 
 BUILDING AND INSTALLING
