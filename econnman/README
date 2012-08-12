@@ -3,9 +3,24 @@ ConnMan User Interface in EFL
 REQUIREMENTS
 ============
 
- * Python-Elementary >= 0.7.3
- * Python-E_DBus >= 0.7.3
+ * Python-Elementary >= 1.7.0
+ * Python-E_DBus >= 1.7.0
  * Python >= 2.7
+
+
+RUNNING
+=======
+
+Executing econnman without arguments will start it WITHOUT the agent
+support. Any requested interaction will be left to existing agents, if
+any. This means that if you need to input passwords, it will use
+another agent.
+
+If you do not have another agent and need to type in passwords, then
+start econnman with the agent support:
+
+        econnman-bin --agent
+
 
 
 BUILDING AND INSTALLING

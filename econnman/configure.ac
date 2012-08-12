@@ -9,6 +9,13 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_PATH_PYTHON([2.7])
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
+# not strictly needed during compile, but let's force this check
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([PY_EFL], [
+   python-elementary >= 1.7.0
+   python-edbus >= 1.7.0
+])
+
 AC_CONFIG_FILES([
 Makefile
 ])
