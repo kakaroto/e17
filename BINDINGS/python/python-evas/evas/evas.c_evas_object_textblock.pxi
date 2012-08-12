@@ -61,19 +61,16 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         @rtype: str
         """
         cdef const_Evas_Textblock_Style *style
-        cdef const_char_ptr s
         style = evas_object_textblock_style_get(self.obj)
-        s = evas_textblock_style_get(style)
-        if s != NULL:
-            return s
+        return _ctouni(evas_textblock_style_get(style))
 
-    def style_set(self, const_char_ptr value):
+    def style_set(self, value):
         """set the textblock style information
 
         @param value:
         """
         cdef Evas_Textblock_Style *style = evas_textblock_style_new()
-        evas_textblock_style_set(style, value)
+        evas_textblock_style_set(style, _cfruni(value))
         evas_object_textblock_style_set(self.obj, style)
         evas_textblock_style_free(style)
 
@@ -81,7 +78,7 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
         def __get__(self):
             return self.style_get()
 
-        def __set__(self, const_char_ptr value):
+        def __set__(self, value):
             self.style_set(value)
 
     def text_markup_get(self):
@@ -89,39 +86,33 @@ cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextbloc
 
         @rtype: str
         """
-        cdef const_char_ptr s
-        s = evas_object_textblock_text_markup_get(self.obj)
-        if s != NULL:
-            return s
+        return _ctouni(evas_object_textblock_text_markup_get(self.obj))
 
-    def text_markup_set(self, const_char_ptr value):
+    def text_markup_set(self, value):
         """set the textblock markup information
 
         @param value:
         """
-        evas_object_textblock_text_markup_set(self.obj, value)
+        evas_object_textblock_text_markup_set(self.obj, _cfruni(value))
 
     property text_markup:
         def __get__(self):
             return self.text_markup_get()
 
-        def __set__(self, const_char_ptr value):
+        def __set__(self, value):
             self.text_markup_set(value)
 
     def replace_char_get(self):
-        cdef const_char_ptr s
-        s = evas_object_textblock_replace_char_get(self.obj)
-        if s != NULL:
-            return s
+        return _ctouni(evas_object_textblock_replace_char_get(self.obj))
 
-    def replace_char_set(self, const_char_ptr value):
-        evas_object_textblock_replace_char_set(self.obj, value)
+    def replace_char_set(self, value):
+        evas_object_textblock_replace_char_set(self.obj, _cfruni(value))
 
     property replace_char:
         def __get__(self):
             return self.replace_char_get()
 
-        def __set__(self, const_char_ptr value):
+        def __set__(self, value):
             self.replace_char_set(value)
 
     def line_number_geometry_get(self, int index):

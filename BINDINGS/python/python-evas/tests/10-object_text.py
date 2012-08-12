@@ -37,7 +37,7 @@ class TextBasics(unittest.TestCase):
         text = "ASCII"
         o = self.canvas.Text(text=text, font=("sans serif", 20),
                              color="#ff0000")
-        self.assertEqual(isinstance(o.text_get(), str), True)
+        self.assertEqual(isinstance(o.text_get(), unicode), True)
         self.assertEqual(o.text_get(), text)
 
     def testUnicode1(self):
