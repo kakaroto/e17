@@ -3,12 +3,12 @@
 REQUIREMENTS
 ============
 
- * Elementary >= 0.7.0.52890
- * Evas >= 1.0.0  (indirect, Elementary dependency)
- * Ecore >= 1.0.0 (indirect, Elementary dependency)
- * Python-Evas >= 0.7.3
- * Cython >= 0.13
- * Python >= 2.4
+ * Elementary >= 1.7.0
+ * Evas >= 1.7.0        (indirect, Elementary dependency)
+ * Ecore >= 1.7.0       (indirect, Elementary dependency)
+ * Python-Evas >= 1.7.0
+ * Cython >= 0.16       (not required with release tarballs)
+ * Python >= 2.7        (tested version, may work with older or newer)
 
 
 BUILDING AND INSTALLING

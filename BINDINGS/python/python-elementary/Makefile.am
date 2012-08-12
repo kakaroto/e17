@@ -1,7 +1,9 @@
 ACLOCAL_AMFLAGS = -I m4
 
 cython_ins = elementary/elementary.c_elementary.pyx
-cython_outs = elementary/elementary.c_elementary.c
+cython_outs = \
+	elementary/elementary.c_elementary.c \
+	elementary/elementary.c_elementary.h
 CYTHONFLAGS = @CYTHONFLAGS@
 CYTHON_ELEMENTARY_FLAGS = -I@CYTHON_ELEMENTARY_INCLUDEDIR@
 EPYDOC = @EPYDOC@
@@ -229,21 +231,23 @@ EXTRA_DIST = \
 
 # do not distcleancheck for generated elementary.c_elementary.[ch]
 distcleancheck_listfiles = \
-	find . -type f -not -name 'elementary.c_elementary.c'
+	find . -type f \
+		\( -not -name 'elementary.c_elementary.c' -a \
+		   -not -name 'elementary.c_elementary.h' \)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = python-elementary.pc
 
 if HAVE_CYTHON
 BUILT_SOURCES = $(cython_outs)
-$(top_builddir)/elementary/elementary.c_elementary.c: $(top_srcdir)/elementary/elementary.c_elementary.pyx $(c_elementary_deps) $(c_elementary_includes) Makefile
+$(top_builddir)/elementary/elementary.c_elementary.c $(top_builddir)/elementary/elementary.c_elementary.h: $(top_srcdir)/elementary/elementary.c_elementary.pyx $(c_elementary_deps) $(c_elementary_includes) Makefile
 	@$(MKDIR_P) $(top_builddir)/elementary
 	$(AM_V_GEN)cd $(top_builddir) && $(PYTHON) -m cython $(CYTHON_ELEMENTARY_FLAGS) -I$(top_srcdir)/include $(CYTHONFLAGS) -o $@ $<
 else
-$(top_builddir)/elementary/elementary.c_elementary.c: Makefile
+$(top_builddir)/elementary/elementary.c_elementary.c $(top_builddir)/elementary/elementary.c_elementary.h: Makefile
 	@echo "NOTE: No cython, using pre-generated elementary.c_elementary.[ch]"
 	@$(MKDIR_P) $(top_builddir)/elementary
-	$(AM_V_GEN)for f in elementary/elementary.c_elementary.c; do if ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f > /dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
+	$(AM_V_GEN)for f in elementary/elementary.c_elementary.c elementary/elementary.c_elementary.h; do if ! cmp $(top_srcdir)/$$f $(top_srcdir)/$$f > /dev/null; then cp $(top_srcdir)/$$f $(top_builddir)/$$f; fi; done
 endif
 
 AM_CPPFLAGS = \
@@ -258,7 +262,10 @@ pyexecelementary_LTLIBRARIES = c_elementary.la
 c_elementary_la_LIBADD = @ELEMENTARY_LIBS@
 c_elementary_la_LDFLAGS = -module -avoid-version
 c_elementary_la_LIBTOOLFLAGS = --tag=disable-static
-c_elementary_la_SOURCES = $(top_builddir)/elementary/elementary.c_elementary.c
+c_elementary_la_SOURCES = \
+	$(top_builddir)/elementary/elementary.c_elementary.c \
+	$(top_builddir)/elementary/elementary.c_elementary.h
+
 
 pyelementarydir = $(pythondir)/elementary
 pyelementary_PYTHON = elementary/__init__.py elementary/cursors.py
