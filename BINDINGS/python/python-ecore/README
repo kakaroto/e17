@@ -3,11 +3,11 @@
 REQUIREMENTS
 ============
 
- * Evas >= 1.0.0
- * Ecore >= 1.0.0
- * Cython >= 0.13
- * Python-Evas >= 0.7.3
- * Python >= 2.4
+ * Evas >= 1.7.0
+ * Ecore >= 1.7.0
+ * Python-Evas >= 1.7.0
+ * Cython >= 0.16 (not required with release tarballs)
+ * Python >= 2.7  (tested version, may work with older or newer)
 
 
 BUILDING AND INSTALLING

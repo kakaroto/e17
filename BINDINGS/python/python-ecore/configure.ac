@@ -1,25 +1,24 @@
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
-m4_define([v_maj], [0])
+m4_define([v_maj], [1])
 m4_define([v_min], [7])
-m4_define([v_mic], [3])
-m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v export || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
+m4_define([v_mic], [0])
+m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v '\(export\|Unversioned directory\)' || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
 m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
 ##--   When released, remove the dnl on the below line
-dnl m4_undefine([v_rev])
+m4_undefine([v_rev])
 ##--   When doing snapshots - change soname. remove dnl on below line
-m4_define([relname], [ver-pre-svn-08])
-m4_define([v_rel], [-release relname])
+dnl m4_define([relname], [ver-pre-svn-07])
+dnl m4_define([v_rel], [-release relname])
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
-m4_ifdef([v_rev], [m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])],
-[m4_define([v_ver], [v_maj.v_min.v_mic])])
-m4_define([lt_rev], m4_eval(v_maj + v_min))
-m4_define([lt_cur], v_mic)
+m4_ifdef([v_rev], [m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])], [m4_define([v_ver], [v_maj.v_min.v_mic])])
+m4_define([lt_cur], m4_eval(v_maj + v_min))
+m4_define([lt_rev], v_mic)
 m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-AC_INIT([python-ecore], [v_ver], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([python-ecore], [v_ver-alpha], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.65])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -62,14 +61,14 @@ else
 fi
 AC_SUBST(pkgconfig_requires_private)
 
-pkgconfig_ecore_requires_libs="ecore >= 1.0.0"
+pkgconfig_ecore_requires_libs="ecore >= 1.7.0"
 AC_SUBST(pkgconfig_ecore_requires_libs)
 PKG_CHECK_MODULES([ECORE], [$pkgconfig_ecore_requires_libs])
 wanted_cython_files="${srcdir}/ecore/ecore.c_ecore.pyx"
 
 have_ecore_x="no"
 want_ecore_x="auto"
-pkgconfig_ecore_x_requires_libs="ecore-x >= 1.0.0"
+pkgconfig_ecore_x_requires_libs="ecore-x >= 1.7.0"
 AC_SUBST(pkgconfig_ecore_x_requires_libs)
 
 AC_ARG_ENABLE([ecore-x],
@@ -96,7 +95,7 @@ AM_CONDITIONAL(WANT_ECORE_X,
 
 have_ecore_imf="no"
 want_ecore_imf="auto"
-pkgconfig_ecore_imf_requires_libs="ecore-imf >= 1.0.0"
+pkgconfig_ecore_imf_requires_libs="ecore-imf >= 1.7.0"
 AC_SUBST(pkgconfig_ecore_imf_requires_libs)
 AC_ARG_ENABLE([ecore-imf],
    [AC_HELP_STRING([--disable-ecore-imf],
@@ -122,7 +121,7 @@ AM_CONDITIONAL(WANT_ECORE_IMF,
 
 have_ecore_win32="no"
 want_ecore_win32="auto"
-pkgconfig_ecore_win32_requires_libs="ecore-win32 >= 1.0.0"
+pkgconfig_ecore_win32_requires_libs="ecore-win32 >= 1.7.0"
 AC_SUBST(pkgconfig_ecore_win32_requires_libs)
 AC_ARG_ENABLE([ecore-win32],
    [AC_HELP_STRING([--disable-ecore-win32],
@@ -148,7 +147,7 @@ AM_CONDITIONAL(WANT_ECORE_WIN32,
 
 have_ecore_file="no"
 want_ecore_file="auto"
-pkgconfig_ecore_file_requires_libs="ecore-file >= 1.0.0"
+pkgconfig_ecore_file_requires_libs="ecore-file >= 1.7.0"
 AC_SUBST(pkgconfig_ecore_file_requires_libs)
 AC_ARG_ENABLE([ecore-file],
    [AC_HELP_STRING([--disable-ecore-file],
@@ -174,7 +173,7 @@ AM_CONDITIONAL(WANT_ECORE_FILE,
 
 have_ecore_evas="no"
 want_ecore_evas="auto"
-pkgconfig_ecore_evas_requires_libs="ecore-evas >= 1.0.0"
+pkgconfig_ecore_evas_requires_libs="ecore-evas >= 1.7.0"
 AC_SUBST(pkgconfig_ecore_evas_requires_libs)
 AC_ARG_ENABLE([ecore-evas],
    [AC_HELP_STRING([--disable-ecore-evas],
@@ -193,7 +192,7 @@ if test "x$want_ecore_evas" = "xyes" -a "x$have_ecore_evas" = "xno"; then
     AC_MSG_ERROR([ecore-evas support requested, but not found by pkg-config: $pkgconfig_ecore_evas_requires_libs])
 fi
 CYTHON_ECORE_EVAS_INCLUDEDIR=""
-python_evas_version="0.7.3"
+python_evas_version="1.7.0"
 if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
    pkgconfig_python_evas_requires_libs="python-evas >= ${python_evas_version}"
    AC_SUBST(pkgconfig_python_evas_requires_libs)
@@ -210,10 +209,10 @@ AM_CONDITIONAL(WANT_ECORE_EVAS,
    [test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes" -a "x${have_python_evas}" = "xyes"])
 AC_SUBST(CYTHON_ECORE_EVAS_INCLUDEDIR)
 
-AM_PATH_PYTHON(2.5)
+AM_PATH_PYTHON(2.7)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
-cython_required_version=0.13
+cython_required_version=0.16
 AM_CHECK_CYTHON([$cython_required_version], [:], [:])
 
 have_cython_precompiled=no
