@@ -47,12 +47,12 @@ struct Vector2
         return *this;
    }
 
-   const Vector2<T>& operator-(const Vector2<T>& rhs)
+   const Vector2<T> operator-(const Vector2<T>& rhs)
    {
         return Vector2<T>(*this) -= rhs;
    }
 
-   const Vector2<T>& operator+(const Vector2<T>& rhs)
+   const Vector2<T> operator+(const Vector2<T>& rhs)
    {
         return Vector2<T>(*this) += rhs;
    }
@@ -61,12 +61,11 @@ struct Vector2
    {
         this->x *= rhs;
         this->y *= rhs;
-        printf("FIXME: What the Hell??? %f\n", rhs);
 
         return *this;
    }
 
-   const Vector2<T>& operator*(const T rhs) const
+   const Vector2<T> operator*(const T rhs) const
    {
         return Vector2<T>(*this) *= rhs;
    }

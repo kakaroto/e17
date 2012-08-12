@@ -187,8 +187,7 @@ void App ::DispatchMouseMove(int x, int y, int buttons)
    dir -= this->pc->Position();
    dir.Normalize();
 
-   printf("Direction: %f %f\n", dir.x, dir.y);
-   this->pc->Move(dir, 2);
+   this->pc->Move(dir, 1);
 }
 
 
