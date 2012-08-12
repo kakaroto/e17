@@ -153,6 +153,6 @@ Evas_Object *clouseau_obj_information_list_add(Evas_Object *parent);
 void clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *lb);
 
 /* Public */
-void clouseau_object_information_list_clear(void);
+EAPI void clouseau_object_information_list_clear(void);
 
 #endif

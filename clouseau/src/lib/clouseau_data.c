@@ -23,7 +23,7 @@ static Eet_Data_Descriptor *clouseau_variant_edd = NULL;
 static Eet_Data_Descriptor *clouseau_protocol_edd = NULL;
 static Eet_Data_Descriptor *clouseau_map_point_props_edd = NULL;
 
-void
+EAPI void
 clouseau_lines_free(bmp_info_st *st)
 {  /* Free lines asociated with a bmp */
    if (st->lx)
@@ -35,7 +35,7 @@ clouseau_lines_free(bmp_info_st *st)
    st->lx = st->ly = NULL;
 }
 
-void
+EAPI void
 clouseau_bmp_blob_free(bmp_info_st *st)
 {  /* We also free all lines drawn in this bmp canvas */
    clouseau_lines_free(st);
@@ -57,7 +57,7 @@ _clouseau_tree_item_free(Clouseau_Tree_Item *parent)
    free(parent);
 }
 
-void
+EAPI void
 clouseau_tree_free(Eina_List *tree)
 {
    Clouseau_Tree_Item *treeit;
@@ -82,7 +82,7 @@ static const struct {
    { CLOUSEAU_UNKNOWN, NULL }
 };
 
-Clouseau_Message_Type
+EAPI Clouseau_Message_Type
 clouseau_packet_mapping_type_get(const char *name)
 {
    int i;
@@ -131,7 +131,7 @@ _clouseau_variant_type_set(const char *type,
    return EINA_TRUE;
 }
 
-void
+EAPI void
 clouseau_variant_free(Variant_st *v)
 {
    if (v->data)
@@ -140,7 +140,7 @@ clouseau_variant_free(Variant_st *v)
    free(v);
 }
 
-Variant_st *
+EAPI Variant_st *
 clouseau_variant_alloc(Clouseau_Message_Type t, size_t size, void *info)
 {
    Variant_st *v;
@@ -1002,7 +1002,7 @@ _clouseau_highlight_del(void *data,
    ecore_animator_del(data);
 }
 
-void
+EAPI void
 clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view)
 {
    Ecore_Animator *t;
@@ -1096,7 +1096,7 @@ libclouseau_lines_cb(void *data,
          (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y));
 }
 
-int
+EAPI int
 clouseau_init(void)
 {
    if (clouseau_init_count++ != 0)
@@ -1111,7 +1111,7 @@ clouseau_init(void)
    return clouseau_init_count;
 }
 
-int
+EAPI int
 clouseau_shutdown(void)
 {
    if (--clouseau_init_count != 0)

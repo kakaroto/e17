@@ -170,17 +170,17 @@ Clouseau_Object *clouseau_object_information_get(Clouseau_Tree_Item *treeit);
 void clouseau_object_information_free(Clouseau_Object *oinfo);
 
 /* Exported function */
-int clouseau_init(void);
-int clouseau_shutdown(void);
+EAPI int clouseau_init(void);
+EAPI int clouseau_shutdown(void);
 
 Variant_st *clouseau_variant_alloc(Clouseau_Message_Type t, size_t size, void *info);
-void clouseau_variant_free(Variant_st *v);
-void clouseau_tree_free(Eina_List *tree);
-void clouseau_bmp_blob_free(bmp_info_st *st);
-void clouseau_lines_free(bmp_info_st *st);
+EAPI void clouseau_variant_free(Variant_st *v);
+EAPI void clouseau_tree_free(Eina_List *tree);
+EAPI void clouseau_bmp_blob_free(bmp_info_st *st);
+EAPI void clouseau_lines_free(bmp_info_st *st);
 
-void clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view);
+EAPI void clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view);
 
-Clouseau_Message_Type clouseau_packet_mapping_type_get(const char *name);
+EAPI Clouseau_Message_Type clouseau_packet_mapping_type_get(const char *name);
 
 #endif  /*  EET_DATA_H  */

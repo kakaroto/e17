@@ -623,7 +623,7 @@ clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *
    }
 }
 
-void
+EAPI void
 clouseau_object_information_list_clear(void)
 {
    _clouseau_item_tree_free();
