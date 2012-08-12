@@ -16,7 +16,9 @@ econnman-bin: $(top_srcdir)/econnman-bin.in $(top_builddir)/Makefile
 	chmod +x $(top_builddir)/econnman-bin
 
 desktopdir = $(datadir)/applications
-desktop_DATA = data/desktop/econnman.desktop
+desktop_DATA = \
+	data/desktop/econnman-agent.desktop \
+	data/desktop/econnman.desktop
 
 EXTRA_DIST += $(desktop_DATA)
 

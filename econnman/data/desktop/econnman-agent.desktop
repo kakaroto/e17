@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Icon=econnman
+Name=EConnMan with Agent
+GenericName=Connection Manager
+Comment=Manage your internet connections using ConnMan and EFL. Version with agent to get passwords and other input.
+Categories=Network;Settings;Enlightenment;
+Exec=econnman-bin --agent
+StartupNotify=true
+Terminal=false
