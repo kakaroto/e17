@@ -12,6 +12,8 @@ In order to build modules ensure you have the following installed in
 your machine:
 
  * Cython: converts high level definitions of .pyx into .c to be
-   compiled as a loadable module. As of now, version 0.13 is
+   compiled as a loadable module. As of now, version 0.16 is
    required, not older, not newer.
- * Latest build of EFL
+
+ * Latest build of EFL. To ease the process of matching versions,
+   we're synchronizing EFL and Python bindings versions numbers.
