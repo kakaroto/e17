@@ -14,6 +14,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, standard_priority);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, select_mode);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmToolbar, items_count);
+GENERATE_METHOD_CALLBACKS(CElmToolbar, item_state_get);
+GENERATE_METHOD_CALLBACKS(CElmToolbar, item_state_set);
 
 GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(icon_size),
@@ -23,12 +25,50 @@ GENERATE_TEMPLATE(CElmToolbar,
                   PROPERTY(shrink_mode),
                   PROPERTY(horizontal),
                   PROPERTY(standard_priority),
-                  PROPERTY_RO(items_count));
+                  PROPERTY_RO(items_count),
+                  METHOD(item_state_set),
+                  METHOD(item_state_get),
+                  PROPERTY(select_mode));
 
 CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_toolbar_add(parent->GetEvasObject()))
 {
 }
+
+void CElmToolbar::AddItemStates(Local<Object> obj, Elm_Object_Item *item, Handle<Value> states)
+{
+   if (!states->IsObject())
+     return;
+
+   Local<Object> states_obj = states->ToObject();
+   Local<Array> props = states_obj->GetOwnPropertyNames();
+   Handle<Object> wrapped_states = Object::New();
+
+   for (unsigned i = 0; i < props->Length(); ++i)
+     {
+        Local<Value> key = props->Get(i);
+        Local<Value> paramValues = states_obj->Get(key->ToString());
+        if (!paramValues->IsObject())
+          continue;
+
+        Local<Object> params = paramValues->ToObject();
+
+        Local<Value> icon = params->Get(String::NewSymbol("icon"));
+        Local<Value> data = params->Get(String::NewSymbol("data"));
+        Local<Value> label = params->Get(String::NewSymbol("label"));
+        Local<Value> callback = params->Get(String::NewSymbol("on_select"));
+
+        Elm_Toolbar_Item_State *state = elm_toolbar_item_state_add(item,
+            icon->IsUndefined() ? NULL : *String::Utf8Value(icon),
+            label->IsUndefined() ? NULL : *String::Utf8Value(label),
+            OnSelect, new Item(jsObject, data, callback));
+
+        wrapped_states->Set(key, External::Wrap(state));
+     }
+
+   obj->SetHiddenValue(String::NewSymbol("elm::toolbar::states"), wrapped_states);
+}
+
 
 Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
 {
@@ -39,6 +79,7 @@ Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
    Local<Value> data = obj->Get(String::NewSymbol("data"));
    Local<Value> label = obj->Get(String::NewSymbol("label"));
    Local<Value> callback = obj->Get(String::NewSymbol("on_select"));
+   Local<Value> states = obj->Get(String::NewSymbol("states"));
 
    Elm_Object_Item *item;
    Local<Value> next;
@@ -57,6 +98,7 @@ Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
                                     label->IsUndefined() ? NULL : *String::Utf8Value(label),
                                     OnSelect, new Item(jsObject, data, callback));
 
+   AddItemStates(obj, item, states);
    obj->SetHiddenValue(String::NewSymbol("elm::toolbar::item"), External::Wrap(item));
 
    return scope.Close(obj);
@@ -255,6 +297,54 @@ void CElmToolbar::standard_priority_set(Handle<Value> value)
 Handle<Value> CElmToolbar::items_count_get() const
 {
    return Number::New(elm_toolbar_items_count(eo));
+}
+
+Handle<Value> CElmToolbar::item_state_set(const Arguments& args)
+{
+   Local<Object> item = args[0]->ToObject();
+   if (item->IsUndefined())
+     return Undefined();
+
+   Elm_Object_Item *toolbar_item = static_cast<Elm_Object_Item *>(External::Unwrap(item->GetHiddenValue(String::NewSymbol("elm::toolbar::item"))));
+   if (!toolbar_item)
+     return Undefined();
+
+   if (!args[1]->IsString())
+     {
+        elm_toolbar_item_state_unset(toolbar_item);
+        return Boolean::New(true);
+     }
+
+   Handle<Object> states = item->GetHiddenValue(String::NewSymbol("elm::toolbar::states"))->ToObject();
+   Elm_Toolbar_Item_State *state = static_cast<Elm_Toolbar_Item_State *>(External::Unwrap(states->Get(args[1]->ToString())));
+   if (state)
+     return Boolean::New(elm_toolbar_item_state_set(toolbar_item, state));
+
+   return Undefined();
+}
+
+Handle<Value> CElmToolbar::item_state_get(const Arguments& args)
+{
+   Local<Object> item = args[0]->ToObject();
+   if (item->IsUndefined())
+     return Undefined();
+
+   Elm_Object_Item *toolbar_item = static_cast<Elm_Object_Item *>(External::Unwrap(item->GetHiddenValue(String::NewSymbol("elm::toolbar::item"))));
+   if (!toolbar_item)
+     return Undefined();
+
+   Handle<Object> states = item->GetHiddenValue(String::NewSymbol("elm::toolbar::states"))->ToObject();
+   Local<Array> props = states->GetOwnPropertyNames();
+   Elm_Toolbar_Item_State *elm_state = elm_toolbar_item_state_get(toolbar_item);
+
+   for (unsigned i = 0; i < props->Length(); ++i)
+     {
+        Local<Value> key = states->Get(i);
+        if ((void *)elm_state == (void *)External::Unwrap(states->Get(key->ToString())))
+          return key;
+     }
+
+   return Undefined();
 }
 
 }

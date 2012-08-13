@@ -30,6 +30,8 @@ private:
 
    static Persistent<FunctionTemplate> tmpl;
 
+   void AddItemStates(Local<Object>, Elm_Object_Item*, Handle<Value>);
+
 protected:
    CElmToolbar(Local<Object> _jsObject, CElmObject *parent);
    static Handle<FunctionTemplate> GetTemplate();
@@ -67,6 +69,9 @@ public:
    void select_mode_set(Handle<Value> value);
 
    Handle<Value> items_count_get() const;
+
+   Handle<Value> item_state_set(const Arguments& args);
+   Handle<Value> item_state_get(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };

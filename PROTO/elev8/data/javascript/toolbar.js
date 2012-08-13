@@ -49,6 +49,37 @@ function toolbar_cb(item) {
 
 win.elements.toolbar.elements.home = {icon: 'home', label: 'Home', data: 'HOME', on_select: toolbar_cb};
 win.elements.toolbar.elements.chat = {icon: 'chat', label: 'Chat', data: 'CHAT', on_select: toolbar_cb};
+win.elements.toolbar.elements.multi = {
+    icon: 'accessories-calculator',
+    label: 'Calculator',
+    on_select: function() {
+        print('Changing state to text');
+        print(win.elements.toolbar.item_state_set(
+            win.elements.toolbar.elements.multi, 'text'));
+    },
+    states: {
+        'text': {
+            icon: 'accessories-text-editor',
+            label: 'Text Editor',
+            on_select: function() {
+                print('Changing state to filemanager');
+                print(win.elements.toolbar.item_state_set(
+                    win.elements.toolbar.elements.multi, 'filemanager'));
+
+                print('Current state: ', win.elements.toolbar.elements.multi);
+            }
+        },
+        'filemanager': {
+            icon: 'file-manager',
+            label: 'File Manager',
+            on_select: function() {
+                print('Changing state to default');
+                print(win.elements.toolbar.item_state_set(
+                    win.elements.toolbar.elements.multi, null));
+            }
+        }
+    }
+}
 
 win.elements.toolbar.elements.clock = {
     label : 'Clock',
