@@ -1,0 +1,34 @@
+data
+  {
+      /* color for your own name in chat */
+      item: "shotgun/color/me" "00FF01";
+      /* color for other person's name in chat */
+      item: "shotgun/color/you" "0001FF";
+      /* color for new message alert chat tabs */
+      item: "shotgun/color/message" "263E57";
+  }
+collections
+  {
+
+#define ICON(Name, Min, Max, Rel1, Rel2)                      \
+   group { name: "elm/icon/shotgun/"##Name##"/default"; min: Min Min; max: Max Max; \
+      images.image: Name##".png" COMP; parts { part { name: "base";             \
+			   description { aspect: 1.0 1.0; aspect_preference: BOTH; rel1.offset: Rel1 Rel1; rel2.offset: Rel2 Rel2; \
+               image.normal: Name##".png"; } } } }
+
+     ICON("x", 16, 0, 0, 0);
+     ICON("useradd", 16, 0, 0, 0);
+     ICON("userdel", 16, 0, 0, 0);
+     ICON("dialog_ok", 16, 0, 0, 0);
+     ICON("settings", 16, 0, 0, 0);
+     ICON("status", 16, 0, 0, 0);
+     ICON("logout", 16, 0, 0, 0);
+
+     ICON("useroffline", 16, 0, 5, -6);
+     ICON("userunknown", 16, 0, 5, -6);
+     ICON("arrows_both", 16, 0, 5, -6);
+     ICON("arrows_pending_left", 16, 0, 5, -6);
+     ICON("arrows_pending_right", 16, 0, 5, -6);
+     ICON("arrows_rejected", 16, 0, 5, -6);
+
+  }

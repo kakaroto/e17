@@ -1,0 +1,11 @@
+PROTOCOL:
+	should probably wait for server return instead of assuming things just work
+BUGS:
+	contact list right click menu in grid view
+
+FEATURES:
+	message status handling
+	user avatars
+	file transfers
+	chat text styles (bold, italic, underline, etc)
+	OTR support

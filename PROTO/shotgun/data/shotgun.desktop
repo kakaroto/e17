@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Shotgun
+Comment=XMPP Client
+Exec=shotgun
+Icon=shotgun
+Terminal=false
+Type=Application
+Categories=Application;Network;InstantMessaging
