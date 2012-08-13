@@ -1232,6 +1232,10 @@ def connect_service(path, properties):
             log.debug("Failed to Connect to %s (%s): %s", name, path, exc)
             return
         log.error("Failed to Connect to %s (%s): %s", name, path, exc)
+        if exc_name == "net.connman.Error.NotRegistered":
+            popup_error(win, "Failed to Connect to %s" % name,
+                        "Not registered. Try running \"$ econnman-bin -a\"")
+            return
         popup_error(win, "Failed to Connect to %s" % name,
                     exc.get_dbus_message())
 
