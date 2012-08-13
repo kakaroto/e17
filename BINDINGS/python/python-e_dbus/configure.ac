@@ -61,7 +61,7 @@ else
 fi
 AC_SUBST(pkgconfig_requires_private)
 
-pkgconfig_edbus_requires_libs="dbus-python >= 1.0.0, edbus >= 1.7.0"
+pkgconfig_edbus_requires_libs="dbus-python >= 0.83.0, edbus >= 1.7.0"
 AC_SUBST(pkgconfig_edbus_requires_libs)
 PKG_CHECK_MODULES([EDBUS], [$pkgconfig_edbus_requires_libs])
 
