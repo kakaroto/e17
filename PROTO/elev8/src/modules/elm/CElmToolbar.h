@@ -30,7 +30,11 @@ private:
 
    static Persistent<FunctionTemplate> tmpl;
 
-   void AddItemStates(Local<Object>, Elm_Object_Item*, Handle<Value>);
+   void AddItemStates(Local<Object>, Elm_Object_Item*);
+   Elm_Object_Item *CreateItem(Handle<Value> next,
+                     Handle<Value> icon, Handle<Value> label,
+                     Handle<Value> callback, Handle<Value> data);
+   Elm_Object_Item *CreateItem(Handle<Value> next);
 
 protected:
    CElmToolbar(Local<Object> _jsObject, CElmObject *parent);

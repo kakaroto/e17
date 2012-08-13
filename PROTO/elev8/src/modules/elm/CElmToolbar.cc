@@ -35,8 +35,9 @@ CElmToolbar::CElmToolbar(Local <Object> _jsObject, CElmObject *parent)
 {
 }
 
-void CElmToolbar::AddItemStates(Local<Object> obj, Elm_Object_Item *item, Handle<Value> states)
+void CElmToolbar::AddItemStates(Local<Object> obj, Elm_Object_Item *item)
 {
+   Local<Value> states = obj->Get(String::NewSymbol("states"));
    if (!states->IsObject())
      return;
 
@@ -69,36 +70,62 @@ void CElmToolbar::AddItemStates(Local<Object> obj, Elm_Object_Item *item, Handle
    obj->SetHiddenValue(String::NewSymbol("elm::toolbar::states"), wrapped_states);
 }
 
+Elm_Object_Item *CElmToolbar::CreateItem(Handle<Value> next,
+   Handle<Value> icon, Handle<Value> label,
+   Handle<Value> callback, Handle<Value> data)
+{
+   if (!next.IsEmpty())
+     return elm_toolbar_item_insert_before(eo,
+                    (Elm_Object_Item *)External::Unwrap(next),
+                    icon->IsUndefined() ? NULL : *String::Utf8Value(icon),
+                    label->IsUndefined() ? NULL : *String::Utf8Value(label),
+                    OnSelect, new Item(jsObject, data, callback));
+
+   return elm_toolbar_item_append(eo,
+                                  icon->IsUndefined() ? NULL : *String::Utf8Value(icon),
+                                  label->IsUndefined() ? NULL : *String::Utf8Value(label),
+                                  OnSelect, new Item(jsObject, data, callback));
+}
+
+Elm_Object_Item *CElmToolbar::CreateItem(Handle<Value> next)
+{
+   if (!next.IsEmpty())
+     return elm_toolbar_item_insert_before(eo,
+                    (Elm_Object_Item *)External::Unwrap(next),
+                    NULL, NULL, NULL, NULL);
+
+   return elm_toolbar_item_append(eo, NULL, NULL, NULL, NULL);
+}
 
 Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
 {
    HandleScope scope;
    Local<Object> obj = value->ToObject()->Clone();
-
-   Local<Value> icon = obj->Get(String::NewSymbol("icon"));
-   Local<Value> data = obj->Get(String::NewSymbol("data"));
-   Local<Value> label = obj->Get(String::NewSymbol("label"));
-   Local<Value> callback = obj->Get(String::NewSymbol("on_select"));
-   Local<Value> states = obj->Get(String::NewSymbol("states"));
-
    Elm_Object_Item *item;
    Local<Value> next;
 
    if (!replace->IsUndefined())
      next = replace->ToObject()->GetHiddenValue(String::NewSymbol("elm::toolbar::next"));
 
-   if (!next.IsEmpty())
-     item = elm_toolbar_item_insert_before(eo, (Elm_Object_Item *)External::Unwrap(next),
-                                           icon->IsUndefined() ? NULL : *String::Utf8Value(icon),
-                                           label->IsUndefined() ? NULL : *String::Utf8Value(label),
-                                           OnSelect, new Item(jsObject, data, callback));
+   if (obj->Has(String::NewSymbol("element")))
+     {
+        item = CreateItem(next);
+        elm_object_item_part_content_set(item, "object",
+                                         GetEvasObjectFromJavascript(Realise(obj->Get(String::NewSymbol("element"))->ToObject(), jsObject)));
+     }
+   else if (obj->Get(String::NewSymbol("separator"))->BooleanValue())
+     {
+        item = CreateItem(next);
+        elm_toolbar_item_separator_set(item, EINA_TRUE);
+     }
    else
-     item = elm_toolbar_item_append(eo,
-                                    icon->IsUndefined() ? NULL : *String::Utf8Value(icon),
-                                    label->IsUndefined() ? NULL : *String::Utf8Value(label),
-                                    OnSelect, new Item(jsObject, data, callback));
+     {
+        item = CreateItem(next, obj->Get(String::NewSymbol("icon")),
+             obj->Get(String::NewSymbol("label")), obj->Get(String::NewSymbol("on_select")),
+             obj->Get(String::NewSymbol("data")));
+        AddItemStates(obj, item);
+     }
 
-   AddItemStates(obj, item, states);
    obj->SetHiddenValue(String::NewSymbol("elm::toolbar::item"), External::Wrap(item));
 
    return scope.Close(obj);

@@ -20,6 +20,7 @@ var win = elm.realise(elm.Window({
             align : FILL_BOTH,
             resize : true,
             select_mode : 'none',
+            homogeneous: false,
             elements :
             [
                 {
@@ -27,6 +28,19 @@ var win = elm.realise(elm.Window({
                     on_select: function() {
                         print("Label only clicked")
                     }
+                },
+                {
+                    element: elm.Slider({
+                        hint_min: {width: 100, height: 50},
+                        align: FILL_BOTH,
+                        weight: EXPAND_BOTH,
+                        on_change: function(me) {
+                            print(me.value);
+                        }
+                    })
+                },
+                {
+                    separator: true
                 },
                 {
                     icon: 'apps',
@@ -48,6 +62,7 @@ function toolbar_cb(item) {
 }
 
 win.elements.toolbar.elements.home = {icon: 'home', label: 'Home', data: 'HOME', on_select: toolbar_cb};
+win.elements.toolbar.elements.sep = {separator: true};
 win.elements.toolbar.elements.chat = {icon: 'chat', label: 'Chat', data: 'CHAT', on_select: toolbar_cb};
 win.elements.toolbar.elements.multi = {
     icon: 'accessories-calculator',
