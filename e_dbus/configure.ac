@@ -202,7 +202,7 @@ EFL_ENABLE_BIN([edbus-notify-send], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-notify-test], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-ofono-test], [${enable_eofono}])
 EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
-EFL_ENABLE_BIN([edbus-performance-test], ["yes"])
+EFL_ENABLE_BIN([edbus-performance-test], ["no"])
 EFL_ENABLE_BIN([edbus-async-test], ["yes"])
 
 if test "x${have_edbus_test}" = "xyes" ; then
