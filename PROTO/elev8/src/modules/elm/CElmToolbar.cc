@@ -126,6 +126,9 @@ Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
         AddItemStates(obj, item);
      }
 
+   if (obj->Has(String::NewSymbol("priority")))
+     elm_toolbar_item_priority_set(item, obj->Get(String::NewSymbol("priority"))->Int32Value());
+
    obj->SetHiddenValue(String::NewSymbol("elm::toolbar::item"), External::Wrap(item));
 
    return scope.Close(obj);

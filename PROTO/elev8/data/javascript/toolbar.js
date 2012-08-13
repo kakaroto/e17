@@ -5,51 +5,81 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var win = elm.realise(elm.Window({
     title: "test",
-    width: 480,
     elements: {
         background: elm.Background({
             weight : EXPAND_BOTH,
             align : FILL_BOTH,
-            resize : true,
-            red : 255,
-            green : 0,
-            blue : 0,
+            resize : true
         }),
-        toolbar: elm.Toolbar({
-            weight : EXPAND_BOTH,
-            align : FILL_BOTH,
-            resize : true,
-            select_mode : 'none',
-            homogeneous: false,
-            elements :
-            [
-                {
-                    label: 'Label',
-                    on_select: function() {
-                        print("Label only clicked")
-                    }
-                },
-                {
-                    element: elm.Slider({
-                        hint_min: {width: 100, height: 50},
-                        align: FILL_BOTH,
-                        weight: EXPAND_BOTH,
-                        on_change: function(me) {
-                            print(me.value);
+        box: elm.Box({
+            resize: true,
+            weight: EXPAND_BOTH,
+            align: FILL_BOTH,
+            elements: {
+                toolbar: elm.Toolbar({
+                    homogeneous: false,
+                    shrink_mode: 'expand',
+                    standard_priority: 0,
+                    align: FILL_BOTH,
+                    elements: [
+                        {
+                            label: 'Label',
+                            on_select: function() {
+                                print("Label only clicked")
+                            },
+                            priority: 100
+                        },
+                        {
+                            element: elm.Slider({
+                                hint_min: {width: 100, height: 50},
+                                align: FILL_BOTH,
+                                weight: EXPAND_BOTH,
+                                on_change: function(me) {
+                                    print(me.value);
+                                }
+                            }),
+                            priority: 100
+                        },
+                        {
+                            separator: true,
+                            priority: 100
+                        },
+                        {
+                            icon: 'apps',
+                            on_select: function() {
+                                print("Icon only clicked")
+                            },
+                            priority: 100
+                        },
+                        {
+                            icon: 'preferences-desktop-display',
+                            label: 'Display',
+                            priority: -500
+                        },
+                        {
+                            icon: 'preferences-desktop-font',
+                            label: 'Font',
+                            priority: -500
+                        },
+                        {
+                            icon: 'preferences-desktop-theme',
+                            label: 'Theme',
+                            priority: -500
+                        },
+                        {
+                            icon: 'preferences-desktop-screensaver',
+                            label: 'Screensaver',
+                            priority: -500
                         }
-                    })
-                },
-                {
-                    separator: true
-                },
-                {
-                    icon: 'apps',
-                    on_select: function() {
-                        print("Icon only clicked")
-                    }
-                }
-            ]
-        })
+                    ]
+                }),
+                l: elm.Label({
+                    label: 'Hello world',
+                    weight: EXPAND_BOTH,
+                    align: FILL_BOTH
+                })
+            }
+        }),
     }
 }));
 
@@ -61,16 +91,17 @@ function toolbar_cb(item) {
         elm.exit();
 }
 
-win.elements.toolbar.elements.home = {icon: 'home', label: 'Home', data: 'HOME', on_select: toolbar_cb};
-win.elements.toolbar.elements.sep = {separator: true};
-win.elements.toolbar.elements.chat = {icon: 'chat', label: 'Chat', data: 'CHAT', on_select: toolbar_cb};
-win.elements.toolbar.elements.multi = {
+win.elements.box.elements.toolbar.elements.home = {icon: 'home', label: 'Home', data: 'HOME', on_select: toolbar_cb, priority: 100};
+win.elements.box.elements.toolbar.elements.sep = {separator: true, priority: 100};
+win.elements.box.elements.toolbar.elements.chat = {icon: 'chat', label: 'Chat', data: 'CHAT', on_select: toolbar_cb, priority: 100};
+win.elements.box.elements.toolbar.elements.multi = {
     icon: 'accessories-calculator',
     label: 'Calculator',
+    priority: -200,
     on_select: function() {
         print('Changing state to text');
-        print(win.elements.toolbar.item_state_set(
-            win.elements.toolbar.elements.multi, 'text'));
+        print(win.elements.box.elements.toolbar.item_state_set(
+            win.elements.box.elements.toolbar.elements.multi, 'text'));
     },
     states: {
         'text': {
@@ -78,10 +109,10 @@ win.elements.toolbar.elements.multi = {
             label: 'Text Editor',
             on_select: function() {
                 print('Changing state to filemanager');
-                print(win.elements.toolbar.item_state_set(
-                    win.elements.toolbar.elements.multi, 'filemanager'));
+                print(win.elements.box.elements.toolbar.item_state_set(
+                    win.elements.box.elements.toolbar.elements.multi, 'filemanager'));
 
-                print('Current state: ', win.elements.toolbar.elements.multi);
+                print('Current state: ', win.elements.box.elements.toolbar.elements.multi);
             }
         },
         'filemanager': {
@@ -89,29 +120,32 @@ win.elements.toolbar.elements.multi = {
             label: 'File Manager',
             on_select: function() {
                 print('Changing state to default');
-                print(win.elements.toolbar.item_state_set(
-                    win.elements.toolbar.elements.multi, null));
+                print(win.elements.box.elements.toolbar.item_state_set(
+                    win.elements.box.elements.toolbar.elements.multi, null));
             }
         }
     }
 }
 
-win.elements.toolbar.elements.clock = {
+win.elements.box.elements.toolbar.elements.clock = {
     label : 'Clock',
     icon : 'clock',
     data : 'CLOCK',
     on_select : function() {
-       win.elements.toolbar.elements.clock =  {
+       win.elements.box.elements.toolbar.elements.clock =  {
           label : 'Blah',
           icon : 'apps',
           data : 'BLAH',
        }
-    }
+    },
+    priority: 100
 };
 
-win.elements.toolbar.elements.close = {
+win.elements.box.elements.toolbar.elements.close = {
     label : 'Close',
     icon : 'close',
     data : 'CLOSE',
-    on_select : toolbar_cb
+    on_select : toolbar_cb,
+    priority: 100
 };
+
