@@ -60,6 +60,7 @@ var examples = new Array(
     ["panes","Panes Example"],
     ["photocam","PhotoCam Example"],
     ["photo","Photo Example"],
+    ["popup","Popup Example"],
     ["progressbar","Progress Bar Example"],
     ["radio","Radio Example"],
     ["segment","Segment Example"],
