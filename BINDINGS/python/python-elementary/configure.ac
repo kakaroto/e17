@@ -72,7 +72,7 @@ wanted_cython_files="${srcdir}/elementary/elementary.c_elementary.pyx"
 AM_PATH_PYTHON(2.7)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
-cython_required_version=0.16
+cython_required_version=0.15.1
 AM_CHECK_CYTHON([$cython_required_version], [:], [:])
 
 FILTER_VAR_REGEXP([CFLAGS], [-fvisibility=hidden])

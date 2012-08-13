@@ -72,7 +72,7 @@ wanted_cython_files="${srcdir}/emotion/emotion.c_emotion.pyx"
 AM_PATH_PYTHON(2.7)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
-cython_required_version=0.16
+cython_required_version=0.15.1
 AM_CHECK_CYTHON([$cython_required_version], [:], [:])
 
 have_cython_precompiled=no

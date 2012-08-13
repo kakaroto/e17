@@ -7,7 +7,7 @@ REQUIREMENTS
  * Evas >= 1.7.0        (indirect, Elementary dependency)
  * Ecore >= 1.7.0       (indirect, Elementary dependency)
  * Python-Evas >= 1.7.0
- * Cython >= 0.16       (not required with release tarballs)
+ * Cython >= 0.15.1     (not required with release tarballs)
  * Python >= 2.7        (tested version, may work with older or newer)
 
 

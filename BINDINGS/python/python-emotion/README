@@ -8,7 +8,7 @@ REQUIREMENTS
  * Ecore >= 1.7.0       (indirect, Emotion dependency)
  * Eina >= 1.7.0        (indirect, Emotion dependency)
  * Python-Evas >= 1.7.0
- * Cython >= 0.16       (not required with release tarballs)
+ * Cython >= 0.15.1     (not required with release tarballs)
  * Python >= 2.7        (tested version, may work with older or newer)
 
 

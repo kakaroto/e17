@@ -4,11 +4,11 @@ REQUIREMENTS
 ============
 
  * Ethumb >= 1.7.0
- * Evas >= 1.7.0   (indirect, Ethumb dependency)
- * Ecore >= 1.7.0  (indirect, Ethumb dependency)
- * E_Dbus >= 1.7.0 (indirect, Ethumb dependency if client is compiled)
- * Cython >= 0.16  (not required with release tarballs)
- * Python >= 2.7   (tested version, may work with older or newer)
+ * Evas >= 1.7.0     (indirect, Ethumb dependency)
+ * Ecore >= 1.7.0    (indirect, Ethumb dependency)
+ * E_Dbus >= 1.7.0   (indirect, Ethumb dependency if client is compiled)
+ * Cython >= 0.15.1  (not required with release tarballs)
+ * Python >= 2.7     (tested version, may work with older or newer)
 
 
 BUILDING AND INSTALLING
