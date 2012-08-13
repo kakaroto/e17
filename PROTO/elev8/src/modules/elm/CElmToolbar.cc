@@ -12,6 +12,7 @@ GENERATE_PROPERTY_CALLBACKS(CElmToolbar, item_align);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, shrink_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, horizontal);
 GENERATE_PROPERTY_CALLBACKS(CElmToolbar, standard_priority);
+GENERATE_PROPERTY_CALLBACKS(CElmToolbar, select_mode);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmToolbar, items_count);
 
 GENERATE_TEMPLATE(CElmToolbar,
@@ -137,6 +138,36 @@ void CElmToolbar::icon_order_lookup_set(Handle<Value> value)
      return;
 
    elm_toolbar_icon_order_lookup_set(eo, (Elm_Icon_Lookup_Order) value->Int32Value());
+}
+
+Handle<Value> CElmToolbar::select_mode_get() const
+{
+   switch (elm_toolbar_select_mode_get(eo)) {
+     case ELM_OBJECT_SELECT_MODE_ALWAYS:
+       return String::NewSymbol("always");
+     case ELM_OBJECT_SELECT_MODE_NONE:
+       return String::NewSymbol("none");
+     case ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY:
+       return String::NewSymbol("display-only");
+     default:
+       return String::NewSymbol("default");
+   }
+
+   return String::NewSymbol("unknown");
+}
+
+void CElmToolbar::select_mode_set(Handle<Value> value)
+{
+   String::Utf8Value mode(value->ToString());
+
+   if (!strcmp(*mode, "default"))
+     elm_toolbar_select_mode_set(eo, ELM_OBJECT_SELECT_MODE_DEFAULT);
+   else if (!strcmp(*mode, "always"))
+     elm_toolbar_select_mode_set(eo, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   else if (!strcmp(*mode, "none"))
+     elm_toolbar_select_mode_set(eo, ELM_OBJECT_SELECT_MODE_NONE);
+   else if (!strcmp(*mode, "display-only"))
+     elm_toolbar_select_mode_set(eo, ELM_OBJECT_SELECT_MODE_DISPLAY_ONLY);
 }
 
 Handle<Value> CElmToolbar::homogeneous_get() const

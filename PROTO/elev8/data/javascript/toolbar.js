@@ -19,6 +19,7 @@ var win = elm.realise(elm.Window({
             weight : EXPAND_BOTH,
             align : FILL_BOTH,
             resize : true,
+            select_mode : 'none',
             elements :
             [
                 {

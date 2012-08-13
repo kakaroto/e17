@@ -63,6 +63,9 @@ public:
    Handle<Value> standard_priority_get() const;
    void standard_priority_set(Handle<Value> value);
 
+   Handle<Value> select_mode_get() const;
+   void select_mode_set(Handle<Value> value);
+
    Handle<Value> items_count_get() const;
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
