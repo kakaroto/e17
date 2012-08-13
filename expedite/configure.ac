@@ -92,10 +92,6 @@ AC_SUBST(gl_cocoa_libs)
 # Software 16bit X11
 EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
-# 16bit DirectDraw
-EXPEDITE_CHECK_ENGINE([software-16-ddraw], [Software 16 bits DirectDraw], "yes", [ddraw_16_libs="-lddraw -ldxguid"])
-AC_SUBST(ddraw_16_libs)
-
 # 16bit WinCE
 EXPEDITE_CHECK_ENGINE([software-16-wince], [Software 16 bits WinCE], "yes", [wince_16_libs="-laygshell"])
 AC_SUBST(wince_16_libs)
@@ -273,7 +269,6 @@ echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
 echo "    PSL1GHT......................: ${have_psl1ght}"
 echo "    Software X11 16 bits.........: ${have_software_16_x11}"
-echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"
 echo
 echo "  Installation:"
