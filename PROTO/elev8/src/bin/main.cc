@@ -337,6 +337,7 @@ main(int argc, char *argv[])
    else if (argc >= 3 && !strcmp(argv[1], "--debug"))
      {
         printf("Awaiting connection from debugger on port 5858.");
+        fflush(stdout);
         Debug::EnableAgent("elev8", 5858, true);
         Debug::SetDebugMessageDispatchHandler(debug_message_handler);
         script_arg = 2;
