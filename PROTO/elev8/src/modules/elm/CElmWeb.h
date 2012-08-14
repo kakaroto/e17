@@ -20,9 +20,13 @@ protected:
       Persistent<Value> on_load_progress;
       Persistent<Value> on_title_change;
       Persistent<Value> on_uri_change;
+      Persistent<Value> on_link_hover_in;
+      Persistent<Value> on_link_hover_out;
    } cb;
 
 public:
+   virtual ~CElmWeb();
+
    static void Initialize(Handle<Object> target);
 
    /* Read & Write properties */
@@ -68,6 +72,16 @@ public:
    void on_uri_change_set(Handle<Value> val);
    void OnUriChange(void *event_info);
    static void OnUriChangeWrapper(void *data, Evas_Object *, void *);
+
+   Handle<Value> on_link_hover_in_get() const;
+   void on_link_hover_in_set(Handle<Value> val);
+   void OnLinkHoverIn(char *url, char *title);
+   static void OnLinkHoverInWrapper(void *data, Evas_Object *, void *);
+
+   Handle<Value> on_link_hover_out_get() const;
+   void on_link_hover_out_set(Handle<Value> val);
+   void OnLinkHoverOut();
+   static void OnLinkHoverOutWrapper(void *data, Evas_Object *, void *);
 
    /* Read only properties */
    Handle<Value> forward_possible_get() const;

@@ -16,6 +16,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmWeb, inwin_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmWeb, on_load_progress);
 GENERATE_PROPERTY_CALLBACKS(CElmWeb, on_title_change);
 GENERATE_PROPERTY_CALLBACKS(CElmWeb, on_uri_change);
+GENERATE_PROPERTY_CALLBACKS(CElmWeb, on_link_hover_in);
+GENERATE_PROPERTY_CALLBACKS(CElmWeb, on_link_hover_out);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWeb, forward_possible);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWeb, title);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmWeb, selection);
@@ -48,6 +50,8 @@ GENERATE_TEMPLATE_FULL(CElmObject, CElmWeb,
                        PROPERTY(on_title_change),
                        PROPERTY(on_uri_change),
                        PROPERTY(on_load_progress),
+                       PROPERTY(on_link_hover_in),
+                       PROPERTY(on_link_hover_out),
                        PROPERTY_RO(forward_possible),
                        PROPERTY_RO(title),
                        PROPERTY_RO(selection),
@@ -71,6 +75,15 @@ CElmWeb::CElmWeb(Local<Object> _jsObject, CElmObject *parent)
     : CElmObject(_jsObject,
                  elm_need_web() ? elm_web_add(parent->GetEvasObject()) : NULL)
 {
+}
+
+CElmWeb::~CElmWeb()
+{
+   cb.on_load_progress.Dispose();
+   cb.on_uri_change.Dispose();
+   cb.on_load_progress.Dispose();
+   cb.on_link_hover_in.Dispose();
+   cb.on_link_hover_out.Dispose();
 }
 
 void CElmWeb::Initialize(Handle<Object> target)
@@ -231,16 +244,83 @@ void CElmWeb::OnLoadProgress(void *event_info)
    callback->Call(jsObject, 1, args);
 }
 
-void CElmWeb::OnLoadProgressWrapper(void *data, Evas_Object *, void *)
+Handle<Value> CElmWeb::on_link_hover_in_get() const
 {
-   CElmWeb *self = static_cast<CElmWeb *>(data);
+   return cb.on_link_hover_in;
+}
 
-   if (self->load_progress_get()->IsUndefined())
+void CElmWeb::on_link_hover_in_set(Handle<Value> val)
+{
+   if (!cb.on_link_hover_in.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo,
+                                       "link,hover,in",
+                                       &OnLinkHoverInWrapper);
+        cb.on_link_hover_in.Dispose();
+        cb.on_link_hover_in.Clear();
+     }
+
+   if (!val->IsFunction())
      return;
 
-   double progress = self->load_progress_get()->NumberValue();
+   cb.on_link_hover_in = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo,
+                                  "link,hover,in",
+                                  &OnLinkHoverInWrapper,
+                                  this);
+}
 
-   self->OnLoadProgress(static_cast<void *>(&progress));
+void CElmWeb::OnLinkHoverIn(char *url, char *title)
+{
+   Handle<Function> callback(Function::Cast(*cb.on_link_hover_in));
+   Handle<Value> args[2] = { String::New(url), String::New(title) };
+   callback->Call(jsObject, 2, args);
+}
+
+void CElmWeb::OnLinkHoverInWrapper(void *data, Evas_Object *, void *event_info)
+{
+   CElmWeb *self = static_cast<CElmWeb *>(data);
+   char **link = (char **)event_info;
+   self->OnLinkHoverIn(link[0], link[1]);
+}
+
+Handle<Value> CElmWeb::on_link_hover_out_get() const
+{
+   return cb.on_link_hover_out;
+}
+
+void CElmWeb::on_link_hover_out_set(Handle<Value> val)
+{
+   if (!cb.on_link_hover_out.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo,
+                                       "link,hover,out",
+                                       &OnLinkHoverOutWrapper);
+        cb.on_link_hover_out.Dispose();
+        cb.on_link_hover_out.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.on_link_hover_out = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo,
+                                  "link,hover,out",
+                                  &OnLinkHoverOutWrapper,
+                                  this);
+}
+
+void CElmWeb::OnLinkHoverOut()
+{
+   Handle<Function> callback(Function::Cast(*cb.on_link_hover_out));
+   Handle<Value> args[] = { };
+   callback->Call(jsObject, 0, args);
+}
+
+void CElmWeb::OnLinkHoverOutWrapper(void *data, Evas_Object *, void *)
+{
+   CElmWeb *self = static_cast<CElmWeb *>(data);
+   self->OnLinkHoverOut();
 }
 
 Handle<Value> CElmWeb::on_title_change_get() const
