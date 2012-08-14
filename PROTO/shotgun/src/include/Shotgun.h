@@ -75,12 +75,39 @@
  * String org.shotgun.core.status_self(Shotgun_User_Status *st, int *priority)
 */
 
-extern int SHOTGUN_EVENT_CONNECT; /* Shotgun_Auth */
-extern int SHOTGUN_EVENT_CONNECTION_STATE;
-extern int SHOTGUN_EVENT_DISCONNECT; /* Shotgun_Auth */
-extern int SHOTGUN_EVENT_IQ; /* Shotgun_Event_Iq */
-extern int SHOTGUN_EVENT_MESSAGE; /* Shotgun_Event_Message */
-extern int SHOTGUN_EVENT_PRESENCE; /* Shotgun_Event_Presence */
+
+#ifdef EAPI
+# undef EAPI
+#endif
+
+#ifdef _WIN32
+# ifdef EFL_EVAS_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
+# else
+#  define EAPI __declspec(dllimport)
+# endif /* ! EFL_EVAS_BUILD */
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif /* ! _WIN32 */
+
+EAPI extern int SHOTGUN_EVENT_CONNECT; /* Shotgun_Auth */
+EAPI extern int SHOTGUN_EVENT_CONNECTION_STATE;
+EAPI extern int SHOTGUN_EVENT_DISCONNECT; /* Shotgun_Auth */
+EAPI extern int SHOTGUN_EVENT_IQ; /* Shotgun_Event_Iq */
+EAPI extern int SHOTGUN_EVENT_MESSAGE; /* Shotgun_Event_Message */
+EAPI extern int SHOTGUN_EVENT_PRESENCE; /* Shotgun_Event_Presence */
 
 typedef struct Shotgun_Auth Shotgun_Auth;
 
@@ -207,69 +234,63 @@ typedef struct
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-int shotgun_init(void);
-Eina_Bool shotgun_connect(Shotgun_Auth *auth);
-void shotgun_disconnect(Shotgun_Auth *auth);
-
-Shotgun_Auth *shotgun_new(const char *svr_name, const char *username, const char *domain);
-void shotgun_ssl_verify_set(Shotgun_Auth *auth, Eina_Bool verify);
-Eina_Bool shotgun_ssl_verify_get(Shotgun_Auth *auth);
-void shotgun_free(Shotgun_Auth *auth);
-Shotgun_Connection_State shotgun_connection_state_get(Shotgun_Auth *auth);
-void shotgun_username_set(Shotgun_Auth *auth, const char *username);
-const char *shotgun_username_get(Shotgun_Auth *auth);
-const char *shotgun_password_get(Shotgun_Auth *auth);
-const char *shotgun_resource_get(Shotgun_Auth *auth);
-void shotgun_domain_set(Shotgun_Auth *auth, const char *domain);
-const char *shotgun_domain_get(Shotgun_Auth *auth);
-void shotgun_servername_set(Shotgun_Auth *auth, const char *svr_name);
-const char *shotgun_servername_get(Shotgun_Auth *auth);
-const char *shotgun_jid_get(Shotgun_Auth *auth);
-const char *shotgun_jid_full_get(Shotgun_Auth *auth);
-void shotgun_settings_set(Shotgun_Auth *auth, void *settings);
-void *shotgun_settings_get(Shotgun_Auth *auth);
-void shotgun_data_set(Shotgun_Auth *auth, void *data);
-void *shotgun_data_get(Shotgun_Auth *auth);
-void shotgun_password_set(Shotgun_Auth *auth, const char *password);
-
-Eina_Bool shotgun_iq_roster_get(Shotgun_Auth *auth);
-Eina_Bool shotgun_iq_contact_add(Shotgun_Auth *auth, const char *user, const char *alias, Eina_List */* const char * */groups);
-Eina_Bool shotgun_iq_contact_del(Shotgun_Auth *auth, const char *user);
-Eina_Bool shotgun_iq_contact_otr_set(Shotgun_Auth *auth, const char *jid, Eina_Bool enable);
-Eina_Bool shotgun_iq_server_query(Shotgun_Auth *auth);
-Eina_Bool shotgun_iq_gsettings_query(Shotgun_Auth *auth);
-Eina_Bool shotgun_iq_vcard_get(Shotgun_Auth *auth, const char *user);
-Eina_Bool shotgun_iq_archive_get(Shotgun_Auth *auth, const char *user, unsigned int max);
-Eina_Bool shotgun_iq_gsettings_available(Shotgun_Auth *auth);
-Eina_Bool shotgun_iq_otr_available(Shotgun_Auth *auth);
-Eina_Bool shotgun_iq_otr_set(Shotgun_Auth *auth, Eina_Bool enable);
-Eina_Bool shotgun_iq_otr_get(Shotgun_Auth *auth);
-void shotgun_iq_gsettings_archiving_set(Shotgun_Auth *auth, Eina_Bool enable);
-Eina_Bool shotgun_iq_gsettings_archiving_get(Shotgun_Auth *auth);
-void shotgun_iq_gsettings_mailnotify_set(Shotgun_Auth *auth, Eina_Bool enable);
-Eina_Bool shotgun_iq_gsettings_mailnotify_get(Shotgun_Auth *auth);
-void shotgun_iq_gsettings_mailnotify_ping(Shotgun_Auth *auth);
-
-Eina_Bool shotgun_message_send(Shotgun_Auth *auth, const char *to, const char *msg, Shotgun_Message_Status status);
-
-Shotgun_User_Status shotgun_presence_status_get(Shotgun_Auth *auth);
-void shotgun_presence_status_set(Shotgun_Auth *auth, Shotgun_User_Status status);
-int shotgun_presence_priority_get(Shotgun_Auth *auth);
-void shotgun_presence_priority_set(Shotgun_Auth *auth, int priority);
-const char *shotgun_presence_desc_get(Shotgun_Auth *auth);
-void shotgun_presence_desc_set(Shotgun_Auth *auth, const char *desc);
-void shotgun_presence_desc_manage(Shotgun_Auth *auth, const char *desc);
-void shotgun_presence_set(Shotgun_Auth *auth, Shotgun_User_Status st, const char *desc, int priority);
-const char *shotgun_presence_get(Shotgun_Auth *auth, Shotgun_User_Status *st, int *priority);
-Eina_Bool shotgun_presence_send(Shotgun_Auth *auth);
-Eina_Bool shotgun_presence_subscription_set(Shotgun_Auth *auth, const char *jid, Eina_Bool subscribe);
-
-void shotgun_event_message_free(Shotgun_Event_Message *msg);
-void shotgun_event_presence_free(Shotgun_Event_Presence *pres);
-void shotgun_user_info_free(Shotgun_User_Info *info);
-void shotgun_user_free(Shotgun_User *user);
-void shotgun_user_setting_free(Shotgun_User_Setting *sus);
+EAPI int shotgun_init(void);
+EAPI Eina_Bool shotgun_connect(Shotgun_Auth *auth);
+EAPI void shotgun_disconnect(Shotgun_Auth *auth);
+EAPI Shotgun_Auth *shotgun_new(const char *svr_name, const char *username, const char *domain);
+EAPI void shotgun_ssl_verify_set(Shotgun_Auth *auth, Eina_Bool verify);
+EAPI Eina_Bool shotgun_ssl_verify_get(Shotgun_Auth *auth);
+EAPI void shotgun_free(Shotgun_Auth *auth);
+EAPI Shotgun_Connection_State shotgun_connection_state_get(Shotgun_Auth *auth);
+EAPI void shotgun_username_set(Shotgun_Auth *auth, const char *username);
+EAPI const char *shotgun_username_get(Shotgun_Auth *auth);
+EAPI const char *shotgun_password_get(Shotgun_Auth *auth);
+EAPI const char *shotgun_resource_get(Shotgun_Auth *auth);
+EAPI void shotgun_domain_set(Shotgun_Auth *auth, const char *domain);
+EAPI const char *shotgun_domain_get(Shotgun_Auth *auth);
+EAPI void shotgun_servername_set(Shotgun_Auth *auth, const char *svr_name);
+EAPI const char *shotgun_servername_get(Shotgun_Auth *auth);
+EAPI const char *shotgun_jid_get(Shotgun_Auth *auth);
+EAPI const char *shotgun_jid_full_get(Shotgun_Auth *auth);
+EAPI void shotgun_settings_set(Shotgun_Auth *auth, void *settings);
+EAPI void *shotgun_settings_get(Shotgun_Auth *auth);
+EAPI void shotgun_data_set(Shotgun_Auth *auth, void *data);
+EAPI void *shotgun_data_get(Shotgun_Auth *auth);
+EAPI void shotgun_password_set(Shotgun_Auth *auth, const char *password);
+EAPI Eina_Bool shotgun_iq_roster_get(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_iq_contact_add(Shotgun_Auth *auth, const char *user, const char *alias, Eina_List */* const char * */groups);
+EAPI Eina_Bool shotgun_iq_contact_del(Shotgun_Auth *auth, const char *user);
+EAPI Eina_Bool shotgun_iq_contact_otr_set(Shotgun_Auth *auth, const char *jid, Eina_Bool enable);
+EAPI Eina_Bool shotgun_iq_server_query(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_iq_gsettings_query(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_iq_vcard_get(Shotgun_Auth *auth, const char *user);
+EAPI Eina_Bool shotgun_iq_archive_get(Shotgun_Auth *auth, const char *user, unsigned int max);
+EAPI Eina_Bool shotgun_iq_gsettings_available(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_iq_otr_available(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_iq_otr_set(Shotgun_Auth *auth, Eina_Bool enable);
+EAPI Eina_Bool shotgun_iq_otr_get(Shotgun_Auth *auth);
+EAPI void shotgun_iq_gsettings_archiving_set(Shotgun_Auth *auth, Eina_Bool enable);
+EAPI Eina_Bool shotgun_iq_gsettings_archiving_get(Shotgun_Auth *auth);
+EAPI void shotgun_iq_gsettings_mailnotify_set(Shotgun_Auth *auth, Eina_Bool enable);
+EAPI Eina_Bool shotgun_iq_gsettings_mailnotify_get(Shotgun_Auth *auth);
+EAPI void shotgun_iq_gsettings_mailnotify_ping(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_message_send(Shotgun_Auth *auth, const char *to, const char *msg, Shotgun_Message_Status status);
+EAPI Shotgun_User_Status shotgun_presence_status_get(Shotgun_Auth *auth);
+EAPI void shotgun_presence_status_set(Shotgun_Auth *auth, Shotgun_User_Status status);
+EAPI int shotgun_presence_priority_get(Shotgun_Auth *auth);
+EAPI void shotgun_presence_priority_set(Shotgun_Auth *auth, int priority);
+EAPI const char *shotgun_presence_desc_get(Shotgun_Auth *auth);
+EAPI void shotgun_presence_desc_set(Shotgun_Auth *auth, const char *desc);
+EAPI void shotgun_presence_desc_manage(Shotgun_Auth *auth, const char *desc);
+EAPI void shotgun_presence_set(Shotgun_Auth *auth, Shotgun_User_Status st, const char *desc, int priority);
+EAPI const char *shotgun_presence_get(Shotgun_Auth *auth, Shotgun_User_Status *st, int *priority);
+EAPI Eina_Bool shotgun_presence_send(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_presence_subscription_set(Shotgun_Auth *auth, const char *jid, Eina_Bool subscribe);
+EAPI void shotgun_event_message_free(Shotgun_Event_Message *msg);
+EAPI void shotgun_event_presence_free(Shotgun_Event_Presence *pres);
+EAPI void shotgun_user_info_free(Shotgun_User_Info *info);
+EAPI void shotgun_user_free(Shotgun_User *user);
+EAPI void shotgun_user_setting_free(Shotgun_User_Setting *sus);
 
 #ifdef __cplusplus
 }
