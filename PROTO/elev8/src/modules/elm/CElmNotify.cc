@@ -50,13 +50,50 @@ void CElmNotify::content_set(Handle<Value> val)
 
 Handle<Value> CElmNotify::orient_get() const
 {
-   return Number::New(elm_notify_orient_get(eo));
+   switch (elm_notify_orient_get(eo)) {
+     case ELM_NOTIFY_ORIENT_TOP: return String::New("top");
+     case ELM_NOTIFY_ORIENT_CENTER: return String::New("center");
+     case ELM_NOTIFY_ORIENT_BOTTOM: return String::New("bottom");
+     case ELM_NOTIFY_ORIENT_LEFT: return String::New("left");
+     case ELM_NOTIFY_ORIENT_RIGHT: return String::New("right");
+     case ELM_NOTIFY_ORIENT_TOP_LEFT: return String::New("top-left");
+     case ELM_NOTIFY_ORIENT_TOP_RIGHT: return String::New("top-right");
+     case ELM_NOTIFY_ORIENT_BOTTOM_LEFT: return String::New("bottom-left");
+     case ELM_NOTIFY_ORIENT_BOTTOM_RIGHT: return String::New("bottom-right");
+     default: return String::New("unknown");
+   }
 }
 
 void CElmNotify::orient_set(Handle<Value> val)
 {
    if (val->IsNumber())
-     elm_notify_orient_set(eo, (Elm_Notify_Orient)val->Int32Value());
+     {
+        elm_notify_orient_set(eo, (Elm_Notify_Orient)val->Int32Value());
+        return;
+     }
+
+   if (!val->IsString())
+     return;
+
+   String::Utf8Value orient(val->ToString());
+   if (!strcmp(*orient, "top"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_TOP);
+   else if (!strcmp(*orient, "center"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_CENTER);
+   else if (!strcmp(*orient, "bottom"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_BOTTOM);
+   else if (!strcmp(*orient, "left"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_LEFT);
+   else if (!strcmp(*orient, "right"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_RIGHT);
+   else if (!strcmp(*orient, "top-left"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_TOP_LEFT);
+   else if (!strcmp(*orient, "top-right"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_TOP_RIGHT);
+   else if (!strcmp(*orient, "bottom-left"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_BOTTOM_LEFT);
+   else if (!strcmp(*orient, "bottom-right"))
+     elm_notify_orient_set(eo, ELM_NOTIFY_ORIENT_BOTTOM_RIGHT);
 }
 
 Handle<Value> CElmNotify::timeout_get() const
