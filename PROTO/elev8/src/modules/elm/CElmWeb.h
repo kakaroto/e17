@@ -60,17 +60,17 @@ public:
    /* Events */
    Handle<Value> on_title_change_get() const;
    void on_title_change_set(Handle<Value> val);
-   void OnTitleChange(void *event_info);
+   void OnTitleChange();
    static void OnTitleChangeWrapper(void *data, Evas_Object *, void *);
 
    Handle<Value> on_load_progress_get() const;
    void on_load_progress_set(Handle<Value> val);
-   void OnLoadProgress(void *event_info);
+   void OnLoadProgress();
    static void OnLoadProgressWrapper(void *data, Evas_Object *, void *);
 
    Handle<Value> on_uri_change_get() const;
    void on_uri_change_set(Handle<Value> val);
-   void OnUriChange(void *event_info);
+   void OnUriChange();
    static void OnUriChangeWrapper(void *data, Evas_Object *, void *);
 
    Handle<Value> on_link_hover_in_get() const;

@@ -235,13 +235,17 @@ void CElmWeb::on_load_progress_set(Handle<Value> val)
                                   this);
 }
 
-void CElmWeb::OnLoadProgress(void *event_info)
+void CElmWeb::OnLoadProgress()
 {
-   Handle<Value> progress =  Number::New(*static_cast<double *>(event_info));
    Handle<Function> callback(Function::Cast(*cb.on_load_progress));
-   Handle<Value> args[1] = { progress };
-
+   Handle<Value> args[1] = { Number::New(elm_web_load_progress_get(eo)) };
    callback->Call(jsObject, 1, args);
+}
+
+void CElmWeb::OnLoadProgressWrapper(void *data, Evas_Object *, void *)
+{
+   CElmWeb *self = static_cast<CElmWeb *>(data);
+   self->OnLoadProgress();
 }
 
 Handle<Value> CElmWeb::on_link_hover_in_get() const
@@ -349,24 +353,18 @@ void CElmWeb::on_title_change_set(Handle<Value> val)
                                   this);
 }
 
-void CElmWeb::OnTitleChange(void *event_info)
+void CElmWeb::OnTitleChange()
 {
-   Handle<Value> new_title = String::New(static_cast<const char*>(event_info));
+   const char *title = elm_web_title_get(eo);
    Handle<Function> callback(Function::Cast(*cb.on_title_change));
-   Handle<Value> args[1] = { new_title };
-
+   Handle<Value> args[1] = { String::New(title ? title : "") };
    callback->Call(jsObject, 1, args);
 }
 
 void CElmWeb::OnTitleChangeWrapper(void *data, Evas_Object *, void *)
 {
    CElmWeb *self = static_cast<CElmWeb *>(data);
-   Handle<Value> current_title = self->title_get();
-
-   if (current_title->IsUndefined())
-     return;
-
-   self->OnTitleChange(*String::Utf8Value(current_title->ToString()));
+   self->OnTitleChange();
 }
 
 Handle<Value> CElmWeb::on_uri_change_get() const
@@ -395,24 +393,18 @@ void CElmWeb::on_uri_change_set(Handle<Value> val)
                                   this);
 }
 
-void CElmWeb::OnUriChange(void *event_info)
+void CElmWeb::OnUriChange()
 {
-   Handle<Value> new_uri = String::New(static_cast<const char*>(event_info));
+   const char *uri = elm_web_uri_get(eo);
    Handle<Function> callback(Function::Cast(*cb.on_uri_change));
-   Handle<Value> args[1] = { new_uri };
-
+   Handle<Value> args[1] = { String::New(uri ? uri : "") };
    callback->Call(jsObject, 1, args);
 }
 
 void CElmWeb::OnUriChangeWrapper(void *data, Evas_Object *, void *)
 {
    CElmWeb *self = static_cast<CElmWeb *>(data);
-   Handle<Value> current_uri = self->uri_get();
-
-   if (current_uri->IsUndefined())
-     return;
-
-   self->OnUriChange(*String::Utf8Value(current_uri->ToString()));
+   self->OnUriChange();
 }
 
 Handle<Value> CElmWeb::forward_possible_get() const
