@@ -1,3 +1,4 @@
+#include <math.h>
 #include "elm.h"
 #include "CElmObject.h"
 
@@ -13,6 +14,8 @@ GENERATE_PROPERTY_CALLBACKS(CElmObject, width);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, height);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, align);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, weight);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, expand);
+GENERATE_PROPERTY_CALLBACKS(CElmObject, fill);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, text);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, scale);
 GENERATE_PROPERTY_CALLBACKS(CElmObject, style);
@@ -253,6 +256,8 @@ Handle<FunctionTemplate> CElmObject::GetTemplate()
                       PROPERTY(on_key_down),
                       PROPERTY(elements),
                       PROPERTY(content),
+                      PROPERTY(expand),
+                      PROPERTY(fill),
                       NULL);
 
    return tmpl;
@@ -400,6 +405,113 @@ void CElmObject::weight_set(Handle<Value> value)
    evas_object_size_hint_weight_set(eo,
         weight->Get(String::NewSymbol("x"))->ToNumber()->Value(),
         weight->Get(String::NewSymbol("y"))->ToNumber()->Value());
+}
+
+#define CMP_FLOAT_EQ(v1,v2)	(fabs((v1) - (v2)) < 0.001)
+#define CMP_HINTS(v1,v2)	(CMP_FLOAT_EQ(x, (v1)) && CMP_FLOAT_EQ(y, (v2)))
+
+Handle<Value> CElmObject::expand_get() const
+{
+   double x, y;
+
+   evas_object_size_hint_weight_get(eo, &x, &y);
+
+   if (CMP_HINTS(1.0, 1.0))
+     return String::New("both");
+   if (CMP_HINTS(1.0, 0.0))
+     return String::New("horizontal");
+   if (CMP_HINTS(0.0, 1.0))
+     return String::New("vertical");
+   if (CMP_HINTS(0.0, 0.0))
+     return String::New("none");
+
+   return String::New("custom");
+}
+
+void CElmObject::expand_set(Handle<Value> value)
+{
+   if (!value->IsString())
+     return;
+
+   String::Utf8Value v(value->ToString());
+   double x, y;
+
+   if (!strcmp(*v, "both"))
+     {
+        x = 1.0;
+        y = 1.0;
+     }
+   else if (!strcmp(*v, "horizontal"))
+     {
+        x = 1.0;
+        y = 0.0;
+     }
+   else if (!strcmp(*v, "vertical"))
+     {
+        x = 0.0;
+        y = 1.0;
+     }
+   else if (!strcmp(*v, "none"))
+     {
+        x = 0.0;
+        y = 0.0;
+     }
+   else
+     return;
+
+   evas_object_size_hint_weight_set(eo, x, y);
+}
+
+Handle<Value> CElmObject::fill_get() const
+{
+   double x, y;
+
+   evas_object_size_hint_align_get(eo, &x, &y);
+
+   if (CMP_HINTS(-1.0, -1.0))
+     return String::New("both");
+   if (CMP_HINTS(-1.0, 0.0))
+     return String::New("horizontal");
+   if (CMP_HINTS(0.0, -1.0))
+     return String::New("vertical");
+   if (CMP_HINTS(0.0, 0.0))
+     return String::New("none");
+
+   return String::New("custom");
+}
+
+void CElmObject::fill_set(Handle<Value> value)
+{
+   if (!value->IsString())
+     return;
+
+   String::Utf8Value v(value->ToString());
+   double x, y;
+
+   if (!strcmp(*v, "both"))
+     {
+        x = -1.0;
+        y = -1.0;
+     }
+   else if (!strcmp(*v, "horizontal"))
+     {
+        x = -1.0;
+        y = 0.0;
+     }
+   else if (!strcmp(*v, "vertical"))
+     {
+        x = 0.0;
+        y = -1.0;
+     }
+   else if (!strcmp(*v, "none"))
+     {
+        x = 0.0;
+        y = 0.0;
+     }
+   else
+     return;
+
+   evas_object_size_hint_align_set(eo, x, y);
 }
 
 Handle<Value> CElmObject::visible_get() const

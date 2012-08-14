@@ -170,6 +170,12 @@ public:
    Handle<Value> weight_get() const;
    void weight_set(Handle<Value> align);
 
+   Handle<Value> expand_get() const;
+   void expand_set(Handle<Value> align);
+
+   Handle<Value> fill_get() const;
+   void fill_set(Handle<Value> align);
+
    Handle<Value> visible_get() const;
    void visible_set(Handle<Value> val);
 
