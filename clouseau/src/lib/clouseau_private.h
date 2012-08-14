@@ -142,45 +142,28 @@ struct _data_desc
 };
 typedef struct _data_desc data_desc;
 
-/* Function Declarations */
-Clouseau_Object *obj_information_get(Clouseau_Tree_Item *treeit);
-void item_tree_item_free(Clouseau_Tree_Item *parent);
-void _item_tree_item_string(Clouseau_Tree_Item *parent);
-data_desc *data_descriptors_init(void);
-void data_descriptors_shutdown(void);
-void *packet_compose(Clouseau_Message_Type t, void *data, int data_size, int *size, void *blob, int blob_size);
-Variant_st *packet_info_get(void *data, int size);
-Eina_Bool eet_info_save(const char *filename, app_info_st *a, tree_data_st *ftd, Eina_List *ck_list);
-Eina_Bool eet_info_read(const char *filename, app_info_st **app, tree_data_st **ftd);
-
-/* Highlight code, we may choose to move this to other file later */
-void libclouseau_make_lines(bmp_info_st *st, Evas_Coord xx, Evas_Coord yy);
-void libclouseau_lines_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
-
 /* Private function */
 #define CLOUSEAU_APP_ADD_ENTRY   "clouseau/app"
 #define CLOUSEAU_TREE_DATA_ENTRY "clouseau/app/tree"
 #define CLOUSEAU_BMP_LIST_ENTRY  "clouseau/app/shot_list"
 #define CLOUSEAU_BMP_DATA_ENTRY  "clouseau/app/screenshot"
 
-void clouseau_data_descriptors_init(void);
-void clouseau_data_descriptors_shutdown(void);
 
-Clouseau_Object *clouseau_object_information_get(Clouseau_Tree_Item *treeit);
-void clouseau_object_information_free(Clouseau_Object *oinfo);
+/* Exported From Object information */
+EAPI void clouseau_object_information_free(Clouseau_Object *oinfo);
+EAPI Clouseau_Object * clouseau_object_information_get(Clouseau_Tree_Item *treeit);
 
 /* Exported function */
-EAPI int clouseau_init(void);
-EAPI int clouseau_shutdown(void);
-
-Variant_st *clouseau_variant_alloc(Clouseau_Message_Type t, size_t size, void *info);
-EAPI void clouseau_variant_free(Variant_st *v);
-EAPI void clouseau_tree_free(Eina_List *tree);
-EAPI void clouseau_bmp_blob_free(bmp_info_st *st);
-EAPI void clouseau_lines_free(bmp_info_st *st);
-
-EAPI void clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view);
-
-EAPI Clouseau_Message_Type clouseau_packet_mapping_type_get(const char *name);
-
+EAPI void clouseau_data_tree_free(Eina_List *tree);
+EAPI Clouseau_Message_Type clouseau_data_packet_mapping_type_get(const char *name);
+EAPI void clouseau_data_variant_free(Variant_st *v);
+EAPI Variant_st *clouseau_data_variant_alloc(Clouseau_Message_Type t, size_t size, void *info);
+EAPI void * clouseau_data_packet_compose(Clouseau_Message_Type t, void *data, int data_size, int *size, void *blob, int blob_size);
+EAPI Variant_st *
+clouseau_data_packet_info_get(void *data, int size);
+EAPI void clouseau_data_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view);
+EAPI Eina_Bool clouseau_data_eet_info_save(const char *filename, app_info_st *a, tree_data_st *ftd, Eina_List *ck_list);
+EAPI Eina_Bool clouseau_data_eet_info_read(const char *filename, app_info_st **a, tree_data_st **ftd);
+EAPI int clouseau_data_init(void);
+EAPI int clouseau_data_shutdown(void);
 #endif  /*  EET_DATA_H  */

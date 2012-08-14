@@ -23,27 +23,6 @@ static Eet_Data_Descriptor *clouseau_variant_edd = NULL;
 static Eet_Data_Descriptor *clouseau_protocol_edd = NULL;
 static Eet_Data_Descriptor *clouseau_map_point_props_edd = NULL;
 
-EAPI void
-clouseau_lines_free(bmp_info_st *st)
-{  /* Free lines asociated with a bmp */
-   if (st->lx)
-     evas_object_del(st->lx);
-
-   if (st->ly)
-     evas_object_del(st->ly);
-
-   st->lx = st->ly = NULL;
-}
-
-EAPI void
-clouseau_bmp_blob_free(bmp_info_st *st)
-{  /* We also free all lines drawn in this bmp canvas */
-   clouseau_lines_free(st);
-
-   if (st->bmp)
-     free(st->bmp);
-}
-
 static void
 _clouseau_tree_item_free(Clouseau_Tree_Item *parent)
 {
@@ -58,7 +37,7 @@ _clouseau_tree_item_free(Clouseau_Tree_Item *parent)
 }
 
 EAPI void
-clouseau_tree_free(Eina_List *tree)
+clouseau_data_tree_free(Eina_List *tree)
 {
    Clouseau_Tree_Item *treeit;
 
@@ -83,7 +62,7 @@ static const struct {
 };
 
 EAPI Clouseau_Message_Type
-clouseau_packet_mapping_type_get(const char *name)
+clouseau_data_packet_mapping_type_get(const char *name)
 {
    int i;
    if (!name)
@@ -132,7 +111,7 @@ _clouseau_variant_type_set(const char *type,
 }
 
 EAPI void
-clouseau_variant_free(Variant_st *v)
+clouseau_data_variant_free(Variant_st *v)
 {
    if (v->data)
      free(v->data);
@@ -141,7 +120,7 @@ clouseau_variant_free(Variant_st *v)
 }
 
 EAPI Variant_st *
-clouseau_variant_alloc(Clouseau_Message_Type t, size_t size, void *info)
+clouseau_data_variant_alloc(Clouseau_Message_Type t, size_t size, void *info)
 {
    Variant_st *v;
 
@@ -188,7 +167,7 @@ _clouseau_app_add_desc_make(void)
 }
 
 static void
-_clouseau_data_req_desc_make(void)
+_clouseau_req_desc_make(void)
 {
    Eet_Data_Descriptor_Class eddc;
 
@@ -583,7 +562,7 @@ _clouseau_object_desc_make(void)
                                  extra_props.type, clouseau_union_edd);
 }
 
-void
+static void
 clouseau_data_descriptors_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
@@ -595,7 +574,7 @@ clouseau_data_descriptors_init(void)
    _clouseau_tree_item_desc_make();
    _clouseau_connect_desc_make();
    _clouseau_app_add_desc_make();
-   _clouseau_data_req_desc_make();
+   _clouseau_req_desc_make();
    _clouseau_tree_data_desc_make();
    _clouseau_app_closed_desc_make();
    _clouseau_highlight_desc_make();
@@ -631,7 +610,7 @@ clouseau_data_descriptors_init(void)
                                    "data", data, type, clouseau_variant_edd);
 }
 
-void
+static void
 clouseau_data_descriptors_shutdown(void)
 {
    eet_data_descriptor_free(clouseau_connect_edd);
@@ -702,8 +681,8 @@ _net_to_host_blob_get(void *blob, int blob_size)
    return h_blob;
 }
 
-void *
-packet_compose(Clouseau_Message_Type t, void *data,
+EAPI void *
+clouseau_data_packet_compose(Clouseau_Message_Type t, void *data,
                int data_size, int *size,
                void *blob, int blob_size)
 {
@@ -729,9 +708,9 @@ packet_compose(Clouseau_Message_Type t, void *data,
            void *net_blob;
            char *b;
 
-           v = clouseau_variant_alloc(t, data_size, data);
+           v = clouseau_data_variant_alloc(t, data_size, data);
            p = eet_data_descriptor_encode(clouseau_protocol_edd, v, &e_size);
-           clouseau_variant_free(v);
+           clouseau_data_variant_free(v);
 
            /* Save encoded size in network format */
            enc_size = htonl((uint32_t) e_size);
@@ -761,9 +740,9 @@ packet_compose(Clouseau_Message_Type t, void *data,
         {
            /* All others are variant packets with EET encoding  */
            /* Variant is composed of message type + ptr to data */
-           v = clouseau_variant_alloc(t, data_size, data);
+           v = clouseau_data_variant_alloc(t, data_size, data);
            p = eet_data_descriptor_encode(clouseau_protocol_edd, v, size);
-           clouseau_variant_free(v);
+           clouseau_data_variant_free(v);
         }
      }
 
@@ -776,8 +755,8 @@ packet_compose(Clouseau_Message_Type t, void *data,
    return pb;  /* User has to free(pb) */
 }
 
-Variant_st *
-packet_info_get(void *data, int size)
+EAPI Variant_st *
+clouseau_data_packet_info_get(void *data, int size)
 {
    /* user has to use variant_free() to free return struct */
    char *ch = data;
@@ -818,98 +797,6 @@ packet_info_get(void *data, int size)
          return eet_data_descriptor_decode(clouseau_protocol_edd,
                                            ch + 1, size - 1);
      }
-}
-
-Eina_Bool
-eet_info_save(const char *filename,
-              app_info_st *a, tree_data_st *ftd, Eina_List *ck_list)
-{
-   Eina_List *shots = NULL;
-   Eina_List *l;
-   Eet_File *fp;
-   Evas_Object *ck;
-
-   fp = eet_open(filename, EET_FILE_MODE_WRITE);
-   if (!fp) return EINA_FALSE;
-
-   eet_data_write(fp, clouseau_app_add_edd, CLOUSEAU_APP_ADD_ENTRY,
-                  a, EINA_TRUE);
-   eet_data_write(fp, clouseau_tree_data_edd, CLOUSEAU_TREE_DATA_ENTRY,
-                  ftd, EINA_TRUE);
-
-   /* Build list of (bmp_info_st *) according to user selection    */
-   EINA_LIST_FOREACH(ck_list, l , ck)
-     if (elm_check_state_get(ck))
-       {
-          void *data;
-
-          data = evas_object_data_get(ck, BMP_FIELD);
-          if (data)
-            shots = eina_list_append(shots, data);
-       }
-
-   if (shots)
-     {
-        /* Write list and bitmaps */
-        char buf[1024];
-        shot_list_st t;
-        bmp_info_st *st;
-
-        t.view = shots;
-        eet_data_write(fp, clouseau_shot_list_edd, CLOUSEAU_BMP_LIST_ENTRY,
-                       &t, EINA_TRUE);
-        EINA_LIST_FREE(shots, st)
-          {
-             sprintf(buf, CLOUSEAU_BMP_DATA_ENTRY"/%llx", st->object);
-             eet_data_image_write(fp, buf, st->bmp,
-                                  st->w, st->h, 1, 0, 100, 0);
-          }
-     }
-
-   eet_close(fp);
-
-   return EINA_TRUE;
-}
-
-Eina_Bool
-eet_info_read(const char *filename,
-              app_info_st **a, tree_data_st **ftd)
-{
-   bmp_info_st *st;
-   shot_list_st *t;
-   Eet_File *fp;
-
-   fp = eet_open(filename, EET_FILE_MODE_READ);
-   if (!fp) return EINA_FALSE;
-
-   *a = eet_data_read(fp, clouseau_app_add_edd, CLOUSEAU_APP_ADD_ENTRY);
-   *ftd = eet_data_read(fp, clouseau_tree_data_edd, CLOUSEAU_TREE_DATA_ENTRY);
-   t = eet_data_read(fp, clouseau_shot_list_edd, CLOUSEAU_BMP_LIST_ENTRY);
-
-   EINA_LIST_FREE(t->view, st)
-     {
-        Variant_st *v;
-        char buf[1024];
-        int alpha;
-        int compress;
-        int quality;
-        int lossy;
-
-        sprintf(buf, CLOUSEAU_BMP_DATA_ENTRY"/%llx", st->object);
-        st->bmp = eet_data_image_read(fp, buf,
-                                      (unsigned int *) &st->w,
-                                      (unsigned int *) &st->h,
-                                      &alpha, &compress, &quality, &lossy);
-
-        /* Add the bitmaps to the actuall app data struct */
-        v = clouseau_variant_alloc(CLOUSEAU_BMP_DATA, sizeof(*st), st);
-        (*a)->view = eina_list_append((*a)->view, v);
-     }
-
-   free(t);
-   eet_close(fp);
-
-   return EINA_TRUE;
 }
 
 /* HIGHLIGHT code. */
@@ -1003,7 +890,7 @@ _clouseau_highlight_del(void *data,
 }
 
 EAPI void
-clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view)
+clouseau_data_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info_st *view)
 {
    Ecore_Animator *t;
    Evas_Object *r;
@@ -1057,47 +944,100 @@ clouseau_object_highlight(Evas_Object *obj, Clouseau_Evas_Props *props, bmp_info
    fprintf(stderr, "Creation backtrace :\n%s*******\n", tmp); */
 }
 
-void
-libclouseau_make_lines(bmp_info_st *st, Evas_Coord xx, Evas_Coord yy)
+EAPI Eina_Bool
+clouseau_data_eet_info_save(const char *filename,
+              app_info_st *a, tree_data_st *ftd, Eina_List *ck_list)
 {
-   /* and no, we are NOT talking about WHITE lines */
-   Evas_Coord x_rgn, y_rgn, w_rgn, h_rgn;
+   Eina_List *shots = NULL;
+   Eina_List *l;
+   Eet_File *fp;
+   Evas_Object *ck;
 
-   clouseau_lines_free(st);
+   fp = eet_open(filename, EET_FILE_MODE_WRITE);
+   if (!fp) return EINA_FALSE;
 
-   elm_scroller_region_get(st->scr, &x_rgn, &y_rgn, &w_rgn, &h_rgn);
+   eet_data_write(fp, clouseau_app_add_edd, CLOUSEAU_APP_ADD_ENTRY,
+                  a, EINA_TRUE);
+   eet_data_write(fp, clouseau_tree_data_edd, CLOUSEAU_TREE_DATA_ENTRY,
+                  ftd, EINA_TRUE);
 
-   st->lx = evas_object_line_add(evas_object_evas_get(st->o));
-   st->ly = evas_object_line_add(evas_object_evas_get(st->o));
-   evas_object_repeat_events_set(st->lx, EINA_TRUE);
-   evas_object_repeat_events_set(st->ly, EINA_TRUE);
+   /* Build list of (bmp_info_st *) according to user selection    */
+   EINA_LIST_FOREACH(ck_list, l , ck)
+     if (elm_check_state_get(ck))
+       {
+          void *data;
 
-   evas_object_line_xy_set(st->lx, 0, yy, w_rgn, yy);
-   evas_object_line_xy_set(st->ly, xx, 0, xx, h_rgn);
+          data = evas_object_data_get(ck, BMP_FIELD);
+          if (data)
+            shots = eina_list_append(shots, data);
+       }
 
-   evas_object_color_set(st->lx, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_color_set(st->ly, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
-         HIGHLIGHT_A);
-   evas_object_show(st->lx);
-   evas_object_show(st->ly);
+   if (shots)
+     {
+        /* Write list and bitmaps */
+        char buf[1024];
+        shot_list_st t;
+        bmp_info_st *st;
+
+        t.view = shots;
+        eet_data_write(fp, clouseau_shot_list_edd, CLOUSEAU_BMP_LIST_ENTRY,
+                       &t, EINA_TRUE);
+        EINA_LIST_FREE(shots, st)
+          {
+             sprintf(buf, CLOUSEAU_BMP_DATA_ENTRY"/%llx", st->object);
+             eet_data_image_write(fp, buf, st->bmp,
+                                  st->w, st->h, 1, 0, 100, 0);
+          }
+     }
+
+   eet_close(fp);
+
+   return EINA_TRUE;
 }
 
-void
-libclouseau_lines_cb(void *data,
-      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
-      void *event_info)
+EAPI Eina_Bool
+clouseau_data_eet_info_read(const char *filename,
+              app_info_st **a, tree_data_st **ftd)
 {
-   if (((Evas_Event_Mouse_Down *) event_info)->button == 1)
-     return; /* Draw line only if not left mouse button */
+   bmp_info_st *st;
+   shot_list_st *t;
+   Eet_File *fp;
 
-   libclouseau_make_lines(data, 
-         (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x),
-         (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y));
+   fp = eet_open(filename, EET_FILE_MODE_READ);
+   if (!fp) return EINA_FALSE;
+
+   *a = eet_data_read(fp, clouseau_app_add_edd, CLOUSEAU_APP_ADD_ENTRY);
+   *ftd = eet_data_read(fp, clouseau_tree_data_edd, CLOUSEAU_TREE_DATA_ENTRY);
+   t = eet_data_read(fp, clouseau_shot_list_edd, CLOUSEAU_BMP_LIST_ENTRY);
+
+   EINA_LIST_FREE(t->view, st)
+     {
+        Variant_st *v;
+        char buf[1024];
+        int alpha;
+        int compress;
+        int quality;
+        int lossy;
+
+        sprintf(buf, CLOUSEAU_BMP_DATA_ENTRY"/%llx", st->object);
+        st->bmp = eet_data_image_read(fp, buf,
+                                      (unsigned int *) &st->w,
+                                      (unsigned int *) &st->h,
+                                      &alpha, &compress, &quality, &lossy);
+
+        /* Add the bitmaps to the actuall app data struct */
+        v = clouseau_data_variant_alloc(CLOUSEAU_BMP_DATA, sizeof(*st), st);
+        (*a)->view = eina_list_append((*a)->view, v);
+     }
+
+   free(t);
+   eet_close(fp);
+
+   return EINA_TRUE;
 }
 
 EAPI int
-clouseau_init(void)
+clouseau_data_init(void)
 {
    if (clouseau_init_count++ != 0)
      return clouseau_init_count;
@@ -1112,7 +1052,7 @@ clouseau_init(void)
 }
 
 EAPI int
-clouseau_shutdown(void)
+clouseau_data_shutdown(void)
 {
    if (--clouseau_init_count != 0)
      return clouseau_init_count;

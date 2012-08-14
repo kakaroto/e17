@@ -148,7 +148,9 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Add *e
    ecore_ipc_server_data_size_max_set(ev->server, -1);
 
    connect_st t = { getpid(), _my_app_name };
-   p = packet_compose(CLOUSEAU_APP_CLIENT_CONNECT, &t, sizeof(t), &size, NULL, 0);
+   p = clouseau_data_packet_compose(CLOUSEAU_APP_CLIENT_CONNECT,
+         &t, sizeof(t), &size, NULL, 0);
+
    if (p)
      {
         ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -182,8 +184,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
 {
    Variant_st *v;
 
-   v = packet_info_get(ev->data, ev->size);
-   switch (clouseau_packet_mapping_type_get(v->type))
+   v = clouseau_data_packet_info_get(ev->data, ev->size);
+   switch (clouseau_data_packet_mapping_type_get(v->type))
      {
       case CLOUSEAU_DATA_REQ:
         {  /* data req includes ptr to GUI, to tell which client asking */
@@ -196,9 +198,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
 
            if (t.tree)
              {  /* Reply with tree data to data request */
-                void *p = packet_compose(CLOUSEAU_TREE_DATA,
-                                         &t, sizeof(t), &size,
-                                         NULL, 0);
+                void *p = clouseau_data_packet_compose(CLOUSEAU_TREE_DATA,
+                                         &t, sizeof(t), &size, NULL, 0);
+
                 if (p)
                   {
                      ecore_ipc_server_send(ev->server, 0,0,0,0,
@@ -207,7 +209,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
                      free(p);
                   }
 
-                clouseau_tree_free(t.tree);
+                clouseau_data_tree_free(t.tree);
              }
         }
         break;
@@ -216,7 +218,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
            {  /* Highlight msg contains PTR of object to highlight */
               highlight_st *ht = v->data;
               Evas_Object *obj = (Evas_Object *) (uintptr_t) ht->object;
-              clouseau_object_highlight(obj, NULL, NULL);
+              clouseau_data_object_highlight(obj, NULL, NULL);
            }
          break;
 
@@ -233,8 +235,8 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
                    NULL,NULL, NULL, 1.0,
                    NULL, NULL, NULL, NULL, NULL, NULL };
 
-              void *p = packet_compose(CLOUSEAU_BMP_DATA, &t, sizeof(t), &size,
-                    bmp, (w * h * sizeof(int)));
+              void *p = clouseau_data_packet_compose(CLOUSEAU_BMP_DATA,
+                    &t, sizeof(t), &size, bmp, (w * h * sizeof(int)));
 
               if (p)
                 {
@@ -253,7 +255,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Server_Data 
          break;
      }
 
-   clouseau_variant_free(v);
+   clouseau_data_variant_free(v);
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -332,11 +334,11 @@ ecore_main_loop_begin(void)
         return;
      }
 
-   clouseau_init();
+   clouseau_data_init();
 
    _ecore_main_loop_begin();
 
-   clouseau_shutdown();
+   clouseau_data_shutdown();
 
    return;
 }

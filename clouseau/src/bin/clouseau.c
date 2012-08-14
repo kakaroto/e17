@@ -95,7 +95,9 @@ _add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
    if (svr)
      {
         connect_st t = { getpid(), __FILE__ };
-        p = packet_compose(CLOUSEAU_GUI_CLIENT_CONNECT, &t, sizeof(t), &size, NULL, 0);
+        p = clouseau_data_packet_compose(CLOUSEAU_GUI_CLIENT_CONNECT,
+              &t, sizeof(t), &size, NULL, 0);
+
         if (p)
           {
              ecore_ipc_server_send(ev->server, 0,0,0,0,EINA_FALSE, p, size);
@@ -194,6 +196,26 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
    return ECORE_CALLBACK_RENEW;
 }
 
+static void
+clouseau_lines_free(bmp_info_st *st)
+{  /* Free lines asociated with a bmp */
+   if (st->lx)
+     evas_object_del(st->lx);
+
+   if (st->ly)
+     evas_object_del(st->ly);
+
+   st->lx = st->ly = NULL;
+}
+
+static void
+clouseau_bmp_blob_free(bmp_info_st *st)
+{  /* We also free all lines drawn in this bmp canvas */
+   clouseau_lines_free(st);
+
+   if (st->bmp)
+     free(st->bmp);
+}
 
 static Eina_Bool
 _load_gui_with_list(gui_elements *g, Eina_List *trees)
@@ -264,7 +286,7 @@ _close_app_views(app_info_st *app, Eina_Bool clr)
         EINA_LIST_FREE(app->view, view)
           {  /* Free memory allocated to show any app screens */
              clouseau_bmp_blob_free(view->data);
-             clouseau_variant_free(view);
+             clouseau_data_variant_free(view);
           }
 
         app->view = NULL;
@@ -374,7 +396,7 @@ _remove_bmp(Eina_List *view, void *ptr)
         if (st->bmp)
           free(st->bmp);
 
-        clouseau_variant_free(v);
+        clouseau_data_variant_free(v);
         return eina_list_remove(view, v);
      }
 
@@ -406,8 +428,8 @@ _free_app_tree_data(Variant_st *td)
    if (!td) return ;
 
    ftd = td->data;
-   clouseau_tree_free(ftd->tree);
-   clouseau_variant_free(td);
+   clouseau_data_tree_free(ftd->tree);
+   clouseau_data_variant_free(td);
 }
 
 static void
@@ -427,10 +449,10 @@ _free_app(app_data_st *st)
         if (b->bmp)
           free(b->bmp);
 
-        clouseau_variant_free(view);
+        clouseau_data_variant_free(view);
      }
 
-   clouseau_variant_free(st->app);
+   clouseau_data_variant_free(st->app);
    _free_app_tree_data(st->td);
    free(st);
 }
@@ -463,7 +485,7 @@ _remove_app(gui_elements *g, Variant_st *v)
            _add_app_to_dd_list(g->dd_list, st);
      }
 
-   clouseau_variant_free(v);
+   clouseau_data_variant_free(v);
 }
 
 static void
@@ -564,7 +586,7 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
            This code ignores this case. */
         elm_progressbar_pulse(g->pb, EINA_FALSE);
         evas_object_hide(g->pb);
-        clouseau_variant_free(v);
+        clouseau_data_variant_free(v);
 
         /* Make refresh button display: screenshot NOT available */
         if (nd)
@@ -598,8 +620,46 @@ _add_bmp(gui_elements *g EINA_UNUSED, Variant_st *v)
         if (st->bmp)
           free(st->bmp);
 
-        clouseau_variant_free(v);
+        clouseau_data_variant_free(v);
      }
+}
+
+static void
+clouseau_make_lines(bmp_info_st *st, Evas_Coord xx, Evas_Coord yy)
+{  /* and no, we are NOT talking about WHITE lines */
+   Evas_Coord x_rgn, y_rgn, w_rgn, h_rgn;
+
+   clouseau_lines_free(st);
+
+   elm_scroller_region_get(st->scr, &x_rgn, &y_rgn, &w_rgn, &h_rgn);
+
+   st->lx = evas_object_line_add(evas_object_evas_get(st->o));
+   st->ly = evas_object_line_add(evas_object_evas_get(st->o));
+   evas_object_repeat_events_set(st->lx, EINA_TRUE);
+   evas_object_repeat_events_set(st->ly, EINA_TRUE);
+
+   evas_object_line_xy_set(st->lx, 0, yy, w_rgn, yy);
+   evas_object_line_xy_set(st->ly, xx, 0, xx, h_rgn);
+
+   evas_object_color_set(st->lx, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_color_set(st->ly, HIGHLIGHT_R, HIGHLIGHT_G, HIGHLIGHT_B,
+         HIGHLIGHT_A);
+   evas_object_show(st->lx);
+   evas_object_show(st->ly);
+}
+
+static void
+clouseau_lines_cb(void *data,
+      Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
+      void *event_info)
+{
+   if (((Evas_Event_Mouse_Down *) event_info)->button == 1)
+     return; /* Draw line only if not left mouse button */
+
+   clouseau_make_lines(data, 
+         (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.x),
+         (((Evas_Event_Mouse_Move *) event_info)->cur.canvas.y));
 }
 
 static void
@@ -639,7 +699,7 @@ _mouse_move(void *data,
    elm_object_text_set(st->lb_mouse, s_bar);
 
    if (((Evas_Event_Mouse_Move *) event_info)->buttons > 1)
-     libclouseau_make_lines(st, mp_x, mp_y);
+     clouseau_make_lines(st, mp_x, mp_y);
 
    if (((xx >= 0) && (xx < ((Evas_Coord) st->w))) &&
          ((yy >= 0) && (yy < ((Evas_Coord) st->h))))
@@ -663,7 +723,7 @@ _app_win_del(void *data,
    evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_OUT,
          _mouse_out);
    evas_object_event_callback_del(st->o, EVAS_CALLBACK_MOUSE_DOWN,
-         libclouseau_lines_cb);
+         clouseau_lines_cb);
    st->win = st->bt = st->lb_mouse = st->o = NULL;
 }
 
@@ -846,7 +906,7 @@ _open_app_window(bmp_info_st *st, Evas_Object *bt, Clouseau_Tree_Item *treeit)
          _mouse_out, st);
 
    evas_object_event_callback_add(st->o, EVAS_CALLBACK_MOUSE_DOWN,
-         libclouseau_lines_cb, st);
+         clouseau_lines_cb, st);
 
    evas_object_resize(st->scr, st->w, st->h);
    elm_win_resize_object_add(st->win, bx);
@@ -894,7 +954,9 @@ _show_app_window(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
              (unsigned long long) (uintptr_t) st->ptr,
              (unsigned long long) (uintptr_t) treeit->ptr, st->refresh_ctr };
 
-        void *p = packet_compose(CLOUSEAU_BMP_REQ, &t, sizeof(t), &size, NULL, 0);
+        void *p = clouseau_data_packet_compose(CLOUSEAU_BMP_REQ,
+              &t, sizeof(t), &size, NULL, 0);
+
         if (p)
           {
              ecore_ipc_server_send(svr,
@@ -925,10 +987,10 @@ _data(void *data, int type EINA_UNUSED, void *event)
    Ecore_Ipc_Event_Server_Data *ev = event;
    Variant_st *v;
 
-   v = packet_info_get(ev->data, ev->size);
+   v = clouseau_data_packet_info_get(ev->data, ev->size);
    if (!v) return ECORE_CALLBACK_RENEW;
 
-   switch (clouseau_packet_mapping_type_get(v->type))
+   switch (clouseau_data_packet_mapping_type_get(v->type))
      {
       case CLOUSEAU_APP_ADD:            /* Add info to list of APPs  */
          _add_app(data, v);    /* v->data is (app_info_st *) */
@@ -1196,7 +1258,7 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
      return;
 
    /* Populate object information, then do highlight */
-   clouseau_obj_information_list_populate(treeit, g->lb);
+   clouseau_object_information_list_populate(treeit, g->lb);
 
    if (!do_highlight)
      return;
@@ -1209,7 +1271,9 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
 
    if (svr)
      {
-        void *p = packet_compose(CLOUSEAU_HIGHLIGHT, &st, sizeof(st), &size, NULL, 0);
+        void *p = clouseau_data_packet_compose(CLOUSEAU_HIGHLIGHT,
+              &st, sizeof(st), &size, NULL, 0);
+
         if (p)
           {
              ecore_ipc_server_send(svr,
@@ -1234,7 +1298,7 @@ _gl_selected(void *data EINA_UNUSED, Evas_Object *pobj EINA_UNUSED,
 
    if (v)
      {  /* Third param gives evas surface when running offline */
-        clouseau_object_highlight((void*) (uintptr_t) treeit->ptr,
+        clouseau_data_object_highlight((void*) (uintptr_t) treeit->ptr,
                                   &treeit->info->evas_props, v->data);
      }
    /* END   - replacing clouseau_object_highlight(obj); */
@@ -1272,8 +1336,9 @@ _load_list(gui_elements *g)
                   data_req_st t = { (unsigned long long) (uintptr_t) NULL,
                        (unsigned long long) (uintptr_t) st->ptr };
 
-                  void *p = packet_compose(CLOUSEAU_DATA_REQ, &t, sizeof(t), &size,
-                        NULL, 0);
+                  void *p = clouseau_data_packet_compose(CLOUSEAU_DATA_REQ,
+                        &t, sizeof(t), &size, NULL, 0);
+
                   if (p)
                     {
                        elm_progressbar_pulse(g->pb, EINA_TRUE);
@@ -1341,7 +1406,7 @@ _bt_load_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    /* app_info_st *app = NULL; */
    if (event_info)
      {
-        Eina_Bool s = eet_info_read(event_info,
+        Eina_Bool s = clouseau_data_eet_info_read(event_info,
               (app_info_st **) &app->data,
               (tree_data_st **) &td->data);
 
@@ -1372,7 +1437,7 @@ _bt_save_file(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
    if (event_info)
      {
         /* FIXME: Handle failure. */
-        eet_info_save(event_info, app, ftd, data);
+        clouseau_data_eet_info_save(event_info, app, ftd, data);
      }
 
    eina_list_free(data);
@@ -1525,7 +1590,9 @@ _remove_apps_with_no_tree_data(gui_elements *g)
                 (((app_info_st *) st->app->data)->ptr);
 
              /* v is freed by _remove_app */
-             v = clouseau_variant_alloc(CLOUSEAU_APP_CLOSED, sizeof(t), &t);
+             v = clouseau_data_variant_alloc(CLOUSEAU_APP_CLOSED,
+                   sizeof(t), &t);
+
              _remove_app(g, v); /* v->data is (app_closed_st *) */
           }
      }
@@ -1727,7 +1794,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    /* Properties list */
      {
         Evas_Object *prop_list = NULL;
-        prop_list = clouseau_obj_information_list_add(panes);
+        prop_list = clouseau_object_information_list_add(panes);
         gui->prop_list = prop_list;
         evas_object_size_hint_align_set(prop_list,
               EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1774,7 +1841,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    eina_init();
    ecore_init();
    ecore_ipc_init();
-   clouseau_init();
+   clouseau_data_init();
 
    /* START - Popup to get IP, PORT from user */
    gui->connect_inwin = elm_win_inwin_add(win);
@@ -1852,7 +1919,7 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
    EINA_LIST_FREE(bmp_req, st)
       free(st);
 
-   clouseau_shutdown();
+   clouseau_data_shutdown();
    if (gui->address)
      free(gui->address);
 

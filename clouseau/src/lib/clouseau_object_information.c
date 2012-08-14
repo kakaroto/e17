@@ -72,8 +72,8 @@ item_text_get(void *data, Evas_Object *obj EINA_UNUSED,
    return strdup(tit->string);
 }
 
-Evas_Object *
-clouseau_obj_information_list_add(Evas_Object *parent)
+EAPI Evas_Object *
+clouseau_object_information_list_add(Evas_Object *parent)
 {
    prop_list = elm_genlist_add(parent);
    elm_genlist_mode_set(prop_list, ELM_LIST_COMPRESS);
@@ -119,7 +119,7 @@ _clouseau_item_tree_free(void)
      }
 }
 
-void
+EAPI void
 clouseau_object_information_free(Clouseau_Object *oinfo)
 {
    if (!oinfo)
@@ -165,7 +165,7 @@ clouseau_object_information_free(Clouseau_Object *oinfo)
    free(oinfo);
 }
 
-Clouseau_Object *
+EAPI Clouseau_Object *
 clouseau_object_information_get(Clouseau_Tree_Item *treeit)
 {
    Clouseau_Object *oinfo;
@@ -434,8 +434,8 @@ _clouseau_type_to_parent(Eina_List **main, const char *name)
    return item;
 }
 
-void
-clouseau_obj_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *lb)
+EAPI void
+clouseau_object_information_list_populate(Clouseau_Tree_Item *treeit, Evas_Object *lb)
 {
    Inf_Clouseau_Tree_Item *main_tit;
    Clouseau_Object *oinfo;

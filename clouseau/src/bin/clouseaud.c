@@ -65,7 +65,7 @@ _daemon_cleanup(void)
    gui = app = NULL;
    ipc_svr = NULL;
 
-   clouseau_shutdown();
+   clouseau_data_shutdown();
    ecore_ipc_shutdown();
    ecore_shutdown();
    eina_shutdown();
@@ -172,7 +172,9 @@ _del(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Del *e
         app_closed_st t = { (unsigned long long) (uintptr_t) ev->client };
         Eina_List *l;
         int size;
-        void *p = packet_compose(CLOUSEAU_APP_CLOSED, &t, sizeof(t), &size, NULL, 0);
+        void *p = clouseau_data_packet_compose(CLOUSEAU_APP_CLOSED,
+              &t, sizeof(t), &size, NULL, 0);
+
         if (p)
           {
              EINA_LIST_FOREACH(gui, l, i)
@@ -207,7 +209,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
    sprintf(msg_buf, "<%s> msg from <%p>", __func__, ev->client);
    log_message(LOG_FILE, "a", msg_buf);
 
-   Variant_st *v = packet_info_get(ev->data, ev->size);
+   Variant_st *v =  clouseau_data_packet_info_get(ev->data, ev->size);
    /* This is where daemon impl communication protocol.
     * In order to simplify, all messages also contains recipient ptr
     * as saved by daemon.
@@ -218,7 +220,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
         return ECORE_CALLBACK_RENEW;
      }
 
-   switch(clouseau_packet_mapping_type_get(v->type))
+   switch(clouseau_data_packet_mapping_type_get(v->type))
      {
       case CLOUSEAU_APP_CLIENT_CONNECT:
         {  /* Register APP then notify GUI about it */
@@ -229,7 +231,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                              (unsigned long long) (uintptr_t) ev->client, NULL, 0 };
 
            app = _add_client(app, t, ev->client);
-           p = packet_compose(CLOUSEAU_APP_ADD, &m, sizeof(m), &size, NULL, 0);
+           p = clouseau_data_packet_compose(CLOUSEAU_APP_ADD,
+                 &m, sizeof(m), &size, NULL, 0);
+
            if (p)
              {
                 EINA_LIST_FOREACH(gui, l, st)
@@ -254,8 +258,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
            gui = _add_client(gui, t, ev->client);
            EINA_LIST_FOREACH(app, l, st)
              {  /* Add all registered apps to newly open GUI */
-                p = packet_compose(CLOUSEAU_APP_ADD, st, sizeof(*st), &size,
-                                   NULL, 0);
+                p = clouseau_data_packet_compose(CLOUSEAU_APP_ADD,
+                      st, sizeof(*st), &size, NULL, 0);
+
                 if (p)
                   {
                      ecore_ipc_client_send(ev->client,
@@ -281,8 +286,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                        (unsigned long long) (uintptr_t) ev->client,
                        (unsigned long long) (uintptr_t) req->app };
 
-                     p = packet_compose(CLOUSEAU_DATA_REQ,
+                     p = clouseau_data_packet_compose(CLOUSEAU_DATA_REQ,
                                         &t, sizeof(t), &size, NULL, 0);
+
                      if (p)
                        {
                           ecore_ipc_client_send(
@@ -305,8 +311,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                 EINA_LIST_FOREACH(app, l, st)
                   {
                      t.app = (unsigned long long) (uintptr_t) st->ptr;
-                     p = packet_compose(CLOUSEAU_DATA_REQ,
+                     p = clouseau_data_packet_compose(CLOUSEAU_DATA_REQ,
                                         &t, sizeof(t), &size, NULL, 0);
+
                      if (p)
                        {
                           ecore_ipc_client_send(
@@ -351,7 +358,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                   }
              }
 
-           clouseau_tree_free(td->tree);
+           clouseau_data_tree_free(td->tree);
         }
         break;
 
@@ -379,8 +386,9 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
                   (unsigned long long) (uintptr_t) ev->client,
                   req->app, req->object, req->ctr };
 
-                p = packet_compose(CLOUSEAU_BMP_REQ,
+                p = clouseau_data_packet_compose(CLOUSEAU_BMP_REQ,
                                    &t, sizeof(t), &size, NULL, 0);
+
                 if (p)
                   {  /* FWD req to app with client data */
                      ecore_ipc_client_send(
@@ -433,7 +441,7 @@ _data(void *data EINA_UNUSED, int type EINA_UNUSED, Ecore_Ipc_Event_Client_Data 
          break;
      }
 
-   clouseau_variant_free(v);
+   clouseau_data_variant_free(v);
 
    log_message(LOG_FILE, "a", "_data() finished");
    return ECORE_CALLBACK_RENEW;
@@ -446,7 +454,7 @@ int main(void)
    eina_init();
    ecore_init();
    ecore_ipc_init();
-   clouseau_init();
+   clouseau_data_init();
 
    if (!(ipc_svr = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM,
                LISTEN_IP, PORT, NULL)))
