@@ -1,0 +1,32 @@
+# Portuguese translation for Eektool.
+# This file is put in the public domain.
+# Sérgio Marques <smarquespt@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Eektool\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-04-09 07:34+0200\n"
+"PO-Revision-Date: 2012-08-14 16:07-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:35
+msgid "Eektool Settings"
+msgstr "Definições Eektool"
+
+#: src/e_mod_config.c:77
+msgid "Command"
+msgstr "Comando"
+
+#: src/e_mod_config.c:84
+#, c-format
+msgid "%4.0f seconds"
+msgstr "%4.0f segundos"
+
+#: src/e_mod_main.c:174
+msgid "Settings"
+msgstr "Definições"
