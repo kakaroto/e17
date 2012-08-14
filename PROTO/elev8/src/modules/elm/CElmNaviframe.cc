@@ -75,15 +75,20 @@ Handle<Value> CElmNaviframe::Pack(Handle<Value> value, Handle<Value> replace)
    else if (before->IsString() || before->IsNumber())
      before = GetJSObject()->Get(String::NewSymbol("elements"))->ToObject()->Get(before);
 
+   bool has_style = obj->Get(String::NewSymbol("style"))->IsString();
+   String::Utf8Value style(obj->Get(String::NewSymbol("style"))->ToString());
+
    if (before->IsUndefined())
      {
-        object_item = elm_naviframe_item_push(eo, NULL, NULL, NULL, NULL, 0);
+        object_item = elm_naviframe_item_push(eo, NULL, NULL, NULL, NULL,
+                                              has_style ? *style : NULL);
      }
    else
      {
         Item *item = Item::Unwrap(before);
         object_item = elm_naviframe_item_insert_before(eo, item->object_item,
-                                                       NULL, NULL, NULL, NULL, 0);
+                                                       NULL, NULL, NULL, NULL,
+                                                       has_style ? *style : NULL);
      }
 
    title_visible_eval();
