@@ -1,10 +1,10 @@
 #include <unistd.h>
 #include <string.h>
-#include <elev8_utils.h>
+#include <utils.h>
 
 using namespace v8;
 
-int shebang_length(const char *p, int len)
+static int shebang_length(const char *p, int len)
 {
    if ((len >= 2) && (p[0] == '#') && (p[1] == '!'))
      return (const char *)memchr(&p[2], '\n', len) - p;

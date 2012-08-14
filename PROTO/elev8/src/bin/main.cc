@@ -8,12 +8,12 @@
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <elev8_common.h>
-#include <elev8_utils.h>
 #include <unistd.h>
 #include <v8-debug.h>
 #include "environment.h"
 #include "storage.h"
 #include "timer.h"
+#include "utils.h"
 
 using namespace v8;
 int elev8_log_domain = -1;
