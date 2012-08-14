@@ -110,8 +110,9 @@ Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
    if (obj->Has(String::NewSymbol("element")))
      {
         item = CreateItem(next);
-        elm_object_item_part_content_set(item, "object",
-                                         GetEvasObjectFromJavascript(Realise(obj->Get(String::NewSymbol("element"))->ToObject(), jsObject)));
+        Handle<Value> realised = Realise(obj->Get(String::NewSymbol("element"))->ToObject(), jsObject);
+        obj->Set(String::NewSymbol("element"), realised);
+        elm_object_item_part_content_set(item, "object", GetEvasObjectFromJavascript(realised));
      }
    else if (obj->Get(String::NewSymbol("separator"))->BooleanValue())
      {
