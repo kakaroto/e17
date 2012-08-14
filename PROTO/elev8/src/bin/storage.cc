@@ -187,7 +187,7 @@ void RegisterModule(Handle<ObjectTemplate> global)
    inst_t->SetAccessor(String::NewSymbol("length"), length, NULL);
    inst_t->SetAccessor(String::NewSymbol("database"), databaseGet, databaseSet);
 
-   global->Set("localStorage", tmpl);
+   global->Set("LocalStorage", tmpl);
 }
 
 }
