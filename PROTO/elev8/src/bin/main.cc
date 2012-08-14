@@ -11,6 +11,7 @@
 #include <elev8_utils.h>
 #include <unistd.h>
 #include <v8-debug.h>
+#include "environment.h"
 #include "storage.h"
 #include "timer.h"
 
@@ -350,6 +351,7 @@ main(int argc, char *argv[])
    global->Set(String::NewSymbol("print"), FunctionTemplate::New(print));
    storage::RegisterModule(global);
    timer::RegisterModule(global);
+   environment::RegisterModule(global);
 
    Persistent<Context> context = Context::New(NULL, global);
    Context::Scope context_scope(context);
