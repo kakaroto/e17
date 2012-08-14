@@ -190,7 +190,7 @@ Handle<Value> CElmLayout::box_remove_all(const Arguments& args)
 
 Handle<Value> CElmLayout::signal_emit(const Arguments& args)
 {
-   if((args[0]->IsUndefined()) && (args[1]->IsUndefined()))
+   if((!args[0]->IsUndefined()) && (!args[1]->IsUndefined()))
      elm_layout_signal_emit(eo, *String::Utf8Value(args[0]), *String::Utf8Value(args[1]));
 
    return Undefined();
