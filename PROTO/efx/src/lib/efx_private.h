@@ -4,10 +4,13 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
 #include <math.h>
+
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+
 #include "Efx.h"
 
 #define DBG(...)            EINA_LOG_DOM_DBG(_efx_log_dom, __VA_ARGS__)

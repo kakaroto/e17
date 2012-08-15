@@ -34,14 +34,11 @@ efx_init(void)
    if (++_efx_init_count > 1) return _efx_init_count;
 
    if (eina_init() < 1) goto err;
-   if (ecore_evas_init() < 1) goto ecerr;
 
    _efx_log_dom = eina_log_domain_register("efx", EINA_COLOR_GREEN);
    if (_efx_log_dom < 0) goto lgerr;
    return _efx_init_count;
 lgerr:
-   ecore_evas_shutdown();
-ecerr:
    eina_shutdown();
 err:
    return --_efx_init_count;
@@ -54,6 +51,5 @@ efx_shutdown(void)
    if (--_efx_init_count != 0) return;
    eina_log_domain_unregister(_efx_log_dom);
    _efx_log_dom = -1;
-   ecore_evas_shutdown();
    eina_shutdown();
 }
