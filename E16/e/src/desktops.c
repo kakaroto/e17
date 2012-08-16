@@ -47,10 +47,13 @@
 #include <X11/extensions/Xrandr.h>
 #endif
 
-#define EDESK_EVENT_MASK \
-  (ButtonPressMask | ButtonReleaseMask | \
-   EnterWindowMask | LeaveWindowMask /* | PointerMotionMask | ButtonMotionMask */ | \
+#define DESK_EVENT_MASK1 \
+  (ButtonPressMask | ButtonReleaseMask)
+#define DESK_EVENT_MASK2 \
+  (EnterWindowMask | LeaveWindowMask | \
    SubstructureNotifyMask | SubstructureRedirectMask | PropertyChangeMask)
+
+#define DESK_EVENT_MASK (DESK_EVENT_MASK1 | DESK_EVENT_MASK2)
 
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 
@@ -438,10 +441,13 @@ DeskCreate(int desk, int configure)
    if (configure)
       DeskConfigure(dsk);
 
+   /* Root window: Don't include ButtonPressMask as it may cause the event
+    * selection to fail for the other events too.
+    * The ButtonPress/ReleaseMask events are selected in SetupX(). */
    if (desk == 0)
-      ESelectInputChange(EoGetWin(dsk), EDESK_EVENT_MASK, 0);
+      ESelectInputChange(EoGetWin(dsk), DESK_EVENT_MASK2, 0);
    else
-      ESelectInput(EoGetWin(dsk), EDESK_EVENT_MASK);
+      ESelectInput(EoGetWin(dsk), DESK_EVENT_MASK);
 
    return dsk;
 }

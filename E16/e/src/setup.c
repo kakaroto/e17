@@ -163,6 +163,16 @@ SetupX(const char *dstr)
 	EExit(1);
      }
 
+   mask |= ButtonPressMask | ButtonReleaseMask;
+   ESelectInput(VROOT, mask);
+   ESync(0);
+   if (Dpy.last_error_code)
+     {
+	AlertX(_("Cannot select root window button press events"),
+	       _("OK"), NULL, NULL,
+	       _("Root window button actions will not work.\n"));
+     }
+
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)
      {
