@@ -26,12 +26,10 @@
 #include "eobj.h"
 #include "ewins.h"
 
-void                EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty,
-				int speed);
-void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
-				 int speed);
 void                EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty,
 				    int fw, int fh, int tw, int th, int speed);
+void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
+				 int speed);
 
 #define SLIDE_SOUND     (1 << 0)
 #define SLIDE_FOCUS     (1 << 1)

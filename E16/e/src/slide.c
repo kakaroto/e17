@@ -32,27 +32,6 @@
  */
 
 void
-EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
-{
-   int                 k, x, y;
-
-   EGrabServer();
-
-   ETimedLoopInit(0, 1024, speed);
-   for (k = 0; k <= 1024;)
-     {
-	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
-	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
-	EobjMove(eo, x, y);
-
-	k = ETimedLoopNext();
-     }
-   EobjMove(eo, tx, ty);
-
-   EUngrabServer();
-}
-
-void
 EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
 {
    int                 i, k, x, y;
