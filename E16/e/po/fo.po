@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-06-27 20:32+0200\n"
+"POT-Creation-Date: 2012-08-15 22:27+0200\n"
 "PO-Revision-Date: 2010-05-05 17:03+0000\n"
 "Last-Translator: Gunleif Joensen <Unknown>\n"
 "Language-Team: Faroese <fo@li.org>\n"
@@ -135,7 +135,7 @@ msgstr "Legg ikki lag at hesum"
 msgid "Restart Enlightenment"
 msgstr "Endurbyrja Enlightenment"
 
-#: src/alert.c:560 src/setup.c:170
+#: src/alert.c:560 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "Gevast við Enlightenment"
 
@@ -144,7 +144,7 @@ msgid "Attention !!!"
 msgstr "Gev gætur !!!"
 
 #: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
-#: src/setup.c:159 src/sound.c:310
+#: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
@@ -364,7 +364,7 @@ msgstr "Lat aftur"
 msgid "Create New Iconbox"
 msgstr "Stovna nýggjan ímyndarkassa"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1941
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Ímyndastødd: %2d"
@@ -445,7 +445,7 @@ msgstr "Vís ímyndanøvn"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2606
+#: src/container.c:1679 src/desktops.c:2617
 msgid "Off"
 msgstr "Sløkk"
 
@@ -489,7 +489,7 @@ msgstr ""
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr ""
 
-#: src/desktops.c:125
+#: src/desktops.c:129
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -500,7 +500,7 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 
-#: src/desktops.c:136
+#: src/desktops.c:140
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -510,105 +510,105 @@ msgid ""
 "applications currently running.\n"
 msgstr ""
 
-#: src/desktops.c:154
+#: src/desktops.c:158
 msgid ""
 "Click here to raise this desktop\n"
 "to the top."
 msgstr ""
 
-#: src/desktops.c:166
+#: src/desktops.c:170
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom."
 msgstr ""
 
-#: src/desktops.c:2364
+#: src/desktops.c:2375
 msgid "Number of virtual desktops:"
 msgstr "Tal á tykisligum gluggum:"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2401
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2396
+#: src/desktops.c:2407
 msgid "Desktop Slide speed:"
 msgstr ""
 
-#: src/desktops.c:2410
+#: src/desktops.c:2421
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2418
+#: src/desktops.c:2429
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/desktops.c:2424
+#: src/desktops.c:2435
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/desktops.c:2428
+#: src/desktops.c:2439
 msgid "Top"
 msgstr "Toppur"
 
-#: src/desktops.c:2434
+#: src/desktops.c:2445
 msgid "Bottom"
 msgstr "Botnur"
 
-#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2451 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Vinstru"
 
-#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2457 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Høgru"
 
-#: src/desktops.c:2454 src/menus-misc.c:586
+#: src/desktops.c:2465 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Skriviorð"
 
-#: src/desktops.c:2455
+#: src/desktops.c:2466
 msgid "Multiple Desktop Settings"
 msgstr ""
 
-#: src/desktops.c:2458
+#: src/desktops.c:2469
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
 msgstr ""
 
-#: src/desktops.c:2560
+#: src/desktops.c:2571
 msgid "Virtual Desktop size:"
 msgstr "Stødd á tykisligum skriviborði:"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2607
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2603
+#: src/desktops.c:2614
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2611
+#: src/desktops.c:2622
 msgid "On"
 msgstr "Tendra"
 
-#: src/desktops.c:2616
+#: src/desktops.c:2627
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2622
+#: src/desktops.c:2633
 msgid "Resistance at edge of screen:"
 msgstr "Mótstøða við skíggjakanti:"
 
-#: src/desktops.c:2634
+#: src/desktops.c:2645
 msgid "Areas"
 msgstr "Øki"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2646
 msgid "Virtual Desktop Settings"
 msgstr "Instillingar á tykisligum skriviborði"
 
-#: src/desktops.c:2638
+#: src/desktops.c:2649
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -618,7 +618,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Set í verk"
 
-#: src/ecompmgr.c:2304
+#: src/ecompmgr.c:2303
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1056,7 +1056,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:538
+#: src/magwin.c:509
 msgid "Magnifier"
 msgstr "Sjóneyka"
 
@@ -1098,27 +1098,27 @@ msgstr ""
 msgid "Group %i"
 msgstr "Bólkur %i"
 
-#: src/menus.c:1948
+#: src/menus.c:1964
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:1953
+#: src/menus.c:1969
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:1958
+#: src/menus.c:1974
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:1975
+#: src/menus.c:1991
 msgid "Menus"
 msgstr "Valmyndir"
 
-#: src/menus.c:1976
+#: src/menus.c:1992
 msgid "Menu Settings"
 msgstr "Valmynda instillingar"
 
-#: src/menus.c:1979
+#: src/menus.c:1995
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1669,15 +1669,23 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:169
+#: src/setup.c:171
+msgid "Cannot select root window button press events"
+msgstr ""
+
+#: src/setup.c:173
+msgid "Root window button actions will not work.\n"
+msgstr ""
+
+#: src/setup.c:179
 msgid "X server version error"
 msgstr "Villa á X ambætara útgávu"
 
-#: src/setup.c:169
+#: src/setup.c:179
 msgid "Ignore this error"
 msgstr ""
 
-#: src/setup.c:171
+#: src/setup.c:181
 #, c-format
 msgid ""
 "WARNING:\n"

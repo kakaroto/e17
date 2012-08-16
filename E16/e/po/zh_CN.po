@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-06-27 20:32+0200\n"
+"POT-Creation-Date: 2012-08-15 22:27+0200\n"
 "PO-Revision-Date: 2010-05-09 01:20+0000\n"
 "Last-Translator: luojie-dune <Unknown>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -166,7 +166,7 @@ msgstr "忽略这个"
 msgid "Restart Enlightenment"
 msgstr "重启 Enlightenment"
 
-#: src/alert.c:560 src/setup.c:170
+#: src/alert.c:560 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "退出 Enlightenment"
 
@@ -175,7 +175,7 @@ msgid "Attention !!!"
 msgstr "注意！！！"
 
 #: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
-#: src/setup.c:159 src/sound.c:310
+#: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "确定"
 
@@ -416,7 +416,7 @@ msgstr "关闭"
 msgid "Create New Iconbox"
 msgstr "创建新图标架"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1941
 #, c-format
 msgid "Icon size: %2d"
 msgstr "图标尺寸：%2d"
@@ -497,7 +497,7 @@ msgstr "显示图标名称"
 msgid "Animation mode:"
 msgstr "动画模式："
 
-#: src/container.c:1679 src/desktops.c:2606
+#: src/container.c:1679 src/desktops.c:2617
 msgid "Off"
 msgstr "关闭"
 
@@ -543,7 +543,7 @@ msgstr ""
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr "聚焦/非聚焦透明度： %d/%d %%"
 
-#: src/desktops.c:125
+#: src/desktops.c:129
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -560,7 +560,7 @@ msgstr ""
 "点击中键可以获取所有运\n"
 "行中的程序列表。\n"
 
-#: src/desktops.c:136
+#: src/desktops.c:140
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -576,7 +576,7 @@ msgstr ""
 "点击中键可以获取所有运\n"
 "行中的程序列表。\n"
 
-#: src/desktops.c:154
+#: src/desktops.c:158
 msgid ""
 "Click here to raise this desktop\n"
 "to the top."
@@ -584,7 +584,7 @@ msgstr ""
 "点击这里来提升桌面\n"
 "到顶部。"
 
-#: src/desktops.c:166
+#: src/desktops.c:170
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom."
@@ -592,55 +592,55 @@ msgstr ""
 "点击这里来下降桌面\n"
 "到底部。"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2375
 msgid "Number of virtual desktops:"
 msgstr "虚拟桌面的数量："
 
-#: src/desktops.c:2390
+#: src/desktops.c:2401
 msgid "Slide desktops around when changing"
 msgstr "更改桌面时拉幕式切换"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2407
 msgid "Desktop Slide speed:"
 msgstr "桌面切换速度："
 
-#: src/desktops.c:2410
+#: src/desktops.c:2421
 msgid "Wrap desktops around"
 msgstr "包围桌面"
 
-#: src/desktops.c:2418
+#: src/desktops.c:2429
 msgid "Display desktop dragbar"
 msgstr "显示桌面拖动栏"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2435
 msgid "Drag bar position:"
 msgstr "拖动栏位置："
 
-#: src/desktops.c:2428
+#: src/desktops.c:2439
 msgid "Top"
 msgstr "顶部"
 
-#: src/desktops.c:2434
+#: src/desktops.c:2445
 msgid "Bottom"
 msgstr "底部"
 
-#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2451 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "左键"
 
-#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2457 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "右键"
 
-#: src/desktops.c:2454 src/menus-misc.c:586
+#: src/desktops.c:2465 src/menus-misc.c:586
 msgid "Desks"
 msgstr "桌面"
 
-#: src/desktops.c:2455
+#: src/desktops.c:2466
 msgid "Multiple Desktop Settings"
 msgstr "多桌面设置"
 
-#: src/desktops.c:2458
+#: src/desktops.c:2469
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -648,39 +648,39 @@ msgstr ""
 "Enlightenment 多桌面\n"
 "设置对话框"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2571
 msgid "Virtual Desktop size:"
 msgstr "虚拟桌面尺寸："
 
-#: src/desktops.c:2596
+#: src/desktops.c:2607
 msgid "Wrap virtual desktops around"
 msgstr "包围虚拟桌面"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2614
 msgid "Edge Flip Mode:"
 msgstr "边缘翻转模式："
 
-#: src/desktops.c:2611
+#: src/desktops.c:2622
 msgid "On"
 msgstr "开启"
 
-#: src/desktops.c:2616
+#: src/desktops.c:2627
 msgid "Only when moving window"
 msgstr "仅移动窗口时开启"
 
-#: src/desktops.c:2622
+#: src/desktops.c:2633
 msgid "Resistance at edge of screen:"
 msgstr "抵抗屏幕边界:"
 
-#: src/desktops.c:2634
+#: src/desktops.c:2645
 msgid "Areas"
 msgstr "区域"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2646
 msgid "Virtual Desktop Settings"
 msgstr "虚拟桌面设置"
 
-#: src/desktops.c:2638
+#: src/desktops.c:2649
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -692,7 +692,7 @@ msgstr ""
 msgid "Apply"
 msgstr "应用"
 
-#: src/ecompmgr.c:2304
+#: src/ecompmgr.c:2303
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1162,7 +1162,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:538
+#: src/magwin.c:509
 msgid "Magnifier"
 msgstr "放大镜"
 
@@ -1204,27 +1204,27 @@ msgstr "图标化该组"
 msgid "Group %i"
 msgstr "组 %i"
 
-#: src/menus.c:1948
+#: src/menus.c:1964
 msgid "Animated display of menus"
 msgstr "动画显示菜单"
 
-#: src/menus.c:1953
+#: src/menus.c:1969
 msgid "Always pop up menus on screen"
 msgstr "总是在屏幕上弹出菜单"
 
-#: src/menus.c:1958
+#: src/menus.c:1974
 msgid "Warp pointer after moving menus"
 msgstr "移动菜单后折返光标位置"
 
-#: src/menus.c:1975
+#: src/menus.c:1991
 msgid "Menus"
 msgstr "菜单"
 
-#: src/menus.c:1976
+#: src/menus.c:1992
 msgid "Menu Settings"
 msgstr "菜单设置"
 
-#: src/menus.c:1979
+#: src/menus.c:1995
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1807,15 +1807,23 @@ msgstr ""
 "必须先行退出当前窗口管理器\n"
 "然后才能运行Enlightenment\n"
 
-#: src/setup.c:169
+#: src/setup.c:171
+msgid "Cannot select root window button press events"
+msgstr ""
+
+#: src/setup.c:173
+msgid "Root window button actions will not work.\n"
+msgstr ""
+
+#: src/setup.c:179
 msgid "X server version error"
 msgstr "X 服务版本错误"
 
-#: src/setup.c:169
+#: src/setup.c:179
 msgid "Ignore this error"
 msgstr "忽略此错误"
 
-#: src/setup.c:171
+#: src/setup.c:181
 #, c-format
 msgid ""
 "WARNING:\n"

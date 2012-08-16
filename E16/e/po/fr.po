@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16 svn-rev69488\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-06-27 20:32+0200\n"
+"POT-Creation-Date: 2012-08-15 22:27+0200\n"
 "PO-Revision-Date: 2012-03-17 16:02+0100\n"
 "Last-Translator: Trinine <trinine@free.fr>\n"
 "Language-Team: French\n"
@@ -165,7 +165,7 @@ msgstr "Ignorer"
 msgid "Restart Enlightenment"
 msgstr "Redémarrer Enlightenment"
 
-#: src/alert.c:560 src/setup.c:170
+#: src/alert.c:560 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "Quitter Enlightenment"
 
@@ -174,7 +174,7 @@ msgid "Attention !!!"
 msgstr "Attention !!!"
 
 #: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
-#: src/setup.c:159 src/sound.c:310
+#: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "OK"
 
@@ -428,7 +428,7 @@ msgstr "Fermer"
 msgid "Create New Iconbox"
 msgstr "Créer une nouvelle Boîte à icônes"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1941
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Taille des icônes: %2d"
@@ -509,7 +509,7 @@ msgstr "Afficher les noms des icônes"
 msgid "Animation mode:"
 msgstr "Type d'animation:"
 
-#: src/container.c:1679 src/desktops.c:2606
+#: src/container.c:1679 src/desktops.c:2617
 msgid "Off"
 msgstr "Aucune"
 
@@ -557,7 +557,7 @@ msgstr ""
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr "Opacité avec/sans focus : %d/%d %%"
 
-#: src/desktops.c:125
+#: src/desktops.c:129
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -574,7 +574,7 @@ msgstr ""
 "Cliquez avec le bouton du milieu pour obtenir la liste\n"
 "de toutes les applications actuellement lancées.\n"
 
-#: src/desktops.c:136
+#: src/desktops.c:140
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -590,67 +590,67 @@ msgstr ""
 "Cliquez avec le bouton du milieu pour obtenir la liste\n"
 "de toutes les applications actuellement lancées.\n"
 
-#: src/desktops.c:154
+#: src/desktops.c:158
 msgid ""
 "Click here to raise this desktop\n"
 "to the top."
 msgstr "Cliquez ici pour élever ce bureau."
 
-#: src/desktops.c:166
+#: src/desktops.c:170
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom."
 msgstr "Cliquez ici pour abaisser ce bureau."
 
-#: src/desktops.c:2364
+#: src/desktops.c:2375
 msgid "Number of virtual desktops:"
 msgstr "Nombre de bureaux :"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2401
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2407
 msgid "Desktop Slide speed:"
 msgstr "Vitesse de glissement des bureaux:"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2421
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2418
+#: src/desktops.c:2429
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2435
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2428
+#: src/desktops.c:2439
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2434
+#: src/desktops.c:2445
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2451 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2457 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2454 src/menus-misc.c:586
+#: src/desktops.c:2465 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Bureaux multiples"
 
-#: src/desktops.c:2455
+#: src/desktops.c:2466
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2458
+#: src/desktops.c:2469
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -658,39 +658,39 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2571
 msgid "Virtual Desktop size:"
 msgstr "Nombre de bureaux virtuels:"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2607
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2614
 msgid "Edge Flip Mode:"
 msgstr "Bords sensitifs et mode de glissement:"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2622
 msgid "On"
 msgstr "Glissement activé"
 
-#: src/desktops.c:2616
+#: src/desktops.c:2627
 msgid "Only when moving window"
 msgstr "Seulement lors des déplacements de fenêtre"
 
-#: src/desktops.c:2622
+#: src/desktops.c:2633
 msgid "Resistance at edge of screen:"
 msgstr "Résistance des bords de l'écran:"
 
-#: src/desktops.c:2634
+#: src/desktops.c:2645
 msgid "Areas"
 msgstr "Bureaux virtuels"
 
-#: src/desktops.c:2635
+#: src/desktops.c:2646
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2638
+#: src/desktops.c:2649
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -702,7 +702,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/ecompmgr.c:2304
+#: src/ecompmgr.c:2303
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1229,7 +1229,7 @@ msgstr ""
 "Veuillez rectifier cette erreur et vous assurer qu'il est\n"
 "correctement installé.\n"
 
-#: src/magwin.c:538
+#: src/magwin.c:509
 msgid "Magnifier"
 msgstr "Loupe"
 
@@ -1271,27 +1271,27 @@ msgstr "Icônifier ce groupe"
 msgid "Group %i"
 msgstr "Groupe %i"
 
-#: src/menus.c:1948
+#: src/menus.c:1964
 msgid "Animated display of menus"
 msgstr "Animer l'affichage des menus"
 
-#: src/menus.c:1953
+#: src/menus.c:1969
 msgid "Always pop up menus on screen"
 msgstr "Toujours afficher les menus sur l'écran"
 
-#: src/menus.c:1958
+#: src/menus.c:1974
 msgid "Warp pointer after moving menus"
 msgstr "Distorsion du curseur après déplacement des menus"
 
-#: src/menus.c:1975
+#: src/menus.c:1991
 msgid "Menus"
 msgstr "Menus"
 
-#: src/menus.c:1976
+#: src/menus.c:1992
 msgid "Menu Settings"
 msgstr "Paramètres des Menus"
 
-#: src/menus.c:1979
+#: src/menus.c:1995
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1886,15 +1886,23 @@ msgstr ""
 "Vous devrez quitter votre gestionnaire de fenêtres actuel avant\n"
 "de pouvoir lancer Enlightenment.\n"
 
-#: src/setup.c:169
+#: src/setup.c:171
+msgid "Cannot select root window button press events"
+msgstr ""
+
+#: src/setup.c:173
+msgid "Root window button actions will not work.\n"
+msgstr ""
+
+#: src/setup.c:179
 msgid "X server version error"
 msgstr "Erreur de version du serveur X"
 
-#: src/setup.c:169
+#: src/setup.c:179
 msgid "Ignore this error"
 msgstr "Ignorer cette erreur"
 
-#: src/setup.c:171
+#: src/setup.c:181
 #, c-format
 msgid ""
 "WARNING:\n"

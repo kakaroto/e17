@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-06-27 20:32+0200\n"
+"POT-Creation-Date: 2012-08-15 22:27+0200\n"
 "PO-Revision-Date: 2009-12-02 09:48+0000\n"
 "Last-Translator: Michael Kim <Unknown>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -155,7 +155,7 @@ msgstr "무시"
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
-#: src/alert.c:560 src/setup.c:170
+#: src/alert.c:560 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -164,7 +164,7 @@ msgid "Attention !!!"
 msgstr "주목 !!!"
 
 #: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
-#: src/setup.c:159 src/sound.c:310
+#: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "확인"
 
@@ -395,7 +395,7 @@ msgstr "닫기"
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:1925
+#: src/container.c:1507 src/container.c:1583 src/menus.c:1941
 #, c-format
 msgid "Icon size: %2d"
 msgstr ""
@@ -476,7 +476,7 @@ msgstr "아이콘 이름 보여주기"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2606
+#: src/container.c:1679 src/desktops.c:2617
 msgid "Off"
 msgstr ""
 
@@ -522,7 +522,7 @@ msgstr ""
 msgid "Focused/unfocused opacity: %d/%d %%"
 msgstr ""
 
-#: src/desktops.c:125
+#: src/desktops.c:129
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -540,7 +540,7 @@ msgstr ""
 "현재 실행중인 모든 응용프로그램들을 보시려면\n"
 "가운데 마우스 버튼을 클릭하세요.\n"
 
-#: src/desktops.c:136
+#: src/desktops.c:140
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -556,7 +556,7 @@ msgstr ""
 "현재 실행중인 모든 응용프로그램들을 보시려면\n"
 "가운데 마우스 버튼을 클릭하세요.\n"
 
-#: src/desktops.c:154
+#: src/desktops.c:158
 msgid ""
 "Click here to raise this desktop\n"
 "to the top."
@@ -564,7 +564,7 @@ msgstr ""
 "데스크탑을 제일 위로 올리기 위해서는\n"
 "여기를 클릭하세요."
 
-#: src/desktops.c:166
+#: src/desktops.c:170
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom."
@@ -572,55 +572,55 @@ msgstr ""
 "데스크탑을 제일 밑으로 내리기 위해서는\n"
 "여기를 클릭하세요."
 
-#: src/desktops.c:2364
+#: src/desktops.c:2375
 msgid "Number of virtual desktops:"
 msgstr "가상 데스크탑 수:"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2401
 msgid "Slide desktops around when changing"
 msgstr "데스크탑 바꿀 때 미끄러짐"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2407
 msgid "Desktop Slide speed:"
 msgstr ""
 
-#: src/desktops.c:2410
+#: src/desktops.c:2421
 msgid "Wrap desktops around"
 msgstr "가상 데스크탑 이동을 반복"
 
-#: src/desktops.c:2418
+#: src/desktops.c:2429
 msgid "Display desktop dragbar"
 msgstr "데스크탑 끌기막대 표시"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2435
 msgid "Drag bar position:"
 msgstr "끌기막대 위치:"
 
-#: src/desktops.c:2428
+#: src/desktops.c:2439
 msgid "Top"
 msgstr "위"
 
-#: src/desktops.c:2434
+#: src/desktops.c:2445
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2440 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2451 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2446 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2457 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2454 src/menus-misc.c:586
+#: src/desktops.c:2465 src/menus-misc.c:586
 msgid "Desks"
 msgstr ""
 
-#: src/desktops.c:2455
+#: src/desktops.c:2466
 msgid "Multiple Desktop Settings"
 msgstr "여러 데스크탑 설정"
 
-#: src/desktops.c:2458
+#: src/desktops.c:2469
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -628,39 +628,39 @@ msgstr ""
 "인라이튼먼트 여러 데스크탑\n"
 "설정 대화상자"
 
-#: src/desktops.c:2560
+#: src/desktops.c:2571
 msgid "Virtual Desktop size:"
 msgstr "가상 데스크탑 크기:"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2607
 msgid "Wrap virtual desktops around"
 msgstr "가상 데스크탑 주변을 겹치기"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2614
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2611
+#: src/desktops.c:2622
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2616
+#: src/desktops.c:2627
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2622
+#: src/desktops.c:2633
 msgid "Resistance at edge of screen:"
 msgstr "스크린 변두리에서의 저항감:"
 
-#: src/desktops.c:2634
+#: src/desktops.c:2645
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2635
+#: src/desktops.c:2646
 msgid "Virtual Desktop Settings"
 msgstr "가상 데스크탑 설정"
 
-#: src/desktops.c:2638
+#: src/desktops.c:2649
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -672,7 +672,7 @@ msgstr ""
 msgid "Apply"
 msgstr "적용"
 
-#: src/ecompmgr.c:2304
+#: src/ecompmgr.c:2303
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1188,7 +1188,7 @@ msgstr ""
 "이 문제를 고치시기를 바라며 dox가 인스톨이 제대로 되었는\n"
 "지를 확인하시기 바랍니다.\n"
 
-#: src/magwin.c:538
+#: src/magwin.c:509
 msgid "Magnifier"
 msgstr ""
 
@@ -1230,27 +1230,27 @@ msgstr "이 그룹 아이콘화"
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/menus.c:1948
+#: src/menus.c:1964
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/menus.c:1953
+#: src/menus.c:1969
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/menus.c:1958
+#: src/menus.c:1974
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/menus.c:1975
+#: src/menus.c:1991
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:1976
+#: src/menus.c:1992
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:1979
+#: src/menus.c:1995
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1833,15 +1833,23 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:169
+#: src/setup.c:171
+msgid "Cannot select root window button press events"
+msgstr ""
+
+#: src/setup.c:173
+msgid "Root window button actions will not work.\n"
+msgstr ""
+
+#: src/setup.c:179
 msgid "X server version error"
 msgstr "X 서버 버전 오류"
 
-#: src/setup.c:169
+#: src/setup.c:179
 msgid "Ignore this error"
 msgstr "이 오류 무시"
 
-#: src/setup.c:171
+#: src/setup.c:181
 #, c-format
 msgid ""
 "WARNING:\n"
