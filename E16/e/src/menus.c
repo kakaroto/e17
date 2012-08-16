@@ -271,6 +271,17 @@ MenuLoad(Menu * m)
 }
 
 static void
+_MenuEwinShow(EWin * ewin)
+{
+   ICCCM_Cmap(NULL);
+   EwinOpFloatAt(ewin, OPSRC_NA, EoGetX(ewin), EoGetY(ewin));
+   EwinRaise(ewin);
+   EwinShow(ewin);
+   if (Conf.menus.animate)
+      EwinUnShade(ewin);
+}
+
+static void
 MenuShow(Menu * m, char noshow)
 {
    EWin               *ewin;
@@ -352,13 +363,7 @@ MenuShow(Menu * m, char noshow)
 	   EwinInstantShade(ewin, 0);
 
 	if (!noshow)
-	  {
-	     ICCCM_Cmap(NULL);
-	     EwinOpFloatAt(ewin, OPSRC_NA, EoGetX(ewin), EoGetY(ewin));
-	     EwinShow(ewin);
-	     if (Conf.menus.animate)
-		EwinUnShade(ewin);
-	  }
+	   _MenuEwinShow(ewin);
      }
 
    m->shown = 1;
@@ -1328,11 +1333,6 @@ MenuItemEventMouseUp(MenuItem * mi, XEvent * ev __UNUSED__)
      }
 }
 
-struct _mdata {
-   Menu               *m;
-   MenuItem           *mi;
-};
-
 static void
 MenusSetEvents(int on)
 {
@@ -1387,137 +1387,156 @@ MenuSelectItemByChild(Menu * m, Menu * mc)
 }
 
 static void
-_SubmenuCheckSlide(Menu * m, MenuItem * mi, EWin * ewin, EWin * ewin2,
-		   int xo, int yo, int ww, int hh)
+_SubmenuGetPlacement(Menu * m, int *xo, int *yo, int *mw, int *mh)
 {
-   EWin               *menus[256], *etmp;
-   int                 fx[256], fy[256], tx[256], ty[256];
-   int                 i;
+   EWin               *ewin, *ewin2;
+   MenuItem           *mi = m->sel_item;
+   int                 mix, miy, miw, my2;
+   int                 bl1, br1, bt1, bb1;
+   int                 bl2, br2, bt2, bb2;
+
+   EGetGeometry(mi->win, NULL, &mix, &miy, &miw, NULL, NULL, NULL);
+   my2 = 0;
+   if (mi->child->num > 0 && mi->child->items[0])
+      EGetGeometry(mi->child->items[0]->win, NULL, NULL, &my2, NULL, NULL, NULL,
+		   NULL);
+
+   ewin = m->ewin;
+   ewin2 = m->child->ewin;
+   EwinBorderGetSize(ewin, &bl1, &br1, &bt1, &bb1);
+   EwinBorderGetSize(ewin2, &bl2, &br2, &bt2, &bb2);
+
+   /* Sub-menu offsets relative to parent menu origin */
+   *xo = bl1 + mix + miw;
+   *yo = bt1 + miy - (bt2 + my2);
+
+   /* Size of new submenu (may be shaded atm.) */
+   *mw = mi->child->w + bl2 + br2;
+   *mh = mi->child->h + bt2 + bb2;
+}
+
+static void
+_MenusSlideCheck(Menu * m, int xo, int yo, int ww, int hh, int *pdx, int *pdy)
+{
+   EWin               *ewin;
    int                 sx, sy, sw, sh;
-   int                 xdist = 0, ydist = 0;
+   int                 xdist, ydist;
+
+   xdist = ydist = 0;
 
    if (!Conf.menus.onscreen)
-      return;
+      goto done;
 
    ScreenGetGeometryByHead(Mode_menus.first->ewin->head, &sx, &sy, &sw, &sh);
 
+   ewin = m->ewin;
+
    if (EoGetX(Mode_menus.first->ewin) < sx)
       xdist = sx - EoGetX(Mode_menus.first->ewin);
-   if (xdist + EoGetX(ewin) + xo + ww > sx + sw)
+   if (EoGetX(ewin) + xdist + xo + ww > sx + sw)
       xdist = sx + sw - (EoGetX(ewin) + xo + ww);
-   if (EoGetX(ewin) + xdist < sx)
-      xdist = sx - EoGetX(ewin);
+   if (EoGetX(ewin) + xdist + xo < sx)
+      xdist = sx - (EoGetX(ewin) + xo);
 
    if (EoGetY(Mode_menus.first->ewin) < sy)
       ydist = sy - EoGetY(Mode_menus.first->ewin);
-   if (ydist + EoGetY(ewin) + yo + hh > sy + sh)
+   if (EoGetY(ewin) + ydist + yo + hh > sy + sh)
       ydist = sy + sh - (EoGetY(ewin) + yo + hh);
-   if (EoGetY(ewin) + ydist < sy)
-      ydist = sy - EoGetY(ewin);
+   if (EoGetY(ewin) + ydist + yo < sy)
+      ydist = sy - (EoGetY(ewin) + yo);
 
-   if (xdist == 0 && ydist == 0)
-      return;
+ done:
+   *pdx = xdist;
+   *pdy = ydist;
+}
+
+static void
+_MenusSlide(Menu * m, int xdist, int ydist)
+{
+   EWin               *ewin, *menus[256];
+   int                 fx[256], fy[256], tx[256], ty[256];
+   int                 i;
+   Menu               *mm;
+   MenuItem           *mi;
 
    i = 0;
-   for (m = Mode_menus.first; m; m = m->child)
+   for (mm = Mode_menus.first; mm; mm = mm->child)
      {
-	etmp = m->ewin;
-	if (!etmp || etmp == ewin2)
-	   break;
-	menus[i] = etmp;
-	fx[i] = EoGetX(etmp);
-	fy[i] = EoGetY(etmp);
-	tx[i] = EoGetX(etmp) + xdist;
-	ty[i] = EoGetY(etmp) + ydist;
+	ewin = mm->ewin;
+	menus[i] = ewin;
+	fx[i] = EoGetX(ewin);
+	fy[i] = EoGetY(ewin);
+	tx[i] = EoGetX(ewin) + xdist;
+	ty[i] = EoGetY(ewin) + ydist;
 	i++;
+	if (mm == m)
+	   break;
      }
 
    MenusSetEvents(0);		/* Disable menu item events while sliding */
    EwinsSlideTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0, 0);
    MenusSetEvents(1);
 
-   if (Conf.menus.warp)
-      EWarpPointer(mi->win, mi->text_w / 2, mi->text_h / 2);
+   mi = m->sel_item;
+   if (mi && Conf.menus.warp)
+      EWarpPointer(mi->win, WinGetW(mi->win) / 2, WinGetH(mi->win) / 2);
 }
 
 static int
-SubmenuShowTimeout(void *dat)
+SubmenuShowTimeout(void *data)
 {
-   int                 mx, my, my2, xo, yo, mw, ww, hh;
    Menu               *m;
    MenuItem           *mi;
-   EWin               *ewin2, *ewin;
-   struct _mdata      *data;
-   int                 bl1, br1, bt1, bb1;
-   int                 bl2, br2, bt2, bb2;
+   EWin               *ewin, *ewin2;
+   int                 xo, yo, mw, mh, xdist, ydist;
 
-   data = (struct _mdata *)dat;
-   if (!data || !data->m)
-      goto done;
+   menu_timer_submenu = NULL;
 
-   m = data->m;
+   m = (Menu *) data;
    if (!ecore_list_goto(menu_list, m))
       goto done;
    ewin = m->ewin;
-   if (!ewin || !EwinFindByPtr(ewin))
+   if (!EwinFindByPtr(ewin))
       goto done;
    if (!EoIsShown(ewin))
       goto done;
 
-   mi = data->mi;
+   mi = m->sel_item;
    if (!mi)
       goto done;
 
    if (mi->child != m->child)
       MenuHide(m->child);
    m->child = mi->child;
-   if (!mi->child)
+
+   xo = yo = mw = mh = 0;
+   ewin2 = NULL;
+   if (mi->child)
      {
-	_SubmenuCheckSlide(m, mi, ewin, NULL, 0, 0, 0, 0);
-	goto done;
+	mi->child->parent = m;
+	MenuShow(mi->child, 1);
+	ewin2 = mi->child->ewin;
+	ewin2 = EwinFindByPtr(ewin2);
+	if (ewin2)
+	   _SubmenuGetPlacement(m, &xo, &yo, &mw, &mh);
      }
 
-   mi->child->parent = m;
-   MenuShow(mi->child, 1);
-   ewin2 = mi->child->ewin;
-   if (!ewin2 || !EwinFindByPtr(ewin2))
-      goto done;
-
-   EGetGeometry(mi->win, NULL, &mx, &my, &mw, NULL, NULL, NULL);
-   my2 = 0;
-   if (mi->child->num > 0 && mi->child->items[0])
-      EGetGeometry(mi->child->items[0]->win, NULL, NULL, &my2, NULL, NULL, NULL,
-		   NULL);
-
-   /* Sub-menu offsets relative to parent menu origin */
-   EwinBorderGetSize(ewin, &bl1, &br1, &bt1, &bb1);
-   EwinBorderGetSize(ewin2, &bl2, &br2, &bt2, &bb2);
-   xo = bl1 + mx + mw;
-   yo = bt1 + my - (bt2 + my2);
-
-   /* Size of new submenu (may be shaded atm.) */
-   ww = mi->child->w + bl2 + br2;
-   hh = mi->child->h + bt2 + bb2;
-
-   _SubmenuCheckSlide(m, mi, ewin, ewin2, xo, yo, ww, hh);
-
-   EwinMove(ewin2, EoGetX(ewin) + xo, EoGetY(ewin) + yo, MRF_NOCHECK_ONSCREEN);
-   EwinOpFloatAt(ewin2, OPSRC_NA, EoGetX(ewin2), EoGetY(ewin2));
-   EwinRaise(ewin2);
-   EwinShow(ewin2);
-
-   if (Conf.menus.animate)
-      EwinUnShade(ewin2);
+   _MenusSlideCheck(m, xo, yo, mw, mh, &xdist, &ydist);
+   if (ewin2)
+      EwinMove(ewin2, EoGetX(ewin) + xdist + xo, EoGetY(ewin) + ydist + yo,
+	       MRF_NOCHECK_ONSCREEN);
+   if (xdist != 0 || ydist != 0)
+      _MenusSlide(m, xdist, ydist);
+   if (ewin2)
+      _MenuEwinShow(ewin2);
 
  done:
-   menu_timer_submenu = NULL;
    return 0;
 }
 
 static void
 MenuActivateItem(Menu * m, MenuItem * mi)
 {
-   static struct _mdata mdata;
    MenuItem           *mi_prev;
 
    mi_prev = m->sel_item;
@@ -1537,11 +1556,7 @@ MenuActivateItem(Menu * m, MenuItem * mi)
    TIMER_DEL(menu_timer_submenu);
 
    if ((mi && mi->child && !mi->child->shown) || (mi && mi->child != m->child))
-     {
-	mdata.m = m;
-	mdata.mi = mi;
-	TIMER_ADD(menu_timer_submenu, 200, SubmenuShowTimeout, &mdata);
-     }
+      TIMER_ADD(menu_timer_submenu, 200, SubmenuShowTimeout, m);
 }
 
 static void
