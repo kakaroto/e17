@@ -1205,6 +1205,8 @@ DeskGoto(Desk * dsk)
      {
 	if (Conf.desks.slidein)
 	  {
+	     EObj               *eo = &dsk->o;
+
 	     if (!dsk->viewable)
 	       {
 		  int                 x, y;
@@ -1231,12 +1233,12 @@ DeskGoto(Desk * dsk)
 		    }
 		  DeskMove(dsk, x, y);
 		  DeskEnter(dsk);
-		  EobjSlideTo(&dsk->o, x, y, 0, 0, Conf.desks.slidespeed);
+		  EobjsSlideBy(&eo, 1, -x, -y, Conf.desks.slidespeed);
 	       }
 	     else
 	       {
-		  EobjSlideTo(&dsk->o, EoGetX(dsk), EoGetY(dsk), 0, 0,
-			      Conf.desks.slidespeed);
+		  EobjsSlideBy(&eo, 1, -EoGetX(dsk), -EoGetY(dsk),
+			       Conf.desks.slidespeed);
 		  DeskEnter(dsk);
 	       }
 	  }
