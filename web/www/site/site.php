@@ -266,7 +266,7 @@ function dev_data_irc($data)
 	  $h = read_var("p/$b/link");
 	  $pname = $h;
       }
-      else $h = $b
+      else $h = "p.php?p=$b&amp;l=$lang"
       if ((strncasecmp($page,$l,strlen($l)) == 0) OR
           (($page == "index") AND ($l == "Home") )) {
       	  $c = "active";
