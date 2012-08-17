@@ -195,7 +195,11 @@ esql_connect_timeout_set(Esql  *e,
      }
    if (timeout > 0.0)
      {
-        if (e->timeout_timer) ecore_timer_delay(e->timeout_timer, e->timeout - ecore_timer_pending_get(e->timeout_timer));
+        if (e->timeout_timer)
+          {
+             ecore_timer_interval_set(e->timeout_timer, e->timeout);
+             ecore_timer_reset(e->timeout_timer);
+          }
         else e->timeout_timer = ecore_timer_add(timeout, (Ecore_Task_Cb)esql_timeout_cb, e);
      }
    else

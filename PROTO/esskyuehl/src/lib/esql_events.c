@@ -289,6 +289,7 @@ esql_connect_handler(Esql             *e,
      INFO("Pool member %u: Running io", e->pool_id);
    else
      INFO("Running io");
+   if (e->timeout_timer) ecore_timer_reset(e->timeout_timer);
 
    ret = e->backend.io(e);
    switch (ret)
