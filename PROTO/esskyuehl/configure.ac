@@ -170,9 +170,9 @@ AC_ARG_ENABLE([sqlite],
 
 if test "x${want_sqlite}" != "xno" ; then
    PKG_CHECK_MODULES([SQLITE3], [sqlite3])
-   AM_CONDITIONAL([SQLITE], [test -n "$SQLITE3_LIBS"])
    test -n "$SQLITE3_LIBS" && sqlite=sqlite
 fi
+AM_CONDITIONAL([SQLITE], [test -n "$SQLITE3_LIBS"])
 
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
