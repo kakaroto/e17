@@ -135,8 +135,6 @@ esql_pool_disconnect(Esql_Pool *ep)
    EINA_INLIST_FOREACH(ep->esqls, e)
      if (e->connected) esql_disconnect(e);
    ep->connected = EINA_FALSE;
-   ep->e_connected = 0;
-   ecore_event_add(ESQL_EVENT_DISCONNECT, ep, (Ecore_End_Cb)esql_fake_free, NULL);
 }
 
 Esql_Query_Id

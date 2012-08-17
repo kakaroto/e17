@@ -93,10 +93,13 @@ esql_disconnect(Esql *e)
    e->fdh = NULL;
    if (e->pool_member)
      e->pool_struct->e_connected--;
-   else
+   if ((!e->pool_member) || (!e->pool_struct->e_connected))
      {
         INFO("Disconnected");
-        ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
+        if (e->pool_member)
+          ecore_event_add(ESQL_EVENT_DISCONNECT, e->pool_struct, (Ecore_End_Cb)esql_fake_free, NULL);
+        else
+          ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
         e->event_count++;
      }
 }
