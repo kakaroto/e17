@@ -36,14 +36,13 @@ if (is_file("p/$page/$lang-rss"))
 
             <ul class="menu">
                 <?php echo(nav_button("homelink", ""));?>
-                <?php echo(nav_button("main2", ""));?>
-                <?php echo(nav_button("main3", ""));?>
-                <?php echo(nav_button("main4", ""));?>
-                <?php echo(nav_button("main5", ""));?>
-                <?php echo(nav_button("main6", ""));?>
-                <?php echo(nav_button("main7", ""));?>
+                <?php echo(nav_button("news", ""));?>
+                <?php echo(nav_button("about", ""));?>
+                <?php echo(nav_button("download", ""));?>
+                <?php echo(nav_button("support", ""));?>
+                <?php echo(nav_button("contribute", ""));?>
+                <?php echo(nav_button("contact", ""));?>
                 <?php echo(nav_button("docs", ""));?>
-                <!-- <?php echo(nav_button("main8", "")); ?> -->
                 <li class="tracker"><a href="http://trac.enlightenment.org/e"><span>Tracker</span></a></li>
 		<li class="events"><a href="http://trac.enlightenment.org/e/wiki/Events"><span>Events</span></a></li>
             </ul>
