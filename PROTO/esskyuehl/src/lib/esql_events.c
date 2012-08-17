@@ -203,6 +203,7 @@ esql_reconnect_handler(Esql *e)
         e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE | ECORE_FD_ERROR, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
         ecore_main_fd_handler_active_set(e->fdh, ret);
         e->current = ESQL_CONNECT_TYPE_INIT;
+        if (ev->database) esql_database_set(e, ev->database);
      }
    return;
 error:
