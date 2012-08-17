@@ -93,6 +93,11 @@ _esql_res_free(Esql_Res *res)
          */
      }
 
+   if (res->e->pool)
+     {
+        Esql_Pool *ep = (Esql_Pool*)res->e;
+        res->e = EINA_INLIST_CONTAINER_GET(ep->esqls, Esql);
+     }
    res->e->backend.res_free(res);
    free(res->query);
    if (res->mempool) eina_mempool_del(res->mempool);
