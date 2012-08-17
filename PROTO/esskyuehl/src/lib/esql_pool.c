@@ -132,6 +132,7 @@ esql_pool_disconnect(Esql_Pool *ep)
 {
    Esql *e;
 
+   ep->connected = EINA_FALSE;
    EINA_INLIST_FOREACH(ep->esqls, e)
      if (e->connected) esql_disconnect(e);
    ep->connected = EINA_FALSE;

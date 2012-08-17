@@ -80,8 +80,6 @@ esql_disconnect(Esql *e)
 {
    DBG("(e=%p)", e);
    EINA_SAFETY_ON_NULL_RETURN(e);
-   if (!e->connected) return;
-   e->connected = EINA_FALSE;
    if (e->pool)
      {
         esql_pool_disconnect((Esql_Pool *)e);
@@ -92,17 +90,21 @@ esql_disconnect(Esql *e)
    e->backend.disconnect(e);
    if (e->fdh) ecore_main_fd_handler_del(e->fdh);
    e->fdh = NULL;
-   if (e->pool_member)
-     e->pool_struct->e_connected--;
-   if ((!e->pool_member) || (!e->pool_struct->e_connected))
+   if (e->connected)
      {
-        INFO("Disconnected");
         if (e->pool_member)
-          ecore_event_add(ESQL_EVENT_DISCONNECT, e->pool_struct, (Ecore_End_Cb)esql_fake_free, NULL);
-        else
-          ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
-        e->event_count++;
+          e->pool_struct->e_connected--;
+        if ((!e->pool_member) || (!e->pool_struct->e_connected))
+          {
+             INFO("Disconnected");
+             if (e->pool_member)
+               ecore_event_add(ESQL_EVENT_DISCONNECT, e->pool_struct, (Ecore_End_Cb)esql_fake_free, NULL);
+             else
+               ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
+             e->event_count++;
+          }
      }
+   e->connected = EINA_FALSE;
 }
 
 /**
