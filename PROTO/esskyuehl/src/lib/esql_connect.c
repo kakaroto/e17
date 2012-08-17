@@ -80,6 +80,7 @@ esql_disconnect(Esql *e)
 {
    DBG("(e=%p)", e);
    EINA_SAFETY_ON_NULL_RETURN(e);
+   if (!e->connected) return;
    e->connected = EINA_FALSE;
    if (e->pool)
      {
