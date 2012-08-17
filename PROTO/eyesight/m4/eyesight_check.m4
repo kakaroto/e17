@@ -15,7 +15,7 @@ PKG_CHECK_MODULES([ECORE_FILE],
    [have_dep="no"])
 
 if test "x$1" = "xstatic" ; then
-   requirement_eyesight="${requirement} ${requirement_eyesight}"
+   requirements_pc_eyesight="${requirement} ${requirements_pc_eyesight}"
 fi
 
 
@@ -28,114 +28,114 @@ dnl use: EYESIGHT_CHECK_DEP_PDF(want_static[, ACTION-IF-FOUND[, ACTION-IF-NOT-FO
 AC_DEFUN([EYESIGHT_CHECK_DEP_PDF],
 [
 
-requirement=""
+requirements_pc=""
+requirements_libs=""
 
-if test "x${with_pdf_backend}" = "xpoppler" ; then
-   PKG_CHECK_MODULES([POPPLER],
-      [poppler >= 0.12],
+MUPDF_CFLAGS=""
+MUPDF_LIBS=""
+
+have_dep="yes"
+
+dnl zlib
+if test "x${have_dep}" = "xyes" ; then
+   PKG_CHECK_EXISTS([zlib >= 1.2.5],
       [
-       have_dep="yes"
-       requirement="poppler"
+       have_pkg_zlib="yes"
+       requirements_pc="zlib ${requirements_pc}"
       ],
+      [have_pkg_zlib="no"])
+
+   if test "x${have_pkg_zlib}" = "xno" ; then
+      AC_MSG_NOTICE([no pkg-config file for zlib, checking files individually])
+      AC_CHECK_HEADER([zlib.h], [have_dep="yes"], [have_dep="no"])
+      if test "x${have_dep}" = "xyes" ; then
+         AC_CHECK_LIB([z], [zlibVersion],
+            [
+             have_dep="yes"
+             requirements_libs="${requirements_libs} -lz"
+            ],
+            [have_dep="no"])
+      fi
+   fi
+fi
+
+dnl freetype
+if test "x${have_dep}" = "xyes" ; then
+   PKG_CHECK_EXISTS([freetype2],
+      [requirements_pc="freetype2 ${requirements_pc}"],
       [have_dep="no"])
+fi
 
-   if test "x${have_dep}" = "xyes" ; then
-      AC_LANG_PUSH(C++)
-      CPPFLAGS_save=${CPPFLAGS}
-      CPPFLAGS="${CPPFLAGS} ${POPPLER_CFLAGS}"
-      AC_CHECK_HEADER([GlobalParams.h],
-         [have_dep="yes"],
-         [
-          AC_MSG_WARN([Xpdf headers not found. Verify that poppler is configured with the option --enable-xpdf-headers])
-          have_dep="no"
-         ])
-      CPPFLAGS=${CPPFLAGS_save}
-      AC_LANG_POP(C++)
-   fi
-
-   if test "x${have_dep}" = "xyes" ; then
-      PKG_CHECK_MODULES([POPPLER_0_14],
-         [poppler >= 0.14],
-         [AC_DEFINE([HAVE_POPPLER_0_14], [1], [Set to 1 if poppler 0.14 is installed])],
-         [dummy=yes])
-   fi
-else
-dnl PDF backend is enabled and it's not poppler, then it is mupdf
-
-   MUPDF_CFLAGS=""
-   MUPDF_LIBS=""
-
-   mupdf_pkgs="freetype2"
-   jp2k_libs=""
-
-   PKG_CHECK_EXISTS([libopenjpeg1],
+dnl openjpeg
+if test "x${have_dep}" = "xyes" ; then
+   PKG_CHECK_EXISTS([libopenjpeg1 >= 1.4],
       [
        have_pkg_jp2k="yes"
-       mupdf_pkgs="${mupdf_pkgs} libopenjpeg1"
+       requirements_pc="libopenjpeg1 ${requirements_pc}"
       ],
       [have_pkg_jp2k="no"])
 
    if test "x${have_pkg_jp2k}" = "xno" ; then
-      PKG_CHECK_EXISTS([libopenjpeg],
+      PKG_CHECK_EXISTS([libopenjpeg >= 1.4],
          [
           have_pkg_jp2k="yes"
-          mupdf_pkgs="${mupdf_pkgs} libopenjpeg"
+          requirements_pc="libopenjpeg ${requirements_pc}"
          ],
          [have_pkg_jp2k="no"])
    fi
 
-dnl Freetype
-   PKG_CHECK_MODULES([MUPDF_DEP],
-      [${mupdf_pkgs}],
-      [have_dep="yes"],
-      [have_dep="no"])
-
-dnl libopenjpeg (if the .pc does not exist)
-   if test "x${have_pkg_jp2k}" = "xno" && test "x${have_dep}" = "xyes" ; then
+   if test "x${have_pkg_jp2k}" = "xno" ; then
       AC_MSG_NOTICE([no pkg-config file for openjpeg, checking files individually])
       AC_CHECK_HEADER([openjpeg.h], [have_dep="yes"], [have_dep="no"])
+      if test "x${have_dep}" = "xyes" ; then
+         AC_CHECK_LIB([openjpeg], [opj_image_create],
+            [
+             have_dep="yes"
+             requirements_libs="-lopenjpeg ${requirements_libs}"
+            ],
+            [have_dep="no"])
+      fi
    fi
+fi
 
-   if test "x${have_pkg_jp2k}" = "xno" && test "x${have_dep}" = "xyes" ; then
-      AC_CHECK_LIB([openjpeg], [opj_image_create],
+dnl jbig2dec
+if test "x${have_dep}" = "xyes" ; then
+   AC_CHECK_HEADER([jbig2.h], [have_dep="yes"], [have_dep="no"])
+   if test "x${have_dep}" = "xyes" ; then
+      AC_CHECK_LIB([jbig2dec], [jbig2_ctx_new],
          [
           have_dep="yes"
-          jp2k_libs="-lopenjpeg"
+          requirements_libs="-ljbig2dec ${requirements_libs}"
          ],
          [have_dep="no"])
    fi
-
-dnl jbig2
-   if test "x${have_dep}" = "xyes" ; then
-      AC_CHECK_HEADER([jbig2.h], [have_dep="yes"], [have_dep="no"])
-   fi
-
-   if test "x${have_dep}" = "xyes" ; then
-      AC_CHECK_LIB([jbig2dec], [jbig2_ctx_new], [have_dep="yes"], [have_dep="no"])
-   fi
-
-   if test "x${have_dep}" = "xyes" ; then
-      requirement="${mupdf_pkgs}"
-      MUPDF_CFLAGS="${MUPDF_DEP_CFLAGS}"
-      MUPDF_LIBS="${MUPDF_DEP_LIBS} -ljbig2dec ${jp2k_libs}"
-   fi
-
-dnl CJK fonts
-   if ! test "x${want_mupdf_cjk}" = "xyes" ; then
-      BUILD_MUPDF_CJK_FONTS="-DNOCJK"
-   fi
-
 fi
 
-AC_SUBST(MUPDF_CFLAGS)
-AC_SUBST(MUPDF_LIBS)
-AC_SUBST(BUILD_MUPDF_CJK_FONTS)
+dnl check libraries
+PKG_CHECK_MODULES([MUPDF],
+      [${requirements_pc}],
+      [
+       have_dep="yes"
+       MUPDF_LIBS="${requirements_libs} ${MUPDF_LIBS}"
+      ],
+      [have_dep="no"])
 
-AM_CONDITIONAL([HAVE_PDF_BACKEND_MUPDF], [test "x${with_pdf_backend}" = "xmupdf"])
+dnl CJK fonts
+if ! test "x${want_mupdf_cjk}" = "xyes" ; then
+   BUILD_MUPDF_CJK_FONTS="-DNOCJK"
+fi
+
+AC_ARG_VAR([MUPDF_CFLAGS], [preprocessor flags for mupdf])
+AC_SUBST([MUPDF_CFLAGS])
+AC_ARG_VAR([MUPDF_LIBS], [linker flags for mupdf])
+AC_SUBST([MUPDF_LIBS])
+AC_SUBST([BUILD_MUPDF_CJK_FONTS])
+
 AM_CONDITIONAL([BUILD_MUPDF_CJK_FONTS], [test "x${want_mupdf_cjk}" = "xyes"])
 
 if test "x$1" = "xstatic" ; then
-   requirement_eyesight="${requirement} ${requirement_eyesight}"
+   requirements_pc_eyesight="${requirements_pc} ${requirements_pc_eyesight}"
+   requirements_libs_eyesight="${requirements_libs} ${requirements_libs_eyesight}"
 fi
 
 AS_IF([test "x$have_dep" = "xyes"], [$2], [$3])
@@ -158,7 +158,7 @@ PKG_CHECK_MODULES([POSTSCRIPT],
    [have_dep="no"])
 
 if test "x$1" = "xstatic" ; then
-   requirement_eyesight="${requirement} ${requirement_eyesight}"
+   requirements_pc_eyesight="${requirement} ${requirements_pc_eyesight}"
 fi
 
 AS_IF([test "x$have_dep" = "xyes"], [$2], [$3])

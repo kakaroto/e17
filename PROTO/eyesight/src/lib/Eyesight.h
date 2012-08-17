@@ -54,17 +54,17 @@ typedef enum
 
 typedef enum
 {
-  EYESIGHT_LINK_ACTION_UNKNOWN,       /**< */
-  EYESIGHT_LINK_ACTION_GOTO,          /**< go to destination in the same file */
-  EYESIGHT_LINK_ACTION_GOTO_NEW_FILE, /**< go to destination in a new file */
-  EYESIGHT_LINK_ACTION_LAUNCH,        /**< launch app or open docuent */
-  EYESIGHT_LINK_ACTION_URI,           /**< URI */
-  EYESIGHT_LINK_ACTION_NAMED,         /**< named action */
-  EYESIGHT_LINK_ACTION_MOVIE,         /**< movie action */
-  EYESIGHT_LINK_ACTION_RENDITION,     /**< */
-  EYESIGHT_LINK_ACTION_SOUND,         /**< sound action */
-  EYESIGHT_LINK_ACTION_JAVASCRIPT,    /**< JaveScript action */
-  EYESIGHT_LINK_ACTION_OCG_STATE      /**< Set-OCG-State action */
+  EYESIGHT_LINK_ACTION_UNKNOWN,          /**< */
+  EYESIGHT_LINK_ACTION_GOTO,             /**< go to destination in the same file */
+  EYESIGHT_LINK_ACTION_GOTO_REMOTE_FILE, /**< go to destination in a remote file */
+  EYESIGHT_LINK_ACTION_LAUNCH,           /**< launch app or open docuent */
+  EYESIGHT_LINK_ACTION_URI,              /**< URI */
+  EYESIGHT_LINK_ACTION_NAMED,            /**< named action */
+  EYESIGHT_LINK_ACTION_MOVIE,            /**< movie action */
+  EYESIGHT_LINK_ACTION_RENDITION,        /**< */
+  EYESIGHT_LINK_ACTION_SOUND,            /**< sound action */
+  EYESIGHT_LINK_ACTION_JAVASCRIPT,       /**< JaveScript action */
+  EYESIGHT_LINK_ACTION_OCG_STATE         /**< Set-OCG-State action */
 } Eyesight_Link_Action_Kind;
 
 typedef enum
@@ -81,7 +81,7 @@ typedef struct _Eyesight_Link       Eyesight_Link;
 
 typedef struct _Eyesight_Link_Action_Unknown       Eyesight_Link_Action_Unknown;
 typedef struct _Eyesight_Link_Action_Goto          Eyesight_Link_Action_Goto;
-typedef struct _Eyesight_Link_Action_Goto_New_File Eyesight_Link_Action_Goto_New_File;
+typedef struct _Eyesight_Link_Action_Goto_Remote_File Eyesight_Link_Action_Goto_Remote_File;
 typedef struct _Eyesight_Link_Action_Launch        Eyesight_Link_Action_Launch;
 typedef struct _Eyesight_Link_Action_Uri           Eyesight_Link_Action_Uri;
 typedef struct _Eyesight_Link_Action_Named         Eyesight_Link_Action_Named;
@@ -101,7 +101,7 @@ struct _Eyesight_Link_Action_Goto
   int page;
 };
 
-struct _Eyesight_Link_Action_Goto_New_File
+struct _Eyesight_Link_Action_Goto_Remote_File
 {
   char *filename;
 };
@@ -158,7 +158,7 @@ struct _Eyesight_Link
   union {
     Eyesight_Link_Action_Unknown       action_unknown;
     Eyesight_Link_Action_Goto          action_goto;
-    Eyesight_Link_Action_Goto_New_File action_goto_new_file;
+    Eyesight_Link_Action_Goto_Remote_File action_goto_remote_file;
     Eyesight_Link_Action_Launch        action_launch;
     Eyesight_Link_Action_Uri           action_uri;
     Eyesight_Link_Action_Named         action_named;

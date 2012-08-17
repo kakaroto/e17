@@ -37,15 +37,6 @@ want_txt="yes"
 
 ### Additional options to configure
 
-AC_ARG_WITH([pdf-backend],
-   [AC_HELP_STRING([--with-pdf-backend], [PDF backend used (mupdf or poppler) @<:@default=mupdf@:>@])],
-  [
-   if ! test "x${with_pdf_backend}" = "xmupdf" && ! test "x${with_pdf_backend}" = "xpoppler" ; then
-      with_pdf_backend="mupdf"
-   fi
-  ],
-  [with_pdf_backend="mupdf"])
-
 # CJK fonts for mupdf
 AC_ARG_ENABLE([mupdf-cjk],
    [AC_HELP_STRING([--enable-mupdf-cjk], [enable mupdf CJK fonts @<:@default=disabled@:>@])],
@@ -63,11 +54,7 @@ AC_MSG_RESULT([${want_mupdf_cjk}])
 
 
 ### Checks for programs
-AC_PROG_CC
-AC_PROG_CPP
-AC_PROG_CXX
-AC_PROG_CXXCPP
-AC_LANG(C)
+AC_PROG_CC_C99
 
 # pkg-config
 PKG_PROG_PKG_CONFIG
@@ -90,17 +77,17 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 ### Checks for libraries
 
-requirement_eyesight="eina >= 1.2.0, evas >= 1.2.0 efreet-mime >= 1.2.0"
+requirements_pc_eyesight="eina >= 1.2.0, evas >= 1.2.0 efreet-mime >= 1.2.0"
 
 EYESIGHT_CHECK_MODULE([PDF], [${want_pdf}])
 EYESIGHT_CHECK_MODULE([Postscript], [${want_postscript}])
 EYESIGHT_CHECK_MODULE([Txt], [${want_txt}])
 EYESIGHT_CHECK_MODULE([Img], [${want_img}])
 
-PKG_CHECK_MODULES([EYESIGHT], [${requirement_eyesight}])
+PKG_CHECK_MODULES([EYESIGHT], [${requirements_pc_eyesight}])
 
 if test "x${have_eyesight}" = "xyes" ; then
-   PKG_CHECK_MODULES([EYESIGHT_BIN], [elementary >= 1.0.0 ecore-input >= 1.2.0],
+   PKG_CHECK_MODULES([EYESIGHT_BIN], [elementary >= 1.0.0 efreet >= 1.0.0 edbus >= 1.0.0 ecore-input >= 1.2.0],
       [build_eyesight_bin="yes"], [build_eyesight_bin="no"])
 fi
 
@@ -116,7 +103,6 @@ fi
 
 ### Checks for compiler characteristics
 AM_PROG_CC_C_O
-AC_PROG_CXX_C_O
 EFL_ATTRIBUTE_UNUSED
 
 EFL_EYESIGHT_BUILD=""
@@ -146,7 +132,8 @@ AC_SUBST([lt_enable_auto_import])
 ### Checks for library functions
 
 
-AC_SUBST([requirement_eyesight])
+AC_SUBST([requirements_pc_eyesight])
+AC_SUBST([requirements_libs_eyesight])
 
 AC_CONFIG_FILES([
 Makefile
@@ -158,7 +145,7 @@ src/lib/Makefile
 src/modules/Makefile
 src/modules/img/Makefile
 src/modules/pdf/Makefile
-src/modules/pdf/mupdf-0.9/Makefile
+src/modules/pdf/mupdf-1.1/Makefile
 src/modules/ps/Makefile
 src/modules/txt/Makefile
 data/Makefile
@@ -184,11 +171,7 @@ echo "  Documentation........: ${build_doc}"
 echo
 echo "  Modules..............:"
 echo "    Image..............: ${enable_img}"
-if test "x${enable_pdf}" = "xyes" ; then
-   echo "    PDF................: yes (${with_pdf_backend})"
-else
-   echo "    PDF................: no"
-fi
+echo "    PDF................: ${enable_pdf}"
 echo "    Postscript.........: ${enable_postscript}"
 echo "    Txt................: ${enable_txt}"
 echo
@@ -202,4 +185,3 @@ echo
 echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...............: $prefix"
 echo
-

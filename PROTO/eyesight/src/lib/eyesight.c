@@ -278,22 +278,22 @@ eyesight_init(void)
         goto shutdown_efreet;
      }
 
-   _eyesight_modules = eina_module_list_get(NULL, PACKAGE_LIB_DIR "/eyesight/", 0, NULL, NULL);
+   _eyesight_modules = eina_module_list_get(NULL, PACKAGE_LIB_DIR "/eyesight", 0, NULL, NULL);
    if (!_eyesight_modules)
      {
         ERR("Could not allocate modules array.");
         goto free_plugins;
      }
 
-   path = eina_module_environment_path_get("HOME", "/.eyesight/");
+   path = eina_module_environment_path_get("HOME", "/.eyesight");
    _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
    if (path) free(path);
 
-   path = eina_module_environment_path_get("EYESIGHT_MODULES_DIR", "/eyesight/");
+   path = eina_module_environment_path_get("EYESIGHT_MODULES_DIR", "/eyesight");
    _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
    if (path) free(path);
 
-   path = eina_module_symbol_path_get(eyesight_object_add, "/eyesight/");
+   path = eina_module_symbol_path_get(eyesight_object_add, "/eyesight");
    _eyesight_modules = eina_module_list_get(_eyesight_modules, path, 0, NULL, NULL);
    if (path) free(path);
 

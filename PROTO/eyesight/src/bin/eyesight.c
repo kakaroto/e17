@@ -246,7 +246,6 @@ int main(int argc, char *argv[])
   Evas_Object *bg;
   Evas_Object *o;
   int w, h;
-  char *backend = NULL;
   Eina_List *links = NULL;
   Eyesight_Backend eb;
   void *doc;
@@ -259,33 +258,9 @@ int main(int argc, char *argv[])
     }
 
   printf("**%s**\n", argv[1]);
-  backend = strrchr(argv[1], '.');
-  if (!backend)
-    {
-      printf ("no suffix to file, exiting...\n");
-      return -1;
-    }
-  backend++;
-  if (strcmp(backend, "eps") == 0)
-    backend = "ps";
-  if ((strcmp(backend, "bmp") == 0) ||
-      (strcmp(backend, "gif") == 0) ||
-      (strcmp(backend, "jpg") == 0) ||
-      (strcmp(backend, "jpeg") == 0) ||
-      (strcmp(backend, "png") == 0) ||
-      (strcmp(backend, "ppm") == 0) ||
-      (strcmp(backend, "tga") == 0) ||
-      (strcmp(backend, "tiff") == 0) ||
-      (strcmp(backend, "xpm") == 0) ||
-      (strcmp(backend, "cba") == 0) ||
-      (strcmp(backend, "cbr") == 0) ||
-      (strcmp(backend, "cbt") == 0) ||
-      (strcmp(backend, "cbz") == 0) ||
-      (strcmp(backend, "cb7") == 0))
-    backend = "img";
-  printf ("%s\n", backend);
 
   ecore_evas_init();
+  eyesight_init();
 
   ee = ecore_evas_new(NULL, 10, 10, 1, 1, NULL);
   if (!ee)
@@ -301,18 +276,14 @@ int main(int argc, char *argv[])
   bg = o;
 
   o = eyesight_object_add(evas);
-  if (!(eb = eyesight_object_init(o, backend)))
-    {
-      printf("erreur init backend\n");
-      ecore_evas_shutdown();
-      return -1;
-    }
-  if (!(doc = eyesight_object_file_set(o, argv[1])))
+  if (!eyesight_object_file_set(o, argv[1]))
     {
       printf("erreur file_set\n");
       ecore_evas_shutdown();
       return -1;
     }
+
+  doc = eyesight_object_document_get(o);
 
   /* Specific information */
 

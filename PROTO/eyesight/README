@@ -5,14 +5,9 @@ I) Needed libraries:
 
 Eina and Evas (and Ecore and Ecore_Evas for the binary)
 
-II) Modules
+II) Modules (optional)
 
-1) PDF renderer: MuPDF or Poppler.
-
- a) MuPDF library is provided (default renderer)
- b) Or download and install Poppler: http://poppler.freedesktop.org/
-    Do not forget to install Xpdf headers (pass --enable-xpdf-headers
-    to Poppler's ./configure)
+1) PDF renderer: MuPDF (provided)
 
 2) PS renderer: download and install libspectre:
    http://libspectre.freedesktop.org/wiki/

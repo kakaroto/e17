@@ -100,6 +100,8 @@ elm_main(int argc, char **argv)
       return EXIT_FAILURE;
     }
 
+  ecore_event_init();
+
   args = ecore_getopt_parse(&options, values, argc, argv);
   if (args < 0)
     {

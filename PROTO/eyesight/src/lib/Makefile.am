@@ -24,13 +24,9 @@ libeyesight_la_SOURCES += $(top_srcdir)/src/modules/img/eyesight_img.c
 endif
 
 if EYESIGHT_STATIC_BUILD_PDF
-if HAVE_PDF_BACKEND_MUPDF
-   libeyesight_la_SOURCES += $(top_srcdir)/src/modules/pdf/eyesight_pdf_mupdf.c
-else
-   libeyesight_la_SOURCES += $(top_srcdir)/src/modules/pdf/eyesight_pdf_poppler.cpp
-   libeyesight_la_CPPFLAGS += @POPPLER_CFLAGS@
-   libeyesight_la_LIBADD += @POPPLER_LIBS@
-endif
+libeyesight_la_SOURCES += $(top_srcdir)/src/modules/pdf/eyesight_pdf.c
+libeyesight_la_CPPFLAGS += @MUPDF_CFLAGS@
+libeyesight_la_LIBADD += @MUPDF_LIBS@
 endif
 
 if EYESIGHT_STATIC_BUILD_POSTSCRIPT
@@ -41,14 +37,4 @@ endif
 
 if EYESIGHT_STATIC_BUILD_TXT
 libeyesight_la_SOURCES += $(top_srcdir)/src/modules/txt/eyesight_txt.c
-endif
-
-if EYESIGHT_STATIC_BUILD_PDF
-if HAVE_PDF_BACKEND_MUPDF
-libeyesight_la_LINK = $(LINK) $(libeyesight_la_LDFLAGS)
-else
-libeyesight_la_LINK = $(CXXLINK) $(libeyesight_la_LDFLAGS)
-endif
-else
-libeyesight_la_LINK = $(LINK) $(libeyesight_la_LDFLAGS)
 endif

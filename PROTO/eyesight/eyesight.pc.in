@@ -4,8 +4,9 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: @PACKAGE@
-Description: Enlightenment Foundations Library based document renderer.
-@pkgconfig_requires_private@: @requirement_eyesight@
+Description: Enlightenment Foundations Library based document renderer library.
+@pkgconfig_requires_private@: @requirements_pc_eyesight@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -leyesight
+Libs.private: @requirements_libs_eyesight@
 Cflags: -I${includedir}/eyesight
