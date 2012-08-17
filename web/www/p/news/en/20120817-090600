@@ -1,0 +1,28 @@
+New Python-EFL release cycle 1.7 BETA
+Stefan Schmidt
+stefan@datenfreihafen.org
+
+<p>
+
+Following the release cycle for C libraries for Enlightenment that <a
+href="http://enlightenment.org/p.php?p=news/show&l=en&news_id=52">announced
+1.7 BETA</a>, we'd like to announce a new release cycle beta release
+of Python EFL bindings.
+</p>
+
+<p><ul>
+
+<li>python-evas 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-evas-1.7.0-beta.tar.bz2"></a>]</li>
+<li>python-ecore 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-ecore-1.7.0-beta.tar.bz2"></a>]</li>
+<li>python-e_dbus 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-e_dbus-1.7.0-beta.tar.bz2"></a>]</li>
+<li>python-edje 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-edje-1.7.0-beta.tar.bz2"></a>]</li>
+<li>python-emotion 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-emotion-1.7.0-beta.tar.bz2"></a>]</li>
+<li>python-ethumb 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-ethumb-1.7.0-beta.tar.bz2"></a>]</li>
+<li>python-elementary 1.7.0 - [<a href="http://download.enlightenment.org/releases/python-elementary-1.7.0-beta.tar.bz2"></a>]</li>
+
+</ul></p>
+<!-- cut -->
+
+<p>
+Since the ALPHA release we decreased the python-dbus version requirement to 0.83.0.
+</p>
