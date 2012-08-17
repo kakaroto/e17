@@ -91,10 +91,14 @@ esql_disconnect(Esql *e)
    e->backend.disconnect(e);
    if (e->fdh) ecore_main_fd_handler_del(e->fdh);
    e->fdh = NULL;
-   INFO("Disconnected");
-   ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
-   e->event_count++;
-   if (e->reconnect) esql_reconnect_handler(e);
+   if (e->pool_member)
+     e->pool_struct->e_connected--;
+   else
+     {
+        INFO("Disconnected");
+        ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
+        e->event_count++;
+     }
 }
 
 /**
