@@ -60,7 +60,7 @@ esql_connect(Esql       *e,
    fd = e->backend.fd_get(e);
    if (fd != -1)
      {
-        e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
+        e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE | ECORE_FD_ERROR, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
         ecore_main_fd_handler_active_set(e->fdh, ret);
         e->current = ESQL_CONNECT_TYPE_INIT;
      }
@@ -94,6 +94,7 @@ esql_disconnect(Esql *e)
    INFO("Disconnected");
    ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
    e->event_count++;
+   if (e->reconnect) esql_reconnect_handler(e);
 }
 
 /**

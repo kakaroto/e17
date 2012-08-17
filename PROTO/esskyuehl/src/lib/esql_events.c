@@ -200,7 +200,7 @@ esql_reconnect_handler(Esql *e)
    fd = e->backend.fd_get(e);
    if (fd != -1)
      {
-        e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
+        e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE | ECORE_FD_ERROR, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
         ecore_main_fd_handler_active_set(e->fdh, ret);
         e->current = ESQL_CONNECT_TYPE_INIT;
      }
@@ -258,29 +258,21 @@ esql_event_error(Esql *e)
              eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
              esql_res_free(NULL, res);
           }
-        else
+        if (!ecore_main_fd_handler_active_get(e->fdh, ECORE_FD_ERROR))
           {
-             ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
-             e->event_count++;
+             esql_next(e);
+             return;
           }
-        esql_next(e);
-        return;
      }
-   if (ev->connect_cb)
-     ev->connect_cb(ev, ev->connect_cb_data);
    else
      {
-        ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
-        e->event_count++;
+        if (ev->connect_cb)
+          ev->connect_cb(ev, ev->connect_cb_data);
      }
+   ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+   e->event_count++;
 
-   e->fdh = NULL;
-   if (e->reconnect) esql_reconnect_handler(e);
-   else
-     {
-        ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
-        e->event_count++;
-     }
+   esql_disconnect(e);
    return;
 }
 
@@ -319,10 +311,8 @@ esql_connect_handler(Esql             *e,
         break;
 
       default:
-        ERR("unknown return from io(): %d", ret);
+        ERR("Error return from io()");
         esql_event_error(e);
-        if (e->current != ESQL_CONNECT_TYPE_QUERY)
-          return ECORE_CALLBACK_CANCEL;
      }
    return ECORE_CALLBACK_RENEW;
 }
