@@ -266,6 +266,7 @@ function dev_data_irc($data)
 	  $h = read_var("p/$b/link");
 	  $pname = $h;
       }
+      else $h = $b
       if ((strncasecmp($page,$l,strlen($l)) == 0) OR
           (($page == "index") AND ($l == "Home") )) {
       	  $c = "active";
