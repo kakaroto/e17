@@ -1,6 +1,6 @@
 #include "fitz-internal.h"
 
-#define OPJ_STATIC
+//#define OPJ_STATIC
 #include <openjpeg.h>
 
 static void fz_opj_error_callback(const char *msg, void *client_data)
