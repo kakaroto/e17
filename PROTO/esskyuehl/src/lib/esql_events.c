@@ -111,7 +111,7 @@ esql_call_complete(Esql *e)
         else
           INFO("Connected");
 
-        if ((!e->pool_member) || (e->pool_member && (e->pool_struct->e_connected == e->pool_struct->size)))
+        if ((!e->pool_member) || (e->pool_member && (!e->pool_struct->connected) && (e->pool_struct->e_connected == e->pool_struct->size)))
           {
              if (e->pool_member)
                {
