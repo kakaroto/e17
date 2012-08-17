@@ -230,24 +230,6 @@ function dev_data_irc($data)
       return "";
   }
 
-/* functions to output sections of the page */
-  function show_langs($f) {
-      global $page;
-      global $lang;
-      if (file_exists($f)) {
-	  $handle = fopen($f, "r");
-	  if ($handle) {
-	      while (!feof($handle)) {
-		  $fl = fgets($handle, 4096);
-		  $fl = str_replace("\n", "", $fl);
-		  if ($fl != "") {
-		      echo("<a href='p.php?p=$page&amp;l=$fl'><img src='i/$fl.png' style='width:24px; height:18px; border:0;' alt='$fl'/></a>\n");
-		  }
-	      }
-	  }
-      }
-  }
-
   function nav_button($b) {
       global $page;
       global $lang;
