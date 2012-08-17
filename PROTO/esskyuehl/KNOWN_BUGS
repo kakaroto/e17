@@ -1,0 +1,2 @@
+* when auto-reconnecting from an error while using a pool, the current (if any) query
+  for the reconnecting pool member will be lost
