@@ -183,13 +183,14 @@ out:
    esql_next(e);
 }
 
-void
+Eina_Bool
 esql_reconnect_handler(Esql *e)
 {
    Esql *ev;
    int ret, fd;
 
    ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
+   e->reconnect_timer = NULL;
    ret = e->backend.connect(e);
    EINA_SAFETY_ON_NULL_GOTO(e->backend.db, error);
    if (ret == ECORE_FD_ERROR)
@@ -205,10 +206,11 @@ esql_reconnect_handler(Esql *e)
         e->current = ESQL_CONNECT_TYPE_INIT;
         if (ev->database) esql_database_set(e, ev->database);
      }
-   return;
+   return EINA_FALSE;
 error:
    ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
    e->event_count++;
+   return EINA_FALSE;
 }
 
 void
@@ -274,8 +276,7 @@ esql_event_error(Esql *e)
    e->event_count++;
 
    esql_disconnect(e);
-   if (e->reconnect) esql_reconnect_handler(e);
-   return;
+   if (e->reconnect) e->reconnect_timer = ecore_timer_add(1.0, (Ecore_Task_Cb)esql_reconnect_handler, e);
 }
 
 Eina_Bool
@@ -325,6 +326,6 @@ esql_timeout_cb(Esql *e)
 {
    e->timeout_timer = NULL;
    esql_disconnect(e);
-   if (e->reconnect) esql_reconnect_handler(e);
+   if (e->reconnect) e->reconnect_timer = ecore_timer_add(1.0, (Ecore_Task_Cb)esql_reconnect_handler, e);
    return EINA_FALSE;
 }

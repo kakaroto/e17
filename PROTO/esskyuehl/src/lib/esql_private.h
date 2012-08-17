@@ -164,6 +164,7 @@ struct Esql
    Ecore_Fd_Handler *fdh;
    Esql_Res         *res; /* current working result */
    Ecore_Timer      *timeout_timer;
+   Ecore_Timer      *reconnect_timer;
 
    Esql_Connect_Type current;
    double            query_start;
@@ -231,7 +232,7 @@ Eina_Bool     esql_pool_type_set(Esql_Pool *ep, Esql_Type type);
 void          esql_pool_connect_timeout_set(Esql_Pool *ep, double timeout);
 void          esql_pool_reconnect_set(Esql_Pool *ep, Eina_Bool enable);
 void          esql_pool_free(Esql_Pool *ep);
-void          esql_reconnect_handler(Esql *e);
+Eina_Bool    esql_reconnect_handler(Esql *e);
 
 EAPI void     esql_event_error(Esql *e);
 EAPI void     esql_call_complete(Esql *e);
