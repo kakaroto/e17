@@ -35,7 +35,7 @@ if (is_file("p/$page/$lang-rss"))
         <div class="layout">
 
             <ul class="menu">
-                <?php echo(nav_button("main1", ""));?>
+                <?php echo(nav_button("homelink", ""));?>
                 <?php echo(nav_button("main2", ""));?>
                 <?php echo(nav_button("main3", ""));?>
                 <?php echo(nav_button("main4", ""));?>
