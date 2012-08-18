@@ -40,8 +40,8 @@ URL: http://www.enlightenment.org
 Packager: %{?_packager:%{_packager}}%{!?_packager:Rui Seabra <rms@1407.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-BuildRequires: edje
-BuildRequires: edje-devel
+Requires: edje, openjpeg-devel >= 1.5.0, mupdf >= 1.1
+BuildRequires: edje-devel, openjpeg-devel >= 1.5.0, mupdf-devel >= 1.1
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %package devel
