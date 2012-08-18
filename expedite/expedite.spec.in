@@ -1,13 +1,16 @@
 # Note that this is NOT a relocatable package
-%define ver      0.7.0
-%define rel      1
+%define _missing_doc_files_terminate_build 0
+%{!?_rel:%{expand:%%global _rel 0.enl%{?dist}}}
+
+%define ver      @VERSION@
+%define rel      %{_rel}
 %define prefix   /usr
 
 Summary: expedite
 Name: expedite
 Version: %ver
 Release: %rel
-Copyright: BSD
+License: BSD
 Group: System Environment/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/expedite-%{ver}.tar.gz
 BuildRoot: /var/tmp/expedite-root
