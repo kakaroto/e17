@@ -636,6 +636,11 @@ class ServicesList(object):
         auto_connect = s.get("AutoConnect")
         connected = (str(state) not in ("idle", "failure"))
 
+        if security:
+            security = [str(x) for x in security]
+            if "none" in security:
+                security.remove("none")
+
         if part == "elm.swallow.end":
             bx = elm.Box(obj)
             bx.horizontal = True
