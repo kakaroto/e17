@@ -68,7 +68,7 @@ fi
 
 dnl openjpeg
 if test "x${have_dep}" = "xyes" ; then
-   PKG_CHECK_EXISTS([libopenjpeg1 >= 1.4],
+   PKG_CHECK_EXISTS([libopenjpeg1 >= 1.5],
       [
        have_pkg_jp2k="yes"
        requirements_pc="libopenjpeg1 ${requirements_pc}"
@@ -76,7 +76,7 @@ if test "x${have_dep}" = "xyes" ; then
       [have_pkg_jp2k="no"])
 
    if test "x${have_pkg_jp2k}" = "xno" ; then
-      PKG_CHECK_EXISTS([libopenjpeg >= 1.4],
+      PKG_CHECK_EXISTS([libopenjpeg >= 1.5],
          [
           have_pkg_jp2k="yes"
           requirements_pc="libopenjpeg ${requirements_pc}"
@@ -86,15 +86,28 @@ if test "x${have_dep}" = "xyes" ; then
 
    if test "x${have_pkg_jp2k}" = "xno" ; then
       AC_MSG_NOTICE([no pkg-config file for openjpeg, checking files individually])
-      AC_CHECK_HEADER([openjpeg.h], [have_dep="yes"], [have_dep="no"])
-      if test "x${have_dep}" = "xyes" ; then
-         AC_CHECK_LIB([openjpeg], [opj_image_create],
-            [
-             have_dep="yes"
-             requirements_libs="-lopenjpeg ${requirements_libs}"
-            ],
-            [have_dep="no"])
-      fi
+      AC_MSG_CHECKING([for openjpeg library])
+      LIBS_save="${LIBS}"
+      LIBS="${LIBS} -lopenjpeg"
+      AC_LINK_IFELSE(
+         [AC_LANG_PROGRAM(
+             [[
+#include <openjpeg.h>
+             ]],
+             [[
+opj_dparameters_t params;
+
+opj_set_default_decoder_parameters(&params);
+params.flags |= OPJ_DPARAMETERS_IGNORE_PCLR_CMAP_CDEF_FLAG;
+             ]])],
+         [
+          have_dep="yes"
+          requirements_libs="-lopenjpeg ${requirements_libs}"
+         ],
+         [have_dep="no"])
+      LIBS="${LIBS_save}"
+
+      AC_MSG_RESULT([${have_dep}])
    fi
 fi
 
