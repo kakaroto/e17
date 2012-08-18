@@ -202,7 +202,7 @@ AC_ARG_ENABLE([DOWN],
    [AC_HELP_STRING([--enable-]DOWN, [enable build of $1 module @<:@default=yes@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
-       enable_module="yes"
+       enable_module="strict"
     else
        if test "x${enableval}" = "xstatic" ; then
           enable_module="static"
@@ -213,7 +213,7 @@ AC_ARG_ENABLE([DOWN],
    ],
    [enable_module="yes"])
 
-if test "x${enable_module}" = "xyes" || test "x${enable_module}" = "xstatic" ; then
+if test "x${enable_module}" = "xyes" || test "x${enable_module}" = "xstrict" || test "x${enable_module}" = "xstatic" ; then
    want_module="yes"
 fi
 
@@ -224,6 +224,10 @@ fi
 
 AC_MSG_CHECKING([whether to enable $1 module built])
 AC_MSG_RESULT([${have_module}])
+
+if test "x${have_module}" = "xno" && test "x${enable_module}" = "xstrict" ; then
+   AC_MSG_ERROR([$1 module requested, but dependency checks failed. See config.log for more details. Exiting...])
+fi
 
 static_module="no"
 if test "x${have_module}" = "xyes" && test "x${enable_module}" = "xstatic" ; then
