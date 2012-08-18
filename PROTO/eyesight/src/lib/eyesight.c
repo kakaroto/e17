@@ -464,6 +464,27 @@ eyesight_object_file_get(Evas_Object *obj)
    return sd->filename;
 }
 
+EAPI Eina_Bool
+eyesight_object_document_is_locked(Evas_Object *obj)
+{
+   Smart_Data *sd;
+
+   E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, EINA_FALSE);
+
+   return sd->module->is_locked(sd->backend);
+}
+
+EAPI Eina_Bool
+eyesight_object_document_password_set(Evas_Object *obj,
+                                      const char *password)
+{
+   Smart_Data *sd;
+
+   E_SMART_OBJ_GET_RETURN(sd, obj, E_OBJ_NAME, EINA_TRUE);
+
+   return sd->module->password_set(sd->backend, password);
+}
+
 EAPI void *
 eyesight_object_document_get(Evas_Object *obj)
 {

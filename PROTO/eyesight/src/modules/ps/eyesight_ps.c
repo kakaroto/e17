@@ -191,6 +191,18 @@ em_file_close(void *eb)
     }
 }
 
+static Eina_Bool
+em_is_locked(void *eb __UNUSED__)
+{
+  return EINA_FALSE;
+}
+
+static Eina_Bool
+em_password_set(void *eb __UNUSED__, const char *password __UNUSED__)
+{
+  return EINA_TRUE;
+}
+
 static const Eina_List *
 em_toc_get(void *eb)
 {
@@ -464,6 +476,8 @@ static Eyesight_Module _eyesight_module_ps =
   em_shutdown,
   em_file_open,
   em_file_close,
+  em_is_locked,
+  em_password_set,
   em_toc_get,
   em_page_count,
   em_page_set,

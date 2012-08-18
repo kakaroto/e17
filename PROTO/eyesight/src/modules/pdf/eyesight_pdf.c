@@ -471,8 +471,6 @@ em_file_open(void *eb, const char *filename)
 /*   doc->mode = _eyesight_document_page_mode_get(ebp->doc.pdfdoc); */
 /*   doc->layout = _eyesight_document_page_layout_get(ebp->doc.pdfdoc); */
 
-/*   doc->locked = (ebp->doc.pdfdoc->getErrorCode() == errEncrypted) ? EINA_TRUE : EINA_FALSE; */
-  doc->encrypted = pdf_needs_password(ebp->doc.doc);
 /*   doc->linearized = ebp->doc.pdfdoc->isLinearized(); */
   doc->printable = fz_meta((fz_document *)ebp->doc.doc, FZ_META_HAS_PERMISSION, NULL, FZ_PERMISSION_PRINT) == 0;
   doc->changeable = fz_meta((fz_document *)ebp->doc.doc, FZ_META_HAS_PERMISSION, NULL, FZ_PERMISSION_CHANGE) == 0;
@@ -565,6 +563,31 @@ em_file_close(void *eb)
       free(ebp->filename);
       ebp->filename = NULL;
     }
+}
+
+static Eina_Bool
+em_is_locked(void *eb)
+{
+  Eyesight_Backend_Pdf *ebp;
+
+  if (!eb)
+    return EINA_FALSE;
+
+  ebp = (Eyesight_Backend_Pdf *)eb;
+
+  return pdf_needs_password(ebp->doc.doc) ? EINA_TRUE : EINA_FALSE;
+}
+
+static Eina_Bool
+em_password_set(void *eb, const char *password)
+{
+  Eyesight_Backend_Pdf *ebp;
+
+  if (!eb)
+    return EINA_FALSE;
+
+  ebp = (Eyesight_Backend_Pdf *)eb;
+  return pdf_authenticate_password(ebp->doc.doc, (char *)password) ? EINA_TRUE : EINA_FALSE;
 }
 
 static const Eina_List *
@@ -837,6 +860,8 @@ static Eyesight_Module _eyesight_module_pdf =
   em_shutdown,
   em_file_open,
   em_file_close,
+  em_is_locked,
+  em_password_set,
   em_toc_get,
   em_page_count,
   em_page_set,

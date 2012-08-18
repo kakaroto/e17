@@ -50,6 +50,8 @@ struct _Eyesight_Module
   void                 (*shutdown)(void *backend);
   void                *(*file_open)(void *backend, const char *filename);
   void                 (*file_close)(void *backend);
+  Eina_Bool            (*is_locked)(void *backend);
+  Eina_Bool            (*password_set)(void *backend, const char *password);
   const Eina_List     *(*toc_get)(void *backend);
   int                  (*page_count)(void *backend);
 

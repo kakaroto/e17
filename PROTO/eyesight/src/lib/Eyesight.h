@@ -177,6 +177,9 @@ EAPI Evas_Object         *eyesight_object_add(Evas *evas);
 EAPI Eina_Bool            eyesight_object_file_set(Evas_Object *obj,
                                                    const char *filename);
 EAPI const char          *eyesight_object_file_get(Evas_Object *obj);
+EAPI Eina_Bool            eyesight_object_document_is_locked(Evas_Object *obj);
+EAPI Eina_Bool            eyesight_object_document_password_set(Evas_Object *obj,
+                                                                const char *password);
 EAPI void                *eyesight_object_document_get(Evas_Object *obj);
 EAPI const Eina_List     *eyesight_object_toc_get(Evas_Object *obj);
 EAPI int                  eyesight_object_page_count(Evas_Object *obj);

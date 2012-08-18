@@ -306,7 +306,6 @@ static void *
 em_file_open (void *eb, const char *filename)
 {
   Eyesight_Backend_Img *ebi;
-  int ret;
   Eina_Bool use_rar;
   Eyesight_Document_Img *doc;
 
@@ -461,6 +460,18 @@ em_file_close (void *eb)
     }
 }
 
+static Eina_Bool
+em_is_locked(void *eb __UNUSED__)
+{
+  return EINA_FALSE;
+}
+
+static Eina_Bool
+em_password_set(void *eb __UNUSED__, const char *password __UNUSED__)
+{
+  return EINA_TRUE;
+}
+
 static const Eina_List *
 em_toc_get(void *eb)
 {
@@ -512,7 +523,7 @@ em_page_set(void *eb, int page)
        return;
     }
 
-  if (page >= eina_list_count(ebi->doc.toc))
+  if (page >= (int)eina_list_count(ebi->doc.toc))
     {
       ERR("Page number is beyond the maximal number of pages");
       return;
@@ -634,19 +645,19 @@ em_page_render(void *eb)
 }
 
 char *
-em_page_text_get(void *eb, Eina_Rectangle rect)
+em_page_text_get(void *eb __UNUSED__, Eina_Rectangle rect __UNUSED__)
 {
   return NULL;
 }
 
 Eina_List *
-em_page_text_find(void *eb, const char *text, Eina_Bool is_case_sensitive, Eina_Bool backward)
+em_page_text_find(void *eb __UNUSED__, const char *text __UNUSED__, Eina_Bool is_case_sensitive __UNUSED__, Eina_Bool backward __UNUSED__)
 {
   return NULL;
 }
 
 Eina_List *
-em_page_links_get(void *eb)
+em_page_links_get(void *eb __UNUSED__)
 {
   return NULL;
 }
@@ -657,6 +668,8 @@ static Eyesight_Module _eyesight_module_img =
   em_shutdown,
   em_file_open,
   em_file_close,
+  em_is_locked,
+  em_password_set,
   em_toc_get,
   em_page_count,
   em_page_set,

@@ -1,8 +1,11 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = mupdf-1.1
+SUBDIRS =
 
 if EYESIGHT_BUILD_PDF
+
+SUBDIRS += mupdf-1.1
+
 if !EYESIGHT_STATIC_BUILD_PDF
 
 includesdir = $(includedir)/eyesight

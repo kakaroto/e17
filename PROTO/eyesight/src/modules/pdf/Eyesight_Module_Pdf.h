@@ -38,8 +38,6 @@ typedef struct
   char *date_modification;
   Eyesight_Document_Pdf_Page_Mode mode;
   Eyesight_Document_Pdf_Page_Layout layout;
-  Eina_Bool locked : 1;
-  Eina_Bool encrypted : 1;
   Eina_Bool linearized : 1;
   Eina_Bool printable : 1;
   Eina_Bool changeable : 1;
