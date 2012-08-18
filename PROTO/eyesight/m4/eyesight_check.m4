@@ -112,17 +112,19 @@ if test "x${have_dep}" = "xyes" ; then
 fi
 
 dnl check libraries
-PKG_CHECK_MODULES([MUPDF],
-      [${requirements_pc}],
-      [
-       have_dep="yes"
-       MUPDF_LIBS="${requirements_libs} ${MUPDF_LIBS}"
-      ],
-      [have_dep="no"])
+if test "x${have_dep}" = "xyes" ; then
+   PKG_CHECK_MODULES([MUPDF],
+         [${requirements_pc}],
+         [
+          have_dep="yes"
+          MUPDF_LIBS="${requirements_libs} ${MUPDF_LIBS}"
+         ],
+         [have_dep="no"])
 
 dnl CJK fonts
-if ! test "x${want_mupdf_cjk}" = "xyes" ; then
-   BUILD_MUPDF_CJK_FONTS="-DNOCJK"
+   if ! test "x${want_mupdf_cjk}" = "xyes" ; then
+      BUILD_MUPDF_CJK_FONTS="-DNOCJK"
+   fi
 fi
 
 AC_ARG_VAR([MUPDF_CFLAGS], [preprocessor flags for mupdf])
