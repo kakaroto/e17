@@ -246,7 +246,7 @@ AC_CHECK_FUNCS([sync])
 
 AC_OUTPUT([
 Makefile
-expedite.spec.in
+expedite.spec
 src/Makefile
 src/bin/Makefile
 data/Makefile
