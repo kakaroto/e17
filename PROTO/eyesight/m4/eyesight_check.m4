@@ -218,7 +218,7 @@ if test "x${enable_module}" = "xyes" || test "x${enable_module}" = "xstrict" || 
 fi
 
 have_module="no"
-if test "x${want_module}" = "xyes" && (test "x${enable_module}" = "xyes" || test "x${enable_module}" = "xstatic") ; then
+if test "x${want_module}" = "xyes" && (test "x${enable_module}" = "xyes" || test "x${enable_module}" = "xstrict" || test "x${enable_module}" = "xstatic") ; then
    m4_default([EYESIGHT_CHECK_DEP_]m4_defn([UP]))(${enable_module}, [have_module="yes"], [have_module="no"])
 fi
 
