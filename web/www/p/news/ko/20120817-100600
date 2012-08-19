@@ -1,13 +1,10 @@
-New Python-EFL release cycle 1.7 BETA
-Stefan Schmidt
+Python-EFL 1.7 베타 배포
+스테판 슈밋
 stefan@datenfreihafen.org
 
 <p>
-
-Following the release cycle for C libraries for Enlightenment that <a
-href="http://enlightenment.org/p.php?p=news/show&l=en&news_id=52">announced
-1.7 BETA</a>, we'd like to announce a new release cycle beta release
-of Python EFL bindings.
+Enlightenment의 C라이브러리 <a
+href="http://enlightenment.org/p.php?p=news/show&l=ko&news_id=52">1.7 베타 배포</a>에 맞추어 Python EFL 바인딩도 1.7 베타 버전을 배포합니다.
 </p>
 
 <p><ul>
@@ -24,5 +21,5 @@ of Python EFL bindings.
 <!-- cut -->
 
 <p>
-Since the ALPHA release we decreased the python-dbus version requirement to 0.83.0.
+1.7 알파 이후로 python-dbus의 버전 요구 사항을 0.83.0으로 낮추었습니다.
 </p>
