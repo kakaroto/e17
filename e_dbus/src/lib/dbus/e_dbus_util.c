@@ -40,8 +40,7 @@ e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err)
 {
   if (cb && cb->unmarshal_func)
     return cb->unmarshal_func(msg, err);
-  else
-    return NULL;
+  return NULL;
 }
 
 EAPI void

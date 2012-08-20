@@ -38,12 +38,14 @@ _dbus_peer_call(E_DBus_Connection *conn, const char *method_name, const char *de
 EAPI DBusPendingCall *
 e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
    return _dbus_peer_call(conn, "Ping", destination, path, cb_return, data);
 }
 
 EAPI DBusPendingCall *
 e_dbus_peer_get_machine_id(E_DBus_Connection *conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
    return _dbus_peer_call(conn, "GetMachineId", destination, path, cb_return, data);
 }
 
@@ -87,6 +89,7 @@ e_dbus_properties_get_all(E_DBus_Connection *conn, const char *destination, cons
   DBusMessage *msg;
   DBusPendingCall *ret;
 
+  EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
   msg = _dbus_message_property_method_call
     (conn, "GetAll", destination, path, interface, NULL);
   if (!msg)
@@ -107,6 +110,7 @@ e_dbus_properties_get(E_DBus_Connection *conn, const char *destination, const ch
   DBusMessage *msg;
   DBusPendingCall *ret;
 
+  EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
   msg = _dbus_message_property_method_call
     (conn, "Get", destination, path, interface, property);
   if (!msg)
@@ -130,6 +134,7 @@ e_dbus_properties_set(E_DBus_Connection *conn, const char *destination, const ch
   DBusPendingCall *ret;
   char sig[2];
 
+  EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
   if (!dbus_type_is_basic(value_type))
   {
     if (cb_return)

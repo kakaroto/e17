@@ -511,6 +511,7 @@ e_dbus_connection_setup(DBusConnection *conn)
 EAPI void
 e_dbus_connection_close(E_DBus_Connection *conn)
 {
+  if (!conn) return;
   DBG("e_dbus_connection_close");
 
   if (e_dbus_idler_active)
@@ -552,12 +553,14 @@ e_dbus_connection_close(E_DBus_Connection *conn)
 EAPI void
 e_dbus_connection_ref(E_DBus_Connection *conn)
 {
+  EINA_SAFETY_ON_NULL_RETURN(conn);
   conn->refcount++;
 }
 
 DBusConnection *
 e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
 {
+  EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
   return conn->conn;
 }
 

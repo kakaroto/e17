@@ -279,24 +279,28 @@ e_dbus_object_free(E_DBus_Object *obj)
 EAPI void *
 e_dbus_object_data_get(E_DBus_Object *obj)
 {
+  EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
   return obj->data;
 }
 
 EAPI E_DBus_Connection *
 e_dbus_object_conn_get(E_DBus_Object *obj)
 {
+  EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
   return obj->conn;
 }
 
 EAPI const char *
 e_dbus_object_path_get(E_DBus_Object *obj)
 {
+  EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
   return obj->path;
 }
 
 EAPI const Eina_List *
 e_dbus_object_interfaces_get(E_DBus_Object *obj)
 {
+  EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
   return obj->interfaces;
 }
 
@@ -347,6 +351,8 @@ e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
 {
   E_DBus_Interface *found;
 
+  EINA_SAFETY_ON_NULL_RETURN(obj);
+  EINA_SAFETY_ON_NULL_RETURN(iface);
   DBG("e_dbus_object_interface_detach (%s, %s) ", obj->path, iface->name);
   found = eina_list_data_find(obj->interfaces, iface);
   if (!found) return;
@@ -359,6 +365,7 @@ e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
 EAPI void
 e_dbus_interface_ref(E_DBus_Interface *iface)
 {
+  EINA_SAFETY_ON_NULL_RETURN(iface);
   iface->refcount++;
   DBG("e_dbus_interface_ref (%s) = %d", iface->name, iface->refcount);
 }
@@ -366,6 +373,7 @@ e_dbus_interface_ref(E_DBus_Interface *iface)
 EAPI void
 e_dbus_interface_unref(E_DBus_Interface *iface)
 {
+  EINA_SAFETY_ON_NULL_RETURN(iface);
   DBG("e_dbus_interface_unref (%s) = %d", iface->name, iface->refcount - 1);
   if (--(iface->refcount) == 0)
     e_dbus_interface_free(iface);
@@ -391,6 +399,7 @@ e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const c
 {
   E_DBus_Method *m;
 
+  EINA_SAFETY_ON_NULL_RETURN_VAL(iface, 0);
   m = e_dbus_method_new(member, signature, reply_signature, func);
   DBG("E-dbus: Add method %s: %p", member, m);
   if (!m) return 0;
@@ -404,6 +413,7 @@ e_dbus_interface_signal_add(E_DBus_Interface *iface, const char *name, const cha
 {
   E_DBus_Signal *s;
 
+  EINA_SAFETY_ON_NULL_RETURN_VAL(iface, 0);
   s = e_dbus_signal_new(name, signature);
   DBG("E-dbus: Add signal %s: %p", name, s);
   if (!s) return 0;
