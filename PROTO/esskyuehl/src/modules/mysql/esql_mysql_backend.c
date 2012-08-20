@@ -163,7 +163,6 @@ esql_mysac_database_set(Esql *e, const char *database_name)
 static int
 esql_mysac_io(Esql *e)
 {
-   if (e->timeout) ecore_timer_reset(e->timeout_timer);
    ESQL_MYSAC_SWITCH_RET(mysac_io(e->backend.db));
 }
 

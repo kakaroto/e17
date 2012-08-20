@@ -145,7 +145,6 @@ esql_postgresql_connect(Esql *e)
 static int
 esql_postgresql_io(Esql *e)
 {
-   if (e->timeout) ecore_timer_reset(e->timeout_timer);
    if (PQstatus(e->backend.db) == CONNECTION_BAD)
      {
         ERR("%s", esql_postgresql_error_get(e));
