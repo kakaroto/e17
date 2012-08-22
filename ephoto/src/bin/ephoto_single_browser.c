@@ -559,18 +559,6 @@ _zoom_fit_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    _zoom_fit(sb);
 }
 
-static int
-_entry_cmp(const void *pa, const void *pb)
-{
-   const Ephoto_Entry *a = pa;
-   const char *path = pb;
-   
-   if (path == a->path)
-     return 0;
-   else
-     return strcoll(a->path, path);
-}
-
 static void
 _next_entry(Ephoto_Single_Browser *sb)
 {
@@ -578,14 +566,11 @@ _next_entry(Ephoto_Single_Browser *sb)
    Eina_List *node;
    EINA_SAFETY_ON_NULL_RETURN(sb->entry);
 
-   node = eina_list_search_sorted_list(sb->ephoto->entries, _entry_cmp, sb->entry->path);
+   node = eina_list_search_sorted_list(sb->ephoto->entries, ephoto_entries_cmp,
+                                       sb->entry);
    if (!node) return;
-   while ((node = node->next))
-     {
-        entry = node->data;
-        if (!entry->is_dir)
-          break;
-     }
+   if ((node = node->next))
+     entry = node->data;
    if (!entry)
      entry = _first_entry_find(sb);
    if (entry)
@@ -602,13 +587,14 @@ _prev_entry(Ephoto_Single_Browser *sb)
    Ephoto_Entry *entry = NULL;
    EINA_SAFETY_ON_NULL_RETURN(sb->entry);
 
-   node = eina_list_search_sorted_list(sb->ephoto->entries, _entry_cmp, sb->entry->path);
+   node = eina_list_search_sorted_list(sb->ephoto->entries, ephoto_entries_cmp,
+                                       sb->entry);
    if (!node) return;
-   while ((node = node->prev))
+   if ((node = node->prev))
      {
         entry = node->data;
-        if (!entry->is_dir)
-          break;
+        if (entry->is_dir)
+          entry = NULL;
      }
    if (!entry)
      entry = _last_entry_find(sb);

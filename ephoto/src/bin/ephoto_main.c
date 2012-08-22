@@ -261,8 +261,8 @@ ephoto_title_set(Ephoto *ephoto, const char *title)
    elm_win_title_set(ephoto->win, buf);
 }
 
-static int
-_entry_cmp(const void *pa, const void *pb)
+int
+ephoto_entries_cmp(const void *pa, const void *pb)
 {
    const Ephoto_Entry *a = pa, *b = pb;
    if (a->is_dir == b->is_dir)
@@ -291,7 +291,7 @@ _ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_
      {
         int near_cmp;
         Eina_List *near_node = eina_list_search_sorted_near_list
-          (ephoto->entries, _entry_cmp, e, &near_cmp);
+          (ephoto->entries, ephoto_entries_cmp, e, &near_cmp);
 
         if (near_cmp < 0)
           ephoto->entries =  eina_list_append_relative_list

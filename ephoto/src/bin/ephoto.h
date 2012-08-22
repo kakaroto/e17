@@ -159,6 +159,7 @@ void          ephoto_entry_free(Ephoto_Entry *entry);
 void          ephoto_entry_free_listener_add(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data);
 void          ephoto_entry_free_listener_del(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data);
 void          ephoto_entries_free(Ephoto *ephoto);
+int           ephoto_entries_cmp(const void *pa, const void *pb);
 
 extern int __log_domain;
 #define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
