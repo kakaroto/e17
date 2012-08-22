@@ -118,6 +118,5 @@ _ephoto_display_usage(void)
           "ephoto dirname  : Specifies a directory to open\n");
 }
 
-
 #endif
 ELM_MAIN()

@@ -13,18 +13,23 @@ ephoto_config_init(Ephoto *ephoto)
 {
    Eet_Data_Descriptor_Class eddc;
 
-   if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Ephoto_Config", sizeof(Ephoto_Config)))
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc),
+                                                  "Ephoto_Config",
+                                                  sizeof(Ephoto_Config)))
      {
         ERR("Unable to create the config data descriptor!");
         return EINA_FALSE;
      }
 
    if (!edd) edd = eet_data_descriptor_stream_new(&eddc);
+
 #undef T
 #undef D
 #define T Ephoto_Config
 #define D edd
-#define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
+#define C_VAL(edd, type, member, dtype) \
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
+
    C_VAL(D, T, config_version, EET_T_INT);
    C_VAL(D, T, thumb_size, EET_T_INT);
    C_VAL(D, T, thumb_gen_size, EET_T_INT);
@@ -50,7 +55,8 @@ ephoto_config_init(Ephoto *ephoto)
          if (ephoto->config->config_version < 2)
            {
               ephoto->config->slideshow_timeout = 4.0;
-              ephoto->config->slideshow_transition = eina_stringshare_add("fade");
+              ephoto->config->slideshow_transition =
+                 eina_stringshare_add("fade");
            }
          if (ephoto->config->config_version < 3)
            ephoto->config->editor = eina_stringshare_add("gimp %s");

@@ -857,7 +857,7 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    sep = elm_separator_add(sb->bar);
    elm_box_pack_end(sb->bar, sep);
    evas_object_show(sep);
-   
+
    but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/zoom-in.png");
    evas_object_smart_callback_add(but, "clicked", _zoom_in_cb, sb);
 
@@ -879,7 +879,8 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_size_hint_align_set(sb->sentry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_single_line_set(sb->sentry, EINA_TRUE);
    elm_entry_scrollable_set(sb->sentry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(sb->sentry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_entry_scrollbar_policy_set(sb->sentry, ELM_SCROLLER_POLICY_OFF,
+                                  ELM_SCROLLER_POLICY_OFF);
    elm_object_disabled_set(sb->sentry, EINA_TRUE);
    evas_object_smart_callback_add
      (sb->sentry, "activated", _changed_file_text, sb);
@@ -934,7 +935,7 @@ ephoto_single_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
 
    if (sb->entry)
      ephoto_entry_free_listener_del(sb->entry, _entry_free, sb);
-  
+
    sb->entry = entry;
 
    if (entry)

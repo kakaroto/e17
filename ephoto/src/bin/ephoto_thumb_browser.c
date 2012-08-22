@@ -337,7 +337,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
      {
         if (!strcmp(k, "Up"))
           {
-             if (strcmp(tb->ephoto->config->directory, "/") != 0)
+             if (strcmp(tb->ephoto->config->directory, "/"))
                {
                   char *parent = ecore_file_dir_get
                     (tb->ephoto->config->directory);
@@ -522,7 +522,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_size_hint_align_set(tb->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_single_line_set(tb->entry, EINA_TRUE);
    elm_entry_scrollable_set(tb->entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(tb->entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_entry_scrollbar_policy_set(tb->entry, ELM_SCROLLER_POLICY_OFF,
+                                  ELM_SCROLLER_POLICY_OFF);
 
    evas_object_smart_callback_add
      (tb->entry, "activated", _changed_dir_text, tb);
