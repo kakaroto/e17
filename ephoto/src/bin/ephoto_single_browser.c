@@ -447,6 +447,7 @@ Ephoto_Orient
 ephoto_file_orient_get(const char *path)
 {
 #ifndef HAVE_LIBEXIF
+   (void) path;
    return EPHOTO_ORIENT_0;
 #else
    Ephoto_Orient orient = EPHOTO_ORIENT_0;
