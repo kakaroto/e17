@@ -450,7 +450,6 @@ _button_add(Evas_Object *box, const char *image)
 
    ic = elm_icon_add(but);
    elm_image_file_set(ic, image, NULL);
-   evas_object_size_hint_min_set(ic, 16, 16);
    evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
 
    elm_object_content_set(but, ic);
