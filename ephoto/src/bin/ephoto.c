@@ -29,21 +29,6 @@ elm_main(int argc, char **argv)
    elm_need_ethumb();
    elm_init(argc, argv);
 
-   elm_theme_extension_add(NULL, PACKAGE_DATA_DIR"/themes/default/ephoto.edj");
-
-   if (!efreet_mime_init())
-     fprintf(stderr, "Could not init efreet_mime!\n");
-
-   client = elm_thumb_ethumb_client_get();
-   if (!client)
-     {
-        ERR("could not get ethumb_client");
-        r = 1;
-        goto end_log_domain;
-     }
-   ethumb_client_crop_align_set(client, 0.5, 0.5);
-   ethumb_client_aspect_set(client, ETHUMB_THUMB_CROP);
-   ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
    __log_domain = eina_log_domain_register("ephoto", EINA_COLOR_ORANGE);
    if (!__log_domain)
      {
@@ -51,6 +36,22 @@ elm_main(int argc, char **argv)
         r = 1;
         goto end_log_domain;
      }
+
+   elm_theme_extension_add(NULL, PACKAGE_DATA_DIR"/themes/default/ephoto.edj");
+
+   if (!efreet_mime_init())
+     ERR("Could not init efreet_mime!");
+
+   client = elm_thumb_ethumb_client_get();
+   if (!client)
+     {
+        ERR("could not get ethumb_client");
+        r = 1;
+        goto end;
+     }
+   ethumb_client_crop_align_set(client, 0.5, 0.5);
+   ethumb_client_aspect_set(client, ETHUMB_THUMB_CROP);
+   ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
@@ -99,8 +100,8 @@ elm_main(int argc, char **argv)
 
  end:
    eina_log_domain_unregister(__log_domain);
- end_log_domain:
    efreet_mime_shutdown();
+ end_log_domain:
    elm_shutdown();
    eio_shutdown();
 
