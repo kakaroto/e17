@@ -113,7 +113,7 @@ _viewer_add(Evas_Object *parent, const char *path)
         EINA_SAFETY_ON_NULL_GOTO(obj, error);
         v->image = elm_image_add(parent);
         elm_image_file_set(v->image, path, group);
-        err = evas_object_image_load_error_get(v->image);
+        err = evas_object_image_load_error_get(elm_image_object_get(v->image));
         if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
         elm_image_object_size_get(v->image, &w, &h);
         evas_object_size_hint_align_set(v->image, 0.5, 0.5);
