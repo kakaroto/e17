@@ -46,7 +46,9 @@ function build()
 		echo "============ "$I" ============"
 		echo "" >> $LOG_WARN_FILE
 		echo "["$I"]" >> $LOG_WARN_FILE
-		make clean distclean || true
+		if [ -f Makefile ]; then
+			make clean distclean || true
+		fi
 		./autogen.sh "$autogen_option"
 		make 2>> $LOG_WARN_FILE 
 		sudo make install
