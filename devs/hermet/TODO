@@ -12,17 +12,14 @@ cutout_rect - static?! nowhere free it actually.
 <Elementary>
 naviframe - need to block the style set while transiton is going on
 naviframe - more transition effect styles.
-naviframe - visible problem (normal style naviframe -> naviframe in naviframe -> switching items outside naviframe -> the content inner naviframe do not properly hide all the time
-naviframe - check the bg color
+naviframe - optimize for translation effect speed
+naviframe - elementary_test -> naviframe_complex -> change view & push/pop
 hoversel - add horizontal mode style.
 genlist - need to check to prevent flickerling when theme_hook is called
 gengrid - segfault with elm_gengrid_item_sorted_insert func (#984)
 widget  - Raw evas objects are not proper as the child member of the widget cause of the color.
-notify - let check the smart member relationship 
-popup - let check the smart member relationship
 index - check the FIXEMEs
 conformant - how to skip the calc the size if the window is in background.
-glview - run the glview twice in elementary_test
 general - elm_policy_set/elm_policy_get Use Elm_Policy parameter.
 layout - signal_callback_add/del,call... not for common APIs?
 transit - consider mix the separate evas_map effects
