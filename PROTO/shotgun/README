@@ -1,2 +1,4 @@
 shotgun is an xmpp client/library which uses EFL. it requires the core
 EFL+elementary as well as PROTO/efx, and optionally PROTO/azy.
+
+see #shotgun on FreeNODE irc for support
