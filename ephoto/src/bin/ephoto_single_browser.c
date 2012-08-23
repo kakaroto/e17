@@ -145,7 +145,7 @@ _viewer_zoom_apply(Ephoto_Viewer *v, double zoom)
    else
      {
         Evas_Coord w, h;
-        elm_image_object_size_get(v->image, &w, &h);
+        evas_object_image_size_get(elm_image_object_get(v->image), &w, &h);
         w *= zoom;
         h *= zoom;
         evas_object_size_hint_min_set(v->image, w, h);
@@ -167,7 +167,7 @@ _viewer_zoom_fit_apply(Ephoto_Viewer *v)
    else
      {
         evas_object_geometry_get(v->scroller, NULL, NULL, &cw, &ch);
-        elm_image_object_size_get(v->image, &iw, &ih);
+        evas_object_image_size_get(elm_image_object_get(v->image), &iw, &ih);
      }
 
    if ((cw <= 0) || (ch <= 0)) return; /* object still not resized */
