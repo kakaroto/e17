@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Ecrire\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2012-08-09 11:44+0900\n"
-"PO-Revision-Date: 2012-01-09 14:32-0000\n"
+"PO-Revision-Date: 2012-08-23 00:32+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt\n"
@@ -19,14 +19,11 @@ msgstr ""
 "X-Poedit-Country: PORTUGAL\n"
 
 #: src/bin/ui/alerts.c:56
-msgid ""
-"<align=center>Would you like to save changes to document?<br>Any unsaved "
-"changes will be lost."
-msgstr ""
-"<align=center>Pretende gravar as alterações no documento?<br>As alterações "
-"não gravadas serão perdidas."
+msgid "<align=center>Would you like to save changes to document?<br>Any unsaved changes will be lost."
+msgstr "<align=center>Pretende gravar as alterações do documento?<br>As alterações não gravadas serão perdidas."
 
-#: src/bin/ui/alerts.c:71 src/bin/main.c:687
+#: src/bin/ui/alerts.c:71
+#: src/bin/main.c:687
 msgid "Save"
 msgstr "Gravar"
 
@@ -38,7 +35,8 @@ msgstr "Rejeitar"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/bin/ui/search_dialog.c:144 src/bin/main.c:705
+#: src/bin/ui/search_dialog.c:144
+#: src/bin/main.c:705
 msgid "Find & Replace"
 msgstr "Localizar e substituir"
 
@@ -73,7 +71,7 @@ msgstr "%.0f pts"
 
 #: src/bin/ui/font_dialog.c:157
 msgid "Use Default Font:"
-msgstr ""
+msgstr "Utilizar letra padrão:"
 
 #: src/bin/ui/font_dialog.c:168
 msgid "Set"
@@ -92,7 +90,7 @@ msgstr "%s Sem título %d - %s"
 #: src/bin/main.c:123
 #, c-format
 msgid "Ln %d, Col %d"
-msgstr "Lin %d, Col %d"
+msgstr "Lin. %d, Col. %d"
 
 #: src/bin/main.c:684
 msgid "New"
@@ -103,9 +101,8 @@ msgid "Open"
 msgstr "Abrir"
 
 #: src/bin/main.c:688
-#, fuzzy
 msgid "Save As"
-msgstr "Gravar"
+msgstr "Gravar como"
 
 #: src/bin/main.c:693
 msgid "Undo"
@@ -130,3 +127,4 @@ msgstr "Colar"
 #: src/bin/main.c:709
 msgid "Settings"
 msgstr "Definições"
+

@@ -5,39 +5,43 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: e_pattern_lock 0.1.0\n"
+"Project-Id-Version: e_pattern_lock \n"
 "Report-Msgid-Bugs-To: rms@1407.org\n"
 "POT-Creation-Date: 2011-09-18 10:19+0100\n"
-"PO-Revision-Date: 2011-09-09 00:13+0100\n"
-"Last-Translator: Rui Miguel Silva Seabra <rms@1407.org>\n"
+"PO-Revision-Date: 2012-08-23 01:15+0100\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: Portugal\n"
 
 #: src/e_pattern_lock.c:59
 #, c-format
 msgid "Mouse down on %dx%d\n"
-msgstr ""
+msgstr "Descer rato em %dx%d\n"
 
-#: src/e_pattern_lock.c:60 src/e_pattern_lock.c:75
+#: src/e_pattern_lock.c:60
+#: src/e_pattern_lock.c:75
 #, c-format
 msgid "Password is '%s'\n"
-msgstr ""
+msgstr "A senha é %s\n"
 
 #: src/e_pattern_lock.c:77
 #, c-format
 msgid "Mouse in on %dx%d\n"
-msgstr ""
+msgstr "Entrar com rato em %dx%d\n"
 
 #: src/e_pattern_lock.c:89
 #, c-format
 msgid "Mouse up on %dx%d\n"
-msgstr ""
+msgstr "Subir rato em %dx%d\n"
 
 #: src/e_pattern_lock.c:90
 #, c-format
 msgid "Final password is '%s'\n"
-msgstr ""
+msgstr "A senha final é %s\n"
+

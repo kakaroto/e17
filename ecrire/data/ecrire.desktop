@@ -2,6 +2,8 @@
 Encoding=UTF-8
 Name=Ecrire
 Comment=Simple text editor
+Comment[it]=Semplice editor di testo
+Comment[pt]=Editor de texto
 Exec=ecrire %f
 Icon=ecrire
 Terminal=false

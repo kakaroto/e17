@@ -2,8 +2,12 @@
 Name=Excessive
 GenericName=Files Browser
 GenericName[fr]=Navigateur de fichiers
+GenericName[it]=Navigatore del filesystem
+GenericName[pt]=Explorador de ficheiros
 Comment=Fast and light file browser.
 Comment[fr]=Gérez vos albums photo
+Comment[it]=Un filemanager leggero e veloce
+Comment[pt]=Um explorador de ficheiiros rápido e leve
 Exec=@prefix@/bin/excessive
 Icon=excessive.png
 Type=Application

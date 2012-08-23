@@ -1,10 +1,9 @@
-
 [Desktop Entry]
 Encoding=UTF-8
 Name=Elm_Softkey
 Comment=Elementary Softkey
 Comment[it]=Elementary - Tastiera software
-Comment[pt]=Teclas Elementary
+Comment[pt]=Teclado Elementary
 Exec=elm_softkey
 Icon=elm_softkey
 Terminal=false

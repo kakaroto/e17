@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: elmdentica\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2011-03-05 10:38+0000\n"
-"PO-Revision-Date: 2010-12-17 15:33-0000\n"
+"PO-Revision-Date: 2012-08-23 00:50+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Rui Miguel Silva Seabra <rms@1407.org>\n"
 "Language: \n"
@@ -18,7 +18,9 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 
-#: src/curl.c:92 src/elmdentica.c:1382 src/elmdentica.c:1591
+#: src/curl.c:92
+#: src/elmdentica.c:1382
+#: src/elmdentica.c:1591
 msgid "Close"
 msgstr "Fechar"
 
@@ -34,7 +36,7 @@ msgstr ""
 #: src/curl.c:326
 #, c-format
 msgid "Can't open %s for writing: %s\n"
-msgstr "Não consegui abrir %s em modo de escrita: %s\n"
+msgstr "Não foi possível abrir %s no modo de escrita: %s\n"
 
 #: src/elmdentica.c:281
 msgid "Last messages..."
@@ -56,33 +58,39 @@ msgstr "Respostas/citações..."
 msgid "My friends..."
 msgstr "Meus amigos..."
 
-#: src/elmdentica.c:477 src/elmdentica.c:624
+#: src/elmdentica.c:477
+#: src/elmdentica.c:624
 msgid "Follow"
-msgstr "Acompanhar"
+msgstr "Seguir"
 
-#: src/elmdentica.c:479 src/elmdentica.c:626
+#: src/elmdentica.c:479
+#: src/elmdentica.c:626
 msgid "Stop following"
-msgstr "Abandonar"
+msgstr "Deixar de seguir"
 
 #: src/elmdentica.c:613
 msgid "Couldn't parse user info message..."
-msgstr "Informação do utilizador imperceptível..."
+msgstr "Informação do utilizador impercetível..."
 
-#: src/elmdentica.c:675 src/elmdentica.c:754
+#: src/elmdentica.c:675
+#: src/elmdentica.c:754
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr "Pertence ao grupo %s assim como mais %d utilizador(es).<br>«%s»"
 
-#: src/elmdentica.c:676 src/elmdentica.c:787
+#: src/elmdentica.c:676
+#: src/elmdentica.c:787
 msgid "Leave"
 msgstr "Sair"
 
-#: src/elmdentica.c:678 src/elmdentica.c:756
+#: src/elmdentica.c:678
+#: src/elmdentica.c:756
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
 msgstr "Não pertence ao grupo %s mas %d pessoas pertencem.<br>«%s»"
 
-#: src/elmdentica.c:679 src/elmdentica.c:789
+#: src/elmdentica.c:679
+#: src/elmdentica.c:789
 msgid "Join"
 msgstr "Integrar"
 
@@ -116,16 +124,17 @@ msgid "~ 1 hour ago"
 msgstr "~ 1 hora atrás"
 
 #: src/elmdentica.c:1017
-#, fuzzy, c-format
+#, c-format
 msgid "on %x"
-msgstr "em %F"
+msgstr "em %x"
 
 #: src/elmdentica.c:1020
 #, c-format
 msgid "%x %X"
-msgstr ""
+msgstr "%x %X"
 
-#: src/elmdentica.c:1021 src/elmdentica.c:1022
+#: src/elmdentica.c:1021
+#: src/elmdentica.c:1022
 #, c-format
 msgid "some-when"
 msgstr "algures no tempo"
@@ -146,9 +155,11 @@ msgstr "Abrir"
 #: src/elmdentica.c:1161
 #, c-format
 msgid "downloading %s"
-msgstr "descarregando %s"
+msgstr "a transferir %s"
 
-#: src/elmdentica.c:1177 src/elmdentica.c:1876 src/settings.c:542
+#: src/elmdentica.c:1177
+#: src/elmdentica.c:1876
+#: src/settings.c:542
 #: src/settings.c:1271
 msgid "Cancel"
 msgstr "Cancelar"
@@ -181,7 +192,8 @@ msgstr "Responder"
 msgid "Repeat"
 msgstr "Repetir"
 
-#: src/elmdentica.c:1430 src/elmdentica.c:2147
+#: src/elmdentica.c:1430
+#: src/elmdentica.c:2147
 msgid "DM"
 msgstr "MD"
 
@@ -213,11 +225,14 @@ msgstr "Erro de \"µ-blog\""
 msgid "Send a DM to..."
 msgstr "Enviar MD a..."
 
-#: src/elmdentica.c:1870 src/settings.c:534 src/settings.c:1262
+#: src/elmdentica.c:1870
+#: src/settings.c:534
+#: src/settings.c:1262
 msgid "OK"
 msgstr "OK"
 
-#: src/elmdentica.c:1954 src/elmdentica.c:2096
+#: src/elmdentica.c:1954
+#: src/elmdentica.c:2096
 msgid "Type your status here..."
 msgstr "Escreva aqui o seu estado..."
 
@@ -231,7 +246,7 @@ msgstr "Enviar"
 
 #: src/elmdentica.c:2160
 msgid "Hide"
-msgstr "Esconder"
+msgstr "Ocultar"
 
 #: src/elmdentica.c:2181
 msgid "Timelines"
@@ -263,41 +278,42 @@ msgstr "Amigos e eu"
 
 #: src/elmdentica.c:2194
 msgid "Fullscreen"
-msgstr "ecrã completo"
+msgstr "Ecrã completo"
 
-#: src/elmdentica.c:2195 src/settings.c:1427
+#: src/elmdentica.c:2195
+#: src/settings.c:1427
 msgid "Settings"
 msgstr "Definições"
 
 #: src/statusnet.c:365
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough memory to create a status\n"
-msgstr "Sem memória para definir o caminho para \"conf.eet\""
+msgstr "Sem memória para criar um estado\n"
 
 #: src/statusnet.c:417
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough memory to create an user\n"
-msgstr "Sem memória para definir o caminho para \"conf.eet\""
+msgstr "Sem memória para criar um utilizador\n"
 
 #: src/statusnet.c:554
-#, fuzzy, c-format
+#, c-format
 msgid "Error encountered: %s\n"
-msgstr "Erro %d: %s\n"
+msgstr "Encontrado um erro: %s\n"
 
 #: src/statusnet.c:966
 #, c-format
 msgid "Unknown timeline %d\n"
-msgstr ""
+msgstr "Ocorrência desconhecida %d\n"
 
 #: src/statusnet.c:973
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough memory to construct timeline URI\n"
-msgstr "Sem memória para definir o caminho para \"conf.eet\""
+msgstr "Sem memória para criar o URI de ocorrências\n"
 
 #: src/statusnet.c:980
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough memory to prepare host url\n"
-msgstr "Sem memória para definir o caminho para \"conf.eet\""
+msgstr "Sem memória para preparar o url do servidor\n"
 
 #: src/settings.c:146
 msgid "never"
@@ -313,55 +329,49 @@ msgstr "1 minuto"
 
 #: src/settings.c:147
 msgid "1 min"
-msgstr "1 min"
+msgstr "1 min."
 
 #: src/settings.c:148
-#, fuzzy
 msgid "2 minutes"
 msgstr "2 minutos"
 
 #: src/settings.c:148
 msgid "2 min"
-msgstr "2 min"
+msgstr "2 min."
 
 #: src/settings.c:149
-#, fuzzy
 msgid "5 minutes"
 msgstr "5 minutos"
 
 #: src/settings.c:149
 msgid "5 min"
-msgstr "5 min"
+msgstr "5 min."
 
 #: src/settings.c:150
-#, fuzzy
 msgid "10 minutes"
 msgstr "10 minutos"
 
 #: src/settings.c:150
 msgid "10 min"
-msgstr "10 min"
+msgstr "10 min."
 
 #: src/settings.c:151
-#, fuzzy
 msgid "15 minutes"
 msgstr "15 minutos"
 
 #: src/settings.c:151
 msgid "15 min"
-msgstr "15 min"
+msgstr "15 min."
 
 #: src/settings.c:152
-#, fuzzy
 msgid "30 minutes"
 msgstr "30 minutos"
 
 #: src/settings.c:152
 msgid "30 min"
-msgstr "30 min"
+msgstr "30 min."
 
 #: src/settings.c:153
-#, fuzzy
 msgid "1 hour"
 msgstr "1 hora"
 
@@ -369,8 +379,8 @@ msgstr "1 hora"
 msgid "1 h"
 msgstr "1 h"
 
-#: src/settings.c:174 src/settings.c:1081
-#, fuzzy
+#: src/settings.c:174
+#: src/settings.c:1081
 msgid "Every: "
 msgstr "A cada: "
 
@@ -414,28 +424,33 @@ msgstr "Enviar?"
 msgid "Accounts..."
 msgstr "Contas..."
 
-#: src/settings.c:746 src/settings.c:1378
+#: src/settings.c:746
+#: src/settings.c:1378
 msgid "Add"
 msgstr "Adicionar"
 
-#: src/settings.c:759 src/settings.c:1391
+#: src/settings.c:759
+#: src/settings.c:1391
 msgid "Edit"
 msgstr "Editar"
 
-#: src/settings.c:773 src/settings.c:1404
+#: src/settings.c:773
+#: src/settings.c:1404
 msgid "Delete"
 msgstr "Apagar"
 
-#: src/settings.c:800 src/settings.c:823
+#: src/settings.c:800
+#: src/settings.c:823
 msgid "No posts<br>in cache."
 msgstr "Sem publicações<br>memorizadas."
 
 #: src/settings.c:802
 #, c-format
 msgid "Currently remembering<br>%d posts."
-msgstr "Memorizando<br>%d mensagens."
+msgstr "%d publicações<br>memorizadas"
 
-#: src/settings.c:838 src/settings.c:861
+#: src/settings.c:838
+#: src/settings.c:861
 msgid "No messages<br>in cache."
 msgstr "Sem mensagens<br>memorizadas."
 
@@ -462,7 +477,7 @@ msgstr "Navegador preferido..."
 
 #: src/settings.c:1053
 msgid "Online mode..."
-msgstr "Modo \"on-line\"..."
+msgstr "Modo \"online\"..."
 
 #: src/settings.c:1055
 msgid "Online"
@@ -486,7 +501,7 @@ msgstr "Absolutas"
 
 #: src/settings.c:1073
 msgid "Auto updates"
-msgstr "Actualizações automáticas"
+msgstr "Atualizações automáticas"
 
 #: src/settings.c:1242
 msgid "Pattern..."
@@ -541,16 +556,12 @@ msgstr "Incapaz de executar \"ecore_file_init()\"\n"
 #: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
-msgstr ""
-"Incapaz de criar o diretório de preferências uma vez que \"asprintf\" "
-"falhou\n"
+msgstr "Incapaz de criar o diretório de preferências uma vez que \"asprintf\" falhou\n"
 
 #: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr ""
-"Incapaz de criar o diretório de preferências uma vez que \"ecore_file_mkpath"
-"\" falhou\n"
+msgstr "Incapaz de criar o diretório de preferências uma vez que \"ecore_file_mkpath\" falhou\n"
 
 #: src/settings.c:1507
 #, c-format
@@ -574,41 +585,6 @@ msgstr "Incapaz de definir \"settings_edd\"."
 
 #: src/settings.c:1547
 #, c-format
-msgid ""
-"Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr ""
-"Memória insuficiente para as definições, sem dúvida também para mais nada..."
+msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr "Memória insuficiente para as definições e provavelmente para mais algo..."
 
-#~ msgid "Error %d: %s\n"
-#~ msgstr "Erro %d: %s\n"
-
-#~ msgid "System failed, child exited with status %d\n"
-#~ msgstr "System falhou, sub-processo terminou com estado %d\n"
-
-#~ msgid "Post"
-#~ msgstr "Publicar"
-
-#~ msgid "Error importing related status\n"
-#~ msgstr "Erro ao importar o estado\n"
-
-#, fuzzy
-#~ msgid "Got an error: %s\n"
-#~ msgstr "Erro %d: %s\n"
-
-#~ msgid "Not implemented yet"
-#~ msgstr "Ainda não implementado"
-
-#~ msgid "Last %d messages"
-#~ msgstr "Últimas %d mensagens"
-
-#~ msgid "%F %T"
-#~ msgstr "%F %T"
-
-#~ msgid "Oops, there should be a status here, for %s!\n"
-#~ msgstr "Oops, é suposto haver aqui um estado para %s!\n"
-
-#~ msgid "Oops, there should be an user here for %lld!\n"
-#~ msgstr "Oops, é suposto haver aqui um utilizador para %lld!\n"
-
-#~ msgid "%s@%s had HTTP response: %ld"
-#~ msgstr "%s@%s teve a resposta HTTP: %ld"

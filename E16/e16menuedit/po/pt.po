@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: e16menuedit\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-05-09 08:51+0800\n"
-"PO-Revision-Date: 2010-08-11 11:29-0000\n"
+"PO-Revision-Date: 2012-08-23 00:18+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,17 +26,17 @@ msgstr "Gravar"
 #: ../src/treeview.c:149
 #: ../e16menuedit2.glade.h:11
 msgid "New Entry"
-msgstr "Nova Entrada"
+msgstr "Nova entrada"
 
 #: ../src/callbacks.c:67
 #: ../e16menuedit2.glade.h:4
 msgid "Choose Icon"
-msgstr "Escolha o Ícone"
+msgstr "Escolha o ícone"
 
 #: ../src/callbacks.c:74
 #: ../e16menuedit2.glade.h:6
 msgid "Delete Entry"
-msgstr "Apagar Entrada"
+msgstr "Apagar entrada"
 
 #: ../src/callbacks.c:81
 msgid "Quit"
@@ -56,7 +56,7 @@ msgstr "Menu carregado com sucesso!"
 
 #: ../src/icon_chooser.c:66
 msgid "Select Icon..."
-msgstr "Seleccione o Ícone..."
+msgstr "Selecione o ícone..."
 
 #: ../src/icon_chooser.c:102
 msgid "Icon size:"
@@ -100,23 +100,23 @@ msgstr ""
 
 #: ../e16menuedit2.glade.h:5
 msgid "Choose _Icon"
-msgstr "Escolha o Í_cone"
+msgstr "Escolha o í_cone"
 
 #: ../e16menuedit2.glade.h:7
 msgid "E16 Menu Editor"
-msgstr "Editor de Menus do E16"
+msgstr "Editor de menus do E16"
 
 #: ../e16menuedit2.glade.h:8
 msgid "Fallback Help-Browser:"
-msgstr "Navegador de Recurso para a Ajuda:"
+msgstr "Navegador de recurso para a ajuda:"
 
 #: ../e16menuedit2.glade.h:9
 msgid "Info"
-msgstr "Info"
+msgstr "Informações"
 
 #: ../e16menuedit2.glade.h:10
 msgid "Info about E16 Menu Editor"
-msgstr "Info sobre o editor de menus do E16"
+msgstr "Informações do editor de menus do E16"
 
 #: ../e16menuedit2.glade.h:12
 msgid "Properties"
@@ -124,11 +124,11 @@ msgstr "Propriedades"
 
 #: ../e16menuedit2.glade.h:13
 msgid "_Contents"
-msgstr "_Conteúdos"
+msgstr "_Conteúdo"
 
 #: ../e16menuedit2.glade.h:14
 msgid "_Delete Entry"
-msgstr "_Apagar Entrada"
+msgstr "Apagar entra_da"
 
 #: ../e16menuedit2.glade.h:15
 msgid "_Edit"
@@ -140,11 +140,11 @@ msgstr "_Ficheiro"
 
 #: ../e16menuedit2.glade.h:17
 msgid "_Help"
-msgstr "A_juda"
+msgstr "Aj_uda"
 
 #: ../e16menuedit2.glade.h:18
 msgid "_New Entry"
-msgstr "_Nova Entrada"
+msgstr "_Nova entrada"
 
 #: ../e16menuedit2.glade.h:19
 msgid ""

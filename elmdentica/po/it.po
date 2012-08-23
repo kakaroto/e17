@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2011-03-05 10:38+0000\n"
-"PO-Revision-Date: 2011-07-28 11:35+0200\n"
+"PO-Revision-Date: 2012-08-23 20:05+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "Language: \n"
@@ -220,7 +220,7 @@ msgstr "Inserisci il tuo stato qui..."
 
 #: src/elmdentica.c:2113
 msgid "Clear"
-msgstr ""
+msgstr "Pulisci"
 
 #: src/elmdentica.c:2134
 msgid "Send"
@@ -260,7 +260,7 @@ msgstr "Io e gli amici"
 
 #: src/elmdentica.c:2194
 msgid "Fullscreen"
-msgstr ""
+msgstr "Schermo pieno"
 
 #: src/elmdentica.c:2195 src/settings.c:1427
 msgid "Settings"
@@ -566,6 +566,3 @@ msgid ""
 msgstr ""
 "Memoria insufficiente per impostazioni, e sicuramente anche per "
 "nient'altro..."
-
-#~ msgid "Recycle status"
-#~ msgstr "Ricicla stato"

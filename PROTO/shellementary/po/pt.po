@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Shellementary\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2012-06-14 17:49+0900\n"
-"PO-Revision-Date: 2010-10-08 11:21-0000\n"
+"PO-Revision-Date: 2012-08-23 01:24+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -33,32 +33,15 @@ msgstr "Informações"
 
 #: src/bin/shelm_about.c:9
 msgid "About Shellementary"
-msgstr "Sobre o \" Shellementary\""
+msgstr "Sobre o Shellementary"
 
 #: src/bin/shelm_about.c:34
-msgid ""
-"<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, "
-"supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/"
-"PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> "
-"and C programming language.<br><b>License:</> MIT"
-msgstr ""
-"<b>Exibe os diálogos dos \"scripts shell\"l</><br>Desenvolvido para ser uma "
-"alternativa ao zenity pois tem suporte aos mesmos argumentos<br><b>http://"
-"svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Baseado nas "
-"ferramentas Elementary desenvolvido por<b>raster</>e em programação C."
-"<br><b>Licença :</> MIT"
+msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and C programming language.<br><b>License:</> MIT"
+msgstr "<b>Exibe os diálogos dos \"scripts\" da consolal</><br>Desenvolvido para ser uma alternativa ao zenity pois tem suporte aos mesmos argumentos<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Baseado no Elementary e desenvolvido por<b>raster</> e em programação C.<br><b>Licença :</> MIT"
 
 #: src/bin/shelm_about.c:43
-msgid ""
-"<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</"
-"><br><b>Carsten Haitzler (raster)</> for Enlightenment DR17, great "
-"Elementary toolkit and help with developenment<br><b>Christopher Michael "
-"(devilhorns)</> for help with developenment<br>"
-msgstr ""
-"<b>Autor:</> quaker (quaker66@gmail.com)<br><br><b>Créditos:</"
-"><br><b>Carsten Haitzler (raster)</> pelo Enlightenment DR17, ferramentas e "
-"ajuda no desenvolvimento<br><b>Christopher Michael (devilhorns)</> pela "
-"ajuda no desenvolvimento<br>"
+msgid "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>Carsten Haitzler (raster)</> for Enlightenment DR17, great Elementary toolkit and help with developenment<br><b>Christopher Michael (devilhorns)</> for help with developenment<br>"
+msgstr "<b>Autor:</> quaker (quaker66@gmail.com)<br><br><b>Créditos:</><br><b>Carsten Haitzler (raster)</> pelo Enlightenment DR17, ferramentas e ajuda no desenvolvimento<br><b>Christopher Michael (devilhorns)</> pela ajuda no desenvolvimento<br>"
 
 #: src/bin/shelm_about.c:58
 msgid "Close"
@@ -68,16 +51,20 @@ msgstr "Fechar"
 msgid "Enter something here"
 msgstr "Indique algo aqui"
 
-#: src/bin/shelm_dlg_entry.c:47 src/bin/shelm_dlg_list.c:56
-#: src/bin/shelm_dlg_scale.c:43 src/bin/shelm_dlg_textinfo.c:80
+#: src/bin/shelm_dlg_entry.c:47
+#: src/bin/shelm_dlg_list.c:56
+#: src/bin/shelm_dlg_scale.c:43
+#: src/bin/shelm_dlg_textinfo.c:80
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/bin/shelm_dlg_entry.c:53 src/bin/shelm_dlg_simpleicon.c:44
-#: src/bin/shelm_dlg_list.c:62 src/bin/shelm_dlg_scale.c:49
+#: src/bin/shelm_dlg_entry.c:53
+#: src/bin/shelm_dlg_simpleicon.c:44
+#: src/bin/shelm_dlg_list.c:62
+#: src/bin/shelm_dlg_scale.c:49
 #: src/bin/shelm_dlg_textinfo.c:86
 msgid "OK"
-msgstr "OK"
+msgstr "Aceitar"
 
 #: src/bin/shelm_dlg_list.c:12
 msgid "Select an item"
@@ -110,3 +97,4 @@ msgstr "erro fd, a sair."
 #: src/bin/shelm_callbacks.c:81
 msgid "nothing to read?"
 msgstr "nada para ler?"
+

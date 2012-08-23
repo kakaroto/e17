@@ -2,6 +2,8 @@
 Encoding=UTF-8
 Name=Elev8
 Comment=Elev8 Runtime Interpreter
+Comment[it]=Interprete runtime Elev8
+Comment[pt]=Interpretador de execuções Elev8
 Exec=elev8
 Icon=elev8
 Terminal=false

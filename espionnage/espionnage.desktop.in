@@ -2,8 +2,12 @@
 Name=Espionnage
 GenericName=Webcam testing application
 GenericName[fr]=Application de test de la Webcam
+GenericName[it]=Applicazione per il test della webcam
+GenericName[pt]=Aplicação para testar a câmara web
 Comment=A light webcam test application
 Comment[fr]=Une application legere pour tester votre Webcam
+Comment[it]=Un'applicazione leggera per testare la webcam
+Comment[pt]=Uma aplicação para testar a câmara web
 Exec=@prefix@/bin/espionnage
 Icon=espionnage.png
 Type=Application
