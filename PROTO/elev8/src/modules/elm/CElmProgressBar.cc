@@ -81,7 +81,9 @@ void CElmProgressBar::horizontal_set(Handle<Value> value)
 
 Handle<Value> CElmProgressBar::units_get() const
 {
-   return String::New(elm_progressbar_unit_format_get(eo));
+   const char* units = elm_progressbar_unit_format_get(eo);
+
+   return units ? String::New(units) :  Undefined();
 }
 
 void CElmProgressBar::units_set(Handle<Value> value)

@@ -115,7 +115,9 @@ void CElmWeb::tab_propagate_set(Handle<Value> val)
 
 Handle<Value> CElmWeb::uri_get() const
 {
-   return String::New(elm_web_uri_get(eo));
+   const char *current_uri = elm_web_uri_get(eo);
+
+   return current_uri ? String::New(current_uri) : Undefined();
 }
 
 void CElmWeb::uri_set(Handle<Value> val)

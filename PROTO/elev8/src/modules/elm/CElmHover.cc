@@ -181,17 +181,16 @@ Handle<Value> CElmHover::best_content_location_get(const Arguments& args)
     return Undefined();
 
   String::Utf8Value pref_axis(args[0]->ToString());
+  const char* best_content = elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_NONE);
 
-  if (!strcmp(*pref_axis, "none"))
-    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_NONE));
   if (!strcmp(*pref_axis, "horizontal"))
-    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_HORIZONTAL));
-  if (!strcmp(*pref_axis, "vertical"))
-    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_VERTICAL));
-  if (!strcmp(*pref_axis, "both"))
-    return String::New(elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_BOTH));
+    best_content = elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_HORIZONTAL);
+  else if (!strcmp(*pref_axis, "vertical"))
+    best_content = elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_VERTICAL);
+  else if (!strcmp(*pref_axis, "both"))
+    best_content = elm_hover_best_content_location_get(eo, ELM_HOVER_AXIS_BOTH);
 
-  return String::NewSymbol("undefined");
+  return best_content ? String::New(best_content) :  Undefined();
 }
 
 Handle<Value> CElmHover::target_get() const

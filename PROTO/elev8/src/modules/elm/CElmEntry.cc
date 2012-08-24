@@ -270,7 +270,9 @@ void CElmEntry::single_line_set(Handle<Value> value)
 
 Handle<Value> CElmEntry::entry_get() const
 {
-   return String::New(elm_entry_entry_get(eo));
+   const char* entry = elm_entry_entry_get(eo);
+
+   return entry ? String::New(entry) : Undefined();
 }
 
 void CElmEntry::entry_set(Handle<Value> val)
@@ -467,7 +469,9 @@ void CElmEntry::prediction_allow_set(Handle<Value> value)
 
 Handle<Value> CElmEntry::anchor_hover_style_get() const
 {
-   return String::New(elm_entry_anchor_hover_style_get(eo));
+   const char* hover_style = elm_entry_anchor_hover_style_get(eo);
+
+   return hover_style ? String::New(hover_style) : Undefined() ;
 }
 
 void CElmEntry::anchor_hover_style_set(Handle<Value> val)
@@ -690,7 +694,9 @@ Handle<Value> CElmEntry::is_empty_get() const
 
 Handle<Value> CElmEntry::selection_get() const
 {
-   return String::New(elm_entry_selection_get(eo));
+   const char* selection = elm_entry_selection_get(eo);
+
+   return selection ? String::New(selection) : Undefined();
 }
 
 Handle<Value> CElmEntry::cursor_content_get() const
@@ -814,7 +820,9 @@ Handle<Value> CElmEntry::anchor_hover_end(const Arguments&)
 
 Handle<Value> CElmEntry::text_style_user_peek(const Arguments&)
 {
-   return String::New(elm_entry_text_style_user_peek(eo));
+   const char* user_peek = elm_entry_text_style_user_peek(eo);
+
+   return user_peek ? String::New(user_peek) : Undefined() ;
 }
 
 Handle<Value> CElmEntry::cursor_line_begin(const Arguments&)

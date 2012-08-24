@@ -125,8 +125,10 @@ Handle<Value> CElmLayout::cursor_style_get() const
      return Undefined();
 
    Local<Object> cursor = cursor_style->ToObject();
-   return String::New(elm_layout_part_cursor_style_get(eo,
-                           *String::Utf8Value(cursor->Get(0))));
+   const char *style = elm_layout_part_cursor_style_get(eo,
+                            *String::Utf8Value(cursor->Get(0)));
+
+   return style ?  String::New(style) : Undefined();
 }
 
 void CElmLayout::cursor_style_set(Handle<Value> val)

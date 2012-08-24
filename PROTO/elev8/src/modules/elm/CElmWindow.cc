@@ -409,7 +409,9 @@ void CElmWindow::role_set(Handle <Value> val)
 
 Handle<Value> CElmWindow::focus_highlight_style_get() const
 {
-   return String::New(elm_win_focus_highlight_style_get(eo));
+   const char *style = elm_win_focus_highlight_style_get(eo);
+
+   return style ? String::New(style) : Undefined();
 }
 
 void CElmWindow::focus_highlight_style_set(Handle <Value> val)
