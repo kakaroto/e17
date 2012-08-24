@@ -89,6 +89,12 @@ GtkScrolledWindow.frame {
 	-unico-border-gradient: none;
 }
 
+ .entry:selected,
+ .entry:selected:focused {
+     background-color: @selected_bg_color;
+     color: @selected_fg_color;
+ }
+
 .entry:insensitive {
 	background-color: @insensitive_bg_color;
 	-unico-border-gradient: -gtk-gradient (linear,
