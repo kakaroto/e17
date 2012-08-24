@@ -653,14 +653,12 @@ CElmWindow::CElmWindow(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_win_add(parent ? parent->GetEvasObject() : NULL, "main", ELM_WIN_BASIC))
 {
    if(!main)
-     {
-        main = GetEvasObject();
-        evas_object_smart_callback_add(main, "delete,request", &quit, NULL);
-     }
+     main = GetEvasObject();
 
    evas_object_focus_set(eo, 1);
    evas_object_show(eo);
    elm_win_autodel_set(eo, true);
+   evas_object_smart_callback_add(main, "delete,request", &quit, this);
 }
 
 void CElmWindow::Initialize(Handle<Object> target)
@@ -668,10 +666,20 @@ void CElmWindow::Initialize(Handle<Object> target)
    target->Set(String::NewSymbol("Window"), GetTemplate()->GetFunction());
 }
 
-void CElmWindow::quit(void *, Evas_Object *, void *)
+void CElmWindow::quit(void *data, Evas_Object *, void *)
 {
+   CElmObject *self = static_cast<CElmObject*>(data);
+   Handle<Object> obj = self->GetJSObject();
+
+   Local<Function> callback
+      (Function::Cast(*obj->Get(String::NewSymbol("on_delete"))));
+
+   if (callback->IsFunction())
+     callback->Call(obj, 0, NULL);
+
    //TODO: check if his window has parent
-   ecore_main_loop_quit();
+   if (main == self->GetEvasObject())
+     ecore_main_loop_quit();
 }
 
 CElmWindow::~CElmWindow()
