@@ -23,7 +23,7 @@ function icon(key, before) {
 }
 
 var win = elm.realise(elm.Window({
-  title: "Horizontal Box example",
+  title: "Box example",
   width: 480,
   height: 240,
   elements: {

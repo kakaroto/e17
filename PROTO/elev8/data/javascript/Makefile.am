@@ -8,6 +8,7 @@ files_SCRIPTS = \
 	airshow.js \
 	anim.js \
 	bg.js \
+	box.js \
 	box_horiz.js \
 	box_vert.js \
 	bubble.js \
