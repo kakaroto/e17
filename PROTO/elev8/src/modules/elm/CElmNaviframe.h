@@ -113,6 +113,11 @@ private:
                   elm_object_item_part_content_set(item->object_item, *part,
                                                    GetEvasObjectFromJavascript(value));
              }
+           else if (!strcmp(*part, "style"))
+             {
+                elm_naviframe_item_style_set(item->object_item,
+                                             *String::Utf8Value(value));
+             }
 
            Local<Value> items = obj->GetHiddenValue(str.items);
            info.This()->Delete(attr);
@@ -167,7 +172,6 @@ protected:
 
    void title_visible_eval();
 
-   Persistent<Value> item_style;
 public:
    static void Initialize(Handle<Object> target);
 
@@ -187,9 +191,6 @@ public:
 
    void prev_btn_auto_pushed_set(Handle<Value> val);
    Handle<Value> prev_btn_auto_pushed_get() const;
-
-   void item_style_set(Handle<Value> val);
-   Handle<Value> item_style_get() const;
 
    void content_preserve_on_pop_set(Handle<Value> val);
    Handle<Value> content_preserve_on_pop_get() const;

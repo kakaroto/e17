@@ -8,7 +8,6 @@ using namespace v8;
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, title_visible);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, event_enabled);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, prev_btn_auto_pushed);
-GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, item_style);
 GENERATE_PROPERTY_CALLBACKS(CElmNaviframe, content_preserve_on_pop);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, items);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmNaviframe, top_item);
@@ -22,7 +21,6 @@ GENERATE_TEMPLATE_FULL(CElmLayout, CElmNaviframe,
                   PROPERTY(title_visible),
                   PROPERTY(event_enabled),
                   PROPERTY(prev_btn_auto_pushed),
-                  PROPERTY(item_style),
                   PROPERTY(content_preserve_on_pop),
                   PROPERTY_RO(items),
                   PROPERTY_RO(top_item),
@@ -46,8 +44,6 @@ CElmNaviframe::~CElmNaviframe()
 {
    for (uint32_t items = stack->Length(); items; items--)
      stack->Delete(items);
-
-   item_style.Dispose();
 }
 
 void CElmNaviframe::Initialize(Handle<Object> target)
@@ -159,24 +155,6 @@ void CElmNaviframe::prev_btn_auto_pushed_set(Handle<Value> val)
 Handle<Value> CElmNaviframe::prev_btn_auto_pushed_get() const
 {
    return Boolean::New(elm_naviframe_prev_btn_auto_pushed_get(eo));
-}
-
-void CElmNaviframe::item_style_set(Handle<Value> val)
-{
-   if(!val->IsArray())
-     return;
-
-   Local<Object> style = val->ToObject();
-   Elm_Object_Item *it = static_cast<Elm_Object_Item *>(External::Unwrap(style->Get(0)->ToObject()));
-   elm_naviframe_item_style_set(it, *String::Utf8Value(style->Get(1)->ToString()));
-
-   item_style.Dispose();
-   item_style = Persistent<Value>::New(val);
-}
-
-Handle<Value> CElmNaviframe::item_style_get() const
-{
-   return item_style->ToObject()->Get(1)->ToString();
 }
 
 void CElmNaviframe::content_preserve_on_pop_set(Handle<Value> val)
