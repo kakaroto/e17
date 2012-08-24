@@ -93,6 +93,9 @@ void CElmLayout::theme_set(Handle <Value> val)
 
 Handle<Value> CElmLayout::part_cursor_get() const
 {
+   if (part_cursor.IsEmpty())
+     return Undefined();
+
    Local<Object> cursor = part_cursor->ToObject();
    return String::New(elm_layout_part_cursor_get(eo,
                            *String::Utf8Value(cursor->Get(0))));
@@ -118,6 +121,9 @@ void CElmLayout::part_cursor_set(Handle<Value> val)
 
 Handle<Value> CElmLayout::cursor_style_get() const
 {
+   if (cursor_style.IsEmpty())
+     return Undefined();
+
    Local<Object> cursor = cursor_style->ToObject();
    return String::New(elm_layout_part_cursor_style_get(eo,
                            *String::Utf8Value(cursor->Get(0))));
@@ -143,6 +149,9 @@ void CElmLayout::cursor_style_set(Handle<Value> val)
 
 Handle<Value> CElmLayout::cursor_engine_get() const
 {
+   if (cursor_engine.IsEmpty())
+     return Undefined();
+
    Local<Object> cursor = cursor_engine->ToObject();
    return Boolean::New(elm_layout_part_cursor_engine_only_get(eo,
                            *String::Utf8Value(cursor->Get(0))));
