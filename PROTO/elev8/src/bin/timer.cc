@@ -29,6 +29,7 @@ public:
       thisObj = Persistent<Object>::New(thisObj_);
       callback = Persistent<Value>::New(callback_);
       repeat = repeat_;
+      on_interval = false;
    }
 
    Handle<Object> ToObject() {
