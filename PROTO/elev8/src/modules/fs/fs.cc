@@ -37,6 +37,7 @@ public:
       filter = NULL;
       batchSize = 1024;
       batchLen = 0;
+      onlyDirectories = false;
 
       if (!args[2].IsEmpty() && args[2]->IsObject())
         {
@@ -65,6 +66,10 @@ public:
            tmp = kwargs->Get(String::NewSymbol("allow_hidden"));
            if (!tmp.IsEmpty())
              allowHidden = tmp->IsBoolean() && tmp->BooleanValue();
+
+           tmp = kwargs->Get(String::NewSymbol("only_directories"));
+           if (!tmp.IsEmpty())
+             onlyDirectories = tmp->IsBoolean() && tmp->BooleanValue();
 
            tmp = kwargs->Get(String::NewSymbol("filters"));
            if (!tmp.IsEmpty() && tmp->IsArray())
@@ -161,6 +166,7 @@ private:
    double period;
    double lastTimeout;
    bool allowHidden;
+   bool onlyDirectories;
    int batchSize, batchLen;
 
    static Persistent<FunctionTemplate> tmpl;
@@ -184,6 +190,8 @@ private:
       if ((!t->allowHidden) && (name[0] == '.'))
         return EINA_FALSE;
 
+      if (t->onlyDirectories)
+        return info->type == EINA_FILE_DIR;
       if (info->type == EINA_FILE_DIR)
         return EINA_TRUE;
       if (info->type != EINA_FILE_REG)
