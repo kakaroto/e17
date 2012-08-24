@@ -11,6 +11,7 @@ files_SCRIPTS = \
 	box.js \
 	box_horiz.js \
 	box_vert.js \
+	browser.js \
 	bubble.js \
 	button.js \
 	calculator.js \
