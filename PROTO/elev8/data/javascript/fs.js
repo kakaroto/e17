@@ -67,7 +67,12 @@ function listFilesCb(files, isDone, isError) {
 var path = ".";
 var patterns = ["*.jpg", "*.png"];
 
-var ls = fs.listFiles(path, listFilesCb, patterns, true, 0.5, false)
+var ls = fs.listFiles(path, listFilesCb, {
+                      recursive: true,
+                      period: 0.5,
+                      batch_size: 1024,
+                      allow_hidden: false,
+                      filters: patterns});
 
 buildTree(path, patterns, function (t) {
     dumpTree(t);

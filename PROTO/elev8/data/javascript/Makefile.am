@@ -30,6 +30,7 @@ files_SCRIPTS = \
 	fileselectorentry.js \
 	fileselector.js \
 	flip.js \
+	fs.js \
 	genlist.js \
 	grid.js \
 	http_test.js \
