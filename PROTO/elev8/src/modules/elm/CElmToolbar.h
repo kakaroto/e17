@@ -10,22 +10,56 @@ using namespace v8;
 
 class CElmToolbar : public CElmObject {
 private:
-   class Item {
+   class State {
    public:
       Persistent<Object> self;
-      Persistent<Value> data;
-      Persistent<Value> callback;
+      Elm_Toolbar_Item_State *state;
+      State(Local<Object> item, Local<Value> value);
+      Handle<Object> ToObject() { return self; };
+      static void OnSelect(void *data, Evas_Object *, void *);
+   };
 
-      Item(Handle<Object> _self, Handle<Value> _data, Handle<Value> _callback)
-         : self(Persistent<Object>::New(_self))
-         , data(Persistent<Value>::New(_data))
-         , callback(Persistent<Value>::New(_callback)) {}
-      ~Item()
-        {
-           data.Dispose();
-           callback.Dispose();
-           self.Dispose();
-        }
+   class Item {
+   public:
+      Elm_Object_Item *object_item;
+      Persistent<Object> self;
+
+      Item(Handle<Value> value, Handle<Object> parent);
+      ~Item();
+
+      Handle<Object> ToObject() { return self; };
+      static void OnSelect(void *data, Evas_Object *, void *);
+
+      static Item *Unwrap(Handle<Value> value);
+      static Item *Unwrap(const AccessorInfo &info);
+
+      static Handle<Value> GetIcon(Local<String>, const AccessorInfo &info);
+      static void SetIcon(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetLabel(Local<String>, const AccessorInfo &info);
+      static void SetLabel(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetPriority(Local<String>, const AccessorInfo &info);
+      static void SetPriority(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetSeparator(Local<String>, const AccessorInfo &info);
+      static void SetSeparator(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetEnable(Local<String>, const AccessorInfo &info);
+      static void SetEnable(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetElement(Local<String>, const AccessorInfo &info);
+      static void SetElement(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetStates(Local<String>, const AccessorInfo &info);
+      static void SetStates(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> GetState(Local<String>, const AccessorInfo &info);
+      static void SetState(Local<String>, Local<Value>, const AccessorInfo &info);
+
+      static Handle<Value> StatesGetter(Local<String> attr, const AccessorInfo& info);
+      static Handle<Value> StatesSetter(Local<String> attr, Local<Value> val,
+                                      const AccessorInfo& info);
    };
 
    static Persistent<FunctionTemplate> tmpl;
@@ -45,8 +79,6 @@ public:
 
    virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);
-
-   static void OnSelect(void *data, Evas_Object *, void *);
 
    Handle<Value> icon_size_get() const;
    void icon_size_set(Handle<Value> value);
@@ -73,9 +105,6 @@ public:
    void select_mode_set(Handle<Value> value);
 
    Handle<Value> items_count_get() const;
-
-   Handle<Value> item_state_set(const Arguments& args);
-   Handle<Value> item_state_get(const Arguments& args);
 
    friend Handle<Value> CElmObject::New<CElmToolbar>(const Arguments& args);
 };

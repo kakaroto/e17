@@ -85,9 +85,9 @@ var win = elm.realise(elm.Window({
 
 function toolbar_cb(item) {
 
-    print('Click: ', item);
+    print('Click', item, ' ', item.label);
 
-    if (item == "CLOSE")
+    if (item.label == "Close")
         elm.exit();
 }
 
@@ -100,8 +100,7 @@ win.elements.box.elements.toolbar.elements.multi = {
     priority: -200,
     on_select: function() {
         print('Changing state to text');
-        print(win.elements.box.elements.toolbar.item_state_set(
-            win.elements.box.elements.toolbar.elements.multi, 'text'));
+        win.elements.box.elements.toolbar.elements.multi.state = 'text';
     },
     states: {
         'text': {
@@ -109,10 +108,8 @@ win.elements.box.elements.toolbar.elements.multi = {
             label: 'Text Editor',
             on_select: function() {
                 print('Changing state to filemanager');
-                print(win.elements.box.elements.toolbar.item_state_set(
-                    win.elements.box.elements.toolbar.elements.multi, 'filemanager'));
-
-                print('Current state: ', win.elements.box.elements.toolbar.elements.multi);
+                win.elements.box.elements.toolbar.elements.multi.state = 'filemanager';
+                print('Current state: ', win.elements.box.elements.toolbar.elements.multi.state);
             }
         },
         'filemanager': {
@@ -120,8 +117,7 @@ win.elements.box.elements.toolbar.elements.multi = {
             label: 'File Manager',
             on_select: function() {
                 print('Changing state to default');
-                print(win.elements.box.elements.toolbar.item_state_set(
-                    win.elements.box.elements.toolbar.elements.multi, null));
+                win.elements.box.elements.toolbar.elements.multi.state = null;
             }
         }
     }
