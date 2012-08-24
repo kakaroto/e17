@@ -40,9 +40,11 @@ files_SCRIPTS = \
 	naviframe.js \
 	notepad.js \
 	notify.js \
+	packing.js \
 	panes.js \
 	photocam.js \
 	photo.js \
+	popup.js \
 	progressbar.js \
 	radio.js \
 	scroller.js \
@@ -51,8 +53,10 @@ files_SCRIPTS = \
 	slider.js \
 	spinner.js \
 	stock.js \
+	storage.js \
 	table.js \
 	thumb.js \
+	timer.js \
 	toolbar.js \
 	twitter.js
 
