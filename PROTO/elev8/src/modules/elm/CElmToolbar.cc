@@ -130,6 +130,9 @@ Handle<Value> CElmToolbar::Pack(Handle<Value> value, Handle<Value> replace)
    if (obj->Has(String::NewSymbol("priority")))
      elm_toolbar_item_priority_set(item, obj->Get(String::NewSymbol("priority"))->Int32Value());
 
+   if (obj->Has(String::NewSymbol("enable")))
+     elm_object_item_disabled_set(item, !obj->Get(String::NewSymbol("enable"))->BooleanValue());
+
    obj->SetHiddenValue(String::NewSymbol("elm::toolbar::item"), External::Wrap(item));
 
    return scope.Close(obj);
