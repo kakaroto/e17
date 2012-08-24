@@ -57,6 +57,12 @@ private:
 
       ~Item()
         {
+           Local<Function> callback
+              (Function::Cast(*jsObject->Get(String::NewSymbol("on_delete"))));
+
+           if (callback->IsFunction())
+             callback->Call(jsObject, 0, NULL);
+
            jsObject->DeleteHiddenValue(str.item);
            jsObject.Dispose();
         }

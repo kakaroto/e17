@@ -48,6 +48,7 @@ function button_push() {
     print("button_push");
     var naviframe = win.elements.box.elements.naviframe;
     naviframe.elements[count++] = {
+        on_delete: function() { print('Deleting ', this.title) },
         content: {
             "Orange": orange,
             "Yellow": yellow,
