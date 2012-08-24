@@ -26,6 +26,7 @@ libelm_la_SOURCES = \
 	CElmColorSelector.cc \
 	CElmConform.cc \
 	CElmContainer.cc \
+	CElmCtxPopup.cc \
 	CElmDateTime.cc \
 	CElmDaySelector.cc \
 	CElmEntry.cc \

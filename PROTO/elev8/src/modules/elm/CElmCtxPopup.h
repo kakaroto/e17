@@ -1,55 +1,56 @@
-#ifndef C_ELM_CTXPOPUP_H
-#define C_ELM_CTXPOPUP_H
+#ifndef C_ELM_CTX_POPUP_H
+#define C_ELM_CTX_POPUP_H
 
-#include <v8.h>
-#include "CEvasObject.h"
-#include <string>
+#include "elm.h"
+#include "CElmObject.h"
 
-class CElmCtxPopup : public CEvasObject {
-   FACTORY(CElmCtxPopup)
+namespace elm {
 
+using namespace v8;
+
+class CElmCtxPopup : public CElmObject {
+private:
+  static Persistent<FunctionTemplate> tmpl;
+  Evas_Object *ctxpopup_parent;
+
+//  Persistent<Object> items;
+  Persistent<Value> on_item_select;
+  Persistent<Value> on_dismiss;
+  Persistent<Value> hover_parent;
 protected:
-   CPropHandler<CElmCtxPopup> prop_handler;
+  CElmCtxPopup(Local<Object> _jsObject, CElmObject *parent);
+  ~CElmCtxPopup();
 
-   /* the dismissed function */
-   Persistent<Value> on_dismissed_val;
-
-   /* The parent for the ctx popup */
-   Persistent<Value> parent;
-
-   struct CtxPopupItemClass {
-      char *label;
-      CEvasObject *icon;
-      Persistent<Value> data;
-      Persistent<Value> on_select;
-   };
-
-   void on_dismissed(void *);
-
-   static void eo_on_dismissed(void *data, Evas_Object *, void *event_info);
-
-   CElmCtxPopup(CEvasObject *parent, Local<Object> obj);
+  static Handle<FunctionTemplate> GetTemplate();
 
 public:
-   virtual Handle<Value> hover_parent_get() const;
-   virtual void hover_parent_set(Handle<Value> val);
+  static void Initialize(Handle<Object> target);
 
-   virtual Handle<Value> horizontal_get() const;
-   virtual void horizontal_set(Handle<Value> val);
+  void ItemSelected(Handle<Value> item);
+  void Dismissed();
 
-   virtual Handle<Value> direction_priority_get() const;
-   virtual void direction_priority_set(Handle<Value> val);
+  void on_item_select_set(Handle<Value> val);
+  Handle<Value> on_item_select_get() const;
 
-   virtual Handle<Value> direction_get() const;
-   virtual void direction_set(Handle<Value> val);
+  void on_dismiss_set(Handle<Value> val);
+  Handle<Value> on_dismiss_get() const;
 
-   virtual void on_dismissed_set(Handle<Value> val);
-   virtual Handle<Value> on_dismissed_get(void) const;
+  void horizontal_set(Handle<Value> val);
+  Handle<Value> horizontal_get() const;
 
-   static Handle<Value> dismiss(const Arguments& args);
-   static Handle<Value> clear(const Arguments& args);
-   static Handle<Value> append(const Arguments& args);
-   static void sel(void *data, Evas_Object *, void *);
+  void hover_parent_set(Handle<Value> val);
+  Handle<Value> hover_parent_get() const;
+
+  Handle<Value> direction_get() const;
+
+  Handle<Value> AddItems(Handle<Value> val);
+
+  Handle<Value> show(const Arguments &args);
+  Handle<Value> dismiss(const Arguments &);
+
+  friend Handle<Value> CElmObject::New<CElmCtxPopup>(const Arguments& args);
 };
+
+}
 
 #endif

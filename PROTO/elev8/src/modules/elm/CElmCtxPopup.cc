@@ -1,38 +1,117 @@
 #include "CElmCtxPopup.h"
 
-CElmCtxPopup::CElmCtxPopup(CEvasObject *par, Local<Object> obj)
-   : CEvasObject()
-   , prop_handler(property_list_base)
+namespace elm {
+
+using namespace v8;
+
+struct CbItemStruct {
+  CElmCtxPopup *self;
+  Persistent<Value> item;
+};
+
+GENERATE_PROPERTY_CALLBACKS(CElmCtxPopup, on_item_select)
+GENERATE_PROPERTY_CALLBACKS(CElmCtxPopup, horizontal);
+GENERATE_PROPERTY_CALLBACKS(CElmCtxPopup, hover_parent);
+GENERATE_PROPERTY_CALLBACKS(CElmCtxPopup, on_dismiss);
+GENERATE_RO_PROPERTY_CALLBACKS(CElmCtxPopup, direction);
+GENERATE_METHOD_CALLBACKS(CElmCtxPopup, show);
+GENERATE_METHOD_CALLBACKS(CElmCtxPopup, dismiss);
+
+GENERATE_TEMPLATE_FULL(CElmObject, CElmCtxPopup,
+                        PROPERTY(on_item_select),
+                        PROPERTY(horizontal),
+                        PROPERTY(hover_parent),
+                        PROPERTY(on_dismiss),
+                        PROPERTY_RO(direction),
+                        METHOD(show),
+                        METHOD(dismiss));
+
+static void _dismissed(void *data, Evas_Object *, void*)
 {
-   // context popup is added to a given parent - not the top widget
-   eo = elm_ctxpopup_add(par->get());
-   construct(eo, obj);
-   get_object()->Set(String::NewSymbol("clear"),
-                     FunctionTemplate::New(clear)->GetFunction());
-   get_object()->Set(String::NewSymbol("dismiss"),
-                     FunctionTemplate::New(dismiss)->GetFunction());
-   get_object()->Set(String::NewSymbol("append"),
-                     FunctionTemplate::New(append)->GetFunction());
+   CElmCtxPopup *self = static_cast<CElmCtxPopup *>(data);
+   self->Dismissed();
 }
 
-Handle<Value> CElmCtxPopup::hover_parent_get() const
+static void _item_selected_cb(void *data, Evas_Object *, void *)
 {
-   return parent;
+   CbItemStruct *cis = (CbItemStruct *)data;
+   cis->self->ItemSelected(cis->item);
 }
 
-void CElmCtxPopup::hover_parent_set(Handle<Value> val)
+CElmCtxPopup::CElmCtxPopup(Local<Object> _jsObject, CElmObject *parent)
+   : CElmObject(_jsObject,
+   elm_ctxpopup_add(parent->GetEvasObject()))
 {
-   if (!val->IsObject())
+   evas_object_smart_callback_add(eo, "dismissed", _dismissed, this);
+   ctxpopup_parent = parent->GetEvasObject();
+}
+
+CElmCtxPopup::~CElmCtxPopup()
+{
+   on_item_select.Dispose();
+   on_dismiss.Dispose();
+   hover_parent.Dispose();
+}
+
+void CElmCtxPopup::Initialize(Handle<Object> target)
+{
+   target->Set(String::NewSymbol("CtxPopup"), GetTemplate()->GetFunction());
+}
+
+void CElmCtxPopup::ItemSelected(Handle<Value> item)
+{
+   if (on_item_select.IsEmpty() || !on_item_select->IsFunction())
      return;
 
-   parent.Dispose();
-   parent = Persistent<Value>::New(val);
-   CEvasObject *p = make_or_get(this, val);
+   Handle<Function> callback(Function::Cast(*on_item_select));
+   Handle<Value> args[1] = { item };
+   callback->Call(jsObject, 1, args);
+}
 
-   if (p)
-     elm_ctxpopup_hover_parent_set(eo, p->get());
-   else
-     printf("Failed Setting parent\n");
+void CElmCtxPopup::Dismissed()
+{
+   if (on_dismiss.IsEmpty() || !on_dismiss->IsFunction())
+     return;
+   Handle<Function> callback(Function::Cast(*on_dismiss));
+   Handle<Value> args[] = { };
+   callback->Call(jsObject, 0, args);
+
+   evas_object_del(eo);
+   eo = elm_ctxpopup_add(ctxpopup_parent);
+   evas_object_data_set(eo, "this", this);
+   evas_object_smart_callback_add(eo, "dismissed", _dismissed, this);
+}
+
+Handle<Value> CElmCtxPopup::AddItems(Handle<Value> value)
+{
+   Handle<Array> items = value->ToObject()->GetPropertyNames();
+
+   int n_items = items->Length();
+   for (int i = 0; i < n_items; i++)
+     {
+       Local<Value> item = value->ToObject()->Get(items->Get(i));
+
+       CbItemStruct *cis = new CbItemStruct();
+       cis->self = this;
+       cis->item = Persistent<Value>::New(item);
+
+       if (item->IsObject())
+         {
+            Handle<Value> text = item->ToObject()->Get(String::NewSymbol("text"));
+            Handle<Value> icon = item->ToObject()->Get(String::NewSymbol("icon"));
+            Evas_Object *eo_icon = (!icon.IsEmpty() && icon->IsObject()) ?
+               GetEvasObjectFromJavascript(Realise(icon->ToObject(), jsObject)) : NULL;
+
+            elm_ctxpopup_item_append(eo, *String::Utf8Value(text->ToString()),
+                                     eo_icon, _item_selected_cb, cis);
+         }
+       else
+         elm_ctxpopup_item_append(eo, *String::Utf8Value(item->ToString()),
+                                     NULL, _item_selected_cb, cis);
+
+     }
+
+   return Undefined();
 }
 
 Handle<Value> CElmCtxPopup::horizontal_get() const
@@ -40,148 +119,87 @@ Handle<Value> CElmCtxPopup::horizontal_get() const
    return Boolean::New(elm_ctxpopup_horizontal_get(eo));
 }
 
-void CElmCtxPopup::horizontal_set(Handle<Value> val)
+void CElmCtxPopup::horizontal_set(Handle<Value> value)
 {
-   if (val->IsBoolean())
-     elm_ctxpopup_horizontal_set(eo, val->BooleanValue());
+   if (value->IsBoolean())
+     elm_ctxpopup_horizontal_set(eo, value->BooleanValue());
 }
 
-Handle<Value> CElmCtxPopup::direction_priority_get() const
+void CElmCtxPopup::on_item_select_set(Handle<Value> val)
 {
-   HandleScope handle_scope;
-   Elm_Ctxpopup_Direction f, s, q, t;
-   elm_ctxpopup_direction_priority_get(eo, &f, &s, &t, &q);
-   Local<Object> obj = Object::New();
-   obj->Set(String::NewSymbol("first"), Number::New(f));
-   obj->Set(String::NewSymbol("second"), Number::New(s));
-   obj->Set(String::NewSymbol("third"), Number::New(t));
-   obj->Set(String::NewSymbol("fourth"), Number::New(q));
-   return handle_scope.Close(obj);
+   on_item_select.Dispose();
+   on_item_select.Clear();
+
+   if (val->IsFunction())
+     on_item_select = Persistent<Value>::New(val);
 }
 
-void CElmCtxPopup::direction_priority_set(Handle<Value> val)
+Handle<Value> CElmCtxPopup::on_item_select_get(void) const
 {
-   if (!val->IsObject())
+   return on_item_select;
+}
+
+void CElmCtxPopup::on_dismiss_set(Handle<Value> val)
+{
+   on_dismiss.Dispose();
+   on_dismiss.Clear();
+
+   if (val->IsFunction())
+     on_dismiss = Persistent<Value>::New(val);
+}
+
+Handle<Value> CElmCtxPopup::on_dismiss_get(void) const
+{
+   return on_dismiss;
+}
+
+Handle<Value> CElmCtxPopup::hover_parent_get() const
+{
+   return hover_parent;
+}
+
+void CElmCtxPopup::hover_parent_set(Handle<Value> value)
+{
+   if (!value->IsObject())
      return;
 
-   HandleScope handle_scope;
-   Local<Object> obj = val->ToObject();
-   Local<Value> first  = obj->Get(String::NewSymbol("first"));
-   Local<Value> second  = obj->Get(String::NewSymbol("second"));
-   Local<Value> third  = obj->Get(String::NewSymbol("third"));
-   Local<Value> fourth  = obj->Get(String::NewSymbol("fourth"));
-   if (!first->IsNumber() || !second->IsNumber() ||
-       !third->IsNumber() || !fourth->IsNumber())
-     return;
+   elm_ctxpopup_hover_parent_set(eo, GetEvasObjectFromJavascript(value));
 
-   Elm_Ctxpopup_Direction f = (Elm_Ctxpopup_Direction)first->NumberValue();
-   Elm_Ctxpopup_Direction s = (Elm_Ctxpopup_Direction)second->NumberValue();
-   Elm_Ctxpopup_Direction t = (Elm_Ctxpopup_Direction)third->NumberValue();
-   Elm_Ctxpopup_Direction q = (Elm_Ctxpopup_Direction)fourth->NumberValue();
-   elm_ctxpopup_direction_priority_set(eo, f, s, t, q);
+   hover_parent.Dispose();
+   hover_parent = Persistent<Value>::New(value);
 }
 
 Handle<Value> CElmCtxPopup::direction_get() const
 {
-   return Number::New(elm_ctxpopup_direction_get(eo));
+   switch(elm_ctxpopup_direction_get(eo))
+     {
+       case ELM_CTXPOPUP_DIRECTION_DOWN:
+         return String::NewSymbol("down");
+       case ELM_CTXPOPUP_DIRECTION_RIGHT:
+         return String::NewSymbol("right");
+       case ELM_CTXPOPUP_DIRECTION_LEFT:
+         return String::NewSymbol("left");
+       case ELM_CTXPOPUP_DIRECTION_UP:
+         return String::NewSymbol("up");
+       case ELM_CTXPOPUP_DIRECTION_UNKNOWN:
+       default:
+         return String::NewSymbol("unknown");
+     }
 }
 
-void CElmCtxPopup::direction_set(Handle<Value>)
+Handle<Value> CElmCtxPopup::dismiss(const Arguments &)
 {
-   // do nothing
-   // ctx popup direction is set based on priority
-}
-
-void CElmCtxPopup::on_dismissed(void *)
-{
-   HandleScope handle_scope;
-   Handle<Object> obj = get_object();
-   Handle<Value> val = on_dismissed_val;
-   assert(val->IsFunction());
-   Handle<Function> fn(Function::Cast(*val));
-   Handle<Value> args[1] = { obj };
-   fn->Call(obj, 1, args);
-}
-
-void CElmCtxPopup::eo_on_dismissed(void *data, Evas_Object *, void *event_info)
-{
-   CElmCtxPopup *dismissed = static_cast<CElmCtxPopup*>(data);
-   dismissed->on_dismissed(event_info);
-}
-
-void CElmCtxPopup::on_dismissed_set(Handle<Value> val)
-{
-   on_dismissed_val.Dispose();
-   on_dismissed_val = Persistent<Value>::New(val);
-   if (val->IsFunction())
-     evas_object_smart_callback_add(eo, "dismissed", &eo_on_dismissed, this);
-   else
-     evas_object_smart_callback_del(eo, "dismissed", &eo_on_dismissed);
-}
-
-Handle<Value> CElmCtxPopup::on_dismissed_get(void) const
-{
-   return on_dismissed_val;
-}
-
-Handle<Value> CElmCtxPopup::dismiss(const Arguments& args)
-{
-   CEvasObject *self = eo_from_info(args.This());
-   CElmCtxPopup *ctxpopup = static_cast<CElmCtxPopup *>(self);
-   elm_ctxpopup_dismiss(ctxpopup->get());
+   elm_ctxpopup_dismiss(eo);
    return Undefined();
 }
 
-Handle<Value> CElmCtxPopup::clear(const Arguments& args)
+Handle<Value> CElmCtxPopup::show(const Arguments &args)
 {
-   CEvasObject *self = eo_from_info(args.This());
-   CElmCtxPopup *ctxpopup = static_cast<CElmCtxPopup *>(self);
-   elm_ctxpopup_clear(ctxpopup->get());
-   return Undefined();
-}
+   AddItems(args.This()->ToObject()->Get(String::NewSymbol("elements"))->ToObject());
 
-void CElmCtxPopup::sel(void *data, Evas_Object *, void *)
-{
-   CtxPopupItemClass *itc = (CtxPopupItemClass *)data;
-   if (itc->on_select.IsEmpty())
-     return;
-
-   HandleScope scope;
-   Handle<Function> fn(Function::Cast(*(itc->on_select)));
-   Local<Object> temp = Object::New();
-   temp->Set(String::NewSymbol("data"), itc->data);
-   fn->Call(temp, 0, 0);
-}
-
-Handle<Value> CElmCtxPopup::append(const Arguments& args)
-{
-   if (!args[0]->IsObject())
-     return Undefined();
-
-   CEvasObject *self = eo_from_info(args.This());
-   CElmCtxPopup *ctxpopup = static_cast<CElmCtxPopup *>(self);
-
-   HandleScope scope;
-   CtxPopupItemClass *itc = new CtxPopupItemClass();
-   Local<Object> obj = args[0]->ToObject();
-
-   itc->label = strdup(*String::Utf8Value(obj->Get(String::NewSymbol("label"))));
-   itc->icon = make_or_get(ctxpopup->get_parent(),
-                           obj->Get(String::NewSymbol("icon")));
-   itc->on_select = Persistent<Value>::New(obj->Get(String::NewSymbol("on_select")));
-   itc->data = Persistent<Value>::New(obj->Get(String::NewSymbol("data")));
-
-   elm_ctxpopup_item_append(ctxpopup->get(), itc->label, itc->icon->get(),
-                            sel, itc);
+   evas_object_show(eo);
 
    return Undefined();
 }
 
-PROPERTIES_OF(CElmCtxPopup) = {
-   PROP_HANDLER(CElmCtxPopup, hover_parent),
-   PROP_HANDLER(CElmCtxPopup, direction_priority),
-   PROP_HANDLER(CElmCtxPopup, direction),
-   PROP_HANDLER(CElmCtxPopup, horizontal),
-   PROP_HANDLER(CElmCtxPopup, on_dismissed),
-   { NULL }
-};
+}
