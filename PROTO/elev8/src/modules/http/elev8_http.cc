@@ -123,7 +123,10 @@ class XMLHttpRequest
         const char *value = (const char *)eina_binbuf_string_get(self->data);
         int length = eina_binbuf_length_get(self->data);
 
-        if (strstr(self->getResponseHeader("Content-Type"), "image/"))
+        const char *content_type = self->getResponseHeader("Content-Type");
+        if (!content_type)
+          self->jsObject->Set(String::NewSymbol("responseText"), String::New(""));
+        else if (strstr(content_type, "image/"))
           {
              char buf[256];
              snprintf(buf, sizeof(buf), "%s/elev8-http-%p",PACKAGE_TMP_DIR, self);
