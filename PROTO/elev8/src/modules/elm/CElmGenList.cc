@@ -21,8 +21,6 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_longpress);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, scroller_policy);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenList, items_count);
-GENERATE_METHOD_CALLBACKS(CElmGenList, append);
-GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
 GENERATE_METHOD_CALLBACKS(CElmGenList, tooltip_unset);
 GENERATE_METHOD_CALLBACKS(CElmGenList, promote_item);
@@ -45,8 +43,6 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(on_longpress),
                   PROPERTY(scroller_policy),
                   PROPERTY_RO(items_count),
-                  METHOD(append),
-                  METHOD(clear),
                   METHOD(realized_items_update),
                   METHOD(tooltip_unset),
                   METHOD(promote_item),

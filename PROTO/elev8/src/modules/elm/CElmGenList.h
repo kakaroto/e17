@@ -27,8 +27,6 @@ public:
    static void Initialize(Handle<Object> target);
    static void UpdateItem(Handle<Value> value);
 
-   Handle<Value> clear(const Arguments& args);
-   Handle<Value> append(const Arguments& args);
    Handle<Value> realized_items_update(const Arguments& args);
    Handle<Value> tooltip_unset(const Arguments& args);
    Handle<Value> promote_item(const Arguments& args);

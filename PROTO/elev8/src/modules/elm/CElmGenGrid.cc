@@ -18,8 +18,6 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, item_align);
 GENERATE_PROPERTY_CALLBACKS(CElmGenGrid, group_item_size);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, items_count);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, realized_items);
-GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
-GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, realized_items_update);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, bring_in_item);
 
@@ -36,8 +34,6 @@ GENERATE_TEMPLATE_FULL(CElmObject, CElmGenGrid,
                   PROPERTY(group_item_size),
                   PROPERTY_RO(items_count),
                   PROPERTY_RO(realized_items),
-                  METHOD(append),
-                  METHOD(clear),
                   METHOD(realized_items_update),
                   METHOD(bring_in_item));
 
