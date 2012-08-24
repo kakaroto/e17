@@ -83,6 +83,38 @@ exit(const Arguments&)
 }
 
 static Handle<Value>
+addThemeExtension(const Arguments& args)
+{
+   if (args[0]->IsString())
+      elm_theme_extension_add(NULL, *String::Utf8Value(args[0]));
+   return Undefined();
+}
+
+static Handle<Value>
+delThemeExtension(const Arguments& args)
+{
+   if (args[0]->IsString())
+      elm_theme_extension_del(NULL, *String::Utf8Value(args[0]));
+   return Undefined();
+}
+
+static Handle<Value>
+addThemeOverlay(const Arguments& args)
+{
+   if (args[0]->IsString())
+      elm_theme_overlay_add(NULL, *String::Utf8Value(args[0]));
+   return Undefined();
+}
+
+static Handle<Value>
+delThemeOverlay(const Arguments& args)
+{
+   if (args[0]->IsString())
+      elm_theme_overlay_del(NULL, *String::Utf8Value(args[0]));
+   return Undefined();
+}
+
+static Handle<Value>
 datadir_getter(Local<String>, const AccessorInfo&)
 {
    return datadir;
@@ -132,6 +164,14 @@ static void Initialize(Handle<Object> target)
                FunctionTemplate::New(exit)->GetFunction());
    target->Set(String::NewSymbol("loop_time"),
                FunctionTemplate::New(loop_time)->GetFunction());
+   target->Set(String::NewSymbol("addThemeExtension"),
+               FunctionTemplate::New(addThemeExtension)->GetFunction());
+   target->Set(String::NewSymbol("delThemeExtension"),
+               FunctionTemplate::New(delThemeExtension)->GetFunction());
+   target->Set(String::NewSymbol("addThemeOverlay"),
+               FunctionTemplate::New(addThemeOverlay)->GetFunction());
+   target->Set(String::NewSymbol("delThemeOverlay"),
+               FunctionTemplate::New(delThemeOverlay)->GetFunction());
    target->SetAccessor(String::NewSymbol("tmpdir"),
                        tmpdir_getter, tmpdir_setter);
    target->SetAccessor(String::NewSymbol("datadir"),
