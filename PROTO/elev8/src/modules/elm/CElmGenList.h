@@ -29,13 +29,11 @@ public:
 
    Handle<Value> clear(const Arguments& args);
    Handle<Value> append(const Arguments& args);
-   Handle<Value> delete_item(const Arguments& args);
-   Handle<Value> update_item(const Arguments& args);
-   Handle<Value> set_item_class(const Arguments& args);
    Handle<Value> realized_items_update(const Arguments& args);
    Handle<Value> tooltip_unset(const Arguments& args);
    Handle<Value> promote_item(const Arguments& args);
    Handle<Value> demote_item(const Arguments& args);
+   Handle<Value> bring_in_item(const Arguments& args);
 
    virtual Handle<Value> Pack(Handle<Value>, Handle<Value>);
    virtual Handle<Value> Unpack(Handle<Value>);

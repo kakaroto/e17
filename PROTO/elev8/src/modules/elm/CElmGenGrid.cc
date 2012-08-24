@@ -20,9 +20,8 @@ GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, items_count);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenGrid, realized_items);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, append);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, clear);
-GENERATE_METHOD_CALLBACKS(CElmGenGrid, delete_item);
-GENERATE_METHOD_CALLBACKS(CElmGenGrid, update_item);
 GENERATE_METHOD_CALLBACKS(CElmGenGrid, realized_items_update);
+GENERATE_METHOD_CALLBACKS(CElmGenGrid, bring_in_item);
 
 GENERATE_TEMPLATE_FULL(CElmObject, CElmGenGrid,
                   PROPERTY(item_size_horizontal),
@@ -39,9 +38,8 @@ GENERATE_TEMPLATE_FULL(CElmObject, CElmGenGrid,
                   PROPERTY_RO(realized_items),
                   METHOD(append),
                   METHOD(clear),
-                  METHOD(delete_item),
-                  METHOD(update_item),
-                  METHOD(realized_items_update));
+                  METHOD(realized_items_update),
+                  METHOD(bring_in_item));
 
 CElmGenGrid::CElmGenGrid(Local<Object> _jsObject, CElmObject *p)
    : CElmObject(_jsObject, elm_gengrid_add(elm_object_top_widget_get(p->GetEvasObject())))
@@ -287,6 +285,33 @@ Handle<Value> CElmGenGrid::realized_items_get() const
      }
 
    return arr;
+}
+
+Handle<Value> CElmGenGrid::bring_in_item(const Arguments& args)
+{
+   Item<CElmGenGrid> *item = Item<CElmGenGrid>::Unwrap(args[0]);
+
+   if (!item || !item->object_item)
+     return Undefined();
+
+   Elm_Gengrid_Item_Scrollto_Type scroll_type = ELM_GENGRID_ITEM_SCROLLTO_NONE;
+   if (args[1]->IsString())
+     {
+        String::Utf8Value s(args[1]->ToString());
+
+        if (!strcmp(*s, "none"))
+          scroll_type = ELM_GENGRID_ITEM_SCROLLTO_NONE;
+        else if (!strcmp(*s, "in"))
+          scroll_type = ELM_GENGRID_ITEM_SCROLLTO_IN;
+        else if (!strcmp(*s, "top"))
+          scroll_type = ELM_GENGRID_ITEM_SCROLLTO_TOP;
+        else if (!strcmp(*s, "middle"))
+          scroll_type = ELM_GENGRID_ITEM_SCROLLTO_MIDDLE;
+     }
+
+   elm_gengrid_item_bring_in(item->object_item, scroll_type);
+
+   return Undefined();
 }
 
 }

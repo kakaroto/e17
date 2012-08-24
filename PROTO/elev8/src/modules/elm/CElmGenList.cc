@@ -23,13 +23,11 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, scroller_policy);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenList, items_count);
 GENERATE_METHOD_CALLBACKS(CElmGenList, append);
 GENERATE_METHOD_CALLBACKS(CElmGenList, clear);
-GENERATE_METHOD_CALLBACKS(CElmGenList, delete_item);
-GENERATE_METHOD_CALLBACKS(CElmGenList, update_item);
-GENERATE_METHOD_CALLBACKS(CElmGenList, set_item_class);
 GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
 GENERATE_METHOD_CALLBACKS(CElmGenList, tooltip_unset);
 GENERATE_METHOD_CALLBACKS(CElmGenList, promote_item);
 GENERATE_METHOD_CALLBACKS(CElmGenList, demote_item);
+GENERATE_METHOD_CALLBACKS(CElmGenList, bring_in_item);
 
 GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(homogeneous),
@@ -49,13 +47,11 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY_RO(items_count),
                   METHOD(append),
                   METHOD(clear),
-                  METHOD(delete_item),
-                  METHOD(set_item_class),
-                  METHOD(update_item),
                   METHOD(realized_items_update),
                   METHOD(tooltip_unset),
                   METHOD(promote_item),
-                  METHOD(demote_item));
+                  METHOD(demote_item),
+                  METHOD(bring_in_item));
 
 CElmGenList::CElmGenList(Local<Object> _jsObject, CElmObject *parent)
    : CElmObject(_jsObject, elm_genlist_add(elm_object_top_widget_get(parent->GetEvasObject())))
@@ -385,6 +381,33 @@ Handle<Value> CElmGenList::items_count_get() const
 Handle<Value> CElmGenList::realized_items_update(const Arguments&)
 {
    elm_genlist_realized_items_update(eo);
+   return Undefined();
+}
+
+Handle<Value> CElmGenList::bring_in_item(const Arguments& args)
+{
+   Item<CElmGenList> *item = Item<CElmGenList>::Unwrap(args[0]);
+
+   if (!item || !item->object_item)
+     return Undefined();
+
+   Elm_Genlist_Item_Scrollto_Type scroll_type = ELM_GENLIST_ITEM_SCROLLTO_NONE;
+   if (args[1]->IsString())
+     {
+        String::Utf8Value s(args[1]->ToString());
+
+        if (!strcmp(*s, "none"))
+          scroll_type = ELM_GENLIST_ITEM_SCROLLTO_NONE;
+        else if (!strcmp(*s, "in"))
+          scroll_type = ELM_GENLIST_ITEM_SCROLLTO_IN;
+        else if (!strcmp(*s, "top"))
+          scroll_type = ELM_GENLIST_ITEM_SCROLLTO_TOP;
+        else if (!strcmp(*s, "middle"))
+          scroll_type = ELM_GENLIST_ITEM_SCROLLTO_MIDDLE;
+     }
+
+   elm_genlist_item_bring_in(item->object_item, scroll_type);
+
    return Undefined();
 }
 
