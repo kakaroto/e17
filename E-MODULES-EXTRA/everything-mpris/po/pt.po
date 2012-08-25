@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Everything-mpris\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-05-30 21:20+0200\n"
-"PO-Revision-Date: 2010-12-01 12:12-0000\n"
+"PO-Revision-Date: 2012-08-23 17:27+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Sem título"
 #: src/e_mod_main.c:488
 #: src/e_mod_main.c:632
 msgid "Loading Playlist"
-msgstr "Carregando lista de reprodução"
+msgstr "A carregar lista de reprodução"
 
 #: src/e_mod_main.c:498
 msgid "Empty Playlist"
@@ -45,7 +45,7 @@ msgstr "Reproduzir"
 
 #: src/e_mod_main.c:1363
 msgid "Pause"
-msgstr "Pausar"
+msgstr "Pausa"
 
 #: src/e_mod_main.c:1367
 msgid "Stop"
@@ -65,7 +65,7 @@ msgstr "Remover faixa"
 
 #: src/e_mod_main.c:1384
 msgid "Clear Playlist"
-msgstr "Limpar lista de reprodução"
+msgstr "Apagar lista de reprodução"
 
 #: src/e_mod_main.c:1388
 msgid "Play File"
@@ -77,7 +77,7 @@ msgstr "Adicionar ficheiros..."
 
 #: src/e_mod_main.c:1397
 msgid "Enqueue in Playlist"
-msgstr "Colocar na fila de reprodução"
+msgstr "Colocar na lista de reprodução"
 
 #: src/e_mod_main.c:1402
 msgid "Add Music..."
@@ -89,5 +89,5 @@ msgstr "Remover duplicadas"
 
 #: src/e_mod_main.c:1410
 msgid "Remove Missing Files"
-msgstr "Remover ficheiros em falta"
+msgstr "Remover ficheiros inexistentes"
 

@@ -1,7 +1,11 @@
 [Desktop Entry]
 Type=Link
 Name=Everything Shotgun
+Name[it]=Everything - Shotgun
+Name[pt]=Everything - Shotgun
 Icon=e-module
 Comment=Interface for Shotgun Instant Messanger
+Comment[it]=Interfaccia per il client di instant messaging Shotgun
+Comment[pt]=Interface para o cliente de mensagens instantâneas Shotgun
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=launcher

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: snow\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-10-17 11:01-0700\n"
-"PO-Revision-Date: 2010-10-25 02:41-0000\n"
+"PO-Revision-Date: 2012-08-25 15:26+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:42
 msgid "Snow Configuration"
-msgstr "Configuração da neve"
+msgstr "Configuração"
 
 #: ../src/e_mod_config.c:99
 msgid "General Settings"

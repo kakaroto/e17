@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: forecasts\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-12-20 15:23-0000\n"
+"PO-Revision-Date: 2012-08-25 01:08+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgstr "Inglês"
 
 #: ../src/e_mod_config.c:111
 msgid "Weather.com Forecasts Code"
-msgstr "Código das previsões Weather.com"
+msgstr "Código Weather.com"
 
 #: ../src/e_mod_config.c:112
 msgid "Forecasts Code/US Zip Code"
@@ -75,7 +75,7 @@ msgstr "%s, encontre a sua área e veja a URL"
 
 #: ../src/e_mod_main.c:254
 msgid "Forecasts"
-msgstr "Previsões Meteorológicas"
+msgstr "Previsões meteorológicas"
 
 #: ../src/e_mod_main.c:301
 msgid "Settings"

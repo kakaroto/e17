@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2012-01-22 12:12+0100\n"
-"PO-Revision-Date: 2012-01-23 19:36-0000\n"
+"PO-Revision-Date: 2012-08-25 01:49+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr "Sistema de ficheiros"
 #: src/e_mod_config.c:162
 #: src/e_mod_places.c:779
 msgid "Temp"
-msgstr "Temp"
+msgstr "Temporários"
 
 #: src/e_mod_config.c:165
 msgid "Favorites"
@@ -101,7 +101,7 @@ msgstr "Aviso"
 
 #: src/e_mod_places.c:574
 msgid "<b>Cannot run the Enlightenment FileManager.</b><br>Please choose a custom file manager in<br>the gadget configuration."
-msgstr "<b>Não foi possível executar o EFM.</b><br>Escolha o gestor de ficheiros na<br>configuração do \"gadget\"."
+msgstr "<b>Não foi possível executar o EFM.</b><br>Escolha o gestor de ficheiros na configuração do gadget."
 
 #: src/e_mod_places.c:596
 msgid "No Name"

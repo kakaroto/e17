@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: tclock\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-08-13 05:01-0700\n"
-"PO-Revision-Date: 2010-10-02 00:46-0000\n"
+"PO-Revision-Date: 2012-08-25 15:29+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
-msgstr "Definições do \"Tclock\""
+msgstr "Definições"
 
 #: ../src/e_mod_config.c:88
 msgid "Top"
@@ -53,7 +53,7 @@ msgstr "Mostrar dica"
 
 #: ../src/e_mod_main.c:141
 msgid "TClock"
-msgstr "\"TClock\""
+msgstr "TClock"
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"

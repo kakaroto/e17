@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: comp-scale\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-08-30 15:00-0700\n"
-"PO-Revision-Date: 2011-10-06 17:58-0000\n"
+"PO-Revision-Date: 2012-08-23 17:02+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "Language: pt\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../src/e_mod_config.c:57
 msgid "Scale Windows Module"
-msgstr "Módulo de escala das janelas"
+msgstr "Módulo Ajuste de janelas"
 
 #: ../src/e_mod_config.c:119
 msgid "Current Desktop"
@@ -30,7 +30,7 @@ msgstr "Área de trabalho atual"
 #: ../src/e_mod_config.c:120
 #: ../src/e_mod_config.c:153
 msgid "Minimum space between windows"
-msgstr "O espaço mínimo entre as janelas"
+msgstr "Espaço mínimo entre as janelas"
 
 #: ../src/e_mod_config.c:122
 #: ../src/e_mod_config.c:155
@@ -53,12 +53,12 @@ msgstr "%1.2f"
 #: ../src/e_mod_config.c:133
 #: ../src/e_mod_config.c:165
 msgid "Slotted Layout"
-msgstr "Disposição em ranhuras"
+msgstr "Em ranhuras"
 
 #: ../src/e_mod_config.c:135
 #: ../src/e_mod_config.c:167
 msgid "Natural Layout"
-msgstr "Disposição normal"
+msgstr "Natural"
 
 #: ../src/e_mod_config.c:139
 #: ../src/e_mod_config.c:169
@@ -179,7 +179,7 @@ msgstr "Selecionar anterior (tudo)"
 #: ../src/e_mod_main.c:388
 #: ../src/e_mod_main.c:517
 msgid "Scale Pager"
-msgstr "Escala do paginador"
+msgstr "Ajustar paginador"
 
 #: ../src/e_mod_main.c:326
 #: ../src/e_mod_main.c:385
@@ -210,5 +210,3 @@ msgstr "Ajustar todas as janelas"
 msgid "Settings"
 msgstr "Definições"
 
-#~ msgid "Scale"
-#~ msgstr "Escala"

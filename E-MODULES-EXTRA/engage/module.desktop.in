@@ -8,5 +8,5 @@ Comment[ru]=Док содержащий панель задач и запуск 
 Comment[de]=Ein Dock mit einer Taskbar und Anwendungsstartern<br>Instanzen können hinzugefügt werden über: Enlightenment-Einstellungen → Erweiterungen → Itask-NG
 Comment[it]=Contiene una taskbar ed un lanciatore di applicazioni<br>Per aggiungerne istanze: Pannello di configurazione → Estensioni → Engage
 Comment[fr]=Un dock contenant une barre des tâches et un lanceur.<br>Pour ajouter des instances : Panneau de contrôle → Extensions → Engage 
-Comment[pt]=Uma barra de tarefas e lançador de aplicações<br>Adicione instâncias em: Painel de configuração > Extensões > Engage
+Comment[pt]=Uma barra de tarefas e lançador de aplicações<br>Pode adicionar as barras em: Painel de configuração > Extensões > Engage
 X-Enlightenment-ModuleType=utils

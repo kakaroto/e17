@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: uptime\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:02-0700\n"
-"PO-Revision-Date: 2010-10-02 00:54-0000\n"
+"PO-Revision-Date: 2012-08-25 15:30+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: ../src/e_mod_config.c:52
 #: ../src/e_mod_config.c:105
 msgid "Uptime Settings"
-msgstr "Definições do \"Uptime\""
+msgstr "Definições"
 
 #: ../src/e_mod_config.c:107
 msgid "Update Interval:"
@@ -38,7 +38,7 @@ msgstr "Intervalo de verificação:"
 
 #: ../src/e_mod_main.c:160
 msgid "Uptime"
-msgstr "\"Uptime\""
+msgstr "Uptime"
 
 #: ../src/e_mod_main.c:210
 #| msgid "Uptime Settings"

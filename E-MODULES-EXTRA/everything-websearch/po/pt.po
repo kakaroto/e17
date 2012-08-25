@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Everything-websearch\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-04-08 17:00-0700\n"
-"PO-Revision-Date: 2011-04-10 02:50-0000\n"
+"PO-Revision-Date: 2012-08-23 17:36+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "Language: pt\n"
@@ -32,11 +32,11 @@ msgstr "Cancelar transferência"
 #: ../src/e_mod_main.c:781
 #, c-format
 msgid "Got %d kbytes of"
-msgstr "Obtidos %d \"kbytes\" de"
+msgstr "Obtidos %d \"kbytes de"
 
 #: ../src/e_mod_main.c:795
 msgid "Enqueue in Playlist"
-msgstr "Colocar na fila de reprodução"
+msgstr "Colocar na lista de reprodução"
 
 #: ../src/e_mod_main.c:799
 msgid "Enqueue"
@@ -60,7 +60,7 @@ msgstr "Iniciar transferência"
 
 #: ../src/e_mod_main.c:1004
 msgid "Enqueue files for download"
-msgstr "Colocar os ficheiros na fila de transferência"
+msgstr "Colocar ficheiros na fila de transferência"
 
 #: ../src/e_mod_main.c:1021
 #: ../src/e_mod_main.c:1249
@@ -164,5 +164,3 @@ msgstr "A transferência requer mplayer e mp3lame"
 msgid "Launcher"
 msgstr "Lançador"
 
-#~ msgid "Extensions"
-#~ msgstr "Extensões"

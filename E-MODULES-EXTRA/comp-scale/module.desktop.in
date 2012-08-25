@@ -3,9 +3,11 @@ Type=Link
 Name=Scale Windows
 Name[fr]=Comp-scale
 Name[it]=Comp-scale
+Name[pt]=Ajuste de janelas
 Icon=e-module-skel
 Comment=Scale windows down to see them all. Side by side.
 Comment[fr]=Réduit les fenêtres côte à côte, afin de les voir toutes.
 Comment[it]=Rimpicciolisce le finestre e le dispone una accanto all'altra per poterle vedere tutte.
+Comment[pt]=Ajustar janelas lado a lado para as poder ver todas
 #Several different types available here. NEED TO DOC THESE.
 X-Enlightenment-ModuleType=look

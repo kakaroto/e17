@@ -7,3 +7,4 @@ Comment=Redirects the output of a cmd to an edje textblock
 Comment[de]=Stellt die Ausgabe eines Kommandos als Edje Textblock da
 Comment[fr]=Affiche la sortie d'une commande dans un bloc de texte Edje.
 Comment[it]=Redirige l'output di un comando verso un textblock di edje
+Comment[pt]=Envia o resultado da linha de comandos para um bloco de texto edje

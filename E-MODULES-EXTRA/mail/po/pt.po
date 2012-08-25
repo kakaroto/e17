@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: mail\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2010-12-05 11:23+0000\n"
-"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"PO-Revision-Date: 2012-08-25 01:18+0100\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,7 +30,7 @@ msgstr "Definições gerais"
 
 #: ../src/e_mod_config_box.c:162
 msgid "Start Program When New Mail Arrives"
-msgstr "Iniciar programa se chegarem novas mensagens"
+msgstr "Iniciar programa ao receber novas mensagens"
 
 #: ../src/e_mod_config_box.c:167
 msgid "Program:"
@@ -58,7 +58,7 @@ msgstr "Mbox"
 
 #: ../src/e_mod_config_box.c:193
 msgid "Monitor Mbox file permanently"
-msgstr "Vigiar permanentemente o ficheiro mbox"
+msgstr "Monitorizar o ficheiro mbox"
 
 #: ../src/e_mod_config_box.c:210
 msgid "Port Settings"
@@ -106,11 +106,11 @@ msgstr "Senha:"
 
 #: ../src/e_mod_config_box.c:260
 msgid "New Mail Path:"
-msgstr "Caminho do novo correio:"
+msgstr "Novo caminho:"
 
 #: ../src/e_mod_config_box.c:272
 msgid "Current Mail Path:"
-msgstr "Caminho atual do correio:"
+msgstr "Caminho atual:"
 
 #: ../src/e_mod_config_box.c:430
 msgid "Inbox"
@@ -123,7 +123,7 @@ msgstr "Definições do correio"
 
 #: ../src/e_mod_config.c:96
 msgid "Always Show Labels"
-msgstr "Mostrar sempre o texto"
+msgstr "Mostrar sempre texto"
 
 #: ../src/e_mod_config.c:99
 msgid "Show Mailbox Popup"
@@ -166,5 +166,4 @@ msgstr "Correio"
 #| msgid "Port Settings"
 msgid "Settings"
 msgstr "Definições"
-
 
