@@ -95,12 +95,25 @@ static void
 _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
 {
    Elm_Object_Item *it;
-   if (!strcmp(key->keyname, "space"))
+   if ((!strcmp(key->keyname, "space")) || (!strcmp(key->keyname, "Right")) ||
+       ((!strcmp(key->keyname, "KP_Right")) && (!key->string)))
      {
         it = elm_genlist_selected_item_get(list);
         DBG("current: %p", it);
         it = elm_genlist_item_next_get(it);
         if (!it) it = elm_genlist_first_item_get(list);
+        DBG("next: %p", it);
+        elm_genlist_item_selected_set(it, EINA_TRUE);
+        elm_genlist_item_bring_in(it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+        _pick(NULL, NULL, it);
+     }
+   else if ((!strcmp(key->keyname, "Left")) ||
+           ((!strcmp(key->keyname, "KP_Left")) && (!key->string)))
+     {
+        it = elm_genlist_selected_item_get(list);
+        DBG("current: %p", it);
+        it = elm_genlist_item_prev_get(it);
+        if (!it) it = elm_genlist_last_item_get(list);
         DBG("next: %p", it);
         elm_genlist_item_selected_set(it, EINA_TRUE);
         elm_genlist_item_bring_in(it, ELM_GENLIST_ITEM_SCROLLTO_IN);
@@ -228,6 +241,10 @@ main(int argc, char *argv[])
    evas_object_show(list);
    evas_object_smart_callback_add(list, "clicked,double", (Evas_Smart_Cb)_pick, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
+   1 | evas_object_key_grab(win, "Left", 0, 0, 1);
+   1 | evas_object_key_grab(win, "Right", 0, 0, 1);
+   1 | evas_object_key_grab(win, "KP_Left", 0, 0, 1);
+   1 | evas_object_key_grab(win, "KP_Right", 0, 0, 1);
    1 | evas_object_key_grab(win, "space", 0, 0, 1);
    1 | evas_object_key_grab(win, "q", 0, 0, 1);
    1 | evas_object_key_grab(listwin, "space", 0, 0, 1);
