@@ -79,7 +79,8 @@ have_azy="no"
 want_azy="auto"
 AC_ARG_ENABLE([azy],
    [AC_HELP_STRING([--disable-azy], [disable azy support. @<:@default=detect@:>@])],
-   [want_azy=$enableval], [])
+   [want_azy=no], [])
+##   [want_azy=$enableval], [])
 
 if test "x$want_azy" != "xno"; then
    PKG_CHECK_MODULES([AZY],
