@@ -1,4 +1,17 @@
-E_dbus 1.2.0
+E_dbus 1.7.0
+
+Changes since E_dbus 1.2.0:
+---------------------------
+
+Improvements:
+
+   * More null checks for API's
+
+Fixes:
+
+   * Properties handling
+   * Interface attach to not attach if already there
+   * Missing DBus.Properties attach
 
 Changes since E_dbus 1.1.0:
 ---------------------------
