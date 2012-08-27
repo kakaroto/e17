@@ -23,6 +23,16 @@ if (is_file("p/$page/$lang-rss"))
    echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.php?p=$page&l=$lang">';
 
  ?>
+<script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */</script>
 </head>
 
 <body>
@@ -55,6 +65,16 @@ if (is_file("p/$page/$lang-rss"))
             <ul class="submenu">
                 <?php nav_subs(); ?>
                 <li class=''><?php a("donate", "<span>Donate</span>");?></a></li>
+		<li><script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */</script></li>
                 <li class=''><a href=http://twitter.com/_Enlightenment_><span><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://plus.google.com/118426816251488376359><span><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://www.facebook.com/enlightenment.org><span><img src="http://www.enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16></span></a></li>
