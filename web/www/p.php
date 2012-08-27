@@ -23,16 +23,6 @@ if (is_file("p/$page/$lang-rss"))
    echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.php?p=$page&l=$lang">';
 
  ?>
-<script type="text/javascript">
-/* <![CDATA[ */
-    (function() {
-        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-        t.parentNode.insertBefore(s, t);
-    })();
-/* ]]> */</script>
 </head>
 
 <body>
@@ -65,7 +55,7 @@ if (is_file("p/$page/$lang-rss"))
             <ul class="submenu">
                 <?php nav_subs(); ?>
                 <li class=''><?php a("donate", "<span>Donate</span>");?></a></li>
-		<li><span><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="https://flattr.com/profile/enlightenment"></a><noscript><a href="http://flattr.com/thing/418692/Enlightenment" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript></span></li>
+		<li><a href="http://flattr.com/thing/418692/Enlightenment" target="_blank"><span><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></span></a></li>
                 <li class=''><a href=http://twitter.com/_Enlightenment_><span><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://plus.google.com/118426816251488376359><span><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://www.facebook.com/enlightenment.org><span><img src="http://www.enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16></span></a></li>

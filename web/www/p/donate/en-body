@@ -1,3 +1,14 @@
+<script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */</script>
+
 <table class='main'>
  <tr>
   <td class='main'>
@@ -24,7 +35,16 @@
     
     <p><h3>Flattr</h3></p>
     <p>
-    <a href=http://enlightenment.fr/?flattrss_redirect&amp;id=1097&amp;md5=177a3131774d13074dc465b6ca452b78>Make a donation via Flattr</a>
+    <script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */</script>
     </p>
     
     <p><h3>Paypal</h3></p>
