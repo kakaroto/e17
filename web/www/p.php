@@ -65,8 +65,8 @@ if (is_file("p/$page/$lang-rss"))
             <ul class="submenu">
                 <?php nav_subs(); ?>
                 <li class=''><?php a("donate", "<span>Donate</span>");?></a></li>
-		<li><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://www.enlightenment.org/p.php?p=about/terminology"></a>
-<noscript><a href="http://flattr.com/thing/860395/Terminology" target="_blank">
+		<li><a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="https://flattr.com/profile/enlightenment"></a>
+<noscript><a href="http://flattr.com/thing/418692/Enlightenment" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript></li>
                 <li class=''><a href=http://twitter.com/_Enlightenment_><span><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://plus.google.com/118426816251488376359><span><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></span></a></li>
