@@ -64,6 +64,7 @@ function build_cmake()
 	build_dir=$1
 	for I in $build_dir; do
 	pushd $I
+		echo ""
 		echo "============ "$I" ============"
 		echo "" >> $LOG_WARN_FILE
 		echo "["$I"]" >> $LOG_WARN_FILE
@@ -88,6 +89,62 @@ function uninstall()
 	done
 }
 
+function build_etc()
+{
+	echo ""
+	echo "============ PROTO/ev ============"
+	pushd PROTO/ev
+		make
+		sudo make install
+	popd
+}
+
+function build_themes()
+{
+	#efenniht theme
+	echo ""
+	echo "============ efenniht ============"
+	pushd THEMES/efenniht
+		make install-home
+	popd
+
+	#detour theme (elm)
+	echo ""
+	echo "============ detour elm ============"
+	pushd THEMES/detour-elm
+		make clean
+		#	make
+		#	make install
+	popd
+
+	#detourious
+	echo ""
+	echo "============ detourious ============"
+	pushd THEMES/detourious
+		make
+		make install
+	popd
+
+	#darkness theme
+	echo ""
+	echo "============ darkness ============"
+	pushd THEMES/darkness
+		#./build.sh -r
+		./build.sh -i
+		pushd elm
+			./build.sh
+			cp *.edj ~/.elementary/themes
+		popd
+	popd
+
+	#23oz theme
+	echo ""
+	echo "============ 23oz ============"
+	pushd THEMES/23oz
+		./build.sh -i
+	popd
+}
+
 build "$BUILD_BASIC1" --disable-doc
 build evas --disable-cpu-sse3 --disable-doc
 build "$BUILD_BASIC2" --disable-doc
@@ -95,50 +152,10 @@ build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
 #build "$BUILD_CPP_BINDINGS"
 build "$BUILD_E_MODULES $BUILD_ETC $BUILD_EXAMPLE "
 #build "$BUILD_ETC2"
+
 build_cmake "$BUILD_WITH_CMAKE"
-
-#efenniht theme
-echo ""
-echo "============ efenniht ============"
-pushd THEMES/efenniht
-	make install-home
-popd
-
-#detour theme (elm)
-echo ""
-echo "============ detour elm ============"
-pushd THEMES/detour-elm
-	make clean
-#	make
-#	make install
-popd
-
-#detourious
-echo ""
-echo "============ detourious ============"
-pushd THEMES/detourious
-	make
-	make install
-popd
-
-#darkness theme
-echo ""
-echo "============ darkness ============"
-pushd THEMES/darkness
-	#./build.sh -r
-	./build.sh -i
-	pushd elm
-		./build.sh
-		cp *.edj ~/.elementary/themes
-	popd
-popd
-
-#23oz theme
-echo ""
-echo "============ 23oz ============"
-pushd THEMES/23oz
-	./build.sh -i
-popd
+build_etc
+build_themes
 
 echo ""
 echo "=========== TAGS ============"
