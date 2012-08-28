@@ -1,0 +1,80 @@
+/*
+ * index.css
+ * 
+ * Written By: Nicholas "mekius" Hughart
+ *       Date: 2012-08-28
+ */
+body,html
+{
+  background-color:#ffffff;
+  padding:0;
+  margin:0;
+  font-family:"DejaVu Sans Mono","Bitstream Vera Sans Mono","monospace";
+}
+a:link
+{
+  color:#000000;
+}
+a:active
+{
+  color:#88bbff;
+}
+a:visited
+{
+  color:#000000;
+}
+#PagesWrapper
+{
+  position:fixed;
+  bottom:0;
+  left:0;
+  background-color:#e0e0e0;
+  box-shadow: 0 0 3px 2px #808080;
+  width:100%;
+  border-bottom:#404040;
+}
+#Pages
+{
+  word-spacing:0.6em;
+  text-align:center;
+  padding:5px;
+  margin:0 5px 0 5px;
+}
+#Pages a
+{
+  text-decoration:none;
+  font-size:1em;
+  color:#404040;
+}
+#Pages a.highlight
+{
+  font-weight:bold;
+  font-size:1.6em;
+  color:#000000;
+}
+#Pages span
+{
+  color:#c0c0c0;
+}
+#Pages span.PreviousArrows
+{
+  float:left;
+  font-size:1.6em;
+}
+#Pages span.PreviousArrows:first-child
+{
+  font-size:1.8em;
+}
+#Pages span.NextArrows
+{
+  float:right;
+  font-size:1.6em;
+}
+#Pages span.NextArrows:last-child
+{
+  font-size:1.8em;
+}
+#Images
+{
+  margin-bottom:3em;
+}
