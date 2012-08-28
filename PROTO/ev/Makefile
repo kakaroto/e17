@@ -4,10 +4,10 @@ DOCDIR ?= $(PREFIX)/share/doc/ev
 CC     ?= gcc
 CFLAGS ?= -O0 -pipe -Wall -Wextra -g
 SHELL   = /bin/sh
-LIBS    = $(shell pkg-config --cflags --libs elementary)
+LIBS    = $(shell pkg-config --cflags --libs elementary eio)
 
 ev: ev.c
-	$(CC) $(CFLAGS) $(LIBS) -o $@ $<
+	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
 
 install: ev
 	mkdir -p $(DESTDIR)$(PREFIX)/bin

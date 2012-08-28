@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
+ * Copyright 2011-2012 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Eio.h>
 #include <Elementary.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #ifndef __UNUSED__
 # define __UNUSED__ __attribute__((unused))
@@ -32,6 +31,12 @@
 static int _ev_log_dom = -1;
 static Elm_Genlist_Item_Class itc;
 static Evas_Object *img, *list = NULL;
+
+static void stat_done(void *data, Eio_File *handler, const Eina_Stat *st);
+
+static void
+dummy()
+{}
 
 static void
 _close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
@@ -60,8 +65,7 @@ _title(Evas_Object *win)
 
    evas_object_geometry_get(img, NULL, NULL, &ww, &wh);
    elm_image_file_get(img, &f, NULL);
-   s = strrchr(f, '/');
-   s = s ? s + 1 : f;
+   s = ecore_file_file_get(f);
    snprintf(buf, sizeof(buf), "%s (%ux%u)", s, ww, wh);
    elm_win_title_set(win, buf);
 }
@@ -141,42 +145,75 @@ _show(void *data, Evas_Object *obj __UNUSED__, void *ev __UNUSED__)
      evas_object_show(data);
 }
 
-static void
-add_single(Evas_Object *list, const char *file)
+static int
+add_sort(void *a, void *b)
 {
-   elm_genlist_item_append(list, &itc, file, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL /*data*/);
+   const char *x, *y;
+
+   x = elm_object_item_data_get(a);
+   x = ecore_file_file_get(x);
+   y = elm_object_item_data_get(b);
+   y = ecore_file_file_get(y);
+   return strcmp(x, y);
 }
 
 static void
-add_dir(Evas_Object *list, const char *dir)
+add_single(const char *file)
 {
-   Eina_Iterator *it;
-   const char *str;
+   static Eina_Bool first = EINA_TRUE;
 
-   it = eina_file_ls(dir);
-   if (!it) return;
-   EINA_ITERATOR_FOREACH(it, str)
-     add_single(list, str);
-   eina_iterator_free(it);
+   DBG("NEW: %s", file);
+   elm_genlist_item_sorted_insert(list, &itc, file, NULL, ELM_GENLIST_ITEM_NONE, (Eina_Compare_Cb)add_sort, NULL, NULL /*data*/);
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(list), EINA_TRUE);
+   if (first)
+     {
+        _pick(NULL, NULL, elm_genlist_selected_item_get(list));
+        first = EINA_FALSE;
+     }
 }
 
 static void
-load_stuff(int argc, char **argv, Evas_Object *list)
+ls_done(void *data __UNUSED__, Eio_File *handler __UNUSED__, const char *file)
+{
+   eio_file_direct_stat(file, stat_done, dummy, eina_stringshare_add(file));
+}
+
+static Eina_Bool
+ls_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const char *file)
 {
    struct stat st;
+   if (stat(file, &st)) return EINA_FALSE;
+   return S_ISREG(st.st_mode);
+}
+
+static void
+add_dir(const char *dir)
+{
+   eio_file_ls(dir, ls_filter, ls_done, dummy, dummy, NULL);
+}
+
+static void
+stat_done(void *data, Eio_File *handler __UNUSED__, const Eina_Stat *st)
+{
+   if (S_ISREG(st->mode))
+     {
+        add_single(data);
+        return;
+     }
+   if (S_ISDIR(st->mode))
+     add_dir(data);
+   else
+     ERR("wtf is this %s", (char*)data);
+   eina_stringshare_del(data);
+}
+
+static void
+load_stuff(int argc, char **argv)
+{
    int x;
 
    for (x = 1; x < argc; x++)
-     {
-        stat(argv[x], &st);
-        if (S_ISREG(st.st_mode))
-          add_single(list, eina_stringshare_add(argv[x]));
-        else if (S_ISDIR(st.st_mode))
-          add_dir(list, argv[x]);
-        else
-          ERR("wtf is this %s", argv[x]);
-     }
-   elm_genlist_item_selected_set(elm_genlist_first_item_get(list), EINA_TRUE);
+     eio_file_direct_stat(argv[x], stat_done, dummy, eina_stringshare_add(argv[x]));
 }
 
 int
@@ -253,9 +290,7 @@ main(int argc, char *argv[])
    evas_object_smart_callback_add(img, "clicked", (Evas_Smart_Cb)_show, listwin);
    evas_object_smart_callback_add(win, "delete,request", _close, NULL);
 
-   load_stuff(argc, argv, list);
-
-   _pick(NULL, NULL, elm_genlist_selected_item_get(list));
+   load_stuff(argc, argv);
 
    evas_object_resize(listwin, 450, 350);
 
