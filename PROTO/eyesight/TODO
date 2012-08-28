@@ -5,15 +5,34 @@ General
 
 Modules
 
- * PDF backend: need checks
+ * PDF backend: text:
+
+<vtorri> is there a smple example to:
+<vtorri> 1) find text with mupdf
+<vtorri> 2) if I havea given rectangle, retrieving the text in the PDF document, with mupdf
+<sebras> vtorri: there is a sample example in apps/mudraw.c of how to extract text.
+<sebras> vtorri: if you run mudraw with -t you'll get the plain text printed and using -ttt you will get both the text and the corresponding boundingboxes printed.
+<sebras> vtorri: then you have apps/pdfapp.c::pdfapp_search() that is the searching in the sample viewer.
+<vtorri> ok
+<vtorri> thank you
+<sebras> and in pdfapp_inverthit() you'll find the implementation highlighting a search hit.
+<vtorri> a search hit ?
+<vtorri> what is it  ?
+<sebras> search match.
+<sebras> those functions ought to get you started at least, but feel free to ask further questions of course.
+<vtorri> ok
+<vtorri> thank you
+<sebras> np.
+
  * XPS backend: MuPDF has an implementation
+ * Comic book : MuPDF supports cbz. Use the libraries instead of the binaries ?
  * txt backend: improve a lot
- * dvi backend
+ * dvi backend : to add
  * rtf backend: see ertf
- * djvu backend
- * epub
- * multipage TIFF
- * editing pdf forms
+ * djvu backend: to add
+ * epub: to add
+ * multipage TIFF: to add
+ * editing pdf forms: check if MuPDF can do it.
  * search linking latex source with the corresponding location in DVI or PDF document (pdfsync)
  * chm (less important)
  * odt (less important)
@@ -24,3 +43,4 @@ Architecture
  * make it fully asynchrone and work with smart object callback
  * share context between same opened file (think thumbnail)
  * be able to use ecore_thread_heavy_run to render one page in another thread (and scale way behond one thread)
+ * use the threading support of MuPDF to speed up the rendering
