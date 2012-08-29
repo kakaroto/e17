@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: engage\n"
 "Report-Msgid-Bugs-To: hannes.janetzek@gmail.com\n"
 "POT-Creation-Date: 2011-04-04 14:24+0200\n"
-"PO-Revision-Date: 2012-08-23 17:24+0100\n"
+"PO-Revision-Date: 2012-08-26 00:02+0100\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "Language: pt\n"
@@ -136,7 +136,7 @@ msgstr "Em baixo"
 
 #: src/ng_config.c:207
 msgid "Top Edge"
-msgstr "Ee cima"
+msgstr "Em cima"
 
 #: src/ng_config.c:209
 msgid "Left Edge"
