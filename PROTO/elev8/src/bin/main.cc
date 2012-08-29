@@ -70,6 +70,9 @@ print(const Arguments& args)
           fputs(*String::Utf8Value(object_to_string(args[i]->ToObject())), stdout);
         else
           fputs(*String::Utf8Value(args[i]), stdout);
+
+        if (i < argument_count - 1)
+          putchar(' ');
      }
 
 end:
