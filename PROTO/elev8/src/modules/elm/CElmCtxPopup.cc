@@ -70,14 +70,23 @@ void CElmCtxPopup::ItemSelected(Handle<Value> item)
 
 void CElmCtxPopup::Dismissed()
 {
-   if (on_dismiss.IsEmpty() || !on_dismiss->IsFunction())
-     return;
-   Handle<Function> callback(Function::Cast(*on_dismiss));
-   Handle<Value> args[] = { };
-   callback->Call(jsObject, 0, args);
+   if (!on_dismiss.IsEmpty() && on_dismiss->IsFunction()) {
+     Handle<Function> callback(Function::Cast(*on_dismiss));
+     Handle<Value> args[] = { };
+     callback->Call(jsObject, 0, args);
+   }
+
+   //As it's impossible to show a ctxpopup twice, I create a new one here,
+   //copying original's one properties.
+   Evas_Object *tmp = elm_ctxpopup_add(ctxpopup_parent);
+   Elm_Ctxpopup_Direction first, second, third, fourth;
+   elm_ctxpopup_direction_priority_get(eo, &first, &second, &third, &fourth);
+   elm_ctxpopup_direction_priority_set(tmp, first, second, third, fourth);
+   elm_ctxpopup_hover_parent_set(tmp, elm_ctxpopup_hover_parent_get(eo));
+   elm_ctxpopup_horizontal_set(tmp, elm_ctxpopup_horizontal_get(eo));
 
    evas_object_del(eo);
-   eo = elm_ctxpopup_add(ctxpopup_parent);
+   eo = tmp;
    evas_object_data_set(eo, "this", this);
    evas_object_smart_callback_add(eo, "dismissed", _dismissed, this);
 }
