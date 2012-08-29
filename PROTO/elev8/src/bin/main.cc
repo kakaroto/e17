@@ -29,22 +29,48 @@ enum ContextUseRule{
    USE_CURRENT_CONTEXT
 };
 
+static Handle<String>
+object_to_string(Handle<Object> obj)
+{
+   HandleScope scope;
+
+   Handle<Value> json = Context::GetCurrent()->Global()->Get(String::NewSymbol("JSON"));
+   if (json.IsEmpty())
+     return scope.Close(String::New(""));
+
+   Handle<Value> stringify = json->ToObject()->Get(String::NewSymbol("stringify"));
+   if (stringify.IsEmpty())
+     return scope.Close(String::New(""));
+
+   Handle<Function> func = Handle<Function>::Cast(stringify);
+   Handle<Value> args[3] = { obj, Null(), String::New("    ") };
+
+   Handle<String> dump = func->Call(Context::GetCurrent()->Global(), 3, args)->ToString();
+
+   Local<String> constructor_name = obj->GetConstructorName();
+   if (constructor_name != String::NewSymbol("Object"))
+     return scope.Close(String::Concat(constructor_name, dump));
+
+   return scope.Close(dump);
+}
+
 static Handle<Value>
 print(const Arguments& args)
 {
    HandleScope handle_scope;
    int argument_count;
 
-   switch ((argument_count = args.Length())) {
-   case 0:
+   argument_count = args.Length();
+   if (!argument_count)
      goto end;
-   case 1:
-     fputs(*String::Utf8Value(args[0]), stdout);
-     break;
-   default:
-     for (int i = 0; i < argument_count; i++)
-       fputs(*String::Utf8Value(args[i]), stdout);
-   }
+
+   for (int i = 0; i < argument_count; i++)
+     {
+        if (args[i]->IsObject())
+          fputs(*String::Utf8Value(object_to_string(args[i]->ToObject())), stdout);
+        else
+          fputs(*String::Utf8Value(args[i]), stdout);
+     }
 
 end:
    putchar('\n');
