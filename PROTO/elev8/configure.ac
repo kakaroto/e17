@@ -112,7 +112,6 @@ PKG_CHECK_MODULES([ELEMENTARY], [
 	evas >= 1.0.999
 	ecore-evas >= 1.0.999
 ])
-PKG_CHECK_MODULES([EDBUS], [edbus >= 1.0.999 dbus-1])
 PKG_CHECK_MODULES([ECORECON], [ecore-con >= 1.0.999])
 
 PKG_CHECK_MODULES([EIO], [eio])
@@ -151,7 +150,6 @@ Makefile
 src/Makefile
 src/bin/Makefile
 src/modules/Makefile
-src/modules/dbus/Makefile
 src/modules/http/Makefile
 src/modules/elm/Makefile
 src/modules/fs/Makefile

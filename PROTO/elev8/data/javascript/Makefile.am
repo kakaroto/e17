@@ -23,7 +23,6 @@ files_SCRIPTS = \
 	ctxpopup.js \
 	datetime.js \
 	dayselector.js \
-	dbus_test.js \
 	dilbert.js \
 	elev8_demo.js \
 	entry.js \
