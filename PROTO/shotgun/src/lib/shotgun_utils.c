@@ -7,11 +7,11 @@ shotgun_base64_encode(const unsigned char *string, double len, size_t *size)
 {
    base64_encodestate s;
    char *ret = NULL;
-   int retlen[2];
+   size_t retlen[2];
 
    if ((len < 1) || (!string)) return NULL;
 
-   if (!(ret = malloc(sizeof(char) * ((((len + 2) - ((int)(len + 2) % 3)) / 3) * 4) + 4)))
+   if (!(ret = malloc(sizeof(char) * ((((len + 2) - ((size_t)(len + 2) % 3)) / 3) * 4) + 4)))
      return NULL;
    base64_init_encodestate(&s);
    retlen[0] = base64_encode_block((char*)string, len, ret, &s);
@@ -29,15 +29,15 @@ shotgun_base64_encode(const unsigned char *string, double len, size_t *size)
 }
 
 unsigned char *
-shotgun_base64_decode(const char *string, int len, size_t *size)
+shotgun_base64_decode(const char *string, size_t len, size_t *size)
 {
    base64_decodestate s;
    unsigned char *ret = NULL;
-   int retlen;
+   size_t retlen;
 
    if ((len < 1) || (!string)) return NULL;
 
-   if (!(ret = malloc(sizeof(char) * (int)((double)len / (double)(4 / 3)))))
+   if (!(ret = malloc(sizeof(char) * (size_t)((double)len / (double)(4 / 3)))))
      return NULL;
    base64_init_decodestate(&s);
    retlen = base64_decode_block((char*)string, len, ret, &s);
@@ -51,7 +51,7 @@ void
 shotgun_strtohex(unsigned char *digest, size_t len, char *ret)
 {
    char hexchars[] = "0123456789abcdef";
-   unsigned int x, y;
+   size_t x, y;
    for (x = y = 0; x < len + 1; x++, y++)
      {
         ret[x++] = hexchars[digest[y] >> 4];
