@@ -46,7 +46,8 @@ typedef enum
    SHOTGUN_DATA_TYPE_UNKNOWN,
    SHOTGUN_DATA_TYPE_MSG,
    SHOTGUN_DATA_TYPE_IQ,
-   SHOTGUN_DATA_TYPE_PRES
+   SHOTGUN_DATA_TYPE_PRES,
+   SHOTGUN_DATA_TYPE_FILE
 } Shotgun_Data_Type;
 
 typedef enum
@@ -119,6 +120,13 @@ struct Shotgun_Auth
    Shotgun_Connection_State state;
    void *data;
    void *settings;
+   Shotgun_User_Info *vcard;
+   unsigned int pending_ping;
+   double ping_delay;
+   double ping_timeout;
+   unsigned int ping_max_attempts;
+   Ecore_Timer *et_ping;
+   Ecore_Timer *et_ping_timeout;
 };
 
 extern int shotgun_log_dom;
@@ -146,7 +154,7 @@ Shotgun_Event_Presence *shotgun_presence_new(Shotgun_Auth *auth);
 void shotgun_presence_feed(Shotgun_Auth *auth, char *data, size_t size);
 
 char *shotgun_base64_encode(const unsigned char *string, double len, size_t *size);
-unsigned char *shotgun_base64_decode(const char *string, int len, size_t *size);
+unsigned char *shotgun_base64_decode(const char *string, size_t len, size_t *size);
 void shotgun_strtohex(unsigned char *digest, size_t len, char *ret);
 void shotgun_md5_hmac_encode(unsigned char *digest, const char *string, size_t size, const void *key, size_t ksize);
 

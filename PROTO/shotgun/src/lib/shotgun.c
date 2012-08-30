@@ -28,6 +28,45 @@ keepalive(Shotgun_Auth *auth)
 }
 
 static Eina_Bool
+ping_timeout(Shotgun_Auth *auth)
+{
+   /**
+    * We haven't received ping response during the auth->ping_timeout delay
+    * Current connection have to die.
+    */
+   ERR("Ping timeout, count : %d", auth->pending_ping);
+   ecore_timer_freeze(auth->et_ping_timeout);
+   if (auth->pending_ping > auth->ping_max_attempts)
+      shotgun_disconnect(auth);
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+ping(Shotgun_Auth *auth)
+{
+   /**
+    * Sends ping request to the server (iq tag)
+    * (Re)Init the timeout timer, increase the pending pings counter
+    */
+   xml_iq_ping_write(auth);
+   auth->pending_ping++;
+   ecore_timer_reset(auth->et_ping_timeout);
+   ecore_timer_thaw(auth->et_ping_timeout);
+
+   return EINA_TRUE;
+}
+
+Eina_Bool 
+shotgun_ping_received(Shotgun_Auth *auth)
+{
+   auth->pending_ping = 0;
+   ecore_timer_freeze(auth->et_ping_timeout);
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
 disc(Shotgun_Auth *auth, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
 {
    if ((auth != ecore_con_server_data_get(ev->server)) || (!auth))
@@ -194,7 +233,7 @@ data(Shotgun_Auth *auth, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
         shotgun_presence_feed(auth, data, size);
         break;
       default:
-        ERR("UNPARSABLE TAG!");
+        ERR("UNPARSABLE TAG %d", shotgun_data_tokenize(auth, ev));
         break;
      }
    if (auth->buf) eina_strbuf_free(auth->buf);
@@ -252,7 +291,13 @@ shotgun_connect(Shotgun_Auth *auth)
    auth->ev_upgrade = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_UPGRADE, (Ecore_Event_Handler_Cb)shotgun_login_con, auth);
    auth->ev_write = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_WRITE, (Ecore_Event_Handler_Cb)ev_write, auth);
    auth->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, auth->svr_name, 5222, auth);
-   if (auth->svr) auth->keepalive = ecore_timer_add(300, (Ecore_Task_Cb)keepalive, auth);
+   if (auth->svr)
+     {
+        auth->keepalive = ecore_timer_add(300, (Ecore_Task_Cb)keepalive, auth);
+        auth->et_ping = ecore_timer_add(auth->ping_delay, (Ecore_Task_Cb)ping, auth);
+        auth->et_ping_timeout = ecore_timer_add(auth->ping_timeout, (Ecore_Task_Cb)ping_timeout, auth);
+        ecore_timer_freeze(auth->et_ping_timeout);
+     }
 
    return !!auth->svr;
 }
@@ -271,6 +316,8 @@ shotgun_disconnect(Shotgun_Auth *auth)
    if (auth->ev_write) ecore_event_handler_del(auth->ev_write);
    if (auth->svr) ecore_con_server_del(auth->svr);
    if (auth->keepalive) ecore_timer_del(auth->keepalive);
+   if (auth->et_ping) ecore_timer_del(auth->et_ping);
+   if (auth->et_ping_timeout) ecore_timer_del(auth->et_ping_timeout);
    auth->keepalive = NULL;
    auth->ev_add = NULL;
    auth->ev_del = NULL;
@@ -281,6 +328,7 @@ shotgun_disconnect(Shotgun_Auth *auth)
    auth->svr = NULL;
    auth->state = 0;
    memset(&auth->features, 0, sizeof(auth->features));
+   auth->pending_ping = 0;
 }
 
 void
@@ -300,6 +348,7 @@ shotgun_free(Shotgun_Auth *auth)
    shotgun_disconnect(auth);
    free(auth->settings);
    if (auth->buf) eina_strbuf_free(auth->buf);
+   if (auth->vcard) shotgun_user_info_free(auth->vcard);
    free(auth);
 }
 
@@ -312,9 +361,17 @@ shotgun_new(const char *svr_name, const char *username, const char *domain)
    if (username) auth->user = eina_stringshare_add(username);
    if (domain) auth->from = eina_stringshare_add(domain);
    auth->resource = eina_stringshare_add("SHOTGUN!");
-   if (username && domain) auth->jid = eina_stringshare_printf("%s@%s/%s", auth->user, auth->from, auth->resource);
-   if (username && domain) auth->base_jid = eina_stringshare_printf("%s@%s", auth->user, auth->from);
+   if (username && domain)
+     { 
+        auth->jid = eina_stringshare_printf("%s@%s/%s", auth->user, auth->from, auth->resource);
+        auth->base_jid = eina_stringshare_printf("%s@%s", auth->user, auth->from);
+     }
    if (svr_name) auth->svr_name = eina_stringshare_add(svr_name);
+   auth->pending_ping = 0;
+   auth->ping_max_attempts = 5;
+   shotgun_ping_delay_set(auth, 60);
+   shotgun_ping_timeout_set(auth, 30);
+
    return auth;
 }
 
@@ -360,6 +417,13 @@ shotgun_resource_get(Shotgun_Auth *auth)
    EINA_SAFETY_ON_NULL_RETURN_VAL(auth, NULL);
 
    return auth->resource;
+}
+
+void
+shotgun_resource_set(Shotgun_Auth *auth, const char *resource)
+{
+   eina_stringshare_replace(&auth->resource, resource);
+   auth->changed = EINA_TRUE;
 }
 
 const char *
@@ -446,4 +510,43 @@ shotgun_password_set(Shotgun_Auth *auth, const char *password)
 {
    EINA_SAFETY_ON_NULL_RETURN(auth);
    eina_stringshare_replace(&auth->pass, password);
+}
+
+void *
+shotgun_vcard_get(Shotgun_Auth *auth)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(auth, NULL);
+   return auth->vcard;
+}
+
+void
+shotgun_vcard_set(Shotgun_Auth *auth, void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN(auth);
+   auth->vcard = data;
+}
+
+void
+shotgun_ping_delay_set(Shotgun_Auth *auth, double delay)
+{
+   EINA_SAFETY_ON_NULL_RETURN(auth);
+   auth->ping_delay = delay;
+   if (auth->et_ping) 
+      ecore_timer_interval_set(auth->et_ping, auth->ping_delay);
+}
+
+void
+shotgun_ping_timeout_set(Shotgun_Auth *auth, double timeout)
+{
+   EINA_SAFETY_ON_NULL_RETURN(auth);
+   auth->ping_timeout = timeout;
+   if (auth->et_ping_timeout) 
+      ecore_timer_interval_set(auth->et_ping_timeout, auth->ping_timeout);
+}
+
+void
+shotgun_ping_max_attempts_set(Shotgun_Auth *auth, unsigned int max)
+{
+   EINA_SAFETY_ON_NULL_RETURN(auth);
+   auth->ping_max_attempts = max;
 }

@@ -45,8 +45,31 @@ shotgun_user_info_free(Shotgun_User_Info *info)
    eina_stringshare_del(info->full_name);
    eina_stringshare_del(info->photo.type);
    eina_stringshare_del(info->photo.sha1);
-   free(info->photo.data);
+   if (info->photo.data) free(info->photo.data);
    free(info);
+}
+
+void
+shotgun_iq_last_free(Shotgun_Iq_Last *last)
+{
+   if (!last) return;
+   eina_stringshare_del(last->message);
+   eina_stringshare_del(last->jid);
+   free(last);
+}
+
+void
+shotgun_incoming_file_free(Shotgun_Incoming_File *file)
+{
+   if (!file) return;
+   eina_stringshare_del(file->name);
+   eina_stringshare_del(file->hash);
+   eina_stringshare_del(file->from);
+   eina_stringshare_del(file->id);
+   eina_stringshare_del(file->sid);
+   eina_stringshare_del(file->path);
+   eina_stringshare_del(file->data);
+   free(file);
 }
 
 static void
@@ -66,6 +89,9 @@ shotgun_iq_event_free(void *data __UNUSED__, Shotgun_Event_Iq *iq)
       case SHOTGUN_IQ_EVENT_TYPE_OTR_QUERY:
         EINA_LIST_FREE(iq->ev, sus)
           shotgun_user_setting_free(sus);
+        break;
+      case SHOTGUN_IQ_EVENT_TYPE_IDLE:
+        shotgun_iq_last_free(iq->ev);
         break;
       default:
         break;
@@ -192,6 +218,94 @@ shotgun_iq_vcard_get(Shotgun_Auth *auth, const char *user)
    EINA_SAFETY_ON_NULL_RETURN_VAL(auth, EINA_FALSE);
 
    xml = xml_iq_write_get_vcard(user, &len);
+   shotgun_write(auth->svr, xml, len);
+   free(xml);
+   return EINA_TRUE;
+}
+
+Eina_Bool
+shotgun_iq_si_result(Shotgun_Event_Iq *ev)
+{
+   size_t len;
+   char *xml;
+   Shotgun_Incoming_File *file; 
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ev->account, EINA_FALSE);
+
+   file = (Shotgun_Incoming_File *)ev->ev;
+   xml = xml_iq_write_get_si(shotgun_jid_get(ev->account), file->from, file->id, &len);
+   shotgun_write(ev->account->svr, xml, len);
+   free(xml);
+   return EINA_TRUE;
+}
+
+
+Eina_Bool
+shotgun_iq_bytestream_result(Shotgun_Event_Iq *ev)
+{
+   size_t len;
+   char *xml;
+   Shotgun_Incoming_File *file; 
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ev->account, EINA_FALSE);
+
+   file = (Shotgun_Incoming_File *)ev->ev;
+   xml = xml_iq_write_get_bytestream(shotgun_jid_get(ev->account), 
+                                     file->from, 
+                                     file->id,
+                                     file->sid, 
+                                     &len);
+   shotgun_write(ev->account->svr, xml, len);
+   free(xml);
+   return EINA_TRUE;
+}
+
+
+Eina_Bool
+shotgun_iq_ibb_error(Shotgun_Event_Iq *ev)
+{
+   size_t len;
+   char *xml;
+   Shotgun_Incoming_File *file; 
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ev->account, EINA_FALSE);
+
+   file = (Shotgun_Incoming_File *)ev->ev;
+   xml = xml_iq_ibb_error(shotgun_jid_get(ev->account), file->from, file->id, &len);
+   shotgun_write(ev->account->svr, xml, len);
+   free(xml);
+   return EINA_TRUE;
+}
+
+
+Eina_Bool
+shotgun_iq_vcard_send(Shotgun_Auth *auth){
+   size_t len;
+   char *xml;
+   
+   EINA_SAFETY_ON_NULL_RETURN_VAL(auth, EINA_FALSE);
+   
+   xml = xml_iq_write_vcard(auth, &len);
+   shotgun_write(auth->svr, xml, len);
+   free(xml);
+   
+   return EINA_TRUE;
+}
+
+Eina_Bool
+shotgun_iq_activity_query(Shotgun_Auth *auth, const char *jid)
+{
+   size_t len;
+   char *xml;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(auth, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(jid, EINA_FALSE);
+
+   xml = xml_iq_activity_query(shotgun_jid_get(auth),
+                               jid,
+                               "last1",
+                               &len);
+
    shotgun_write(auth->svr, xml, len);
    free(xml);
    return EINA_TRUE;

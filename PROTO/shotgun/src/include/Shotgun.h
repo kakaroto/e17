@@ -121,6 +121,11 @@ typedef enum
    SHOTGUN_IQ_EVENT_TYPE_MAILNOTIFY, /* NULL */
    SHOTGUN_IQ_EVENT_TYPE_OTR_QUERY, /* Eina_List *Shotgun_User_Setting */
    SHOTGUN_IQ_EVENT_TYPE_ARCHIVE_COLLECTION, /* Shotgun_Archive_Collection */
+   SHOTGUN_IQ_EVENT_TYPE_FILE_TRANSFER,   /* Shotgun_Incoming_File */
+   SHOTGUN_IQ_EVENT_TYPE_BYTESTREAM,   /* Shotgun_Incoming_File, type BYTESTREAM */ 
+   SHOTGUN_IQ_EVENT_TYPE_IBB, /* Shotgun_Incoming_File, type IBB */
+   SHOTGUN_IQ_EVENT_TYPE_IDLE,   /* Shotgun_Iq_Last */
+   SHOTGUN_IQ_EVENT_TYPE_PING /* NULL */
 } Shotgun_Iq_Event_Type;
 
 typedef enum
@@ -128,8 +133,8 @@ typedef enum
    SHOTGUN_USER_SUBSCRIPTION_NONE,
    SHOTGUN_USER_SUBSCRIPTION_FROM, /* user receives events from you */
    SHOTGUN_USER_SUBSCRIPTION_TO, /* you receive events from user */
-   SHOTGUN_USER_SUBSCRIPTION_BOTH,
-   SHOTGUN_USER_SUBSCRIPTION_REMOVE
+   SHOTGUN_USER_SUBSCRIPTION_BOTH,  /* both you and user receive events */
+   SHOTGUN_USER_SUBSCRIPTION_REMOVE /* user doesn't receive events anymore */
 } Shotgun_User_Subscription;
 
 typedef enum
@@ -169,7 +174,16 @@ typedef enum
    SHOTGUN_PRESENCE_TYPE_NONE,
    SHOTGUN_PRESENCE_TYPE_SUBSCRIBE,
    SHOTGUN_PRESENCE_TYPE_UNSUBSCRIBE,
+   SHOTGUN_PRESENCE_TYPE_UNAVAILABLE
 } Shotgun_Presence_Type;
+
+typedef enum
+{
+   SHOTGUN_FILE_UNKNOWN,
+   SHOTGUN_FILE_OPEN,   /* opening file transfer */
+   SHOTGUN_FILE_DATA,   /* receiving data */
+   SHOTGUN_FILE_CLOSE   /* ending file transfer */
+} Shotgun_File_Status;
 
 typedef struct
 {
@@ -218,6 +232,30 @@ typedef struct
 
 typedef struct
 {
+   const char *name,
+              *hash,
+              *from,
+              *id,
+              *sid,
+              *path,
+              *data;
+   size_t size; 
+   size_t blocsize;
+   size_t recvsize;
+   Shotgun_File_Status status;
+   FILE* fd;
+   Shotgun_Auth *account;
+} Shotgun_Incoming_File;
+
+typedef struct
+{
+   unsigned int last;
+   const char *message,
+              *jid;
+} Shotgun_Iq_Last;
+
+typedef struct
+{
    const char *jid;
    const char *photo;
    const char *description;
@@ -234,9 +272,11 @@ typedef struct
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 EAPI int shotgun_init(void);
 EAPI Eina_Bool shotgun_connect(Shotgun_Auth *auth);
 EAPI void shotgun_disconnect(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_ping_received(Shotgun_Auth *auth);
 EAPI Shotgun_Auth *shotgun_new(const char *svr_name, const char *username, const char *domain);
 EAPI void shotgun_ssl_verify_set(Shotgun_Auth *auth, Eina_Bool verify);
 EAPI Eina_Bool shotgun_ssl_verify_get(Shotgun_Auth *auth);
@@ -245,6 +285,7 @@ EAPI Shotgun_Connection_State shotgun_connection_state_get(Shotgun_Auth *auth);
 EAPI void shotgun_username_set(Shotgun_Auth *auth, const char *username);
 EAPI const char *shotgun_username_get(Shotgun_Auth *auth);
 EAPI const char *shotgun_password_get(Shotgun_Auth *auth);
+EAPI void shotgun_resource_set(Shotgun_Auth *auth, const char *resource);
 EAPI const char *shotgun_resource_get(Shotgun_Auth *auth);
 EAPI void shotgun_domain_set(Shotgun_Auth *auth, const char *domain);
 EAPI const char *shotgun_domain_get(Shotgun_Auth *auth);
@@ -257,6 +298,11 @@ EAPI void *shotgun_settings_get(Shotgun_Auth *auth);
 EAPI void shotgun_data_set(Shotgun_Auth *auth, void *data);
 EAPI void *shotgun_data_get(Shotgun_Auth *auth);
 EAPI void shotgun_password_set(Shotgun_Auth *auth, const char *password);
+EAPI void *shotgun_vcard_get(Shotgun_Auth *auth);
+EAPI void shotgun_vcard_set(Shotgun_Auth *auth, void *data);
+EAPI void shotgun_ping_delay_set(Shotgun_Auth *auth, double delay);
+EAPI void shotgun_ping_timeout_set(Shotgun_Auth *auth, double timeout);
+EAPI void shotgun_ping_max_attempts_set(Shotgun_Auth *auth, unsigned int max);
 EAPI Eina_Bool shotgun_iq_roster_get(Shotgun_Auth *auth);
 EAPI Eina_Bool shotgun_iq_contact_add(Shotgun_Auth *auth, const char *user, const char *alias, Eina_List */* const char * */groups);
 EAPI Eina_Bool shotgun_iq_contact_del(Shotgun_Auth *auth, const char *user);
@@ -274,6 +320,8 @@ EAPI Eina_Bool shotgun_iq_gsettings_archiving_get(Shotgun_Auth *auth);
 EAPI void shotgun_iq_gsettings_mailnotify_set(Shotgun_Auth *auth, Eina_Bool enable);
 EAPI Eina_Bool shotgun_iq_gsettings_mailnotify_get(Shotgun_Auth *auth);
 EAPI void shotgun_iq_gsettings_mailnotify_ping(Shotgun_Auth *auth);
+EAPI Eina_Bool shotgun_iq_ibb_error(Shotgun_Event_Iq *ev);
+EAPI Eina_Bool shotgun_iq_vcard_send(Shotgun_Auth *auth);
 EAPI Eina_Bool shotgun_message_send(Shotgun_Auth *auth, const char *to, const char *msg, Shotgun_Message_Status status);
 EAPI Shotgun_User_Status shotgun_presence_status_get(Shotgun_Auth *auth);
 EAPI void shotgun_presence_status_set(Shotgun_Auth *auth, Shotgun_User_Status status);
@@ -286,11 +334,14 @@ EAPI void shotgun_presence_set(Shotgun_Auth *auth, Shotgun_User_Status st, const
 EAPI const char *shotgun_presence_get(Shotgun_Auth *auth, Shotgun_User_Status *st, int *priority);
 EAPI Eina_Bool shotgun_presence_send(Shotgun_Auth *auth);
 EAPI Eina_Bool shotgun_presence_subscription_set(Shotgun_Auth *auth, const char *jid, Eina_Bool subscribe);
+EAPI Eina_Bool shotgun_presence_subscription_answer_set(Shotgun_Auth *auth, const char *jid, Eina_Bool subscribed);
 EAPI void shotgun_event_message_free(Shotgun_Event_Message *msg);
 EAPI void shotgun_event_presence_free(Shotgun_Event_Presence *pres);
 EAPI void shotgun_user_info_free(Shotgun_User_Info *info);
 EAPI void shotgun_user_free(Shotgun_User *user);
 EAPI void shotgun_user_setting_free(Shotgun_User_Setting *sus);
+EAPI void shotgun_incoming_file_free(Shotgun_Incoming_File *file);
+EAPI void shotgun_iq_last_free(Shotgun_Iq_Last *last);
 
 #ifdef __cplusplus
 }

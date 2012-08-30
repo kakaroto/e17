@@ -3,10 +3,18 @@
 #include "pugixml.hpp"
 
 #define XML_NS_ROSTER "jabber:iq:roster"
+#define XML_NS_VERSION "jabber:iq:version"
+#define XML_NS_IDLE "jabber:iq:last"
+#define XML_NS_TIME "urn:xmpp:time"
+#define XML_NS_DATA "jabber:x:data"
 #define XML_NS_DISCO_INFO "http://jabber.org/protocol/disco#info"
 #define XML_NS_CHATSTATES "http://jabber.org/protocol/chatstates"
+#define XML_NS_FILETRANSFER "http://jabber.org/protocol/si/profile/file-transfer"
+#define XML_NS_FEATURE_NEG "http://jabber.org/protocol/feature-neg"
+#define XML_NS_BYTESTREAM "http://jabber.org/protocol/bytestreams"
+#define XML_NS_IBB "http://jabber.org/protocol/ibb"
+#define XML_NS_SI "http://jabber.org/protocol/si"
 #define XML_NS_BIND "urn:ietf:params:xml:ns:xmpp-bind"
-#define XML_NS_IDLE "jabber:iq:last"
 #define XML_NS_DELAY "urn:xmpp:delay"
 #define XML_NS_SESSION "urn:ietf:params:xml:ns:xmpp-session"
 #define XML_NS_ARCHIVE "urn:xmpp:archive"
@@ -15,6 +23,11 @@
 #define XML_NS_GOOGLE_SETTINGS "google:setting"
 #define XML_NS_GOOGLE_NOSAVE "google:nosave"
 #define XML_NS_GOOGLE_MAILNOTIFY "google:mail:notify"
+#define XML_NS_AVATAR_DATA "urn:xmpp:avatar:data"
+#define XML_NS_AVATAR_METADATA "urn:xmpp:avatar:data"
+#define XML_NS_VCARD "vcard-temp"
+#define XML_NS_STANZAS "urn:ietf:params:xml:ns:xmpp-stanzas"
+#define XML_NS_PING "urn:xmpp:ping"
 
 using namespace pugi;
 
@@ -474,6 +487,111 @@ xml_iq_write_contact_otr_set(const char *user, Eina_Bool enable, size_t *len)
 }
 
 char *
+xml_iq_write_get_si(const char *from, const char *to, const char *id, size_t *len)
+{
+   xml_document doc;
+   xml_node iq, node;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("result");
+   iq.append_attribute("from").set_value(from);
+   iq.append_attribute("to").set_value(to);
+   iq.append_attribute("id").set_value(id);
+   node = iq.append_child("si");
+   node.append_attribute("xmlns").set_value(XML_NS_SI);
+   node = node.append_child("feature");
+   node.append_attribute("xmlns").set_value(XML_NS_FEATURE_NEG);
+   node = node.append_child("x");
+   node.append_attribute("xmlns").set_value(XML_NS_DATA);
+   node.append_attribute("type").set_value("submit");
+
+   node = node.append_child("field");
+   node.append_attribute("var").set_value("stream-method");
+
+   node = node.append_child("value");
+   node.append_child(node_pcdata).set_value(XML_NS_IBB);
+
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
+char *
+xml_iq_write_vcard(Shotgun_Auth *auth, size_t *len)
+{
+   xml_document doc;
+   xml_node iq, node;
+   Shotgun_User_Info *info;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("from").set_value(auth->base_jid);
+   iq.append_attribute("type").set_value("set");
+   iq.append_attribute("id").set_value("vc1");
+   node = iq.append_child("vCard");
+   node.append_attribute("xmlns").set_value(XML_NS_VCARD);
+   info = (Shotgun_User_Info *)auth->vcard;
+   xml_vcard_write(info, (void *)&node, EINA_FALSE);
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
+char *
+xml_iq_ibb_error(const char *from, const char *to, const char *id, size_t *len)
+{
+/*
+<iq from='juliet@capulet.com/balcony'
+    id='jn3h8g65'
+    to='romeo@montague.net/orchard'
+    type='error'>
+  <error type='cancel'>
+    <not-acceptable xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>
+  </error>
+</iq>
+*/
+   xml_document doc;
+   xml_node iq, node;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("error");
+   iq.append_attribute("to").set_value(to);
+   iq.append_attribute("id").set_value(id);
+   node = iq.append_child("error");
+   node.append_attribute("type").set_value("cancel");
+   node = node.append_child("not-acceptable");
+   node.append_attribute("xmlns").set_value(XML_NS_STANZAS);
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
+char *
+xml_iq_write_get_bytestream(const char *from, const char *to, const char *id, const char *sid, size_t *len)
+{
+   xml_document doc;
+   xml_node iq, node;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("result");
+   iq.append_attribute("to").set_value(to);
+   iq.append_attribute("id").set_value(id);
+   node = iq.append_child("query");
+   node.append_attribute("xmlns").set_value(XML_NS_BYTESTREAM);
+   node.append_attribute("sid").set_value(sid);
+   node = node.append_child("streamhost-used");
+   node.append_attribute("jid").set_value(to);
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
+char *
+xml_iq_write_get_ibb(const char *from, const char *to, const char *id, size_t *len)
+{
+   xml_document doc;
+   xml_node iq, node;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("result");
+   iq.append_attribute("from").set_value(from);
+   iq.append_attribute("to").set_value(to);
+   iq.append_attribute("id").set_value(id);
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
+char *
 xml_iq_write_preset(Shotgun_Auth *auth, Shotgun_Iq_Preset p, size_t *len)
 {
    xml_document doc;
@@ -768,7 +886,7 @@ xml_iq_roster_read(Shotgun_Auth *auth, xml_node node)
    return ret;
 }
 
-static void
+static Shotgun_Event_Iq *
 xml_iq_disco_info_write(Shotgun_Auth *auth, xml_node &query)
 {
 /*
@@ -803,6 +921,7 @@ xml_iq_disco_info_write(Shotgun_Auth *auth, xml_node &query)
   </query>
 </iq>
 */
+   Shotgun_Event_Iq *ret;
    xml_document doc;
    xml_node iq, node, identity;
    char *xml;
@@ -811,22 +930,75 @@ xml_iq_disco_info_write(Shotgun_Auth *auth, xml_node &query)
    /* TODO: this setup should probably be a macro or something if it gets reused */
    iq = doc.append_child("iq");
    iq.append_attribute("type").set_value("result");
-   iq.append_attribute("from").set_value(query.first_child().attribute("to").value());
-   iq.append_attribute("to").set_value(auth->base_jid);
-   iq.append_attribute("id").set_value(query.first_child().attribute("id").value());
+   iq.append_attribute("from").set_value(auth->base_jid);
+   iq.append_attribute("to").set_value(query.parent().attribute("from").value());
+   iq.append_attribute("id").set_value(query.parent().attribute("id").value());
    node = iq.append_child("query");
    node.append_attribute("xmlns").set_value(XML_NS_DISCO_INFO);
-   identity = node.append_child("identity");
-   identity.append_attribute("category").set_value("what_the_hell_are_categories?");
-   identity.append_attribute("type").set_value("man_I_suck_at_XMPP");
    node.append_child("feature").append_attribute("var").set_value(XML_NS_DISCO_INFO); /* yay recursion */
-   node.append_child("feature").append_attribute("var").set_value(XML_NS_CHATSTATES);
-   node.append_child("feature").append_attribute("var").set_value(XML_NS_IDLE);
-   node.append_child("feature").append_attribute("var").set_value(XML_NS_DELAY);
+   node.append_child("feature").append_attribute("var").set_value(XML_NS_FILETRANSFER);
+   node.append_child("feature").append_attribute("var").set_value(XML_NS_FEATURE_NEG);
+   node.append_child("feature").append_attribute("var").set_value(XML_NS_BYTESTREAM);
+   node.append_child("feature").append_attribute("var").set_value(XML_NS_IBB);
+   node.append_child("feature").append_attribute("var").set_value(XML_NS_PING);
 
    xml = xmlnode_to_buf(doc, &len, EINA_FALSE);
    shotgun_write(auth->svr, xml, len);
    free(xml);
+
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_SERVER_QUERY;
+   ret->account = auth;
+   return ret;
+}
+
+static Shotgun_Event_Iq *
+xml_iq_pong_write(Shotgun_Auth *auth, xml_node &query)
+{
+   Shotgun_Event_Iq *ret;
+   xml_document doc;
+   xml_node iq;
+   char *xml;
+   size_t len;
+
+   /* TODO: this setup should probably be a macro or something if it gets reused */
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("result");
+   iq.append_attribute("from").set_value(auth->base_jid);
+   iq.append_attribute("to").set_value(query.parent().attribute("from").value());
+   iq.append_attribute("id").set_value(query.parent().attribute("id").value());
+
+   xml = xmlnode_to_buf(doc, &len, EINA_FALSE);
+   shotgun_write(auth->svr, xml, len);
+   free(xml);
+
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_PING;
+   ret->account = auth;
+   return ret;
+}
+
+Eina_Bool
+xml_iq_ping_write(Shotgun_Auth *auth)
+{
+   xml_document doc;
+   xml_node iq, node;
+   char *xml;
+   size_t len;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("get");
+   iq.append_attribute("from").set_value(auth->base_jid);
+   iq.append_attribute("to").set_value(auth->svr_name);
+   iq.append_attribute("id").set_value("ping1");
+
+   node = iq.append_child("ping");
+   node.append_attribute("xmlns").set_value(XML_NS_PING);
+
+   xml = xmlnode_to_buf(doc, &len, EINA_FALSE);
+   shotgun_write(auth->svr, xml, len);
+   free(xml);
+   return EINA_TRUE;
 }
 
 static Shotgun_Event_Iq *
@@ -852,6 +1024,191 @@ xml_iq_disco_info_read(Shotgun_Auth *auth, xml_node &query)
    ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
    ret->type = SHOTGUN_IQ_EVENT_TYPE_SERVER_QUERY;
    ret->account = auth;
+   return ret;
+}
+
+static Shotgun_Event_Iq *
+xml_iq_filetransfer_read(Shotgun_Auth *auth, xml_node &si)
+{
+/*
+<iq type='set' id='offer1' to='receiver@jabber.org/resource'>
+  <si xmlns='http://jabber.org/protocol/si' 
+      id='a0'
+      mime-type='text/plain'
+      profile='http://jabber.org/protocol/si/profile/file-transfer'>
+    <file xmlns='http://jabber.org/protocol/si/profile/file-transfer'
+          name='test.txt'
+          size='1022'/>
+    <feature xmlns='http://jabber.org/protocol/feature-neg'>
+      <x xmlns='jabber:x:data' type='form'>
+        <field var='stream-method' type='list-single'>
+          <option><value>http://jabber.org/protocol/bytestreams</value></option>
+          <option><value>http://jabber.org/protocol/ibb</value></option>
+        </field>
+      </x>
+    </feature>
+  </si>
+</iq>
+
+*/
+   Shotgun_Event_Iq *ret;
+   Shotgun_Incoming_File *file;
+
+   file = static_cast<Shotgun_Incoming_File*>(calloc(1, sizeof(Shotgun_Incoming_File)));
+   file->from = eina_stringshare_add(si.parent().attribute("from").value());
+   file->id = eina_stringshare_add(si.parent().attribute("id").value());
+   file->sid = eina_stringshare_add(si.attribute("id").value());
+   file->name = eina_stringshare_add(si.first_child().attribute("name").value());
+   file->size = atoi(si.first_child().attribute("size").value());
+
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_FILE_TRANSFER;
+   ret->ev = file;
+   ret->account = auth;
+   return ret;
+}
+
+static Shotgun_Event_Iq *
+xml_iq_activity_read(Shotgun_Auth *auth, xml_node &query)
+{
+/*
+<iq from='juliet@capulet.com'
+    id='last1'
+    to='romeo@montague.net/orchard'
+    type='result'>
+   <query xmlns='jabber:iq:last' seconds='903'/>
+</iq>
+
+<iq from='juliet@capulet.com'
+    id='last1'
+    to='romeo@montague.net/orchard'
+    type='result'>
+   <query xmlns='jabber:iq:last' seconds='903'>Heading Home</query>
+</iq>
+*/
+   Shotgun_Event_Iq *ret;
+   Shotgun_Iq_Last *idle;
+
+   idle = static_cast<Shotgun_Iq_Last*>(calloc(1, sizeof(Shotgun_Iq_Last)));
+   idle->last = atoi(query.attribute("seconds").value());
+   idle->message = eina_stringshare_add(query.first_child().value());
+   idle->jid = eina_stringshare_add(query.parent().attribute("from").value());
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->ev = idle;
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_IDLE;
+   ret->account = auth;
+   return ret;
+}
+
+static Shotgun_Event_Iq *
+xml_iq_ping_read(Shotgun_Auth *auth, xml_node &iq)
+{
+/*
+<iq from='juliet@capulet.lit/balcony' to='capulet.lit' id='ping1' type='result'/>
+*/
+   Shotgun_Event_Iq *ret;
+
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_PING;
+   ret->account = auth;
+   return ret;
+}
+
+static Shotgun_Event_Iq *
+xml_iq_bytestream_read(Shotgun_Auth *auth, xml_node &query)
+{
+/*
+<iq from='target@example.org/bar'
+    id='hu3vax16'
+    to='requester@example.com/foo'
+    type='result'>
+  <query xmlns='http://jabber.org/protocol/bytestreams'
+         sid='vxf9n471bn46'>
+    <streamhost-used jid='requester@example.com/foo'/>
+  </query>
+</iq>
+*/
+   Shotgun_Event_Iq *ret;
+   Shotgun_Incoming_File *file;
+   char *xml;
+   const char *type;
+   size_t len;
+
+   file = static_cast<Shotgun_Incoming_File*>(calloc(1, sizeof(Shotgun_Incoming_File)));
+   file->from = eina_stringshare_add(query.parent().attribute("from").value());
+   file->id = eina_stringshare_add(query.parent().attribute("id").value());
+   file->sid = eina_stringshare_add(query.first_child().attribute("sid").value());
+
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_BYTESTREAM;
+   ret->ev = file;
+   ret->account = auth;
+
+   xml = xml_iq_write_get_bytestream(shotgun_jid_get(auth), 
+                                      file->from, 
+                                     file->id,
+                                     file->sid, 
+                                     &len);
+   shotgun_write(auth->svr, xml, len);
+   free(xml);
+
+   return ret;
+}
+
+static Shotgun_Event_Iq *
+xml_iq_ibb_read(Shotgun_Auth *auth, xml_node &query)
+{
+/*
+<iq from='target@example.org/bar'
+    id='hu3vax16'
+    to='requester@example.com/foo'
+    type='result'>
+  <query xmlns='http://jabber.org/protocol/bytestreams'
+         sid='vxf9n471bn46'>
+    <streamhost-used jid='requester@example.com/foo'/>
+  </query>
+</iq>
+*/
+   Shotgun_Event_Iq *ret;
+   Shotgun_Incoming_File *file;
+   char *xml;
+   const char *type = NULL;
+   size_t len;
+
+   file = static_cast<Shotgun_Incoming_File*>(calloc(1, sizeof(Shotgun_Incoming_File)));
+   file->from = eina_stringshare_add(query.parent().attribute("from").value());
+   file->id = eina_stringshare_add(query.parent().attribute("id").value());
+   file->sid = eina_stringshare_add(query.attribute("sid").value());
+
+   type = query.name();
+   if (!strcmp(type, "open"))
+     {
+        file->status = SHOTGUN_FILE_OPEN;
+        file->blocsize = atoi(query.attribute("block-size").value());
+     }
+   else if(!strcmp(type, "data"))
+     {
+        file->status = SHOTGUN_FILE_DATA;
+        file->data = eina_stringshare_add(query.first_child().value());
+     }
+   else if (!strcmp(type, "close"))
+     file->status = SHOTGUN_FILE_CLOSE;
+   else
+     file->status = SHOTGUN_FILE_UNKNOWN;
+
+   ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
+   ret->type = SHOTGUN_IQ_EVENT_TYPE_IBB;
+   ret->ev = file;
+   ret->account = auth;
+
+   //xml_iq_bytestream_result(ret);
+   xml = xml_iq_write_get_ibb(shotgun_jid_get(auth), 
+                                file->from, 
+                              file->id,
+                              &len);
+   shotgun_write(auth->svr, xml, len);
+   free(xml);
+
    return ret;
 }
 
@@ -975,6 +1332,24 @@ xml_iq_mailnotification_read(Shotgun_Auth *auth, xml_node node)
    return ret;
 }
 
+char *
+xml_iq_activity_query(const char *from, const char *to, const char *id, size_t *len)
+{
+   xml_document doc;
+   xml_node iq, node;
+
+   iq = doc.append_child("iq");
+   iq.append_attribute("type").set_value("get");
+   iq.append_attribute("from").set_value(from);
+   iq.append_attribute("to").set_value(to);
+   iq.append_attribute("id").set_value(id);
+
+   node = iq.append_child("query");
+   node.append_attribute("xmlns").set_value(XML_NS_IDLE);
+
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
 Shotgun_Event_Iq *
 xml_iq_read(Shotgun_Auth *auth, char *xml, size_t size)
 {
@@ -983,6 +1358,7 @@ xml_iq_read(Shotgun_Auth *auth, char *xml, size_t size)
    xml_parse_result res;
    Shotgun_Iq_Type type;
    const char *str;
+   const char *id;
 
    res = doc.load_buffer_inplace(xml, size, parse_default, encoding_auto);
    if ((res.status != status_ok) && (res.status != status_end_element_mismatch))
@@ -999,7 +1375,7 @@ xml_iq_read(Shotgun_Auth *auth, char *xml, size_t size)
       case SHOTGUN_IQ_TYPE_RESULT:
         if (!strcmp(str, XML_NS_ROSTER))
           return xml_iq_roster_read(auth, node);
-        if (!strcmp(str, "vcard-temp"))
+        if (!strcmp(str, XML_NS_VCARD))
           return xml_iq_vcard_read(auth, doc.first_child(), node);
         if (!strcmp(str, XML_NS_BIND))
           auth->bind = eina_stringshare_add(node.child("jid").child_value());
@@ -1011,12 +1387,24 @@ xml_iq_read(Shotgun_Auth *auth, char *xml, size_t size)
           return xml_iq_gsettings_read(auth, node);
         if (!strcmp(str, XML_NS_GOOGLE_NOSAVE))
           return xml_iq_settings_read(auth, node);
+        if (!strcmp(str, XML_NS_IDLE))
+          return xml_iq_activity_read(auth, node);
+
+        /**
+         * Some IQ tags don't have a xmlns property (ie XEP-0199 ping answer)
+         * We'll have to compare the ID to previously sent IQ's ID in order to 
+         * identify it.
+         */
+        id = doc.first_child().attribute("id").value();
+        if ( !strncmp(id, "ping", 4))
+            shotgun_ping_received(auth);
         break;
       case SHOTGUN_IQ_TYPE_GET:
         if (!strcmp(str, XML_NS_DISCO_INFO))
-          xml_iq_disco_info_write(auth, node);
-          break;
-        return (Shotgun_Event_Iq*)1;
+          return xml_iq_disco_info_write(auth, node);
+        if (!strcmp(str, XML_NS_PING))
+            return xml_iq_pong_write(auth, node);
+        break;
       case SHOTGUN_IQ_TYPE_SET:
         if (!strcmp(str, XML_NS_ROSTER))
           return xml_iq_roster_read(auth, node);
@@ -1024,6 +1412,12 @@ xml_iq_read(Shotgun_Auth *auth, char *xml, size_t size)
           return xml_iq_gsettings_read(auth, node);
         if (!strcmp(str, XML_NS_GOOGLE_MAILNOTIFY))
           return xml_iq_mailnotification_read(auth, node);
+        if (!strcmp(str, XML_NS_SI))
+          return xml_iq_filetransfer_read(auth, node);
+        if (!strcmp(str, XML_NS_BYTESTREAM))
+          return xml_iq_bytestream_read(auth, node);
+        if (!strcmp(str, XML_NS_IBB))
+          return xml_iq_ibb_read(auth, node);
         INF("UNHANDLED SET NS: %s", str);
         break;
       default:
@@ -1168,7 +1562,7 @@ char *
 xml_presence_write_subscription(const char *jid, Eina_Bool subscribe, size_t *len)
 {
 /*
-<presence to='contact@example.org' type='unsubscribed'/>
+<presence to='contact@example.org' type='unsubscribe'/>
 <presence to='user@example.com' type='subscribe'/>
 */
    xml_document doc;
@@ -1185,6 +1579,26 @@ xml_presence_write_subscription(const char *jid, Eina_Bool subscribe, size_t *le
    return xmlnode_to_buf(doc, len, EINA_FALSE);
 }
 
+char *
+xml_presence_write_subscription_answer(const char *jid, Eina_Bool subscribed, size_t *len)
+{
+/*
+<presence to='contact@example.org' type='unsubscribed'/>
+<presence to='user@example.com' type='subscribed'/>
+*/
+   xml_document doc;
+   xml_node node;
+   xml_attribute attr;
+
+   node = doc.append_child("presence");
+   node.append_attribute("to").set_value(jid);
+   attr = node.append_attribute("type");
+   if (subscribed)
+     attr.set_value("subscribed");
+   else
+     attr.set_value("unsubscribed");
+   return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
 
 char *
 xml_presence_write(Shotgun_Auth *auth, size_t *len)
@@ -1199,6 +1613,7 @@ xml_presence_write(Shotgun_Auth *auth, size_t *len)
 */
    xml_document doc;
    xml_node node, show;
+   Shotgun_User_Info *info;
    char buf[64];
 
    node = doc.append_child("presence");
@@ -1229,9 +1644,55 @@ xml_presence_write(Shotgun_Auth *auth, size_t *len)
    node.append_child("priority").append_child(node_pcdata).set_value(buf);
    node = node.append_child("x");
    node.append_attribute("xmlns").set_value("vcard-temp:x:update");
-   node.append_child("photo"); /* FIXME: photo data */
+   info = (Shotgun_User_Info *)auth->vcard;
+   xml_vcard_write(info, (void *)&node, EINA_TRUE);
 
    return xmlnode_to_buf(doc, len, EINA_FALSE);
+}
+
+void
+xml_vcard_write(Shotgun_User_Info *info, void *vcard, Eina_Bool lcasetags)
+{
+   /**
+    * Stupid patch here. When sending vCard within <presence>, the following
+    * tags HAVE to be in lower case (even if sending only an empty <photo/>).
+    * BUT ! when <iq>, they HAVE to be upper case.
+    * If this syntax is wrong, other clients wont receive auto vCard updates, 
+    * they'll have to ask for it.
+    * So... : lcasetags :(
+    */ 
+   xml_node *node, fn_node, ph_node, t_node, d_node;
+   node = (xml_node *)vcard;
+   
+   if (!info)
+     {
+        if (lcasetags) (*node).append_child("photo");
+        else (*node).append_child("PHOTO");
+        return;
+     }
+
+   if (info->full_name)
+     {
+        if (lcasetags) fn_node = (*node).append_child("fn");
+        else fn_node = (*node).append_child("FN");
+        fn_node.append_child(node_pcdata).set_value(info->full_name);
+     }
+
+   if (lcasetags) ph_node = (*node).append_child("photo");
+   else ph_node = (*node).append_child("PHOTO");
+
+   if (info->photo.data)
+     {
+        if (info->photo.type)
+          {
+             if (lcasetags) t_node = ph_node.append_child("type");
+             else t_node = ph_node.append_child("TYPE");
+             t_node.append_child(node_pcdata).set_value(info->photo.type);
+          }
+        if (lcasetags) d_node = ph_node.append_child("binval");
+        else d_node = ph_node.append_child("BINVAL");
+        d_node.append_child(node_pcdata).set_value((const char *)(info->photo.data));
+     }
 }
 
 Shotgun_Event_Presence *
@@ -1277,10 +1738,15 @@ xml_presence_read(Shotgun_Auth *auth, char *xml, size_t size)
              t = attr.value();
              DBG("presence type: %s", t);
              ret->status = SHOTGUN_USER_STATUS_NONE;
-             if (t[0] == 's')
+             if (t[0] == 's')   /* Starts with a 's' -> subscribe */
                ret->type = SHOTGUN_PRESENCE_TYPE_SUBSCRIBE;
-             else
-               ret->type = SHOTGUN_PRESENCE_TYPE_UNSUBSCRIBE;
+             else if (t[2] == 's') /** Third char is a 's' -> unsubscribe 
+                                     *  Can't check if first char is a 'u' cause
+                                     *  it could be "unavailable"
+                                     */
+                ret->type = SHOTGUN_PRESENCE_TYPE_UNSUBSCRIBE;
+             else 
+               ret->type = SHOTGUN_PRESENCE_TYPE_UNAVAILABLE;
           }
      }
    for (xml_node it = node.first_child(); it; it = it.next_sibling())
