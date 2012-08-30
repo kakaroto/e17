@@ -63,93 +63,93 @@
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eina">Eina</a> </b><em>
-     1.2.1</em></p><p>
+     1.7.0</em></p><p>
      Core data structure library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EINA",
-     "http://download.enlightenment.org/releases/eina-1.2.1.tar.gz"
+     "http://download.enlightenment.org/releases/eina-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eet">Eet</a> </b><em>
-     1.6.1</em></p><p>
+     1.7.0</em></p><p>
      Data encode/decode and storage library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EET", 
-     "http://download.enlightenment.org/releases/eet-1.6.1.tar.gz"
+     "http://download.enlightenment.org/releases/eet-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Evas">Evas</a> </b><em>
-     1.2.1</em></p><p>
+     1.7.0</em></p><p>
      Canvas and scenegraph rendering library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EVAS", 
-     "http://download.enlightenment.org/releases/evas-1.2.1.tar.gz"
+     "http://download.enlightenment.org/releases/evas-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> </b><em>
-     1.2.1</em></p><p>
+     1.7.0</em></p><p>
      Core mainloop, display abstraction and utility library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ECORE", 
-     "http://download.enlightenment.org/releases/ecore-1.2.1.tar.gz"
+     "http://download.enlightenment.org/releases/ecore-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Embryo">Embryo</a> </b><em>
-     1.2.0</em></p><p>
+     1.7.0</em></p><p>
      Small <a href="http://www.compuphase.com/pawn">Pawn</a> based virtual machine and compiler. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EMBRYO", 
-     "http://download.enlightenment.org/releases/embryo-1.2.0.tar.gz"
+     "http://download.enlightenment.org/releases/embryo-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
 
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Evas_Generic_Loaders">Evas Generic Loaders</a> </b><em>
-     1.2.0</em></p><p>
+     1.7.0</em></p><p>
      Extra loaders for GPL loaders and unstable libraries. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EVAS GENERIC LOADERS", 
-     "http://download.enlightenment.org/releases/evas_generic_loaders-1.2.0.tar.gz"
+     "http://download.enlightenment.org/releases/evas_generic_loaders-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Exquisite">Exquisite</a> </b><em>
-     1.0.0</em></p><p>
+     1.7.0</em></p><p>
      Bootsplash program able to render in Framebuffer, or X11 that is
      easy to integrate with existing boot setups (sysvinit or systemd) bia
      messaging (pipe or socket) as well as customise look and feel via
      Edje. </p><p align=right><?php blinkdl("i/dl.png",
      "DOWNLOAD EXQUISITE", 
-     "http://download.enlightenment.org/releases/exquisite-1.0.0.tar.gz"
+     "http://download.enlightenment.org/releases/exquisite-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Elementary">Elementary</a> </b><em>
-     1.0.1 </em></p><p>
+     1.7.0 </em></p><p>
      Elementary, the widget set... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ELEMENTARY",
-     "http://download.enlightenment.org/releases/elementary-1.0.1.tar.gz"
+     "http://download.enlightenment.org/releases/elementary-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
 
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eio">Eio</a> </b><em>
-     1.0.1 </em></p><p>
+     1.7.0 </em></p><p>
      Eio, async I/O library... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EIO",
-     "http://download.enlightenment.org/releases/eio-1.0.1.tar.gz"
+     "http://download.enlightenment.org/releases/eio-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
 
@@ -159,80 +159,80 @@
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Edje">Edje</a> </b><em>
-     1.2.1</em></p><p>
+     1.7.0</em></p><p>
      Abstract GUI layout and animation object library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EDJE", 
-     "http://download.enlightenment.org/releases/edje-1.2.1.tar.gz"
+     "http://download.enlightenment.org/releases/edje-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> </b><em>
-     1.2.0</em></p><p>
+     1.7.0</em></p><p>
      Standards handling for <a href="http://www.freedesktop.org">freedesktop.org</a> standards. </p><p align=right><?php blinkdl("i/dl.png",
      "DOWNLOAD EFREET", 
-     "http://download.enlightenment.org/releases/efreet-1.2.0.tar.gz"
+     "http://download.enlightenment.org/releases/efreet-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> </b><em>
-     1.2.0</em></p><p>
+     1.7.0</em></p><p>
      Dbus wrapping and glue layer library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD E_DBUS", 
-     "http://download.enlightenment.org/releases/e_dbus-1.2.0.tar.gz"
+     "http://download.enlightenment.org/releases/e_dbus-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> </b><em>
-     1.2.0</em></p><p>
+     1.7.0</em></p><p>
      Device abstraction library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EEZE", 
-     "http://download.enlightenment.org/releases/eeze-1.2.0.tar.gz"
+     "http://download.enlightenment.org/releases/eeze-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Expedite">Expedite</a> </b><em>
-     1.2.0</em></p><p>
+     1.7.0</em></p><p>
      Performance and correctness test suite for Evas. </p><p align=right><?php blinkdl("i/dl.png",
      "DOWNLOAD EXPEDITE", 
-     "http://download.enlightenment.org/releases/expedite-1.2.0.tar.gz"
+     "http://download.enlightenment.org/releases/expedite-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Evil">Evil</a> </b><em>
-     1.1.0</em></p><p>
+     1.7.0</em></p><p>
      Windows compatibility layer. </p><p align=right><?php blinkdl("i/dl.png",
      "DOWNLOAD EVIL", 
-     "http://download.enlightenment.org/releases/evil-1.1.0.tar.gz"
+     "http://download.enlightenment.org/releases/evil-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Ethumb">Ethumb</a> </b><em>
-     1.0.1 </em></p><p>
+     1.7.0 </em></p><p>
      EThumb, thumbnail generation library... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ETHUMB",
-     "http://download.enlightenment.org/releases/ethumb-1.0.1.tar.gz"
+     "http://download.enlightenment.org/releases/ethumb-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
 
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Emotion">Emotion</a> </b><em>
-     1.0.1 </em></p><p>
+     1.7.0 </em></p><p>
      Emotion, video and audio codec API... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EMOTION",
-     "http://download.enlightenment.org/releases/emotion-1.0.1.tar.gz"
+     "http://download.enlightenment.org/releases/emotion-1.7.0.tar.gz"
    );?></p></div>
    <?php frame2();?>
 
