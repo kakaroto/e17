@@ -76,7 +76,7 @@ AC_ARG_WITH([edje-cc],
 AC_SUBST(edje_cc)
 
 have_azy="no"
-want_azy="auto"
+want_azy="no"
 AC_ARG_ENABLE([azy],
    [AC_HELP_STRING([--disable-azy], [disable azy support. @<:@default=detect@:>@])],
    [want_azy=no], [])
