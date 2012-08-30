@@ -352,6 +352,7 @@ contact_resource_menu_setup(Contact *c, Evas_Object *menu)
         elm_radio_state_value_set(obj, i++);
         elm_object_text_set(obj, buf);
         evas_object_show(obj);
+        sit = elm_menu_item_add(menu, it, NULL, NULL, (Evas_Smart_Cb)contact_resource_set, c);
         elm_object_item_content_set(sit, obj);
      }
    elm_radio_value_set(radio, set);
