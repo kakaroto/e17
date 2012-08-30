@@ -1,0 +1,100 @@
+EFL 1.7 배포
+칼슨 하이츨러
+raster@rasterman.com
+
+<p>
+여러 Enlightenment 컴포넌트를 배포합니다. 히스토리 추적 및 관리를 쉽게 하기 위해 모든 EFL 라이브러리의 버전을 1.7로 맞추었습니다. 어느 부분이 변경되었는지, 고쳐졌는지, 추가되었는지를 확인하려면 각 배포 라이브러리 압축 파일에 있는 NEWS와 README 파일을 읽어보시기 바랍니다. 이번 배포는 SVN 리비전 75861번을 기반으로 합니다.
+</p>
+
+<p>
+11월에 'EFL 개발자 데이' 행사를 개최합니다. LinuxCon 유럽과 같은 곳에서 행사가 열립니다. 시간을 내서 개발자 및 다른 사용자들과 만나 보시길 바랍니다. 그 때 까지는 Enlightenment 0.17을 정식 배포하길 희망합니다.
+</p>
+
+<p>
+이 시점에서 EFL 라이브러리들을 한 소스 트리에 통합하는 작업을 시작하려고 합니다. 앞으로는 한 EFL 소스 트리를 기반으로 EFL을 배포하게 되며 패키징을 하는 분들이나 개발자 분들이 더욱 편리해질 것입니다. 소스 코드 저장소는 곧 새로운 저장소로 이전될 것이며 기존에 만들어두었던 패치를 수정해야 할 수도 있습니다.
+</p>
+
+<p><ul>
+
+<li>Eina 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Embryo 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/embryo-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Efreet 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/efreet-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/efreet-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eeze 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/eeze-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Expedite 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/expedite-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/expedite-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas Generic Loaders 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eio 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/eio-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eio-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Emotion 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/emotion-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/emotion-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ethumb 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/ethumb-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ethumb-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Elementary 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/elementary-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/elementary-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evil 1.7.0 - 
+[<a href="http://download.enlightenment.org/releases/evil-1.7.0.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evil-1.7.0.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
