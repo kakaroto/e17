@@ -291,13 +291,7 @@ shotgun_connect(Shotgun_Auth *auth)
    auth->ev_upgrade = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_UPGRADE, (Ecore_Event_Handler_Cb)shotgun_login_con, auth);
    auth->ev_write = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_WRITE, (Ecore_Event_Handler_Cb)ev_write, auth);
    auth->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, auth->svr_name, 5222, auth);
-   if (auth->svr)
-     {
-        auth->keepalive = ecore_timer_add(300, (Ecore_Task_Cb)keepalive, auth);
-        auth->et_ping = ecore_timer_add(auth->ping_delay, (Ecore_Task_Cb)ping, auth);
-        auth->et_ping_timeout = ecore_timer_add(auth->ping_timeout, (Ecore_Task_Cb)ping_timeout, auth);
-        ecore_timer_freeze(auth->et_ping_timeout);
-     }
+   if (auth->svr) auth->keepalive = ecore_timer_add(300, (Ecore_Task_Cb)keepalive, auth);
 
    return !!auth->svr;
 }
@@ -524,6 +518,14 @@ shotgun_vcard_set(Shotgun_Auth *auth, void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN(auth);
    auth->vcard = data;
+}
+
+void
+shotgun_ping_start(Shotgun_Auth *auth)
+{
+   auth->et_ping = ecore_timer_add(auth->ping_delay, (Ecore_Task_Cb)ping, auth);
+   auth->et_ping_timeout = ecore_timer_add(auth->ping_timeout, (Ecore_Task_Cb)ping_timeout, auth);
+   ecore_timer_freeze(auth->et_ping_timeout);
 }
 
 void

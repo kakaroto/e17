@@ -111,6 +111,7 @@ struct Shotgun_Auth
       Eina_Bool archive_management : 1;
       Eina_Bool google_settings : 1;
       Eina_Bool google_nosave : 1;
+      Eina_Bool ping : 1;
       struct
       {
          Eina_Bool mail_notifications : 1;
@@ -161,6 +162,7 @@ void shotgun_md5_hmac_encode(unsigned char *digest, const char *string, size_t s
 Eina_Bool shotgun_login_con(Shotgun_Auth *auth, int type, Ecore_Con_Event_Server_Add *ev);
 void shotgun_login(Shotgun_Auth *auth, Ecore_Con_Event_Server_Data *ev);
 
+void shotgun_ping_start(Shotgun_Auth *auth);
 #ifdef __cplusplus
 }
 #endif

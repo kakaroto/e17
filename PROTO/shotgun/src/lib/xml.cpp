@@ -1020,6 +1020,11 @@ xml_iq_disco_info_read(Shotgun_Auth *auth, xml_node &query)
           auth->features.google_settings = EINA_TRUE;
         else if (!strcmp(s, XML_NS_GOOGLE_NOSAVE))
           auth->features.google_nosave = EINA_TRUE;
+        else if (!strcmp(s, XML_NS_PING))
+          {
+             auth->features.ping = EINA_TRUE;
+             shotgun_ping_start(auth);
+          }
      }
    ret = static_cast<Shotgun_Event_Iq*>(calloc(1, sizeof(Shotgun_Event_Iq)));
    ret->type = SHOTGUN_IQ_EVENT_TYPE_SERVER_QUERY;
