@@ -1,22 +1,20 @@
-Summary: Graphical SUDO Wrapper
+Summary: Graphical PolicyKit Authentication Agent
 Name: @PACKAGE@
 Version: @VERSION@
 Release: 0.%(date '+%Y%m%d')
 License: 3-clause BSD
 Group: Applications/Admin
-URL: http://www.satus.net/empower/
+URL: http://www.mekius.net/content/empower/
 Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org.au/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
-BuildRequires: evas-devel, ecore-devel, ewl-devel
+BuildRequires: evas-devel, ecore-devel, elementary-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-Empower is an EWL-based wrapper for the "sudo" (Super-User Do" command
-which provides access to privileged commands based on a configurable
-ACL.
+Empower is an Elementary based PolicyKit authentication agent.
 
 %prep
 %setup -q

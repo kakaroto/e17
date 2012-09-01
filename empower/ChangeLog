@@ -1,3 +1,6 @@
+7-21-12 -- Version 3.0.0
+  - Empower is now a PolicyKit authentication agent.  It maintains
+	  the askpass support.
 7-10-09 -- Version 2.0.0
   - Remove ETK version
   - Add Elementary version

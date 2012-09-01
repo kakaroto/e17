@@ -1,22 +1,12 @@
-Empower - A graphical sudo tool based on the Enlightenment Foundation Libraries
-Version 2.0.0
+Empower - A graphical PolicyKit authentication agent based on the
+          Enlightenment Foundation Libraries
+Version 3.0.0
 
 Usage:
-    Sudo: empower [SUDO OPTIONS] [program] [PROGRAM OPTIONS] [EWL OPTIONS]
-    AskPass: empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]
-    
-    Note: EWL options are only valid on the EWL version.
-
-Usage Note:
-    If no options are passed to empower, you will be prompted to provide an 
-    executable and your password (if not authenticated already).  You can 
-    specify sudo options as well as program args by following this format in
-    the execute entry:
-        
-        empower [SUDO OPTIONS] <program> [PROGRAM OPTIONS]
-        
+    PolicyKit Agent: empower
+    AskPass Support: empower-askpass or empower -p
 
 See INSTALL for installation instructions
 See COPYING and COPYING-PLAIN for license information
 
-Created by and Copyright 2005-2009 Nicholas "Mekius_" Hughart
+Created by and Copyright 2005-2009 Nicholas "mekius" Hughart

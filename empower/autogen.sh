@@ -4,7 +4,6 @@ rm -rf autom4te.cache
 rm -f aclocal.m4 ltmain.sh
 
 touch README
-touch ABOUT-NLS
 
 echo "Running autopoint..." ; autopoint -f || :
 echo "Running aclocal..." ; aclocal -I m4 $ACLOCAL_FLAGS || exit 1

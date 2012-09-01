@@ -1,10 +1,5 @@
-To build and install empower, do the following:
+To build and install Empower, do the following:
 	./autogen.sh
 	make
 	make install (as root)
 
-By default the Elementary version will be built unless it's not installed
-or the EWL version is explicitly enabled by passing --enable-ewl to autogen.sh.
-The program will build and install as 'empower' in either case.  Both versions
-cannot be installed at the same time without renaming the resulting binary
-manually.

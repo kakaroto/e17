@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([empower], [2.0.0], [mekius@mekius.net])
+AC_INIT([empower], [3.0.0], [mekius@mekius.net])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -57,8 +57,31 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.12.1])
+ALL_LINGUAS=""
+AC_SUBST(ALL_LINGUAS)
+
+m4_ifdef([AM_GNU_GETTEXT_VERSION], [
+AM_GNU_GETTEXT_VERSION([0.17])
+])
+
+m4_ifdef([AM_GNU_GETTEXT], [
+AM_GNU_GETTEXT([external], [need-ngettext])
+po_makefile_in=po/Makefile.in
+have_po="yes"
+],[
+have_po="no"
+])
+AC_SUBST(LTLIBINTL)
+if test "x$LIBINTL" = "x"; then
+  LIBINTL="$INTLLIBS"
+fi
+
+if test "x${POSUB}" = "x" ; then
+   have_po="no"
+fi
+
+AM_CONDITIONAL([HAVE_PO], [test "x${have_po}" = "xyes"])
+
 
 PKG_CHECK_MODULES([EVAS], evas,
    [],
@@ -84,55 +107,29 @@ PKG_CHECK_MODULES([EDJE], edje,
    ]
 )
 
-AC_ARG_ENABLE(ewl,
-        AC_HELP_STRING([--enable-ewl/--disable-ewl],
-        [enable/disable ewl version (default=no)]),
-        [enable_ewl=$enableval ], [ enable_ewl=no])
-
-if test "x$enable_ewl" = "xdefault" || test "x$enable_ewl" = "xyes"; then
-   PKG_CHECK_MODULES([EWL], ewl >= 0.4.0,
-      [  enable_ewl="yes"  ],
-      [
-         enable_ewl="no"
-         echo "Could not find Ewl.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-         AC_MSG_ERROR([Empower needs Ewl to compile the Ewl version.])
-      ]
+PKG_CHECK_MODULES([ELEMENTARY], elementary,
+   [],
+   [
+      echo "Could not find Elementary.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
+      AC_MSG_ERROR([Empower needs Elementary to compile.])
+   ]
 )
-fi
 
-AM_CONDITIONAL(ENABLE_EWL, test x$enable_ewl = xyes)
-
-if test "x$enable_ewl" = "xno"; then
-AC_ARG_ENABLE(elementary,
-        AC_HELP_STRING([--enable-elementary/--disable-elementary],
-        [enable/disable elementary version (default=autodetect)]),
-        [enable_elementary=$enableval ], [ enable_elementary=default])
-
-if test "x$enable_elementary" = "xdefault" || test "x$enable_elementary" = "xyes"; then
-   PKG_CHECK_MODULES([ELEMENTARY], elementary >= 0.3.0.0,
-      [  enable_elementary="yes"  ],
-      [
-         enable_elementary="no"
-         echo "Could not find Elementary.  If it is installed, \nplease makesure its path is in PKG_CONFIG_PATH";
-         AC_MSG_ERROR([Empower needs Elementary to compile the Elementary version.])
-      ]
+PKG_CHECK_MODULES([EDBUS], edbus,
+   [],
+   [
+      echo "Could not find Edbus.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
+      AC_MSG_ERROR([Empower needs Edbus to compile.])
+   ]
 )
-fi
-else
-enable_elementary="no"
-fi
-
-AM_CONDITIONAL(ENABLE_ELEMENTARY, test x$enable_elementary = xyes)
 
 AC_OUTPUT([
-Makefile 
+Makefile
 empower.spec
 src/Makefile
 src/bin/Makefile
-src/bin/ewl/Makefile
-src/bin/elm/Makefile
 data/Makefile
-po/Makefile.in
+$po_makefile_in
 ])
 
 echo
@@ -140,8 +137,3 @@ echo "Configuration:"
 echo
 echo "  Install path:              ${prefix}"
 echo
-echo "  Toolkit Support"
-echo "  ----------------"
-echo "  EWL:                       $enable_ewl"
-echo "  Elementary:                $enable_elementary"
-echo 
