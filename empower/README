@@ -4,9 +4,8 @@ Version 3.0.0
 
 Usage:
     PolicyKit Agent: empower
-    AskPass Support: empower-askpass or empower -p
 
 See INSTALL for installation instructions
 See COPYING and COPYING-PLAIN for license information
 
-Created by and Copyright 2005-2009 Nicholas "mekius" Hughart
+Created by and Copyright 2005-2012 Nicholas "mekius" Hughart
