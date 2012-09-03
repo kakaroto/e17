@@ -31,7 +31,7 @@ typedef struct _Game
     Card cards[BOARD_SIZE_MAX];
     Card *first_card, *second_card;
     Evas_Object *time_lb, *best_time_lb, *attempts_lb, *found_lb, *won_lb;
-    Evas_Object *inwin, *table, *sp;
+    Evas_Object *win, *inwin, *table, *sp;
     Ecore_Timer *play_timer, *show_timer, *dl_pop;
     Etrophy_Gamescore *gamescore;
     Eina_Bool running:1;
@@ -309,6 +309,44 @@ _prepopulate_table(Game *game)
 }
 
 static void
+_popup_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Evas_Object *eobj = data;
+   evas_object_del(eobj);
+}
+
+static void
+_scores_hide_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Evas_Object *popup = data;
+   evas_object_del(popup);
+}
+
+static void
+_scores_show_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+    Evas_Object *popup, *bt, *leaderboard;
+    Game *game = data;
+
+    popup = elm_popup_add(game->win);
+    elm_object_part_text_set(popup, "title,text", "Leaderboard");
+
+    bt = elm_button_add(popup);
+    elm_object_text_set(bt, "OK");
+    elm_object_part_content_set(popup, "button1", bt);
+
+    leaderboard = etrophy_score_layout_add(popup, game->gamescore);
+    elm_object_content_set(popup, leaderboard);
+    evas_object_smart_callback_add(bt, "clicked", _scores_hide_cb, popup);
+
+    evas_object_event_callback_add(popup, EVAS_CALLBACK_DEL, _popup_del_cb, bt);
+    evas_object_event_callback_add(popup, EVAS_CALLBACK_DEL, _popup_del_cb,
+                                   leaderboard);
+
+    evas_object_show(popup);
+}
+
+static void
 _start_game_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
     Game *game = data;
@@ -479,7 +517,7 @@ _create_window_desktop(Game *game)
     Evas_Object *win, *inwin, *bg, *bx, *bxctl, *table, *bt, *sp, *fr, *lb;
     char buf[16];
 
-    win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
+    game->win = win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
     if (!win) return EINA_FALSE;
     evas_object_smart_callback_add(win, "delete,request",
             _win_delete_request, game);
@@ -511,6 +549,13 @@ _create_window_desktop(Game *game)
     bt = elm_button_add(win);
     elm_object_text_set(bt, "New game");
     evas_object_smart_callback_add(bt, "clicked", _start_game_cb, game);
+    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, 0);
+    evas_object_show(bt);
+    elm_box_pack_end(bxctl, bt);
+
+    bt = elm_button_add(win);
+    elm_object_text_set(bt, "Leaderboard");
+    evas_object_smart_callback_add(bt, "clicked", _scores_show_cb, game);
     evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, 0);
     evas_object_show(bt);
     elm_box_pack_end(bxctl, bt);
@@ -673,7 +718,7 @@ elm_main(int argc, char **argv)
     etrophy_init();
     game.gamescore = etrophy_gamescore_load("econcentration");
     if (!game.gamescore)
-        game.gamescore = etrophy_gamescore_new();
+        game.gamescore = etrophy_gamescore_new("econcentration");
     if (!game.gamescore)
     {
         r = -1;
@@ -688,7 +733,7 @@ elm_main(int argc, char **argv)
 
     elm_run();
 
-    etrophy_gamescore_save(game.gamescore, "econcentration");
+    etrophy_gamescore_save(game.gamescore, NULL);
 
 end:
     etrophy_shutdown();
