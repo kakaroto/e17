@@ -10,7 +10,8 @@
 
 #include <stdlib.h>
 
-#define BOARD_SIZE_DEFAULT 4
+#define BOARD_INDEX_DEFAULT 1
+#define BOARD_SIZE_DEFAULT (BOARD_INDEX_DEFAULT * 2 + 2)
 #define BOARD_SIZE_MAX 64
 #define FLIP_HIDE 3
 
@@ -27,7 +28,8 @@ typedef struct _Card
 
 typedef struct _Game
 {
-    int play_time, attempts, found, board_size, prev_board_size, total_size;
+    int play_time, attempts, found;
+    int board_index, board_size, prev_board_size, total_size;
     Card cards[BOARD_SIZE_MAX];
     Card *first_card, *second_card;
     Evas_Object *time_lb, *best_time_lb, *attempts_lb, *found_lb;
@@ -44,12 +46,19 @@ _board_size_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
     Game *game = data;
     char buf[16];
-    game->board_size = elm_spinner_value_get(obj) * 2 + 2;
+    int score;
+    game->board_index = elm_spinner_value_get(obj);
+    game->board_size = game->board_index * 2 + 2;
     game->total_size = game->board_size * game->board_size;
-    snprintf(buf, sizeof(buf), "%i s",
-             etrophy_gamescore_level_low_score_get(
-                game->gamescore,
-                BOARD_SIZE[(int)elm_spinner_value_get(obj) - 1]));
+    score = etrophy_gamescore_level_low_score_get(
+       game->gamescore, BOARD_SIZE[game->board_index - 1]);
+    if (score == -1)
+      {
+         elm_object_text_set(game->best_time_lb, "");
+         return;
+      }
+
+    snprintf(buf, sizeof(buf), "%i s", score);
     elm_object_text_set(game->best_time_lb, buf);
 }
 
@@ -118,12 +127,12 @@ _player_win(Game *game)
       {
          etrophy_gamescore_level_score_add(
             game->gamescore,
-            BOARD_SIZE[(int)elm_spinner_value_get(game->sp) - 1],
+            BOARD_SIZE[game->board_index - 1],
             NULL, game->play_time, 0);
          snprintf(buf, sizeof(buf), "%i s",
                   etrophy_gamescore_level_low_score_get(
                      game->gamescore,
-                     BOARD_SIZE[(int)elm_spinner_value_get(game->sp) - 1]));
+                     BOARD_SIZE[game->board_index - 1]));
          elm_object_text_set(game->best_time_lb, buf);
 
          snprintf(buf, sizeof(buf),
@@ -664,6 +673,7 @@ elm_main(int argc, char **argv)
     Game game;
     int r = 0;
 
+    game.board_index = BOARD_INDEX_DEFAULT;
     game.board_size = BOARD_SIZE_DEFAULT;
     game.total_size = BOARD_SIZE_DEFAULT * BOARD_SIZE_DEFAULT;
     game.prev_board_size = BOARD_SIZE_DEFAULT;
