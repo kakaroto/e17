@@ -4,6 +4,7 @@
 #include <Elementary.h>
 #include <Edje.h>
 #include <Eina.h>
+#include <Etrophy.h>
 #include <Evas.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -15,6 +16,9 @@
 
 #define HELP_STRING "To play this game in a mobile version use econcentration" \
                     " --mobile"
+
+static const char *BOARD_SIZE[] = {"Small", "Normal", "Big"};
+
 typedef struct _Card
 {
     int value;
@@ -26,8 +30,10 @@ typedef struct _Game
     int play_time, attempts, found, board_size, prev_board_size, total_size;
     Card cards[BOARD_SIZE_MAX];
     Card *first_card, *second_card;
-    Evas_Object *time_lb, *attempts_lb, *found_lb, *won_lb, *inwin, *table;
+    Evas_Object *time_lb, *best_time_lb, *attempts_lb, *found_lb, *won_lb;
+    Evas_Object *inwin, *table, *sp;
     Ecore_Timer *play_timer, *show_timer, *dl_pop;
+    Etrophy_Gamescore *gamescore;
     Eina_Bool running:1;
     /* Are we running in a mobile device? */
     Eina_Bool econcentration_mobile;
@@ -37,8 +43,14 @@ static void
 _board_size_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
     Game *game = data;
+    char buf[16];
     game->board_size = elm_spinner_value_get(obj) * 2 + 2;
     game->total_size = game->board_size * game->board_size;
+    snprintf(buf, sizeof(buf), "%i s",
+             etrophy_gamescore_level_low_score_get(
+                game->gamescore,
+                BOARD_SIZE[(int)elm_spinner_value_get(obj) - 1]));
+    elm_object_text_set(game->best_time_lb, buf);
 }
 
 static Eina_Bool
@@ -96,11 +108,23 @@ _player_win(Game *game)
                     "ZzzzZz. You won.<br>But you can do better.<br>");
       }
     else
-      snprintf(buf, sizeof(buf),
-               "Congratulations, you solved it!<br>"
-               "You spent %i seconds and<br>"
-               "made %i attempts.",
-               game->play_time, game->attempts);
+      {
+         etrophy_gamescore_level_score_add(
+            game->gamescore,
+            BOARD_SIZE[(int)elm_spinner_value_get(game->sp) - 1],
+            NULL, game->play_time, 0);
+         snprintf(buf, sizeof(buf), "%i s",
+                  etrophy_gamescore_level_low_score_get(
+                     game->gamescore,
+                     BOARD_SIZE[(int)elm_spinner_value_get(game->sp) - 1]));
+         elm_object_text_set(game->best_time_lb, buf);
+
+         snprintf(buf, sizeof(buf),
+                  "Congratulations, you solved it!<br>"
+                  "You spent %i seconds and<br>"
+                  "made %i attempts.",
+                  game->play_time, game->attempts);
+      }
 
     elm_object_text_set(game->won_lb, buf);
 }
@@ -453,6 +477,7 @@ static Eina_Bool
 _create_window_desktop(Game *game)
 {
     Evas_Object *win, *inwin, *bg, *bx, *bxctl, *table, *bt, *sp, *fr, *lb;
+    char buf[16];
 
     win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
     if (!win) return EINA_FALSE;
@@ -508,13 +533,14 @@ _create_window_desktop(Game *game)
     elm_spinner_min_max_set(sp, 1, 3);
     elm_spinner_step_set(sp, 1.0);
     elm_spinner_editable_set(sp, EINA_FALSE);
-    elm_spinner_special_value_add(sp, 1, "Small");
-    elm_spinner_special_value_add(sp, 2, "Normal");
-    elm_spinner_special_value_add(sp, 3, "Big");
+    elm_spinner_special_value_add(sp, 1, BOARD_SIZE[0]);
+    elm_spinner_special_value_add(sp, 2, BOARD_SIZE[1]);
+    elm_spinner_special_value_add(sp, 3, BOARD_SIZE[2]);
     evas_object_smart_callback_add(sp, "changed", _board_size_cb, game);
     evas_object_size_hint_align_set(sp, EVAS_HINT_FILL, 0);
     elm_object_content_set(fr, sp);
     evas_object_show(sp);
+    game->sp = sp;
 
     fr = elm_frame_add(win);
     evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -557,6 +583,24 @@ _create_window_desktop(Game *game)
     evas_object_size_hint_align_set(lb, 1, 0.5);
     elm_object_content_set(fr, lb);
     evas_object_show(lb);
+
+    fr = elm_frame_add(win);
+    evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+    evas_object_size_hint_align_set(fr, EVAS_HINT_FILL, EVAS_HINT_FILL);
+    elm_object_text_set(fr, "Best Time:");
+    elm_box_pack_end(bxctl, fr);
+    evas_object_show(fr);
+
+    lb = elm_label_add(win);
+    snprintf(buf, sizeof(buf), "%i s",
+            etrophy_gamescore_level_low_score_get(game->gamescore,
+                BOARD_SIZE[0]));
+    elm_object_text_set(lb, buf);
+    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
+    evas_object_size_hint_align_set(lb, 1, 0.5);
+    elm_object_content_set(fr, lb);
+    evas_object_show(lb);
+    game->best_time_lb = lb;
 
     game->inwin = inwin = elm_win_inwin_add(win);
     elm_object_style_set(inwin, "minimal");
@@ -626,6 +670,16 @@ elm_main(int argc, char **argv)
     if (argc > 1)
       checkArguments(argv, &game);
 
+    etrophy_init();
+    game.gamescore = etrophy_gamescore_load("econcentration");
+    if (!game.gamescore)
+        game.gamescore = etrophy_gamescore_new();
+    if (!game.gamescore)
+    {
+        r = -1;
+        goto no_score;
+    }
+
     if(!_win_new(&game))
     {
         r = -1;
@@ -634,7 +688,11 @@ elm_main(int argc, char **argv)
 
     elm_run();
 
+    etrophy_gamescore_save(game.gamescore, "econcentration");
+
 end:
+    etrophy_shutdown();
+no_score:
     elm_shutdown();
     return r;
 }

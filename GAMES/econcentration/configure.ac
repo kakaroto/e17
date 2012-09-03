@@ -62,6 +62,7 @@ AC_FUNC_ALLOCA
 AC_C___ATTRIBUTE__
 
 PKG_CHECK_MODULES([ELEMENTARY], [elementary evas ecore])
+PKG_CHECK_MODULES([ETROPHY], [etrophy])
 
 want_quicklaunch="auto"
 AC_ARG_ENABLE([quicklaunch],
