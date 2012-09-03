@@ -50,11 +50,11 @@ azy_base64_encode(const char *string,
 {
    base64_encodestate s;
    char *ret = NULL;
-   int retlen[2];
+   size_t retlen[2];
 
    if ((len < 1) || (!string)) return NULL;
 
-   if (!(ret = malloc(sizeof(char) * ((((len + 2) - ((int)(len + 2) % 3)) / 3) * 4) + 4)))
+   if (!(ret = malloc(sizeof(char) * ((((len + 2) - ((size_t)(len + 2) % 3)) / 3) * 4) + 4)))
      return NULL;
    base64_init_encodestate(&s);
    retlen[0] = base64_encode_block(string, len, ret, &s);
@@ -74,15 +74,15 @@ azy_base64_encode(const char *string,
  */
 char *
 azy_base64_decode(const char *string,
-                  int         len)
+                  size_t         len)
 {
    base64_decodestate s;
    char *ret = NULL;
-   int retlen;
+   size_t retlen;
 
    if ((len < 1) || (!string)) return NULL;
 
-   if (!(ret = malloc(sizeof(char) * (int)((double)len / (double)(4 / 3)) + 1)))
+   if (!(ret = malloc(sizeof(char) * (size_t)((double)len / (double)(4 / 3)) + 1)))
      return NULL;
    base64_init_decodestate(&s);
    retlen = base64_decode_block(string, len, ret, &s);
