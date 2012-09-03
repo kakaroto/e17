@@ -94,6 +94,16 @@ _won_ok(void *data, Evas_Object *obj, void *event_info __UNUSED__)
     evas_object_del(obj);
 }
 
+static inline int
+_score_get(Game *game)
+{
+   int score;
+   score = 60 * game->board_index - game->play_time +
+      2 * (game->total_size - game->attempts);
+   if (score < 0) score = 0;
+   return score;
+}
+
 static void
 _player_win(Game *game)
 {
@@ -125,15 +135,15 @@ _player_win(Game *game)
       }
     else
       {
-         int score;
+         int score = _score_get(game);
+         const char *name = "Player";
 
-         score = 60 * game->board_index - game->play_time +
-            2 * (game->total_size - game->attempts);
-         if (score < 0) score = 0;
+         if (getenv("USER"))
+           name = getenv("USER");
 
          etrophy_gamescore_level_score_add(game->gamescore,
                                            BOARD_SIZE[game->board_index - 1],
-                                           NULL, score, 0);
+                                           name, score, 0);
          snprintf(buf, sizeof(buf), "%i points",
                   etrophy_gamescore_level_hi_score_get(
                      game->gamescore,
