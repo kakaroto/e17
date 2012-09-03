@@ -300,7 +300,7 @@
      0.16.999.75862 </em></p><p>
      Enlightenment, the window manager... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ENLIGHTENMENT",
-     "http://download.enlightenment.org/snapshots/2012-08-30/enlightenment-0.16.999.75862.tar.gz"
+     "http://download.enlightenment.org/snapshots/2012-09-03/enlightenment-0.16.999.76015.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
