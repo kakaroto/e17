@@ -17,7 +17,6 @@
 
 #include "azy_private.h"
 #include <ctype.h>
-#include <inttypes.h>
 #include <errno.h>
 
 #define AZY_SKIP_BLANK(PTR)                \
@@ -339,9 +338,9 @@ azy_events_header_parse(Azy_Net       *net,
         if (event_data && (azy_rpc_log_dom >= 0))
           {
              char buf[64];
-             snprintf(buf, sizeof(buf), "STORED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", net->size);
+             snprintf(buf, sizeof(buf), "STORED:\n<<<<<<<<<<<<<\n%%.%"PRIi64"s\n<<<<<<<<<<<<<", net->size);
              RPC_INFO(buf, net->buffer);
-             snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", len - offset);
+             snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%"PRIi64"s\n<<<<<<<<<<<<<", len - offset);
              RPC_INFO(buf, data);
           }
         /* previous buffer */
@@ -516,7 +515,7 @@ skip_header:
                {
                   rlen = net->http.content_length;
                   net->overflow_length = len - rlen;
-                  WARN("Extra content length of %lli!", net->overflow_length);
+                  WARN("Extra content length of %"PRIi64"!", net->overflow_length);
                   net->overflow = malloc(net->overflow_length);
      /* FIXME: uhhhh fuck? */
                   EINA_SAFETY_ON_NULL_RETURN_VAL(net->overflow, EINA_FALSE);
@@ -539,7 +538,7 @@ skip_header:
           /* this shouldn't be possible unless someone is violating spec */
           rlen = len;
 
-        INFO("Set recv size to %lli (previous %lli)", rlen, prev_size);
+        INFO("Set recv size to %"PRIi64" (previous %"PRIi64")", rlen, prev_size);
         net->size = rlen;
         net->buffer = malloc(rlen);
         /* FIXME: cleanup */

@@ -755,7 +755,7 @@ _azy_server_client_send(Azy_Server_Client *client,
         if (content)
           {
              char buf[64];
-             snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%llis\n<<<<<<<<<<<<<", (int)eina_strbuf_length_get(header), content->length);
+             snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%"PRIi64"s\n<<<<<<<<<<<<<", (int)eina_strbuf_length_get(header), content->length);
              RPC_INFO(buf, eina_strbuf_string_get(header), content->buffer);
           }
         else
@@ -767,7 +767,7 @@ _azy_server_client_send(Azy_Server_Client *client,
    if (content && content->buffer && content->length)
      {
         EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, content->buffer, content->length), error);
-        INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
+        INFO("Send [2/2] complete! %"PRIi64" bytes queued for sending.", content->length);
      }
    ecore_con_client_flush(net->conn);
    /* http 1.0 requires that we disconnect after every request has been served */
@@ -950,7 +950,7 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
      {
         client->net->buffer = overflow;
         client->net->size = overflow_length;
-        INFO("%s: Set recv size to %lli from overflow", client->ip, client->net->size);
+        INFO("%s: Set recv size to %"PRIi64" from overflow", client->ip, client->net->size);
 
         /* returns offset where http header line ends */
         if (!(offset = azy_events_type_parse(client->net, type, data, len)) && ev && (!client->net->http.req.http_path))
@@ -962,7 +962,7 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
           {
              client->net->buffer = NULL;
              client->net->size = 0;
-             INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", client->ip, client->net->size, overflow_length);
+             INFO("%s: Overflow could not be parsed, set recv size to %"PRIi64", storing overflow of %"PRIi64"", client->ip, client->net->size, overflow_length);
              return ECORE_CALLBACK_RENEW;
           }
         else
@@ -1002,12 +1002,12 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
              overflow = malloc(overflow_length);
              if (!overflow)
                {
-                  ERR("alloc failure, losing %lli bytes", overflow_length);
+                  ERR("alloc failure, losing %"PRIi64" bytes", overflow_length);
                   _azy_server_client_handler_request(client);
                   return ECORE_CALLBACK_RENEW;
                }
              memcpy(overflow, data + (len - overflow_length), overflow_length);
-             WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+             WARN("%s: Extra content length of %"PRIi64"! Set recv size to %"PRIi64" (previous %"PRIi64")",
                   client->ip, overflow_length, client->net->size + len - overflow_length, client->net->size);
              client->net->size += len - overflow_length;
           }
@@ -1016,7 +1016,7 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
              memcpy(client->net->buffer + client->net->size, data, len);
              client->net->size += len;
 
-             INFO("%s: Incremented recv size to %lli (+%i)", client->ip, client->net->size, len);
+             INFO("%s: Incremented recv size to %"PRIi64" (+%i)", client->ip, client->net->size, len);
           }
      }
    else if (client->net->size > client->net->http.content_length)
@@ -1025,12 +1025,12 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
         overflow = malloc(overflow_length);
         if (!overflow)
           {
-             ERR("alloc failure, losing %lli bytes", overflow_length);
+             ERR("alloc failure, losing %"PRIi64" bytes", overflow_length);
              _azy_server_client_handler_request(client);
              return ECORE_CALLBACK_RENEW;
           }
         memcpy(overflow, client->net->buffer, overflow_length);
-        WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+        WARN("%s: Extra content length of %"PRIi64"! Set recv size to %"PRIi64" (previous %"PRIi64")",
              client->ip, overflow_length, client->net->http.content_length, client->net->size);
         client->net->size = client->net->http.content_length;
      }
@@ -1052,12 +1052,12 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
 
    if (overflow && (!client->net->buffer))
      {
-        WARN("%s: Calling %s again to try using %lli bytes of overflow data...", client->ip, __PRETTY_FUNCTION__, overflow_length);
+        WARN("%s: Calling %s again to try using %"PRIi64" bytes of overflow data...", client->ip, __PRETTY_FUNCTION__, overflow_length);
         _azy_server_client_handler_data(client, type, NULL);
         if (!overflow)
           WARN("%s: Overflow has been successfully used!", client->ip);
         else
-          WARN("%s: Overflow could not be used, storing %lli bytes for next event.", client->ip, overflow_length);
+          WARN("%s: Overflow could not be used, storing %"PRIi64" bytes for next event.", client->ip, overflow_length);
      }
 
    return ECORE_CALLBACK_RENEW;

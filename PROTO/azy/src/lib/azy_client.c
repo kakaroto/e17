@@ -17,7 +17,6 @@
 
 #include "azy_private.h"
 #include <ctype.h>
-#include <inttypes.h>
 
 static Azy_Client_Call_Id azy_client_send_id__ = 0;
 
@@ -489,7 +488,7 @@ azy_client_call(Azy_Client       *client,
    if (azy_rpc_log_dom >= 0)
      {
         char buf[64];
-        snprintf(buf, sizeof(buf), "\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%%.%is%%.%llis\n>>>>>>>>>>>>>>>>>>>>>>>>",
+        snprintf(buf, sizeof(buf), "\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%%.%zus%%.%"PRIi64"s\n>>>>>>>>>>>>>>>>>>>>>>>>",
             eina_strbuf_length_get(msg), content->length);
         RPC_DBG(buf, eina_strbuf_string_get(msg), content->buffer);
      }
@@ -500,7 +499,7 @@ azy_client_call(Azy_Client       *client,
    msg = NULL;
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, content->buffer, content->length), error);
-   INFO("Send [2/2] complete! %lli bytes queued for sending.", content->length);
+   INFO("Send [2/2] complete! %"PRIi64" bytes queued for sending.", content->length);
    ecore_con_server_flush(client->net->conn);
 
    hd = calloc(1, sizeof(Azy_Client_Handler_Data));

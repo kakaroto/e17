@@ -9,6 +9,7 @@
 #include "config.h"
 #endif
 
+#include <inttypes.h>
 #include <time.h>
 #include <Ecore.h>
 #include <Ecore_Con.h>

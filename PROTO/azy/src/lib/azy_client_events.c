@@ -141,7 +141,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
         if (azy_content_error_is_set(content))
           {
              char buf[64];
-             snprintf(buf, sizeof(buf), "%lli bytes:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", hd->recv->size, hd->recv->size);
+             snprintf(buf, sizeof(buf), "%"PRIi64" bytes:\n<<<<<<<<<<<<<\n%%.%"PRIi64"s\n<<<<<<<<<<<<<", hd->recv->size, hd->recv->size);
              ERR(buf, hd->recv->buffer);
           }
         content->ret = ret;
@@ -161,7 +161,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
         if (azy_content_error_is_set(content))
           {
              char buf[64];
-             snprintf(buf, sizeof(buf), "%lli bytes:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", hd->recv->size, hd->recv->size);
+             snprintf(buf, sizeof(buf), "%"PRIi64" bytes:\n<<<<<<<<<<<<<\n%%.%"PRIi64"s\n<<<<<<<<<<<<<", hd->recv->size, hd->recv->size);
              ERR(buf, hd->recv->buffer);
           }
      }
@@ -212,7 +212,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
    if (azy_rpc_log_dom >= 0)
      {
         char buf[64];
-        snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", hd->recv->size);
+        snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%"PRIi64"s\n<<<<<<<<<<<<<", hd->recv->size);
         RPC_INFO(buf, hd->recv->buffer);
      }
    /* handle HTTP GET request */
@@ -238,7 +238,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
    if (azy_content_error_is_set(content))
      {
         char buf[64];
-        snprintf(buf, sizeof(buf), "%s:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", hd->method, hd->recv->size);
+        snprintf(buf, sizeof(buf), "%s:\n<<<<<<<<<<<<<\n%%.%"PRIi64"s\n<<<<<<<<<<<<<", hd->method, hd->recv->size);
         ERR(buf, hd->recv->buffer);
      }
 
@@ -426,7 +426,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
      {
         hd->recv->buffer = overflow;
         hd->recv->size = overflow_length;
-        INFO("%s: Set recv size to %lli from overflow", hd->method, hd->recv->size);
+        INFO("%s: Set recv size to %"PRIi64" from overflow", hd->method, hd->recv->size);
 
         /* returns offset where http header line ends */
         if (!(offset = azy_events_type_parse(hd->recv, type, data, len)) && ev && (!hd->recv->http.res.http_msg))
@@ -435,7 +435,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
           {
              hd->recv->buffer = NULL;
              hd->recv->size = 0;
-             INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", hd->method, hd->recv->size, overflow_length);
+             INFO("%s: Overflow could not be parsed, set recv size to %"PRIi64", storing overflow of %"PRIi64"", hd->method, hd->recv->size, overflow_length);
              return ECORE_CALLBACK_RENEW;
           }
         else
@@ -474,12 +474,12 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
              overflow = malloc(overflow_length);
              if (!overflow)
                {
-                  ERR("alloc failure, losing %lli bytes", overflow_length);
+                  ERR("alloc failure, losing %"PRIi64" bytes", overflow_length);
                   _azy_client_handler_call(hd);
                   return ECORE_CALLBACK_RENEW;
                }
              memcpy(overflow, data + (len - overflow_length), overflow_length);
-             WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+             WARN("%s: Extra content length of %"PRIi64"! Set recv size to %"PRIi64" (previous %"PRIi64")",
                   hd->method, overflow_length, hd->recv->size + len - overflow_length, hd->recv->size);
              hd->recv->size += len - overflow_length;
           }
@@ -488,7 +488,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
              memcpy(hd->recv->buffer + hd->recv->size, data, len);
              hd->recv->size += len;
 
-             INFO("%s: Incremented recv size to %lli (+%i)", hd->method, hd->recv->size, len);
+             INFO("%s: Incremented recv size to %"PRIi64" (+%i)", hd->method, hd->recv->size, len);
           }
      }
    else if (hd->recv->size > hd->recv->http.content_length)
@@ -497,12 +497,12 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
         overflow = malloc(overflow_length);
         if (!overflow)
           {
-             ERR("alloc failure, losing %lli bytes", overflow_length);
+             ERR("alloc failure, losing %"PRIi64" bytes", overflow_length);
              _azy_client_handler_call(hd);
              return ECORE_CALLBACK_RENEW;
           }
         memcpy(overflow, hd->recv->buffer, overflow_length);
-        WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
+        WARN("%s: Extra content length of %"PRIi64"! Set recv size to %"PRIi64" (previous %"PRIi64")",
              hd->method, overflow_length, hd->recv->http.content_length, hd->recv->size);
         hd->recv->size = hd->recv->http.content_length;
      }
@@ -558,15 +558,15 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
         id = dh->id;
         /* ref here in case recursive calls free dh to avoid segv */
         method = eina_stringshare_ref(dh->method);
-        WARN("%s:%u (%u): Calling %s recursively to try using %lli bytes of overflow data...", method, id, recursive, __PRETTY_FUNCTION__, overflow_length);
+        WARN("%s:%u (%u): Calling %s recursively to try using %"PRIi64" bytes of overflow data...", method, id, recursive, __PRETTY_FUNCTION__, overflow_length);
         recursive++;
         prev_len = overflow_length;
         _azy_client_handler_data(dh, type, NULL);
         recursive--;
         if (!overflow)
-          WARN("%s:%u (%u): Overflow has been successfully used (%lli bytes)!", method, id, recursive, prev_len - overflow_length);
+          WARN("%s:%u (%u): Overflow has been successfully used (%"PRIi64" bytes)!", method, id, recursive, prev_len - overflow_length);
         else
-          WARN("%s:%u (%u): Overflow could not be entirely used (%lli bytes gone), storing %lli bytes for next event.", method, id, recursive, prev_len - overflow_length, overflow_length);
+          WARN("%s:%u (%u): Overflow could not be entirely used (%"PRIi64" bytes gone), storing %"PRIi64" bytes for next event.", method, id, recursive, prev_len - overflow_length, overflow_length);
         eina_stringshare_del(method);
      }
 
