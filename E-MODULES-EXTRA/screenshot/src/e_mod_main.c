@@ -36,7 +36,7 @@ static void _cb_window(void *data, E_Menu *menu, E_Menu_Item *mi);
 static void _cb_region(void *data, E_Menu *menu, E_Menu_Item *mi);
 static void _cb_start_shot(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _cb_exec_shot(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _cb_dialog_ok(char *text, void *data);
+static void _cb_dialog_ok(void *data, char *text);
 static void _cb_send_msg(void *data);
 static void _cb_do_shot(void);
 static void _cb_take_shot(E_Object *obj, const char *params);
@@ -497,7 +497,7 @@ _cb_exec_shot(void *data, Evas_Object *obj, const char *emission, const char *so
 }
 
 static void 
-_cb_dialog_ok(char *text, void *data) 
+_cb_dialog_ok(void *data, char *text) 
 {
    Instance *inst = NULL;
    char buf[PATH_MAX];
