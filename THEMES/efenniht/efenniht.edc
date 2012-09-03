@@ -10,7 +10,7 @@
 #include "e/shelf.edc"
 #include "e/toolbar.edc"
 //#include "e/mouse.edc"
-#include "e/connman.edc"
+//#include "e/connman.edc"
 #include "e/bluez.edc"
 #include "e/pager.edc"
 #include "e/battery.edc"
