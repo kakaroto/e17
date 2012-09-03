@@ -77,7 +77,7 @@ azy_base64_decode(const char *string,
                   size_t         len)
 {
    base64_decodestate s;
-   char *ret = NULL;
+   unsigned char *ret = NULL;
    size_t retlen;
 
    if ((len < 1) || (!string)) return NULL;
@@ -88,7 +88,7 @@ azy_base64_decode(const char *string,
    retlen = base64_decode_block(string, len, ret, &s);
    ret[retlen] = '\0';
 
-   return ret;
+   return (char*)ret;
 }
 
 /**
