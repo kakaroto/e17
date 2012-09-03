@@ -7,6 +7,7 @@
 
 #include <Eina.h>
 #include <Evas.h>
+#include <Etrophy.h>
 #include <stdlib.h>
 
 #include "gettext.h"
@@ -33,10 +34,11 @@ typedef struct _Game
     Ecore_Timer *play_timer, *turn_timer;
     Evas_Object *layout;
     double speed;
-    int step, level, score, hi_score;
+    int step, level, score;
     int seq[LEVEL_MAX];
     int next;
     Mode mode;
+    Etrophy_Gamescore *gamescore;
 } Game;
 
 int _log_domain = -1;
@@ -62,16 +64,30 @@ _score_inc(Game *game, int score_inc)
 }
 
 static void
+_hi_score_set(Game *game)
+{
+    char buf[32];
+    int score;
+
+    score = etrophy_gamescore_level_hi_score_get(game->gamescore, "E_CHO");
+    if (score < 0) score = 0;
+    snprintf(buf, sizeof(buf), "%i", score);
+    elm_object_part_text_set(game->layout, "hi-score", buf);
+}
+
+static void
 _player_fail(Game *game)
 {
+    const char *name = "Player";
+
+    if (getenv("USER"))
+        name = getenv("USER");
+
+    etrophy_gamescore_level_score_add(game->gamescore, "E_CHO", name,
+            game->score, 0);
+    _hi_score_set(game);
     elm_object_signal_emit(game->layout, "fail", "");
-    if (game->score > game->hi_score)
-    {
-        char buf[32];
-        game->hi_score = game->score;
-        snprintf(buf, sizeof(buf), "%i", game->hi_score);
-        elm_object_part_text_set(game->layout, "hi-score", buf);
-    }
+
     game->score = 0;
     game->mode = OFF;
 }
@@ -300,6 +316,21 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     if (!sound_init())
         return -1;
 
+    if (!etrophy_init())
+    {
+        r = -1;
+        goto err_etrophy;
+    }
+
+    game.gamescore = etrophy_gamescore_load("e_cho");
+    if (!game.gamescore)
+        game.gamescore = etrophy_gamescore_new("e_cho");
+    if (!game.gamescore)
+    {
+        r = -1;
+        goto end;
+    }
+
     elm_theme_overlay_add(NULL, PACKAGE_DATA_DIR "/" DF_THEME ".edj");
 
     game.speed = SPEED_DEFAULT;
@@ -308,19 +339,23 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
     game.turn_timer = NULL;
     game.play_timer = NULL;
     game.score = 0;
-    game.hi_score = 0;
 
-    if(!_win_new(&game))
+    if (!_win_new(&game))
     {
         r = -1;
         goto end;
     }
+    _hi_score_set(&game);
 
     DBG("Game initialized");
     elm_run();
     DBG("Game shutdown");
 
+    etrophy_gamescore_save(game.gamescore, NULL);
+
 end:
+    etrophy_shutdown();
+err_etrophy:
     sound_shutdown();
     eina_log_domain_unregister(_log_domain);
     elm_shutdown();

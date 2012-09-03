@@ -64,6 +64,7 @@ AC_SUBST(sounddir)
 AS_AC_EXPAND(SOUNDDIR, $sounddir)
 AC_DEFINE_UNQUOTED(SOUNDDIR, ["$SOUNDDIR"], [Where sound files are installed.])
 
+PKG_CHECK_MODULES([ETROPHY], [etrophy])
 PKG_CHECK_MODULES([ELEMENTARY], [elementary])
 PKG_CHECK_MODULES(LIBCANBERRA, [libcanberra])
 PKG_CHECK_MODULES(EVAS, [evas])
