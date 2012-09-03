@@ -30,13 +30,13 @@ typedef struct _Game
     int play_time, attempts, found, board_size, prev_board_size, total_size;
     Card cards[BOARD_SIZE_MAX];
     Card *first_card, *second_card;
-    Evas_Object *time_lb, *best_time_lb, *attempts_lb, *found_lb, *won_lb;
-    Evas_Object *win, *inwin, *table, *sp;
+    Evas_Object *time_lb, *best_time_lb, *attempts_lb, *found_lb;
+    Evas_Object *win, *table, *sp;
     Ecore_Timer *play_timer, *show_timer, *dl_pop;
     Etrophy_Gamescore *gamescore;
     Eina_Bool running:1;
     /* Are we running in a mobile device? */
-    Eina_Bool econcentration_mobile;
+    Eina_Bool econcentration_mobile:1;
 } Game;
 
 static void
@@ -79,33 +79,40 @@ _hide_cards(void *data)
 }
 
 static void
-_won_ok(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_won_ok(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
-    Game *game = data;
-    evas_object_hide(game->inwin);
+    evas_object_del(data);
+    evas_object_del(obj);
 }
 
 static void
 _player_win(Game *game)
 {
+    Evas_Object *popup, *bt;
     char buf[320];
 
     ecore_timer_del(game->play_timer);
     game->play_timer = NULL;
 
-    evas_object_show(game->inwin);
+    popup = elm_popup_add(game->win);
+    elm_object_part_text_set(popup, "title,text", "You won!");
+
+    bt = elm_button_add(popup);
+    elm_object_text_set(bt, "Yay!");
+    evas_object_smart_callback_add(bt, "clicked", _won_ok, popup);
+    elm_object_part_content_set(popup, "button1", bt);
 
     if (game->econcentration_mobile)
       {
          if (game->play_time >= 0 && game->play_time <= 60)
            snprintf(buf, sizeof(buf),
-                    "Wow ! you're very fast.<br> I liked your ninja style.<br>");
+                    "Wow ! You're very fast.<br>I liked your ninja style.");
          else if (game->play_time > 60 && game->play_time <= 120)
            snprintf(buf, sizeof(buf),
-                    "Nice try, you won but try to be faster!<br>");
+                    "Nice try, you won but try to be faster!");
          else
            snprintf(buf, sizeof(buf),
-                    "ZzzzZz. You won.<br>But you can do better.<br>");
+                    "ZzzzZz. You won.<br>But you can do better.");
       }
     else
       {
@@ -121,12 +128,12 @@ _player_win(Game *game)
 
          snprintf(buf, sizeof(buf),
                   "Congratulations, you solved it!<br>"
-                  "You spent %i seconds and<br>"
-                  "made %i attempts.",
+                  "You spent %i seconds and made %i attempts.",
                   game->play_time, game->attempts);
       }
 
-    elm_object_text_set(game->won_lb, buf);
+    elm_object_text_set(popup, buf);
+    evas_object_show(popup);
 }
 
 static void
@@ -342,7 +349,6 @@ _scores_show_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUS
     evas_object_event_callback_add(popup, EVAS_CALLBACK_DEL, _popup_del_cb, bt);
     evas_object_event_callback_add(popup, EVAS_CALLBACK_DEL, _popup_del_cb,
                                    leaderboard);
-
     evas_object_show(popup);
 }
 
@@ -397,10 +403,9 @@ _win_delete_request(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 static Eina_Bool
 _create_window_mobile(Game *game)
 {
-    Evas_Object *win, *inwin, *bg, *bx, *bxctl, *table, *bt, *lb,
-                *boxLabels;
+    Evas_Object *win, *bg, *bx, *bxctl, *table, *bt, *lb, *boxLabels;
 
-    win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
+    game->win = win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
     if (!win) return EINA_FALSE;
     evas_object_smart_callback_add(win, "delete,request",
                                    _win_delete_request, game);
@@ -481,30 +486,6 @@ _create_window_mobile(Game *game)
     evas_object_show(bt);
     elm_box_pack_end(bxctl, bt);
 
-    game->inwin = inwin = elm_popup_add(win);
-    elm_object_part_text_set(inwin, "title,text", "You won!");
-
-    bx = elm_box_add(inwin);
-    evas_object_show(bx);
-    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-    game->won_lb = lb = elm_label_add(inwin);
-    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
-    evas_object_size_hint_align_set(lb, 0.5, 0.5);
-    evas_object_color_set(lb, 255, 255, 255, 255);
-    evas_object_show(lb);
-    elm_box_pack_end(bx, lb);
-
-    bt = elm_button_add(inwin);
-    elm_object_text_set(bt, "Yay!");
-    evas_object_smart_callback_add(bt, "clicked", _won_ok, game);
-    evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    evas_object_show(bt);
-    elm_box_pack_end(bx, bt);
-
-    elm_object_content_set(inwin, bx);
-
     elm_win_title_set(win, "Econcentration");
     evas_object_show(win);
 
@@ -514,7 +495,7 @@ _create_window_mobile(Game *game)
 static Eina_Bool
 _create_window_desktop(Game *game)
 {
-    Evas_Object *win, *inwin, *bg, *bx, *bxctl, *table, *bt, *sp, *fr, *lb;
+    Evas_Object *win, *bg, *bx, *bxctl, *table, *bt, *sp, *fr, *lb;
     char buf[16];
 
     game->win = win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
@@ -646,26 +627,6 @@ _create_window_desktop(Game *game)
     elm_object_content_set(fr, lb);
     evas_object_show(lb);
     game->best_time_lb = lb;
-
-    game->inwin = inwin = elm_win_inwin_add(win);
-    elm_object_style_set(inwin, "minimal");
-
-    bx = elm_box_add(win);
-    evas_object_show(bx);
-    elm_win_inwin_content_set(inwin, bx);
-
-    game->won_lb = lb = elm_label_add(win);
-    evas_object_size_hint_weight_set(lb, 0.0, 0.0);
-    evas_object_size_hint_align_set(lb, 0, 0);
-    evas_object_show(lb);
-    elm_box_pack_end(bx, lb);
-
-    bt = elm_button_add(win);
-    elm_object_text_set(bt, "Yay!");
-    evas_object_smart_callback_add(bt, "clicked", _won_ok, game);
-    evas_object_size_hint_align_set(bt, 0.5, 0.5);
-    evas_object_show(bt);
-    elm_box_pack_end(bx, bt);
 
     evas_object_resize(win, 480, 320);
     evas_object_size_hint_min_set(win, 480, 320);
