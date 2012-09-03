@@ -58,7 +58,7 @@ _board_size_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
          return;
       }
 
-    snprintf(buf, sizeof(buf), "%i s", score);
+    snprintf(buf, sizeof(buf), "%i points", score);
     elm_object_text_set(game->best_time_lb, buf);
 }
 
@@ -125,20 +125,26 @@ _player_win(Game *game)
       }
     else
       {
-         etrophy_gamescore_level_score_add(
-            game->gamescore,
-            BOARD_SIZE[game->board_index - 1],
-            NULL, game->play_time, 0);
-         snprintf(buf, sizeof(buf), "%i s",
-                  etrophy_gamescore_level_low_score_get(
+         int score;
+
+         score = 60 * game->board_index - game->play_time +
+            2 * (game->total_size - game->attempts);
+         if (score < 0) score = 0;
+
+         etrophy_gamescore_level_score_add(game->gamescore,
+                                           BOARD_SIZE[game->board_index - 1],
+                                           NULL, score, 0);
+         snprintf(buf, sizeof(buf), "%i points",
+                  etrophy_gamescore_level_hi_score_get(
                      game->gamescore,
                      BOARD_SIZE[game->board_index - 1]));
          elm_object_text_set(game->best_time_lb, buf);
 
          snprintf(buf, sizeof(buf),
                   "Congratulations, you solved it!<br>"
-                  "You spent %i seconds and made %i attempts.",
-                  game->play_time, game->attempts);
+                  "You spent %i seconds and made %i attempts.<br>"
+                  "Your score was: %i.",
+                  game->play_time, game->attempts, score);
       }
 
     elm_object_text_set(popup, buf);
@@ -622,13 +628,13 @@ _create_window_desktop(Game *game)
     fr = elm_frame_add(win);
     evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(fr, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    elm_object_text_set(fr, "Best Time:");
+    elm_object_text_set(fr, "Hi-Score:");
     elm_box_pack_end(bxctl, fr);
     evas_object_show(fr);
 
     lb = elm_label_add(win);
-    snprintf(buf, sizeof(buf), "%i s",
-            etrophy_gamescore_level_low_score_get(game->gamescore,
+    snprintf(buf, sizeof(buf), "%i points",
+            etrophy_gamescore_level_hi_score_get(game->gamescore,
                 BOARD_SIZE[0]));
     elm_object_text_set(lb, buf);
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
