@@ -20,6 +20,10 @@ GENERATE_PROPERTY_CALLBACKS(CElmGenList, reorder_mode);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, multi_select);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_longpress);
 GENERATE_PROPERTY_CALLBACKS(CElmGenList, scroller_policy);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_scrolled_over_top_edge);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_scrolled_over_bottom_edge);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_scrolled_over_left_edge);
+GENERATE_PROPERTY_CALLBACKS(CElmGenList, on_scrolled_over_right_edge);
 GENERATE_RO_PROPERTY_CALLBACKS(CElmGenList, items_count);
 GENERATE_METHOD_CALLBACKS(CElmGenList, realized_items_update);
 GENERATE_METHOD_CALLBACKS(CElmGenList, tooltip_unset);
@@ -42,6 +46,10 @@ GENERATE_TEMPLATE(CElmGenList,
                   PROPERTY(multi_select),
                   PROPERTY(on_longpress),
                   PROPERTY(scroller_policy),
+                  PROPERTY(on_scrolled_over_top_edge),
+                  PROPERTY(on_scrolled_over_bottom_edge),
+                  PROPERTY(on_scrolled_over_left_edge),
+                  PROPERTY(on_scrolled_over_right_edge),
                   PROPERTY_RO(items_count),
                   METHOD(realized_items_update),
                   METHOD(tooltip_unset),
@@ -405,6 +413,121 @@ Handle<Value> CElmGenList::bring_in_item(const Arguments& args)
    elm_genlist_item_bring_in(item->object_item, scroll_type);
 
    return Undefined();
+}
+
+void CElmGenList::OnScrolledOverEdge(Persistent<Value> edge_callback)
+{
+   Handle<Function> callback(Function::Cast(*edge_callback));
+   Handle<Value> args[1] = { };
+   callback->Call(jsObject, 0, args);
+}
+
+void CElmGenList::OnScrolledOverTopEdgeWrapper(void *data, Evas_Object *, void *)
+{
+   CElmGenList *self = static_cast<CElmGenList*>(data);
+   self->OnScrolledOverEdge(self->cb.scrolled_over_top_edge);
+}
+
+Handle<Value> CElmGenList::on_scrolled_over_top_edge_get() const
+{
+   return cb.scrolled_over_top_edge;
+}
+
+void CElmGenList::on_scrolled_over_top_edge_set(Handle<Value> val)
+{
+   if (!cb.scrolled_over_top_edge.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "edge,top", &OnScrolledOverTopEdgeWrapper);
+        cb.scrolled_over_top_edge.Dispose();
+        cb.scrolled_over_top_edge.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.scrolled_over_top_edge = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "edge,top", &OnScrolledOverTopEdgeWrapper, this);
+}
+
+void CElmGenList::OnScrolledOverRightEdgeWrapper(void *data, Evas_Object *, void *)
+{
+   CElmGenList *self = static_cast<CElmGenList*>(data);
+   self->OnScrolledOverEdge(self->cb.scrolled_over_right_edge);
+}
+
+Handle<Value> CElmGenList::on_scrolled_over_right_edge_get() const
+{
+   return cb.scrolled_over_right_edge;
+}
+
+void CElmGenList::on_scrolled_over_right_edge_set(Handle<Value> val)
+{
+   if (!cb.scrolled_over_right_edge.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "edge,right", &OnScrolledOverRightEdgeWrapper);
+        cb.scrolled_over_right_edge.Dispose();
+        cb.scrolled_over_right_edge.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.scrolled_over_right_edge = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "edge,right", &OnScrolledOverRightEdgeWrapper, this);
+}
+
+void CElmGenList::OnScrolledOverBottomEdgeWrapper(void *data, Evas_Object *, void *)
+{
+   CElmGenList *self = static_cast<CElmGenList*>(data);
+   self->OnScrolledOverEdge(self->cb.scrolled_over_bottom_edge);
+}
+
+Handle<Value> CElmGenList::on_scrolled_over_bottom_edge_get() const
+{
+   return cb.scrolled_over_bottom_edge;
+}
+
+void CElmGenList::on_scrolled_over_bottom_edge_set(Handle<Value> val)
+{
+   if (!cb.scrolled_over_bottom_edge.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "edge,bottom", &OnScrolledOverBottomEdgeWrapper);
+        cb.scrolled_over_bottom_edge.Dispose();
+        cb.scrolled_over_bottom_edge.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.scrolled_over_bottom_edge = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "edge,bottom", &OnScrolledOverBottomEdgeWrapper, this);
+}
+
+void CElmGenList::OnScrolledOverLeftEdgeWrapper(void *data, Evas_Object *, void *)
+{
+   CElmGenList *self = static_cast<CElmGenList*>(data);
+   self->OnScrolledOverEdge(self->cb.scrolled_over_left_edge);
+}
+
+Handle<Value> CElmGenList::on_scrolled_over_left_edge_get() const
+{
+   return cb.scrolled_over_left_edge;
+}
+
+void CElmGenList::on_scrolled_over_left_edge_set(Handle<Value> val)
+{
+   if (!cb.scrolled_over_left_edge.IsEmpty())
+     {
+        evas_object_smart_callback_del(eo, "edge,left", &OnScrolledOverLeftEdgeWrapper);
+        cb.scrolled_over_left_edge.Dispose();
+        cb.scrolled_over_left_edge.Clear();
+     }
+
+   if (!val->IsFunction())
+     return;
+
+   cb.scrolled_over_left_edge = Persistent<Value>::New(val);
+   evas_object_smart_callback_add(eo, "edge,left", &OnScrolledOverLeftEdgeWrapper, this);
 }
 
 }

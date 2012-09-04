@@ -17,6 +17,10 @@ protected:
 
    struct {
       Persistent<Value> longpress;
+      Persistent<Value> scrolled_over_top_edge;
+      Persistent<Value> scrolled_over_bottom_edge;
+      Persistent<Value> scrolled_over_left_edge;
+      Persistent<Value> scrolled_over_right_edge;
    } cb;
 
    Persistent<Value> scroller_policy;
@@ -76,6 +80,24 @@ public:
    static void OnLongPressWrapper(void *data, Evas_Object *, void *event_info);
    Handle<Value> on_longpress_get() const;
    void on_longpress_set(Handle<Value> val);
+
+   void OnScrolledOverEdge(Persistent<Value> edge_callback);
+
+   static void OnScrolledOverTopEdgeWrapper(void *data, Evas_Object *, void *);
+   Handle<Value> on_scrolled_over_top_edge_get() const;
+   void on_scrolled_over_top_edge_set(Handle<Value> val);
+
+   static void OnScrolledOverBottomEdgeWrapper(void *data, Evas_Object *, void *);
+   Handle<Value> on_scrolled_over_bottom_edge_get() const;
+   void on_scrolled_over_bottom_edge_set(Handle<Value> val);
+
+   static void OnScrolledOverLeftEdgeWrapper(void *data, Evas_Object *, void *);
+   Handle<Value> on_scrolled_over_left_edge_get() const;
+   void on_scrolled_over_left_edge_set(Handle<Value> val);
+
+   static void OnScrolledOverRightEdgeWrapper(void *data, Evas_Object *, void *);
+   Handle<Value> on_scrolled_over_right_edge_get() const;
+   void on_scrolled_over_right_edge_set(Handle<Value> val);
 
    Handle<Value> scroller_policy_get() const;
    void scroller_policy_set(Handle<Value> val);
