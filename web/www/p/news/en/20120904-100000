@@ -1,0 +1,30 @@
+New Python-EFL release cycle 1.7
+Gustavo Sverzut Barbieri
+barbieri@profusion.mobi
+
+<p>
+
+Following the release cycle for C libraries for Enlightenment that <a
+href="http://enlightenment.org/p.php?p=news/show&l=en&news_id=50">announced
+1.7</a>, we'd like to announce a new release cycle release
+of Python EFL bindings.
+</p>
+
+<p><ul>
+
+<li>python-evas 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-evas-1.7.0.tar.bz2">BZ2</a>]</li>
+<li>python-ecore 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-ecore-1.7.0.tar.bz2">BZ2</a>]</li>
+<li>python-e_dbus 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-e_dbus-1.7.0.tar.bz2">BZ2</a>]</li>
+<li>python-edje 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-edje-1.7.0.tar.bz2">BZ2</a>]</li>
+<li>python-emotion 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-emotion-1.7.0.tar.bz2">BZ2</a>]</li>
+<li>python-ethumb 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-ethumb-1.7.0.tar.bz2">BZ2</a>]</li>
+<li>python-elementary 1.7.0 - [<a href="http://download.enlightenment.org/releases/BINDINGS/python/python-elementary-1.7.0.tar.bz2">BZ2</a>]</li>
+
+</ul></p>
+<!-- cut -->
+
+<p>
+With this version we are synchronizing the version numbers and
+updating some dependencies to match those we are testing on our
+machines.
+</p>
