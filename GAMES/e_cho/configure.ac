@@ -64,12 +64,7 @@ AC_SUBST(sounddir)
 AS_AC_EXPAND(SOUNDDIR, $sounddir)
 AC_DEFINE_UNQUOTED(SOUNDDIR, ["$SOUNDDIR"], [Where sound files are installed.])
 
-PKG_CHECK_MODULES([ETROPHY], [etrophy])
-PKG_CHECK_MODULES([ELEMENTARY], [elementary])
-PKG_CHECK_MODULES(LIBCANBERRA, [libcanberra])
-PKG_CHECK_MODULES(EVAS, [evas])
-PKG_CHECK_MODULES(ECORE, [ecore])
-PKG_CHECK_MODULES(EDJE, [edje])
+PKG_CHECK_MODULES([ECHO], [libcanberra etrophy elementary edje ecore evas])
 
 AC_ARG_WITH([edje-cc],
    [AC_HELP_STRING([--with-edje-cc=PATH],
