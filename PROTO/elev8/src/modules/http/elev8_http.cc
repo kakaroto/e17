@@ -324,11 +324,35 @@ class XMLHttpRequest
                                                          reinterpret_cast<void *>(self));
         if (self->method == METHOD_GET)
           {
+            const char *old_url = eina_stringshare_ref(ecore_con_url_url_get(self->url));
+            char *url = NULL;
+
+            if (paramData->IsObject())
+              {
+                 char *params = JSObjectToURL(paramData->ToObject());
+                 if (params)
+                   {
+                      if (asprintf(&url, "%s?%s", old_url, params) < 0)
+                        HTTP_WRN("Could not append parameters to URL");
+                      free(params);
+
+                      ecore_con_url_url_set(self->url, url);
+                   }
+              }
+
             if (!ecore_con_url_get(self->url))
               {
-                 HTTP_ERR( "Unable to send request");
+                 HTTP_ERR("Unable to send request");
                  self->reset();
               }
+
+            if (url)
+              {
+                 ecore_con_url_url_set(self->url, old_url);
+                 free(url);
+              }
+
+            eina_stringshare_del(old_url);
           }
         else
           {
@@ -345,7 +369,7 @@ class XMLHttpRequest
 
             if (!ecore_con_url_post(self->url, data, data == NULL ? 0 : strlen(data), NULL))
               {
-                 HTTP_ERR( "Unable to send request");
+                 HTTP_ERR("Unable to send request");
                  self->reset();
               }
 
