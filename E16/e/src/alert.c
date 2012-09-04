@@ -298,12 +298,14 @@ ShowAlert(const char *title,
 
    XSelectInput(dd, win, ExposureMask);
    XMapWindow(dd, win);
+
+   XGrabServer(dd);
+
    XGrabPointer(dd, win, False, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    XGrabKeyboard(dd, win, False, GrabModeAsync, GrabModeAsync, CurrentTime);
    XSetInputFocus(dd, win, RevertToPointerRoot, CurrentTime);
 
-   XGrabServer(dd);
    XSync(dd, False);
 
    wid = DisplayWidth(dd, DefaultScreen(dd));
