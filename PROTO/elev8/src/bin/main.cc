@@ -5,6 +5,7 @@
  * then exit
  */
 
+#include <libgen.h>
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <elev8_common.h>
@@ -28,6 +29,25 @@ enum ContextUseRule{
    CREATE_NEW_CONTEXT,
    USE_CURRENT_CONTEXT
 };
+
+static Handle<Value>
+string_to_object(Handle<String> str)
+{
+   HandleScope scope;
+
+   Handle<Value> json = Context::GetCurrent()->Global()->Get(String::NewSymbol("JSON"));
+   if (json.IsEmpty())
+     return Null();
+
+   Handle<Value> stringify = json->ToObject()->Get(String::NewSymbol("parse"));
+   if (stringify.IsEmpty())
+     return Null();
+
+   Handle<Function> func = Handle<Function>::Cast(stringify);
+   Handle<Value> args[1] = { str };
+
+   return scope.Close(func->Call(Context::GetCurrent()->Global(), 1, args)->ToObject());
+}
 
 static Handle<String>
 object_to_string(Handle<Object> obj)
@@ -131,7 +151,42 @@ find_native_module_file_name(char *module_name)
 inline static char *
 find_js_module_file_name(char *module_name)
 {
-   return find_module_file_name(module_name, "", "js");
+   char *tmp;
+   char *path = find_module_file_name(module_name, "", "js");
+
+   if (path)
+     return path;
+
+   if (asprintf(&tmp, "%s/", module_name) < 0)
+     goto end;
+
+   path = find_module_file_name((char *)"package", tmp, "json");
+   free(tmp);
+
+   if (path)
+     {
+        HandleScope scope;
+        Handle<String> package_json = string_from_file(path);
+        Handle<Value> package_obj = string_to_object(package_json);
+
+        if (!package_obj->IsObject())
+          goto end;
+
+        Handle<Value> main_module = package_obj->ToObject()->Get(String::NewSymbol("main"));
+        if (!main_module->IsString())
+          goto end;
+
+        if (asprintf(&tmp, "%s/%s", dirname(path),
+                    *String::Utf8Value(main_module->ToString())) > 0)
+          {
+             free(path);
+             return !access(tmp, R_OK) ? tmp : NULL;
+          }
+   }
+
+end:
+   free(path);
+   return NULL;
 }
 
 static bool
