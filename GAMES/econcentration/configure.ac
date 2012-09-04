@@ -61,8 +61,7 @@ AC_C_CONST
 AC_FUNC_ALLOCA
 AC_C___ATTRIBUTE__
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary evas ecore])
-PKG_CHECK_MODULES([ETROPHY], [etrophy])
+PKG_CHECK_MODULES([ECONCENTRATION], [etrophy elementary ecore evas])
 
 want_quicklaunch="auto"
 AC_ARG_ENABLE([quicklaunch],
