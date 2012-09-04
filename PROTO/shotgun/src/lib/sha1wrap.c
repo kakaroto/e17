@@ -16,8 +16,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-#include "ui.h"
 
+#include "shotgun_private.h"
 #include "sha1.h"
 
 static const char *

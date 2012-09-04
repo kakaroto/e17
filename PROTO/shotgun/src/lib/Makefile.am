@@ -27,6 +27,9 @@ presence.c \
 pugiconfig.hpp \
 pugixml.cpp \
 pugixml.hpp \
+sha1.c \
+sha1.h \
+sha1wrap.c \
 shotgun.c \
 shotgun_private.h \
 shotgun_utils.c \

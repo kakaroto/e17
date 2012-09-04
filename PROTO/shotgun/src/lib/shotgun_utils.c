@@ -115,3 +115,9 @@ shotgun_md5_hmac_encode(unsigned char *digest, const char *string, size_t size, 
                                          * hash */
    md5_finish_ctx(&ctx, digest);          /* finish up 2nd pass */
 }
+
+EAPI const char *
+shotgun_sha1_buffer(const unsigned char *data, size_t len)
+{
+   return sha1_buffer(data, len);
+}

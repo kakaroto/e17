@@ -9,8 +9,6 @@
 # include <security/pam_misc.h>
 #endif
 
-const char *sha1_buffer(const unsigned char *data, size_t len);
-
 static Eet_File *images = NULL;
 static Eet_Data_Descriptor *cleaner_edd = NULL;
 static Eet_Data_Descriptor *cache_edd = NULL;
@@ -685,7 +683,7 @@ ui_eet_image_add(const char *url, Eina_Binbuf *buf, unsigned long long timestamp
 
    if (!images) return -1;
 
-   sha1 = sha1_buffer(eina_binbuf_string_get(buf), eina_binbuf_length_get(buf));
+   sha1 = shotgun_sha1_buffer(eina_binbuf_string_get(buf), eina_binbuf_length_get(buf));
    INF("Image: %s - %s", url, sha1);
 
    list = eet_list(images, url, &lsize);

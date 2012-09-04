@@ -342,7 +342,7 @@ EAPI void shotgun_user_free(Shotgun_User *user);
 EAPI void shotgun_user_setting_free(Shotgun_User_Setting *sus);
 EAPI void shotgun_incoming_file_free(Shotgun_Incoming_File *file);
 EAPI void shotgun_iq_last_free(Shotgun_Iq_Last *last);
-
+EAPI const char *shotgun_sha1_buffer(const unsigned char *data, size_t len);
 #ifdef __cplusplus
 }
 #endif

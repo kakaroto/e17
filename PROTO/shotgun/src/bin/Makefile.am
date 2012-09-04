@@ -36,9 +36,6 @@ login.c \
 logging.c \
 main.c \
 settings.c \
-sha1.c \
-sha1.h \
-sha1wrap.c \
 ui.c \
 ui.h \
 util.c
