@@ -50,9 +50,6 @@ have_po="yes"
 have_po="no"
 ])
 AC_SUBST(LTLIBINTL)
-if test "x$LIBINTL" = "x"; then
-  LIBINTL="$INTLLIBS"
-fi
 
 if test "x${POSUB}" = "x" ; then
    have_po="no"
@@ -72,8 +69,6 @@ PKG_CHECK_MODULES([EMPOWER],
      edje >= 1.7.0,
      elementary >= 1.7.0
    ]
-   [],
-   []
 )
 
 AC_OUTPUT([
