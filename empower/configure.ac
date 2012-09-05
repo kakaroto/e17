@@ -35,28 +35,6 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale", [Locale-specific data directory])
 fi
 
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
-fi
-
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/bin'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
-fi
-
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
-
 ALL_LINGUAS=""
 AC_SUBST(ALL_LINGUAS)
 
@@ -83,44 +61,19 @@ fi
 AM_CONDITIONAL([HAVE_PO], [test "x${have_po}" = "xyes"])
 
 
-PKG_CHECK_MODULES([EVAS], evas,
-   [],
+PKG_CHECK_MODULES([EMPOWER],
    [
-      echo "Could not find Evas.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-      AC_MSG_ERROR([Empower needs Evas to compile.])
+     eina >= 1.7.0,
+     evas >= 1.7.0,
+     ecore >= 1.7.0,
+     ecore-x >= 1.7.0,
+     efreet >= 1.7.0,
+     edbus >= 1.7.0,
+     edje >= 1.7.0,
+     elementary >= 1.7.0
    ]
-)
-
-PKG_CHECK_MODULES([ECORE], [ ecore ecore-x ],
    [],
-   [
-      echo "Could not find Ecore.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-      AC_MSG_ERROR([Empower needs Ecore to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([EDJE], edje,
-   [],
-   [
-      echo "Could not find Edje.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-      AC_MSG_ERROR([Empower needs Edje to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([ELEMENTARY], elementary,
-   [],
-   [
-      echo "Could not find Elementary.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-      AC_MSG_ERROR([Empower needs Elementary to compile.])
-   ]
-)
-
-PKG_CHECK_MODULES([EDBUS], edbus,
-   [],
-   [
-      echo "Could not find Edbus.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-      AC_MSG_ERROR([Empower needs Edbus to compile.])
-   ]
+   []
 )
 
 AC_OUTPUT([
