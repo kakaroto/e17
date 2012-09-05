@@ -1,0 +1,431 @@
+group {
+   name: "pause_win";
+   min: 1280 720;
+   max: 1280 720;
+
+   images{
+      image: "retry_win_bg.jpg" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "bg";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            color: 130 130 130 130;
+            image.normal: "retry_win_bg.jpg";
+         }
+      }
+
+      part {
+         name: "title";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            color_class: "fail";
+            text {
+               text: "Game Paused";
+               font: "Game";
+               size: 92;
+               align: 0.5 0.15;
+            }
+         }
+      }
+
+      part {
+         name: "btn_resume";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1.relative: 0.35 0.35;
+            rel2.relative: 0.65 0.65;
+            visible: 1;
+            params {
+               string: "style" "efbb-regular";
+               string: "label" "Resume";
+            }
+         }
+      }
+
+      part {
+         name: "btn_menu";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.33 0.85;
+            rel2.relative: 0.66 1;
+            params {
+               string: "style" "efbb-plain";
+               string: "label" "MENU";
+            }
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "btn_resume_clicked";
+         signal: "clicked";
+         source: "btn_resume";
+         action: SIGNAL_EMIT "resume" "game";
+      }
+
+      program {
+         name: "btn_resume_sound";
+         signal: "clicked";
+         source: "btn_retry";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+      program {
+         name: "btn_menu_clicked";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "menu" "btn_menu";
+      }
+
+      program {
+         name: "btn_menu_sound";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+   }
+
+}
+group {
+   name: "retry_win";
+   min: 1280 720;
+   max: 1280 720;
+
+   images{
+      image: "retry_win_bg.jpg" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "bg";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            color: 130 130 130 130;
+            image.normal: "retry_win_bg.jpg";
+         }
+      }
+
+      part {
+         name: "title";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            color_class: "fail";
+            text {
+               text: "LEVEL FAILED!";
+               font: "Game";
+               size: 128;
+               align: 0.5 0.15;
+            }
+         }
+      }
+
+      part {
+         name: "btn_retry";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1.relative: 0.35 0.35;
+            rel2.relative: 0.65 0.65;
+            visible: 1;
+            params {
+               string: "style" "efbb-regular";
+               string: "label" "RETRY";
+            }
+         }
+      }
+
+      part {
+         name: "btn_menu";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.33 0.85;
+            rel2.relative: 0.66 1;
+            params {
+               string: "style" "efbb-plain";
+               string: "label" "MENU";
+            }
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "btn_retry_clicked";
+         signal: "clicked";
+         source: "btn_retry";
+         action: SIGNAL_EMIT "retry" "btn_retry";
+      }
+
+      program {
+         name: "btn_retry_sound";
+         signal: "clicked";
+         source: "btn_retry";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+      program {
+         name: "btn_menu_clicked";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "menu" "btn_menu";
+      }
+
+      program {
+         name: "btn_menu_sound";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }    
+
+   }
+
+}
+
+group {
+   name: "next_win";
+   min: 1280 720;
+   max: 1280 720;
+
+   images{
+      image: "bonus_bomb.png" COMP;
+      image: "total_bar.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "bg";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            color: 130 130 130 130;
+            image.normal: "retry_win_bg.jpg";
+         }
+      }
+
+      part {
+         name: "bomb";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            align: 0.39 0.538;
+            max: 70 70;
+            image.normal: "bonus_bomb.png";
+            visible: 1;
+         }
+      }
+
+      part {
+         name: "bar";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            align: 0.5 0.61;
+            max: 387 13;
+            image.normal: "total_bar.png";
+            visible: 1;
+         }
+      }
+
+      part {
+         name: "title";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            color_class: "success";
+            text {
+               text: "YOU WIN!";
+               font: "Game";
+               size: 128;
+               align: 0.5 0.15;
+            }
+         }
+      }
+
+      part {
+         name: "btn_next";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.57 0.3;
+            rel2.relative: 0.97 0.7;
+            color: 255 255 255 0;
+            visible: 0;
+            params {
+               string: "style" "efbb-forward";
+               string: "label" "NEXT";
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            visible: 1;
+         }
+      }
+
+      part {
+         name: "btn_menu";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.33 0.85;
+            rel2.relative: 0.66 1;
+            params {
+               string: "style" "efbb-plain";
+               string: "label" "MENU";
+            }
+         }
+      }
+
+      part {
+         name: "score";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.44 0.4;
+            rel2.relative: 0.66 0.5;
+            fixed: 1 1;
+            visible: 1;
+            text {
+               text: "0 POINTS";
+               font: "Game";
+               size: 62;
+            }
+         }
+      }
+
+      part {
+         name: "bonus";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.44 0.5;
+            rel2.relative: 0.66 0.6;
+            fixed: 1 1;
+            visible: 1;
+            text {
+               text: "+ 0 BONUS";
+               font: "Game";
+               size: 62;
+            }
+         }
+      }
+
+      part {
+         name: "xbonus";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            visible: 1;
+            text {
+               text: "X0";
+               font: "Game";
+               size: 62;
+               align: 0.41 0.555;
+            }
+         }
+      }
+
+      part {
+         name: "score_total";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            color_class: "success";
+            visible: 1;
+            text {
+               text: "0";
+               font: "Game";
+               size: 128;
+               align: 0.5 0.77;
+            }
+         }
+      }
+
+   }
+
+   programs {
+   
+      program {
+         name: "btn_menu_clicked";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "menu" "btn_menu";
+      }
+
+      program {
+         name: "btn_menu_sound";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+      program {
+         name: "btn_next_clicked";
+         signal: "clicked";
+         source: "btn_next";
+         action: SIGNAL_EMIT "next" "btn_next";
+      }
+
+      program {
+         name: "btn_next_sound";
+         signal: "clicked";
+         source: "btn_next";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+      program {
+         name: "next_hide";
+         source: "level_end";
+         signal: "hide_next";
+         action: STATE_SET "default" 0.0;
+         target: "btn_next";
+      }
+
+      program {
+         name: "next_level_exist";
+         source: "level_end";
+         signal: "next_exist";
+         action: STATE_SET "visible" 0.0;
+         target: "btn_next";
+      }
+
+   }
+
+}
+

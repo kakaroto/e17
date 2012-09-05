@@ -1,0 +1,639 @@
+/*
+ * Cannon Interface
+ *
+ * signals emmitted:
+ *  - "empty" "cannon_theme" -> after half shoot animation is done
+ *
+ * signals received:
+ *  - "load" "cannon" -> bar should be visible
+ *  - "shoot" "cannon" -> bar should be hidden and shoot animation starts
+ *
+ * messages received:
+ * - type:int id: 0 -> ammo ammout, value between 0 and 10
+ * - type:int id: 1 -> cannon rotation angle (degrees)
+ * - type:int id: 2 -> cannon bar strength, value between 0 and 100
+ *
+ */
+
+
+group {
+   name: "cannon_explosion";
+
+   images {
+      image: "explosion.png" COMP;
+   }
+   parts {
+
+      part {
+         name: "explosion";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 50 70;
+            max: 50 70;
+            color: 255 255 255 0;
+            image.normal: "explosion.png";
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            min: 110 100;
+            max: 110 100;
+            color: 255 255 255 255;
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            min: 140 110;
+            max: 140 110;
+            color: 255 255 255 0;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "explosion,show";
+         source: "cannon_theme";
+         signal: "explosion,show";
+         action: STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.1;
+         target: "explosion";
+         after: "explosion,fade,out";
+      }
+
+      program {
+         name: "explosion,fade,out";
+         action: STATE_SET "hidden" 0.0;
+         transition: ACCELERATE 0.1;
+         target: "explosion";
+         after: "explosion,hide";
+      }
+
+      program {
+         name: "explosion,hide";
+         action: STATE_SET "default" 0.0;
+         target: "explosion";
+      }
+
+   }
+
+}
+
+group {
+   name: "cannon_body";
+   images {
+      image: "cannon_body.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "body";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 246 50;
+            max: 246 50;
+            image.normal: "cannon_body.png";
+         }
+         description {
+            state: "back" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: -10 0;
+            rel2.offset: -11 -1;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "body,back";
+         source: "cannon_theme";
+         signal: "body,back";
+         action: STATE_SET "back" 0.0;
+         transition: ACCELERATE 0.16;
+         target: "body";
+         after: "body,default";
+      }
+
+      program {
+         name: "body,default";
+         action: STATE_SET "default" 0.0;
+         transition: ACCELERATE 0.16;
+         target: "body";
+      }
+
+   }
+
+}
+
+group {
+   name: "cannon_smoke1";
+
+   images {
+      image: "smoke_1.png" COMP;
+      image: "smoke_2.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "smoke1";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 76 76;
+            max: 76 76;
+            color: 255 255 255 0;
+            fixed: 1 1;
+            image.normal: "smoke_1.png";
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 200;
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            min: 100 100;
+            max: 100 100;
+            rel1.offset: 50 -10;
+            rel2.offset: 49 -11;
+            color: 255 255 255 0;
+         }
+      }
+
+      part {
+         name: "smoke2";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 52 38;
+            max: 52 38;
+            color: 255 255 255 0;
+            fixed: 1 1;
+            image.normal: "smoke_2.png";
+            rel1 {
+               offset: 4 68;
+            }
+            rel2 {
+               offset: 3 67;
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 200;
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            min: 60 45;
+            max: 60 45;
+            rel1.offset: 41 48;
+            rel2.offset: 40 47;
+            color: 255 255 255 0;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "smoke,show";
+         source: "cannon_theme";
+         signal: "smoke1,show";
+         action: STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.12;
+         target: "smoke1";
+         target: "smoke2";
+         after: "smoke1,fade,out";
+         after: "smoke2,fade,out";
+      }
+
+      program {
+         name: "smoke1,fade,out";
+         action: STATE_SET "hidden" 0.0;
+         transition: ACCELERATE 0.6;
+         target: "smoke1";
+         after: "smokes,hide";
+      }
+
+      program {
+         name: "smoke2,fade,out";
+         action: STATE_SET "hidden" 0.0;
+         transition: ACCELERATE 0.4;
+         target: "smoke2";
+      }
+
+      program {
+         name: "smokes,hide";
+         action: STATE_SET "default" 0.0;
+         target: "smoke1";
+         target: "smoke2";
+      }
+
+   }
+
+}
+
+group {
+   name: "cannon_smoke2";
+
+   images {
+      image: "smoke_3.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "smoke";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 52 38;
+            max: 52 38;
+            color: 255 255 255 0;
+            fixed: 1 1;
+            image.normal: "smoke_3.png";
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 200;
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            min: 60 45;
+            max: 60 45;
+            rel1.offset: 30 0;
+            rel2.offset: 29 -1;
+            color: 255 255 255 0;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "smoke,show";
+         source: "cannon_theme";
+         signal: "smoke2,show";
+         action: STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.12;
+         target: "smoke";
+         after: "smoke,fade,out";
+      }
+
+      program {
+         name: "smoke,fade,out";
+         action: STATE_SET "hidden" 0.0;
+         transition: ACCELERATE 0.3;
+         target: "smoke";
+         after: "smoke,hide";
+      }
+
+      program {
+         name: "smoke,hide";
+         action: STATE_SET "default" 0.0;
+         target: "smoke";
+      }
+
+   }
+
+}
+
+
+group {
+   name: "cannon";
+
+   images {
+      image: "cannon_base.png" COMP;
+      image: "cannon_body.png" COMP;
+      image: "explosion.png" COMP;
+      image: "smoke_1.png" COMP;
+      image: "smoke_2.png" COMP;
+      image: "smoke_3.png" COMP;
+   }
+
+   script {
+      public message(Msg_Type:type, id, ...) {
+         if ((type == MSG_INT) && (id == MSG_ID_ANGLE)) {
+            new Float:angle = getarg(2);
+            new x, y, xx, yy;
+
+            custom_state(PART:"body", "default", 0.0);
+            set_state_val(PART:"body", STATE_MAP_ROT_Z, -angle);
+            set_state(PART:"body", "custom", 0.0);
+
+            custom_state(PART:"explosion", "default", 0.0);
+            set_state_val(PART:"explosion", STATE_MAP_ROT_Z, -angle);
+            set_state(PART:"explosion", "custom", 0.0);
+
+            custom_state(PART:"bar", "default", 0.0);
+            set_state_val(PART:"bar", STATE_MAP_ROT_Z, -angle);
+            set_state(PART:"bar", "custom", 0.0);
+
+            x = round(70 + 110 * (1 - angle / 60));
+            y = round(-65 - 170 * angle / 60);
+
+            xx = x + rand() % 20;
+            yy = y + rand() % 20;
+
+            custom_state(PART:"smoke1", "default", 0.0);
+            set_state_val(PART:"smoke1", STATE_REL1_OFFSET, xx, yy);
+            set_state_val(PART:"smoke1", STATE_REL2_OFFSET, xx - 1, yy - 1);
+            set_state(PART:"smoke1", "custom", 0.0);
+
+            xx = x + 30 + rand() % 30;
+            yy = y + 10 + rand() % 30;
+
+            custom_state(PART:"smoke2", "default", 0.0);
+            set_state_val(PART:"smoke2", STATE_REL1_OFFSET, xx, yy);
+            set_state_val(PART:"smoke2", STATE_REL2_OFFSET, xx - 1, yy - 1);
+            set_state(PART:"smoke2", "custom", 0.0);
+
+         }
+      }
+   }
+
+   parts {
+
+      part {
+         name: "bg";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+
+      part {
+         name: "smoke1";
+         type: GROUP;
+         mouse_events: 0;
+         source: "cannon_smoke1";
+         description {
+            state: "default" 0.0;
+            min: 200 200;
+            fixed: 1 1;
+            rel1 {
+               to: "base";
+               relative: 1 0;
+            }
+            rel2 {
+               to: "base";
+               relative: 1 1;
+            }
+         }
+      }
+
+      part {
+         name: "explosion";
+         type: GROUP;
+         mouse_events: 0;
+         source: "cannon_explosion";
+         description {
+            state: "default" 0.0;
+            min: 200 200;
+            fixed: 1 1;
+            rel1 {
+               to: "body";
+               relative: 1 0;
+            }
+            rel2 {
+               to: "body";
+               relative: 1 1;
+            }
+            map {
+               on: 1;
+               rotation {
+                  center: "pin";
+               }
+            }
+         }
+      }
+
+      part {
+         name: "smoke2";
+         type: GROUP;
+         mouse_events: 0;
+         source: "cannon_smoke2";
+         description {
+            state: "default" 0.0;
+            min: 200 200;
+            fixed: 1 1;
+            rel1 {
+               to: "base";
+               relative: 1 0;
+            }
+            rel2 {
+               to: "base";
+               relative: 1 1;
+            }
+         }
+      }
+
+      part {
+         name: "body";
+         type: GROUP;
+         mouse_events: 0;
+         source: "cannon_body";
+         description {
+            state: "default" 0.0;
+            min: 300 300;
+            fixed: 1 1;
+            color: 255 0 0 255;
+            align: 0.2 0.5;
+            rel1 {
+               to: "pin";
+               offset: -14 0;
+            }
+            rel2 {
+               to: "pin";
+               offset: -13 -1;
+            }
+            map {
+               on: 1;
+               rotation {
+                  center: "pin";
+               }
+            }
+         }
+      }
+
+
+      part {
+         name: "base";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 130 68;
+            max: 130 68;
+            image.normal: "cannon_base.png";
+            align: 0 0;
+         }
+      }
+
+      part {
+         name: "pin";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 3 3;
+            max: 3 3;
+            color: 255 255 255 0;
+            rel1 {
+               to: "base";
+               offset: 40 -26;
+            }
+            rel2 {
+               to: "base";
+               offset: 39 -25;
+            }
+         }
+      }
+
+      part {
+         name: "bar_clipper";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1.to: "bar";
+            rel2.to: "bar";
+            min: 800 800;
+            max: 800 800;
+            fixed: 1 1;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+
+      part {
+         name: "bar";
+         type: GROUP;
+         mouse_events: 0;
+         source: "bar";
+         clip_to: "bar_clipper";
+         description {
+            state: "default" 0.0;
+            min: 180 53;
+            max: 180 53;
+            fixed: 1 1;
+            rel1 {
+               to: "body";
+               relative: 1 0;
+               offset: 30 0;
+            }
+            rel2 {
+               to: "body";
+               relative: 1 1;
+               offset: 29 -1;
+            }
+            align: 0 0.5;
+            map {
+               on: 1;
+               rotation {
+                  center: "pin";
+               }
+            }
+         }
+      }
+
+      part {
+         name: "ammo";
+         type: GROUP;
+         mouse_events: 0;
+         source: "ammo";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "base";
+               offset: 30 -12;
+            }
+            rel2 {
+               to: "base";
+               offset: 29 -11;
+            }
+            align: 0 1;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "load";
+         source: "cannon";
+         signal: "load";
+         action: STATE_SET "visible" 0.0;
+         target: "bar_clipper";
+      }
+
+      program {
+         name: "shoot";
+         source: "cannon";
+         signal: "shoot";
+         action: STATE_SET "default" 0.0;
+         target: "bar_clipper";
+         after: "explosion,show";
+         after: "body,back";
+      }
+
+      program {
+         name: "body,back";
+         action: SIGNAL_EMIT "body,back" "cannon_theme";
+      }
+
+      program {
+         name: "explosion,show";
+         action: SIGNAL_EMIT "explosion,show" "cannon_theme";
+         after: "smoke1,show";
+         after: "smoke2,show";
+         after: "empty";
+      }
+
+      program {
+         name: "smoke1,show";
+         in: 0 0.2;
+         action: SIGNAL_EMIT "smoke1,show" "cannon_theme";
+      }
+
+      program {
+         name: "smoke2,show";
+         in: 0 0.2;
+         action: SIGNAL_EMIT "smoke2,show" "cannon_theme";
+      }
+
+      program {
+         name: "empty";
+         in: 1.25 0;
+         action: SIGNAL_EMIT "empty" "cannon_theme";
+      }
+
+   }
+
+}

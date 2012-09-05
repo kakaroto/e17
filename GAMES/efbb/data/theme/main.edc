@@ -1,0 +1,83 @@
+#define MSG_ID_AMMO (0)
+#define MSG_ID_ANGLE (1)
+#define MSG_ID_STRENGTH (2)
+
+externals {
+   external: "elm";
+}
+
+fonts {
+   font: "Woodstamp.otf" "Game";
+}
+
+color_classes {
+
+   color_class {
+      name: "regular";
+      color: 255 255 255 255;
+      color2: 70 70 70 255;
+      color3: 70 70 70 255;
+   }
+
+   color_class {
+      name: "regular_pressed";
+      color: 100 100 100 255;
+      color2: 70 70 70 255;
+      color3: 70 70 70 255;
+   }
+
+   color_class {
+      name: "button";
+      color: 255 102 51 255;
+      color2: 70 70 70 255;
+      color3: 70 70 70 255;
+   }
+
+   color_class {
+      name: "button_pressed";
+      color: 153 204 51 255;
+      color2: 70 70 70 255;
+      color3: 70 70 70 255;
+   }
+
+   color_class {
+      name: "success";
+      color: 153 204 51 255;
+      color2: 70 70 70 255;
+      color3: 70 70 70 255;
+   }
+
+   color_class {
+      name: "fail";
+      color: 255 102 51 255;
+      color2: 70 70 70 255;
+      color3: 70 70 70 255;
+   }
+
+   color_class {
+      name: "invisible";
+      color: 255 255 255 0;
+      color2: 255 255 255 0;
+      color3: 255 255 255 0;
+   }
+
+}
+
+collections {
+#include "ammo.edc"
+#include "bar.edc"
+#include "boom.edc"
+#include "button.edc"
+#include "cannon.edc"
+#include "gengrid.edc"
+#include "lvlsel_win.edc"
+#include "main_win.edc"
+#include "objects.edc"
+#include "options.edc"
+#include "retry_win.edc"
+#include "score.edc"
+}
+
+#undef MSG_ID_AMMO
+#undef MSG_ID_ANGLE
+#undef MSG_ID_STRENGTH

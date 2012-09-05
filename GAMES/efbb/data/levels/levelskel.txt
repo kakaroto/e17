@@ -1,0 +1,37 @@
+# use '#' for comments
+# use '/' to separate elements of lists
+# use ',' to separate properties of elements
+
+[Consts]
+WIDTH = 1280
+HEIGHT = 720
+FLOOR_Y = 610
+
+BOX_SIZE_S = 20
+BOX_SIZE_R = 40
+BOX_SIZE_L = 120
+TARGET_SIZE = 60
+
+STONE = stone
+WOOD = wood
+
+PIRATE = pirate
+BOSS = boss
+
+EASY = 0
+MEDIUM = 1
+HARD = 2
+
+[General]
+level_num =
+level_id =
+canon_pos_x =
+canon_pos_y =
+ammo =
+bg =
+time_attack =
+
+[Elements]
+blocks =
+objects =
+targets =

@@ -1,0 +1,66 @@
+group {
+   name: "lvlsel_win";
+   min: 1280 720;
+   max: 1280 720;
+
+   images {
+      image: "bg.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "bg";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            image.normal: "bg.png";
+         }
+      }
+
+      part {
+         name: "grid";
+         type: SWALLOW;
+         description {
+            state: "default" 0;
+            rel1.relative: 0 0.1;
+            rel2.relative: 1 0.8;
+         }
+      }
+
+      part {
+         name: "btn_menu";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.33 0.85;
+            rel2.relative: 0.66 1;
+            params {
+               string: "style" "efbb-plain";
+               string: "label" "BACK";
+            }
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "btn_menu_clicked";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "menu" "btn_menu";
+      }
+
+      program {
+         name: "btn_menu_sound";
+         signal: "clicked";
+         source: "btn_menu";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+   }
+
+}

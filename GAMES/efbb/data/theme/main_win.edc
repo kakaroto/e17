@@ -1,0 +1,342 @@
+#define SEA_ADD(_name, _time, _x1, _x2, _x3, _x4) \
+      part { \
+         name: #_name##"-1"; \
+         type: IMAGE; \
+         mouse_events: 0; \
+         description { \
+            state: "default" 0.0; \
+            min: 1280 112; \
+            max: 1280 112; \
+            image.normal: #_name".png"; \
+            align: 0 1; \
+            rel1.offset: _x1 0; \
+            rel2.offset: (_x1 - 1) -1; \
+         } \
+         description { \
+            state: "end" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.offset: _x2 0; \
+            rel2.offset: (_x2 - 1) -1; \
+         } \
+      } \
+      part { \
+         name: #_name##"-2"; \
+         type: IMAGE; \
+         mouse_events: 0; \
+         description { \
+            state: "default" 0.0; \
+            min: 1280 112; \
+            max: 1280 112; \
+            rel1.offset: _x3 0; \
+            rel2.offset: (_x3 - 1) -1; \
+            image.normal: #_name##".png"; \
+            align: 0 1; \
+         } \
+         description { \
+            state: "end" 0.0; \
+            inherit: "default" 0.0; \
+            rel1.offset: _x4 0; \
+            rel2.offset: (_x4 - 1) -1; \
+         } \
+      } \
+      program { \
+         name: "move_"##_name; \
+         action: STATE_SET "end" 0.0; \
+         transition: LINEAR _time; \
+         target: #_name##"-1"; \
+         target: #_name##"-2"; \
+         after: "move_"##_name##",reset"; \
+      } \
+      program { \
+         name: "move_"##_name##",reset"; \
+         action: STATE_SET "default" 0.0; \
+         target: #_name##"-1"; \
+         target: #_name##"-2"; \
+         after: "move_"##_name; \
+      }
+
+group {
+   name: "main_win";
+
+   images {
+      image: "bars.png" COMP;
+      image: "logo.png" COMP;
+      image: "pirate-ship.png" COMP;
+      image: "sea-1.png" COMP;
+      image: "sea-2.png" COMP;
+      image: "sea-3.png" COMP;
+      image: "sea-4.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "bg";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            min: 1280 720;
+            max: 1280 720;
+            color: 9 52 65 255;
+         }
+      }
+
+      SEA_ADD(sea-4, 6.0, 0, 1280, -1280, 0)
+
+      part {
+         name: "ship_height";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+         }
+         description {
+            state: "high" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 -14;
+            rel2.offset: -1 -15;
+         }
+         description {
+            state: "low" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 10;
+            rel2.offset: -1 -9;
+         }
+      }
+
+      part {
+         name: "ship";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 562 395;
+            max: 562 395;
+            rel1.offset: 10 260;
+            rel1.to_y: "ship_height";
+            rel2.offset: 9 259;
+            rel2.to_y: "ship_height";
+            image.normal: "pirate-ship.png";
+            align: 0 0;
+         }
+         description {
+            state: "mid" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 350 260;
+            rel2.offset: 349 259;
+         }
+         description {
+            state: "end" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 700 260;
+            rel2.offset: 699 259;
+         }
+      }
+
+      SEA_ADD(sea-3, 5.0, 1280, 0, 0, -1280)
+      SEA_ADD(sea-2, 4.5, 0, 1280, -1280, 0)
+      SEA_ADD(sea-1, 4.0, 1280, 0, 0, -1280)
+
+      part {
+         name: "bars";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 1280 720;
+            max: 1280 720;
+            image.normal: "bars.png";
+            rel1.relative: 0 -1;
+            rel2.relative: 1 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            rel1.relative: 0 0;
+            rel2.relative: 1 1;
+         }
+      }
+
+      part {
+         name: "logo";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 1280 550;
+            max: 1280 550;
+            color: 255 255 255 0;
+            rel1.offset: 0 -50;
+            rel2.offset: 0 -51;
+            image.normal: "logo.png";
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+
+      part {
+         name: "btn_play";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.33 0.46;
+            rel2.relative: 0.66 0.8;
+            params {
+               string: "style" "efbb-regular";
+               string: "label" "PLAY";
+            }
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+
+      part {
+         name: "btn_exit";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.33 0.8;
+            rel2.relative: 0.66 1;
+            params {
+               string: "style" "efbb-plain";
+               string: "label" "EXIT";
+            }
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "show";
+         signal: "show";
+         source: "game";
+         filter: "ship" "default";
+         after: "move_ship";
+         after: "move_ship_height,hi";
+         after: "move_sea-1";
+         after: "move_sea-2";
+         after: "move_sea-3";
+         after: "move_sea-4";
+         after: "show_logo";
+      }
+
+      program {
+         name: "move_ship";
+         action: STATE_SET "mid" 0.0;
+         transition: LINEAR 4.0;
+         target: "ship";
+         after: "move_ship,2";
+      }
+
+      program {
+         name: "move_ship,2";
+         action: STATE_SET "end" 0.0;
+         transition: DECEL 6.0;
+         target: "ship";
+      }
+
+      program {
+         name: "move_ship_height,hi";
+         action: STATE_SET "high" 0.0;
+         in: 0.1 0.2;
+         transition: DECEL 1.2;
+         target: "ship_height";
+         after: "move_ship_height,low";
+      }
+
+      program {
+         name: "move_ship_height,low";
+         action: STATE_SET "low" 0.0;
+         in: 0.1 0.4;
+         transition: ACCEL 0.8;
+         target: "ship_height";
+         after: "move_ship_height,hi";
+      }
+
+      program {
+         name: "show_logo";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 2.0;
+         target: "logo";
+         after: "show_logo,0";
+      }
+
+      program {
+         name: "show_logo,0";
+         action: STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.4;
+         target: "logo";
+         after: "move_bars";
+      }
+
+      program {
+         name: "move_bars";
+         action: SIGNAL_EMIT "bars.wav" "sound";
+         after: "move_bars,0";
+      }
+
+      program {
+         name: "move_bars,0";
+         action: STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.8;
+         target: "bars";
+         after: "show_buttons";
+      }
+
+      program {
+         name: "show_buttons";
+         action: STATE_SET "visible" 0.0;
+         target: "btn_play";
+         target: "btn_exit";
+      }
+
+      program {
+         name: "btn_play_clicked";
+         signal: "clicked";
+         source: "btn_play";
+         action: SIGNAL_EMIT "play" "btn_play";
+      }
+
+      program {
+         name: "btn_play_sound";
+         signal: "clicked";
+         source: "btn_play";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+      program {
+         name: "btn_exit_clicked";
+         signal: "clicked";
+         source: "btn_exit";
+         action: SIGNAL_EMIT "exit" "btn_exit";
+      }
+
+      program {
+         name: "btn_exit_sound";
+         signal: "clicked";
+         source: "btn_exit";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+   }
+}
+
+#undef SEA_ADD

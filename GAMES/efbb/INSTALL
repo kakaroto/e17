@@ -1,0 +1,21 @@
+Installation Instructions
+*************************
+
+$ ./autogen.sh [--prefix=DIR]
+$ make
+$ make install
+
+It depends on:
+ * evas
+ * ecore
+ * edje
+ * elementary
+ * ephysics
+ * libcanberra
+ * geneet
+ * etrophy
+
+geneet is a python script that can be found at:
+  http://git.profusion.mobi/~leandro/geneet.html
+
+etrophy is on PROTO/etrophy

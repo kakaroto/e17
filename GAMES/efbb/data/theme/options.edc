@@ -1,0 +1,127 @@
+group {
+   name: "options";
+
+   images {
+      image: "sound_on.png" COMP;
+      image: "sound_off.png" COMP;
+   }
+
+   parts {
+
+      part {
+         name: "sound_event";
+         type: RECT;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.relative: 0 0;
+            rel2.relative: 0.5 1;
+         }
+      }
+
+      part {
+         name: "btn_sound";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 56 56;
+            max: 56 56;
+            rel1.to: "sound_event";
+            rel2.to: "sound_event";
+            image.normal: "sound_on.png";
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "sound_off.png";
+         }
+      }
+
+      part {
+         name: "btn_pause";
+         type: EXTERNAL;
+         source: "elm/button";
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.5 0;
+            rel2.relative: 1 1;
+            visible: 0;
+            params {
+               string: "style" "efbb-plain";
+               string: "effect" "GLOW";
+               string: "label" "II";
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "sound_turn_off";
+         signal: "mouse,clicked,1";
+         source: "sound_event";
+         filter: "btn_sound" "default";
+         action: STATE_SET "disabled" 0.0;
+         transition: LINEAR 0.1;
+         target: "btn_sound";
+      }
+
+      program {
+         name: "sound_turn_on";
+         signal: "mouse,clicked,1";
+         source: "sound_event";
+         filter: "btn_sound" "disabled";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "btn_sound";
+      }
+
+      program {
+         name: "btn_sound_switch";
+         signal: "mouse,clicked,1";
+         source: "sound_event";
+         action: SIGNAL_EMIT "sound" "switch";
+      }
+
+      program {
+         name: "btn_pause_clicked";
+         signal: "clicked";
+         source: "btn_pause";
+         action: SIGNAL_EMIT "pause" "game";
+      }
+
+      program {
+         name: "btn_pause_sound";
+         signal: "clicked";
+         source: "btn_pause";
+         action: SIGNAL_EMIT "button.wav" "sound";
+      }
+
+      program {
+         name: "pause_hide";
+         source: "game";
+         signal: "hide_pause";
+         action: STATE_SET "default" 0.0;
+         target: "btn_pause";
+      }
+
+      program {
+         name: "pause_show";
+         source: "game";
+         signal: "show_pause";
+         action: STATE_SET "visible" 0.0;
+         target: "btn_pause";
+      }
+
+   }
+
+}

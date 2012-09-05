@@ -1,0 +1,77 @@
+group {
+   name: "ammo";
+
+   images {
+      image: "bomb.png" COMP;
+   }
+
+   script {
+      public message(Msg_Type:type, id, ...) {
+         if ((type == MSG_INT) && (id == MSG_ID_AMMO)) {
+            new ammo = getarg(2);
+            new bomb;
+            for (bomb = 1; bomb <= 10; bomb++) {
+               new emission[16];
+               if (bomb <= ammo)
+                  snprintf(emission, sizeof(emission), "bomb%i,visible", bomb);
+               else
+                  snprintf(emission, sizeof(emission), "bomb%i,hide", bomb);
+               emit(emission, "cannon_theme");
+            }
+         }
+      }
+   }
+
+   parts {
+
+#define BOMB(_n, _x, _y) \
+      part { \
+         name: "bomb"_n; \
+         type: IMAGE; \
+         mouse_events: 0; \
+         description { \
+            state: "default" 0.0; \
+            min: 30 30; \
+            max: 30 30; \
+            fixed: 1 1; \
+            rel1.offset: _x (_y + 16); \
+            rel2.offset: (_x - 1) (_y + 15); \
+            image.normal: "bomb.png"; \
+            color: 255 255 255 0; \
+            align: 0 1; \
+         } \
+         description { \
+            state: "visible" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 255; \
+         } \
+      } \
+   \
+      program { \
+         name: "bomb"_n",visible"; \
+         signal: "bomb"_n",visible"; \
+         source: "cannon_theme"; \
+         action: STATE_SET "visible" 0.0; \
+         transition: ACCELERATE 0.2; \
+         target: "bomb"_n; \
+      } \
+   \
+      program { \
+         name: "bomb"_n",hide"; \
+         signal: "bomb"_n",hide"; \
+         source: "cannon_theme"; \
+         action: STATE_SET "default" 0.0; \
+         transition: ACCELERATE 0.2; \
+         target: "bomb"_n; \
+      }
+
+                           BOMB(10, 45, -75)
+                    BOMB(6, 30, -50)  BOMB(9, 60, -50)
+           BOMB(5, 15, -25)  BOMB(3, 45, -25)  BOMB(8, 75, -25)
+     BOMB(4, 0, 0)  BOMB(1, 30, 0)  BOMB(2, 60, 0)  BOMB(7, 90, 0)
+
+#undef BOMB
+
+   }
+
+}

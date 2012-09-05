@@ -1,0 +1,69 @@
+group {
+   name: "score";
+   min: 300 100;
+   max: 300 100;
+
+   parts {
+
+      part {
+         name: "hiscore_lb";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            text {
+               text: "Hi-score:";
+               font: "Game";
+               size: 52;
+               align: 0 0;
+            }
+         }
+      }
+
+      part {
+         name: "hiscore";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            text {
+               text: "0";
+               font: "Game";
+               size: 52;
+               align: 1 0;
+            }
+         }
+      }
+
+      part {
+         name: "score_lb";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            text {
+               text: "Score:";
+               font: "Game";
+               size: 52;
+               align: 0 1;
+            }
+         }
+      }
+
+      part {
+         name: "score";
+         type: TEXT;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
+            text {
+               text: "0";
+               font: "Game";
+               size: 52;
+               align: 1 1;
+            }
+         }
+      }
+   }
+
+}

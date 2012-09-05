@@ -1,0 +1,185 @@
+#define BUTTON_STYLE_SET(_name) \
+ \
+   group { \
+      name: "elm/button/base/efbb-"_name; \
+    \
+      images { \
+         image: "btn_"_name".png" COMP; \
+         image: "btn_"_name"_pressed.png" COMP; \
+      } \
+    \
+      parts { \
+    \
+         part { \
+            name: "blocker"; \
+            type: RECT; \
+            mouse_events: 1; \
+            description { \
+               state: "default" 0.0; \
+               color: 255 255 255 0; \
+            } \
+         } \
+    \
+         part { \
+            name: "base"; \
+            type: IMAGE; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               min: 100 98; \
+               max: 200 196; \
+               image.normal: "btn_"_name".png"; \
+            } \
+            description { \
+               state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               image.normal: "btn_"_name"_pressed.png"; \
+            } \
+         } \
+    \
+         part { \
+            name: "elm.text"; \
+            type: TEXT; \
+            effect: GLOW; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               color_class: "button"; \
+               text { \
+                  font: "Game"; \
+                  size: 180; \
+               } \
+            } \
+            description { \
+               state: "pressed" 0.0; \
+               inherit: "default" 0.0; \
+               color_class: "button_pressed"; \
+            } \
+         } \
+    \
+         part { \
+            name: "over"; \
+            type: RECT; \
+            mouse_events: 1; \
+            ignore_flags: ON_HOLD; \
+            description { \
+               state: "default" 0.0; \
+               color: 255 255 255 0; \
+            } \
+         } \
+    \
+      } \
+    \
+      programs { \
+    \
+         program { \
+            name: "bt_clicked"; \
+            source: "over"; \
+            signal: "mouse,clicked,1"; \
+            action: SIGNAL_EMIT "elm,action,click" ""; \
+         } \
+    \
+         program { \
+            name: "bt_pressed"; \
+            source: "over"; \
+            signal: "mouse,down,1"; \
+            action: STATE_SET "pressed" 0.0; \
+            target: "base"; \
+            target: "elm.text"; \
+         } \
+    \
+         program { \
+            name: "bt_unpressed"; \
+            source: "over"; \
+            signal: "mouse,up,1"; \
+            action: STATE_SET "default" 0.0; \
+            target: "base"; \
+            target: "elm.text"; \
+         } \
+    \
+      } \
+    \
+   }
+
+BUTTON_STYLE_SET("regular")
+BUTTON_STYLE_SET("back")
+BUTTON_STYLE_SET("forward")
+
+group {
+   name: "elm/button/base/efbb-plain";
+
+   parts {
+
+      part {
+         name: "blocker";
+         type: RECT;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+
+      part {
+         name: "elm.text";
+         type: TEXT;
+         effect: GLOW;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color_class: "regular";
+            text {
+               font: "Game";
+               size: 60;
+            }
+         }
+         description {
+            state: "pressed" 0.0;
+            inherit: "default" 0.0;
+            color_class: "regular_pressed";
+         }
+      }
+
+      part {
+         name: "over";
+         type: RECT;
+         mouse_events: 1;
+         ignore_flags: ON_HOLD;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+
+   }
+
+   programs {
+
+      program {
+         name: "bt_clicked";
+         source: "over";
+         signal: "mouse,clicked,1";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+
+      program {
+         name: "bt_pressed";
+         source: "over";
+         signal: "mouse,down,1";
+         action: STATE_SET "pressed" 0.0;
+         target: "elm.text";
+      }
+
+      program {
+         name: "bt_unpressed";
+         source: "over";
+         signal: "mouse,up,1";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+
+   }
+
+}
+
+#undef BUTTON_STYLE_SET

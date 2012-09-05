@@ -1,0 +1,43 @@
+Target {
+    type: str;
+    x: int;
+    y: int;
+    w: int;
+    h: int;
+}
+
+Block {
+    type: str;
+    x: int;
+    y: int;
+    w: int;
+    h: int;
+    mass: int;
+    relto: int;
+}
+
+Object {
+    type: str;
+    x: int;
+    y: int;
+    w: int;
+    h: int;
+    above: int;
+}
+
+Level {
+    level_num: int;
+    level_id: str;
+    cannon_pos_x: int;
+    cannon_pos_y: int;
+    ammo: int;
+    bg: int;
+    time_attack: int;
+    blocks: list of Block;
+    targets: list of Target;
+    objects: list of Object;
+}
+
+World {
+    levels: list of Level;
+}

@@ -1,0 +1,98 @@
+group {
+   name: "bar";
+
+   script {
+      public message(Msg_Type:type, id, ...) {
+         if ((type == MSG_INT) && (id == MSG_ID_STRENGTH)) {
+            new Float:st = getarg(2);
+            set_tween_state(PART:"circle_1", (st - (100/8) * 0) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_2", (st - (100/8) * 1) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_3", (st - (100/8) * 2) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_4", (st - (100/8) * 3) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_5", (st - (100/8) * 4) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_6", (st - (100/8) * 5) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_7", (st - (100/8) * 6) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+            set_tween_state(PART:"circle_8", (st - (100/8) * 7) / (100/8),
+                  "default", 0.0, "visible", 0.0);
+         }
+      }
+   }
+
+   images {
+      image: "bar_border.png" COMP;
+   }
+
+   parts {
+
+#define BAR(_n, _w, _h, _relto, _offset) \
+      images { \
+           image: "bar"_n"_"_w"_"_h".png" COMP; \
+      } \
+ \
+      part { \
+         name: "circle_"_n; \
+         type: IMAGE; \
+         mouse_events: 0; \
+         description { \
+            state: "default" 0.0; \
+            min: _w _h; \
+            max: _w _h; \
+            image.normal: "bar"_n"_"_w"_"_h".png"; \
+            rel1.to: "circle_"_relto; \
+            rel1.relative: 1 0.5; \
+            rel1.offset: _offset  0; \
+            rel2.to: "circle_"_relto; \
+            rel2.relative: 1 0.5; \
+            rel2.offset: _offset -1; \
+            align: 0 0.5; \
+            color: 255 255 255 0; \
+         } \
+         description { \
+            state: "visible" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 255; \
+         } \
+      }
+
+  BAR(1, 45, 21, 0, 1) BAR(2, 22, 26, 1, -3) BAR(3, 23, 30, 2, -5)
+     BAR(4, 25, 35, 3, -7) BAR(5, 27, 39, 4, -9) BAR(6, 29, 43, 5, -11)
+        BAR(7, 32, 49, 6, -14) BAR(8, 36, 49, 7, -17)
+
+#undef BAR
+
+      part {
+         name: "border";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 175 53;
+            max: 175 53;
+            image.normal: "bar_border.png";
+         }
+      }
+
+      part {
+         name: "circle_0";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 1 1;
+            max: 1 1;
+            rel1.offset: -89 0;
+            rel2.offset: -88 -1;
+            color: 255 255 255 0;
+         }
+      }
+
+   }
+
+}
