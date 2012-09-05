@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: efx
+Description: A library for 2D effects
+Version: @VERSION@
+Libs: -L${libdir} -lefx
+@pkgconfig_requires_private@: @requirements_pc_efx@
