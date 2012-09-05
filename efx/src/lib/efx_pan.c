@@ -310,6 +310,8 @@ _pan_cb(Efx_Pan_Data *epd, double pos)
    _smart_pan_get(epd->pan, &px, &py);
    //DBG("PAN: (%d,%d) += (%d,%d)", px, py, x, y);
    _smart_pan_set(epd->pan, px + x, py + y);
+   epd->e->map_data.pan.x = px + x;
+   epd->e->map_data.pan.y = py + y;
 
    epd->current.x += x;
    epd->current.y += y;

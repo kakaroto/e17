@@ -181,7 +181,7 @@ struct Efx_Map_Data
    double zoom; /**< The current zoom amount of an object */
    Evas_Point *zoom_center; /**< The current zoom center for the object */
    Evas_Point *move_center; /**< The current move vertex for the object */
-   Evas_Point *pan_center; /**< The current pan vertex for the object */
+   Evas_Point pan; /**< The current pan for the object */
 };
 
 /**
