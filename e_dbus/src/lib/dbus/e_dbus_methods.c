@@ -29,6 +29,7 @@ _dbus_call__void(E_DBus_Connection *conn, const const char *method_name, E_DBus_
       ERR("E.dbus Error: no connection for call of %s", method_name);
       return NULL;
     }
+  EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, NULL);
   
   msg = _dbus_message_method_call(method_name);
   if (!msg)
@@ -53,6 +54,7 @@ _dbus_call__str(E_DBus_Connection *conn, const const char *method_name, const ch
       ERR("E-dbus Error: no connection for call of %s", method_name);
        return NULL;
     }
+  EINA_SAFETY_ON_NULL_RETURN_VAL(method_name, NULL);
 
   msg = _dbus_message_method_call(method_name);
   if (!msg)
@@ -78,6 +80,8 @@ e_dbus_introspect(E_DBus_Connection *conn, const char *bus, const char *object_p
        ERR("E-dbus Error: no connection for use with introspection");
        return NULL;
     }
+  EINA_SAFETY_ON_NULL_RETURN_VAL(bus, NULL);
+  EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, NULL);
 
    msg = dbus_message_new_method_call
      (bus, object_path, "org.freedesktop.DBus.Introspectable", "Introspect");
@@ -100,6 +104,7 @@ e_dbus_request_name(E_DBus_Connection *conn, const char *name, unsigned int flag
        ERR("E-dbus Error: no connection for call of RequestName");
        return NULL;
     }
+  EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
    u_flags = flags;
 
@@ -155,8 +160,9 @@ e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, unsigned
    if (!conn)
      {
        ERR("ERROR: no connection for call of %s", method_name);
-	return NULL;
+	      return NULL;
      }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
    msg = _dbus_message_method_call(method_name);
    if (!msg)
