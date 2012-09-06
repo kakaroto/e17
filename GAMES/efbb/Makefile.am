@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = src data
 
-MAINTAINERCLEANFILES = Makefile.in ABOUT-NLS INSTALL aclocal.m4 config.guess compile \
+MAINTAINERCLEANFILES = Makefile.in ABOUT-NLS aclocal.m4 config.guess compile \
   config.h.in config.rpath config.sub configure install-sh \
   ltconfig ltmain.sh missing mkinstalldirs \
   m4/lib-link.m4 m4/lib-prefix.m4 m4/lib-ld.m4 m4/lcmessage.m4 m4/libtool.m4 m4/ulonglong.m4 \
@@ -11,6 +11,6 @@ MAINTAINERCLEANFILES = Makefile.in ABOUT-NLS INSTALL aclocal.m4 config.guess com
   m4/codeset.m4 m4/inttypes_h.m4 m4/ltoptions.m4 m4/nls.m4 \
   stamp-h.in acconfig.h depcomp
 
-EXTRA_DIST = README AUTHORS COPYING COPYING_ARTS
+EXTRA_DIST = README AUTHORS COPYING COPYING_ARTS INSTALL
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-quicklaunch
