@@ -1,0 +1,18 @@
+History_Item {
+      title : str default "Untitled";
+      url : str default "about:blank";
+      visit : uint ;
+      favicon: image compress 95;	// compression ranges from 0 (no compression) to 9 (max compression)
+}
+Bookmark_Item {
+      title : str;
+      url : str;
+      visit_count : uint;
+      last_visit : uint;
+      favicon: image compress 95;
+}
+History_Bookmark_Item {
+      version : uint;
+      history_entries : list of History_Item;
+      bookmark_entries : list of Bookmark_Item;
+}

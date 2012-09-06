@@ -1,0 +1,32 @@
+Phone_Number {
+	number : str;
+	type : enum of HOME, WORK, MOBILE;
+}
+
+Email_Address {
+	address : str;
+	type : enum of PERSONAL, WORK;
+}
+
+Address {
+	street : str;
+	number : int;
+	zip_code: str;
+	state : enum of AC, AL, AP, AM, BA, CE, DF, GO, ES, MA, MT, MS, MG, PA, PB, PR, PE, PI, RJ, RN, RS, RO, RR, SP, SC, SE, TO;
+	type : enum of PERSONAL, WORK;
+}
+
+Person {
+	first_name : str;
+	last_name : str;
+	phones : list of Phone_Number;
+	emails : list of Email_Address;
+	addresses : list of Address;
+	photo : image compress 95;
+}
+
+Book {
+	version: int;
+	people : list of Person;
+}
+

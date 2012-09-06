@@ -1,0 +1,82 @@
+geneet
+Generator for EFL's pickler/unpickler library, EET
+
+
+Introduction
+------------
+
+Given a simple description about a data structure, geneet will
+generate the C source code so it can be serialized/deserialized
+by using the EET library.
+
+Even though it is possible to write code to use EET by hand, it
+can be pretty boring and error-prone. Geneet's structure syntax
+is as simple as it gets and, in the future, will be possible to
+use it for other languages as well.
+
+Geneet supports currently:
+  - Fundamental types
+    - str
+    - int, uint
+    - float, double
+  - Enumeration
+  - Images
+  - Lists
+  - Hashes
+
+Generated code can:
+  - Initialize/shutdown the EET descriptor structures
+  - Allocate/free a structure
+  - Load/save a structure to a file
+
+
+Geneet Syntax
+-------------
+
+<Structure_Name> {
+  <field_name> : <type> [<type arguments>] [noencode];
+}
+
+- <Structure_Name> and <field_name> can be any valid C identifier;
+- <type> can be one of:
+  - str
+  - int
+  - uint
+  - float
+  - double
+  - list
+  - hash
+  - enum
+- <type arguments> varies depending on the <type> used; it can be either
+  optional, or mandatory, according to the following table:
+
+	Type	Optional	Argument
+	----	--------	--------
+	str	Yes		default "Default value"
+	list	No		of <Structure_Name>
+	hash	No		of <Structure_Name> by <field_name>
+	enum	No		of <NAME1>, <NAME2>, ..., <NAMEN>
+- noencode might be used to create in-memory only fields; they won't be
+  encoded in the EET file but will be available as structures members
+
+Usage
+-----
+
+Usage is pretty simple; just call geneet with a .geneet file with the
+structure definition you want. Refer to included .geneet files for examples.
+
+Running:
+	$ geneet phonebook.geneet
+
+Will create phonebook.c and phonebook.h. See the included test-phonebook.c
+to see an example of how to use the generated files.
+
+Installing
+----------
+To install install geneet.py script:
+
+	$ python setup.py install
+
+or if a non-standard install directory is wanted:
+
+	$ python setup.py install --prefix=$PREFIX
