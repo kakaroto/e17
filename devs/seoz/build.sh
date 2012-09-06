@@ -5,9 +5,11 @@
 ##########################################
 
 # Ubuntu 12.04 Pre-requisites.
-# build-essential automake libtool ccache zlib1g-dev libjpeg-dev libfreetype6-dev libdbus-1-dev liblua5.1-0-dev g++ libxext-dev libxrender-dev libpng12-dev libxrandr-dev libfontconfig1-dev autopoint libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxfixes-dev libxfont-dev  libxi-dev libxinerama-dev libxss-dev libxv-dev libtiff4-dev librsvg2-dev libfribidi-dev libcurl4-openssl-dev libexif-dev libiptcdata0-dev libxml2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libudev-dev libxcb-shape0-dev libsigc++-2.0-dev byacc libsqlite3-dev python-dev imagemagick libpam0g-dev
+# build-essential automake libtool ccache zlib1g-dev libjpeg-dev libfreetype6-dev libdbus-1-dev liblua5.1-0-dev g++ libxext-dev libxrender-dev libpng12-dev libxrandr-dev libfontconfig1-dev autopoint libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxfixes-dev libxfont-dev  libxi-dev libxinerama-dev libxss-dev libxv-dev libtiff4-dev librsvg2-dev libfribidi-dev libcurl4-openssl-dev libexif-dev libiptcdata0-dev libxml2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libudev-dev libxcb-shape0-dev libsigc++-2.0-dev byacc libsqlite3-dev python-dev imagemagick libpam0g-dev python-pyparsing
+
 # for enjoy : lightmediascanner http://lms.garage.maemo.org/
 # for ephysics : Bullet Physics Engine http://bulletphysics.org/wordpress/
+# for efbb : geneet http://git.profusion.mobi/~leandro/geneet.html
 
 set -e
 #set -x
@@ -27,6 +29,7 @@ export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage E-MODULES-EXTRA/everything-shotgun"
 export BUILD_ETC="terminology exactness PROTO/efx PROTO/shotgun editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy exquisite rage PROTO/eyesight"
 export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
+export BUILD_GAMES="PROTO/etrophy GAMES/efbb"
 export BUILD_ETC2="excessive enki espionnage evas_generic_loaders"
 export BUILD_WITH_CMAKE="ecrire"
 
@@ -151,6 +154,7 @@ build "$BUILD_BASIC2" --disable-doc
 build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
 #build "$BUILD_CPP_BINDINGS"
 build "$BUILD_E_MODULES $BUILD_ETC $BUILD_EXAMPLE "
+build "$BUILD_GAMES"
 #build "$BUILD_ETC2"
 
 build_cmake "$BUILD_WITH_CMAKE"
