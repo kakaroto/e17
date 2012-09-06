@@ -1,3 +1,4 @@
+#!/bin/env python
 from distutils.core import setup
 setup(name='geneet',
         version='0.1',
