@@ -202,6 +202,9 @@ cdef void cb_object_image_preloaded(void *data, Evas *e,
                                     Evas_Object *obj, void *e_inf) with gil:
     cb_object_dispatcher2(<Object>data, EVAS_CALLBACK_IMAGE_PRELOADED)
 
+cdef void cb_object_image_resize(void *data, Evas *e,
+                                    Evas_Object *obj, void *e_inf) with gil:
+    cb_object_dispatcher2(<Object>data, EVAS_CALLBACK_IMAGE_RESIZE)
 
 cdef void cb_object_canvas_focus_in(void *data, Evas *e,
                                     Evas_Object *obj, void *e_inf) with gil:
@@ -244,8 +247,8 @@ cdef void cb_object_canvas_render_post(void *data, Evas *e,
 
 
 cdef int evas_object_event_callbacks_len
-cdef Evas_Object_Event_Cb evas_object_event_callbacks[32]
-evas_object_event_callbacks_len = 32
+cdef Evas_Object_Event_Cb evas_object_event_callbacks[33]
+evas_object_event_callbacks_len = 33
 evas_object_event_callbacks[EVAS_CALLBACK_MOUSE_IN] = cb_object_mouse_in
 evas_object_event_callbacks[EVAS_CALLBACK_MOUSE_OUT] = cb_object_mouse_out
 evas_object_event_callbacks[EVAS_CALLBACK_MOUSE_DOWN] = cb_object_mouse_down
@@ -278,3 +281,4 @@ evas_object_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT] = cb_object_c
 evas_object_event_callbacks[EVAS_CALLBACK_IMAGE_UNLOADED] = cb_object_image_unloaded
 evas_object_event_callbacks[EVAS_CALLBACK_RENDER_PRE] = cb_object_canvas_render_pre
 evas_object_event_callbacks[EVAS_CALLBACK_RENDER_POST] = cb_object_canvas_render_post
+evas_object_event_callbacks[EVAS_CALLBACK_IMAGE_RESIZE] = cb_object_image_resize

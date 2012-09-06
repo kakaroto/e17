@@ -76,6 +76,7 @@ cdef extern from "Evas.h":
     cdef int EVAS_CALLBACK_IMAGE_UNLOADED
     cdef int EVAS_CALLBACK_RENDER_PRE
     cdef int EVAS_CALLBACK_RENDER_POST
+    cdef int EVAS_CALLBACK_IMAGE_RESIZE
     cdef int EVAS_CALLBACK_LAST
 
 
