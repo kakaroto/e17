@@ -10,7 +10,7 @@ static void _login(Login_Window *lw);
    elm_box_pack_end(lw->box, fr); \
 \
    obj = elm_entry_add(win); \
-   elm_entry_bounce_set(obj, EINA_FALSE, EINA_FALSE); \
+   elm_scroller_bounce_set(obj, EINA_FALSE, EINA_FALSE); \
    elm_entry_single_line_set(obj, EINA_TRUE); \
    elm_entry_scrollable_set(obj, EINA_FALSE); \
    EXPAND(obj); \

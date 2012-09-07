@@ -457,7 +457,7 @@ chat_status_entry_toggle(Contact *c)
    c->status_line = status = elm_entry_add(c->chat_window->win);
    elm_entry_single_line_set(status, 1);
    elm_entry_cnp_mode_set(status, ELM_CNP_MODE_NO_IMAGE);
-   elm_entry_scrollbar_policy_set(status, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(status, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
    elm_entry_editable_set(status, 0);
    elm_object_focus_allow_set(status, 0);
    elm_entry_scrollable_set(status, 1);
@@ -645,7 +645,7 @@ chat_window_chat_new(Contact *c, Chat_Window *cw, Eina_Bool focus)
 
    c->chat_buffer = convo = elm_entry_add(win);
    elm_entry_cnp_mode_set(convo, ELM_CNP_MODE_NO_IMAGE);
-   elm_entry_scrollbar_policy_set(convo, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_scroller_policy_set(convo, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    elm_entry_editable_set(convo, 0);
    elm_entry_single_line_set(convo, 0);
    elm_entry_scrollable_set(convo, 1);
@@ -663,7 +663,7 @@ chat_window_chat_new(Contact *c, Chat_Window *cw, Eina_Bool focus)
    c->chat_input = entry = elm_entry_add(win);
    elm_entry_scrollable_set(entry, 1);
    elm_entry_line_wrap_set(entry, ELM_WRAP_MIXED);
-   elm_entry_scrollbar_policy_set(entry, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    EXPAND(entry);
    FILL(entry);
    evas_object_show(entry);

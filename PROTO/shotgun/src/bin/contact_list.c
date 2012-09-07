@@ -266,7 +266,7 @@ _contact_list_add_cb(Contact_List *cl, Evas_Object *obj __UNUSED__, Elm_Object_I
       elm_entry_scrollable_set(o, 1);
       elm_object_tooltip_text_set(o, "Contact's display name");
       elm_object_tooltip_window_mode_set(o, EINA_TRUE);
-      elm_entry_scrollbar_policy_set(o, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+      elm_scroller_policy_set(o, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
       evas_object_smart_callback_add(o, "activated", (Evas_Smart_Cb)_contact_list_add_pager_cb_next, cl);
       evas_object_show(o);
       elm_entry_cursor_begin_set(o);
@@ -310,7 +310,7 @@ _contact_list_add_cb(Contact_List *cl, Evas_Object *obj __UNUSED__, Elm_Object_I
       elm_entry_scrollable_set(o, 1);
       elm_object_tooltip_text_set(o, "Contact's full address in the format \"ABC@XYZ.TLD\"");
       elm_object_tooltip_window_mode_set(o, EINA_TRUE);
-      elm_entry_scrollbar_policy_set(o, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+      elm_scroller_policy_set(o, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
       evas_object_smart_callback_add(o, "activated", (Evas_Smart_Cb)_contact_list_add_pager_cb_next, cl);
       evas_object_show(o);
       elm_entry_cursor_begin_set(o);
@@ -555,8 +555,8 @@ _contact_list_list_add(Contact_List *cl)
    cl->list = list = elm_genlist_add(cl->win);
    cl->mode = EINA_FALSE;
    elm_genlist_reorder_mode_set(list, EINA_TRUE);
-   elm_genlist_bounce_set(list, EINA_FALSE, EINA_FALSE);
-   elm_genlist_scroller_policy_set(list, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_scroller_bounce_set(list, EINA_FALSE, EINA_FALSE);
+   elm_scroller_policy_set(list, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    EXPAND(list);
    FILL(list);
    elm_genlist_mode_set(list, ELM_LIST_COMPRESS);
@@ -689,14 +689,14 @@ _contact_list_status_click(Contact_List *cl, Evas_Object *o __UNUSED__, Elm_Obje
    cl->status_entry = obj = elm_entry_add(scr);
    elm_entry_line_wrap_set(obj, ELM_WRAP_MIXED);
    elm_entry_single_line_set(obj, 1);
-   elm_entry_scrollbar_policy_set(obj, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(obj, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
    elm_entry_select_all(obj);
    EXPAND(obj);
    FILL(obj);
    elm_box_pack_end(box, obj);
    evas_object_smart_callback_add(obj, "activated", (Evas_Smart_Cb)_contact_list_status_activate, cl);
    elm_entry_entry_set(obj, shotgun_presence_desc_get(cl->account));
-   elm_entry_scrollbar_policy_set(obj, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(obj, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
    evas_object_show(obj);
 
    obj = elm_spinner_add(scr);
