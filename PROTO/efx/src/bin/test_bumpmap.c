@@ -41,8 +41,9 @@ main(void)
    Evas_Coord h;
 
    efx_init();
+   ecore_evas_init();
 
-   ee = ecore_evas_new ("software_x11", 10, 10, 1, 1, NULL);
+   ee = ecore_evas_new (NULL, 10, 10, 1, 1, NULL);
    if (!ee)
      {
        fprintf(stderr, "merde\n");
@@ -80,6 +81,7 @@ main(void)
    ecore_main_loop_begin();
 
    ecore_evas_shutdown();
+   efx_shutdown();
 
    return 0;
 }
