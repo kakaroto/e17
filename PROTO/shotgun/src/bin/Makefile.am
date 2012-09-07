@@ -1,6 +1,7 @@
 AM_CFLAGS = \
+  @SHOTGUN_CFLAGS@ \
   @AZY_CFLAGS@ \
-  @ELM_CFLAGS@ \
+  @GUI_CFLAGS@ \
   @edbus_CFLAGS@ \
   @enotify_CFLAGS@ \
  -DDATA_DIR=\"$(datadir)\" \
@@ -15,8 +16,9 @@ AM_CXXFLAGS = $(AM_CFLAGS)
 bin_PROGRAMS = shotgun
 
 shotgun_LDADD = \
+  @SHOTGUN_LIBS@ \
   @AZY_LIBS@ \
-  @ELM_LIBS@ \
+  @GUI_LIBS@ \
   @edbus_LIBS@ \
   @enotify_LIBS@ \
   -lm \

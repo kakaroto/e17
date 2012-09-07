@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: shotgun
+Description: A library for XMPP connections
+Version: @VERSION@
+Libs: -L${libdir} -lshotgun
+@pkgconfig_requires_private@: @requirements_pc_shotgun@

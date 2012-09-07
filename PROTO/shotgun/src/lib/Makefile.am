@@ -2,13 +2,13 @@ lib_LTLIBRARIES = \
   libshotgun.la
 
 AM_CFLAGS = \
-  $(ELM_CFLAGS) \
+  $(SHOTGUN_CFLAGS) \
  -I@top_builddir@ \
  -I@top_srcdir@/src/include
 AM_CXXFLAGS = $(AM_CFLAGS)
 
 libshotgun_la_LIBADD = \
-  @ELM_LIBS@ \
+  @SHOTGUN_LIBS@ \
   -lm
 
 libshotgun_la_LDFLAGS = -version-info @version_info@ @release_info@ -no-undefined

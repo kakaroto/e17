@@ -64,8 +64,35 @@ AC_SUBST([CXX_PIC])
 AC_CHECK_HEADERS([limits.h])
 AC_CHECK_FUNCS([memcpy])
 
-##PKG_CHECK_MODULES([ELM], [$requirement_elm]))
-PKG_CHECK_MODULES([ELM], [eina >= 1.0.999 eet >= 1.4.0 evas >= 1.0.999 ecore >= 1.0.999 ecore-evas >= 1.0.999 ecore-file >= 1.0.999 ecore-imf >= 1.0.999 ecore-con >= 1.0.999 edje >= 1.0.999 elementary efx])
+PKG_PROG_PKG_CONFIG
+
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST([pkgconfig_requires_private])
+
+
+PKG_CHECK_MODULES([SHOTGUN], [eina >= 1.0.999 ecore >= 1.0.999 ecore-con >= 1.0.999])
+
+have_gui="no"
+want_gui="yes"
+AC_ARG_ENABLE([gui],
+   [AC_HELP_STRING([--disable-gui], [disable gui support. @<:@default=detect@:>@])],
+   [want_gui=$enableval], [])
+
+if test "x$want_gui" != "xno"; then
+   PKG_CHECK_MODULES([GUI],
+      [eet >= 1.4.0 evas >= 1.0.999 ecore-file >= 1.0.999 ecore-imf >= 1.0.999 edje >= 1.0.999 elementary efx],
+      [have_gui="yes"],
+      [have_gui="no"]
+   )
+else
+    have_gui="no"
+fi
+AM_CONDITIONAL([GUI], [test "x${have_gui}" = "xyes"])
 
 AC_ARG_WITH([edje-cc],
    [AC_HELP_STRING([--with-edje-cc=PATH],
@@ -146,6 +173,7 @@ fi
 # write output
 AC_CONFIG_FILES([
   Makefile
+  shotgun.pc
   data/Makefile
   data/theme/Makefile
   src/Makefile

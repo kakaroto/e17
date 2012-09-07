@@ -1,4 +1,8 @@
-SUBDIRS = lib bin
+SUBDIRS = lib
+
+if GUI
+SUBDIRS += bin
+endif
 
 MAINTAINERCLEANFILES = Makefile.in
 
