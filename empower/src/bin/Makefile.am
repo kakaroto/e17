@@ -13,6 +13,6 @@ empower_CFLAGS = @EMPOWER_CFLAGS@
 empower_LDADD =  $(LTLIBINTL) \
                  @EMPOWER_LIBS@
 
-EXTRA_DIST = Empower.h gui.h cb.h pka.h marshal.h
+EXTRA_DIST = Empower.h gui.h pka.h marshal.h
 
 MAINTAINERCLEANFILES = Makefile.in config.h.in
