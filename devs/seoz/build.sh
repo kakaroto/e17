@@ -9,7 +9,6 @@
 
 # for enjoy : lightmediascanner http://lms.garage.maemo.org/
 # for ephysics : Bullet Physics Engine http://bulletphysics.org/wordpress/
-# for efbb : geneet http://git.profusion.mobi/~leandro/geneet.html
 
 set -e
 #set -x
@@ -148,14 +147,26 @@ function build_themes()
 	popd
 }
 
+function build_game_prerequisites()
+{
+	# geneet for efbb
+	echo ""
+	echo "============ geneet ============"
+	pushd geneet
+		sudo python setup.py install
+	popd
+}
+
 build "$BUILD_BASIC1" --disable-doc
 build evas --disable-cpu-sse3 --disable-doc
 build "$BUILD_BASIC2" --disable-doc
 build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
 #build "$BUILD_CPP_BINDINGS"
 build "$BUILD_E_MODULES $BUILD_ETC $BUILD_EXAMPLE "
-build "$BUILD_GAMES"
 #build "$BUILD_ETC2"
+
+build_game_prerequisites
+build "$BUILD_GAMES"
 
 build_cmake "$BUILD_WITH_CMAKE"
 build_etc
