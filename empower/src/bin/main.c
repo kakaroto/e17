@@ -54,6 +54,9 @@ int elm_main(int argc, char** argv)
   ecore_idle_enterer_add(_auth_idler, NULL);
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _exit_cb, NULL);
 
+  // Allow use of svg icons
+  efreet_icon_extension_add(".svg");
+
   // Grab UID of the process.  This will be used to set
   // the default user when the UI is first shown.
   empower_uid = getuid();

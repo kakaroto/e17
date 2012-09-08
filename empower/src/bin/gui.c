@@ -8,27 +8,23 @@ static Eina_Bool _gui_grab_keyboard(void *data);
 
 static struct
 {
+  unsigned int h;
+  unsigned int w;
   Evas_Object *win;        // elm_win
-  Evas_Object *frame;      // elm_frame
   Evas_Object *password;   // elm_entry
   Evas_Object *icon;       // elm_icon
-  Evas_Object *message;    // elm_label
+  Evas_Object *message;    // evas_object_text
   Evas_Object *identity;   // elm_hoversel
+  Evas_Object *grid;       // elm_grid
   Empower_Identity *id;
 } _gui;
 
 Eina_Bool gui_init()
 {
   char buf[PATH_MAX];
-  Evas_Object *vbox;
-  Evas_Object *vbox2;
-  Evas_Object *hbox;
   Evas_Object *bg;
-  Evas_Object *frame;
-  Evas_Object *frame2;
-  Evas_Object *frame3;
-  Evas_Object *label;
-  Evas_Object *grid;
+  Evas_Object *o;
+  unsigned int w,h;
 
   _gui.win = elm_win_add(NULL, "Empower", ELM_WIN_DIALOG_BASIC);
   elm_win_title_set(_gui.win, "Empower");
@@ -39,115 +35,72 @@ Eina_Bool gui_init()
   elm_win_fullscreen_set(_gui.win, 1);
   elm_win_keyboard_mode_set(_gui.win, ELM_WIN_KEYBOARD_ON);
 
+  elm_win_screen_size_get(_gui.win, NULL, NULL, &_gui.w, &_gui.h);
+
   bg = elm_image_add(_gui.win);
   snprintf(buf, sizeof(buf), "%s/data/trans.png", PACKAGE_DATA_DIR);
   elm_image_file_set(bg, buf, NULL);
   elm_win_resize_object_add(_gui.win, bg);
-  evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
   elm_image_fill_outside_set(bg, 1);
   evas_object_show(bg);
 
-  grid = elm_gengrid_add(_gui.win);
-
-  vbox2 = elm_box_add(_gui.win);
-  evas_object_size_hint_weight_set(vbox2, 0.5, 0.25);
-  evas_object_size_hint_align_set(vbox2, 0.5, 0.5);
-  elm_win_resize_object_add(_gui.win, vbox2);
-  evas_object_show(vbox2);
-
-  _gui.frame = elm_frame_add(_gui.win);
-  evas_object_size_hint_weight_set(_gui.frame, 0.25, 0.25);
-  evas_object_size_hint_align_set(_gui.frame, 0.5, 0.5);
-  elm_box_pack_end(vbox2, _gui.frame);
-  elm_object_text_set(_gui.frame, _("Empower"));
-
-  frame2 = elm_frame_add(_gui.win);
-  evas_object_size_hint_weight_set(frame2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(frame2, EVAS_HINT_FILL, EVAS_HINT_FILL);
-  elm_object_style_set(frame2, "pad_medium");
-
-  vbox = elm_box_add(_gui.win);
-  elm_box_horizontal_set(vbox, EINA_FALSE);
-  evas_object_size_hint_weight_set(vbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(vbox, 0.5, 0.5);
-  elm_box_homogeneous_set(vbox, EINA_TRUE);
-
-  hbox = elm_box_add(_gui.win);
-  elm_box_horizontal_set(hbox, EINA_TRUE);
-  evas_object_size_hint_weight_set(hbox, EVAS_HINT_EXPAND, 0.0);
-  evas_object_size_hint_align_set(hbox, 0.0, 0.0);
+  _gui.grid = elm_grid_add(_gui.win);
+  elm_grid_size_set(_gui.grid, _gui.w, _gui.h);
+  elm_win_resize_object_add(_gui.win, _gui.grid);
+  evas_object_show(_gui.grid);
 
   _gui.icon = elm_icon_add(_gui.win);
-  elm_image_file_set(_gui.icon, "", "");
   elm_image_aspect_fixed_set(_gui.icon, EINA_TRUE);
-  elm_image_fill_outside_set(_gui.icon, EINA_FALSE);
-  evas_object_size_hint_weight_set(_gui.icon, 0.2, EVAS_HINT_EXPAND);
-  elm_box_pack_end(hbox, _gui.icon);
+  elm_image_fill_outside_set(_gui.icon, EINA_TRUE);
+  evas_object_size_hint_weight_set(_gui.icon, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+  evas_object_size_hint_align_set(_gui.icon, EVAS_HINT_FILL, EVAS_HINT_FILL);
+  elm_grid_pack(_gui.grid, _gui.icon, (_gui.w/2)-64, (_gui.h/2) - 256, 128, 128);
   evas_object_show(_gui.icon);
 
-  _gui.message = elm_label_add(_gui.win);
-  elm_object_text_set(_gui.message, "");
-  evas_object_size_hint_weight_set(_gui.message, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  elm_box_pack_end(hbox, _gui.message);
+  _gui.message = evas_object_text_add(evas_object_evas_get(_gui.win));
+  evas_object_text_font_set(_gui.message, "sans-serif", 18);
+  evas_object_text_style_set(_gui.message, EVAS_TEXT_STYLE_GLOW);
+  evas_object_color_set(_gui.message, 0xff, 0xff, 0xff, 0xff);
+  evas_object_text_glow_color_set(_gui.message, 0x60, 0x60, 0x60, 0xff);
+  elm_grid_pack(_gui.grid, _gui.message, (_gui.w/2), (_gui.h/2) - 120, 0, 0);
   evas_object_show(_gui.message);
 
-  elm_box_pack_end(vbox, hbox);
-  evas_object_show(hbox);
-
-  hbox = elm_box_add(_gui.win);
-  elm_box_horizontal_set(hbox, EINA_TRUE);
-  evas_object_size_hint_weight_set(hbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(hbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-  label = elm_label_add(_gui.win);
-  elm_object_text_set(label, "User: ");
-  evas_object_size_hint_weight_set(label, 0.0, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(label, 0.0, 0.5);
-  elm_box_pack_end(hbox, label);
-  evas_object_show(label);
+  o = evas_object_text_add(evas_object_evas_get(_gui.win));
+  evas_object_text_font_set(o, "sans-serif", 14);
+  evas_object_text_style_set(o, EVAS_TEXT_STYLE_GLOW);
+  evas_object_color_set(o, 0xff, 0xff, 0xff, 0xff);
+  evas_object_text_glow_color_set(o, 0x60, 0x60, 0x60, 0xff);
+  evas_object_text_text_set(o, "Identity");
+  evas_object_geometry_get(o, NULL, NULL, &w, &h);
+  elm_grid_pack(_gui.grid, o, (_gui.w/2) - (w/2), ((_gui.h/2) - h - 24), w, h);
+  evas_object_show(o);
 
   _gui.identity = elm_hoversel_add(_gui.win);
-  evas_object_size_hint_weight_set(_gui.identity, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(_gui.identity, EVAS_HINT_FILL, EVAS_HINT_FILL);
-  elm_box_pack_end(hbox, _gui.identity);
+  evas_object_name_set(_gui.identity, "identity");
+  elm_grid_pack(_gui.grid, _gui.identity, (_gui.w/2) - (_gui.w/8), (_gui.h/2) - 16, (_gui.w/4), 32);
   evas_object_show(_gui.identity);
 
-  elm_box_pack_end(vbox, hbox);
-  evas_object_show(hbox);
-
-  hbox = elm_box_add(_gui.win);
-  elm_box_horizontal_set(hbox, EINA_TRUE);
-  evas_object_size_hint_weight_set(hbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(hbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
-  label = elm_label_add(_gui.win);
-  elm_object_text_set(label, "Password: ");
-  evas_object_size_hint_weight_set(label, 0.0, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(label, 0.0, 0.5);
-  elm_box_pack_end(hbox, label);
-  evas_object_show(label);
+  o = evas_object_text_add(evas_object_evas_get(_gui.win));
+  evas_object_text_font_set(o, "sans-serif", 14);
+  evas_object_text_style_set(o, EVAS_TEXT_STYLE_GLOW);
+  evas_object_color_set(o, 0xff, 0xff, 0xff, 0xff);
+  evas_object_text_glow_color_set(o, 0x60, 0x60, 0x60, 0xff);
+  evas_object_text_text_set(o, "Password");
+  evas_object_geometry_get(o, NULL, NULL, &w, &h);
+  elm_grid_pack(_gui.grid, o, (_gui.w/2) - (w/2), ((_gui.h/2) + 24), w, h);
+  evas_object_show(o);
 
   _gui.password = elm_entry_add(_gui.win);
   elm_entry_scrollable_set(_gui.password, EINA_TRUE);
-  evas_object_size_hint_weight_set(_gui.password, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(_gui.password, EVAS_HINT_FILL, EVAS_HINT_FILL);
   evas_object_name_set(_gui.password, "password");
   elm_entry_editable_set(_gui.password, EINA_TRUE);
   elm_entry_single_line_set(_gui.password, EINA_TRUE);
   elm_entry_password_set(_gui.password, EINA_TRUE);
-  elm_box_pack_end(hbox, _gui.password);
+  elm_entry_input_panel_layout_set(_gui.password, ELM_INPUT_PANEL_LAYOUT_PASSWORD);
+  elm_entry_autocapital_type_set(_gui.password, ELM_AUTOCAPITAL_TYPE_NONE);
+  elm_entry_text_style_user_push(_gui.password, "DEFAULT='font=Sans font_size=20 align=middle valign=baseline linesize=16 color=#ffffff glow_color=#606060 style=glow'");
+  elm_grid_pack(_gui.grid, _gui.password, (_gui.w/2) - (_gui.w/8), (_gui.h/2) + 24 + h, (_gui.w/4), 32);
   evas_object_show(_gui.password);
-
-  elm_box_pack_end(vbox, hbox);
-  evas_object_show(hbox);
-
-  elm_object_content_set(frame2, vbox);
-  evas_object_show(frame2);
-
-  elm_object_content_set(_gui.frame, frame2);
-  evas_object_show(vbox);
-  evas_object_show(_gui.frame);
 
   return EINA_TRUE;
 }
@@ -156,11 +109,34 @@ void gui_show(Empower_Auth_Info *info)
 {
   Eina_List *l;
   Empower_Identity *id;
+  Efreet_Icon_Theme *theme;
+  const char *icon_path;
+  unsigned int x, y, w, h;
 
-  elm_object_text_set(_gui.message, info->message);
-  elm_icon_standard_set(_gui.icon, info->icon);
+  // Reposition message so it's centered.
+  evas_object_text_text_set(_gui.message, info->message);
+  evas_object_geometry_get(_gui.message, &x, &y, &w, &h);
+  elm_grid_pack_set(_gui.message, (_gui.w/2) - (w/2), (_gui.h/2) - (h/2) - 112, w, h);
+
+  // Clear password field here.  Should already be clear, but be sure.
   elm_entry_entry_set(_gui.password, "");
 
+  // Set icon if it's specified.  I've used efreet directly as
+  // elm_icon_standard_set is no good.
+  if (info->icon && info->icon[0])
+  {
+    theme = efreet_icon_theme_find(getenv("E_ICON_THEME"));
+    if (theme)
+    {
+      icon_path = efreet_icon_path_find(theme->name.internal, info->icon, 128);
+
+      if (icon_path)
+        elm_image_file_set(_gui.icon, icon_path, NULL);
+    }
+  }
+
+  // Setup hoversel
+  // TODO: Come up with a face browser of sorts instead of this.
   elm_hoversel_clear(_gui.identity);
   _gui.id = NULL;
   EINA_LIST_FOREACH(info->identities, l, id)
@@ -169,6 +145,8 @@ void gui_show(Empower_Auth_Info *info)
     {
       case EMPOWER_IDENTITY_USER:
         elm_hoversel_item_add(_gui.identity, id->details.user.name, NULL, 0, _gui_id_change, id);
+
+        // If we find the current user in the list then use that as default
         if (id->details.user.uid == empower_uid)
         {
           _gui.id = id;
