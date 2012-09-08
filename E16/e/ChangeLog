@@ -5608,3 +5608,30 @@ Fix bug in pareto_maximizer() (Daniel Manjarres).
 Remove unnecessary AC_PROG_MAKE_SET.
 Warning fix for gcc-4.6.x.
 Japanese translation update (Yasufumi Haga).
+
+-------------------------------------------------------------------------------
+
+Sat Sep  8 08:47:00 CEST 2012
+
+--- 1.0.10.002 ---
+
+Fix coords placement in techopaque mode (Daniel Manjarres).
+Remove unused code.
+Fix (if experimenting with USE_DESK_EXPOSE).
+Move EObj sliding functions to slide.c too.
+Don't prevent pager update due to ewin slide.
+Add some timer debug, cosmetic changes.
+Fetch time to next timer run after running idlers.
+Desk restacking before shade/unshade should not be necessary.
+Another spec file fix - don't own locale/* dirs.
+Startup cosmetics.
+Fix having black solid color background.
+Don't keep shaded windows entirely on-screen (ticket 1191).
+Enable logging to stdout or stderr.
+Improve fading debug logging.
+Remove unnecessary code in ECompMgrWinFadeIn().
+Menu code tweaks.
+Alert if root window button events cannot be selected.
+Use EobjsSlideBy() to slide desks as well as areas.
+EobjSlideTo() is no longer used.
+Fix potential deadlock with multiple simultaneous alerts.
