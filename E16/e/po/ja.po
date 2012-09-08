@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-08-15 22:27+0200\n"
+"POT-Creation-Date: 2012-09-08 08:49+0200\n"
 "PO-Revision-Date: 2011-10-11 18:12+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -157,27 +157,27 @@ msgstr ""
 msgid "Enlightenment Error"
 msgstr "Enlightenment エラー"
 
-#: src/alert.c:559
+#: src/alert.c:561
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment メッセージダイアログ"
 
-#: src/alert.c:559
+#: src/alert.c:561
 msgid "Ignore this"
 msgstr "無視する"
 
-#: src/alert.c:560
+#: src/alert.c:562
 msgid "Restart Enlightenment"
 msgstr "Enlightenment 再起動"
 
-#: src/alert.c:560 src/setup.c:180
+#: src/alert.c:562 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "Enlightenment 終了"
 
-#: src/alert.c:570
+#: src/alert.c:572
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
+#: src/alert.c:572 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
 #: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "了解"

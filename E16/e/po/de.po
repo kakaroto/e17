@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-08-15 22:27+0200\n"
+"POT-Creation-Date: 2012-09-08 08:49+0200\n"
 "PO-Revision-Date: 2010-05-09 01:21+0000\n"
 "Last-Translator: Peter Wehrfritz <Unknown>\n"
 "Language-Team: Enlightenment l10n <enlightenment-intl@lists.sourceforge."
@@ -172,31 +172,31 @@ msgid "Enlightenment Error"
 msgstr "Enlightenment-Fehler"
 
 # src/main.c:89
-#: src/alert.c:559
+#: src/alert.c:561
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment-Meldungsfenster"
 
 # src/main.c:90 src/memory.c:196 src/memory.c:277 src/memory.c:297
 # src/memory.c:378
-#: src/alert.c:559
+#: src/alert.c:561
 msgid "Ignore this"
 msgstr "Dies ignorieren"
 
 # src/main.c:91 src/memory.c:197 src/memory.c:277 src/memory.c:298
 # src/memory.c:378 src/memory.c:396
-#: src/alert.c:560
+#: src/alert.c:562
 msgid "Restart Enlightenment"
 msgstr "Enlightenment neu starten"
 
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:560 src/setup.c:180
+#: src/alert.c:562 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
 # src/dialog.c:304
-#: src/alert.c:570
+#: src/alert.c:572
 msgid "Attention !!!"
 msgstr "Achtung!"
 
@@ -206,7 +206,7 @@ msgstr "Achtung!"
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
+#: src/alert.c:572 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
 #: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "OK"

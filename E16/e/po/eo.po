@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-08-15 22:27+0200\n"
+"POT-Creation-Date: 2012-09-08 08:49+0200\n"
 "PO-Revision-Date: 2010-05-09 01:27+0000\n"
 "Last-Translator: Olivier <Unknown>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -127,27 +127,27 @@ msgstr ""
 msgid "Enlightenment Error"
 msgstr "Eraro de Enlightenment"
 
-#: src/alert.c:559
+#: src/alert.c:561
 msgid "Enlightenment Message Dialog"
 msgstr ""
 
-#: src/alert.c:559
+#: src/alert.c:561
 msgid "Ignore this"
 msgstr "Malatenti tiun ĉi"
 
-#: src/alert.c:560
+#: src/alert.c:562
 msgid "Restart Enlightenment"
 msgstr "Restartigi Enlightenment"
 
-#: src/alert.c:560 src/setup.c:180
+#: src/alert.c:562 src/setup.c:180
 msgid "Quit Enlightenment"
 msgstr "Eliri el Enlightenment"
 
-#: src/alert.c:570
+#: src/alert.c:572
 msgid "Attention !!!"
 msgstr "Atentu!!!"
 
-#: src/alert.c:570 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
+#: src/alert.c:572 src/dialog.c:692 src/dialog.c:1900 src/events.c:94
 #: src/setup.c:159 src/setup.c:172 src/sound.c:310
 msgid "OK"
 msgstr "Bone"
