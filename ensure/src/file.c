@@ -183,6 +183,8 @@ file_save_do(struct ensure *ensure, const char *file)
         eina_iterator_free(iter);
      }
 
+   fclose(fp);
+
    return 0;
 }
 
