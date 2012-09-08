@@ -796,10 +796,10 @@ group {
          repeat_events: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
+            visible: 1;
             align: 0.5 0.0;
             max: 120 6;
-            color: 0 0 0 0;
+            color: 255 255 255 255;
             image {
                normal: "shelf_h_handle.png";
                border: 2 2 2 2;
@@ -814,8 +814,8 @@ group {
          description {
             state: "hidden" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+            visible: 0;
+            color: 0 0 0 0;
          }
       }
       part {
@@ -824,10 +824,10 @@ group {
          repeat_events: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
+            visible: 1;
             align: 1.0 0.5;
             max: 6 120;
-            color: 0 0 0 0;
+            color: 255 255 255 255;
             image {
                normal: "shelf_v_handle.png";
                border: 2 2 2 2;
@@ -842,8 +842,8 @@ group {
          description {
             state: "hidden" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+            visible: 0;
+            color: 0 0 0 0;
          }
       }
       part {
@@ -852,10 +852,10 @@ group {
          repeat_events: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
+            visible: 1;
             align: 0.5 1.0;
             max: 120 6;
-            color: 0 0 0 0;
+            color: 255 255 255 255;
             image {
                normal: "shelf_h_handle.png";
                border: 2 2 2 2;
@@ -870,8 +870,8 @@ group {
          description {
             state: "hidden" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+            visible: 0;
+            color: 0 0 0 0;
          }
       }
       part {
@@ -880,10 +880,10 @@ group {
          repeat_events: 1;
          description {
             state: "default" 0.0;
-            visible: 0;
+            visible: 1;
             align: 0.0 0.5;
             max: 6 120;
-            color: 0 0 0 0;
+            color: 255 255 255 255;
             image {
                normal: "shelf_v_handle.png";
                border: 2 2 2 2;
@@ -898,8 +898,8 @@ group {
          description {
             state: "hidden" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+            visible: 0;
+            color: 0 0 0 0;
          }
       }
    }
