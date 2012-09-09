@@ -182,10 +182,25 @@ _cb_object_resize(void *data , Evas *e __UNUSED__, Evas_Object *obj, void *event
 static void
 _icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
+   Evas_Object *o_edje;
+   Eina_List *l;
+   Evas_Object *over;
    Elfe_Desktop *desk = data;
    Evas_Event_Mouse_Move *ev = event_info;
 
    evas_object_move(desk->floating_icon, ev->cur.output.x - 92 / 2, ev->cur.output.y - 92 / 2);
+
+   EINA_LIST_FOREACH(desk->overs, l, over)
+     {
+        Evas_Coord x,y,w,h;
+        o_edje = elm_layout_edje_get(over);
+        evas_object_geometry_get(o_edje, &x, &y, &w, &h);
+        if (ELM_RECTS_INTERSECT(x, y, w, h, ev->cur.output.x, ev->cur.output.y, 1, 1))
+          edje_object_signal_emit(o_edje, "place,show", "elfe");
+        else
+          edje_object_signal_emit(o_edje, "place,hide", "elfe");
+     }
+
 
 }
 
@@ -228,15 +243,18 @@ _app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    o_edje = elm_layout_edje_get(desk->layout);
    edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
 
-   ic = elfe_utils_fdo_icon_add(o_edje, entry->icon, size);
+
+   ic = elfe_utils_fdo_icon_add(desk->layout, entry->icon, size);
    evas_object_show(ic);
    evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
    evas_object_resize(ic, size, size);
    evas_object_move(ic, x - size / 2, y - size /2);
    desk->floating_icon = ic;
 
-   evas_object_del(desk->allapps);
-   desk->allapps = NULL;
+   evas_object_hide(desk->allapps);
+   //evas_object_del(desk->allapps);
+   //desk->allapps = NULL;
+
    evas_object_pass_events_set(ic, EINA_TRUE);
 
    desk->selected_app = entry;
@@ -544,6 +562,7 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 
 	       evas_object_resize(o_edje, m, n);
 	       evas_object_move(o_edje, x + i*m,  y + j*n);
+               evas_object_raise(o_edje);
 	       evas_object_show(over);
                desk->overs = eina_list_append(desk->overs, over);
 	    }

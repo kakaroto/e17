@@ -583,6 +583,22 @@ collections
             transition: DECELERATE 0.5;
          }
          program {
+            name: "place,show";
+            signal: "place,show";
+            source: "elfe";
+            action: STATE_SET "in" 0.0;
+            target: "over";
+            transition: ACCELERATE 0.5;
+         }
+         program {
+            name: "place,hide";
+            signal: "place,hide";
+            source: "elfe";
+            action: STATE_SET "default" 0.0;
+            target: "over";
+            transition: DECELERATE 0.5;
+         }
+         program {
             name: "mouse,in";
             signal: "mouse,in";
             source: "*";

@@ -167,7 +167,7 @@ _populate_page(Elfe_Desktop_Page *page)
 	if (eina_matrixsparse_data_idx_get(page->items, dic->row, dic->col))
 	     continue;
 
-	item = elfe_desktop_item_add(page->layout, dic->row, dic->col,
+	item = elfe_desktop_item_add(page->parent, dic->row, dic->col,
 				     dic->name, dic->type, page->gc);
 	if (!item)
 	  continue;
@@ -244,7 +244,7 @@ elfe_desktop_page_item_gadget_add(Evas_Object *obj, const char *name,
     /* This position is already used by another item! */
     if (eina_matrixsparse_data_idx_get(page->items, row, col)) return;
 
-    item = elfe_desktop_item_add(page->layout, row, col,
+    item = elfe_desktop_item_add(page->parent, row, col,
 				 name,
                                  ELFE_DESKTOP_ITEM_GADGET, page->gc);
     e_layout_pack(page->layout, item);
@@ -277,7 +277,7 @@ elfe_desktop_page_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
     /* This position is already used by another item! */
     if (eina_matrixsparse_data_idx_get(page->items, row, col)) return;
 
-    item = elfe_desktop_item_add(page->layout, row, col,
+    item = elfe_desktop_item_add(page->parent, row, col,
 				 menu->desktop->orig_path,
                                  ELFE_DESKTOP_ITEM_APP, NULL);
     e_layout_pack(page->layout, item);

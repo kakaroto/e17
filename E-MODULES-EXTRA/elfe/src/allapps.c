@@ -82,9 +82,11 @@ _gl_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    if (gitem->menu->type != EFREET_MENU_ENTRY_DESKTOP)
      return;
 
+   elm_gengrid_item_selected_set(event_info, EINA_FALSE);
+
    evas_object_smart_callback_call(allapps->box,
 				   "entry,longpressed", gitem->menu);
-   elm_gengrid_item_selected_set(it, EINA_FALSE);
+
 }
 
 static void
@@ -94,10 +96,9 @@ _widget_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    Elfe_Allapps *allapps = data;
    Elm_Object_Item *glit = event_info;
 
-   printf("Send widget longpressed\n");
    evas_object_smart_callback_call(allapps->box,
                "gadget,longpressed", (void*)name);
-   elm_gengrid_item_selected_set(glit, EINA_FALSE);
+   elm_gengrid_item_selected_set(event_info, EINA_FALSE);
 }
 
 static void
@@ -160,8 +161,6 @@ _obj_resize_cb(void *data , Evas *e __UNUSED__ , Evas_Object *obj __UNUSED__, vo
    evas_object_geometry_get(allapps->box, NULL, NULL, &w, &h);
 
    ow = w / (elfe_home_cfg->icon_size + w / 10);
-
-   printf("Nb elements : ow %d\n", ow);
 
    elm_gengrid_item_size_set(allapps->grid, w / ow, (w /ow) + 20);
 
@@ -259,52 +258,52 @@ elfe_allapps_add(Evas_Object *parent)
    allapps->box = elm_box_add(parent);
 
    /* Create buttons selector */
-   allapps->selector = elm_box_add(allapps->box);
-   elm_box_horizontal_set(allapps->selector, EINA_TRUE);
+   /* allapps->selector = elm_box_add(allapps->box); */
+   /* elm_box_horizontal_set(allapps->selector, EINA_TRUE); */
 
-   bt = elm_button_add(allapps->selector);
-   elm_object_text_set(bt, "Apps");
-   ic = elm_icon_add(bt);
-   elm_image_file_set(ic, elfe_home_cfg->theme, "icon/applications");
-   evas_object_show(ic);
-   elm_object_content_set(bt, ic);
-   evas_object_show(bt);
-   elm_box_pack_end(allapps->selector, bt);
-   evas_object_smart_callback_add(bt, "clicked", _apps_clicked_cb, allapps);
-   allapps->buttons = eina_list_append(allapps->buttons, bt);
+   /* bt = elm_button_add(allapps->selector); */
+   /* elm_object_text_set(bt, "Apps"); */
+   /* ic = elm_icon_add(bt); */
+   /* elm_image_file_set(ic, elfe_home_cfg->theme, "icon/applications"); */
+   /* evas_object_show(ic); */
+   /* elm_object_content_set(bt, ic); */
+   /* evas_object_show(bt); */
+   /* elm_box_pack_end(allapps->selector, bt); */
+   /* evas_object_smart_callback_add(bt, "clicked", _apps_clicked_cb, allapps); */
+   /* allapps->buttons = eina_list_append(allapps->buttons, bt); */
 
-   sep = elm_separator_add(allapps->selector);
-   evas_object_show(sep);
-   elm_box_pack_end(allapps->selector, sep);
+   /* sep = elm_separator_add(allapps->selector); */
+   /* evas_object_show(sep); */
+   /* elm_box_pack_end(allapps->selector, sep); */
 
-   bt = elm_button_add(allapps->selector);
-   elm_object_text_set(bt, "Widgets");
-   ic = elm_icon_add(bt);
-   elm_image_file_set(ic, elfe_home_cfg->theme, "icon/widgets");
-   evas_object_show(ic);
-   elm_object_content_set(bt, ic);
-   evas_object_show(bt);
-   elm_box_pack_end(allapps->selector, bt);
-   evas_object_smart_callback_add(bt, "clicked", _widgets_clicked_cb, allapps);
-   allapps->buttons = eina_list_append(allapps->buttons, bt);
+   /* bt = elm_button_add(allapps->selector); */
+   /* elm_object_text_set(bt, "Widgets"); */
+   /* ic = elm_icon_add(bt); */
+   /* elm_image_file_set(ic, elfe_home_cfg->theme, "icon/widgets"); */
+   /* evas_object_show(ic); */
+   /* elm_object_content_set(bt, ic); */
+   /* evas_object_show(bt); */
+   /* elm_box_pack_end(allapps->selector, bt); */
+   /* evas_object_smart_callback_add(bt, "clicked", _widgets_clicked_cb, allapps); */
+   /* allapps->buttons = eina_list_append(allapps->buttons, bt); */
 
-   sep = elm_separator_add(allapps->selector);
-   evas_object_show(sep);
-   elm_box_pack_end(allapps->selector, sep);
+   /* sep = elm_separator_add(allapps->selector); */
+   /* evas_object_show(sep); */
+   /* elm_box_pack_end(allapps->selector, sep); */
 
-   bt = elm_button_add(allapps->selector);
-   elm_object_text_set(bt, "Config");
-   ic = elm_icon_add(bt);
-   elm_image_file_set(ic, elfe_home_cfg->theme, "icon/configuration");
-   evas_object_show(ic);
-   elm_object_content_set(bt, ic);
-   evas_object_show(bt);
-   elm_box_pack_end(allapps->selector, bt);
-   evas_object_smart_callback_add(bt, "clicked", _config_clicked_cb, allapps);
-   allapps->buttons = eina_list_append(allapps->buttons, bt);
+   /* bt = elm_button_add(allapps->selector); */
+   /* elm_object_text_set(bt, "Config"); */
+   /* ic = elm_icon_add(bt); */
+   /* elm_image_file_set(ic, elfe_home_cfg->theme, "icon/configuration"); */
+   /* evas_object_show(ic); */
+   /* elm_object_content_set(bt, ic); */
+   /* evas_object_show(bt); */
+   /* elm_box_pack_end(allapps->selector, bt); */
+   /* evas_object_smart_callback_add(bt, "clicked", _config_clicked_cb, allapps); */
+   /* allapps->buttons = eina_list_append(allapps->buttons, bt); */
 
-   evas_object_show(allapps->selector);
-   elm_box_pack_end(allapps->box, allapps->selector);
+   /* evas_object_show(allapps->selector); */
+   /* elm_box_pack_end(allapps->box, allapps->selector); */
 
    allapps->nf = elm_naviframe_add(allapps->box);
    evas_object_show(allapps->nf);

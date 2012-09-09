@@ -8,6 +8,7 @@
 typedef struct _Elfe_Desktop_Item Elfe_Desktop_Item;
 struct _Elfe_Desktop_Item
 {
+   Evas_Object *parent;
    Evas_Object *frame;
    Evas_Object *item;
    Evas_Object *icon;
@@ -98,7 +99,7 @@ _app_add(Elfe_Desktop_Item *dit, const char *name __UNUSED__)
    item = edje_object_add(evas_object_evas_get(dit->frame));
    edje_object_file_set(item, elfe_home_cfg->theme, "elfe/desktop/app/frame");
 
-   icon = elfe_utils_fdo_icon_add(dit->frame, dit->desktop->icon, elfe_home_cfg->icon_size); 
+   icon = elfe_utils_fdo_icon_add(dit->parent, dit->desktop->icon, elfe_home_cfg->icon_size); 
    //evas_object_size_hint_min_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
    evas_object_size_hint_max_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
 
@@ -210,6 +211,8 @@ elfe_desktop_item_add(Evas_Object *parent,
    if (!dit)
      return NULL;
 
+   dit->parent = parent;
+
    dit->row = row;
    dit->col = col;
 
@@ -217,13 +220,12 @@ elfe_desktop_item_add(Evas_Object *parent,
    edje_object_file_set(layout, elfe_home_cfg->theme, "elfe/desktop/frame");
 
    dit->frame = layout;
-   printf("ITEM ADD %s\n", name);
 
    switch (type)
      {
       case ELFE_DESKTOP_ITEM_APP:
 	 dit->desktop = efreet_desktop_get(name);
-         
+
 	 if (!dit->desktop)
 	   {
 	      printf("ERROR unable to get efreet desktop from %s\n", name);

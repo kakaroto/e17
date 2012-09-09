@@ -162,13 +162,10 @@ elfe_gadgets_app_add(Evas_Object *obj, Efreet_Menu *app, Evas_Coord x, Evas_Coor
 
    ic = elfe_utils_fdo_icon_add(obj, app->icon, MIN(w,h));
    evas_object_show(ic);
-   printf("App name : %s\n", app->name);
+
    ly = _item_add(egad, ELFE_DESKTOP_ITEM_APP, app->icon, ic, m, n, pos_x, pos_y, w, h);
    if (ly)
-     {
      elfe_home_config_desktop_item_add(egad->desktop, ELFE_DESKTOP_ITEM_APP, m, n, pos_x, pos_y, w, h, app->desktop->orig_path);
-     printf("Desktop path : %s\n", app->desktop->orig_path);
-     }
    else
      return;
 
@@ -196,10 +193,6 @@ _object_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 
    evas_object_geometry_get(egad->layout, &x, &y, &w, &h);
    e_layout_virtual_size_set(egad->layout, w, h);
-   printf("%d %d %d %d\n", x, y, w, h);
-
-
-
    evas_object_show(egad->layout);
 }
 
@@ -305,11 +298,6 @@ elfe_gadgets_zone_add(Evas_Object *parent, E_Zone *zone, int desktop, const char
 	   default:
 	      break;
 	  }
-
-	printf("%p %d %d %d %d %d %d\n", child, dic->col, dic->row,
-		  dic->pos_x, dic->pos_y,
-		  dic->size_w, dic->size_h);
-
 
      }
 

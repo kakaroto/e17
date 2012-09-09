@@ -234,7 +234,6 @@ _elfe_home_win_new(E_Zone *zone)
 static void
 _elfe_home_win_cb_free(Elfe_Home_Win *hwin)
 {
-   printf("CB FREE\n");
    if (hwin->win->evas_win) e_drop_xdnd_register_set(hwin->win->evas_win, 0);
    if (hwin->o_bg) evas_object_del(hwin->o_bg);
    if (hwin->layout) evas_object_del(hwin->layout);
@@ -248,7 +247,7 @@ _elfe_home_win_cb_resize(E_Win *win)
    Elfe_Home_Win *hwin;
    Evas_Coord w, h;
    if (!(hwin = win->data)) return;
-   if (hwin->o_bg) 
+   if (hwin->o_bg)
        {
            evas_object_size_hint_min_set(hwin->o_bg, win->w, win->h);
            edje_object_parts_extends_calc(hwin->o_bg, NULL, NULL, &w, &h);
