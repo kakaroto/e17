@@ -1864,8 +1864,8 @@ elm_main(int argc EINA_UNUSED, char **argv EINA_UNUSED)
          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(gui->en, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_style_set(gui->connect_inwin, "minimal_vertical");
-   elm_entry_scrollbar_policy_set(gui->en, ELM_SCROLLER_POLICY_OFF,
-         ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(gui->en, ELM_SCROLLER_POLICY_OFF,
+                           ELM_SCROLLER_POLICY_OFF);
    elm_object_text_set(gui->en, LOCALHOST);
    elm_entry_single_line_set(gui->en, EINA_TRUE);
    elm_entry_select_all(gui->en);
