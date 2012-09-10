@@ -11,6 +11,7 @@
 #include "Eina.h"
 #include "Ecore_X.h"
 #include "Elementary.h"
+#include "Efreet.h"
 #include <locale.h>
 #include "config.h"
 #define _(x) gettext(x)

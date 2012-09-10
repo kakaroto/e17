@@ -37,6 +37,9 @@ void marshal_subject(DBusMessageIter *itr, Empower_Subject *subject)
         case EMPOWER_SUBJECT_BUS:
           _marshal_dict_string(&a, "name", subject->details.bus.name);
           break;
+
+        default:
+          break;
       }
       dbus_message_iter_close_container(&s, &a);
     }
@@ -61,6 +64,9 @@ void marshal_identity(DBusMessageIter *itr, Empower_Identity *id)
 
         case EMPOWER_IDENTITY_GROUP:
           _marshal_dict_uint32(&a, "gid", id->details.group.gid);
+          break;
+
+        default:
           break;
       }
       dbus_message_iter_close_container(&s, &a);
@@ -127,6 +133,9 @@ void unmarshal_identity(DBusMessageIter *itr, Empower_Identity *id)
         if (group != NULL)
           id->details.group.name = eina_stringshare_add(group->gr_name);
         break;
+
+        default:
+          break;
     }
   } while (dbus_message_iter_next(&a));
 }

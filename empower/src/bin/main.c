@@ -8,8 +8,6 @@ static Eina_Bool _exit_cb(void *data, int type, void *event);
 #ifndef ELM_LIB_QUICKLAUNCH
 int elm_main(int argc, char** argv)
 {
-  int i;
-
   // initialize gettext
   setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
@@ -107,4 +105,6 @@ static Eina_Bool _exit_cb(void *data, int type, void *event)
   // Call auth shutdown which will exit elm main loop once
   // we've unregisterd as an authentication agent.
   pka_shutdown();
+
+  return EINA_FALSE;
 }

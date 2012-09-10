@@ -1,4 +1,5 @@
 #include "Empower.h"
+#include "pka.h"
 
 static void      _gui_win_show_cb(void *data, Evas *e, Evas_Object *w, void *event);
 static void      _gui_key_down_cb(void *data, Evas *e, Evas_Object *w, void *event);
@@ -8,8 +9,8 @@ static Eina_Bool _gui_grab_keyboard(void *data);
 
 static struct
 {
-  unsigned int h;
-  unsigned int w;
+  int h;
+  int w;
   Evas_Object *win;        // elm_win
   Evas_Object *password;   // elm_entry
   Evas_Object *icon;       // elm_icon
@@ -24,7 +25,7 @@ Eina_Bool gui_init()
   char buf[PATH_MAX];
   Evas_Object *bg;
   Evas_Object *o;
-  unsigned int w,h;
+  Evas_Coord w,h;
 
   _gui.win = elm_win_add(NULL, "Empower", ELM_WIN_DIALOG_BASIC);
   elm_win_title_set(_gui.win, "Empower");
@@ -111,7 +112,7 @@ void gui_show(Empower_Auth_Info *info)
   Empower_Identity *id;
   Efreet_Icon_Theme *theme;
   const char *icon_path;
-  unsigned int x, y, w, h;
+  Evas_Coord x, y, w, h;
 
   // Reposition message so it's centered.
   evas_object_text_text_set(_gui.message, info->message);
@@ -153,8 +154,12 @@ void gui_show(Empower_Auth_Info *info)
           elm_object_text_set(_gui.identity, id->details.user.name);
         }
         break;
+
       case EMPOWER_IDENTITY_GROUP:
         elm_hoversel_item_add(_gui.identity, id->details.group.name, NULL, 0, _gui_id_change, id);
+        break;
+
+      default:
         break;
     }
 

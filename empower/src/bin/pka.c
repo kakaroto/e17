@@ -28,7 +28,6 @@ Eina_Bool pka_init()
 {
   E_DBus_Interface *iface;
   DBusMessage *msg;
-  DBusMessageIter itr;
 
   _pka_state = INVALID;
 
@@ -163,6 +162,8 @@ pka_exec(Empower_Auth_Info *info)
 
   info->helper.stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _pka_helper_stdout, info);
   info->helper.stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _pka_helper_stderr, info);
+
+  return EINA_TRUE;
 }
 
 Eina_Bool
@@ -239,8 +240,7 @@ static void _pka_unregister_done(void *data, DBusMessage *msg, DBusError *error)
 
 static DBusMessage* _pka_message_beginauthentication(E_DBus_Object *obj, DBusMessage *msg)
 {
-  DBusMessage* rsp;
-  DBusMessageIter itr, arr_iter, dict_iter, id_iter;
+  DBusMessageIter itr, arr_iter;
   Empower_Identity *id;
   Empower_Auth_Info *info;
 
@@ -317,7 +317,6 @@ static void _pka_beginauthentication_finish(Empower_Auth_Info *info)
 
 static DBusMessage* _pka_message_cancelauthentication(E_DBus_Object *obj, DBusMessage *msg)
 {
-  DBusMessage* rsp;
   Empower_Auth_Info *info;
 
   DBG("Received CancelAuthentication");
@@ -362,6 +361,8 @@ static Eina_Bool _pka_helper_stdout(void *data, int type, void *event)
   {
     _pka_beginauthentication_finish(info);
   }
+
+  return EINA_FALSE;
 }
 
 static Eina_Bool _pka_helper_stderr(void *data, int type, void *event)
@@ -379,4 +380,5 @@ static Eina_Bool _pka_helper_stderr(void *data, int type, void *event)
   strncpy(msg, ev->data, size);
 
   DBG("HELPER ERR: %s", msg);
+  return EINA_FALSE;
 }
