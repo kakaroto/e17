@@ -76,7 +76,6 @@ EAPI Evas_Object *
 clouseau_object_information_list_add(Evas_Object *parent)
 {
    prop_list = elm_genlist_add(parent);
-   elm_genlist_mode_set(prop_list, ELM_LIST_COMPRESS);
    itc.item_style = "default";
    itc.func.text_get = item_text_get;
    itc.func.content_get = item_icon_get;
