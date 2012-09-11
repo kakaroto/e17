@@ -141,11 +141,23 @@ extern "C" {
 
 /**
  * @brief Initialize e_dbus
+ * @return 1 or greater on success, 0 otherwise
+ *
+ * This function sets up all the E_DBus library. It returns 0 on
+ * failure, otherwise it returns the number of times it has already
+ * been called.
+ *
+ * When E_DBus is not used anymore, call e_dbus_shutdown() to shut down
+ * the E_DBus library.
  */
 EAPI int e_dbus_init(void);
 
 /**
  * Shutdown e_dbus.
+ * @return 0 if e_dbus shuts down, greater than 0 otherwise.
+ *
+ * This function shuts down the E_DBus library. It returns 0 when it has
+ * been called the same number of times as e_dbus_init().
  */
 EAPI int e_dbus_shutdown(void);
 
