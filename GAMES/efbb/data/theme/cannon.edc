@@ -32,7 +32,7 @@ group {
             state: "default" 0.0;
             min: 50 70;
             max: 50 70;
-            color: 255 255 255 0;
+            color: 255 255 255 1;
             image.normal: "explosion.png";
          }
          description {
@@ -47,7 +47,7 @@ group {
             inherit: "default" 0.0;
             min: 140 110;
             max: 140 110;
-            color: 255 255 255 0;
+            color: 255 255 255 1;
          }
       }
 
