@@ -1,0 +1,20 @@
+Evil NEWS - User visible changes.
+
+* Evil 1.7:
+
+** Released August 30th, 2012, by Carsten Haitzler
+** Correctly display messages with evil_format_message()
+
+* Evil 1.1:
+
+** Released April 26th, 2012, by Vincent Torri
+** Add evil_path_is_absolute() API
+** Add POSIX printf() family functions
+** Add S_ISLNK macro
+** Add strcasestr() API
+** Do not declare and define localtime_r() if it's already defined
+** Fix nl_langinfo(RADIXCHAR)
+
+* Evil 1.0:
+
+** Released December 2nd, 2011, by Vincent Torri
