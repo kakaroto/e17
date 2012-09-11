@@ -1,0 +1,33 @@
+New E17 Snapshot (76435)
+Mike Blumenkrantz (zmike)
+michael.blumenkrantz@gmail.com
+
+<p> It's that time again! A new week means a new snapshot of E17 
+from your favorite release manager, so here we go.
+This time, in addition to featuring the usual improvements of 
+<b>LESS CRASHING<b> and <b>IMPROVEMENTS TO NOT CRASHING<b>, 
+I'm pleased to announce some other changes, though this is not in any way
+a comprehensive list, and not all the changes were made by me: 
+</p>
+<p>
+<li>Significant <a href="https://e17releasemanager.wordpress.com/2012/09/05/enlightenment-heroes-of-the-week-bdilly-bruno-dilly-and-demarchi-lucas-de-marchi/">improvements</a> to the connman module</li>
+<li>A slightly more intuitive interface to the filemanager configuration GUI </li>
+<li>Fixes for taking screenshots with strange xinerama layouts</li>
+<li>Two new maximization modes: left and right</li>
+<li>An improved gadget setup dialog</li>
+<li>Deleting a shelf now actually deletes it</li>
+<li>Method for changing shelf position directly from the menu</li>
+<li>Filemanager will no longer, in some rare cases, attempt to overwrite a file with a symlink to that file</li>
+<li>Filemanager provides better support for moving files in cases where the file would be replaced</li>
+<li>Filemanager can now sort files in a number of new ways</li>
+</p>
+
+<p><ul>
+
+<li>E17 76435 - 
+[<a href="http://download.enlightenment.org/snapshots/2012-09-10/enlightenment-0.16.999.76435.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/snapshots/2012-09-10/enlightenment-0.16.999.76435.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
