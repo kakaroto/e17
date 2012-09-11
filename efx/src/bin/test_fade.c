@@ -3,6 +3,7 @@
 #endif
 
 #include <Efx.h>
+#include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 
@@ -56,14 +57,23 @@ main(void)
    Evas *e;
    Evas_Object *r;
 
-   efx_init();
-   ecore_evas_init();
+   if (!efx_init())
+     return -1;
+
+   if (!ecore_evas_init())
+     goto shutdown_efx;
+
    eina_log_domain_level_set("efx", EINA_LOG_LEVEL_DBG);
-   ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 450, 450);
+
+   ee = ecore_evas_new(NULL, 10, 10, 0, 0, NULL);
+   if (!ee)
+     goto shutdown_ecore_evas;
+
    ecore_evas_callback_delete_request_set(ee, _end);
-   ecore_evas_title_set(ee, "fade");
-   ecore_evas_show(ee);
+   ecore_evas_title_set(ee, "Fade");
+
    e = ecore_evas_get(ee);
+
    r = evas_object_rectangle_add(e);
    evas_object_resize(r, 450, 450);
    evas_object_show(r);
@@ -71,7 +81,23 @@ main(void)
    evas_object_resize(r, 300, 300);
    evas_object_move(r, (450 / 2) - (300 / 2), (450 / 2) - (300 / 2));
    evas_object_show(r);
+
+   ecore_evas_resize(ee, 450, 450);
+   ecore_evas_show(ee);
+
    ecore_timer_add(1.0, _start, r);
+
    ecore_main_loop_begin();
+
+   ecore_evas_shutdown();
+   efx_shutdown();
+
    return 0;
+
+ shutdown_ecore_evas:
+   ecore_evas_shutdown();
+ shutdown_efx:
+   efx_shutdown();
+
+   return -1;
 }

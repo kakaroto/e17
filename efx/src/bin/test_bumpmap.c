@@ -3,6 +3,8 @@
 #endif
 
 #include <Efx.h>
+#include <Evas.h>
+#include <Ecore.h>
 #include <Ecore_Evas.h>
 
 static void _move_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Mouse_Move *ev)
@@ -40,14 +42,18 @@ main(void)
    Evas_Coord w;
    Evas_Coord h;
 
-   efx_init();
+   if (!efx_init())
+     return -1;
 
-   ee = ecore_evas_new ("software_x11", 10, 10, 1, 1, NULL);
+   if (!ecore_evas_init())
+     goto shutdown_efx;
+
+   eina_log_domain_level_set("efx", EINA_LOG_LEVEL_DBG);
+
+   ee = ecore_evas_new (NULL, 10, 10, 0, 0, NULL);
    if (!ee)
-     {
-       fprintf(stderr, "merde\n");
-       return -1;
-     }
+     goto shutdown_ecore_evas;
+
    ecore_evas_callback_delete_request_set(ee, _end);
    ecore_evas_title_set(ee, "Bumpmapping");
 
@@ -80,6 +86,14 @@ main(void)
    ecore_main_loop_begin();
 
    ecore_evas_shutdown();
+   efx_shutdown();
 
    return 0;
+
+ shutdown_ecore_evas:
+   ecore_evas_shutdown();
+ shutdown_efx:
+   efx_shutdown();
+
+   return -1;
 }
