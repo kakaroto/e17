@@ -115,8 +115,8 @@ function build_themes()
 	echo "============ detour elm ============"
 	pushd THEMES/detour-elm
 		make clean
-		#	make
-		#	make install
+		make
+		make install
 	popd
 
 	#detourious
