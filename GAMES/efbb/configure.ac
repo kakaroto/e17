@@ -131,6 +131,7 @@ data/theme/fonts/Makefile
 data/images/Makefile
 data/levels/Makefile
 data/sound/Makefile
+data/desktop/Makefile
 ])
 
 

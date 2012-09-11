@@ -1,3 +1,3 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = images theme levels sound
+SUBDIRS = images theme levels sound desktop

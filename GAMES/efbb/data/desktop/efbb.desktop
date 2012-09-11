@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Escape From Booty Bay
+Comment=Game
+Comment[pt]=Jogo
+Exec=efbb
+Icon=efbb
+Terminal=false
+Type=Application
+Categories=Game;LogicGame;Enlightenment;
