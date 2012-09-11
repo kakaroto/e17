@@ -9,8 +9,9 @@ Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org.au/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+Requires: eina >= 1.7.0, evas >= 1.7.0, ecore >= 1.7.0, ecore-x >= 1.7.0, efreet >= 1.7.0, e_dbus >= 1.7.0, edje >= 1.7.0, elementary >= 1.7.0
 #BuildSuggests: xorg-x11-devel
-BuildRequires: evas-devel, ecore-devel, elementary-devel
+BuildRequires: eina-devel >= 1.7.0, evas-devel >= 1.7.0, ecore-devel >= 1.7.0, efreet-devel >= 1.7.0, e_dbus-devel >= 1.7.0, edje-devel >= 1.7.0, elementary-devel >= 1.7.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
