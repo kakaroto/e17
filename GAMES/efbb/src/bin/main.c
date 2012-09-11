@@ -1151,7 +1151,7 @@ _win_add(Game *game)
    Evas_Object *win;
 
    win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
-   elm_win_title_set(win, "EPhysics Game");
+   elm_win_title_set(win, "Escape From Booty Bay");
    evas_object_smart_callback_add(win, "delete,request", _win_del, game);
    elm_win_screen_constrain_set(win, EINA_TRUE);
    evas_object_show(win);
