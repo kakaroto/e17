@@ -14,11 +14,16 @@ ESKISS_DATADIR="/dev_hdd0/game/$ESKISS_APPID/USRDIR/"
 
 
 MINIMAL_TOC="-mminimal-toc"
-#DEBUG_CFLAGS="-g -ggdb -O0"
 DEBUG_CFLAGS="-g -O3"
+AUTOGEN=1
 CONFIGURE=1
 CLEAN_RULE="clean"
 FSELF="make_self"
+
+#AUTOGEN=0
+#CONFIGURE=0
+#CLEAN_RULE=""
+#DEBUG_CFLAGS="-g -ggdb -O0"
 
 GCC_VERSION=$(powerpc64-ps3-elf-gcc --version | head -n 1 | awk '{print $3}')
 
@@ -93,6 +98,9 @@ make_pkg() {
 function escape {
     cd escape || cd PROTO/escape || return 1
 
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         MYCFLAGS="-I$PS3DEV/ppu/lib/gcc/powerpc64-ps3-elf/${GCC_VERSION}/plugin/include/" ps3-configure || return 1
     fi
@@ -104,6 +112,9 @@ function escape {
 # eina :
 function eina {
     cd eina || return 1
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         #MYCFLAGS="-DDEBUG" ps3-configure || return 1
         ps3-configure || return 1
@@ -116,6 +127,9 @@ function eina {
 # eet :
 function eet {
     cd eet || return 1
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure || return 1
     fi
@@ -158,6 +172,9 @@ function fontconfig {
 # evas :
 function evas {
     cd evas || return 1
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --disable-async-events --disable-async-preload --enable-software-sdl=static --enable-software-16-sdl=static --disable-shared --enable-buffer=static --enable-image-loader-eet=static --enable-font-loader-eet --enable-image-loader-gif=static --enable-image-loader-jpeg=static  --enable-image-loader-png=static  --enable-image-loader-tiff=static --enable-image-loader-bmp=static --enable-image-loader-xpm=static  --enable-image-loader-psd=static --enable-image-loader-pmaps=static  --enable-image-loader-ico=static --enable-image-loader-wbmp=static --enable-image-loader-tga=static --enable-static-software-generic --enable-static-software-16 --enable-psl1ght=static --enable-fontconfig || return 1
     fi
@@ -170,6 +187,9 @@ function evas {
 function expedite {
     cd expedite || return 1
 
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --datadir=$EXPEDITE_DATADIR || return 1
     fi
@@ -195,6 +215,9 @@ function ecore {
 ## TODO: add ecore_con: MYCFLAGS="-I$PSL1GHT/ppu/include/net "
     cd ecore  || return 1
 
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --disable-ecore-x --enable-ecore-sdl --enable-ecore-evas-software-sdl --enable-ecore-psl1ght --enable-ecore-evas-psl1ght --enable-ecore-con --disable-ecore-ipc --enable-cares || return 1
     fi
@@ -206,6 +229,9 @@ function ecore {
 # embryo
 function embryo {
     cd embryo || return 1
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure || return 1
     fi
@@ -229,6 +255,9 @@ function lua {
 function edje {
     cd edje || return 1
 
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --disable-edje-player --disable-edje-inspector --disable-edje-external-inspector --disable-edje-cc --disable-edje-decc --disable-edje-recc || return 1
     fi
@@ -240,6 +269,9 @@ function edje {
 # exquisite
 function exquisite {
     cd exquisite || return 1
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --disable-exquisite-binaries || return 1
     fi
@@ -266,6 +298,9 @@ function chipmunk {
 function eskiss {
     cd eskiss || cd GAMES/eskiss || return 1
 
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --datadir=$ESKISS_DATADIR || return 1
     fi
@@ -278,6 +313,9 @@ function eskiss {
 function elementary {
 ## TODO!! remove dlopen
     cd elementary || return 1
+    if [ $AUTOGEN == "1" ]; then
+        NOCONFIGURE=1 ./autogen.sh
+    fi
     if [ $CONFIGURE == "1" ]; then
         ps3-configure --disable-quick-launch || return 1
     fi
