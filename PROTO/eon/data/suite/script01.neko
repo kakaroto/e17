@@ -1,5 +1,0 @@
-$exports.click_cb = function()
-{
-	$print("Your object was clicked !!!\n");
-	$print("id = " + this.property_value_get("id") + "\n");
-}

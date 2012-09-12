@@ -1,7 +1,0 @@
-<eon>
-	<canvas w="100%" h="100%">
-		<displace id="filter01" src="" map=""/>
-		<rect x="0" y="0" w="100%" h="100%" color="white"/>
-		<rect x="50%" y="25%" w="25%" h="25%" color="red" filter="#filter01" />
-	</canvas>
-</eon>

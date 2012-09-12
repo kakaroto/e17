@@ -1,6 +1,0 @@
-<eon>
-	<canvas id="canvas01" w="100%" h="100%">
-		<rect id="rect01" x="0" y="0" w="100%" h="100%" color="white"/>
-		<rect id="rect02" x="10%" y="45%" w="25%" h="25%" color="red"/>
-	</canvas>
-</eon>

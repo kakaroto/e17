@@ -1,7 +1,0 @@
-<eon>
-	<canvas w="100%" h="100%">
-		<rect x="0%" y="0%" w="100%" h="100%" color="white"/>
-		<rect radius="10" x="10" y="10" w="50" h="50" color="red" stroke_color="0xff000000" stroke_width="2"/>
-		<text str="Hello! first eon text object :D :D :D" x="10" y="10" w="50" h="50" color="0xff00ff00"/>
-	</canvas>
-</eon>

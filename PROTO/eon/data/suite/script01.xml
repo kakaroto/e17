@@ -1,7 +1,0 @@
-<eon>
-	<canvas w="100%" h="100%">
-		<script type="neko" file="/home/jl/c/efl-research/eon/data/suite/script01.n"/>
-		<rect x="0%" y="0%" w="100%" h="100%" color="white" rop="fill"/>
-		<rect id="rect01" x="25%" y="25%" w="50%" h="50%" color="red" onclick="click_cb"/>
-	</canvas>
-</eon>

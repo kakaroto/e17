@@ -1,6 +1,0 @@
-<eon>
-	<canvas w="100%" h="100%">
-		<rect x="0%" y="0%" w="100%" h="100%" fill_color="white"/>
-		<rect matrix="rotate(0.5)" x="25%" y="25%" w="50%" h="50%" stroke_width="3" stroke_color="0xff000000" color="0xff00ff00" radius="30" fill_paint="#p01"/>
-	</canvas>
-</eon>

@@ -1,9 +1,0 @@
-<eon>
-	<canvas w="100%" h="100%">
-		<image x="10%" y="10%" w="80%" h="80%" file="tiger.png"/>
-		<rect x="0" y="0" w="100%" h="100%" color="white"/>
-		<rect x="25%" y="25%" w="50%" h="50%" color="red"/>
-		<rect x="10" y="10" w="180" h="110" color="blue"/>
-		<rect x="75%" y="75%" w="25" h="25" color="0xAA55AA55"/>
-	</canvas>
-</eon>
