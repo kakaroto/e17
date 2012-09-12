@@ -101,7 +101,6 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
 {
   E_DBus_Signal_Handler *sh;
   Eina_Strbuf *match;
-  DBusError err;
 
   EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
   sh = calloc(1, sizeof(E_DBus_Signal_Handler));
@@ -130,8 +129,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   sh->data = data;
   sh->delete_me = 0;
 
-  dbus_error_init(&err);
-  dbus_bus_add_match(conn->conn, sh->match, &err);
+  dbus_bus_add_match(conn->conn, sh->match, NULL);
 
   if (!conn->signal_handlers) conn->signal_dispatcher = cb_signal_dispatcher;
 

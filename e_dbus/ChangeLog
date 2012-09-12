@@ -79,3 +79,7 @@
 2012-08-30  Carsten Haitzler (The Rasterman)
 
         1.7.0 release
+
+2012-09-12  Mike Blumenkrantz
+
+        * e_dbus_signal_handler_add() no longer blocks
