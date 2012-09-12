@@ -1,0 +1,52 @@
+%{!?_rel:%{expand:%%global _rel 0.enl%{?dist}}}
+
+Summary: Escape from Booty Bay is a physics game
+Name: @PACKAGE@
+Version: @VERSION@
+Release: %{_rel}
+License: BSD
+Group: Applications/Games
+URL: http://trac.enlightenment.org/trac/browser/e/GAMES/efbb/
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Rui Seabra <rms@1407.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org.au/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+Requires: libcanberra ephysics elementary pyparsing
+#BuildRequires: libcanberra etrophy ephysics elementary
+BuildRequires: libcanberra-devel ephysics-devel elementary-devel geneet pyparsing
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+
+%description
+Escape from Booty Bay is a physics game that explore EPhysics amazing features.
+
+It's written using the Enlightenment Foundation Libraries (EFL).
+
+See INSTALL for help on how to install.
+See COPYING for software usage, modification and redistribution license.
+See COPYING_ARTS, COPYING_FONTS and COPYING_SOUNDS for other material
+licenses.
+
+New levels are easy to be designed and are very welcome! Contribute back!
+
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} DESTDIR=$RPM_BUILD_ROOT install %{?mflags_install}
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS ChangeLog COPYING COPYING_ARTS COPYING_FONTS COPYING_SOUNDS README
+%{_bindir}/*
+%{_libdir}/efbb*
+%{_datadir}/*
+
+%changelog
