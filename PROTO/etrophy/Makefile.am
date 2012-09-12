@@ -31,6 +31,7 @@ AUTHORS \
 COPYING \
 autogen.sh \
 etrophy.pc.in \
+etrophy.spec \
 README
 
 pkgconfigdir = $(libdir)/pkgconfig
