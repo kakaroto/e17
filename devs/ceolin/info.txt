@@ -1,0 +1,9 @@
+Login:        ceolin
+IRC Nick:     ceolin
+Name:         Flavio Vinicius Alvares Ceolin
+Location:     Campinas, Brazil
+E-Mail:       flavio.ceolin@profusion.mobi
+Contributing: Edje, Elementary
+Group:        Libraries, Applications
+Platform:     Fedora (Linux)
+GeoData:      -22.89792,-47.063338
