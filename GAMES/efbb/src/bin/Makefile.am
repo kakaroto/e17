@@ -48,4 +48,4 @@ efbb_ql_LDFLAGS =
 endif
 
 noinst_HEADERS = efbb.h $(builddir)/game_world.h main_screen.h level_select_screen.h cannon.h sound.h score.h bg.h
-EXTRA_DIST = $(noinst_HEADERS)
+EXTRA_DIST = $(noinst_HEADERS) *.geneet

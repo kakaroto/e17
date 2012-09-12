@@ -11,6 +11,6 @@ MAINTAINERCLEANFILES = Makefile.in ABOUT-NLS aclocal.m4 config.guess compile \
   m4/codeset.m4 m4/inttypes_h.m4 m4/ltoptions.m4 m4/nls.m4 \
   stamp-h.in acconfig.h depcomp
 
-EXTRA_DIST = README AUTHORS COPYING COPYING_ARTS INSTALL
+EXTRA_DIST = README AUTHORS COPYING* INSTALL efbb.spec tools/*
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-quicklaunch

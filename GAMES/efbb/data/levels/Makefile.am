@@ -8,6 +8,7 @@ filesdir = $(datadir)/efbb/
 files_DATA = levels.eet
 
 EXTRA_DIST = \
+	levels.list \
 	level00.cfg \
 	level01.cfg \
 	level02.cfg \

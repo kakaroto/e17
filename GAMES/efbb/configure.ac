@@ -18,7 +18,7 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-AC_INIT([efbb], [v_ver-alpha], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([efbb], [v_ver], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -121,6 +121,7 @@ fi
 AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
 AC_OUTPUT([
+efbb.spec
 Makefile
 src/Makefile
 src/bin/Makefile
