@@ -175,7 +175,6 @@ AC_SUBST(requirement_etrophy)
 
 AC_OUTPUT([
 etrophy.pc
-etrophy.spec
 Makefile
 src/Makefile
 src/lib/Makefile
