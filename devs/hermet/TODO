@@ -8,6 +8,7 @@ event - need to handle after pointer mode changed.
 antialiasing - support the edge for all every angle on s/w backend.
 filter - let's start
 cutout_rect - static?! nowhere free it actually.
+proxy - source image visible set feature
 
 <Elementary>
 naviframe - need to block the style set while transiton is going on
@@ -31,3 +32,6 @@ Ecore_X - Use Ecore_X_Error_Code for ecore_x_error_code_get() (pending to Ecore 
 <Eina>
 check random functions
 eina_log_level off
+
+<Edje>
+edje_cc - check the Critical when naviframe style is inherited.
