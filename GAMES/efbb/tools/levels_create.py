@@ -12,6 +12,7 @@ import sys
 import os
 import os.path
 import subprocess
+import tempfile
 import ConfigParser
 
 
@@ -59,8 +60,8 @@ def eet_struct_write(f, struct):
 
 
 def eet_desc_write(levels):
-    tmp_filename = '/tmp/game_levels.desc'
-    f = open(tmp_filename, 'w')
+    fd, tmp_filename = tempfile.mkstemp()
+    f = os.fdopen(fd, 'w')
     r = eet_struct_write(f, levels)
     f.close()
     if r:
@@ -241,6 +242,7 @@ def main(root, eet_filename):
     desc_filename = eet_desc_write(levels)
     if desc_filename:
         eet_create(desc_filename, eet_filename)
+        os.unlink(desc_filename)
         print "Done! File %s created with success." % eet_filename
 
 
