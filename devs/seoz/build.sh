@@ -9,6 +9,7 @@
 
 # for enjoy : lightmediascanner http://lms.garage.maemo.org/
 # for ephysics : Bullet Physics Engine http://bulletphysics.org/wordpress/
+# for e17 connman module & econnman : http://www.kernel.org/pub/linux/network/connman/connman-1.6.tar.gz
 
 set -e
 #set -x
@@ -17,7 +18,7 @@ export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra" # -Wshadow"
 export CC="ccache gcc"
 alias make='make -j6'
 
-export BUILD_E_OPTION="eeze ephysics"
+export BUILD_E_OPTION="eeze ephysics econnman"
 export BUILD_ETHUMB_OPTION="PROTO/epdf"
 export BUILD_ELM_OPTION="PROTO/emap"
 export BUILD_BASIC1="eina eet"
