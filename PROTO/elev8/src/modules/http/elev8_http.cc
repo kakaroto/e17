@@ -161,6 +161,12 @@ class XMLHttpRequest
         self->onreadystatechange = Persistent<Value>::New(value);
      }
 
+   static Handle<Value> onreadystatechange_getter(Local<String>, const AccessorInfo& info)
+     {
+        XMLHttpRequest *self = GetObjectFromInfo<XMLHttpRequest>(info);
+        return self->onreadystatechange;
+     }
+
    const char *getResponseHeader(const char *header)
      {
         void *p;
@@ -416,7 +422,7 @@ class XMLHttpRequest
                 FunctionTemplate::New(getResponseHeader));
         it->Set(String::NewSymbol("getAllResponseHeaders"),
                 FunctionTemplate::New(getAllResponseHeaders));
-        it->SetAccessor(String::New("onreadystatechange"), NULL,
+        it->SetAccessor(String::New("onreadystatechange"), onreadystatechange_getter,
                         onreadystatechange_setter, Null());
         return tmpl;
      }
