@@ -72,7 +72,6 @@ fi
 
 AM_CONDITIONAL([HAVE_PO], [test "x${have_po}" = "xyes"])
 
-
 PKG_CHECK_MODULES([EMPOWER],
    [
      eina >= 1.7.0,
@@ -85,6 +84,17 @@ PKG_CHECK_MODULES([EMPOWER],
      elementary >= 1.7.0
    ]
 )
+
+# Check for systemd-login library
+have_libsystemd_login=no
+PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
+                  [libsystemd-login],
+                  have_libsystemd_login=yes,
+                  have_libsystemd_login=no)
+if test "$have_libsystemd_login" = "yes"; then
+  AC_DEFINE([HAVE_LIBSYSTEMD_LOGIN], 1, [Define to 1 if libsystemd-login is available])
+fi
+AM_CONDITIONAL(HAVE_LIBSYSTEMD_LOGIN, [test "$have_libsystemd_login" = "yes"], [Using libsystemd-login])
 
 AC_OUTPUT([
 Makefile

@@ -191,7 +191,7 @@ static void _pka_register_done(void *data, DBusMessage *msg, DBusError *error)
 
   if (error->message)
   {
-    ERR("Failed to register Autentication Agent with session '%s', (%s)", _pka_session_ids[_pka_session_idx], error->message);
+    WRN("Failed to register Autentication Agent with session '%s', (%s)", _pka_session_ids[_pka_session_idx], error->message);
 
     // Try the next session ID just in case it was a session error.
     _pka_session_idx++;

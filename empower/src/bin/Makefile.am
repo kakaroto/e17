@@ -13,6 +13,11 @@ empower_CFLAGS = @EMPOWER_CFLAGS@
 
 empower_LDADD =  $(LTLIBINTL) \
                  @EMPOWER_LIBS@
+                 
+if HAVE_LIBSYSTEMD_LOGIN
+  empower_CFLAGS += @LIBSYSTEMD_LOGIN_CFLAGS@
+  empower_LDADD += @LIBSYSTEMD_LOGIN_LIBS@
+endif
 
 EXTRA_DIST = Empower.h gui.h pka.h marshal.h ckit.h logind.h
 
