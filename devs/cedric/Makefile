@@ -9,7 +9,7 @@ MFLAGS=-j 16
 #SCANNER=scan-build -o /home/cedric/work/enlightenment/llvm-analysis/
 SCANNER=
 
-all: e17 elsa modules expedite eyelight evas_generic_loaders edje_viewer excessive enjoy espionnage enna-explorer equate esskyuehl ekbd ephoto clouseau elev8 efx terminology ephysics
+all: e17 entrance modules expedite eyelight evas_generic_loaders edje_viewer excessive enjoy espionnage enna-explorer equate esskyuehl ekbd ephoto clouseau elev8 efx terminology ephysics etrophy eobj
 
 modules: comp-scale engage places mail
 
@@ -18,10 +18,10 @@ builddir/e17: edje efreet e_dbus eeze elementary eio
 	cd e && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} --enable-mount-eeze && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
 	touch builddir/e17
 
-elsa: builddir/elsa
-builddir/elsa: efl elementary
-	cd PROTO/elsa && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
-	touch builddir/elsa
+entrance: builddir/entrance
+builddir/entrance: efl elementary
+	cd PROTO/entrance && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
+	touch builddir/entrance
 
 vigrid: builddir/vigrid
 builddir/vigrid: eina elementary
@@ -69,7 +69,7 @@ builddir/ecore: eina evas
 
 efx: builddir/efx
 builddir/efx: eina ecore evas
-	cd PROTO/efx && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
+	cd efx && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
 	touch builddir/efx
 
 edje: builddir/edje
@@ -182,6 +182,11 @@ builddir/azy: eina ecore eet
 	cd PROTO/azy && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
 	touch builddir/azy
 
+eobj: builddir/eobj
+builddir/eobj: eina
+	cd PROTO/eobj && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
+	touch builddir/eobj
+
 esskyuehl: builddir/esskyuehl
 builddir/esskyuehl: eina ecore
 	cd PROTO/esskyuehl && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} NOCONFIGURE=1 ./autogen.sh && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./configure --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
@@ -191,6 +196,11 @@ eyelight: builddir/eyelight
 builddir/eyelight: eina ecore edje emotion
 	cd PROTO/eyelight && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
 	touch builddir/eyelight
+
+etrophy: builddir/etrophy
+builddir/etrophy: eina ecore edje emotion
+	cd PROTO/etrophy && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
+	touch builddir/etrophy
 
 edje_viewer: builddir/edje_viewer
 builddir/edje_viewer: elementary edje
@@ -236,3 +246,8 @@ ecrire: builddir/ecrire
 builddir/ecrire: elementary ecore
 	cd ecrire && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
 	touch builddir/ecrire
+
+efbb: builddir/efbb
+builddir/efbb: elementary evas ephysics
+	cd GAMES/efbb && CFLAGS=${CFLAGS} CC=${CC} PATH=${PATH} PKG_CONFIG_PATH=${PKG_CONFIG_PATH} ./autogen.sh --prefix=${PREFIX} && PATH=${PATH} ${SCANNER} make ${MFLAGS} && sudo make install
+	touch builddir/efbb
