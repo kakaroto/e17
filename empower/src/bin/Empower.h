@@ -97,6 +97,7 @@ struct _Empower_Auth_Info
 enum _Empower_Auth_State
 {
   INVALID,
+  REGISTERING,
   REGISTERED,
   UNREGISTERED
 };
@@ -109,5 +110,6 @@ int empower_log_domain;
 #define CRI(...)    EINA_LOG_DOM_CRIT(empower_log_domain, __VA_ARGS__)
 
 int empower_uid;
+int empower_pid;
 
 #endif

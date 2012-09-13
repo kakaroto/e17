@@ -13,6 +13,14 @@ int elm_main(int argc, char** argv)
   bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
   textdomain(PACKAGE);
 
+  // Grab UID of the process.  This will be used to set
+  // the default user when the UI is first shown.
+  empower_uid = getuid();
+
+  // Grab PID of the process.  This is used to retrieve
+  // the appropriate session ID.
+  empower_pid = getpid();
+
   if(!eina_init())
   {
     printf(_("Unable to init Eina!"));
@@ -54,10 +62,6 @@ int elm_main(int argc, char** argv)
 
   // Allow use of svg icons
   efreet_icon_extension_add(".svg");
-
-  // Grab UID of the process.  This will be used to set
-  // the default user when the UI is first shown.
-  empower_uid = getuid();
 
   elm_run();
 

@@ -1,17 +1,30 @@
 #include "pka.h"
 #include "marshal.h"
+#include "ckit.h"
+#include "logind.h"
+
+#define POLKIT_BUS "org.freedesktop.PolicyKit1"
+#define POLKIT_PATH "/org/freedesktop/PolicyKit1/Authority"
+#define POLKIT_INTERFACE "org.freedesktop.PolicyKit1.Authority"
+
+#define AGENT_BUS "auth.empower"
+#define AGENT_PATH "/auth/empower/Agent"
+#define AGENT_INTERFACE "org.freedesktop.PolicyKit1.AuthenticationAgent"
 
 static E_DBus_Connection *_pka_system_conn = NULL;
 static E_DBus_Object     *_pka_system_obj = NULL;
 static DBusPendingCall   *_pka_register_call = NULL;
 static Eina_List         *_pka_pending_auths = NULL;
 const char               *_pka_agent_path = AGENT_PATH;
-const char               *_pka_session_id = "";
 
 static Empower_Auth_State _pka_state;
 
+// Storage for any session ID's retrieved from consolekit/logind
+//const char               *_pka_session_id = NULL;
+static const char   *_pka_session_ids[2] = {NULL, NULL};
+static unsigned int  _pka_session_idx = 0;
+
 // Method Call Callbacks
-static void               _pka_session_id_done(void *data, DBusMessage *msg, DBusError *error);
 static void               _pka_register_done(void *data, DBusMessage *msg, DBusError *error);
 static void               _pka_unregister_done(void *data, DBusMessage *msg, DBusError *error);
 
@@ -19,15 +32,17 @@ static void               _pka_unregister_done(void *data, DBusMessage *msg, DBu
 static DBusMessage       *_pka_message_beginauthentication(E_DBus_Object *obj, DBusMessage *msg);
 static DBusMessage       *_pka_message_cancelauthentication(E_DBus_Object *obj, DBusMessage *msg);
 
-// Misc
-static void               _pka_beginauthentication_finish(Empower_Auth_Info *info);
+// Helper Callbacks
 static Eina_Bool          _pka_helper_stdout(void *data, int type, void *event);
 static Eina_Bool          _pka_helper_stderr(void *data, int type, void *event);
+
+// Misc
+static void               _pka_beginauthentication_finish(Empower_Auth_Info *info);
+static Eina_Bool          _pka_session_idler(void *data);
 
 Eina_Bool pka_init()
 {
   E_DBus_Interface *iface;
-  DBusMessage *msg;
 
   _pka_state = INVALID;
 
@@ -74,14 +89,13 @@ Eina_Bool pka_init()
     return EINA_FALSE;
   }
 
-  DBG("Getting session ID from ConsoleKit");
-  _pka_session_id = NULL;
-  msg = dbus_message_new_method_call(CONKIT_BUS, CONKIT_PATH, CONKIT_INTERFACE, "GetCurrentSession");
+  // FIXME: Eventually ckit support can be dropped as it's deprecated.  This
+  //        interface can then hopefully be simplified as we won't need to
+  //        check for session ids from multiple places.
+  ckit_init(_pka_system_conn);
+  logind_init(_pka_system_conn);
 
-  if (!msg)
-    return EINA_FALSE;
-
-  e_dbus_message_send(_pka_system_conn, msg, _pka_session_id_done, -1, NULL);
+  ecore_idle_enterer_add(_pka_session_idler, NULL);
 
   return EINA_TRUE;
 }
@@ -100,7 +114,7 @@ Eina_Bool pka_shutdown()
     return EINA_FALSE;
   }
 
-  if (!_pka_session_id)
+  if (_pka_session_idx > (sizeof(_pka_session_ids)/sizeof(_pka_session_ids[0])))
     return EINA_TRUE;
 
   msg = dbus_message_new_method_call(POLKIT_BUS, POLKIT_PATH, POLKIT_INTERFACE, "UnregisterAuthenticationAgent");
@@ -109,15 +123,13 @@ Eina_Bool pka_shutdown()
     return EINA_FALSE;
 
   subject.kind = EMPOWER_SUBJECT_SESSION;
-  subject.details.session.id = _pka_session_id;
+  subject.details.session.id = _pka_session_ids[_pka_session_idx];
 
   dbus_message_iter_init_append(msg, &itr);
   marshal_subject(&itr, &subject);
   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &_pka_agent_path);
 
   _pka_register_call = e_dbus_message_send(_pka_system_conn, msg, _pka_unregister_done, -1, NULL);
-
-  eina_stringshare_del(_pka_session_id);
 
   return EINA_TRUE;
 }
@@ -173,52 +185,18 @@ pka_cancel(Empower_Auth_Info *info)
   return EINA_FALSE;
 }
 
-static void _pka_session_id_done(void *data, DBusMessage *msg, DBusError *error)
-{
-  Empower_Subject subject;
-  const char *s;
-  DBusMessage *newmsg;
-  DBusMessageIter itr;
-
-  if (error->message)
-  {
-    ERR("Failed to get session ID (%s)", error->message);
-  }
-
-  dbus_message_iter_init(msg, &itr);
-  dbus_message_iter_get_basic(&itr, &s);
-  _pka_session_id = eina_stringshare_add(s);
-
-  DBG("Session Received: %s", _pka_session_id);
-
-  DBG("Attempting to register AuthenticationAgent");
-  newmsg = dbus_message_new_method_call(POLKIT_BUS, POLKIT_PATH, POLKIT_INTERFACE, "RegisterAuthenticationAgent");
-
-  if (!newmsg)
-    return;
-
-  subject.kind = EMPOWER_SUBJECT_SESSION;
-  subject.details.session.id = _pka_session_id;
-  s = eina_stringshare_add(setlocale(LC_CTYPE, NULL));
-
-  dbus_message_iter_init_append(newmsg, &itr);
-  marshal_subject(&itr, &subject);
-  dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &s);
-  dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &_pka_agent_path);
-
-  _pka_register_call = e_dbus_message_send(_pka_system_conn, newmsg, _pka_register_done, -1, NULL);
-
-  eina_stringshare_del(s);
-}
-
 static void _pka_register_done(void *data, DBusMessage *msg, DBusError *error)
 {
   _pka_register_call = NULL;
 
   if (error->message)
   {
-    ERR("Failed to register Authentication Agent (%s)", error->message);
-    _pka_state = UNREGISTERED;
+    ERR("Failed to register Autentication Agent with session '%s', (%s)", _pka_session_ids[_pka_session_idx], error->message);
+
+    // Try the next session ID just in case it was a session error.
+    _pka_session_idx++;
+    _pka_state = INVALID;
+
     return;
   }
 
@@ -229,11 +207,19 @@ static void _pka_register_done(void *data, DBusMessage *msg, DBusError *error)
 
 static void _pka_unregister_done(void *data, DBusMessage *msg, DBusError *error)
 {
+  unsigned int i;
+
   e_dbus_object_free(_pka_system_obj);
   e_dbus_connection_close(_pka_system_conn);
   free(_pka_system_conn);
 
   e_dbus_shutdown();
+
+  for (i = 0; i < (sizeof(_pka_session_ids)/sizeof(_pka_session_ids[0])); ++i)
+  {
+    if (_pka_session_ids[i])
+      eina_stringshare_del(_pka_session_ids[i]);
+  }
 
   _pka_state = UNREGISTERED;
 }
@@ -382,3 +368,58 @@ static Eina_Bool _pka_helper_stderr(void *data, int type, void *event)
   DBG("HELPER ERR: %s", msg);
   return EINA_FALSE;
 }
+
+static Eina_Bool _pka_session_idler(void *data)
+{
+  Empower_Subject subject;
+  const char *s;
+  DBusMessage *newmsg;
+  DBusMessageIter itr;
+
+  // If we've registered then we can stop trying different session IDs.
+  if (_pka_state == REGISTERED)
+    return ECORE_CALLBACK_CANCEL;
+
+  // If we've run out of session IDs, throw an error and claim unregistered to
+  // cause Empower to exit.
+  if (_pka_session_idx >= (sizeof(_pka_session_ids)/sizeof(_pka_session_ids[0])))
+  {
+    ERR("Could not register Empower as an authentication agent");
+    _pka_state = UNREGISTERED;
+
+    return ECORE_CALLBACK_CANCEL;
+  }
+
+  _pka_session_ids[0] = ckit_session_get();
+  _pka_session_ids[1] = logind_session_get();
+
+  if ((_pka_state == INVALID) && (_pka_session_ids[_pka_session_idx] != NULL))
+  {
+    DBG("Attempting to register with session id %s", _pka_session_ids[_pka_session_idx]);
+    newmsg = dbus_message_new_method_call(POLKIT_BUS, POLKIT_PATH, POLKIT_INTERFACE, "RegisterAuthenticationAgent");
+
+    if (!newmsg)
+    {
+      ERR("Failed to allocate memory!");
+      return ECORE_CALLBACK_CANCEL;
+    }
+
+    subject.kind = EMPOWER_SUBJECT_SESSION;
+    subject.details.session.id = _pka_session_ids[_pka_session_idx];
+    s = eina_stringshare_add(setlocale(LC_CTYPE, NULL));
+
+    dbus_message_iter_init_append(newmsg, &itr);
+    marshal_subject(&itr, &subject);
+    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &s);
+    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &_pka_agent_path);
+
+    _pka_register_call = e_dbus_message_send(_pka_system_conn, newmsg, _pka_register_done, -1, NULL);
+
+    eina_stringshare_del(s);
+
+    _pka_state = REGISTERING;
+  }
+
+  return ECORE_CALLBACK_RENEW;
+}
+

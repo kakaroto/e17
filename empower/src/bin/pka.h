@@ -3,18 +3,6 @@
 
 #include "Empower.h"
 
-#define CONKIT_BUS "org.freedesktop.ConsoleKit"
-#define CONKIT_PATH "/org/freedesktop/ConsoleKit/Manager"
-#define CONKIT_INTERFACE "org.freedesktop.ConsoleKit.Manager"
-
-#define POLKIT_BUS "org.freedesktop.PolicyKit1"
-#define POLKIT_PATH "/org/freedesktop/PolicyKit1/Authority"
-#define POLKIT_INTERFACE "org.freedesktop.PolicyKit1.Authority"
-
-#define AGENT_BUS "auth.empower"
-#define AGENT_PATH "/auth/empower/Agent"
-#define AGENT_INTERFACE "org.freedesktop.PolicyKit1.AuthenticationAgent"
-
 Eina_Bool pka_init();
 Eina_Bool pka_shutdown();
 Empower_Auth_State pka_state();
