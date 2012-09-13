@@ -90,7 +90,7 @@ examples_files = \
 	tests/test.py \
 	tests/test.edj \
 	tests/cursors.edj \
-	tests/external.edj \
+	tests/test_external.edj \
 	tests/test_3d.py \
 	tests/test_actionslider.py \
 	tests/test_bg.py \
