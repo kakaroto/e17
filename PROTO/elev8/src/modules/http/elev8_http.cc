@@ -401,6 +401,17 @@ class XMLHttpRequest
         return Undefined();
      }
 
+   static Handle<Value> abort(const Arguments &args)
+     {
+        HandleScope scope;
+
+        XMLHttpRequest *self = GetObjectFromArguments<XMLHttpRequest>(args);
+        self->reset();
+        ecore_con_url_free(self->url);
+
+        return Undefined();
+     }
+
  public:
 
    static Handle<FunctionTemplate> GetTemplate()
@@ -416,6 +427,7 @@ class XMLHttpRequest
         it->Set(String::NewSymbol("open"), FunctionTemplate::New(open));
         it->Set(String::NewSymbol("send"), FunctionTemplate::New(send));
         it->Set(String::NewSymbol("do"), FunctionTemplate::New(_do));
+        it->Set(String::NewSymbol("abort"), FunctionTemplate::New(abort));
         it->Set(String::NewSymbol("setRequestHeader"),
                 FunctionTemplate::New(setRequestHeader));
         it->Set(String::NewSymbol("getResponseHeader"),
