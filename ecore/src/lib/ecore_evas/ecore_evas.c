@@ -792,7 +792,7 @@ static const struct ecore_evas_engine _engines[] = {
 #endif
 
   /* PS3 support */
-#ifdef BUILD_ECORE_EVAS_PSL1GHT
+#ifdef BUILD_ECORE_EVAS_GL_PSL1GHT
   {"gl_psl1ght", _ecore_evas_constructor_gl_psl1ght},
 #endif
 #ifdef BUILD_ECORE_EVAS_PSL1GHT
