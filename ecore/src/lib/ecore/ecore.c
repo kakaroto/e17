@@ -259,8 +259,11 @@ ecore_shutdown(void)
     */
      p = _thread_call;
      _thread_call = NULL;
-     ecore_pipe_wait(p, 1, 0.1);
-     ecore_pipe_del(p);
+     if (p)
+       {
+         ecore_pipe_wait(p, 1, 0.1);
+         ecore_pipe_del(p);
+       }
      eina_lock_free(&_thread_safety);
      eina_condition_free(&_thread_cond);
      eina_lock_free(&_thread_mutex);
