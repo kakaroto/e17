@@ -279,6 +279,11 @@ ecore_pipe_wait(Ecore_Pipe *p,
    int total = 0;
 
    EINA_MAIN_LOOP_CHECK_RETURN_VAL(-1);
+   if (!ECORE_MAGIC_CHECK(p, ECORE_MAGIC_PIPE))
+     {
+        ECORE_MAGIC_FAIL(p, ECORE_MAGIC_PIPE, "ecore_pipe_wait");
+        return -1;
+     }
    if (p->fd_read == PIPE_FD_INVALID)
      return -1;
 
